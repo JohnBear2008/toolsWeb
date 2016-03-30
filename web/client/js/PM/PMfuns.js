@@ -263,10 +263,8 @@ function showOrdersDBData(DataPara,columnsData){
 	
 	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 	
-
 	
-	
-	$(DataPara.tableID).DataTable({
+	var dataTable=$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getOrdersDBInfo',
 	        data:DataPara,
@@ -303,6 +301,11 @@ function showOrdersDBData(DataPara,columnsData){
           }
       }
 	});
+	
+	
+//	var TableData=dataTable.$("input").serialize();
+//	
+//	alert("TableData:"+JSON.stringify(TableData));
 
 }
 
@@ -354,3 +357,4 @@ function showFilterDBData(DataPara,columnsData){
 	});
 
 }
+
