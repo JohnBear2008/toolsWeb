@@ -1,0 +1,514 @@
+<div class="contentDiv">
+
+<blockquote class="layui-elem-quote layui-text">
+使用注意事项:1.该工具产生单一停机秘钥文件,通过停机秘钥可恢复机台设备运行. 2.生成单秘钥选择,可选择到期后继续加密或永久解密,选择继续加密到期后需提供新秘钥恢复设备运行。
+</blockquote>
+
+
+<p>欢迎用户：<%-(locals.session==null)?"":locals.session.yjUser.AID%><%-locals.session.yjUser.name%> 登录系统</p>  
+<HR></br>
+
+<div class="layui-form-item">
+<label class="layui-form-label">机台编号:</label>
+<div class="layui-input-block">
+    <input type="text" name="MCode" id="MCode"  placeholder="示例:MA1234567891000 共16位" autocomplete="off" class="layui-input" value="MA1234">
+</div>
+</div>
+
+
+<div class="layui-form-item">
+<label class="layui-form-label">到期日:</label>
+<div class="layui-input-inline">
+    <input type="text" name="ASEndDay" id="ASEndDay"  placeholder="YYYY-MM-DD" autocomplete="off" class="layui-input" value="2021-12-31">
+</div>
+</div>
+
+
+<div class="layui-form-item">
+<label class="layui-form-label">到期后:</label>
+<div class="layui-input-inline">
+    <input type="radio" name="MRadio" id="MRadio" value="1" title="继续加密" checked="checked">
+    <label for="radio">继续加密</label>
+    <input type="radio" name="MRadio" id="MRadio" value="0" title="永久解密"> 
+    <label for="radio">永久解密 </label>
+</div>
+</div>
+
+
+<div class="layui-form-item">
+<div class="layui-input-block">
+<button type="submit" class="layui-btn" name="ASSN" id="ASSN">点击生成秘钥文件</button>
+<button type="submit" class="layui-btn" name="ASPW" id="ASPW">计算密码</button>
+</div>
+</div>
+
+  
+<div class="layui-form-item">
+<label class="layui-form-label">密码:</label>
+<div class="layui-input-block">
+    <input type="text" name="PWResult" id="PWResult"  placeholder="计算成功后此处显示解锁密码,在面板界面输入解锁,与SP秘钥文件有同等效果" autocomplete="off" class="layui-input">
+</div>
+</div> 
+
+</div>
+<!------定义web显示内容---------------------------->
+
+
+
+
+<script type="text/javascript">
+    var  processAID="MSAgent";
+    var  subProcessAID="MSAkey";
+    var g_ScreenFlat=$(window).width()>1366?true:false;
+   
+    
+    
+//定义日期框函数///////////////
+	
+//	function ww4(date){  
+//        var y = date.getFullYear();  
+//        var m = date.getMonth()+1;  
+//        var d = date.getDate();  
+//        var h = date.getHours();  
+//        var min= date.getMinutes();
+//        return  y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d)+' '+(h<10?('0'+h):h)+':'+(min<10?   ('0'+min):min);       
+//}
+//	
+//	
+//	 function w4(s){
+//	        var date=Date.parse(s);
+//	        if(!isNaN(date)){
+//	            return new Date(date);
+//	        }else{
+//	            return new Date();
+//	        }
+//	    }
+/////////////////////////////
+    
+    
+    
+    $(function(){
+        g_subProcesses.renderMSAkey=function(){
+        	
+        	
+        	//检查日期格式          
+
+        	function checkDate(){  
+        		var sDate=$("#ASEndDay").val();
+        		var mp=/\d{4}-\d{2}-\d{2}/; 
+        		var matchArray = sDate.match(mp);     
+        		if (matchArray==null){
+        			alert("日期格式不正确!");
+        			return false;   
+        		}
+        			   
+        		var iaMonthDays = [31,28,31,30,31,30,31,31,30,31,30,31];     
+        		var iaDate = new Array(3);     
+        		var year, month, day;             
+        		iaDate = sDate.split("-");          
+        		year = parseFloat(iaDate[0])      
+        		month = parseFloat(iaDate[1])      
+        		day=parseFloat(iaDate[2])       
+        		if (year < 1900 || year > 2100) {
+        			alert("日期格式不正确!");
+        			return false;    
+        		}
+        			   
+        		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) iaMonthDays[1]=29;       if (month < 1 || month > 12){
+        			alert("日期格式不正确!");
+        			return false;  
+        		}
+        			     
+        		if (day < 1 || day > iaMonthDays[month - 1]) {
+        			alert("日期格式不正确!");
+        			return false; 
+        		}
+        			 
+        		return true;   
+        		}  
+        	
+        	
+        	
+        	function checkMCode(){
+            	
+//        		FInfo=$('#FInfo').val();
+        		if($('#MCode').val()==""){
+        			alert("请输入机台编号！")
+        			return false 
+        		}
+        		else 
+                return true 
+        		
+            	} 
+        	
+        	
+        	//机台编码长度
+        	function MCodeLen(len){
+        		if ( len < 10) {
+            	    return "0" + len;
+            	}else{
+            		return len;
+            	}
+        	}
+        	
+        	
+        	
+        	
+        	
+// 加密算法     	
+//          function encryptByDESModeEBCAS(message){
+//        	var keyHex = CryptoJS.enc.Utf8.parse(SPKey);
+//        	var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+//        	mode: CryptoJS.mode.ECB,
+//        	padding: CryptoJS.pad.Pkcs7
+//        	});
+//        	return encrypted.ciphertext.toString();
+//        	}
+        	
+        	function encryptByDESModeEBC(message){
+        		var keyHex = CryptoJS.enc.Utf8.parse(SPKey);
+        		var encrypted = CryptoJS.TripleDES.encrypt(message, keyHex, {
+        		mode: CryptoJS.mode.ECB,
+        		padding: CryptoJS.pad.Pkcs7
+        		});
+        		return encrypted.ciphertext.toString();
+        		}
+        	
+        	
+//加密单一参数      
+        function encryptS(){
+        	
+        	 MCode=$("#MCode").val();
+        	
+        	 Len=MCodeLen(MCode.length);
+
+    		 ASEndDay=$("#ASEndDay").val();
+    		
+
+    	     FASEndDay= moment(ASEndDay).format("YYMMDD");//格式化日期
+    		
+    		 MRadio=$("#MRadio:checked").val();
+
+    		 ses="<%-locals.session.yjUser.AID%>";
+    		
+    		source =ses+Len+MCode+FASEndDay+MRadio;
+//    		source="7HD00107MA123451812171";
+    		
+//    		alert(source);
+//    		alert(SPKey);
+        	var cc = encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(source));
+//        	alert(cc);
+        	return cc;
+        	}
+        	
+
+        
+//计算单一密码
+        
+        function PWenc(partA,partB){
+        	
+        	a=encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(partA)).substring(0,32);
+        	
+        	a1=　parseInt(a.substring(0,2),16)+parseInt(a.substring(8,10),16)+parseInt(a.substring(16,18),16)+parseInt(a.substring(24,26),16); //表示把字符串bc转换为16进制，结果：188    
+    		a2=　parseInt(a.substring(2,4),16)+parseInt(a.substring(10,12),16)+parseInt(a.substring(18,20),16)+parseInt(a.substring(26,28),16);
+    		a3=　parseInt(a.substring(4,6),16)+parseInt(a.substring(12,14),16)+parseInt(a.substring(20,22),16)+parseInt(a.substring(28,30),16);
+    		a4=　parseInt(a.substring(6,8),16)+parseInt(a.substring(14,16),16)+parseInt(a.substring(22,24),16)+parseInt(a.substring(30,32),16);
+    		 
+    		SPartA=a1.toString(16).substring(a1.toString(16).length-2)+a2.toString(16).substring(a2.toString(16).length-2)+a3.toString(16).substring(a3.toString(16).length-2)+a4.toString(16).substring(a4.toString(16).length-2);
+    		SPartB=encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(partB));
+    			
+        	return SPartA+SPartB;
+        		
+        	
+        }
+        
+        
+        
+        function getPW(){
+        	
+        	
+            MCode=$("#MCode").val();
+
+        	
+        	Len=MCodeLen(MCode.length);
+
+
+    		 ASEndDay=$("#ASEndDay").val();
+    		
+
+    	     FASEndDay= moment(ASEndDay).format("YYMMDD");//格式化日期
+    		
+    		 MRadio=$("#MRadio:checked").val();
+
+    		 ses="<%-locals.session.yjUser.AID%>";
+    		
+//    		var source =ses+Len2+MCode+FASEndDay+MRadio;
+    		
+    		
+    		 partA=ses+Len+MCode;
+    		 Alen=partA.length;
+    		if(Alen<=16){
+    			for(;Alen<16;Alen++){
+        			partA=partA+0;
+        			
+        		}
+        		alert(partA);
+    			
+    		}
+    		
+    		if(Alen>16){
+    			for(;Alen<24;Alen++){
+        			partA=partA+0;
+        			
+        		}
+        		alert(partA);
+    			
+    		}
+    		
+
+    		partB=FASEndDay+MRadio;
+    		PW=PWenc(partA,partB);
+    		alert("计算密码成功!");
+    		$("#PWResult").val(PW);
+
+  		
+
+        	
+        }
+        	
+        	
+          
+           //生成单秘钥文件   
+             $('#ASSN').off("click").on("click",function(){
+            	 
+            	 
+            	 
+            	 if(checkMCode()&&checkDate()){
+         			
+         			var ssp=encryptS();
+         			
+         		}
+            	
+//            	var blob = new Blob([ssp], {type: "text/plain;charset=utf-8"});//out_put_string为需要保存到文件的字符串内容
+            	 var blob = new Blob([ssp], {});//去除文件头参数
+            	saveAs(blob, "<%-locals.session.yjUser.AID%>"+".sp");//为保存的文件名
+                    		
+             })
+             
+             
+             
+             
+             
+             $('#ASPW').off("click").on("click",function(){
+        	  
+            	 getPW();
+              })
+        	
+              
+              
+              
+              
+//           //获取批量生成参数   
+//              
+//              
+//              //定义日期格式
+//              Date.prototype.format=function (){
+//                 var s='';
+//                 s+=this.getFullYear()+'-';          // 获取年份。
+//                 s+=(this.getMonth()+1)+"-";         // 获取月份。
+//                 s+= this.getDate();                 // 获取日。
+//                 return(s);                          // 返回日期。
+//             };
+//              
+//              
+//             function getGDate(begin,end,FQNum){
+//                 var dateAllArr = new Array();
+//                 var ab = begin.split("-");
+//                 var ae = end.split("-");
+//                 var db = new Date();
+//                 db.setUTCFullYear(ab[0], ab[1]-1, ab[2]);
+//                 var de = new Date();
+//                 de.setUTCFullYear(ae[0], ae[1]-1, ae[2]);
+//                 var unixDb=db.getTime();
+//                 var unixDe=de.getTime();
+////         		var num=(unixDe-unixDb)/(24*60*60*1000*FQNum);
+////         		alert(num);
+//
+//                 for(var k=unixDb;k<=unixDe;){
+//         		
+////                     dateAllArr.push((new Date(parseInt(k))).format().toString());
+//                	   dateAllArr.push(  moment( (new Date(parseInt(k))).format().toString() ).format("YYMMDD")  );
+//                     k=k+(unixDe-unixDb)/(FQNum-1);
+//         			
+//                 }
+//                 return dateAllArr;
+//             } 
+//              
+//              
+//              function getInfoG(){
+//            	  
+//            	var ses="<%-locals.session.yjUser.AID%>"
+//         		var MCode=$("#MCode").val();
+//         		var AGBeginDay=$("#AGBeginDay").val();
+//         		var AGEndDay=$("#AGEndDay").val();
+//         		var FQNum=$("#FQNum").val();
+//         		
+//         		
+//         		
+//         		isDate(ASEndDay);
+//         		
+//         		var GDate=getGDate(AGBeginDay,AGEndDay,FQNum);
+//         		
+//         		var GInfo = new Array();
+//         		
+//         		
+//         		
+//         		for(var gi=0;gi<FQNum-1;gi++){
+//         			GInfo.push(ses+MCode+GDate[gi]+1);
+//         			
+//         		}
+//         		GInfo.push(ses+MCode+GDate[FQNum-1]+0);
+//         		
+//         	
+//         		alert(GInfo);
+//         		
+//         	}
+//              
+//             
+//             //定义批量生成按钮 
+//              $('#AGSN').off("click").on("click",function(){
+//             	 getInfoG();
+//             	
+////             	var blob = new Blob(['ttttttttstt'], {type: "text/plain;charset=utf-8"});//out_put_string为需要保存到文件的字符串内容
+////             	saveAs(blob, "SN.msn");//为保存的文件名
+//                     		
+//              })
+//              
+//              
+//               $('#AGPW').off("click").on("click",function(){
+//             	 getInfoG();
+//             	
+//
+//              })
+              
+        	
+////        	alert(data);
+//        	
+//        	
+//        	$.ajax({
+//                method:'get',
+//                data:"",
+//                url:"/app/HMI/HMISetGet",
+//                success:function(data){
+////                	alert(data[0].newMT+data[0].maxID);
+//                	$("#textMt").val(data[0].newMT);
+//                	$("#textCode").val(data[0].codeOne);
+//                	$("#selectID").val(data[0].maxID);
+//                	
+//                	
+//                	//定义年份
+//                	$("#selectYear").empty();//加载前清空防止无限叠加bug
+//                	var yearNumArray= new Array();
+//                	for(yearNum=data[0].yearStart;yearNum<data[0].yearEnd;yearNum++){
+//                		yearNumArray[yearNum]=yearNum+1;
+//                	$("#selectYear").append("<option value='"+yearNumArray[yearNum]+"'>"+yearNumArray[yearNum]+"</option>");         		
+//                	}
+//
+//
+//                	
+//                	//定义机台号
+//                	$("#selectID").empty();//加载前清空防止无限叠加bug
+//                	var IDNumArray= new Array();
+//                	for(IDNum=0;IDNum<data[0].maxID;IDNum++){
+//                		IDNumArray[IDNum]=IDNum+1;
+//                	$("#selectID").append("<option value='"+IDNumArray[IDNum]+"'>"+IDNumArray[IDNum]+"</option>");         		
+//                	}
+//
+//                	
+//                	
+//                	
+//                },
+//                error:function(){
+//    
+//                }
+//            })
+//            
+//            
+//            
+//                     
+//            
+//          
+////            function getAddInfo(bName,bRadio,bCheckBox){
+////                $.ajax({
+////                    method:'post',
+////                    url:'/app/bear/getAddInfo',
+////                    data:{
+////                        bName:bName,
+////                        bRadio:bRadio,
+////                        bCheckBox:bCheckBox
+////                    },
+////                    success : function(data){
+////                        sender.success(data);
+////                        alert(data+"22222");
+////                    },
+////                    error:function(XMLHttpRequest, textStatus, errorThrown){
+////                    }
+////                })
+////            }
+////            
+////            
+//            $('#buttonCreate').off("click").on("click",function(){
+//            	
+//            	var blob = new Blob(['ttttttttstt'], {type: "text/plain;charset=utf-8"});//out_put_string为需要保存到文件的字符串内容
+//            	saveAs(blob, "SN.msn");//为保存的文件名
+//                    		
+//            })
+//            
+//            
+//            $('#buttonBatchCreate').off("click").on("click",function(){
+//            	
+//            	zip.useWebWorkers = false;
+//            	var z = new ZipArchive;
+//                z.addFile("a/a.msn", "aaaaaaacontent");
+//                z.addFile("aaaa.msn", "aaaaaaaccccc");
+//                z.export("snpatch");
+//                    		
+//            })
+//            
+//             $('#buttonOpenFolder').off("click").on("click",function(){
+//            	 
+//            	 try {
+//            		 var Message = "Please select the folder path."; //选择框提示信息
+//            		 var Shell = new ActiveXObject("Shell.Application");
+//            		 var Folder = Shell.BrowseForFolder(0, Message, 0x0040, 0x11); //起始目录为：我的电脑
+//            		 //var Folder = Shell.BrowseForFolder(0,Message,0); //起始目录为：桌面
+//            		 if (Folder != null) {
+//            		 Folder = Folder.items(); // 返回 FolderItems 对象
+//            		 Folder = Folder.item(); // 返回 Folderitem 对象
+//            		 Folder = Folder.Path; // 返回路径
+//            		 if (Folder.charAt(Folder.length - 1) != "\\") {
+//            		 Folder = Folder + "\\";
+//            		 }
+//            		 return Folder;
+//            		 }
+//            		 } catch (e) {
+//            		 alert(e.message);
+//            		 }
+//            		
+//            })
+//            
+////            function addClick(){    
+////                $("#cli").one("click",function(){
+////                    alert(count++);
+////                });
+////            } 解决点击一次按钮 执行多次bug,此方法只执行一次 会有另外问题
+//            
+////            $("#cli").off("click").on("click",function(){
+////                alert(count++);
+////            });此方法处理bug效果较好 
+//
+//       
+            
+        }
+    }); 
+</script>

@@ -1,0 +1,58 @@
+<link rel="stylesheet" type="text/css" href="/css/HMI/HMIContent.css">
+<script src="/js/hmi/FileSaver.min.js"></script>
+<script src="/js/hmi/tableExport.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+<script type="text/javascript" src="/js/hmi/moldParse.js"></script>
+<script type="text/javascript" src="/js/hmi/muc_jsExtend.js"></script>
+
+
+
+<script type="text/javascript" src="/js/hmi/datagrid-scrollview.js"></script>
+
+  <div class="contentDiv">
+    <label>按钮选择文件夹：</label>
+    <input type="file" id="upFolder" onchange="fnTrvlMldFolder()" webkitdirectory>
+    
+    <hr />
+    </br>
+    
+    <div style="margin-bottom:10px">
+	请选择数据类型:<select onchange="load(this.value)">
+		<option value="Screw">Screw</option>
+		<option value="MoldHeight">MoldHeight</option>
+		<option value="Alarm">Alarm</option>
+	</select>
+    </div>
+
+
+    <table id="molddata" border="1" class="easyui-datagrid" style="width:1200px;height:650px"
+			title="molddata - VirtualScrollView"
+			data-options="view:scrollview,rownumbers:true,singleSelect:true,
+				url:'',autoRowHeight:false,pageSize:50">
+        <!-- thead 存放标题， eg. 开模序号、循环计时 。。。 -->
+        <thead>
+            <tr>           
+            <th field="CN" width="150">CN</th>
+            <th field="nDataID" >nDataID</th>
+            <th field="Component" >Component</th>
+			<th field="sType" >sType</th>
+			<th field="nLen" >nLen</th>
+			<th field="nStat" >nStat</th>
+			<th field="dynVal" >dynVal</th>
+			<th field="Block" width="100">Block</th>
+			<th field="LocalMemoryType" >LocalMemoryType</th>			
+			<th field="MachineType" >MachineType</th>
+			<th field="Unit" width="100">Unit</th>
+			<th field="Label" width="120">Label</th>
+			<th field="Precision" >Precision</th>			
+			<th field="Visble" >Visble</th>
+            </tr>
+        </thead>
+        <!-- tbody 存放资料信息， eg.  1， 17.69 。。。 -->
+        <tbody>
+        </tbody>
+    </table>
+</div>
+   

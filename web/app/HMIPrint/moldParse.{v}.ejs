@@ -1,0 +1,33 @@
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/tableDiv.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/upFolderDiv.css">
+<script type="text/javascript" src="/js/muc_jsExtend.js"></script>
+<script type="text/javascript" src="/js/HMIPrint/common.js"></script>
+<script type="text/javascript" src="/js/HMIPrint/moldParse.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+<!-- 欢迎区 TODO 同先前的停机工具 -->
+<p>欢迎用户：
+    <%-(locals.session==null)?"":locals.session.yjUser.AID%>
+</p>
+<hr /><br />
+<!-- 操作区（按钮等） -->
+<div class="upfold-blue">
+    <input type="file" id="upFolder" onchange="fnTrvlEvent()" webkitdirectory>点击选择文件夹
+</div>
+<hr /><br />
+<!--数据呈现区-->
+<div class="table-gray">
+    <table id="monidata" border="1">
+        <!-- thead 存放标题， eg. 开模序号、循环计时 。。。 -->
+        <thead>
+            <tr></tr>
+        </thead>
+        <!-- tbody 存放资料信息， eg.  1， 17.69 。。。 -->
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+window.onload = function() {
+    fnPromptMsg();
+};
+</script>

@@ -1,0 +1,1002 @@
+<div class="contentDiv">
+
+<blockquote class="layui-elem-quote layui-text">
+使用注意事项:</br>
+	1.该工具用于分期付款情况，用于同时产生多个密钥，分几期则会产生几期+1期密钥,分期最后一期密钥文件名带OK标识为永久解密密钥。</br>
+	2.输入机台编号，分期起始日，分期结束日后，点击生成平均分期密钥，系统会自动产生平均间隔日期的分期密钥。</br>
+	3.如需自定义分期日期，可点击打开自定义分期按钮，再点击获取默认分期，系统会显示默认分期日期，用户根据实际情况调整所需日期，完成后点击生成自定义分期密钥按钮即可.
+</blockquote>
+
+
+<p>欢迎用户：<%-(locals.session==null)?"":locals.session.yjUser.AID%><%-locals.session.yjUser.name%> 登录系统</p>  
+<HR></br>
+
+<form class="layui-form" action="">
+
+<div class="layui-form-item">
+<label class="layui-form-label">机台编号:</label>
+<div class="layui-input-block">
+    <input type="text" name="MGCode" id="MGCode"  placeholder="示例:MA1234567891000  最长16位" autocomplete="off" class="layui-input" value="" maxlength="16">
+</div>
+</div>
+
+<div class="layui-form-item">
+<label class="layui-form-label">客户简称:</label>
+<div class="layui-input-block">
+    <input type="text" name="GCustomer" id="GCustomer"  placeholder="可输入客户信息,方便管理查找,选填 " autocomplete="off" class="layui-input" value="" maxlength="16">
+</div>
+</div>
+
+<div class="layui-form-item">
+
+
+<label class="layui-form-label">分期起始日:</label>
+<div class="layui-input-inline">
+    <input type="text" name="AGBeginDay" id="AGBeginDay" lay-verify="date" autocomplete="off" class="layui-input" >
+</div>
+
+
+
+</div>
+
+
+
+<div class="layui-form-item">
+<label class="layui-form-label">分期期数:</label>
+<div class="layui-input-inline">
+    <input type="text" name="FQNum" id="FQNum"  placeholder="分期数最多不超过100期" autocomplete="off" class="layui-input" value="" maxlength="2">
+</div>
+</div>
+
+
+<div class="layui-form-item">
+<label class="layui-form-label">分期类型:</label>
+
+    <input type="radio" name="FQRadio" id="FQRadio" value="1" title="固定日期分期" checked="checked" lay-filter="FQRadio" >
+
+    <input type="radio" name="FQRadio" id="FQRadio" value="2" title="固定间隔分期" lay-filter="FQRadio"> 
+    
+    <input type="radio" name="FQRadio" id="FQRadio" value="3" title="自定义平均分期" lay-filter="FQRadio">
+
+</div>
+
+
+<!----------------固定日期分期------------------->
+<div class="layui-form-item" id="FixDayFQ" >
+
+<div class="layui-form-item">
+<label class="layui-form-label">每月固定日期:</label>
+<div class="layui-input-inline">
+    <input type="text" name="MonthFix" id="MonthFix"  placeholder="可填入02-28号" autocomplete="off" class="layui-input" maxlength="2" >
+</div>
+</div>
+
+<div class="layui-form-item">
+<div class="layui-input-block">
+<button type="button" class="layui-btn" name="calMonFix" id="calMonFix">生成分期秘钥</button>
+<button type="button" class="layui-btn" name="AGSNMonFix" id="AGSNMonFix">下载分期密钥</button>
+
+</div>
+</div>
+
+
+
+</div>
+<!----------------固定日期分期------------------->
+
+
+
+<!----------------固定间隔分期------------------->
+
+<div class="layui-form-item" id="FixNumFQ" style="display:none">
+
+<div class="layui-form-item">
+<label class="layui-form-label">固定间隔天数:</label>
+<div class="layui-input-inline">
+    <input type="text" name="DayNumFix" id="DayNumFix"  placeholder="每期间隔的天数小于1000天" autocomplete="off" class="layui-input" maxlength="3" >
+</div>
+</div>
+
+<div class="layui-form-item">
+<div class="layui-input-block">
+<button type="button" class="layui-btn" name="calDayNumFix" id="calDayNumFix">生成分期秘钥</button>
+<button type="button" class="layui-btn" name="AGSNDayNumFix" id="AGSNDayNumFix">下载分期密钥</button>
+
+</div>
+</div>
+
+</div>
+<!----------------固定间隔分期------------------->
+
+
+<!----------------自定义平均分期------------------->
+
+<div class="layui-form-item" id="AvgFQ" style="display:none">
+
+
+<div class="layui-form-item">
+<label class="layui-form-label">分期结束日:</label>
+<div class="layui-input-inline">
+    <input type="text" name="AGEndDay" id="AGEndDay" lay-verify="date" placeholder="计算平均分期时必填" autocomplete="off" class="layui-input" >
+</div>
+
+</div>
+
+<div class="layui-form-item">
+<div class="layui-input-block">
+<button type="button" class="layui-btn" name="calAGDays" id="calAGDays">计算平均分期</button>
+
+</div>
+</div>
+
+
+</div>
+<!----------------平均分期------------------->
+
+
+
+ 
+<div class="layui-form-item" id="DIVFQ" style="display:none">
+<label class="layui-form-label">自定义分期:</label>
+<div class="layui-input-block">
+
+    <textarea placeholder="点击计算平均分期后，分期默认值会显示于此，如不符合需求，可直接修改日期后再点击生成自定义分期密钥，输入日期请严格按照示例格式！示例：20180101,20180205,20190609,...." class="layui-textarea" id="FQDates"></textarea>
+    </br>
+    <button type="button" class="layui-btn" name="calAGDIV" id="calAGDIV">生成自定义分期秘钥</button>
+    <button type="button" class="layui-btn" name="AGDIV" id="AGDIV">下载自定义分期秘钥</button>
+</div>
+</div>
+
+
+</form>
+
+  
+  
+  
+</div>
+<!------定义web显示内容---------------------------->
+
+<script type="text/javascript">
+    var  processAID="MSAgent";
+    var  subProcessAID="MSAkeyG";
+    var g_ScreenFlat=$(window).width()>1366?true:false;
+   
+    
+    $(function(){
+        g_subProcesses.renderMSAkeyG=function(){
+        	
+//定义日期选择框    及 radio控件
+        	layui.use(['form','layedit', 'laydate'], function(){
+        	    var form = layui.form
+        	            ,layer = layui.layer
+        	            ,layedit = layui.layedit
+        	            ,laydate = layui.laydate;
+
+        	    //日期-----
+        	    laydate.render({
+        	        elem: '#AGBeginDay'
+        	    });
+        	    laydate.render({
+        	        elem: '#AGEndDay'
+        	    });
+        	  //日期-----
+        	    
+        	    
+        	    //radio-----------
+        	    
+        	    form.on("radio(FQRadio)",function(data){
+             		//alert(data.value);//判断单选框的选中值/
+             		if(data.value == 1){
+             			$("#FixDayFQ").show();
+                        $("#FixNumFQ").hide();
+                        $("#AvgFQ").hide();
+                        $("#DIVFQ").hide();
+             		}else if(data.value == 2){
+             			 $("#FixDayFQ").hide();
+                         $("#FixNumFQ").show();
+                         $("#AvgFQ").hide();
+                         $("#DIVFQ").hide();
+                         
+             		}else if(data.value == 3){
+             			 $("#FixDayFQ").hide();
+                         $("#FixNumFQ").hide();
+                         $("#AvgFQ").show();
+             		}
+             		
+             		
+             		
+             		});
+        	    
+        	    //radio-----------
+        	   
+
+        	 });
+//------------------------------	
+        	
+        
+        
+
+          	
+//--------------------选择分期类型-----------------------    
+        	
+        	
+//设置起始分期日为默认当前日期
+        	function CurentTime()
+        	    { 
+        	        var now = new Date();
+        	        var year = now.getFullYear();       //年
+        	        var month = now.getMonth() + 1;     //月
+        	        var day = now.getDate();            //日   
+        	        var clock = year + "-";
+        	         if(month < 10)
+        	            clock += "0";
+        	        clock += month + "-";
+        	        if(day < 10)
+        	           clock += "0";
+        	        clock += day + "";
+        	        return clock; 
+        	    }
+        
+        	$("#AGBeginDay").val(CurentTime()); 
+//---------------------------------- 	
+        	
+        	
+//定义日期合法性检查
+        	function checkDate(sDate){  
+        		var mp=/\d{4}-\d{2}-\d{2}/; 
+        		var matchArray = sDate.match(mp);     
+        		if (matchArray==null){
+        			layer.alert("日期不能为空!");
+        			return false;   
+        		}
+        		var Ndate=CurentTime();
+        		if (sDate<Ndate){
+        			layer.alert("存在分期日期不能小于今日日期,请检查!");
+        			return false;   
+        		}
+        			   
+        		var iaMonthDays = [31,28,31,30,31,30,31,31,30,31,30,31];     
+        		var iaDate = new Array(3);     
+        		var year, month, day;             
+        		iaDate = sDate.split("-");          
+        		year = parseFloat(iaDate[0])      
+        		month = parseFloat(iaDate[1])      
+        		day=parseFloat(iaDate[2])       
+        		if ( year > 2100) {
+        			layer.alert("存在输入日期或过大,请检查!");
+        			return false;    
+        		}
+        			   
+        		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) iaMonthDays[1]=29;       if (month < 1 || month > 12){
+        			layer.alert("存在不合规日期,请检查!");
+        			return false;  
+        		}
+        			     
+        		if (day < 1 || day > iaMonthDays[month - 1]) {
+        			layer.alert("存在不合规日期,请检查!");
+        			return false; 
+        		}
+        			 
+        		return true;   
+        		}  
+        	
+//-----------------------------------------------------     
+        	
+//检查机台编号    	
+        	function checkMGCode(){
+            	
+//        		FInfo=$('#FInfo').val();
+        		if($('#MGCode').val()==""){
+        			layer.alert("请输入机台编号！")
+        			return false 
+        		}
+        		else 
+                return true 
+        		
+            	} 
+//------------------------------------------    	
+        	
+
+//检查日期格式
+        	function checkFQDate(){
+            	var a = /^(\d{4})-(\d{2})-(\d{2})$/
+            	if (!a.test($("#AGBeginDay").val())&&!a.test($("#AGEndDay").val())) { 
+            	layer.alert("日期格式不正确!") 
+            	return false 
+            	} 
+            	else if($("#AGEndDay").val()<=$("#AGBeginDay").val()){
+            		layer.alert("分期结束日期必须大于分期起始日期!");
+            		return false
+            	}
+            	else
+            	return true 
+            	} 
+//---------------------------------------------
+        	
+        	
+        	
+//检查分期数
+        	 function checkFQNum(){
+             	
+//         		FInfo=$('#FInfo').val();
+         		if($('#FQNum').val()>0&&$('#FQNum').val()<100){
+         			return true 
+         		}
+         		else 
+                 
+                 layer.alert("分期数输入不正确！")
+     			return false 
+         		
+             	} 
+//--------------------------------------------	
+        	 
+//检查固定日期分期数
+        	 function checkMonthFix(){
+             	
+//         		FInfo=$('#FInfo').val();
+         		if($('#MonthFix').val()>0&&$('#MonthFix').val()<32){
+         			return true 
+         		}
+         		else 
+                 
+                 layer.alert("采用固定日期分期时,每月固定日期必须填入1到31号任意天数,如填入29,30,31,请注意根据实际情况打开自定义面板调整,避免出现无效日期!")
+     			return false 
+         		
+             	} 
+//--------------------------------------------	 
+        	 
+//检查固定间隔天数
+        	 function checkDayNumFix(){
+             	
+//         		FInfo=$('#FInfo').val();
+         		if($('#DayNumFix').val()>0&&$('#FQNum').val()<100){
+         			return true 
+         		}
+         		else 
+                 
+                 layer.alert("采用固定间隔日期分期时,固定间隔日期必须填入大于0的整数,请检查!")
+     			return false 
+         		
+             	} 
+//--------------------------------------------	
+        	 
+//检查日期组合法性------------------------------------
+        	 function checkDatesArray(Dates){
+        		 
+        		 
+        		 
+        		 for(i=0;i<Dates.length;i++){
+        			 
+        			 checkDate(Dates[i]);
+        			 
+        			 var checkReasult=1;
+        			 
+        			 var checkReasult=checkReasult&&checkDate(Dates[i]);
+
+        			 
+        		 }
+        		 
+        		 if(checkReasult){
+        			 return true
+        		 }else{
+        			 return false
+        		 }
+        		 
+        		 
+        	 }
+        	 
+
+//---------------------------------------------      	 
+        	 
+//机台编码长度
+         	function MCodeLen(len){
+         		if ( len < 10) {
+             	    return "0" + len;
+             	}else{
+             		return len;
+             	}
+         	}
+        
+//------------------------------------------------    
+         	
+        	
+         	
+         	
+         	
+              
+//加密函数          
+            function encryptByDESModeEBC(message){
+        		var keyHex = CryptoJS.enc.Utf8.parse(SPKey);
+        		var encrypted = CryptoJS.TripleDES.encrypt(message, keyHex, {
+        		mode: CryptoJS.mode.ECB,
+        		padding: CryptoJS.pad.Pkcs7
+        		});
+        		return encrypted.ciphertext.toString();
+        		}
+//----------------------------------------------
+              
+              
+//定义日期格式
+              Date.prototype.format=function (){
+                 var s='';
+                 s+=this.getFullYear()+'-';          // 获取年份。
+                 s+=(this.getMonth()+1)+"-";         // 获取月份。
+                 s+= this.getDate();                 // 获取日。
+                 return(s);                          // 返回日期。
+             };
+//----------------------------            
+             
+              
+//获取计算平均分期日期函数    YYYY-MM-DD
+             function getAveDates(begin,end,FQNum){
+
+                 var dateAllArr = new Array();
+                 var ab = begin.split("-");
+                 var ae = end.split("-");
+                 var db = new Date();
+                 db.setUTCFullYear(ab[0], ab[1]-1, ab[2]);
+                 var de = new Date();
+                 de.setUTCFullYear(ae[0], ae[1]-1, ae[2]);
+                 var unixDb=db.getTime();
+                 var unixDe=de.getTime();
+//         		var num=(unixDe-unixDb)/(24*60*60*1000*FQNum);
+//         		layer.alert(num);
+   
+                 for(var k=unixDb;k<=unixDe+1;){
+                	 
+//               dateAllArr.push(  moment( (new Date(parseInt(k))).format("YYMMDD").toString() )  );         		
+//               dateAllArr.push((new Date(parseInt(k))).format().toString());
+               
+//               dateAllArrOrg.push(  moment( (new Date(parseInt(k))).format().toString() ).format("YYYYMMDD")  ); 	 
+          	     dateAllArr.push(  moment( (new Date(parseInt(k))).format().toString() ).format("YYYY-MM-DD")  );
+
+                     k=k+(unixDe-unixDb)/(FQNum-1);
+         			
+                 }
+
+                 return dateAllArr;
+             } 
+//---------------------------------------          
+             
+             
+////获取显示平均日期函数       YYYYMMDD
+//             function getDatesOrg(begin,end,FQNum){
+//            	 var dateAllArrOrg = new Array();
+//
+//                 var ab = begin.split("-");
+//                 var ae = end.split("-");
+//                 var db = new Date();
+//                 db.setUTCFullYear(ab[0], ab[1]-1, ab[2]);
+//                 var de = new Date();
+//                 de.setUTCFullYear(ae[0], ae[1]-1, ae[2]);
+//                 var unixDb=db.getTime();
+//                 var unixDe=de.getTime();
+////         		var num=(unixDe-unixDb)/(24*60*60*1000*FQNum);
+////         		layer.alert(num);
+//        //unixDE+1  防止数据微量溢出而导致的缺项情况
+//                 for(var k=unixDb;k<=unixDe+1;){
+//     
+//                 dateAllArrOrg.push(  moment( (new Date(parseInt(k))).format().toString() ).format("YYYY-MM-DD")  ); 	 
+//                     k=k+(unixDe-unixDb)/(FQNum-1);
+//         			
+//                 }
+////                 layer.alert(dateAllArrOrg);
+//                 return dateAllArrOrg;
+//             } 
+////-----------------------------------      
+             
+             
+//定义固定间隔天数日期函数          
+             
+
+             
+             function getDayNumFix(begin,FQNum,DayNumFix){
+            	 
+             
+            	 var Dates=new Array();
+            	
+            	 function getNewDay(dateTemp, days) {
+            		    var dateTemp = dateTemp.split("-");
+            		    var nDate = new Date(dateTemp[1] + '-' + dateTemp[2] + '-' + dateTemp[0]); //转换为MM-DD-YYYY格式  
+            		    var millSeconds = Math.abs(nDate) + (days * 24 * 60 * 60 * 1000);
+            		    var rDate = new Date(millSeconds);
+            		    var year = rDate.getFullYear();
+            		    var month = rDate.getMonth() + 1;
+            		    if (month < 10) month = "0" + month;
+            		    var date = rDate.getDate();
+            		    if (date < 10) date = "0" + date;
+            		    return (year + "-" + month + "-" + date);
+            	 }
+            	 
+            	 for(i=0;i<FQNum;i++){
+            		 Dates[i]=getNewDay(begin,(i+1)*DayNumFix);
+            		 
+            	 }
+            	 
+            	 return Dates;
+            	 
+
+            	      	 
+            	 
+             }           
+             
+             
+             
+//定义固定日期函数          
+             
+
+             
+             function getDatesFix(begin,FQNum,MonthFix){
+            	 var DatesFix=new Array();
+            	 var year=parseInt(begin.substring(0,4));
+            	 var month=parseInt(begin.substring(6,8));
+            	 
+
+            	 for(var i=0;i<FQNum;i++){
+            		 
+            		 month=month+1;
+            		 if(month==13){
+            			 year=year+1;
+            			 month=1;
+            		 }
+            		 
+            		 
+            		 DatesFix[i]=year+"-"+month+"-"+MonthFix;
+            		 DatesFix[i]=moment(DatesFix[i]).format("YYYY-MM-DD");
+            		 
+            	 }
+            	 
+            	 return DatesFix;
+            	      	 
+            	 
+             }
+
+              
+//定义日期数组Area显示
+             function showDateArray(Array){
+//            	 layer.alert(Array);
+            	 DateArray=Array;
+            	 DateArray[0]="第1期："+DateArray[0];
+            	 for(i=1;i<DateArray.length;i++){
+            		 DateArray[i]="\n"+"第"+(i+1)+"期："+DateArray[i];
+            		 
+            	 }
+            	 return DateArray;
+            	 
+             }
+//------------------------------------------------------   
+             
+           //定义记录信息函数     	
+             function logInfo(data){
+                 $.ajax({
+                     method:'post',
+                     url:'/app/MSAgent/logInfo',
+                     data:data,
+                     success:function(data,textStatus){
+//                     	layer.alert(data);
+                         
+                     },
+                     error:function(XMLHttpRequest, textStatus, errorThrown){
+                     }
+                 })
+             }
+     //-----------------------------                    
+
+//格式化日期   YYMMDD+去除--
+             function fomatDates(Date){
+            	 
+            	 
+              
+       		 Date=Date.replace(/-/g, "").substring(2,8);//删除所有-号  /g表示所有
+
+            	 return Date;
+            	 
+             }
+            
+//----------------------------     
+             
+             
+             
+//定义批量生成密钥函数
+             function CreateSP(Info,FQNum,Dates){
+
+            	 var GInfo = new Array();	
+            	 var DatesCal=new Array();
+
+        		    
+             	for(var gi=0;gi<FQNum;gi++){
+             		
+             		DatesCal[gi]=fomatDates(Dates[gi]);
+
+             		ssp=encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(Info+DatesCal[gi]+1)).toUpperCase();
+             		//记录信息至数据库
+             		var data={
+        					UID:"<%-locals.session.yjUser.AID%>",
+        					MKID:"<%-locals.session.yjUser.AID%>".substring(0,3),
+                            AGID:"<%-locals.session.yjUser.AID%>".substring(3,6),
+                            MCID:$("#MGCode").val(),
+                            Customer:$("#GCustomer").val(),
+                            EndDate:Dates[gi],
+                            CreateDate:CurentTime(),
+                            SP:ssp,
+                            PW:"",
+                            Type:"NO",
+                            FQ:"YES",
+                            downloadNum:"0"
+        			}
+        		
+        			logInfo(data);
+
+             		GInfo.push(ssp);
+
+             		
+             		
+             	}
+             	//记录信息至数据库
+             	
+             	DatesCal[FQNum-1]=fomatDates(Dates[FQNum-1]);
+             	
+             	var ssp=encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(Info+DatesCal[FQNum-1]+2)).toUpperCase();
+             	
+         		var data={
+    					 UID:"<%-locals.session.yjUser.AID%>",
+    					 MKID:"<%-locals.session.yjUser.AID%>".substring(0,3),
+                        AGID:"<%-locals.session.yjUser.AID%>".substring(3,6),
+                        MCID:$("#MGCode").val(),
+                        Customer:$("#GCustomer").val(),
+                        EndDate:Dates[gi],
+                        CreateDate:CurentTime(),
+                        SP:ssp,
+                        PW:"",
+                        Type:"YES",
+                        FQ:"YES",
+                        downloadNum:"0"
+    			}
+    		
+    			logInfo(data);
+         		//---------------
+
+             	GInfo.push(ssp);
+
+            	  
+            	 
+             }
+//-------------------------------------    
+             
+             
+             
+             
+//定义批量生成密钥压缩包函数
+             function CreateZip(Info,FQNum,Dates){
+
+            	 var GInfo = new Array();	
+            	 var DatesCal=new Array();
+        		 var zip = new JSZip();
+        		    
+             	for(var gi=0;gi<FQNum;gi++){
+             		
+             		DatesCal[gi]=fomatDates(Dates[gi]);
+
+             		ssp=encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(Info+DatesCal[gi]+1)).toUpperCase();
+             		//记录信息至数据库
+             		var data={
+        					UID:"<%-locals.session.yjUser.AID%>",
+        					MKID:"<%-locals.session.yjUser.AID%>".substring(0,3),
+                            AGID:"<%-locals.session.yjUser.AID%>".substring(3,6),
+                            MCID:$("#MGCode").val(),
+                            Customer:$("#GCustomer").val(),
+                            EndDate:Dates[gi],
+                            CreateDate:CurentTime(),
+                            SP:ssp,
+                            PW:"",
+                            Type:"NO",
+                            FQ:"YES",
+                            downloadNum:"1"
+        			}
+        		
+        			logInfo(data);
+
+             		GInfo.push(ssp);
+             		zip.file(data.MCID+"_"+DatesCal[gi]+".sp",ssp);
+             		
+             		
+             	}
+             	//记录信息至数据库
+             	
+             	DatesCal[FQNum-1]=fomatDates(Dates[FQNum-1]);
+             	
+             	var ssp=encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(Info+DatesCal[FQNum-1]+2)).toUpperCase();
+             	
+         		var data={
+    					 UID:"<%-locals.session.yjUser.AID%>",
+    					 MKID:"<%-locals.session.yjUser.AID%>".substring(0,3),
+                        AGID:"<%-locals.session.yjUser.AID%>".substring(3,6),
+                        MCID:$("#MGCode").val(),
+                        Customer:$("#GCustomer").val(),
+                        EndDate:Dates[gi],
+                        CreateDate:CurentTime(),
+                        SP:ssp,
+                        PW:"",
+                        Type:"YES",
+                        FQ:"YES",
+                        downloadNum:"1"
+    			}
+    		
+    			logInfo(data);
+         		//---------------
+             	
+	
+             	
+             	GInfo.push(ssp);
+             	zip.file(data.MCID+"_"+DatesCal[FQNum-1]+"OK"+".sp",ssp);
+	
+             	
+     	
+             	zip.generateAsync({type:"blob"})
+             	.then(function(content) {
+             	    // see FileSaver.js
+             	saveAs(content, "spzip.zip");
+         	  })
+            	  
+            	 
+             }
+//-------------------------------------           	 
+            
+//--------------每月固定分期--------------------------------     
+             
+             
+           //定义生成固定日期分期     生成按钮 -----------------
+             $('#calMonFix').off("click").on("click",function(){
+           	  
+           	  
+           	  if(checkMGCode()&&checkFQNum()&&checkMonthFix()){
+           		  
+           		var ses="<%-locals.session.yjUser.AID%>";
+                   var MGCode=$("#MGCode").val();
+                   var LenG=MCodeLen(MGCode.length);
+
+             		var AGBeginDay=$("#AGBeginDay").val();
+
+              		var FQNum=$("#FQNum").val();
+              		var MonthFix=$("#MonthFix").val();
+    		
+              		var DatesOrgShow=getDatesFix(AGBeginDay,FQNum,MonthFix);
+              		
+              		$("#FQDates").val(showDateArray(DatesOrgShow));
+              		
+              		if(confirm("分期信息如下,点击确认将生成分期密钥,提示生成成功后,点击密钥管理页面选择所需密钥下载!"+"\n"+$("#FQDates").val())){
+              			var DatesOrg=getDatesFix(AGBeginDay,FQNum,MonthFix);
+
+                  		CreateSP(ses+LenG+MGCode,FQNum,DatesOrg);
+                  		layer.alert("生成密钥成功!");
+              			
+              			
+              		}
+
+           	  }  
+             })
+              		
+       //定义生成固定日期分期     生成按钮 -----------------     
+        
+       //定义生成固定日期分期     下载按钮 -----------------
+             $('#AGSNMonFix').off("click").on("click",function(){
+
+           	  if(checkMGCode()&&checkFQNum()&&checkMonthFix()){
+           		  
+           		var ses="<%-locals.session.yjUser.AID%>";
+                   var MGCode=$("#MGCode").val();
+                   var LenG=MCodeLen(MGCode.length);
+
+             		var AGBeginDay=$("#AGBeginDay").val();
+
+              		var FQNum=$("#FQNum").val();
+              		var MonthFix=$("#MonthFix").val();
+    		
+              		var DatesOrgShow=getDatesFix(AGBeginDay,FQNum,MonthFix);
+              		
+              		$("#FQDates").val(showDateArray(DatesOrgShow));
+              		
+              		if(confirm("分期信息如下,点击确认所有密钥将直接打包成压缩包下载,如无需立即全部下载,点击取消!"+"\n"+$("#FQDates").val())){
+              			var DatesOrg=getDatesFix(AGBeginDay,FQNum,MonthFix);
+
+                  		CreateZip(ses+LenG+MGCode,FQNum,DatesOrg);
+              			
+              			
+              		}
+
+           	  }  
+             })
+              		
+       //定义生成固定日期分期     下载按钮 -----------------           
+             
+//--------------每月固定分期--------------------------------        
+             
+//------------------固定间隔天数-----------------------
+             
+              //生成按钮----- 
+              $('#calDayNumFix').off("click").on("click",function(){
+            	  
+            	  
+            	  if(checkMGCode()&&checkFQNum()&&checkDayNumFix()){
+            		  
+            		var ses="<%-locals.session.yjUser.AID%>";
+                    var MGCode=$("#MGCode").val();
+                    var LenG=MCodeLen(MGCode.length);
+
+              		var AGBeginDay=$("#AGBeginDay").val();
+
+               		var FQNum=$("#FQNum").val();
+               		var DayNumFix=$("#DayNumFix").val();
+     		
+               		var DatesOrgShow=getDayNumFix(AGBeginDay,FQNum,DayNumFix);
+               		
+               		$("#FQDates").val(showDateArray(DatesOrgShow));
+               		
+               		if(confirm("分期信息如下,点击确认将生成分期密钥,提示生成成功后,点击密钥管理页面选择所需密钥下载!"+"\n"+$("#FQDates").val())){
+               			var DatesOrg=getDayNumFix(AGBeginDay,FQNum,DayNumFix);
+
+               			CreateSP(ses+LenG+MGCode,FQNum,DatesOrg);
+               			layer.alert("生成密钥成功!");
+               			
+               		}
+ 
+            	  }  
+              })
+              //生成按钮----- 
+             
+             
+             
+             
+            //下载按钮----- 
+              $('#AGSNDayNumFix').off("click").on("click",function(){
+            	  
+            	  
+            	  if(checkMGCode()&&checkFQNum()&&checkDayNumFix()){
+            		  
+            		var ses="<%-locals.session.yjUser.AID%>";
+                    var MGCode=$("#MGCode").val();
+                    var LenG=MCodeLen(MGCode.length);
+
+              		var AGBeginDay=$("#AGBeginDay").val();
+
+               		var FQNum=$("#FQNum").val();
+               		var DayNumFix=$("#DayNumFix").val();
+     		
+               		var DatesOrgShow=getDayNumFix(AGBeginDay,FQNum,DayNumFix);
+               		
+               		$("#FQDates").val(showDateArray(DatesOrgShow));
+               		
+               		if(confirm("分期信息如下,点击确认所有密钥将直接打包成压缩包下载,如无需立即全部下载,点击取消!"+"\n"+$("#FQDates").val())){
+               			var DatesOrg=getDayNumFix(AGBeginDay,FQNum,DayNumFix);
+
+                   		CreateZip(ses+LenG+MGCode,FQNum,DatesOrg);
+               			
+               			
+               		}
+ 
+            	  }  
+              })
+              //下载按钮----- 
+               		
+//------------------固定间隔天数-----------------------    
+
+             
+//------------------自定义平均分分期-------------------------------------
+              
+              
+              
+              
+              
+              
+              $('#calAGDays').off("click").on("click",function(){
+            	  
+            	  
+            	  if(checkMGCode()&&checkFQDate()&&checkFQNum()){
+            		  
+            		var ses="<%-locals.session.yjUser.AID%>";
+                    var MGCode=$("#MGCode").val();
+                    var LenG=MCodeLen(MGCode.length);
+
+              		var AGBeginDay=$("#AGBeginDay").val();
+               		var AGEndDay=$("#AGEndDay").val();
+               		var FQNum=$("#FQNum").val();
+     		
+               		var DatesOrgShow=getAveDates(AGBeginDay,AGEndDay,FQNum);
+               		
+               		$("#FQDates").val(showDateArray(DatesOrgShow));
+               		
+               	    $("#DIVFQ").show();
+ 
+            	  }  
+              })
+               		
+//-----------------------------------------------
+              
+              
+              
+    
+                	   
+              
+////  打开自定义分期面板           
+//        
+//              $('#DIVOpen3').off("click").on("click",function(){
+//            	   $("#DIVFQ").toggle();
+//            	   
+//              })
+//              
+////---------------------------------------------       
+              
+              
+        //生成自定义----------
+             
+              $('#calAGDIV').off("click").on("click",function(){
+            	          	  
+            	  if(confirm("分期信息如下,点击取消可继续修改,点击确认将生成分期密钥,提示生成成功后,点击密钥管理页面选择所需密钥下载!"+"\n"+$("#FQDates").val())){
+            		  
+            		  
+            		  
+                 		DatesDiv=$("#FQDates").val().split(',');
+                 		for(i=0;i<DatesDiv.length;i++){
+                 			DatesDiv[i]=DatesDiv[i].toString().substring(DatesDiv[i].length-10,DatesDiv[i].length);
+
+                 		}  			
+	
+                  	var ses="<%-locals.session.yjUser.AID%>";
+               		var MGCode=$("#MGCode").val();
+                  	var LenG=MCodeLen(MGCode.length);
+               		var AGBeginDay=$("#AGBeginDay").val();
+               		var AGEndDay=$("#AGEndDay").val();
+               		var FQNum=$("#FQNum").val();
+               		
+               		
+               		if(checkDatesArray(DatesDiv)){
+
+               			CreateSP(ses+LenG+MGCode,FQNum,DatesDiv);
+               			layer.alert("生成密钥成功!");
+               		}
+
+            	  }  
+              })
+
+       //生成自定义---------- 
+              
+           
+             
+        //下载自定义----------
+             
+              $('#AGDIV').off("click").on("click",function(){
+            	          	  
+            	  if(confirm("分期信息如下,点击取消可继续修改,点击确认所有密钥将直接打包成压缩包下载!"+"\n"+$("#FQDates").val())){
+            		  
+            		  
+            		  
+                 		DatesDiv=$("#FQDates").val().split(',');
+                 		for(i=0;i<DatesDiv.length;i++){
+                 			DatesDiv[i]=DatesDiv[i].toString().substring(DatesDiv[i].length-10,DatesDiv[i].length);
+
+                 		}  			
+	
+                  	var ses="<%-locals.session.yjUser.AID%>";
+               		var MGCode=$("#MGCode").val();
+                  	var LenG=MCodeLen(MGCode.length);
+               		var AGBeginDay=$("#AGBeginDay").val();
+               		var AGEndDay=$("#AGEndDay").val();
+               		var FQNum=$("#FQNum").val();
+               		
+               		
+               		if(checkDatesArray(DatesDiv)){
+
+               			CreateZip(ses+LenG+MGCode,FQNum,DatesDiv);	
+               		}
+
+            	  }  
+              })
+
+       //下载自定义----------
+//------------------自定义平均分分期-------------------------------------      
+        	
+
+            
+        }
+    }); 
+</script>

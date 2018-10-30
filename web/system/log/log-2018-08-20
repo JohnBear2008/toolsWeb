@@ -1,0 +1,21 @@
+[2018-08-20 13:07:57.563] [ERROR] dateFileLog - { [Error: Handshake inactivity timeout]
+  code: 'PROTOCOL_SEQUENCE_TIMEOUT',
+  fatal: true,
+  timeout: 10000 }
+Error: Handshake inactivity timeout
+    at Handshake.<anonymous> (D:\NB\node_modules\mysql\lib\protocol\Protocol.js:154:17)
+    at emitNone (events.js:67:13)
+    at Handshake.emit (events.js:166:7)
+    at Handshake._onTimeout (D:\NB\node_modules\mysql\lib\protocol\sequences\Sequence.js:116:8)
+    at Timer.listOnTimeout (timers.js:92:15)
+    --------------------
+    at Protocol._enqueue (D:\NB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at Protocol.handshake (D:\NB\node_modules\mysql\lib\protocol\Protocol.js:52:41)
+    at PoolConnection.connect (D:\NB\node_modules\mysql\lib\Connection.js:109:18)
+    at Pool.getConnection (D:\NB\node_modules\mysql\lib\Pool.js:45:23)
+    at getConnection (D:\NB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:49:12)
+    at Object.dbm.exec (D:\NB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:116:11)
+    at Object.module.exports.getProject (D:\NB\yujiang.Foil.Node.BizServer\biz\org\processAuthority\processAuthority.db.mysql.js:15:15)
+    at buildProject (D:\NB\yujiang.Foil.Node.BizServer\biz\org\processAuthority.js:36:5)
+    at fn (D:\NB\node_modules\async\lib\async.js:641:34)
+    at Immediate._onImmediate (D:\NB\node_modules\async\lib\async.js:557:34)

@@ -1,0 +1,39 @@
+[2018-09-04 09:54:17.262] [ERROR] dateFileLog - { [Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.VidDate FROM msagent LEFT JOIN users on msagent.Account=users.UserAID  WHERE  F' at line 1]
+  code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0 }
+Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.VidDate FROM msagent LEFT JOIN users on msagent.Account=users.UserAID  WHERE  F' at line 1
+    at Query.Sequence._packetToError (D:\NB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\NB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\NB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\NB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\NB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\NB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at readableAddChunk (_stream_readable.js:153:18)
+    at Socket.Readable.push (_stream_readable.js:111:10)
+    --------------------
+    at Protocol._enqueue (D:\NB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\NB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\NB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:128:25)
+    at getConnection.success (D:\NB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:119:13)
+    at Object.exports.safeSuccess (D:\NB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (D:\NB\yujiang.Foil.Node\src\yjError.js:154:12)
+    at D:\NB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:57:11
+    at Ping.onPing (D:\NB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:287:14)
+    at Ping.runBound [as _callback] (domain.js:300:12)
+[2018-09-04 09:54:17.267] [ERROR] dateFileLog - [Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.VidDate FROM msagent LEFT JOIN users on msagent.Account=users.UserAID  WHERE  F' at line 1]
+Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '.VidDate FROM msagent LEFT JOIN users on msagent.Account=users.UserAID  WHERE  F' at line 1
+    at Request.<anonymous> (D:\NB\yujiang.Foil.Node\src\yjREST.engine.remote.restler.js:43:33)
+    at emitTwo (events.js:87:13)
+    at Request.emit (events.js:172:7)
+    at Request.mixin._fireSuccess (D:\NB\node_modules\restler\lib\restler.js:220:12)
+    at D:\NB\node_modules\restler\lib\restler.js:158:20
+    at IncomingMessage.parsers.auto (D:\NB\node_modules\restler\lib\restler.js:394:7)
+    at Request.mixin._encode (D:\NB\node_modules\restler\lib\restler.js:195:29)
+    at D:\NB\node_modules\restler\lib\restler.js:154:16
+    at Request.mixin._decode (D:\NB\node_modules\restler\lib\restler.js:170:7)
+    at IncomingMessage.<anonymous> (D:\NB\node_modules\restler\lib\restler.js:147:14)

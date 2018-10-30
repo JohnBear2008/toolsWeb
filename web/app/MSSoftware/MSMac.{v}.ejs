@@ -1,0 +1,118 @@
+<script type="text/javascript" src="/js/fileSaver.min.js"></script>
+<script type="text/javascript" src="/js/jszip.js"></script>
+<script type="text/javascript" src="/js/excel-gen.js"></script>
+<script type="text/javascript" src="/js/deflate.js"></script>
+<script type="text/javascript"  src="/js/tripledes.js"></script>
+<script type="text/javascript"  src="/js/core.js"></script>
+<script type="text/javascript"  src="/js/var.js"></script>
+<script type="text/javascript"  src="/js/tkfuns.js"></script>
+<script type="text/javascript"  src="/js/tkenc.js"></script>
+<script type="text/javascript"  src="/js/mode-ecb.js"></script>
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div class="contentDiv">
+
+
+<blockquote class="layui-elem-quote layui-text">
+<p>欢迎用户：<%-(locals.session==null)?"":locals.session.yjUser.AID%> 
+</blockquote>
+<HR></br>
+
+<div class="layui-form-item">
+<label class="layui-form-label">MAC地址:</label> 
+<div class="layui-input-block"> 
+  <input type="text" name="textMac" id="textMac" autocomplete="off"  placeholder="参考格式:  00-01-02-03-04-05注意删除前后空格" class="layui-input" /></p>
+</div>
+</div>
+
+<div class="layui-form-item">
+<label class="layui-form-label">SN注册码:</label> 
+<div class="layui-input-block"> 
+  <input type="text" name="textSN" id="textSN" autocomplete="off"  placeholder="注册码计算成功后会显示于此处,复制至软件注册即可!" class="layui-input" /></p>
+</div>
+</div>
+
+<div class="layui-input-block">
+<button type="button" class="layui-btn" name="SNTxt" id="SNTxt">计算注册码</button>
+<button type="button" class="layui-btn" name="SNCreate" id="SNCreate">生成软件注册文件</button>
+</div>
+
+
+</div>
+
+
+<!----------定义web显示内容---------------------------->
+
+
+
+
+<script type="text/javascript">
+
+
+
+
+    
+  
+    $(function(){
+    	
+    	layui.use(['form'], function(){
+    	    var layer = layui.layer
+    	    });
+    	
+    	
+    	//-------------------------
+   	 $('#SNTxt').off("click").on("click",function(){           	
+        	
+        	var textMac=$("#textMac").val();   	
+        	var checkmac=checkMac(textMac);
+        	
+        	if(checkmac){
+        		
+        		
+        		var FMMac=FM(textMac);
+        		
+        		mssn=encryptMac(FMMac);
+        		
+        		$("#textSN").val(mssn);
+
+        	}else{
+           		layer.alert("你输入的MAC地址不正确,请检查,按照参考格式输入!"); 
+           	}
+		
+        })
+        
+        //-------------------------
+   	
+   
+       $('#SNCreate').off("click").on("click",function(){           	
+       	
+       	var textMac=$("#textMac").val();   	
+       	var checkmac=checkMac(textMac);
+       	
+       	if(checkmac){
+
+       		var FMMac=FM(textMac);
+       		
+       		mssn=encryptMac(FMMac);
+
+       		var blob = new Blob([mssn], {});//out_put_string为需要保存到文件的字符串内容
+           	saveAs(blob, "History.sn");//为保存的文件名
+       		
+       	}else{
+       		layer.alert("你输入的MAC地址不正确,请检查,按照参考格式输入!"); 
+       	}
+
+               		
+       })
+       
+       //-------------------------------
+       
+       
+
+        
+    }); 
+</script>

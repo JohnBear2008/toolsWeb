@@ -1,0 +1,110 @@
+<div class="contentDiv">
+
+<blockquote class="layui-elem-quote layui-text">
+使用注意事项:</br>
+	1.可通过该项功能查询已生成秘钥信息.</br>
+	2.批量生成秘钥会在此处生成多个秘钥.
+</blockquote>
+	<p>欢迎用户：<%-(locals.session==null)?"":locals.session.yjUser.AID%><%-locals.session.yjUser.name%> 登录系统</p>  
+	<HR></br>
+
+	
+	
+	<div class="demoTable">
+	  搜索ID：
+	  <div class="layui-inline">
+	    <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+	  </div>
+	  <button class="layui-btn" data-type="reload">搜索</button>
+	</div>
+	 
+	<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table> 
+	
+	
+	
+
+	
+	
+</div>
+<!------定义web显示内容---------------------------->
+
+<!-- 表格操作按钮集 -->
+<script type="text/html" id="toolbar">
+<a class="layui-btn layui-btn-primary layui-btn-small" lay-event="detail">查看</a>
+<a class="layui-btn layui-btn-small" lay-event="download">重新下载</a>
+
+</script>
+
+
+<script type="text/javascript">
+    var  processAID="MSAgent";
+    var  subProcessAID="MSAdmin";
+    var g_ScreenFlat=$(window).width()>1366?true:false;
+   
+
+    
+    $(function(){
+        g_subProcesses.renderMSAdmin=function(){
+        	
+        	layui.use('table', function(){
+        		  var table = layui.table;
+        		  
+        		  //方法级渲染
+        		  table.render({
+        		    elem: '#LAY_table_user'
+        		    ,url: '/css/divcss/data/user.json'
+        		    ,cols: [[
+        		      {checkbox: true, fixed: true}
+        		      ,{field:'id', title: 'ID', width:80, sort: true, fixed: true}
+        		      ,{field:'username', title: '用户名', width:80}
+        		      ,{field:'sex', title: '性别', width:80, sort: true}
+        		      ,{field:'city', title: '城市', width:80}
+        		      ,{field:'sign', title: '签名'}
+        		      ,{field:'experience', title: '积分', sort: true, width:80}
+        		      ,{field:'score', title: '评分', sort: true, width:80}
+        		      ,{field:'classify', title: '职业', width:80}
+        		      ,{field:'wealth', title: '财富', sort: true, width:135}
+        		    ]]
+        		    ,id: 'testReload'
+        		    ,page: true
+        		    ,height: 315
+        		  });
+        		//--------------------------
+        		  var $ = layui.$, active = {
+        		    reload: function(){
+        		      var demoReload = $('#demoReload');
+        		      
+        		      //执行重载
+        		      table.reload('testReload', {
+        		        page: {
+        		          curr: 1 //重新从第 1 页开始
+        		        }
+        		        ,where: {
+        		          key: {
+        		            id: demoReload.val()
+        		          }
+        		        }
+        		      });
+        		    }
+        		  };
+        		//-------------------------------------
+        		  $('.demoTable .layui-btn').on('click', function(){
+        		    var type = $(this).data('type');
+        			alert(type);
+        		    active[type] ? active[type].call(this) : '';
+        		  });
+        		//------------------------------------  
+        		  
+        		  
+        		  
+        		});
+        	
+        	
+            
+        }
+    }); 
+</script>
+
+
+
+

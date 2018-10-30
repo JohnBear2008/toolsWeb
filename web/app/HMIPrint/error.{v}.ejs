@@ -1,0 +1,61 @@
+<link rel="stylesheet" type="text/css" href="/css/HMI/HMIContent.css">
+<script src="/js/hmi/FileSaver.min.js"></script>
+<script src="/js/hmi/tableExport.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+<script type="text/javascript" src="/js/hmi/alarmParsePage.js"></script>
+
+
+
+<div class="contentHMI">
+
+
+<label>请点击右侧按钮选择目标文件夹：</label>
+<input type="file" id="upFolder" onchange="fnTrvlAlarmFolder()" webkitdirectory>
+<hr />
+
+
+
+
+<table id = "alarmData" border="1"  >
+<thead>
+    <tr>
+    <th>警报字符串</th>
+    <th>警报ID</th>
+    <th>警报次数</th>
+    <th>开始时间</th>
+    <th>结束时间</th>
+    <th>资料来源</th>
+    <th>警报翻译</th>
+    </tr>
+</thead>
+<tbody>
+    
+</tbody>     
+</table>
+
+
+
+</div>
+
+
+<script type="text/javascript">
+
+//$(function(){
+//    $("#btn1").click(function() {
+//        $("#monidata tbody").prepend('<tr><td></td><td></td><td></td></tr>');
+//    });
+//    $("#btn2").click(function() {
+//        $("#monidata tbody").append('<tr><td></td><td></td><td></td></tr>');
+//    });
+//});
+
+window.onload = function() {
+    var body = document.getElementsByTagName("body")[0];
+    if (typeof body.style.WebkitAnimation == "undefined" || typeof(Promise) !== "function")
+        alert("当前浏览器不支持高级特性，请更换浏览器： \n   猎豹浏览器");
+    else
+        fnPromptMsg();
+}
+</script>
