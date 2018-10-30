@@ -1,8 +1,12 @@
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/divContent.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/tableDiv.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/upFolderDiv.css">
 <script type="text/javascript" src="/js/muc_jsExtend.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/common.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/moniParse.js"></script>
+<script src="/js/HMIPrint/FileSaver.min.js"></script>
+<script src="/js/HMIPrint/tableExport.js"></script>
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <!-- 欢迎区 TODO 同先前的停机工具 -->
 <p>欢迎用户：
@@ -10,36 +14,35 @@
 </p>
 <hr /><br />
 <!-- 操作区（按钮等） -->
-<div id="OperDiv" class="upfold-blue">
-    <!-- <input type="file" id="upFolder" onchange="fnTrvlEvent()" webkitdirectory>点击选择文件夹 -->
-    <input type="file" id="upFolder" webkitdirectory>点击选择文件夹
-</div>
-<hr /><br />
-<!--数据呈现区-->
-<div class="table-gray">
-    <table id="monidata" border="1">
-        <!-- thead 存放警报标题， eg. 开模序号、循环计时 。。。 -->
-        <thead>
-            <tr></tr>
-        </thead>
-        <!-- tbody 存放对应的资料值， eg.  1， 17.69 。。。 -->
-        <tbody></tbody>
-    </table>
+<div class="divContent">
+    <div id="OperDiv" class="upfold-blue">
+        <!-- <input type="file" id="upFolder" onchange="fnTrvlEvent()" webkitdirectory>点击选择文件夹 -->
+        <input type="file" id="upFolder" webkitdirectory>点击选择文件夹        
+    </div>
+        
+        <button  onclick="$('#monidata').tableExport({type: 'excel', excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right']})"> 导出EXCEL</button> 
+               
+    <hr /><br />
+    <!--数据呈现区-->
+    <div class="table-gray">
+        <table id="monidata" border="1">
+            <!-- thead 存放警报标题， eg. 开模序号、循环计时 。。。 -->
+            <thead>
+                <tr></tr>
+            </thead>
+            <!-- tbody 存放对应的资料值， eg.  1， 17.69 。。。 -->
+            <tbody></tbody>
+        </table>
+    </div>
 </div>
 <script type="text/javascript">
 // 浏览器兼容性检查与提示信息处理
-window.onload = function() {
-    var sRslt = fnBrowserSupport();
-    if (sRslt === "Support") {
-        if (sessionStorage.getItem("moni")) {
-            var ObjTmp = JSON.parse(sessionStorage.getItem("moni"));
-            fnPreObjShow(ObjTmp);
-        }
-    } else { // 文件选择变为不可编辑
-        $('#OperDiv').removeClass("upfold-blue");
-        $('#upFolder').attr("disabled", true);
+$(window).load(function() {
+    if (sessionStorage.getItem("moni")) {
+        var ObjTmp = JSON.parse(sessionStorage.getItem("moni"));
+        fnPreObjShow(ObjTmp);
     }
-};
+});
 // $(function() {
 //     var sRslt = fnBrowserSupport();
 //     if (sRslt === "Support") {

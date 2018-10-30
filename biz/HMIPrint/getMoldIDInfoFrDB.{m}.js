@@ -38,20 +38,20 @@ module.exports = function(sender) {
         "       AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
         " ) " +
         /* 数据表内除去与“如上info临时表内DataID相同的数据”（包括info临时表自己） */
-        " SELECT DataID, Component, Block, Unit, Label, CN,Visible FROM hmiprint_mold " +
+        " SELECT DataID, Component, Block, Unit, Label, CN,Visb FROM hmiprint_mold " +
         "       WHERE DataID NOT IN ( SELECT DataID FROM info ) " +
         // 限定只在标准的数据里找，过滤其他厂家的冗余数据
         "           AND Manufacturer=? AND CtrlType=? AND MachType=? " +
         "           AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
         /* union all info的查询结果 */
         " UNION ALL " +
-        " SELECT DataID, Component, Block, Unit, Label, CN,Visible FROM hmiprint_mold " +
+        " SELECT DataID, Component, Block, Unit, Label, CN,Visb FROM hmiprint_mold " +
         "       WHERE Manufacturer=? AND CtrlType=? AND MachType=? " +
         "       AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? ";
     // mark #1，上下两种效率仅差0.01s，为代码维护简便，故mark
     /*    } else { // 不带有info文件的HMI程式，按照默认的效果进行显示
             aSQLPara = ["STD", "0000", "00000000", "0", "0", "0", "0", "0"]; // 厂家、控制器、机型、预留0、1、2、3、4
-            execSQL = "SELECT CN, Visible FROM hmiprint_mold WHERE Manufacturer=? AND CtrlType=? AND MachType=? " +
+            execSQL = "SELECT CN, Visb FROM hmiprint_mold WHERE Manufacturer=? AND CtrlType=? AND MachType=? " +
                 " AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=?";
         }*/
 

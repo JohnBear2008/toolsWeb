@@ -1,8 +1,6 @@
 // Chenly 2018-10-17 模具解析功能模块，目前仅 TM55 3354系统；其他均需调整
 /*Note：
- * 一、系统、机型、子类等识别
- *     1、只能通过新建Sys.ini来识别
- *     2、假使通过版本号来识别，代码将变得冗余同时加大维护的复杂度
+ * 对象的属性，假使未按照匈牙利命名规则的，则表示此项属性从DB获取
  **/
 /*===========================================================================+
 |   constant                                                                 |
@@ -88,8 +86,8 @@ var mIDLen = new Map([
 
 /* 无用的信息列表 */
 var aUseLess = [
-    "DataID",
-    "C_MEMERY_PAD"
+    "DataID", // 与原obj重复的DataID
+    "C_MEMERY_PAD" // 内存对齐的内容
 ];
 
 // Chenly 2018-10-19 mark，使用这种方式传参会浪费 几ms的时间
@@ -129,7 +127,7 @@ function MoldObj() {
     this.sMedia = ""; // 媒介，暂无实际大作用
     this.sVers = "";
     this.nDataIDSum = 0;
-    this.aDBInfo = []; // 存放 DataInfoObj
+    this.aDataInfo = []; // 存放 DataInfoObj
 
     // 如下信息从moldset.ini中获取并补充缺省的内容，用于存放moldset.ini中各种资料数据长度的信息及没有提及的资料数据长度信息
     this.oIniLen = {
@@ -162,11 +160,12 @@ function MoldObj() {
         Reserved4: "0"
     };
 
+    this.RelativePath = "unknow"; // 获取当前文件的相对路径，基于安全策略，无法获取绝对路径
     // Chenly 2018-10-16 test
     // if (typeof MoldObj._bInit === "undefined") {
     //     /* 设置DataInfo的内容 */
     //     MoldObj.prototype.fnPushObj = function(subObj) {
-    //         this.aDBInfo.push(subObj);
+    //         this.aDataInfo.push(subObj);
 
     //         MoldObj._bInit = true;
     //     };
@@ -184,8 +183,8 @@ function IdentifyObj(sMeterial, sColor, nPerMoldCnt, sMedia) {
     this.sMedia = sMedia;
 }
 
-// 访问格式 MoldObj.aDBInfo[nInx].KEY
-// function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal, sBlock, Component, sLable, Prec, FmtPrec, Visble, Unit, CN) {
+// 访问格式 MoldObj.aDataInfo[nInx].KEY
+// function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal, sBlock, Component, sLable, Prec, FmtPrec, Visb, Unit, CN) {
 function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     // 如下信息可从cdb获得
     this.nDataID = nDataID;
@@ -195,7 +194,7 @@ function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     this.dynVal = dynVal;
 
     // 如下信息从数据库获得，这里仅做显示参考，从数据库获取的数据均采用帕斯卡命名方式
-    // this.Visble = Visble; // 是否可见
+    // this.Visb = Visb; // 是否可见
     // this.Prec = Prec; // 小数位数， 0表示无精确， 1表示精确到一位小数， 2表示精确到两位小数
     // this.FmtPrec = FmtPrec; // 格式化精度，eg. 0=> val === val;   1=> val =/ 10;   2=> val = val /=100
     // this.Component = Component; // 归组，其他-0，关模-1，射出-2，托模-3，储料-4，中子-5，座台-6，温度-7，开模-10
@@ -207,14 +206,14 @@ function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     // this.EN = EN;
 }
 
-// function PadDataInfoObj(nDataID, sBlock, Component, sLable, Prec, FmtPrec, Visble, Unit, CN, TW, EN) {
+// function PadDataInfoObj(nDataID, sBlock, Component, sLable, Prec, FmtPrec, Visb, Unit, CN, TW, EN) {
 //     this.nDataID = nDataID;
 //     this.sBlock = sBlock;
 //     this.Component = Component;
 //     this.sLable = sLable;
 //     this.Prec = Prec;
 //     this.FmtPrec = FmtPrec;
-//     this.Visble = Visble;
+//     this.Visb = Visb;
 //     this.Unit = Unit;
 //     this.CN = CN;
 //     this.TW = TW;
@@ -230,14 +229,14 @@ function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
 // }
 
 // /* 模具子信息对象原型 */
-// function DataSubInfo(nOffSet, nLen, fVal, Visble, Prec, FmtPrec, Component, Unit) {
+// function DataSubInfo(nOffSet, nLen, fVal, Visb, Prec, FmtPrec, Component, Unit) {
 //     // 如下信息可从cdb获得
 //     this.nOffSet = nOffSet;
 //     this.nLen = nLen;
 //     this.fVal = fVal;
 
 //     // 如下信息从数据库获得
-//     this.Visble = Visble;
+//     this.Visb = Visb;
 //     this.Prec = Prec; // 小数位数， 000,001,002 。。。  eg. 001表示一位小数
 //     this.FmtPrec = FmtPrec; // 格式化精度，000,001,002。。。 eg. 001代表一位精度
 //     this.Component = Component; // 归组，其他-0，关模-1，射出-2，托模-3，储料-4，中子-5，座台-6，温度-7，开模-10
@@ -258,25 +257,34 @@ function fnTrvlEvent() {
 // 处理上传的Folder内的cdb和ini数据，并呈现数据结果
 function fnTrvlFolder() {
     var upFolder = document.getElementById('upFolder').files;
+    var nFileSizes = 0;
     var sOperStat = fnQuitTrvlFolder(g_oMold, upFolder); // common.js
     if (sOperStat !== "Continue") {
         return -1;
     }
 
+    // 获取当前文件的相对路径，基于安全策略，无法获取绝对路径
+    g_oMold.RelativePath = upFolder[0].webkitRelativePath;
+
     // Chenly 2018-09-27 分配ini和cdb文件变量
     for (var i = 0, len = upFolder.length; i < len; ++i) {
+        nFileSizes += Math.round(upFolder[i].size / 1024 / 1024);
         if (upFolder[i].name.match(".cdb")) {
             g_CdbFile = upFolder[i];
             g_nCdbSize = upFolder[i].size;
-        } else if (upFolder[i].name.match(".ini")) {
+        } else if (upFolder[i].name.indexOf(".ini") !== -1) {
             g_IniFile = upFolder[i];
-        } else if (upFolder[i].name.match(".info")) {
+        } else if (upFolder[i].name.indexOf(".info") !== -1) {
             g_SysInfoFile = upFolder[i];
         }
     }
 
-    /* 文件丢失则不做解析 */
-    if (!g_CdbFile) {
+    /* 假使文件夹超过预期大小，则直接return */
+    /* 假设cdb或ini文件丢失，则直接return */
+    if (nFileSizes > 2) {
+        alert('所选文件夹的大小 > 2MB，请确认所选文件夹是否有误');
+        return -1;
+    } else if (!g_CdbFile) {
         alert('所选文件夹内的cdb文件丢失，无法进行接下来的解析工作！');
         return -1;
     } else if (!g_IniFile) {
@@ -302,6 +310,11 @@ function fnInitVariate() {
     g_oMold = new MoldObj();
     g_oMold.sFolderName = "mold";
     g_cszHexMoldCdb = [];
+
+    // 清空全局的file标识
+    g_CdbFile = undefined;
+    g_IniFile = undefined;
+    g_SysInfoFile = undefined;
 }
 
 // 创建新的数据
@@ -373,15 +386,15 @@ function fnShowDataObj(objArg) {
     $moldDataTab.text("");
     var eTrTitle = document.createElement('tr');
 
-    for (var nRow = 0, nGLen = objArg.aDBInfo.length; nRow < nGLen; ++nRow) {
+    for (var nRow = 0, nGLen = objArg.aDataInfo.length; nRow < nGLen; ++nRow) {
         var eTrData = document.createElement('tr');
 
-        for (var nSerial = 0, nSLen = objArg.aDBInfo[nRow].length; nSerial < nSLen; ++nSerial) {
-            var bVisible = objArg.aDBInfo[nRow][nSerial].bVisible;
+        for (var nSerial = 0, nSLen = objArg.aDataInfo[nRow].length; nSerial < nSLen; ++nSerial) {
+            var bVisb = objArg.aDataInfo[nRow][nSerial].bVisb;
 
             // 不可见的模具信息内容不做显示
             // 建议用table存储数据，便于后续爬虫->excel工作
-            if (bVisible) {
+            if (bVisb) {
                 var eTdTitle = document.createElement('td');
                 var eTdData = document.createElement('td');
 
@@ -392,11 +405,11 @@ function fnShowDataObj(objArg) {
                 eTdData.setAttribute("align", "center");
 
                 if (nRow === 0) {
-                    eTdTitle.innerHTML = objArg.aDBInfo[nRow][nSerial].sName;
+                    eTdTitle.innerHTML = objArg.aDataInfo[nRow][nSerial].sName;
                     eTrTitle.appendChild(eTdTitle);
                 }
 
-                eTdData.innerHTML = g_oMold.aDBInfo[nRow][nSerial].Value;
+                eTdData.innerHTML = g_oMold.aDataInfo[nRow][nSerial].Value;
 
                 eTrData.appendChild(eTdData);
             }
@@ -515,8 +528,8 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
         aDataID.push(nDataID);
 
         // (sType, nLen, nStat, dynVal,
-        // nDataID, sBlock, Component, sLable, Prec, FmtPrec, Visble, Unit, CN) {
-        objArg.aDBInfo.push(new TM55DataInfoObj(nDataID, sIDType, nLen, nIDStat, dynVal));
+        // nDataID, sBlock, Component, sLable, Prec, FmtPrec, Visb, Unit, CN) {
+        objArg.aDataInfo.push(new TM55DataInfoObj(nDataID, sIDType, nLen, nIDStat, dynVal));
 
     }
 
@@ -524,9 +537,14 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
 
 }
 
-// TODO 效率孰优孰劣？
-// ①  ajax形参再接收个aDataID发至biz，SQL处通过IN来缩短搜索范围
-// ②  ajax只接收版本信息
+/**
+ * @Author    Muc
+ * @DateTime  2018-10-30
+ * @Describle [传入系统版本信息，获取相应的DB数据]
+ * @Warning   [Warning]
+ * @param     {[type]}    objSysArg [description]
+ * @return    {[type]}              [description]
+ */
 function getMoldIDInfoFrDB(objSysArg) {
     // var aRslt = [];
     $.ajax({
@@ -538,13 +556,14 @@ function getMoldIDInfoFrDB(objSysArg) {
             console.log("getMoldIDInfoFrDB Success!");
             // console.log(data); // 这里get到的结构为 [{Component:Mold, Block:DB_MOLDSET, ...}, {Component:Mold, Block:DB_MOLDSET, ...}, ...]
 
+            /*  */
             for (var nInx in data) {
                 // console.log(data[nInx]);
                 for (var nDataInx = 0, nlen1 = g_oMold.nDataIDSum; nDataInx < nlen1; ++nDataInx) {
-                    if (g_oMold.aDBInfo[nDataInx].nDataID === data[nInx].DataID) {
+                    if (g_oMold.aDataInfo[nDataInx].nDataID === data[nInx].DataID) {
                         for (var key in data[nInx]) {
-                            if (aUseLess.indexOf(key) == -1) // 从biz获取的无用的信息无需写入到obj内
-                                g_oMold.aDBInfo[nDataInx][key] = data[nInx][key];
+                            if (aUseLess.indexOf(key) === -1) // 从biz获取的无用的信息无需写入到obj内
+                                g_oMold.aDataInfo[nDataInx][key] = data[nInx][key];
                         }
                     }
                 }
