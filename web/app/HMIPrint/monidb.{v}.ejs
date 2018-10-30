@@ -27,6 +27,7 @@
 <thead>
 <tr>
 <th>厂家</th>
+<th>精度</th>
 <th>控制</th>
 <th>机型</th>
 <th>内容</th>
@@ -45,13 +46,14 @@
 <form style="padding:10px 20px 10px 40px;">
 
 	<p>厂家: <input id="ManufacturerInput" size="40" type="text"></p>
+	<p>精度: <input id="PrecInput" size="40" type="text"></p>
 	<p>控制: <input id="CtrlTypeInput" size="40" type="text"></p>
 	<p>机型: <input id="MachTypeInput" size="40" type="text"></p>	
 	<p>内容: <input id="DDKeyInput" size="40" type="text"></p>
 	<p>中文: <input id="CNInput" size="40" type="text"></p>
 	<p>繁体: <input id="TWInput" size="40" type="text"></p>
 	<p>英文: <input id="ENInput" size="40" type="text"></p>
-	<p>可见: <input id="VisibleInput" size="40" type="text"></p>
+	<p>可见: <input id="VisbInput" size="40" type="text"></p>
 	
 	<div style="padding:5px;text-align:center;">
 		<a id="AddDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">添加</a>
@@ -73,27 +75,48 @@
 <script>
 
 // 构建moni数据结构
-function moniData(UID,Manufacturer,CtrlType,MachType,DDKey,CN,TW,EN,Visible){
+function moniData(UID,Manufacturer,Prec,CtrlType,MachType,DDKey,CN,TW,EN,Visb){
 	this.UID=UID;
 	this.Manufacturer=Manufacturer;
+	this.Prec=Prec;
 	this.CtrlType=CtrlType;
 	this.MachType=MachType;
 	this.DDKey=DDKey;
 	this.CN=CN;
 	this.TW=TW;
 	this.EN=EN;
-	this.Visible=Visible;
+	this.Visb=Visb;
 	
 }
 
 // 检查Form输入数据是否符号规范
 function checkinput(Data){
+	
+	if(Data.Prec==""){
+		alert("精度不能为空,请检查!");
+		return false;
+	}
+	if(!(Data.Prec<=10)){
+		alert("精度必须为小于10的整数,请检查!");
+		return false;
+	}
+	
+	
 	if(Data.DDKey==""){
 		alert("搜索值不能为空,请检查!");
 		return false;
 	}
 	if(Data.CN==""){
 		alert("中文不能为空,请检查!");
+		return false;
+	}
+	
+	if(Data.Visb==""){
+		alert("可见性不能为空,请检查!");
+		return false;
+	}
+	if(Data.Visb!="0"&&Data.Visb!="1"){
+		alert("可见性只能输入0或1,0代表不可见,1代表可见!");
 		return false;
 	}
 	
@@ -188,14 +211,15 @@ $(document).ready( function () {
 	        dataSrc: ''
 	    },
 	    columns: [
-	    	 { data: 'Manufacturer' },	        
+	    	 { data: 'Manufacturer' },
+	    	 { data: 'Prec' },
 	         { data: 'CtrlType' },
 	         { data: 'MachType' },
 	         { data: 'DDKey' },
 	         { data: 'CN' },
 	         { data: 'TW' },
 	         { data: 'EN' },
-	         { data: 'Visible' },
+	         { data: 'Visb' },
 	         
 	    ]
 	} );
@@ -220,14 +244,15 @@ $(document).ready( function () {
 	    	$('#win').window('open');
 	    	$('#AddDoButton').show();
     		$('#UpdDoButton').hide();
-    		$('#ManufacturerInput').val("");    	
+    		$('#ManufacturerInput').val(""); 
+    		$('#PrecInput').val("");   
     		$('#CtrlTypeInput').val("");
     		$('#MachTypeInput').val("");
     		$('#DDKeyInput').val("");
     		$('#CNInput').val("");
     		$('#TWInput').val("");
     		$('#ENInput').val("");
-    		$('#VisibleInput').val("");
+    		$('#VisbInput').val("");
 	    });
 	    
 //更新按钮---------	    
@@ -244,13 +269,14 @@ $(document).ready( function () {
 	    		$('#AddDoButton').hide();
 	    		$('#UpdDoButton').show();	
 	    		$('#ManufacturerInput').val(dataSelect.Manufacturer);
+	    		$('#PrecInput').val(dataSelect.Prec);
 	    		$('#CtrlTypeInput').val(dataSelect.CtrlType);
 	    		$('#MachTypeInput').val(dataSelect.MachType);
 	    		$('#DDKeyInput').val(dataSelect.DDKey);
 	    		$('#CNInput').val(dataSelect.CN);
 	    		$('#TWInput').val(dataSelect.TW);
 	    		$('#ENInput').val(dataSelect.EN);
-	    		$('#VisibleInput').val(dataSelect.Visible);
+	    		$('#VisbInput').val(dataSelect.Visb);
 	    		
 	    	}
 
@@ -287,17 +313,18 @@ $(document).ready( function () {
 	    $('#AddDoButton').click(function(){
 	    	var UID="";
 	    	var ManufacturerInput=$('#ManufacturerInput').val();
+	    	var PrecInput=$('#PrecInput').val();
 	    	var CtrlTypeInput=$('#CtrlTypeInput').val();
 	    	var MachTypeInput=$('#MachTypeInput').val();
 	    	var DDKeyInput=$('#DDKeyInput').val();
 	    	var CNInput=$('#CNInput').val();
 	    	var TWInput=$('#TWInput').val();
 	    	var ENInput=$('#ENInput').val();
-	    	var Visible=$('#VisibleInput').val();
+	    	var VisbInput=$('#VisbInput').val();
 	    	
-	    	var formData=new moniData(UID,ManufacturerInput,CtrlTypeInput,MachTypeInput,DDKeyInput,CNInput,TWInput,ENInput,Visible);
+	    	var formData=new moniData(UID,ManufacturerInput,PrecInput,CtrlTypeInput,MachTypeInput,DDKeyInput,CNInput,TWInput,ENInput,VisbInput);
 	    	
-//   	alert("formData:"+JSON.stringify(formData));
+//  	alert("formData:"+JSON.stringify(formData));
 	    	
 	    	if(checkinput(formData)){
 	    	//	alert("输入正确");
@@ -316,16 +343,17 @@ $(document).ready( function () {
 	    $('#UpdDoButton').click(function(){
 	    	
 	    	var UID=table.row('.selected').data().UID;
-	    	var ManufacturerInput=$('#ManufacturerInput').val();	    	
+	    	var ManufacturerInput=$('#ManufacturerInput').val();
+	    	var PrecInput=$('#PrecInput').val();
 	    	var CtrlTypeInput=$('#CtrlTypeInput').val();
 	    	var MachTypeInput=$('#MachTypeInput').val();
 	    	var DDKeyInput=$('#DDKeyInput').val();
 	    	var CNInput=$('#CNInput').val();
 	    	var TWInput=$('#TWInput').val();
 	    	var ENInput=$('#ENInput').val();
-	    	var Visible=$('#VisibleInput').val();
+	    	var VisbInput=$('#VisbInput').val();
 	    	
-	    	var formData=new moniData(UID,ManufacturerInput,CtrlTypeInput,MachTypeInput,DDKeyInput,CNInput,TWInput,ENInput,Visible);
+	    	var formData=new moniData(UID,ManufacturerInput,PrecInput,CtrlTypeInput,MachTypeInput,DDKeyInput,CNInput,TWInput,ENInput,VisbInput);
 	    	
 //   	alert("formData:"+JSON.stringify(formData));
 	    	
