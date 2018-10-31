@@ -1,4 +1,6 @@
-// 对象的属性未按照匈牙利命名规则的，则表示从DB获取
+/*Note：
+ * 对象的属性，假使未按照匈牙利命名规则的，则表示此项属性从DB获取
+ **/
 function MoniInfoSubObj(nSerial, sName, nSize, Prec, nDispPrec, fValue) {
     this.nSerial = nSerial;
     this.sName = sName;
@@ -280,22 +282,6 @@ function fnInitVariate() {
     g_IniFile = undefined;
     g_SysInfoFile = undefined;
 }
-
-// Chenly 2018-10-30 Mark，移动到了common.js内
-/**
- * @Author    Muc
- * @DateTime  2018-10-24
- * @Describle [判断创建的obj是否存在有效数据]
- * @return    {[String]}           [0-obj内容正常， STOP-obj没有有效数据]
- */
-// function fnJudgeObj(objArg) {
-//     if (objArg.aDataInfo === undefined || objArg.aDataInfo.length === 0) {
-//         alert('所选文件夹内无 **有效的{0}记录**，请检查'.format(objArg.sFolderName));
-//         return ("STOP");
-//     } else {
-//         return 0;
-//     }
-// }
 
 /**
  * @Author    Muc

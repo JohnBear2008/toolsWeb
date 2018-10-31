@@ -184,7 +184,6 @@ function IdentifyObj(sMeterial, sColor, nPerMoldCnt, sMedia) {
 }
 
 // 访问格式 MoldObj.aDataInfo[nInx].KEY
-// function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal, sBlock, Component, sLable, Prec, FmtPrec, Visb, Unit, CN) {
 function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     // 如下信息可从cdb获得
     this.nDataID = nDataID;
@@ -196,7 +195,6 @@ function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     // 如下信息从数据库获得，这里仅做显示参考，从数据库获取的数据均采用帕斯卡命名方式
     // this.Visb = Visb; // 是否可见
     // this.Prec = Prec; // 小数位数， 0表示无精确， 1表示精确到一位小数， 2表示精确到两位小数
-    // this.FmtPrec = FmtPrec; // 格式化精度，eg. 0=> val === val;   1=> val =/ 10;   2=> val = val /=100
     // this.Component = Component; // 归组，其他-0，关模-1，射出-2，托模-3，储料-4，中子-5，座台-6，温度-7，开模-10
     // this.Unit = Unit; //单位，eg. % Bar mm 。。。
     // etc，具体以数据库列名为准（因HMI的db.xls命名不规范）
@@ -205,44 +203,6 @@ function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     // this.TW = TW;
     // this.EN = EN;
 }
-
-// function PadDataInfoObj(nDataID, sBlock, Component, sLable, Prec, FmtPrec, Visb, Unit, CN, TW, EN) {
-//     this.nDataID = nDataID;
-//     this.sBlock = sBlock;
-//     this.Component = Component;
-//     this.sLable = sLable;
-//     this.Prec = Prec;
-//     this.FmtPrec = FmtPrec;
-//     this.Visb = Visb;
-//     this.Unit = Unit;
-//     this.CN = CN;
-//     this.TW = TW;
-//     this.EN = EN;
-// }
-
-/* ↓ 54结构 --------------------*/
-// /* 模具信息对象原型 */
-// function DataInfoObj(nInitDataID) {
-//     // 如下信息可从cdb获得
-//     this.nInitDataID = nInitDataID;
-//     this.aSubInfo = []; // eg. [DataSubInfo， DataSubInfo]
-// }
-
-// /* 模具子信息对象原型 */
-// function DataSubInfo(nOffSet, nLen, fVal, Visb, Prec, FmtPrec, Component, Unit) {
-//     // 如下信息可从cdb获得
-//     this.nOffSet = nOffSet;
-//     this.nLen = nLen;
-//     this.fVal = fVal;
-
-//     // 如下信息从数据库获得
-//     this.Visb = Visb;
-//     this.Prec = Prec; // 小数位数， 000,001,002 。。。  eg. 001表示一位小数
-//     this.FmtPrec = FmtPrec; // 格式化精度，000,001,002。。。 eg. 001代表一位精度
-//     this.Component = Component; // 归组，其他-0，关模-1，射出-2，托模-3，储料-4，中子-5，座台-6，温度-7，开模-10
-//     this.Unit = Unit; //单位，eg. % Bar mm 。。。
-// }
-/* ↑ 54结构 -------------------- */
 
 
 /*===========================================================================+
@@ -292,7 +252,10 @@ function fnTrvlFolder() {
         return -1;
     }
 
-    fnIni2DataObj(g_IniFile, g_oMold)
+    fnGetSysInfo(g_oMold, g_SysInfoFile)
+        .then(function() {
+            return fnParseIniFile(g_IniFile, g_oMold);
+        })
         .then(function() {
             return fnCdb2Arr(g_CdbFile, g_cszHexMoldCdb); // Ok
         })
@@ -301,7 +264,7 @@ function fnTrvlFolder() {
         })
         .then(function() {
             console.info(g_oMold);
-            // return fnShowDataObj(g_oMold); // TODO 用分页，不然画面会卡
+            return fnShowDataObj(g_oMold); // TODO 用分页，不然画面会卡
         });
 }
 
@@ -318,7 +281,7 @@ function fnInitVariate() {
 }
 
 // 创建新的数据
-function fnIni2DataObj(iniArg, objArg) {
+function fnParseIniFile(iniArg, objArg) {
     return new Promise(function(resolve, reject) {
         var reader = new FileReader();
         reader.readAsText(iniArg);
@@ -346,7 +309,7 @@ function fnIni2DataObj(iniArg, objArg) {
             // 模具保存时间： 日+月+年+周几
             objArg.oIniLen.timelength = nBytes.DAY + nBytes.MONTH + nBytes.YEAR + nBytes.DAY_OF_WEEK;
 
-            resolve("fnIni2DataObj Done");
+            resolve("fnParseIniFile Done");
         };
     });
 }
@@ -379,49 +342,49 @@ function fnSetDataIDInfo(objArg, cszHexArg) {
 // show Data
 function fnShowDataObj(objArg) {
     // console.info(objArg);
-    var $moldTitleTab = $("#moldTitleTab");
-    var $moldDataTab = $("#moldDataTab");
+    // var $moldTitleTab = $("#moldTitleTab");
+    // var $moldDataTab = $("#moldDataTab");
 
-    $moldTitleTab.text("");
-    $moldDataTab.text("");
-    var eTrTitle = document.createElement('tr');
+    // $moldTitleTab.text("");
+    // $moldDataTab.text("");
+    // var eTrTitle = document.createElement('tr');
 
-    for (var nRow = 0, nGLen = objArg.aDataInfo.length; nRow < nGLen; ++nRow) {
-        var eTrData = document.createElement('tr');
+    // for (var nRow = 0, nGLen = objArg.aDataInfo.length; nRow < nGLen; ++nRow) {
+    //     var eTrData = document.createElement('tr');
 
-        for (var nSerial = 0, nSLen = objArg.aDataInfo[nRow].length; nSerial < nSLen; ++nSerial) {
-            var bVisb = objArg.aDataInfo[nRow][nSerial].bVisb;
+    //     for (var nSerial = 0, nSLen = objArg.aDataInfo[nRow].length; nSerial < nSLen; ++nSerial) {
+    //         var bVisb = objArg.aDataInfo[nRow][nSerial].bVisb;
 
-            // 不可见的模具信息内容不做显示
-            // 建议用table存储数据，便于后续爬虫->excel工作
-            if (bVisb) {
-                var eTdTitle = document.createElement('td');
-                var eTdData = document.createElement('td');
+    //         // 不可见的模具信息内容不做显示
+    //         // 建议用table存储数据，便于后续爬虫->excel工作
+    //         if (bVisb) {
+    //             var eTdTitle = document.createElement('td');
+    //             var eTdData = document.createElement('td');
 
-                eTdTitle.setAttribute("style", "width:150px");
-                eTdTitle.setAttribute("align", "center");
+    //             eTdTitle.setAttribute("style", "width:150px");
+    //             eTdTitle.setAttribute("align", "center");
 
-                eTdData.setAttribute("style", "width:150px");
-                eTdData.setAttribute("align", "center");
+    //             eTdData.setAttribute("style", "width:150px");
+    //             eTdData.setAttribute("align", "center");
 
-                if (nRow === 0) {
-                    eTdTitle.innerHTML = objArg.aDataInfo[nRow][nSerial].sName;
-                    eTrTitle.appendChild(eTdTitle);
-                }
+    //             if (nRow === 0) {
+    //                 eTdTitle.innerHTML = objArg.aDataInfo[nRow][nSerial].sName;
+    //                 eTrTitle.appendChild(eTdTitle);
+    //             }
 
-                eTdData.innerHTML = g_oMold.aDataInfo[nRow][nSerial].Value;
+    //             eTdData.innerHTML = g_oMold.aDataInfo[nRow][nSerial].Value;
 
-                eTrData.appendChild(eTdData);
-            }
-        }
+    //             eTrData.appendChild(eTdData);
+    //         }
+    //     }
 
-        $moldTitleTab.attr("border", "1");
-        $moldTitleTab.append(eTrTitle);
+    //     $moldTitleTab.attr("border", "1");
+    //     $moldTitleTab.append(eTrTitle);
 
-        $moldDataTab.attr("border", "1");
-        $moldDataTab.append(eTrData);
+    //     $moldDataTab.attr("border", "1");
+    //     $moldDataTab.append(eTrData);
 
-    }
+    // }
 }
 
 /*===========================================================================+
@@ -436,7 +399,7 @@ function fnShowDataObj(objArg) {
 function fnTrvlCdbArr(objArg, cszHexArg) {
     // 如下几个PART为 属性赋值过程
     // 过程必须按照如下顺序来，同时将代码分开写便于代码理解与优化执行效率
-    // DataID笔数过多，故所有DataID以for循环的方式赋值
+    // DataID笔数过多且有规律，故所有DataID以for循环的方式赋值
 
     /* PART 1  set moldName (Big-Endian) */
     objArg.sMoldName = fnSplcCszHex(objArg, "moldlength", cszHexArg, bEndian.BIG);
@@ -462,6 +425,9 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
     /* PART 8 set DataIDSum and push DataIDObj */
     objArg.nDataIDSum = fnSplcCszHex(objArg, "idsum", cszHexArg, bEndian.LIT);
 
+    // Chenly 2018-10-31 TODO 后面开始，HT55和TM55的cdb数据结构不一样，需通过 objArg.aSysInfo的内容区别处理
+
+
     /* PART 9 push DataIDObj and set DataIDObj.ID/type/len/stat/value */
     var nDataIDSum = objArg.nDataIDSum;
 
@@ -483,7 +449,7 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
         // get DataID.stat
         var nIDStat = fnSplcCszHex(objArg, nBytes.IDSTAT, cszHexArg, bEndian.LIT);
 
-        // DataID.nLen
+        // DataID.nLen，String类型是特例，第一个Bytes为数据长度len，后面len个Bytes代表数据的值
         if (sIDType === "STRING") {
             nLen = fnSplcCszHex(objArg, nBytes.ONE, cszHexArg, bEndian.LIT);
             dynVal = fnSplcCszHex(objArg, nLen, cszHexArg, bEndian.BIG);
@@ -492,43 +458,8 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
             dynVal = fnSplcCszHex(objArg, nLen, cszHexArg, bEndian.LIT);
         }
 
-        /**
-         * Mark 提高执行效率的方案一
-         * @Author    Muc
-         * @DateTime  2018-10-19
-         * @Describle 先写入block，其他缺省的数据从DB获取
-         *     途径：按照DataID的范围，先把block信息写入。 要求：DataID Block的范围必须固定，假使后续会做改动，则直接废弃此方案
-         */
-        // switch (true) {
-        //     case nDataID < parseInt("0x1100", 16):
-        //         sBlock = "DB_MOLDSET";
-        //         break;
-        //     case nDataID < parseInt("0x3200", 16):
-        //         sBlock = DB_MOLDSETB;
-        //         break;
-        //     case nDataID < parseInt("0x3800", 16):
-        //         sBlock = DB_MOLDSET2;
-        //         break;
-        //         // 如此循环
-        //     default:
-        //         break;
-        // }
-
-        /**
-         * 提高执行效率的方案二
-         *     一、Component属性首选从DB获取】
-         *         优：代码基本不用做太大的维护，代码逻辑清晰明了
-         *         缺：访问数据次数较多
-         *     二、参照方案一，通过类似如上“DataID范围判断block”的形式来设定Component，分标准和特殊的方式来处理此Component属性的赋予，标准直接按照汇总出来的xls在代码里通过判断范围来赋予，如果Component为undefined，则去访问DB
-         *         优：访问的次数肯定比先前要少，但是具体能少多少次在未出汇总前无法确定
-         *         缺：逻辑代码将会变得难以维护！！！！！！根据厂商各有标准和特殊，特殊用作指定机型！！！！！
-         *         方式：switch(true) 同方案一
-         */
-
         aDataID.push(nDataID);
 
-        // (sType, nLen, nStat, dynVal,
-        // nDataID, sBlock, Component, sLable, Prec, FmtPrec, Visb, Unit, CN) {
         objArg.aDataInfo.push(new TM55DataInfoObj(nDataID, sIDType, nLen, nIDStat, dynVal));
 
     }
@@ -556,7 +487,7 @@ function getMoldIDInfoFrDB(objSysArg) {
             console.log("getMoldIDInfoFrDB Success!");
             // console.log(data); // 这里get到的结构为 [{Component:Mold, Block:DB_MOLDSET, ...}, {Component:Mold, Block:DB_MOLDSET, ...}, ...]
 
-            /*  */
+            /* 将从DB获取的数据赋值给obj */
             for (var nInx in data) {
                 // console.log(data[nInx]);
                 for (var nDataInx = 0, nlen1 = g_oMold.nDataIDSum; nDataInx < nlen1; ++nDataInx) {
@@ -619,7 +550,7 @@ function fnSplcCszHex(objArg, nLenArg, cszHexArg, Endian) {
 /**
  * @Author    Muc
  * @DateTime  2018-10-22
- * @Warning   [会丢掉构造函数]
+ * @Warning   [会丢掉构造函数原型]
  */
 function fnDeepClone(obj) {
     var result = typeof obj.splice === 'function' ? [] : {},

@@ -7,9 +7,15 @@
 +===========================================================================*/
 
 
+/*===========================================================================+
+|   function      {v}.ejs                                                    |
++===========================================================================*/
+function fnRemitExcel(tableID, excelName) {
+    $(tableID).tableExport({ fileName: excelName, type: 'excel', excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right'] });
+}
 
 /*===========================================================================+
-|   function                                                                 |
+|   function      js                                                         |
 +===========================================================================*/
 /**
  * @Author    Muc
@@ -62,7 +68,7 @@ function fnGetSysInfo(objArg, SysInfoFile) {
                 resolve("fnGetSysInfo Done #1");
             };
         } else {
-            resolve("fnGetSysInfo pass #2");
+            resolve("fnGetSysInfo:could't find info file #2");
         }
     });
 }
