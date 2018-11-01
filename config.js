@@ -17,7 +17,7 @@ var config = {
             url: "http://127.0.0.1:3000/biz"
         }
     },
-    homePage_url: "/app/index",
+    homePage_url: "/app/system/sitemap/showSitemap",
     db_Connection: g_dbConenctions,
     product: {
         name: "ToolsWeb",

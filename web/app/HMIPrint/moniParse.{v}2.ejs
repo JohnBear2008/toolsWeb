@@ -1,38 +1,34 @@
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/divContent.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/tableDiv.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/upFolderDiv.css">
 <script type="text/javascript" src="/js/muc_jsExtend.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/common.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/moniParse.js"></script>
 <script src="/js/HMIPrint/FileSaver.min.js"></script>
 <script src="/js/HMIPrint/tableExport.js"></script>
 
-<!-- 新 Bootstrap 核心 CSS 文件 -->
-<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
- 
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <div class="divContent">
     <!-- 欢迎区 -->
-    <H3>Moni文件解析</H3>
-    <hr />
+    <p>欢迎用户：
+        <%-(locals.session==null)?"什么？你居然跳过了登录界面？":locals.session.yjUser.AID%>
+    </p>
+    <hr /><br />
     <!-- 操作区（按钮等） -->
-    
-
-    <div class="input-append">
-    <input type="file" id="upFolder" style="display:none" webkitdirectory />
-    	<a class="btn btn-default" onclick="$('input[id=upFolder]').click();">导入文件</a>
-    	<button id="remitExcel" class="btn btn-default">汇出EXCEL</button>
+    <div id="OperDiv" class="upfold-blue">
+        <!-- <input type="file" id="upFolder" onchange="fnTrvlEvent()" webkitdirectory>点击选择文件夹 -->
+        <input type="file" id="upFolder" webkitdirectory />点击选择文件夹
     </div>
-    </br>
-
+    <button id="remitExcel">汇出EXCEL</button>
+    
+    <br />
     <!--数据呈现区-->
-    <div >
-        <table id="monidata"  class="table table-bordered">
-        
-
+    <div class="table-gray">
+        <table id="monidata" border="1">
             <!-- thead 存放警报标题， eg. 开模序号、循环计时 。。。 -->
             <thead>
                 <tr></tr>
@@ -41,8 +37,6 @@
             <tbody></tbody>
         </table>
     </div>
-    
-    
 </div>
 <script type="text/javascript">
 /* 操作控件事件绑定 */

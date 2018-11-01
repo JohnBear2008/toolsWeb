@@ -90,16 +90,6 @@ var aUseLess = [
     "C_MEMERY_PAD" // 内存对齐的内容
 ];
 
-// Chenly 2018-10-19 mark，使用这种方式传参会浪费 几ms的时间
-// var mMoldOther = new Map([
-//     ["materiallength", bEndian.BIG],
-//     ["colorlength", bEndian.BIG],
-//     ["permoldcntLength", bEndian.LIT],
-//     ["medialength", bEndian.BIG],
-//     ["verslength", bEndian.LIT],
-//     ["idsum", bEndian.LIT]
-// ]);
-
 /*===========================================================================+
 |   variate                                                                  |
 +===========================================================================*/
@@ -204,6 +194,25 @@ function TM55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
     // this.EN = EN;
 }
 
+function HT55DataInfoObj(nDataID, sType, nLen, nStat, dynVal) {
+    // 如下信息可从cdb获得
+    this.nDataID = nDataID;
+    this.sType = sType;
+    this.nLen = nLen;
+    this.nStat = nStat; // 读写状态
+    this.dynVal = dynVal;
+
+    // 如下信息从数据库获得，这里仅做显示参考，从数据库获取的数据均采用帕斯卡命名方式
+    // this.Visb = Visb; // 是否可见
+    // this.Prec = Prec; // 小数位数， 0表示无精确， 1表示精确到一位小数， 2表示精确到两位小数
+    // this.Component = Component; // 归组，其他-0，关模-1，射出-2，托模-3，储料-4，中子-5，座台-6，温度-7，开模-10
+    // this.Unit = Unit; //单位，eg. % Bar mm 。。。
+    // etc，具体以数据库列名为准（因HMI的db.xls命名不规范）
+    // // 中繁英
+    // this.CN = CN;
+    // this.TW = TW;
+    // this.EN = EN;
+}
 
 /*===========================================================================+
 |   MainFunc                                                                 |

@@ -1,25 +1,20 @@
-<!--****************
-    ****************
-        本地路径
-    ****************-->
 <link rel="stylesheet" type="text/css" href="/css/HMI/HMIContent.css">
 <script src="/js/HMIPrint/FileSaver.min.js"></script>
 <script src="/js/HMIPrint/tableExport.js"></script>
+
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+ 
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="/DataTables/media/css/jquery.dataTables.css">
 <!-- DataTables -->
 <script type="text/javascript" charset="utf8" src="/DataTables/media/js/jquery.dataTables.js"></script>
-<!--****************
-    ****************
-        网络路径
-    ****************-->
-<!-- 新 Bootstrap 核心 CSS 文件 -->
-<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
-<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/localization/messages_zh.js"></script>
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
 <div class="content">
     <h1>Moni 数据库维护</h1>
     <hr>
@@ -50,91 +45,22 @@
         </thead>
     </table>
     <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:400px;height:560px;">
-        <form style="padding:10px 60px;">
-            <p>厂家 : <input id="ManufacturerInput" size="30" type="text"></p>
-            <p>控制 : <input id="CtrlTypeInput" size="30" type="text"></p>
-            <p>机型 : <input id="MachTypeInput" size="30" type="text"></p>
+    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:400px;height:450px;">
+        <form style="padding:10px 20px 10px 40px;">
+            <p>厂家: <input id="ManufacturerInput" size="30" type="text"></p>
+            <p>控制: <input id="CtrlTypeInput" size="30" type="text"></p>
+            <p>机型: <input id="MachTypeInput" size="30" type="text"></p>
             <p>保留0: <input id="Reserved0Input" size="30" type="text"></p>
             <p>保留1: <input id="Reserved1Input" size="30" type="text"></p>
             <p>保留2: <input id="Reserved2Input" size="30" type="text"></p>
             <p>保留3: <input id="Reserved3Input" size="30" type="text"></p>
             <p>保留4: <input id="Reserved4Input" size="30" type="text"></p>
-            <!-- <p>内容: <input id="DDKeyInput" size="30" type="text"></p> -->
-            <p>内容 : <input type="text" id="DDKeyInput" list="aDDKey" name="DDKey" size="30" /></p>
-            <!--  临时方案：改用datalist，但是存在overflow的现况 -->
-            <datalist id="aDDKey">
-                <option value="dwShotCount" label="开模序号"></option>
-                <option value="tmlCycle" label="循环计时"></option>
-                <option value="tmlInject" label="射出计时"></option>
-                <option value="tmllTurnToHold" label="转保压时间"></option>
-                <option value="tmlCharge" label="储料计时"></option>
-                <option value="adPosi_InjectStart" label="射出起点"></option>
-                <option value="adPosi_TurnToHold" label="保压起点"></option>
-                <option value="adPosi_InjectEnd" label="射出终点"></option>
-                <option value="adPosi_InjectCushion" label="射出监控位置"></option>
-                <option value="adPosi_InjectPeak" label="射出尖峰位置"></option>
-                <option value="daPres_TurnToHold" label="保压转换压力"></option>
-                <option value="cnChargeRPM" label="储料RPM"></option>
-                <option value="tmSuckBack" label="射退计时"></option>
-                <option value="tmEject" label="托模计时"></option>
-                <option value="tmEjectAdvance" label="托进计时"></option>
-                <option value="tmEjectReturn" label="托退计时"></option>
-                <option value="daPres_InjectPeak" label="射出尖峰压力"></option>
-                <option value="daPres_ChargePeak" label="储料尖峰压力"></option>
-                <option value="tmlInjectB" label="B组射出计时"></option>
-                <option value="tmlChargeB" label="B组储料计时"></option>
-                <option value="adPosi_InjectStartB" label="B组射出起点"></option>
-                <option value="adPosi_TurnToHoldB" label="B组保压起点"></option>
-                <option value="adPosi_InjectCushionB" label="B组射出终点"></option>
-                <option value="daPres_InjecterB" label="B组射出压力"></option>
-                <option value="daPres_ChargeBackB" label="B组储料背压"></option>
-                <option value="tmTake" label="取件时间"></option>
-                <option value="adPosi_OpenMoldEnd" label="开模终点"></option>
-                <option value="daPress_TurnToHoldB" label="B组转保压力实际值"></option>
-                <option value="tmlTurnToHoldB" label="B组转保压计时"></option>
-                <option value="adPosi_InjectHoldEndB" label="B组射出终点位置实际值"></option>
-                <option value="daPres_InjectMiddleB" label="B组射出尖峰压力实际值"></option>
-                <option value="daPres_ChargeMiddleB" label="B组储料尖峰压力实际值"></option>
-                <option value="InjectMaxSpeed" label="最大射速"></option>
-                <option value="InjectMaxSpeedB" label="B组最大射速"></option>
-                <option value="wReservedMG[0]" label="预留"></option>
-                <option value="wReservedMG[1]" label="预留"></option>
-                <option value="wReservedMG[2]" label="预留"></option>
-                <option value="wReservedMG[3]" label="预留"></option>
-                <option value="wReservedMG[4]" label="预留"></option>
-                <option value="wReservedMG[5]" label="预留"></option>
-                <option value="wReservedMG[6]" label="预留"></option>
-                <option value="wReservedMG[7]" label="预留"></option>
-                <option value="wReservedMG[8]" label="预留"></option>
-                <option value="wReservedMG[9]" label="预留"></option>
-                <option value="wReservedMG[10]" label="预留"></option>
-                <option value="wReservedMG[11]" label="预留"></option>
-                <option value="wReservedMG[12]" label="预留"></option>
-                <option value="wReservedMG[13]" label="预留"></option>
-                <option value="wReservedMG[14]" label="预留"></option>
-                <option value="wReservedMG[15]" label="预留"></option>
-                <option value="wReservedMG[16]" label="预留"></option>
-                <option value="wReservedMG[17]" label="预留"></option>
-                <option value="wReservedMG[18]" label="预留"></option>
-                <option value="wReservedMG[19]" label="预留"></option>
-                <option value="dwReservedMG[0]" label="预留"></option>
-                <option value="dwReservedMG[1]" label="预留"></option>
-                <option value="dwReservedMG[2]" label="预留"></option>
-                <option value="dwReservedMG[3]" label="预留"></option>
-                <option value="dwReservedMG[4]" label="预留"></option>
-                <option value="dwReservedMG[5]" label="预留"></option>
-                <option value="dwReservedMG[6]" label="预留"></option>
-                <option value="dwReservedMG[7]" label="预留"></option>
-                <option value="dwReservedMG[8]" label="预留"></option>
-                <option value="dwReservedMG[9]" label="预留"></option>
-                <option value="wSource" label="来源"></option>
-            </datalist>
-            <p>中文 : <input id="CNInput" size="30" type="text"></p>
-            <p>繁体 : <input id="TWInput" size="30" type="text"></p>
-            <p>英文 : <input id="ENInput" size="30" type="text"></p>
-            <p>精度 : <input id="PrecInput" size="30" type="text"></p>
-            <p>可见 : <input id="VisbInput" size="30" type="text"></p>
+            <p>内容: <input id="DDKeyInput" size="30" type="text"></p>
+            <p>中文: <input id="CNInput" size="30" type="text"></p>
+            <p>繁体: <input id="TWInput" size="30" type="text"></p>
+            <p>英文: <input id="ENInput" size="30" type="text"></p>
+            <p>精度: <input id="PrecInput" size="30" type="text"></p>
+            <p>可见: <input id="VisbInput" size="30" type="text"></p>
             <div style="padding:5px;text-align:center;">
                 <a id="AddDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">添加</a>
                 <a id="UpdDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">更新</a>
@@ -166,34 +92,30 @@ function moniData(UID, Manufacturer, Prec, CtrlType, MachType, DDKey, CN, TW, EN
 
 // 检查Form输入数据是否符号规范
 function checkinput(Data) {
-    if (Data.Manufacturer.length > 4) {
-        alert('厂家的数据长度应 <=4 位，请检查!');
-        return false;
-    } else if (Data.CtrlType.length !== 4) {
-        alert('控制的数据长度应为4位，请检查!');
-        return false;
-    } else if (Data.MachType.length !== 8) {
-        alert('机型的数据长度应为8位，请检查!');
-        return false;
-    } else if (Data.Reserved0 === "" || Data.Reserved1 === "" || Data.Reserved2 === "" || Data.Reserved3 === "" || Data.Reserved4 === "") {
-        alert('保留信息不能为空，请检查!');
-        return false;
-    } else if (Data.Prec == "") {
+
+    if (Data.Prec == "") {
         alert("精度不能为空,请检查!");
         return false;
-    } else if (Data.Prec > 5) {
-        alert("精度必须为小于5的整数,请检查!");
+    }
+    if (Data.Prec > 10) {
+        alert("精度必须为小于10的整数,请检查!");
         return false;
-    } else if (Data.DDKey == "") {
+    }
+
+    if (Data.DDKey == "") {
         alert("内容不能为空,请检查!");
         return false;
-    } else if (Data.CN == "") {
+    }
+    if (Data.CN == "") {
         alert("中文不能为空,请检查!");
         return false;
-    } else if (Data.Visb == "") {
+    }
+
+    if (Data.Visb == "") {
         alert("可见性不能为空,请检查!");
         return false;
-    } else if (Data.Visb != "0" && Data.Visb != "1") {
+    }
+    if (Data.Visb != "0" && Data.Visb != "1") {
         alert("可见性只能输入0或1,0代表不可见,1代表可见!");
         return false;
     }
@@ -271,7 +193,6 @@ function ajaxDel(UID) {
 
 //加载完成后执行程序
 $(document).ready(function() {
-    /* init Obj or read Obj from cache */
     var oParsed = JSON.parse(sessionStorage.getItem("lastFormData")); // 当前页面缓存的Obj数据
     var oInput;
     // obj内无需缓存但仍需在第一次初始化的key
@@ -364,7 +285,7 @@ $(document).ready(function() {
         // $('#Reserved3Input').val("0");
         // $('#Reserved4Input').val("0");
 
-        // 读取上一次提交表格内数据的值（仅input元素）
+        // 读取上一次提交表格内数据的值
         var inputNum = $("#win").find("input").length;
         for (var i = 0; i < inputNum; ++i) {
             var inputElem = $("#win").find("input").eq(i);
@@ -377,7 +298,6 @@ $(document).ready(function() {
             }
 
         }
-
     });
 
     //更新按钮---------
@@ -419,14 +339,11 @@ $(document).ready(function() {
         if (dataSelect == undefined) {
             alert("当前未选择任何数据,请先点击需要删除的数据行!");
         } else {
-            var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-            if (msg1 === true) {
-                var msg2 = confirm("确认删除此行数据？");
-                if (msg2 === true) {
-                    var UID = { "UID": dataSelect.UID };
-                    // alert("UID:"+UID);
-                    ajaxDel(UID);
-                }
+            var delDataMsg = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+            if (delDataMsg === true) {
+                var UID = { "UID": dataSelect.UID };
+                // alert("UID:"+UID);
+                ajaxDel(UID);
             }
         }
 
@@ -464,7 +381,6 @@ $(document).ready(function() {
             var nVal = $(key).val();
             aRemainVal.push(nVal);
         }
-
         var formData = new moniData(UID, ...aRemainVal);
         // alert("formData:" + JSON.stringify(formData));
 
