@@ -1,3 +1,5 @@
+<!--本地路径-->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/divContent.css">
 <script type="text/javascript" src="/js/muc_jsExtend.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/common.js"></script>
@@ -5,34 +7,26 @@
 <script src="/js/HMIPrint/FileSaver.min.js"></script>
 <script src="/js/HMIPrint/tableExport.js"></script>
 
+<!--网络路径-->
 <!-- 新 Bootstrap 核心 CSS 文件 -->
-<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
- 
+<link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/js/HMIPrint/bootstrap.min.js"></script>
 
-
-
-<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <div class="divContent">
-    <!-- 欢迎区 -->
-    <H3>Moni文件解析</H3>
+    <h1>Moni 文件解析</h1>
     <hr />
     <!-- 操作区（按钮等） -->
-    
-
     <div class="input-append">
-    <input type="file" id="upFolder" style="display:none" webkitdirectory />
-    	<a class="btn btn-default" onclick="$('input[id=upFolder]').click();">导入文件</a>
-    	<button id="remitExcel" class="btn btn-default">汇出EXCEL</button>
+        <input type="file" id="upFolder" style="display:none;" webkitdirectory />
+        <a class="btn btn-lg btn-info" onclick="$('input[id=upFolder]').click();">导入文件</a>
+        <button id="remitExcel" class=" btn btn-lg btn-default">汇出excel</button>
     </div>
     </br>
 
     <!--数据呈现区-->
-    <div >
-        <table id="monidata"  class="table table-bordered">
-        
-
+    <div>
+        <table id="monidata" class="table table-bordered">
             <!-- thead 存放警报标题， eg. 开模序号、循环计时 。。。 -->
             <thead>
                 <tr></tr>
@@ -41,12 +35,17 @@
             <tbody></tbody>
         </table>
     </div>
-    
-    
 </div>
-<script type="text/javascript">
-/* 操作控件事件绑定 */
-$(function() {
+<script type="text/javascript" defer="defer">
+// $(window).load(function() {
+window.onload = function() {
+    // 呈现先前成功解析的obj
+    var oParsed = JSON.parse(sessionStorage.getItem("moni")); // 当前页面缓存的Obj数据
+    if (oParsed) {
+        fnPreObjShow(oParsed);
+    }
+
+    /* 操作控件事件绑定 */
     // 上传文件夹
     $("#upFolder").change(function() {
         fnTrvlEvent();
@@ -60,14 +59,6 @@ $(function() {
         var elemID = "#monidata";
         fnRemitExcel(elemID, excelName);
     });
+};
 
-});
-
-// 呈现先前成功解析的obj
-$(window).load(function() {
-    var oParsed = JSON.parse(sessionStorage.getItem("moni")); // 当前页面缓存的Obj数据
-    if (oParsed) {
-        fnPreObjShow(oParsed);
-    }
-});
 </script>

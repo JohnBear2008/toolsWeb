@@ -1,9 +1,9 @@
 /*Note：
  * 对象的属性，假使未按照匈牙利命名规则的，则表示此项属性从DB获取
  **/
-function MoniInfoSubObj(nSerial, sName, nSize, Prec, nDispPrec, fValue) {
+function MoniInfoSubObj(nSerial, sDDKey, nSize, Prec, nDispPrec, fValue) {
     this.nSerial = nSerial;
-    this.sName = sName;
+    this.sDDKey = sDDKey; // 对应DB内的DDKey
     this.nSize = nSize;
     this.Prec = 0;
     this.nDispPrec = nDispPrec;
@@ -197,7 +197,7 @@ function fnSetObjOriginVal() {
                 nSubInfoSize = g_oMoni.aDataInfo[i][j].nSize;
                 // 无用的信息无需记录值
                 var valTmp = fnTrvlMoniCdbData(g_aMoniCdb, g_nCdbStart, g_nCdbEnd, nSubInfoSize);
-                if (aUseLess.indexOf(g_oMoni.aDataInfo[i][j].sName) === -1)
+                if (aUseLess.indexOf(g_oMoni.aDataInfo[i][j].sDDKey) === -1)
                     g_oMoni.aDataInfo[i][j].fValue = valTmp;
             }
 
@@ -327,6 +327,7 @@ function CNtranslator(DDKey, objSysArg) {
             var nRecNum = g_oMoni.aDataInfo.length; // 监测记录的条数
             var nTitNum = g_oMoni.aDataInfo[0].length; // 所有标题的数据结构与值完全一致，故判断任意一行即可得知
 
+            // 从biz获取的data,row内的Inx代表的内容
             var nArrInx = {
                 DDKey: 0,
                 CN: 1,
@@ -334,23 +335,24 @@ function CNtranslator(DDKey, objSysArg) {
                 Prec: 3
             };
 
+            // Chenly 2018-11-02 mark，替换为下面的for循环部分的代码了
             // console.log("data.rows", data.rows);
-            for (var i = 0, nLen1 = DDKey.length; i < nLen1; ++i) {
-                for (var item in data.rows) {
-                    // console.log(data.rows[item]);
-                    if (DDKey[i] == data.rows[item][0]) { // Chenly 2018-10-15 如果DDKey对应，则将以CN覆盖DDkey
-                        DDKey[i] = data.rows[item][1];
-                    }
-                }
-            }
+            // for (var i = 0, nLen1 = DDKey.length; i < nLen1; ++i) {
+            //     for (var item in data.rows) {
+            //         // console.log(data.rows[item]);
+            //         if (DDKey[i] == data.rows[item][0]) { // 如果DDKey对应，则将以CN覆盖DDkey
+            //             DDKey[i] = data.rows[item][1];
+            //         }
+            //     }
+            // }
 
             for (var nRecx = 0; nRecx < nRecNum; ++nRecx) {
                 var tdData = "";
                 for (var nTitx = 0; nTitx < nTitNum; ++nTitx) {
                     /* 从biz获取的满足条件的data.rows [DDKey,CN,Visb,Preci] */
                     for (var nVisbInfoInx in data.rows) {
-                        if ((g_oMoni.aDataInfo[nRecx][nTitx].sName == data.rows[nVisbInfoInx][nArrInx.DDKey]) &&
-                            (aUseLess.indexOf(g_oMoni.aDataInfo[nRecx][nTitx].sName) === -1)) { // 只记录从DB获取的有用的信息
+                        if ((g_oMoni.aDataInfo[nRecx][nTitx].sDDKey == data.rows[nVisbInfoInx][nArrInx.DDKey]) &&
+                            (aUseLess.indexOf(g_oMoni.aDataInfo[nRecx][nTitx].sDDKey) === -1)) { // 只记录从DB获取的有用的信息
 
                             /* 设置对应的中文 */
                             // 为了方便console调试，故每条监测信息都加上CN
@@ -400,7 +402,7 @@ function CNtranslator(DDKey, objSysArg) {
             // for (var j = 0; j < nTitNum; ++j) {
             //     for (var item3 in data.rows) {
             //         if (g_oMoni.aDataInfo[0][j].Visb) { // 所有标题的数据结构与值完全一致，故判断任意一行均可
-            //             if (g_oMoni.aDataInfo[0][j].sName == data.rows[item3][0]) { // Chenly 2018-10-15 如果DDKey对应，则将以CN覆盖DDkey
+            //             if (g_oMoni.aDataInfo[0][j].sDDKey == data.rows[item3][0]) { // Chenly 2018-10-15 如果DDKey对应，则将以CN覆盖DDkey
             //                 // if (g_oMoni.aDataInfo[0][j].Visb !== data.rows[item3][2]) // mark，与上面重复
             //                 //     g_oMoni.aDataInfo[0][j].Visb = data.rows[item3][2];
             //                 $("#monidata thead tr").append("<th>" + data.rows[item3][1] + "</th>");
@@ -447,7 +449,7 @@ function fnShowMoniData(objArg) {
 
         var DDKey = [];
         for (var i = 0, len = objArg.aDataInfo[0].length; i < len; ++i) {
-            DDKey.push(objArg.aDataInfo[0][i].sName);
+            DDKey.push(objArg.aDataInfo[0][i].sDDKey);
         }
 
         CNtranslator(DDKey, objArg.aSysInfo);

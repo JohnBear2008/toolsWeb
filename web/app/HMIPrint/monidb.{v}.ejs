@@ -1,34 +1,33 @@
-<!--****************
-    ****************
-        本地路径
-    ****************-->
+<!--本地路径-->
+
 <link rel="stylesheet" type="text/css" href="/css/HMI/HMIContent.css">
 <script src="/js/HMIPrint/FileSaver.min.js"></script>
 <script src="/js/HMIPrint/tableExport.js"></script>
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="/DataTables/media/css/jquery.dataTables.css">
 <!-- DataTables -->
-<script type="text/javascript" charset="utf8" src="/DataTables/media/js/jquery.dataTables.js"></script>
-<!--****************
-    ****************
-        网络路径
-    ****************-->
+<script type="text/javascript" src="/DataTables/media/js/jquery.dataTables.js"></script>
+
+
 <!-- 新 Bootstrap 核心 CSS 文件 -->
-<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
-<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/localization/messages_zh.js"></script>
+<script src="/js/HMIPrint/bootstrap.min.js"></script>
+
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <div class="content">
     <h1>Moni 数据库维护</h1>
     <hr>
     <!--<button id="Add"  onclick="javascript:$('#win').window('open')">添加</button>-->
+    <!-- 操作区（按钮等） -->
     <div class="lineitem">
-        <button id="Add" class="easyui-linkbutton">添加</button>
-        <button id="Upd" class="easyui-linkbutton">更新</button>
-        <button id="Del" class="easyui-linkbutton">删除</button>
+        <button id="Add" class="btn btn-info">添加</button>
+        <button id="Upd" class="btn btn-warning">更新</button>
+        <button id="Del" class="btn btn-danger">删除</button>
     </div>
+
+    <!--数据呈现区-->
     <table id="moniDBTable" class="moniDBTableStyle">
         <thead>
             <tr>
@@ -161,9 +160,7 @@ function moniData(UID, Manufacturer, Prec, CtrlType, MachType, DDKey, CN, TW, EN
     this.Reserved2 = Reserved2;
     this.Reserved3 = Reserved3;
     this.Reserved4 = Reserved4;
-
 }
-
 // 检查Form输入数据是否符号规范
 function checkinput(Data) {
     if (Data.Manufacturer.length > 4) {
@@ -197,11 +194,8 @@ function checkinput(Data) {
         alert("可见性只能输入0或1,0代表不可见,1代表可见!");
         return false;
     }
-
     return true;
-
 }
-
 //AJAX新增函数
 function ajaxAdd(moniData) {
     $.ajax({
@@ -209,9 +203,7 @@ function ajaxAdd(moniData) {
         url: '/app/HMIPrint/moniAdd',
         data: moniData,
         success: function(data, textStatus) {
-
             // alert("成功数据:" + JSON.stringify(data));
-
             if (data.affectedRows != 0) {
                 alert("新增数据成功!");
                 window.location.reload();
@@ -223,16 +215,13 @@ function ajaxAdd(moniData) {
     });
 }
 //ajax更新函数
-
 function ajaxUpd(moniData) {
-
     $.ajax({
         method: 'post',
         url: '/app/HMIPrint/moniUpd',
         data: moniData,
         success: function(data, textStatus) {
             //      alert("成功数据:"+JSON.stringify(data));
-
             if (data.changedRows != 0) {
                 alert("更新数据成功!");
                 window.location.reload();
@@ -240,12 +229,9 @@ function ajaxUpd(moniData) {
                 alert("未有数据更新!");
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-        }
+        error: function(XMLHttpRequest, textStatus, errorThrown) {}
     });
 }
-
 //ajax删除函数
 function ajaxDel(UID) {
     $.ajax({
@@ -253,9 +239,7 @@ function ajaxDel(UID) {
         url: '/app/HMIPrint/moniDel',
         data: UID,
         success: function(data, textStatus) {
-
             //  alert("成功数据:"+JSON.stringify(data));
-
             if (data.affectedRows != 0) {
                 alert("删除数据成功!");
                 window.location.reload();
@@ -263,12 +247,9 @@ function ajaxDel(UID) {
                 alert("删除数据失败!");
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-        }
+        error: function(XMLHttpRequest, textStatus, errorThrown) {}
     });
 }
-
 //加载完成后执行程序
 $(document).ready(function() {
     /* init Obj or read Obj from cache */
@@ -303,7 +284,6 @@ $(document).ready(function() {
             "Reserved4Input": "0"
         };
     }
-
     //加载数据表及数据----------
     $('#moniDBTable').DataTable({
         ajax: {
@@ -327,11 +307,8 @@ $(document).ready(function() {
             { data: 'Visb' }
         ]
     });
-
-
     //判断是否选中数据-------
     var table = $('#moniDBTable').DataTable();
-
     $('#moniDBTable tbody').on('click', 'tr', function() {
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
@@ -340,15 +317,12 @@ $(document).ready(function() {
             $(this).addClass('selected');
         }
     });
-
-
     // 添加按钮-----
     // Chenly 2018-10-31 加上默认值
     $('#Add').click(function() {
         $('#win').window('open');
         $('#AddDoButton').show();
         $('#UpdDoButton').hide();
-
         // $('#ManufacturerInput').val("STD");
         // $('#PrecInput').val("0");
         // $('#CtrlTypeInput').val("0000");
@@ -363,7 +337,6 @@ $(document).ready(function() {
         // $('#Reserved2Input').val("0");
         // $('#Reserved3Input').val("0");
         // $('#Reserved4Input').val("0");
-
         // 读取上一次提交表格内数据的值（仅input元素）
         var inputNum = $("#win").find("input").length;
         for (var i = 0; i < inputNum; ++i) {
@@ -375,18 +348,13 @@ $(document).ready(function() {
                 var IDTmp = "#" + inputID; // id选择器要加个#
                 $(IDTmp).val(oInput[inputID]); // inputElem.attr("value", oInput[objID]);
             }
-
         }
-
     });
-
     //更新按钮---------
     $('#Upd').click(function() {
-
         //alert("seclet: "+JSON.stringify(table.row('.selected').data()));
         // table.row('.selected').remove().draw( false );
         var dataSelect = table.row('.selected').data();
-
         if (dataSelect == undefined) {
             alert("当前未选择任何数据,请先点击需要更新的数据行!");
         } else {
@@ -408,14 +376,10 @@ $(document).ready(function() {
             $('#Reserved3Input').val(dataSelect.Reserved3);
             $('#Reserved4Input').val(dataSelect.Reserved4);
         }
-
-
     });
-
     //删除按钮----------
     $('#Del').click(function() {
         var dataSelect = table.row('.selected').data();
-
         if (dataSelect == undefined) {
             alert("当前未选择任何数据,请先点击需要删除的数据行!");
         } else {
@@ -429,13 +393,8 @@ $(document).ready(function() {
                 }
             }
         }
-
-
         //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
     });
-
-
-
     //form框添加按钮----------
     $('#AddDoButton').click(function() {
         var UID = "";
@@ -454,9 +413,7 @@ $(document).ready(function() {
         // var Reserved2Input = $('#Reserved2Input').val();
         // var Reserved3Input = $('#Reserved3Input').val();
         // var Reserved4Input = $('#Reserved4Input').val();
-
         // var formData = new moniData(UID, ManufacturerInput, PrecInput, CtrlTypeInput, MachTypeInput, DDKeyInput, CNInput, TWInput, ENInput, VisbInput, Reserved0Input, Reserved1Input, Reserved2Input, Reserved3Input, Reserved4Input);
-
         // UID + form的数据 ==> 构造obj
         var aRemainVal = [];
         for (var key in oInput) {
@@ -464,10 +421,8 @@ $(document).ready(function() {
             var nVal = $(key).val();
             aRemainVal.push(nVal);
         }
-
         var formData = new moniData(UID, ...aRemainVal);
         // alert("formData:" + JSON.stringify(formData));
-
         if (checkinput(formData)) {
             // 保存本次提交表格内数据的值至obj内，便于连续操作
             var inputNum = $("#win").find("input").length;
@@ -481,20 +436,13 @@ $(document).ready(function() {
                 }
             }
             sessionStorage.setItem("lastFormData", JSON.stringify(oInput));
-
             ajaxAdd(formData);
-
         } else {
             //  alert("输入错误");
-
         }
-
-
     });
     //form 更新按钮
-
     $('#UpdDoButton').click(function() {
-
         var UID = table.row('.selected').data().UID;
         // Chenly 2018-11-01 mark，将数组作为形参构造obj
         // var ManufacturerInput = $('#ManufacturerInput').val();
@@ -511,9 +459,7 @@ $(document).ready(function() {
         // var Reserved2Input = $('#Reserved2Input').val();
         // var Reserved3Input = $('#Reserved3Input').val();
         // var Reserved4Input = $('#Reserved4Input').val();
-
         // var formData = new moniData(UID, ManufacturerInput, PrecInput, CtrlTypeInput, MachTypeInput, DDKeyInput, CNInput, TWInput, ENInput, VisbInput, Reserved0Input, Reserved1Input, Reserved2Input, Reserved3Input, Reserved4Input);
-
         // UID + form的数据 ==> 构造obj
         var aRemainVal = [];
         for (var key in oInput) {
@@ -522,29 +468,19 @@ $(document).ready(function() {
             aRemainVal.push(nVal);
         }
         var formData = new moniData(UID, ...aRemainVal);
-
         //      alert("formData:"+JSON.stringify(formData));
-
         if (checkinput(formData)) {
             //  alert("输入正确");
             ajaxUpd(formData);
-
         } else {
             //  alert("输入错误");
         }
-
     });
-
     //form框 取消按钮
-
     $('#CancelButton').click(function() {
         $('#win').window('close');
     });
-
-
 });
-
-
 //function getdata(DDKey) {
 //    $.ajax({
 //        method: 'get',
@@ -561,4 +497,5 @@ $(document).ready(function() {
 //
 //
 //getdata();
+
 </script>
