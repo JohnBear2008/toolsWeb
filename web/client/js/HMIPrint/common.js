@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 /*===========================================================================+
 |   prototype expend                                                         |
 +===========================================================================*/
@@ -6,12 +7,16 @@
 |   prototype overload                                                       |
 +===========================================================================*/
 
-
 /*===========================================================================+
 |   function      {v}.ejs                                                    |
 +===========================================================================*/
 function fnRemitExcel(tableID, excelName) {
-    $(tableID).tableExport({ fileName: excelName, type: 'excel', excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right'] });
+    $(tableID).tableExport({
+        fileName: excelName,
+        worksheetName: excelName,
+        type: 'excel',
+        excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right']
+    });
 }
 
 /*===========================================================================+
@@ -99,21 +104,20 @@ function fnQuitTrvlFolder(objArg, upFolderArg) {
  * @Warning   [用Obj对应的文件夹名关键字，即FolderName的关键字做为标识。例：MoniObj.sFolderName = moni]
  * @return    {[type]}    [description]
  */
-function fnStgParsedObj(objArg) {
-    sessionStorage.setItem(objArg.sFolderName, JSON.stringify(objArg)); //将对象转为json字符串存储
-}
+function fnStgParsedObj(objArg) { // TODO 改为indexedDB
+    try {
+        sessionStorage.setItem(objArg.sFolderName, JSON.stringify(objArg)); //将对象转为json字符串存储
+    } catch (oException) {
+        if (oException.name == 'QuotaExceededError') {
+            alert('超出浏览器本地存储 5MB 限额！');
+            //如果历史信息不重要了，可清空后再设置
+            sessionStorage.clear();
+            // sessionStorage.setItem(key, value);
+        }
 
-/**
- * @Author    Muc
- * @DateTime  2018-10-24
- * @Describle [判断创建的obj是否存在有效数据]
- * @return    {[String]}           [0-obj内容正常， STOP-obj没有有效数据]
- */
-function fnJudgeObj(objArg) {
-    if (objArg.aDataInfo === undefined || objArg.aDataInfo.length === 0) {
-        alert('所选文件夹内无 **有效的{0}记录**，请检查'.format(objArg.sFolderName));
-        return ("STOP");
-    } else {
-        return 0;
     }
 }
+
+/*===========================================================================+
+|   function      IndexedDB                                                  |
++===========================================================================*/

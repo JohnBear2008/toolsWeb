@@ -42,7 +42,6 @@ var nBytes = {
     ONE: 1
 };
 
-
 var bEndian = {
     LIT: 0,
     BIG: 1
@@ -436,7 +435,6 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
 
     // Chenly 2018-10-31 TODO 后面开始，HT55和TM55的cdb数据结构不一样，需通过 objArg.aSysInfo的内容区别处理
 
-
     /* PART 9 push DataIDObj and set DataIDObj.ID/type/len/stat/value */
     var nDataIDSum = objArg.nDataIDSum;
 
@@ -555,7 +553,6 @@ function fnSplcCszHex(objArg, nLenArg, cszHexArg, Endian) {
     return dynRslt;
 }
 
-
 /**
  * @Author    Muc
  * @DateTime  2018-10-22
@@ -585,7 +582,6 @@ function fnCszHexToInt(csz) {
 
     return parseInt(sTmp, 16);
 }
-
 
 function fnBuf2HexArr(aBuf, aHex) {
     var bufView = new Uint8Array(aBuf);
