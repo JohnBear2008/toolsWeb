@@ -45,7 +45,7 @@ function showDBData(DataPara,columnsData){
 
 
 
-//AJAX新增函数-----------
+//AJAX新增数据库数据函数-----------
 function addDBData(DBData) {
 	
     $.ajax({
@@ -65,11 +65,28 @@ function addDBData(DBData) {
     });
 }
 
-
+//AJAX更新数据库数据函数
+function updDBData(DBData) {
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/updDBData',
+        data: DBData,
+        success: function(data, textStatus) {
+ //                alert("成功数据:"+JSON.stringify(data));
+            if (data.changedRows != 0) {
+                alert("更新数据成功!");
+                window.location.reload();
+            } else {
+                alert("未有数据更新!");
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+    });
+}
 
 
 //AJAX删除数据库数据函数
-function ajaxDel(IDData) {
+function delDBData(IDData) {
     $.ajax({
         method: 'post',
         url: '/app/PM/delDBData',

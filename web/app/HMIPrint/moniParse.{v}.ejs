@@ -4,10 +4,9 @@
 <script type="text/javascript" src="/js/muc_jsExtend.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/common.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/moniParse.js"></script>
-<script src="/js/HMIPrint/FileSaver.min.js"></script>
-<script src="/js/HMIPrint/tableExport.js"></script>
+<!-- <script src="/js/HMIPrint/FileSaver.min.js"></script> -->
+<!-- <script src="/js/HMIPrint/tableExport.js"></script> -->
 
-<!--网络路径-->
 <!-- 新 Bootstrap 核心 CSS 文件 -->
 <link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -20,7 +19,12 @@
     <div class="input-append">
         <input type="file" id="upFolder" style="display:none;" webkitdirectory />
         <a class="btn btn-lg btn-info" onclick="$('input[id=upFolder]').click();">导入文件</a>
-        <button id="remitExcel" class=" btn btn-lg btn-default">汇出excel</button>
+        <!-- 使用FileSaver，tableExport的旧方式，效率较低，故更换为blob方式 -->
+        <!-- <button id="remitExcel" class=" btn btn-lg btn-default">汇出excel</button> -->
+
+        <button id="remitExcel2" style="display:none;"></button>
+        <a id="aExcel" class=" btn btn-lg btn-default" onclick="$('button[id=remitExcel2]').click();">汇出excel</a>
+
         <label id="PMsg" style="font-weight: bold;font-size: 15px;color: red;"></label>
     </div>
     </br>
@@ -38,6 +42,7 @@
     </div>
 </div>
 <script type="text/javascript" defer="defer">
+/*jshint esversion:6*/
 window.onload = function() {
     var pageName = "moni";
 
@@ -54,12 +59,16 @@ window.onload = function() {
     });
 
     // 汇出excel文件
-    $("#remitExcel").click(function() {
-        // 以obj的FolderName作为excel的名字，eg. 监测则为 moni.xls
-        // 因obj无法再此处直接获取，故特殊指定excelName为moni
-        var excelName = pageName;
-        var elemID = "#monidata";
-        fnRemitExcel(elemID, excelName);
+    //$("#remitExcel").click(function() {
+    // 以obj的FolderName作为excel的名字，eg. 监测则为 moni.xls
+    // 因obj无法再此处直接获取，故特殊指定excelName为moni
+    //var excelName = pageName;
+    //var elemID = "#monidata";
+    //fnRemitExcel(elemID, excelName);
+    //});
+
+    $("#remitExcel2").click(function() {
+        fnTableDataExport("#monidata", "#aExcel", pageName, '.xls');
     });
 };
 

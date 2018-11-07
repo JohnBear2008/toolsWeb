@@ -15,9 +15,33 @@ function fnRemitExcel(tableID, excelName) {
         fileName: excelName,
         worksheetName: excelName,
         type: 'excel',
-        excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right']
+        // mark，为了提升汇出效率
+        // excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right']
     });
 }
+
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-07
+ * @Describle [汇出html内的table内容]
+ */
+function fnTableDataExport(tableIDArg, anchorIDArg, fileNameArg, fileTypeArg) {
+    var htmlType = "";
+    if (fileTypeArg === ".xls") {
+        htmlType = "application/vnd.ms-excel";
+    }
+
+    // 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
+    var html = "<html><head><meta charset='utf-8' /></head><body>" + $(tableIDArg).prop("outerHTML") + "</body></html>";
+    // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
+    var blob = new Blob([html], { type: htmlType });
+    var $anchor = $(anchorIDArg)[0];
+    // 利用URL.createObjectURL()方法为a元素生成blob URL
+    $anchor.href = URL.createObjectURL(blob);
+    // 设置文件名
+    $anchor.download = fileNameArg + fileTypeArg;
+}
+
 
 /*===========================================================================+
 |   function      js                                                         |

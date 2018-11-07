@@ -291,7 +291,6 @@ function fnTrvlFolder() {
             })
             .then(() => {
                 return fnSetObjOriginVal(g_oMoni);
-
             })
             .then((Rslt) => {
                 if (Rslt.indexOf("Done") !== -1) {
@@ -379,7 +378,7 @@ function fnPreObjShow(objArg) {
 // Chenly 2018-10-08 从数据库获取CN,Visible等信息
 // 只传必要的数据（g_Obj因数据过大，必须特殊处理，不能直接当作ajax形参传入）
 function CNtranslator(objSysArg) {
-    $("#PMsg").text("处理中，请稍后 。。。");
+    $("#PMsg").text("正在获取/解析数据文件，请稍后 。。。");
     // console.time("timer");
     $.ajax({
         method: 'get',
@@ -387,12 +386,16 @@ function CNtranslator(objSysArg) {
         data: { objSysArg: objSysArg },
 
         success: function(data) {
+            // console.time("CNtranslator");
             var aDataInfo = g_oMoni.aDataInfo;
             var nRecSum = aDataInfo.length; // 监测记录的条数
             // console.log(nRecSum);
             var nTitSum = aDataInfo[0].length; // 所有标题的数据结构与值完全一致，故判断任意一行即可得知
-            var tdBuff = "";
             var trBuff = "";
+            var tdBuff = "";
+            var tdPreStrP1 = "mso-number-format:'\@';>"; // 强制转化为文本格式，防止数值为0的数据精度丢失，例：0.00 错误的 => 0
+            // var tdType = <td style="mso-number-format:'\@';">;
+            var tdPreStr = "<td style=" + tdPreStrP1;
 
             // 从biz获取的data,row内的Inx代表的内容
             var nArrInx = {
@@ -403,13 +406,11 @@ function CNtranslator(objSysArg) {
             };
 
 
-            // 假使当前监测数据超过5000笔，只显示后5000笔数据，此处与HMI同步
+            // 当前HMI至多存储5000笔数据，生成的cdb文件里也只有5000笔，此处为预留
             var nRecOffset = 0;
-            if (nRecSum > 5000) {
-                nRecOffset = nRecSum - 5000;
-            }
 
             for (var nRecx = nRecOffset; nRecx < nRecSum; ++nRecx) {
+                tdBuff += "<tr>"; // 每一条完整的监测记录加个换行
                 for (var nTitx = 0; nTitx < nTitSum; ++nTitx) {
                     /* 从biz获取的满足条件的data.rows [DDKey,CN,Visb,Preci] */
                     for (var nVisbInfoInx in data.rows) {
@@ -450,20 +451,21 @@ function CNtranslator(objSysArg) {
 
                     /* 显示监测信息的详细数值 PART1 */
                     if (aDataInfo[nRecx][nTitx].Visb > 0) {
-                        tdBuff += "<td>" + aDataInfo[nRecx][nTitx].fValue + "</td>";
+                        tdBuff += tdPreStr + aDataInfo[nRecx][nTitx].fValue + "</td>";
                     }
 
                 }
                 /* 显示监测信息的详细数值 PART2 ，这里的tr为了换行*/
-                tdBuff = "<tr>" + tdBuff + "</tr>";
+                tdBuff += "</tr>";
             }
 
             /* cell append */
-            $("#monidata thead tr").append(trBuff);
-            $("#monidata tbody").append(tdBuff); // Chenly 2018-11-05 移到外面，效率提高85%
+            $("#monidata thead tr").html(trBuff); // append = > html，效率再提高约25%
+            $("#monidata tbody").html(tdBuff); // 将$操作移至外面，效率提高约85%
 
             // fnStgParsedObj(g_oMoni); // 临时存储，上限为5MB，必须要改为indexeddb
             $("#PMsg").text("");
+            // console.timeEnd("CNtranslator");
         },
         error: function() {
             $("#PMsg").text("");
