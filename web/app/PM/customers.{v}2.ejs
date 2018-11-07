@@ -1,0 +1,292 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
+<div class="content">
+    <h1>客户信息维护</h1>
+    <hr>
+    <!--<button id="Add"  onclick="javascript:$('#win').window('open')">添加</button>-->
+    <!-- 操作区（按钮等） -->
+    <div class="lineitem">
+        <button id="Add" class="btn btn-info">添加</button>
+        <button id="Upd" class="btn btn-warning">更新</button>
+        <button id="Del" class="btn btn-danger">删除</button>
+    </div>
+    <br/>
+
+    <!--数据呈现区-->
+    <table id="cust_DB" class="table table-striped table-bordered"  >
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>厂商码</th>
+                <th>客户名称</th>
+                <th>联系电话</th>
+            </tr>
+        </thead>
+    </table>
+    <!-- 点击更新、添加按钮后弹出的窗口 -->
+    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:400px;height:560px;">
+        <form style="padding:10px 50px;">
+            <p>厂商码 : <input id="cust_FID" size="30" type="text" class="required"></p>
+            <p>客户名称 : <input id="cust_Name" size="30" type="text" class="required"></p>
+            <p>联系电话 : <input id="cust_Phone" size="30" type="text" class="required"></p>
+
+          
+            <div style="padding:5px;text-align:center;">
+                <a id="AddDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">添加</a>
+                <a id="UpdDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">更新</a>
+                <a id="CancelButton" href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+////定义显示客户信息数据参数结构-------------
+//function factDataPara(tableID,DBTable,cust_Phone) {
+//    this.tableID = tableID;
+//    this.DBTable = DBTable;
+//    this.cust_Phone = cust_Phone;
+//}
+//检查输入信息-------------------
+function checkinput(Data) {
+    if (Data.cust_FID=="") {
+        alert('厂商码不能为空，请检查!');
+        return false;
+    } else if (Data.cust_Name=="") {
+        alert('厂商名称不能为空，请检查!');
+        return false;
+    }
+    return true;
+}
+
+//定义添加发送数据结构---------------------
+
+function addDataInfo(DBTable,cust_FID,cust_Name,cust_Phone){
+	this.DBTable=DBTable;
+	this.cust_FID=cust_FID;
+	this.cust_Name=cust_Name;
+	this.cust_Phone=cust_Phone;
+}
+
+
+//页面加载函数---------------
+$(document).ready( function () {
+		
+	var DataPara={
+			"tableID":"#cust_DB",
+			"DBTable":"PM_customers"			
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'cust_FID' },
+        { data: 'cust_Name'},
+        { data: 'cust_Phone'}
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showDBData(DataPara,columnsData);
+	
+//判断是否选中数据-------
+var table = $('#cust_DB').DataTable();
+$('#cust_DB tbody').on('click', 'tr', function() {
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+});
+	
+
+
+
+
+//添加按钮-----
+$('#Add').click(function() {
+    $('#win').window('open');
+    $('#AddDoButton').show();
+    $('#UpdDoButton').hide();
+    
+});
+
+
+//更新按钮---------
+$('#Upd').click(function() {
+ //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
+    // table.row('.selected').remove().draw( false );
+    var dataSelect = table.row('.selected').data();
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要更新的数据行!");
+    } else {
+        $('#win').window('open');
+        $('#AddDoButton').hide();
+        $('#UpdDoButton').show();
+        
+        $('#cust_FID').val(dataSelect.cust_FID);
+        $('#cust_Name').val(dataSelect.cust_Name);
+        $('#cust_Phone').val(dataSelect.cust_Phone);
+        
+    }
+});
+
+
+//删除按钮----------
+$('#Del').click(function() {
+    var dataSelect = table.row('.selected').data();
+    
+//    alert(JSON.stringify(dataSelect));
+    
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+        if (msg1 === true) {
+            var msg2 = confirm("确认删除此行数据？");
+            if (msg2 === true) {
+            	
+            //	alert(dataSelect.DBID);
+                var IDData = {"DBTable":"PM_customers","DBID":dataSelect.DBID};
+             //   alert("IDData:"+JSON.stringify(IDData));
+                delDBData(IDData);
+            }
+        }
+    }
+    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+});
+
+
+//form框添加按钮----------
+$('#AddDoButton').click(function() {
+	var DBTable="PM_customers";
+	var cust_FID=$("#cust_FID").val();
+	var cust_Name=$("#cust_Name").val();
+	var cust_Phone=$("#cust_Phone").val();
+	
+	var DBData=new addDataInfo(DBTable,cust_FID,cust_Name,cust_Phone);
+	
+	
+	addDBData(DBData);
+	
+//    var UID = "";
+//    // UID + form的数据 ==> 构造obj
+//    var aRemainVal = [];
+//    for (var ID in oInput) {
+//        ID = "#" + ID;
+//        var nVal = $(ID).val();
+//        aRemainVal.push(nVal);
+//    }
+//    var formData = new moniData(UID, ...aRemainVal);
+//    // alert("formData:" + JSON.stringify(formData));
+//
+//    if (checkinput(formData)) {
+//        // 保存本次提交表格内数据的值至obj内，便于连续操作
+//        var inputNum = $("#win").find("input").length;
+//        for (var i = 0; i < inputNum; ++i) {
+//            var inputElem = $("#win").find("input").eq(i);
+//            var inputID = inputElem.attr("id");
+//            // console.log("#1", inputID);
+//            if (oInput.hasOwnProperty(inputID) && (aIgnID.indexOf(inputID) === -1)) {
+//                var IDTmp = "#" + inputID; // id选择器要加个#
+//                oInput[inputID] = $(IDTmp).val();
+//            }
+//        }
+//        sessionStorage.setItem("lastFormData", JSON.stringify(oInput));
+//        ajaxAdd(formData);
+//    } else {
+//        //  alert("输入错误");
+//    }
+
+});
+
+
+
+
+//form 更新按钮------------
+$('#UpdDoButton').click(function() {
+	
+ //   var UID = table.row('.selected').data().UID;
+	
+//	var cust_FID=$('#cust_FID').val();
+//    var cust_Name=$('#cust_Name').val();
+//    var cust_Phone=$('#cust_Phone').val();
+	
+	var updInput={
+			cust_FID:$('#cust_FID').val(),
+			cust_Name:$('#cust_Name').val(),
+			cust_Phone:$('#cust_Phone').val()			
+	}
+
+   
+    var updJSON={
+			'DBTable':"PM_customers",
+			'DBID':table.row('.selected').data().DBID
+    	};
+	var changed=0;
+
+    for (var key in updInput) {   	
+//   	alert(key);
+    	if(updInput[key]!=table.row('.selected').data()[key]){    		
+//    		alert("updInput:"+updInput[key]);
+//    		alert("selected:"+table.row('.selected').data()[key]);    		
+    		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
+    		changed=changed+1;
+    	}
+    }
+
+//   alert("updJSON:"+JSON.stringify(updJSON));
+    
+    if(changed!=0){
+    	if (checkinput(updJSON)) {
+    		 var msg = confirm("共调整"+changed+"处信息,请确认！");
+    		 if(msg==true){
+    			 updDBData(updJSON);
+    		 }
+    		 
+    	}
+    }else{
+    	alert("未有任何信息修改!");
+    }
+    
+});
+
+
+//form框 取消按钮----------------
+$('#CancelButton').click(function() {
+    $('#win').window('close');
+});
+
+	
+	
+}); 
+
+</script>

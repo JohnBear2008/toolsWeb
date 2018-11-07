@@ -21,7 +21,7 @@ module.exports = function(sender) {
     		if(obj[key]==""){
     			updateContent=updateContent+key+"='',";
     		}else{
-    			updateContent=updateContent+key+"="+obj[key]+",";
+    			updateContent=updateContent+key+"="+"'"+obj[key]+"',";
     		}
     		
 //    		tableTitle=tableTitle+key+",";

@@ -16,7 +16,7 @@ module.exports = function(sender) {
     		var DBTable=obj[key];
     	}else{
     		tableTitle=tableTitle+key+",";
-    		tableData=tableData+obj[key]+",";
+    		tableData=tableData+"'"+obj[key]+"',";
     	}
     }
     
@@ -31,7 +31,7 @@ var SQLInsert="insert into "+DBTable+" ("+tableTitle+") values "+"("+tableData+"
 
 
 //var SQLInsert="insert into PM_customer (cust_FID,cust_Name) values(110,110)";
-	console.log("SQLInsert:"+SQLInsert);
+//	console.log("SQLInsert:"+SQLInsert);
 
     yjDBService.exec({
         sql: SQLInsert,

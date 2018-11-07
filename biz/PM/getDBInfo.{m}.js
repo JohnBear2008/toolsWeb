@@ -12,6 +12,7 @@ module.exports = function(sender) {
     var sqlGetTableData = "SELECT * FROM "+DBTable;
 
     // sqlGetIDInfo = "SELECT * FROM hmiprint_mold WHERE DataID=" + DataID + " ";
+    
     yjDBService.exec({
         sql: sqlGetTableData,
         parameters: [],
