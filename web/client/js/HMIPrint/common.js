@@ -10,6 +10,40 @@
 /*===========================================================================+
 |   function      {v}.ejs                                                    |
 +===========================================================================*/
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-08
+ * @Describle [Describle]
+ * @Warning   [checkbox事件绑定，并将check结果存到sessionStorage内]
+ * @purpose   [记录checkbox事件绑定]
+ */
+function fnBindRecTrigger(sRecFlag, recBoxID, on_txt, off_txt) {
+    // 获取sessionStore内的“记录”状态
+    let sRecStat = sessionStorage.getItem(sRecFlag); // String类型
+
+    /* 自动记录 */
+    $(recBoxID).lc_switch(on_txt, off_txt);
+    if (sRecStat == "true") {
+        $(recBoxID).trigger("click"); // 模拟click
+        // console.log("trigger");
+    }
+    // triggered each time a field changes status
+    $('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+        // var status = ($(this).is(':checked')) ? 'checked' : 'unchecked';
+    });
+    // triggered each time a field is checked
+    $('body').delegate('.lcs_check', 'lcs-on', function() {
+        if (sRecStat !== 'true')
+            sessionStorage.setItem(sRecFlag, "true");
+    });
+    // triggered each time a is unchecked
+    $('body').delegate('.lcs_check', 'lcs-off', function() {
+        if (sRecStat !== 'false')
+            sessionStorage.setItem(sRecFlag, "false");
+    });
+}
+
+
 function fnRemitExcel(tableID, excelName) {
     $(tableID).tableExport({
         fileName: excelName,
@@ -26,15 +60,15 @@ function fnRemitExcel(tableID, excelName) {
  * @Describle [汇出html内的table内容]
  */
 function fnTableDataExport(tableIDArg, anchorIDArg, fileNameArg, fileTypeArg) {
-    var htmlType = "";
+    var crvtType = "";
     if (fileTypeArg === ".xls") {
-        htmlType = "application/vnd.ms-excel";
+        crvtType = "application/vnd.ms-excel";
     }
 
     // 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
     var html = "<html><head><meta charset='utf-8' /></head><body>" + $(tableIDArg).prop("outerHTML") + "</body></html>";
     // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
-    var blob = new Blob([html], { type: htmlType });
+    var blob = new Blob([html], { type: crvtType });
     var $anchor = $(anchorIDArg)[0];
     // 利用URL.createObjectURL()方法为a元素生成blob URL
     $anchor.href = URL.createObjectURL(blob);
@@ -46,6 +80,84 @@ function fnTableDataExport(tableIDArg, anchorIDArg, fileNameArg, fileTypeArg) {
 /*===========================================================================+
 |   function      js                                                         |
 +===========================================================================*/
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-08
+ * @Describle [Describle]
+ * @Warning   [将成功解析后的obj存储到IndexedDB，以防obj被销毁无法找回]
+ * @purpose   [1、保存上次解析数据  2、汇出excel拓展]
+ */
+function fnSetData2IndexedDB(dbArg, storeArg, sIDArg, oDataArg) {
+    let db,
+        DBReq;
+
+    DBReq = indexedDB.open(dbArg); // second opt_arg : vers def == 1
+    // 初次创建DB或者版本更新时调用
+    // DBReq.onupgradeneeded = function(event) {
+    //     db = event.target.result;
+    //     // if store not exist, then create
+    //     if (!db.objectStoreNames.contains(storeArg)) {
+    //         let objectStore = db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
+    //     }
+    // };
+    // 数据库打开成功后 rewrite数据
+    DBReq.onsuccess = (e) => {
+        db = e.target.result;
+        let transaction = db.transaction([storeArg], "readwrite"); // second arg def == read
+
+        let objStore = transaction.objectStore(storeArg);
+        let putReq = objStore.put({ id: sIDArg, data: oDataArg });
+        putReq.onsuccess = (e) => {};
+    };
+    // 数据库打开失败
+    DBReq.onerror = (e) => {
+        alert("检测到IndexedDB被禁用，影响：无法保存上次成功解析的数据");
+    };
+
+}
+
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-08
+ * @Describle [从IndexedDB获取记录]
+ * @Warning   [必须通过callback获取结果]
+ * @purpose   [purpose]
+ * @param     {[type]}    dbArg    [description]
+ * @param     {[type]}    storeArg [description]
+ * @param     {[type]}    sIDArg   [description]
+ * @param     {Function}  callback [description]
+ * @return    {[type]}             [description]
+ */
+function fngetDataFrIndexedDB(dbArg, storeArg, sIDArg, callback) {
+    let db,
+        DBReq,
+        data;
+
+    DBReq = indexedDB.open(dbArg); // second opt_arg : vers def == 1
+    // 初次创建DB或者版本更新时调用
+    DBReq.onupgradeneeded = function(event) {
+        db = event.target.result;
+        // if store not exist, then create
+        if (!db.objectStoreNames.contains(storeArg)) {
+            let objectStore = db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
+        }
+    };
+    // 数据库打开成功后 rewrite数据
+    DBReq.onsuccess = (e) => {
+        db = e.target.result;
+        let transaction = db.transaction([storeArg], "readwrite"); // second arg def == read
+
+        let objStore = transaction.objectStore(storeArg);
+        let getReq = objStore.get(sIDArg);
+        getReq.onsuccess = (e) => {
+            data = e.target.result.data;
+            callback(data);
+            // console.log("1");
+        };
+    };
+
+}
+
 /**
  * @Author    Muc
  * @DateTime  2018-09-27

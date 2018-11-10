@@ -1,20 +1,17 @@
 <!--本地路径-->
-
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/HMIContent.css">
+
 <script src="/js/HMIPrint/FileSaver.min.js"></script>
 <script src="/js/HMIPrint/tableExport.js"></script>
-<!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css" href="/DataTables/media/css/jquery.dataTables.css">
-<!-- DataTables -->
+
 <script type="text/javascript" src="/DataTables/media/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="/DataTables/media/css/jquery.dataTables.css">
 
-<!-- 新 Bootstrap 核心 CSS 文件 -->
-<link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<!-- 最新的 Bootstrap 核心 JavaScript和css 文件 -->
 <script src="/js/HMIPrint/bootstrap.min.js"></script>
+<link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
 
-
-<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <div class="content">
     <h1>Moni 数据库维护</h1>
     <hr>
@@ -288,6 +285,7 @@ $(document).ready(function() {
     }
     //加载数据表及数据----------
     $('#moniDBTable').DataTable({
+        aLengthMenu: [15, 30],
         ajax: {
             url: '/app/HMIPrint/getMoniInfo',
             dataSrc: ''
@@ -310,26 +308,26 @@ $(document).ready(function() {
         ],
         "language": {
             "url": "dataTables.german.lang",
-            "sProcessing":   "处理中...",
-            "sLengthMenu":   "显示 _MENU_ 项结果",
-            "sZeroRecords":  "没有匹配结果",
-            "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-            "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+            "sProcessing": "处理中...",
+            "sLengthMenu": "显示 _MENU_ 项结果",
+            "sZeroRecords": "没有匹配结果",
+            "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+            "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-            "sInfoPostFix":  "",
-            "sSearch":       "搜索:",
-            "sUrl":          "",
-            "sEmptyTable":     "表中数据为空",
+            "sInfoPostFix": "",
+            "sSearch": "搜索:",
+            "sUrl": "",
+            "sEmptyTable": "表中数据为空",
             "sLoadingRecords": "载入中...",
-            "sInfoThousands":  ",",
+            "sInfoThousands": ",",
             "oPaginate": {
-                "sFirst":    "首页",
+                "sFirst": "首页",
                 "sPrevious": "上页",
-                "sNext":     "下页",
-                "sLast":     "末页"
+                "sNext": "下页",
+                "sLast": "末页"
             },
             "oAria": {
-                "sSortAscending":  ": 以升序排列此列",
+                "sSortAscending": ": 以升序排列此列",
                 "sSortDescending": ": 以降序排列此列"
             }
         }

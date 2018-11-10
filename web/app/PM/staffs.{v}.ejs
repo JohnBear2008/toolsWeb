@@ -1,0 +1,271 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
+<div class="divcontent">
+    <h1>人员信息维护</h1>
+    <hr>
+    <!--<button id="Add"  onclick="javascript:$('#win').window('open')">添加</button>-->
+    <!-- 操作区（按钮等） -->
+    <div class="lineitem">
+        <button id="Add" class="btn btn-info">添加</button>
+        <button id="Upd" class="btn btn-warning">更新</button>
+        <button id="Del" class="btn btn-danger">删除</button>
+    </div>
+    <br/>
+
+    <!--数据呈现区-->
+    <table id="staff_DB" class="table table-striped table-bordered"  >
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>工号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>账号</th>
+            </tr>
+        </thead>
+    </table>
+    <!-- 点击更新、添加按钮后弹出的窗口 -->
+    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:400px;height:560px;">
+        <form style="padding:10px 50px;">
+            <p>工号 : <input id="staff_ID" size="30" type="text" class="required"></p>
+            <p>姓名 : <input id="staff_Name" size="30" type="text" class="required"></p>
+            <p>性别 : <input id="staff_Sex" size="30" type="text" class="required"></p>
+
+          
+            <div style="padding:5px;text-align:center;">
+                <a id="AddDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">添加</a>
+                <a id="UpdDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">更新</a>
+                <a id="CancelButton" href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+////定义显示人员信息数据参数结构-------------
+//function factDataPara(tableID,DBTable,staff_Sex) {
+//    this.tableID = tableID;
+//    this.DBTable = DBTable;
+//    this.staff_Sex = staff_Sex;
+//}
+//检查输入信息-------------------
+function checkinput(Data) {
+    if (Data.staff_ID=="") {
+        alert('工号不能为空，请检查!');
+        return false;
+    } else if (Data.staff_Name=="") {
+        alert('姓名不能为空，请检查!');
+        return false;
+    }
+    return true;
+}
+
+//定义添加发送数据结构---------------------
+
+function addDataInfo(DBTable,staff_ID,staff_Name,staff_Sex,staff_User){
+	this.DBTable=DBTable;
+	this.staff_ID=staff_ID;
+	this.staff_Name=staff_Name;
+	this.staff_Sex=staff_Sex;
+	this.staff_User=staff_User;
+}
+
+
+//页面加载函数---------------
+$(document).ready( function () {
+		
+	var DataPara={
+			"tableID":"#staff_DB",
+			"DBTable":"PM_staffs"			
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'staff_ID' },
+        { data: 'staff_Name'},
+        { data: 'staff_Sex'},
+        { data: 'staff_User'}
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showDBData(DataPara,columnsData);
+	
+//判断是否选中数据-------
+var table = $('#staff_DB').DataTable();
+$('#staff_DB tbody').on('click', 'tr', function() {
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+});
+	
+
+
+
+
+//添加按钮-----
+$('#Add').click(function() {
+    $('#win').window('open');
+    $('#AddDoButton').show();
+    $('#UpdDoButton').hide();
+    
+});
+
+
+//更新按钮---------
+$('#Upd').click(function() {
+ //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
+    // table.row('.selected').remove().draw( false );
+    var dataSelect = table.row('.selected').data();
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要更新的数据行!");
+    } else {
+        $('#win').window('open');
+        $('#AddDoButton').hide();
+        $('#UpdDoButton').show();
+        
+        $('#staff_ID').val(dataSelect.staff_ID);
+        $('#staff_Name').val(dataSelect.staff_Name);
+        $('#staff_Sex').val(dataSelect.staff_Sex);
+        $('#staff_User').val(dataSelect.staff_User);
+        
+    }
+});
+
+
+//删除按钮----------
+$('#Del').click(function() {
+    var dataSelect = table.row('.selected').data();
+    
+//    alert(JSON.stringify(dataSelect));
+    
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+        if (msg1 === true) {
+            var msg2 = confirm("确认删除此行数据？");
+            if (msg2 === true) {
+            	
+            //	alert(dataSelect.DBID);
+                var IDData = {"DBTable":"PM_staffs","DBID":dataSelect.DBID};
+             //   alert("IDData:"+JSON.stringify(IDData));
+                delDBData(IDData);
+            }
+        }
+    }
+    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+});
+
+
+//form框添加按钮----------
+$('#AddDoButton').click(function() {
+	var DBTable="PM_staffs";
+	var staff_ID=$("#staff_ID").val();
+	var staff_Name=$("#staff_Name").val();
+	var staff_Sex=$("#staff_Sex").val();
+	var staff_User=$("#staff_User").val();
+	
+	var DBData=new addDataInfo(DBTable,staff_ID,staff_Name,staff_Sex,staff_User);
+	
+	
+	addDBData(DBData);
+	
+
+
+});
+
+
+
+
+//form 更新按钮------------
+$('#UpdDoButton').click(function() {
+	
+ //   var UID = table.row('.selected').data().UID;
+	
+//	var staff_ID=$('#staff_ID').val();
+//    var staff_Name=$('#staff_Name').val();
+//    var staff_Sex=$('#staff_Sex').val();
+	
+	var updInput={
+			staff_ID:$('#staff_ID').val(),
+			staff_Name:$('#staff_Name').val(),
+			staff_Sex:$('#staff_Sex').val(),
+			staff_User:$('#staff_User').val()	
+	}
+
+   
+    var updJSON={
+			'DBTable':"PM_staffs",
+			'DBID':table.row('.selected').data().DBID
+    	};
+	var changed=0;
+
+    for (var key in updInput) {   	
+//   	alert(key);
+    	if(updInput[key]!=table.row('.selected').data()[key]){    		
+//    		alert("updInput:"+updInput[key]);
+//    		alert("selected:"+table.row('.selected').data()[key]);    		
+    		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
+    		changed=changed+1;
+    	}
+    }
+
+//   alert("updJSON:"+JSON.stringify(updJSON));
+    
+    if(changed!=0){
+    	if (checkinput(updJSON)) {
+    		 var msg = confirm("共调整"+changed+"处信息,请确认！");
+    		 if(msg==true){
+    			 updDBData(updJSON);
+    		 }
+    		 
+    	}
+    }else{
+    	alert("未有任何信息修改!");
+    }
+    
+});
+
+
+//form框 取消按钮----------------
+$('#CancelButton').click(function() {
+    $('#win').window('close');
+});
+
+	
+	
+}); 
+
+</script>
