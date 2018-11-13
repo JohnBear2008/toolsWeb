@@ -42,20 +42,108 @@
     <table id="staff_DB" class="table table-striped table-bordered"  >
         <thead>
             <tr>
-                <th>ID</th>
-                <th>工号</th>
+                <th>DBID</th>
+                <th>部门</th>
+                <th>课</th>
+                <th>组</th>
                 <th>姓名</th>
                 <th>性别</th>
-                <th>账号</th>
+                <th>职位</th>
+                <th>职级</th>
+                <th>电话</th>
             </tr>
         </thead>
     </table>
     <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:400px;height:560px;">
+    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:450px;height:750px;">
         <form style="padding:10px 50px;">
             <p>工号 : <input id="staff_ID" size="30" type="text" class="required"></p>
-            <p>姓名 : <input id="staff_Name" size="30" type="text" class="required"></p>
-            <p>性别 : <input id="staff_Sex" size="30" type="text" class="required"></p>
+            <p>部门 : <input id="dept" size="30" type="text" class="required" value="软体部"></p>
+            <p>课 :
+            <select id="deptClass" class="required">
+            <option value="主机课" label="主机课"></option>
+            <option value="面板课" label="面板课"></option>
+            <option value="产品技术课" label="产品技术课"></option>
+            <option value="应用工程课" label="应用工程课"></option>
+            <option value="生技课" label="生技课"></option>
+            </select>
+            </p>
+            
+            <p>组 : 
+            <select id="deptGroup" class="required">
+            <option value="主机组" label="主机组"></option>
+            <option value="面板组" label="面板组"></option>
+            <option value="产品技术组" label="产品技术组"></option>
+            <option value="应用工程组" label="应用工程组"></option>
+            <option value="生技组" label="生技组"></option>
+            </select>
+            </p>
+            
+            
+            <p>姓名 : <input id="staffName" size="30" type="text" class="required"></p>
+            
+            
+            <p>性别 :
+            <select id="sex" class="required">
+            <option value="男" label="男"></option>
+            <option value="女" label="女"></option>
+            </select>
+            </p>
+            
+            
+            <p>会费 : <input id="deptFee" list="deptFeeInput" size="30" type="text" class="required"></p>
+            <datalist id="deptFeeInput">
+            </datalist>
+            <p>职位 : <input id="postName" size="30" type="text" class="required"></p>
+            <p>职级 : 
+            <select id="postLevel" class="required">
+            <option value="员工级" label="员工级"></option>
+            <option value="副组长级" label="副组长级"></option>
+            <option value="组长级" label="组长级"></option>
+            <option value="副课长级" label="副课长级"></option>
+            <option value="课长级" label="课长级"></option>
+            <option value="副经理级" label="副经理级"></option>
+            <option value="经理级" label="经理级"></option>
+            <option value="副总" label="副总"></option>
+            </select>
+            
+            </p>
+            
+            <p>学历 : 
+            <select id="edu" class="required">
+            <option value="本科" label="本科"></option>
+            <option value="大专" label="大专"></option>
+            <option value="硕士" label="硕士"></option>
+            <option value="博士" label="硕士"></option>
+            <option value="高中" label="硕士"></option>
+            <option value="初中" label="硕士"></option>
+            </select>
+            
+            </p>
+            
+            <p>入职日期 : <input id="entryDate" size="30" type="date"  class="required" ></p>
+            
+            <p>公司 : 
+            <select id="company" class="required">
+            <option value="弘讯科技" label="弘讯科技"></option>
+            <option value="奥图美克" label="奥图美克"></option>
+            <option value="软件公司" label="软件公司"></option>
+            </select>
+            </p>
+            <p>生日 : <input id="birthday" size="30" type="date" class="required"></p>
+            <p>加入工会 : 
+            
+            <select id="inUnion" class="required">
+            <option value="是" label="是"></option>
+            <option value="否" label="否"></option>
+            </select>
+            </p>
+            <p>电话号 : <input id="Phone" size="30" type="text" class="required"></p>
+            <p>专业 : <input id="major" size="30" type="text" class="required"></p>
+            <p>毕业学校 : <input id="school" size="30" type="text" class="required"></p>
+            <p>学位 : <input id="degree" size="30" type="text" class="required"></p>
+            <p>证书 : <input id="certificates" size="30" type="text" class="required"></p>   
+            <p>毕业时间 : <input id="gradTime" size="30" type="text" class="required"></p>
 
           
             <div style="padding:5px;text-align:center;">
@@ -71,17 +159,17 @@
 <script>
 
 ////定义显示人员信息数据参数结构-------------
-//function factDataPara(tableID,DBTable,staff_Sex) {
+//function factDataPara(tableID,DBTable,sex) {
 //    this.tableID = tableID;
 //    this.DBTable = DBTable;
-//    this.staff_Sex = staff_Sex;
+//    this.sex = sex;
 //}
 //检查输入信息-------------------
 function checkinput(Data) {
     if (Data.staff_ID=="") {
         alert('工号不能为空，请检查!');
         return false;
-    } else if (Data.staff_Name=="") {
+    } else if (Data.staffName=="") {
         alert('姓名不能为空，请检查!');
         return false;
     }
@@ -90,17 +178,68 @@ function checkinput(Data) {
 
 //定义添加发送数据结构---------------------
 
-function addDataInfo(DBTable,staff_ID,staff_Name,staff_Sex,staff_User){
+function addDataInfo(DBTable,staff_ID,dept,deptClass,deptGroup,staffName,sex,deptFee,postName,postLevel,edu,entryDate,company,birthday,inUnion,Phone,major,school,degree,certificates,gradTime){
 	this.DBTable=DBTable;
 	this.staff_ID=staff_ID;
-	this.staff_Name=staff_Name;
-	this.staff_Sex=staff_Sex;
-	this.staff_User=staff_User;
+	this.dept=dept;
+	this.deptClass=deptClass;
+	this.deptGroup=deptGroup;
+	this.staffName=staffName;
+	this.sex=sex;
+	this.deptFee=deptFee;
+	this.postName=postName;
+	this.postLevel=postLevel;
+	this.edu=edu;
+	this.company=company;
+	this.birthday=birthday;
+	this.entryDate=entryDate;
+	this.inUnion=inUnion;
+	this.Phone=Phone;
+	this.major=major;
+	this.school=school;
+	this.degree=degree;
+	this.certificates=certificates;
+	this.gradTime=gradTime;
 }
 
 
 //页面加载函数---------------
 $(document).ready( function () {
+	
+	
+	var format = function(time, format){
+	    var t = new Date(time);
+	    var tf = function(i){return (i < 10 ? '0' : '') + i};
+	    return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a){
+	        switch(a){
+	            case 'yyyy':
+	                return tf(t.getFullYear());
+	                break;
+	            case 'MM':
+	                return tf(t.getMonth() + 1);
+	                break;
+	            case 'mm':
+	                return tf(t.getMinutes());
+	                break;
+	            case 'dd':
+	                return tf(t.getDate());
+	                break;
+	            case 'HH':
+	                return tf(t.getHours());
+	                break;
+	            case 'ss':
+	                return tf(t.getSeconds());
+	                break;
+	        }
+	    })
+	}
+
+	 
+
+//	var date = format(new Date(), 'yyyy-MM-dd');
+	
+	
+//	DateFormat formator = new SimpleDateFormat("yyyy-MM-dd");
 		
 	var DataPara={
 			"tableID":"#staff_DB",
@@ -110,10 +249,14 @@ $(document).ready( function () {
 	
 	var columnsData=[
 		{ data: 'DBID' ,"visible": false},
-        { data: 'staff_ID' },
-        { data: 'staff_Name'},
-        { data: 'staff_Sex'},
-        { data: 'staff_User'}
+        { data: 'dept' },
+        { data: 'deptClass' },
+        { data: 'deptGroup' },
+        { data: 'staffName' },
+        { data: 'sex'},
+        { data: 'postName'},
+        { data: 'postLevel'},
+        { data: 'Phone'}
     ];
 
 //	alert(JSON.stringify(DataPara));
@@ -156,9 +299,25 @@ $('#Upd').click(function() {
         $('#UpdDoButton').show();
         
         $('#staff_ID').val(dataSelect.staff_ID);
-        $('#staff_Name').val(dataSelect.staff_Name);
-        $('#staff_Sex').val(dataSelect.staff_Sex);
-        $('#staff_User').val(dataSelect.staff_User);
+        $('#dept').val(dataSelect.dept);
+        $('#deptClass').val(dataSelect.deptClass);
+        $('#deptGroup').val(dataSelect.deptGroup);
+        $('#staffName').val(dataSelect.staffName);
+        $('#sex').val(dataSelect.sex);
+        $('#deptFee').val(dataSelect.deptFee);
+        $('#postName').val(dataSelect.postName);
+        $('#postLevel').val(dataSelect.postLevel);
+        $('#edu').val(dataSelect.edu);
+        $('#entryDate').val(moment(dataSelect.entryDate).format("YYYY-MM-DD"));
+        $('#company').val(dataSelect.company);
+        $('#birthday').val(moment(dataSelect.birthday).format("YYYY-MM-DD"));
+        $('#inUnion').val(dataSelect.inUnion);
+        $('#Phone').val(dataSelect.Phone);
+        $('#major').val(dataSelect.major);
+        $('#school').val(dataSelect.school);
+        $('#degree').val(dataSelect.degree);
+        $('#certificates').val(dataSelect.certificates);
+        $('#gradTime').val(dataSelect.gradTime);
         
     }
 });
@@ -192,12 +351,29 @@ $('#Del').click(function() {
 //form框添加按钮----------
 $('#AddDoButton').click(function() {
 	var DBTable="OA_staffs";
-	var staff_ID=$("#staff_ID").val();
-	var staff_Name=$("#staff_Name").val();
-	var staff_Sex=$("#staff_Sex").val();
-	var staff_User=$("#staff_User").val();
 	
-	var DBData=new addDataInfo(DBTable,staff_ID,staff_Name,staff_Sex,staff_User);
+	var staff_ID=$('#staff_ID').val();
+	var dept= $('#dept').val();
+	var deptClass= $('#deptClass').val();
+	var deptGroup= $('#deptGroup').val();
+	var staffName=$('#staffName').val();
+	var sex= $('#sex').val();
+	var deptFee= $('#deptFee').val();
+	var postName= $('#postName').val();
+	var postLevel= $('#postLevel').val();
+	var edu= $('#edu').val();
+	var entryDate= $('#entryDate').val();
+	var company= $('#company').val();
+	var birthday= $('#birthday').val();
+	var inUnion=$('#inUnion').val();
+	var Phone= $('#Phone').val();
+	var major= $('#major').val();
+	var school= $('#school').val();
+	var degree= $('#degree').val();
+	var certificates= $('#certificates').val();
+	var gradTime= $('#gradTime').val();
+	
+	var DBData=new addDataInfo(DBTable,staff_ID,dept,deptClass,deptGroup,staffName,sex,deptFee,postName,postLevel,edu,entryDate,company,birthday,inUnion,Phone,major,school,degree,certificates,gradTime);
 	
 	
 	addDBData(DBData);
@@ -215,21 +391,37 @@ $('#UpdDoButton').click(function() {
  //   var UID = table.row('.selected').data().UID;
 	
 //	var staff_ID=$('#staff_ID').val();
-//    var staff_Name=$('#staff_Name').val();
-//    var staff_Sex=$('#staff_Sex').val();
+//    var staffName=$('#staffName').val();
+//    var sex=$('#sex').val();
 	
 	var updInput={
-			staff_ID:$('#staff_ID').val(),
-			staff_Name:$('#staff_Name').val(),
-			staff_Sex:$('#staff_Sex').val(),
-			staff_User:$('#staff_User').val()	
+			 staff_ID:$('#staff_ID').val(),
+			 dept: $('#dept').val(),
+			 deptClass: $('#deptClass').val(),
+			 deptGroup: $('#deptGroup').val(),
+			 staffName:$('#staffName').val(),
+			 sex: $('#sex').val(),
+			 deptFee: $('#deptFee').val(),
+			 postName: $('#postName').val(),
+			 postLevel: $('#postLevel').val(),
+			 edu: $('#edu').val(),
+			 entryDate: $('#entryDate').val(),
+			 company: $('#company').val(),
+			 birthday: $('#birthday').val(),
+			 inUnion:$('#inUnion').val(),
+			 Phone: $('#Phone').val(),
+			 major: $('#major').val(),
+			 school: $('#school').val(),
+			 degree: $('#degree').val(),
+			 certificates: $('#certificates').val(),
+			 gradTime: $('#gradTime').val()	
 	}
 
    
     var updJSON={
 			'DBTable':"OA_staffs",
 			'DBID':table.row('.selected').data().DBID
-    	};
+    	}
 	var changed=0;
 
     for (var key in updInput) {   	

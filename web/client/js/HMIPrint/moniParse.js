@@ -1,9 +1,10 @@
 /*jshint esversion: 6 */
 /*Note：
  * 对象的属性，假使未按照匈牙利命名规则的，则表示此项属性从DB获取
+ * 对象的所有属性可以在构造函数内找到，假使有缺漏，请补充并带上注释
  **/
 
-// Chenly 2018-09-29 监测数据信息原型
+// 监测数据信息原型
 function MoniObj() {
     this.nHeadSize = 0;
     this.nBlockSize = 0;
@@ -28,8 +29,15 @@ function MoniObj() {
         Reserved3: "0",
         Reserved4: "0"
     };
-
     this.RelativePath = "unknow"; // 获取当前文件的相对路径，基于安全策略，无法获取绝对路径
+
+    // 分页显示后，用于excel汇出功能
+    this.trBuff = ""; // 用以缓存所有tr元素.html()组成集合
+    this.tdBuff = ""; // 用以缓存所有td元素.html()组成集合
+
+    // DataTable插件使用
+    this.aTheadElem = ""; // columns属性对应的值
+    this.aTbElem = ""; // data属性对应的值
 }
 
 function MoniInfoSubObj(nSerial, sDDKey, nSize, Prec, nDispPrec, fValue) {
@@ -42,20 +50,15 @@ function MoniInfoSubObj(nSerial, sDDKey, nSize, Prec, nDispPrec, fValue) {
     this.fValue = 0;
 }
 
-var g_CdbFile;
-var g_IniFile;
-var g_SysInfoFile; // 机型区分的file标识
-
-var g_nCdbSize; // 用于缓存cdb的大小
-
-var g_nCdbInfoRow; // Chenly 2018-09-30 监测cdb，详细监测信息的条数
-
-var g_nCdbStart = 0; // 遍历cdb的start_inx
-var g_nCdbEnd = 0; // 遍历cdb的end_inx
-
-var g_aMoniCdb; // 最终会被splice清空
-
-var g_oMoni; // 用以构造moni数据
+var g_CdbFile,
+    g_IniFile,
+    g_SysInfoFile, // 机型区分的file标识
+    g_nCdbSize, // 用于缓存cdb的大小
+    g_nCdbInfoRow, // 监测cdb，详细监测信息的条数
+    g_nCdbStart = 0, // 遍历cdb的start_inx
+    g_nCdbEnd = 0, // 遍历cdb的end_inx
+    g_aMoniCdb, // 最终会被splice清空
+    g_oMoni; // 用以构造moni数据
 
 /* 无用的信息列表 */
 var aUseLess = [
@@ -80,6 +83,7 @@ function fnInitVariate() {
         // Init Obj
         g_oMoni = new MoniObj();
         g_oMoni.sFolderName = "moni";
+
         g_aMoniCdb = [];
 
         // 清空全局的file标识
@@ -103,7 +107,7 @@ function fnTrvlFolder() {
         // 获取当前文件的相对路径，基于安全策略，无法获取绝对路径
         g_oMoni.RelativePath = upFolder[0].webkitRelativePath;
 
-        // 分配ini和cdb文件变量
+        // 分配ini和cdb文件标识
         for (var i = 0, len = upFolder.length; i < len; ++i) {
             nFileSizes += Math.round(upFolder[i].size / 1024 / 1024);
 
@@ -117,8 +121,7 @@ function fnTrvlFolder() {
             }
         }
 
-        /* 假使文件夹超过预期大小，则直接return */
-        /* 假设cdb或ini文件丢失，则直接return */
+        /* 假使文件夹超过预期大小、cdb或ini文件丢失则直接return */
         if (nFileSizes > 2) {
             alert('所选文件夹的大小 > 2MB，请确认所选文件夹是否有误');
             return -1;
@@ -151,9 +154,6 @@ function fnTrvlFolder() {
                 alert(err);
             });
 
-        // console.log(g_aMoniCdb);
-        // console.log(g_oMoni);
-
         resolve("fnTrvlFolder Done");
     });
 }
@@ -170,18 +170,17 @@ function fnEnd() {
 /*===========================================================================+
 |   function      Sub                                                        |
 +===========================================================================*/
-// Chenly 2018-09-29 解析cdb文件内容
+// 解析cdb文件内容
 function fnCreMoniCdbArray() {
     return new Promise(function(resolve, reject) {
         var reader = new FileReader();
 
-        reader.readAsArrayBuffer(g_CdbFile); // Chenly 2018-09-29 以ArrayBuffer的形式读取
+        reader.readAsArrayBuffer(g_CdbFile); // 以ArrayBuffer的形式读取
         reader.onload = function() {
             fnBuf2HexCsz(this.result, g_aMoniCdb);
 
             resolve("fnCreMoniCdbArray Done");
         };
-        // console.log(g_aMoniCdb);
     });
 }
 
@@ -189,8 +188,6 @@ function fnCreMoniCdbArray() {
  * @Author    Muc
  * @DateTime  2018-10-26
  * @Describle [将ini里面的所有有用的信息写入到obj内，例：DDKey, 名字，数据长度，精度，格式化精度，可见性]
- * @Warning   [Warning]
- * @return    {[type]}    [description]
  */
 function fnCreMoniObj() {
     return new Promise(function(resolve, reject) {
@@ -198,53 +195,53 @@ function fnCreMoniObj() {
         reader.readAsText(g_IniFile);
 
         reader.onload = function() {
-            var aDetial;
-            var bSubInfoFlag = false; // Chenly 2018-09-28 1 - 开始处理监测SubInfo信息
-            var aMoniIniSpt = this.result.split("\n"); // Chenly 2018-09-28 将读取到的字符串按换行符转化为数组
-            var reMoniSubInfoSep = /[=, ]+/;
-            var aMoniSubInfoSt = [];
-            var nSizeSum = 0;
-            // Chenly 2018-09-28 遍历iniData生成的数组，获得Header和BlockSize并将数组指针重新指向监测信息后继续遍历过程
+            var aDetial,
+                bSubInfoFlag = false, // 1 - 开始处理监测SubInfo信息
+                aMoniIniSpt = this.result.split("\n"), // 将读取到的字符串按换行符转化为数组
+                reMoniSubInfoSep = /[=, ]+/,
+                aMoniSubInfoSt = [],
+                nSizeSum = 0;
+            // 遍历iniData生成的数组，获得Header和BlockSize并将数组指针重新指向监测信息后继续遍历过程
             // 注：期间parseInt是为了将代表数字字符变为数字类型保存，便于读取
-            for (var i = 0, len = aMoniIniSpt.length; i < len; ++i) {
+            for (let i = 0, len = aMoniIniSpt.length; i < len; ++i) {
                 if (bSubInfoFlag == false) {
                     if (aMoniIniSpt[i].indexOf("Header") !== -1) {
-                        var sHeadSize = aMoniIniSpt[i].match(/\d+/)[0];
+                        let sHeadSize = aMoniIniSpt[i].match(/\d+/)[0];
                         g_oMoni.nHeadSize = parseInt(sHeadSize, 10);
                     } else if (aMoniIniSpt[i].indexOf("BlockSize") !== -1) {
-                        var sBlockSize = aMoniIniSpt[i].match(/\d+/)[0];
+                        let sBlockSize = aMoniIniSpt[i].match(/\d+/)[0];
                         g_oMoni.nBlockSize = parseInt(sBlockSize, 10);
                     } else if (aMoniIniSpt[i].indexOf(",") !== -1) {
-                        i -= 1; // Chenly 2018-09-28 -1是为了将数组指针重新指向监测的SubInfos信息
+                        i -= 1; // -1是为了将数组指针重新指向监测的SubInfos信息
                         bSubInfoFlag = true;
                     }
-                } else { // Chenly 2018-09-28 此处获取监测的SubInfo，每行以数组的形式存入
+                } else { // 此处获取监测的SubInfo，每行以数组的形式存入
                     if (aMoniIniSpt[i].match(reMoniSubInfoSep)) {
                         aDetial = aMoniIniSpt[i].split(reMoniSubInfoSep).map(fnStr2DecNum);
-                        var oTmp = new MoniInfoSubObj(...aDetial);
+                        let oTmp = new MoniInfoSubObj(...aDetial);
                         aMoniSubInfoSt.push(oTmp);
                     } else {
-                        break; // Chenly 2018-09-28 防止写入空内容（这里指EOF的‘\0'）
+                        break; // 防止写入空内容（这里指EOF的‘\0'）
                     }
                 }
             }
 
-            // Chenly 2018-10-10 获取ini内 【Parameter】参数的总数据长度
-            for (var j = 0, nlen = aMoniSubInfoSt.length; j < nlen; ++j) {
+            // 获取ini内 【Parameter】参数的总数据长度
+            for (let j = 0, nlen = aMoniSubInfoSt.length; j < nlen; ++j) {
                 nSizeSum += aMoniSubInfoSt[j].nSize;
             }
 
-            // Chenly 2018-10-10 blocksize与ini内【Parameter】参数的总数据长度不一致时，补齐空缺的内容
+            // blocksize与ini内【Parameter】参数的总数据长度不一致时，补齐空缺的内容
             if (g_oMoni.nBlockSize > aMoniSubInfoSt.length) {
-                var nPadBytes = g_oMoni.nBlockSize - nSizeSum;
-                var g_oIniLostData = new MoniInfoSubObj(aMoniSubInfoSt.length + 1, "C_MEMERY_PAD", nPadBytes, 0, 0, 0, 0);
+                let nPadBytes = g_oMoni.nBlockSize - nSizeSum;
+                let g_oIniLostData = new MoniInfoSubObj(aMoniSubInfoSt.length + 1, "C_MEMERY_PAD", nPadBytes, 0, 0, 0, 0);
                 aMoniSubInfoSt.push(g_oIniLostData);
             }
 
-            // Chenly 2018-09-29 有一条详细监测数据就push一笔
+            // 有一条详细监测数据就push一笔
             g_nCdbInfoRow = (g_nCdbSize - g_oMoni.nHeadSize) / g_oMoni.nBlockSize;
-            for (var nInfoCnt = 0; nInfoCnt < g_nCdbInfoRow; ++nInfoCnt) {
-                var aTmp = fnDeepClone(aMoniSubInfoSt); // Chenly 2018-10-08 必须深拷贝，防止引用重复
+            for (let nInfoCnt = 0; nInfoCnt < g_nCdbInfoRow; ++nInfoCnt) {
+                let aTmp = fnDeepClone(aMoniSubInfoSt); // 必须深拷贝，防止引用重复
                 g_oMoni.aDataInfo.push(aTmp);
             }
 
@@ -258,8 +255,6 @@ function fnCreMoniObj() {
  * @Author    Muc
  * @DateTime  2018-09-30
  * @Describle [设置g_oMoni.aDataInfo subInfo的原始资料值（无精度处理）]
- * @details
- * @return    {[type]}    [description]
  */
 function fnSetObjOriginVal(objArg) {
     return new Promise(function(resolve, reject) {
@@ -267,22 +262,21 @@ function fnSetObjOriginVal(objArg) {
         g_nCdbStart = objArg.nHeadSize;
 
         /* 判断数据是否有效 */
-        var sHeader = parseInt(g_aMoniCdb.slice(0, g_nCdbStart));
+        let sHeader = parseInt(g_aMoniCdb.slice(0, g_nCdbStart));
 
         if (!sHeader) {
             resolve("fnSetObjOriginVal Break");
         }
 
-        // Chenly 2018-09-30 提取cdb中的监测信息的值并写入到Obj内
-        for (var i = 0, nInfoLen = aDataInfo.length; i < nInfoLen; ++i) {
-            for (var j = 0, nSubInfoLen = aDataInfo[i].length; j < nSubInfoLen; ++j) {
-                var nSubInfoSize = aDataInfo[i][j].nSize;
+        // 提取cdb中的监测信息的值并写入到Obj内
+        for (let i = 0, nInfoLen = aDataInfo.length; i < nInfoLen; ++i) {
+            for (let j = 0, nSubInfoLen = aDataInfo[i].length; j < nSubInfoLen; ++j) {
+                let nSubInfoSize = aDataInfo[i][j].nSize;
                 // 无用的信息无需记录值
-                var valTmp = fnTrvlMoniCdbData(g_aMoniCdb, g_nCdbStart, g_nCdbEnd, nSubInfoSize);
+                let valTmp = fnTrvlMoniCdbData(g_aMoniCdb, g_nCdbStart, g_nCdbEnd, nSubInfoSize);
                 if (aUseLess.indexOf(aDataInfo[i][j].sDDKey) === -1)
                     aDataInfo[i][j].fValue = valTmp;
             }
-
         }
 
         resolve("fnSetObjOriginVal Done");
@@ -290,69 +284,57 @@ function fnSetObjOriginVal(objArg) {
 
 }
 
+/*===========================================================================+
+|   function      showParsedData                                             |
++===========================================================================*/
 /**
  * @Author    Muc
- * @DateTime  2018-10-29
- * @Describle [显示先前的数据，防止页面切换导致先前的obj对象数据全部丢失]
- * @Warning   [先前存下来的只有5000笔数据，故此处无需再做offset特殊处理]
- * @return    {[type]}    [description]
+ * @DateTime  2018-11-09
+ * @Describle [展示数据]
  */
-function fnPreObjShow(objArg) {
-    var aDataInfo = objArg.aDataInfo;
-    var nRecSum = aDataInfo.length; // 监测记录的条数
-    var nTitSum = aDataInfo[0].length; // 所有标题的数据结构与值完全一致，故判断任意一行即可得知
-    var tdBuff = "";
-    var trBuff = "";
-    var tdPreStrP1 = "mso-number-format:'\@';>"; // 强制转化为文本格式，防止数值为0的数据精度丢失，例：0.00 错误的 => 0
-    var tdPreStr = "<td style=" + tdPreStrP1;
-
-    for (var nRecx = 0; nRecx < nRecSum; ++nRecx) {
-        tdBuff += "<tr>";
-        for (var nTitx = 0; nTitx < nTitSum; ++nTitx) {
-            /* 显示监测信息的标题文字内容，判断===0即显示一行即可 */
-            if (nRecx === 0) {
-                if (objArg.aDataInfo[nRecx][nTitx].Visb > 0) {
-                    trBuff += "<th>" + aDataInfo[nRecx][nTitx].CN + "</th>";
-                }
-            }
-
-            /* 显示监测信息的详细数值 */
-            if (aDataInfo[nRecx][nTitx].Visb > 0) {
-                tdBuff += tdPreStr + aDataInfo[nRecx][nTitx].fValue + "</td>";
-            }
-        }
-        tdBuff += "</tr>";
-    }
-
-    /* cell append */
-    $("#monidata thead tr").html(trBuff);
-    $("#monidata tbody").html(tdBuff); // Chenly 2018-11-05 移到外面，效率提高80%
-
-}
-
-//------展示数据功能---------------------
 function fnShowMoniData(objArg) {
     return new Promise(function(resolve, reject) {
-        // Chenly 2018-10-15 show前先清空，防止重复读取造成显示异常
-        $("#monidata thead tr").empty();
-        $("#monidata tbody").empty();
+
+        // show前先清空，防止重复读取造成显示异常
+        // $("#monidata thead tr").empty();
+        // $("#monidata tbody").empty();
 
         CNtranslator(objArg.aSysInfo);
         resolve("fnShowMoniData Done");
     });
 }
 
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-09
+ * @Describle [通过解析成功后的td\tr字符串数据，直接展示先前的数据]
+ */
+function fnShowPreMoniData(objArg) {
+    let trBuff = objArg.trBuff,
+        // tdBuff = objArg.tdBuff,
+        aTheadElem = objArg.aTheadElem,
+        aTbElem = objArg.aTbElem;
+
+    /* cell append */
+    $("#dataThTr").html(trBuff);
+    let table = crtDBTableObj("#monidata", aTheadElem);
+    /* 添加数据并绘制表格 */
+    table.clear()
+        .rows.add(aTbElem)
+        .draw(false);
+}
+
 /*===========================================================================+
 |   function      ajax                                                       |
 +===========================================================================*/
-// Chenly 2018-10-08 从数据库获取CN,Visible等信；为防纰漏，故函数名不再做修改
+// 从数据库获取CN,Visible等信；为防纰漏，故函数名不再做修改
 // 只传必要的数据（g_Obj因数据过大，必须特殊处理，不能直接当作ajax形参传入）
 function CNtranslator(objSysArg) {
     $("#PMsg").text("正在获取/解析数据文件，请稍后 . . .");
     // console.time("timer");
     $.ajax({
         method: 'get',
-        url: "/app/HMIPrint/CNtranslator", // Chenly 2018-10-15 发送请求的地址，注：此文件类型为.{m}.js
+        url: "/app/HMIPrint/CNtranslator", // 发送请求的地址，注：此文件类型为.{m}.js
         data: { objSysArg: objSysArg },
 
         success: function(data) {
@@ -363,9 +345,8 @@ function CNtranslator(objSysArg) {
             var nTitSum = aDataInfo[0].length; // 所有标题的数据结构与值完全一致，故判断任意一行即可得知
             var trBuff = "";
             var tdBuff = "";
-            var tdPreStrP1 = "mso-number-format:'\@';>"; // 强制转化为文本格式，防止数值为0的数据精度丢失，例：0.00 错误的 => 0
-            var tdPreStr = "<td style=" + tdPreStrP1;
 
+            var tdPreStr = "<td>";
             // 从biz获取的data,row内的Inx代表的内容
             var nArrInx = {
                 DDKey: 0,
@@ -377,11 +358,11 @@ function CNtranslator(objSysArg) {
             // 当前HMI至多存储5000笔数据，生成的cdb文件里也只有5000笔，此处为预留
             var nRecOffset = 0;
 
-            for (var nRecx = nRecOffset; nRecx < nRecSum; ++nRecx) {
+            for (let nRecx = nRecOffset; nRecx < nRecSum; ++nRecx) {
                 tdBuff += "<tr>"; // 每一条完整的监测记录加个换行
-                for (var nTitx = 0; nTitx < nTitSum; ++nTitx) {
+                for (let nTitx = 0; nTitx < nTitSum; ++nTitx) {
                     /* 从biz获取的满足条件的data.rows [DDKey,CN,Visb,Preci] */
-                    for (var nVisbInfoInx in data.rows) {
+                    for (let nVisbInfoInx in data.rows) {
                         if ((aDataInfo[nRecx][nTitx].sDDKey == data.rows[nVisbInfoInx][nArrInx.DDKey]) &&
                             (aUseLess.indexOf(aDataInfo[nRecx][nTitx].sDDKey) === -1)) { // 只记录从DB获取的有用的信息
 
@@ -389,13 +370,13 @@ function CNtranslator(objSysArg) {
                             if (aDataInfo[nRecx][nTitx].Prec !== data.rows[nVisbInfoInx][nArrInx.Prec]) {
                                 aDataInfo[nRecx][nTitx].Prec = data.rows[nVisbInfoInx][nArrInx.Prec];
                             }
-                            var nPrecTmp = aDataInfo[nRecx][nTitx].Prec;
-                            var fValTmp = aDataInfo[nRecx][nTitx].fValue;
-                            // Chenly 2018-09-30 精度=0的数据，不做精度处理，节省开销，
+                            let nPrecTmp = aDataInfo[nRecx][nTitx].Prec;
+                            let fValTmp = aDataInfo[nRecx][nTitx].fValue;
+                            // 精度=0的数据，不做精度处理，节省开销，
                             if (nPrecTmp > 0) {
                                 fValTmp /= Math.pow(10, nPrecTmp);
                                 aDataInfo[nRecx][nTitx].fValue = fValTmp.toFixed(nPrecTmp); // 保留精度对应的小数位，针对原工具的优化
-                            } else if (nPrecTmp < 0) { // Chenly 2018-09-30 精度<0的数据，不做精度处理，节省开销，
+                            } else if (nPrecTmp < 0) { // 精度<0的数据，不做精度处理，节省开销，
                                 aDataInfo[nRecx][nTitx].fValue *= (-nPrecTmp); // 精度为负N则表示值需要扩大10*N倍，针对原工具的补充
                             }
 
@@ -409,7 +390,7 @@ function CNtranslator(objSysArg) {
                             // delete aDataInfo[nRecx][nTitx].Prec;
                             // delete aDataInfo[nRecx][nTitx].nDispPrec;
 
-                            /* 显示监测信息的标题文字内容，所有title从第一条记录即可获取完全 */
+                            /* ========== 显示监测信息的标题文字内容，所有title从第一条记录即可获取完全 ========== */
                             if (nRecx === nRecOffset) {
                                 if (aDataInfo[nRecx][nTitx].Visb > 0) {
                                     aDataInfo[nRecx][nTitx].CN = data.rows[nVisbInfoInx][nArrInx.CN];
@@ -419,33 +400,68 @@ function CNtranslator(objSysArg) {
                             }
                         }
                     }
-
-                    /* 显示监测信息的详细数值 PART1 */
+                    /* ========== 显示监测信息的详细数值 PART1 ========== */
                     if (aDataInfo[nRecx][nTitx].Visb > 0) {
                         tdBuff += tdPreStr + aDataInfo[nRecx][nTitx].fValue + "</td>";
                     }
 
                 }
-                /* 显示监测信息的详细数值 PART2 ，这里的tr为了换行*/
+                /* ========== 显示监测信息的详细数值 PART2 ，这里的tr为了换行 ========== */
                 tdBuff += "</tr>";
             }
 
             /* cell append */
-            $("#monidata thead tr").html(trBuff); // append = > html，效率再提高约25%
-            $("#monidata tbody").html(tdBuff); // 将$操作移至外面，效率提高约85%
+            $("#monidata thead tr").html(trBuff); // append = > html
+            let aTbElem = [], // 替代DataTable内的data
+                oTbData,
+                aTheadElem = []; // 替代DataTable内的columns
 
-            fnSetData2IndexedDB("MucDB", "HMIPrint", "moni", g_oMoni); // 最好每次都记录，为了以后的功能拓展
-            console.log("asd");
+            for (let nRecx2 = 0; nRecx2 < nRecSum; ++nRecx2) {
+                // init obj
+                oTbData = {};
+                for (let nTitx2 = 0; nTitx2 < nTitSum; ++nTitx2) {
+                    if (aDataInfo[nRecx2][nTitx2].Visb) {
+                        oTbData[aDataInfo[nRecx2][nTitx2].sDDKey] = aDataInfo[nRecx2][nTitx2].fValue;
 
-            $("#PMsg").text("");
-            // console.timeEnd("CNtranslator");
+                        if (nRecx2 === 0) {
+                            // 这里必须为obj，为了给DataTable传入参数
+                            let oThead = { data: aDataInfo[nRecx2][nTitx2].sDDKey };
+                            aTheadElem.push(oThead);
+                        }
+                    }
+                }
+                aTbElem.push(oTbData);
+            }
+
+            /* ========== 添加数据并绘制表格 ========== */
+            let table = crtDBTableObj("#monidata", aTheadElem);
+            table.clear()
+                .rows.add(aTbElem)
+                .draw(false);
+
+            /* ========== 将成功解析的数据们写入到indexedDB ========== */
+            let mucDB = "MucDB",
+                store = "HMIPrint",
+                pageID = "moni",
+                sParseFlag = "MoniParseStat", // 假使当前页面解析过，则为true
+                obj = g_oMoni;
+
+            obj.trBuff = trBuff;
+            obj.tdBuff = tdBuff;
+            obj.aTheadElem = aTheadElem;
+            obj.aTbElem = aTbElem;
+            sessionStorage.setItem(sParseFlag, "true");
+            fnSetData2IndexedDB(mucDB, store, pageID, obj); // 最好每次都记录，为了以后的功能拓展
+
+            /* 为anchor绑定download连接 */
+            // fnTableBuffExport(trBuff, tdBuff, "#dlink", pageID, '.xls');
         },
         error: function() {
-            $("#PMsg").text("");
-            alert('远程服务器繁忙，请刷新一下页面试试! #moniParse.js');
+            alert('远程服务器繁忙，请重新刷新一下页面再试试! #moniParse.js');
         },
         complete: function() {
-            // console.timeEnd("timer");
+            /* 清空提示字串内容 */
+            $("#PMsg").text("");
         }
     });
 
@@ -455,11 +471,11 @@ function CNtranslator(objSysArg) {
 |   function      cycle                                                      |
 +===========================================================================*/
 function fnTrvlMoniCdbData(aCdbData, nStart, nEnd, nSepSize) {
-    var aTmp = [];
+    let aTmp = [];
 
     nEnd = (nStart + nSepSize) - 1;
     aTmp = aCdbData.slice(nStart, nEnd + 1);
-    aTmp.reverse(); // Chenly 2018-10-15 Little-Endian
+    aTmp.reverse(); // Little-Endian
     g_nCdbStart = nEnd + 1;
     g_nCdbEnd = (g_nCdbStart + nSepSize) - 1;
 
@@ -468,23 +484,23 @@ function fnTrvlMoniCdbData(aCdbData, nStart, nEnd, nSepSize) {
 
 
 function fnCszToHex(csz) {
-    var sTmp = csz.join("");
+    let sTmp = csz.join("");
     return parseInt(sTmp, 16);
 }
 
 function fnBuf2HexCsz(aBuf, aHex) {
-    var bufView = new Uint8Array(aBuf); // 8个Bit === 1Byte
+    let bufView = new Uint8Array(aBuf); // 8个Bit === 1Byte
     // console.log(bufView);
-    for (var i = 0, len = bufView.length; i < len; ++i) {
+    for (let i = 0, len = bufView.length; i < len; ++i) {
         aHex.push(fnByte2Str(bufView[i]));
     }
 }
 
-// Chenly 2018-09-29 将一个Byte数据转化为Hex状态的Str
+// 将一个Byte数据转化为Hex状态的Str
 function fnByte2Str(byte) {
-    var str = "";
+    let str = "";
 
-    var tmp = byte.toString(16);
+    let tmp = byte.toString(16);
     if (tmp.length == 1) {
         tmp = "0" + tmp;
     }
@@ -492,9 +508,9 @@ function fnByte2Str(byte) {
     return str;
 }
 
-// Chenly 2018-09-30 str代表的是十进制数字？return 数字 ： return str
+// str代表的是十进制数字？return 数字 ： return str
 function fnStr2DecNum(str) {
-    var tmp = parseFloat(str);
+    let tmp = parseFloat(str);
     if (!isNaN(tmp))
         return tmp;
     else
@@ -511,10 +527,10 @@ function fnStr2DecNum(str) {
  * @return    {[type]}             [description]
  */
 function fnPromptMsg() {
-    // Chenly 2018-09-27 判断浏览器是否支持FileReader接口
+    // 判断浏览器是否支持FileReader接口
     if (typeof FileReader == 'undefined') {
-        result.innerHTML = "<p>你的浏览器不支持FileReader接口，请升级或更换浏览器版本！</p>";
-        //使选择控件不可操作
+        result.innerHTML = "<p>你的浏览器不支持FileReader接口，请使用最新的Chrome浏览器！</p>";
+        // 使选择控件不可操作
         file.setAttribute("disabled", "disabled");
     } else
         return "Continue";
@@ -522,7 +538,7 @@ function fnPromptMsg() {
 }
 
 function fnDeepClone(obj) {
-    var result = typeof obj.splice === 'function' ? [] : {},
+    let result = typeof obj.splice === 'function' ? [] : {},
         key;
 
     if (obj && typeof obj === 'object') {
@@ -538,4 +554,63 @@ function fnDeepClone(obj) {
     }
 
     return obj;
+}
+
+/*===========================================================================+
+|   function     return a  created obj                                       |
++===========================================================================*/
+function crtDBTableObj(tableID, columns) {
+    return $(tableID).DataTable({
+        /* ========== 数据显示 ========== */
+        "aLengthMenu": [
+            [15, 50, 200, 500, -1],
+            [15, 50, 200, 500, "All"]
+        ],
+        dataSrc: "",
+        // data: aTbElem,
+        //使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性
+        //data 这里是固定不变的，name，position，salary，office 为你数据里对应的属性
+        columns: columns,
+
+        /* ========== 显示相关 ========== */
+        "bDestroy": true, // 下次载入前销毁
+        "filter": false, //搜索框 // 数据呈现这边意义不大，故mark
+        // "sPaginationType": "full_numbers", // 首页尾页
+        "bDeferRender": true, // 延迟渲染数据
+        "bProcessing": true,
+        //默认的排序方式，第1列 （开模序号），升序排列
+        "aaSorting": [
+            [0, "asc"]
+        ],
+
+        "oLanguage": {
+            "url": "dataTables.german.lang",
+            "sProcessing": "正在加载数据中，请稍后 ...",
+            // "sProcessing": "<img src='/images/gif/loading4.gif'>", // mark，显示效果需通过css来处理
+            "sLengthMenu": "显示 _MENU_ 项结果",
+            "sZeroRecords": "没有匹配结果",
+            "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+            "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+            "sInfoPostFix": "",
+            "sSearch": "搜索:",
+            "sUrl": "",
+            "sEmptyTable": "表中数据为空",
+            "sLoadingRecords": "载入中...",
+            "sInfoThousands": ",",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "上页",
+                "sNext": "下页",
+                "sLast": "末页"
+            },
+            "oAria": {
+                "sSortAscending": ": 以升序排列此列",
+                "sSortDescending": ": 以降序排列此列"
+            }
+        }
+
+        /* ========== 数据处理相关 ==========  */
+        /* ========== 新方法 ========== */
+    });
 }

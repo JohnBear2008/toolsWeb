@@ -20,12 +20,11 @@
 function fnBindRecTrigger(sRecFlag, recBoxID, on_txt, off_txt) {
     // 获取sessionStore内的“记录”状态
     let sRecStat = sessionStorage.getItem(sRecFlag); // String类型
-
     /* 自动记录 */
     $(recBoxID).lc_switch(on_txt, off_txt);
+
     if (sRecStat == "true") {
         $(recBoxID).trigger("click"); // 模拟click
-        // console.log("trigger");
     }
     // triggered each time a field changes status
     $('body').delegate('.lcs_check', 'lcs-statuschange', function() {
@@ -43,30 +42,36 @@ function fnBindRecTrigger(sRecFlag, recBoxID, on_txt, off_txt) {
     });
 }
 
-
-function fnRemitExcel(tableID, excelName) {
-    $(tableID).tableExport({
-        fileName: excelName,
-        worksheetName: excelName,
-        type: 'excel',
-        // mark，为了提升汇出效率
-        // excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right']
-    });
-}
+// Chenly 2018-11-09 因第三方excel插件效率低下，故不再使用
+// function fnRemitExcel(tableID, excelName) {
+//     $(tableID).tableExport({
+//         fileName: excelName,
+//         worksheetName: excelName,
+//         type: 'excel',
+// mark，为了提升汇出效率
+// excelstyles: ['border-bottom', 'border-top', 'border-left', 'border-right']
+//     });
+// }
 
 /**
  * @Author    Muc
  * @DateTime  2018-11-07
- * @Describle [汇出html内的table内容]
+ * @Describle [为anchor绑定download属性，用于汇出excel]
+ * @Details [download的值通过元素outerHTML获取]
  */
 function fnTableDataExport(tableIDArg, anchorIDArg, fileNameArg, fileTypeArg) {
     var crvtType = "";
     if (fileTypeArg === ".xls") {
         crvtType = "application/vnd.ms-excel";
     }
-
     // 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
     var html = "<html><head><meta charset='utf-8' /></head><body>" + $(tableIDArg).prop("outerHTML") + "</body></html>";
+    let tdPreStrP1 = "mso-number-format:'\@';>"; // 强制转化为文本格式，防止数值为0的数据精度丢失，例：0.00 错误的 => 0
+    let tdPreStr = "<td style=" + tdPreStrP1;
+    console.log($(tableIDArg).prop("outerHTML"));
+    // 所有td带上format-style
+    html = html.replace(/<td>/g, tdPreStr);
+
     // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
     var blob = new Blob([html], { type: crvtType });
     var $anchor = $(anchorIDArg)[0];
@@ -76,6 +81,35 @@ function fnTableDataExport(tableIDArg, anchorIDArg, fileNameArg, fileTypeArg) {
     $anchor.download = fileNameArg + fileTypeArg;
 }
 
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-07
+ * @Describle [为anchor绑定download属性，用于汇出excel]
+ * @Details [download的值从strBuff/IndexedDB获取]
+ */
+function fnTableBuffExport(trBuffArg, tdBuffArg, anchorIDArg, fileNameArg, fileTypeArg) {
+    var crvtType = "";
+    if (fileTypeArg === ".xls") {
+        crvtType = "application/vnd.ms-excel";
+    }
+    let tdPreStrP1 = "mso-number-format:'\@';>"; // 强制转化为文本格式，防止数值为0的数据精度丢失，例：0.00 错误的 => 0
+    let tdPreStr = "<td style=" + tdPreStrP1;
+
+    // border是为了让汇出的excel能有框格
+    var tableHtml = "<table border='1'><thead><tr>" + trBuffArg + "</tr></thead>" + "<tbody>" + tdBuffArg + "</tbody></table>";
+    tableHtml = tableHtml.replace(/<td>/g, tdPreStr); // 所有td带上format-style
+
+    // 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
+    var html = "<html><head><meta charset='utf-8' /></head><body>" + tableHtml + "</body></html>";
+
+    // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
+    var blob = new Blob([html], { type: crvtType });
+    var $anchor = $(anchorIDArg)[0];
+    // 利用URL.createObjectURL()方法为a元素生成blob URL
+    $anchor.href = URL.createObjectURL(blob);
+    // 设置文件名
+    $anchor.download = fileNameArg + fileTypeArg;
+}
 
 /*===========================================================================+
 |   function      js                                                         |
@@ -93,13 +127,13 @@ function fnSetData2IndexedDB(dbArg, storeArg, sIDArg, oDataArg) {
 
     DBReq = indexedDB.open(dbArg); // second opt_arg : vers def == 1
     // 初次创建DB或者版本更新时调用
-    // DBReq.onupgradeneeded = function(event) {
-    //     db = event.target.result;
-    //     // if store not exist, then create
-    //     if (!db.objectStoreNames.contains(storeArg)) {
-    //         let objectStore = db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
-    //     }
-    // };
+    DBReq.onupgradeneeded = function(event) {
+        db = event.target.result;
+        // if store not exist, then create
+        if (!db.objectStoreNames.contains(storeArg)) {
+            let objectStore = db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
+        }
+    };
     // 数据库打开成功后 rewrite数据
     DBReq.onsuccess = (e) => {
         db = e.target.result;
@@ -122,13 +156,8 @@ function fnSetData2IndexedDB(dbArg, storeArg, sIDArg, oDataArg) {
  * @Describle [从IndexedDB获取记录]
  * @Warning   [必须通过callback获取结果]
  * @purpose   [purpose]
- * @param     {[type]}    dbArg    [description]
- * @param     {[type]}    storeArg [description]
- * @param     {[type]}    sIDArg   [description]
- * @param     {Function}  callback [description]
- * @return    {[type]}             [description]
  */
-function fngetDataFrIndexedDB(dbArg, storeArg, sIDArg, callback) {
+function fnGetDataFrIndexedDB(dbArg, storeArg, sIDArg, callback) {
     let db,
         DBReq,
         data;
@@ -139,7 +168,7 @@ function fngetDataFrIndexedDB(dbArg, storeArg, sIDArg, callback) {
         db = event.target.result;
         // if store not exist, then create
         if (!db.objectStoreNames.contains(storeArg)) {
-            let objectStore = db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
+            db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
         }
     };
     // 数据库打开成功后 rewrite数据
@@ -149,10 +178,12 @@ function fngetDataFrIndexedDB(dbArg, storeArg, sIDArg, callback) {
 
         let objStore = transaction.objectStore(storeArg);
         let getReq = objStore.get(sIDArg);
-        getReq.onsuccess = (e) => {
-            data = e.target.result.data;
-            callback(data);
-            // console.log("1");
+        getReq.onsuccess = function(e) {
+            // console.log("#1", e.target.result);
+            if (e.target.result) {
+                data = e.target.result.data;
+                callback(data);
+            }
         };
     };
 
@@ -257,3 +288,14 @@ function fnStgParsedObj(objArg) { // TODO 改为indexedDB
 /*===========================================================================+
 |   function      IndexedDB                                                  |
 +===========================================================================*/
+
+
+/*===========================================================================+
+|   function      other                                                      |
++===========================================================================*/
+// 时间转为时间戳（ 毫秒）
+// console.log("耗时：" + (t2 - t1) + " 毫秒");
+function time2stamp() {
+    var cost = new Date();
+    return Date.parse(cost) + cost.getMilliseconds();
+}
