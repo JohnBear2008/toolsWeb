@@ -12,6 +12,10 @@
 <script src="/js/HMIPrint/bootstrap.min.js"></script>
 <link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
 
+<!-- mark，alert样式，暂时不做美化 -->
+<!-- <script type="text/javascript" src="/js/HMIPrint/alert.min.js"></script> -->
+<!-- <link rel="stylesheet" type="text/css" href="/css/HMIPrint/alert.css"> -->
+
 <div class="content">
     <h1>Moni 数据库维护</h1>
     <hr>
@@ -380,6 +384,29 @@ $(document).ready(function() {
         if (dataSelect == undefined) {
             alert("当前未选择任何数据,请先点击需要更新的数据行!");
         } else {
+            /* ===== 增加对STD数据进行更新时的提示信息 =====*/
+            let oStdTmp = {
+                    "Manufacturer": "STD",
+                    "CtrlType": "0000",
+                    "MachType": "00000000",
+                    "Reserved0": "0",
+                    "Reserved1": "0",
+                    "Reserved2": "0",
+                    "Reserved3": "0",
+                    "Reserved4": "0"
+                },
+                bStdKeysNum = Object.getOwnPropertyNames(oStdTmp).length,
+                bSelectKeysNum = 0;
+            /* -- 只对所罗列的key进行判断 --*/
+            for (let key in oStdTmp) {
+                if (dataSelect[key] && (dataSelect[key] == oStdTmp[key])) {
+                    ++bSelectKeysNum;
+                }
+            }
+            if (bSelectKeysNum == bStdKeysNum) {
+                alert("风险操作！\n    您当前更新的数据为'标准'内容，变更此数据或影响所有HMI程式的解析结果，请确保操作正确无误!");
+            }
+
             $('#win').window('open');
             $('#AddDoButton').hide();
             $('#UpdDoButton').show();
@@ -405,7 +432,7 @@ $(document).ready(function() {
         if (dataSelect == undefined) {
             alert("当前未选择任何数据,请先点击需要删除的数据行!");
         } else {
-            var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+            var msg1 = confirm("风险操作！\n    此行数据内容移除后无法还原，请确认操作是否无误！");
             if (msg1 === true) {
                 var msg2 = confirm("确认删除此行数据？");
                 if (msg2 === true) {

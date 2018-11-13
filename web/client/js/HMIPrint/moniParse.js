@@ -454,10 +454,10 @@ function CNtranslator(objSysArg) {
             fnSetData2IndexedDB(mucDB, store, pageID, obj); // 最好每次都记录，为了以后的功能拓展
 
             /* 为anchor绑定download连接 */
-            // fnTableBuffExport(trBuff, tdBuff, "#dlink", pageID, '.xls');
+             fnTableBuffExport(trBuff, tdBuff, "#dlink", pageID, '.xls');
         },
         error: function() {
-            alert('远程服务器繁忙，请重新刷新一下页面再试试! #moniParse.js');
+            alert('远程服务器开小差啦，请重新刷新一下页面再试试! #moniParse.js');
         },
         complete: function() {
             /* 清空提示字串内容 */
