@@ -3,12 +3,18 @@
 
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
-	
+<link href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="/css/PM/checkbox/awesome-bootstrap-checkbox.css" />	
+<link rel="stylesheet" href="/css/PM/checkbox/build.css" />	
+
 <!-- JS -->
 <script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
 <script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
 <script src="/js/PM/PMfuns.js"></script>
+
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -37,6 +43,7 @@
     </div>
     
     <div class="form-group">
+    
     <label  class="col-sm-1 control-label" for="name">客户:</label>    
     <div class="col-sm-2">
     <select  id="cust_Selector" class="selectpicker" data-live-search="true"> 
@@ -70,6 +77,35 @@
     <option>其他</option>
     </select>
     </div>  
+    </div>
+    
+    <div class="form-group">
+    <label for="dtp_input2" class="col-sm-1 control-label">下单日期:</label>
+    
+    <div class="col-sm-2">
+    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+        <input class="form-control " size="16" type="text" value="" readonly>
+
+		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    </div>
+	<input type="hidden" id="dtp_input2" value="" />
+	
+	</div>
+	</div>
+	
+	<div class="form-group">
+    <label for="dtp_input2" class="col-sm-1 control-label">多选样式:</label>
+    
+    <div class="col-sm-2">
+	
+    <div class="checkbox checkbox-primary">
+    <input id="checkbox2" class="styled" type="checkbox" checked>
+    <label for="checkbox2">
+        Primary
+    </label>
+     </div>
+     
+    </div>
     </div>
     
     
@@ -123,6 +159,17 @@ $(document).ready( function () {
 	var mach_Type_selectorID="#mach_Type_Selector";
     getSelectDBData(mach_Type_Select_Para,mach_Type_selectorID);
     
+    
+    $('.form_date').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+    });
     
 
 

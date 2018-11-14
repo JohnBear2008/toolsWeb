@@ -114,9 +114,9 @@
             <option value="本科" label="本科"></option>
             <option value="大专" label="大专"></option>
             <option value="硕士" label="硕士"></option>
-            <option value="博士" label="硕士"></option>
-            <option value="高中" label="硕士"></option>
-            <option value="初中" label="硕士"></option>
+            <option value="博士" label="博士"></option>
+            <option value="高中" label="高中"></option>
+            <option value="初中" label="初中"></option>
             </select>
             
             </p>
@@ -430,23 +430,20 @@ $('#UpdDoButton').click(function() {
 //    		alert("updInput:"+updInput[key]);
 //    		alert("selected:"+table.row('.selected').data()[key]);    		
     		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
-    		changed=changed+1;
+//    		changed=changed+1;
     	}
     }
 
 //   alert("updJSON:"+JSON.stringify(updJSON));
     
-    if(changed!=0){
+
     	if (checkinput(updJSON)) {
-    		 var msg = confirm("共调整"+changed+"处信息,请确认！");
+    		 var msg = confirm("确认更新?");
     		 if(msg==true){
     			 updDBData(updJSON);
     		 }
     		 
     	}
-    }else{
-    	alert("未有任何信息修改!");
-    }
     
 });
 

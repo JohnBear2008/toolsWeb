@@ -27,7 +27,6 @@
             			return true;
             			} else {
 
-                alert("你输入的MAC地址不正确,请检查,按照参考格式输入!"); 
                 return false;
                 }
             }

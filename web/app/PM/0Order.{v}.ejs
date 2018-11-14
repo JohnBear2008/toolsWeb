@@ -1,0 +1,214 @@
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<link rel="stylesheet" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
+<link rel="stylesheet" href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" >
+<link rel="stylesheet" href="/css/PM/checkbox/awesome-bootstrap-checkbox.css" />	
+<link rel="stylesheet" href="/css/PM/checkbox/build.css" />	
+
+<!-- JS -->
+<script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script src="/js/PM/PMfuns.js"></script>
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+<div class="divcontent">
+
+	<h1>表单示例</h1>
+	<hr>
+
+	<div class="panel panel-info">
+	
+    <div class="panel-heading">
+        <h3 class="panel-title">基本信息</h3>
+    </div>
+    
+    <div class="panel-body">
+
+
+   <form class="form-horizontal" > 
+    <div class="form-group">
+      <label class="col-sm-1 control-label">单号:</label>
+      <div class="col-sm-5">
+        <input class="form-control" id="focusedInput" type="text" value="该输入框获得焦点...">
+      </div>
+    </div>
+    
+    <div class="form-group">
+    
+    <label  class="col-sm-1 control-label" for="name">客户:</label>    
+    <div class="col-sm-2">
+    <select  id="cust_Selector" class="selectpicker" data-live-search="true"> 
+    </select>
+    </div>
+    
+    <label  class="col-sm-1 control-label" for="name">负责人:</label>    
+    <div class="col-sm-2">
+    <select  id="staff_Selector" class="selectpicker" data-live-search="true"> 
+    </select>
+    </div>
+
+    </div>
+    
+    <div class="form-group">   
+    <label  class="col-sm-1 control-label" for="name">机型:</label>    
+    <div class="col-sm-5">
+    <select  id="mach_Type_Selector" class="selectpicker" data-live-search="true"> 
+    </select>
+    </div>  
+    </div>
+    
+    <div class="form-group">   
+    <label  class="col-sm-1 control-label" for="name">来源:</label>    
+    <div class="col-sm-5">
+    <select  id="from_Selector" class="selectpicker" data-live-search="true"> 
+    <option>邮件</option>
+    <option>电话</option>
+    <option>传真</option>
+    <option>微信</option>
+    <option>其他</option>
+    </select>
+    </div>  
+    </div>
+    
+    <div class="form-group">
+    <label for="dtp_input2" class="col-sm-1 control-label">下单日期:</label>
+    
+    <div class="col-sm-2">
+    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+        <input class="form-control " size="16" type="text" value="" readonly>
+
+		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    </div>
+	<input type="hidden" id="dtp_input2" value="" />
+	
+	</div>
+	</div>
+	
+	
+	
+	<div class="form-group">
+	
+	
+    <label for="dtp_input2" class="col-sm-1 control-label">多选样式:</label>
+    
+    <div class="col-sm-2">
+    <div class="checkbox checkbox-primary">
+    <input id="checkbox2" class="styled" type="checkbox" checked>
+    <label for="checkbox2">
+        选项一
+    </label>
+     </div>
+     
+    </div>
+    </div>
+    
+    
+    
+    <div class="col-md-4">
+    <fieldset>
+        <legend>
+            Circled
+        </legend>
+        <p>
+            <code>.checkbox-circle</code> for roundness.
+        </p>
+        <div class="checkbox checkbox-circle">
+            <input id="checkbox7" class="styled" type="checkbox">
+            <label for="checkbox7">
+                Simply Rounded
+            </label>
+        </div>
+        <div class="checkbox checkbox-info checkbox-circle">
+            <input id="checkbox8" class="styled" type="checkbox" checked>
+            <label for="checkbox8">
+                Me too
+            </label>
+        </div>
+    </fieldset>
+    </div>
+    
+    
+    <div class="form-group">
+    <label class="col-sm-1 control-label">修改主题:</label>
+    <div class="col-sm-5">
+      <input class="form-control" id="focusedInput" type="text" value="修改主题...">
+    </div>
+  </div>
+    
+    <div class="form-group">
+    <label  class="col-sm-1 control-label" for="name">文本框</label>    
+    <div class="col-sm-6">
+    <textarea class="form-control" rows="6"></textarea>
+    </div>
+    </div>
+    
+    <div class="form-group">    
+    <label  class="col-sm-1 control-label" for="name"></label>  
+    <div class="col-sm-6">
+    <button id="Add" class="btn btn-info">添加</button>
+    </div>    
+    </div>
+    
+    
+  </form>
+    
+
+    </div>
+   </div>
+	
+
+</div>
+
+<script>
+$(document).ready( function () {
+	
+	
+	
+	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
+	var cust_selectorID="#cust_Selector";
+    getSelectDBData(cust_Select_Para,cust_selectorID);
+	
+    
+	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+	var staff_selectorID="#staff_Selector";
+    getSelectDBData(staff_Select_Para,staff_selectorID);
+    
+    
+    var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
+	var mach_Type_selectorID="#mach_Type_Selector";
+    getSelectDBData(mach_Type_Select_Para,mach_Type_selectorID);
+    
+    
+    $('.form_date').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+    });
+    
+    function changeState(el) {
+        if (el.readOnly) el.checked=el.readOnly=false;
+        else if (!el.checked) el.readOnly=el.indeterminate=true;
+    }
+    
+
+
+	
+	
+
+});
+
+</script>
