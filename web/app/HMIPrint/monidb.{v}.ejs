@@ -375,6 +375,11 @@ $(document).ready(function() {
                 $(IDTmp).val(oInput[inputID]); // inputElem.attr("value", oInput[objID]);
             }
         }
+
+        /* TODO 添加改为：批量新增 */
+        // 加载标准数据库内容                # ajax从后端先获取
+        // 弹出一个窗口用于显示/编辑如上内容（窗口底部：提交和取消按钮）
+        // 提交时剔除与STD数据完全一致的“窗口内数据”（这里数据判断不包括机型区分的几个列名，如CtrlType）
     });
     //更新按钮---------
     $('#Upd').click(function() {
@@ -432,15 +437,19 @@ $(document).ready(function() {
         if (dataSelect == undefined) {
             alert("当前未选择任何数据,请先点击需要删除的数据行!");
         } else {
-            var msg1 = confirm("风险操作！\n    此行数据内容移除后无法还原，请确认操作是否无误！");
-            if (msg1 === true) {
-                var msg2 = confirm("确认删除此行数据？");
-                if (msg2 === true) {
-                    var UID = { "UID": dataSelect.UID };
-                    // alert("UID:"+UID);
-                    ajaxDel(UID);
-                }
+            // let msg1 = confirm("风险操作！\n    此行数据内容移除后无法还原，请确认操作是否无误！");
+            // if (msg1 === true) {
+            //     let msg2 = confirm("确认删除此行数据？");
+            //     if (msg2 === true) {
+
+            let sPromptTxt = prompt("风险操作！请输入Yes来确认本次操作", "No");
+            if (sPromptTxt == "Yes") {
+                let UID = { "UID": dataSelect.UID };
+                ajaxDel(UID);
+            } else {
+                alert("cancel");
             }
+            // }
         }
         //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
     });

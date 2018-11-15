@@ -4,8 +4,7 @@
 <link rel="stylesheet" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
 <link rel="stylesheet" href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" >
-<link rel="stylesheet" href="/css/PM/checkbox/awesome-bootstrap-checkbox.css" />	
-<link rel="stylesheet" href="/css/PM/checkbox/build.css" />	
+
 
 <!-- JS -->
 <script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -83,7 +82,7 @@
     <label for="dtp_input2" class="col-sm-1 control-label">下单日期:</label>
     
     <div class="col-sm-2">
-    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" >
         <input class="form-control " size="16" type="text" value="" readonly>
 
 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
@@ -97,44 +96,32 @@
 	
 	<div class="form-group">
 	
-	
-    <label for="dtp_input2" class="col-sm-1 control-label">多选样式:</label>
-    
+    <label class="col-sm-1 control-label">多选:</label>    
     <div class="col-sm-2">
-    <div class="checkbox checkbox-primary">
-    <input id="checkbox2" class="styled" type="checkbox" checked>
-    <label for="checkbox2">
+
+    <input id="checkbox1" class="styled" type="checkbox" checked>
+    <label for="checkbox1">
         选项一
     </label>
-     </div>
-     
-    </div>
+        
+    <input id="checkbox2" class="styled" type="checkbox" checked>
+    <label for="checkbox2">
+        选项二
+    </label>
+            
+    <input id="checkbox3" class="styled" type="checkbox" checked>
+    <label for="checkbox3">
+        选项三
+    </label>   
+
+   
+    </div>  
+    
     </div>
     
     
     
-    <div class="col-md-4">
-    <fieldset>
-        <legend>
-            Circled
-        </legend>
-        <p>
-            <code>.checkbox-circle</code> for roundness.
-        </p>
-        <div class="checkbox checkbox-circle">
-            <input id="checkbox7" class="styled" type="checkbox">
-            <label for="checkbox7">
-                Simply Rounded
-            </label>
-        </div>
-        <div class="checkbox checkbox-info checkbox-circle">
-            <input id="checkbox8" class="styled" type="checkbox" checked>
-            <label for="checkbox8">
-                Me too
-            </label>
-        </div>
-    </fieldset>
-    </div>
+    
     
     
     <div class="form-group">
@@ -159,7 +146,7 @@
     </div>
     
     
-  </form>
+    </form>
     
 
     </div>
@@ -199,10 +186,7 @@ $(document).ready( function () {
 		forceParse: 0
     });
     
-    function changeState(el) {
-        if (el.readOnly) el.checked=el.readOnly=false;
-        else if (!el.checked) el.readOnly=el.indeterminate=true;
-    }
+    
     
 
 
