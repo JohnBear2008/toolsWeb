@@ -34,13 +34,16 @@
 
 
    <form class="form-horizontal" > 
+   
+   
+   <!-------------------------------------------------------------------------->
     <div class="form-group">
       <label class="col-sm-1 control-label">单号:</label>
       <div class="col-sm-5">
         <input class="form-control" id="focusedInput" type="text" value="该输入框获得焦点...">
       </div>
     </div>
-    
+    <!-------------------------------------------------------------------------->
     <div class="form-group">
     
     <label  class="col-sm-1 control-label" for="name">客户:</label>    
@@ -56,7 +59,7 @@
     </div>
 
     </div>
-    
+    <!-------------------------------------------------------------------------->
     <div class="form-group">   
     <label  class="col-sm-1 control-label" for="name">机型:</label>    
     <div class="col-sm-5">
@@ -64,7 +67,7 @@
     </select>
     </div>  
     </div>
-    
+    <!-------------------------------------------------------------------------->
     <div class="form-group">   
     <label  class="col-sm-1 control-label" for="name">来源:</label>    
     <div class="col-sm-5">
@@ -77,7 +80,7 @@
     </select>
     </div>  
     </div>
-    
+    <!-------------------------------------------------------------------------->
     <div class="form-group">
     <label for="dtp_input2" class="col-sm-1 control-label">下单日期:</label>
     
@@ -92,45 +95,57 @@
 	</div>
 	</div>
 	
-	
-	
+    
+    <!-------------------------------------------------------------------------->
+
 	<div class="form-group">
 	
-    <label class="col-sm-1 control-label">多选:</label>    
-    <div class="col-sm-2">
-
-    <input id="checkbox1" class="styled" type="checkbox" checked>
-    <label for="checkbox1">
-        选项一
-    </label>
-        
-    <input id="checkbox2" class="styled" type="checkbox" checked>
-    <label for="checkbox2">
-        选项二
-    </label>
-            
-    <input id="checkbox3" class="styled" type="checkbox" checked>
-    <label for="checkbox3">
-        选项三
-    </label>   
-
-   
-    </div>  
+	<label class="col-sm-1 control-label">多选:</label>   
+	
+	<div class="col-sm-2">
+	    <label class="checkbox-inline">
+	        <input type="checkbox" id="inlineCheckbox1" value="option1"> 选项 1
+	    </label>
+	    <label class="checkbox-inline">
+	        <input type="checkbox" id="inlineCheckbox2" value="option2"> 选项 2
+	    </label>
+	    <label class="checkbox-inline">
+	        <input type="checkbox" id="inlineCheckbox3" value="option3"> 选项 3
+	    </label>
+	       
+	</div>
     
     </div>
     
+    <!-------------------------------------------------------------------------->
+
+	<div class="form-group">
+	
+	<label class="col-sm-1 control-label">单选:</label>   
+	
+	<div class="col-sm-2">
+	 
+	        
+	    <label class="radio-inline">
+	        <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked> 选项 1
+	    </label>
+	    <label class="radio-inline">
+	        <input type="radio" name="optionsRadiosinline" id="optionsRadios4"  value="option2"> 选项 2
+	    </label>
+	</div>
     
+    </div>
     
-    
-    
-    
+    <!-------------------------------------------------------------------------->
+
     <div class="form-group">
     <label class="col-sm-1 control-label">修改主题:</label>
     <div class="col-sm-5">
       <input class="form-control" id="focusedInput" type="text" value="修改主题...">
     </div>
-  </div>
+    </div>
     
+    <!-------------------------------------------------------------------------->
     <div class="form-group">
     <label  class="col-sm-1 control-label" for="name">文本框</label>    
     <div class="col-sm-6">
@@ -138,13 +153,52 @@
     </div>
     </div>
     
+    <!-------------------------------------------------------------------------->
+    
+    <div class="form-group">
+    <label  class="col-sm-1 control-label" for="name">上传</label>  
+    
+    <div class="col-sm-6">
+    <div id="div_previewImages"></div>
+    <div id="progressNumber"></div>
+    
+    
+    <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
+    <a class="btn btn-info" onclick="$('#fileToUpload').click();">选择文件</a>
+    
+    
+	<input type="button" class="btn " onclick="uploadFile()" value="确认上传" >
+	<input type="button" class="btn " onclick="deleteFile()" value="delete" >
+    
+    
+    </div>
+
+    
+   
+
+	
+	</div>
+	
+	<!-------------------------------------------------------------------------->
+	 <div class="form-group">
+	<label  class="col-sm-1 control-label" for="name">服务器获取</label>
+	
+	<div class="col-sm-6">
+
+	<div id="div_images"></div>
+	</div>
+	
+	
+	</div>
+    
+    <!-------------------------------------------------------------------------->
     <div class="form-group">    
     <label  class="col-sm-1 control-label" for="name"></label>  
     <div class="col-sm-6">
     <button id="Add" class="btn btn-info">添加</button>
     </div>    
     </div>
-    
+    <!-------------------------------------------------------------------------->
     
     </form>
     
