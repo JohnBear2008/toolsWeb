@@ -4,7 +4,7 @@ module.exports = function(sender) {
 
 //    var aDataIDs = sender.req.query.t;
     
-//console.log("get:"+JSON.stringify(sender.req.query));
+console.log("OA get:"+JSON.stringify(sender.req.query));
     
     var DBTable=sender.req.query.DBTable;
     

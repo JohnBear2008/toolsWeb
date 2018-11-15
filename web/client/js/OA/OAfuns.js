@@ -5,7 +5,7 @@ function showDBData(DataPara,columnsData){
 //alert(JSON.stringify(DataPara));
 	$(DataPara.tableID).DataTable({
 	    ajax: {
-	        url: '/app/PM/getDBInfo',
+	        url: '/app/OA/getDBInfo',
 	        data:{DBTable:DataPara.DBTable},
 	        dataSrc: ''
 	    },
@@ -61,7 +61,7 @@ function addDBData(DBData) {
 	
     $.ajax({
         method: 'post',
-        url: '/app/PM/addDBData',
+        url: '/app/OA/addDBData',
         data: DBData,
         success: function(data, textStatus) {
             // alert("成功数据:" + JSON.stringify(data));
@@ -80,7 +80,7 @@ function addDBData(DBData) {
 function updDBData(DBData) {
     $.ajax({
         method: 'post',
-        url: '/app/PM/updDBData',
+        url: '/app/OA/updDBData',
         data: DBData,
         success: function(data, textStatus) {
  //                alert("成功数据:"+JSON.stringify(data));
@@ -100,7 +100,7 @@ function updDBData(DBData) {
 function delDBData(IDData) {
     $.ajax({
         method: 'post',
-        url: '/app/PM/delDBData',
+        url: '/app/OA/delDBData',
         data: IDData,
         success: function(data, textStatus) {
             //  alert("成功数据:"+JSON.stringify(data));
@@ -125,7 +125,7 @@ function getSelectDBData(selectPara,selectorID) {
 	  $.ajax({
           method:'get',
           data:selectPara,
-          url:"/app/PM/getSelectDBData",
+          url:"/app/OA/getSelectDBData",
           success:function(data){
         	  
         	  //alert("return1111:"+JSON.stringify(data));
