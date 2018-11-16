@@ -260,17 +260,19 @@ function fnCreMoniObj() {
 function fnSetObjOriginVal(objArg) {
     return new Promise(function(resolve, reject) {
         var aDataInfo = objArg.aDataInfo;
+        let nRecNum = aDataInfo.length; // 监测条数
         g_nCdbStart = objArg.nHeadSize;
 
-        /* 判断数据是否有效 */
+        /* ===== 判断cdb数据是否有效，无效条件如下 =====
+            1、 监测条数为0
+            2、 数据全为0                        */
         let sHeader = parseInt(g_aMoniCdb.slice(0, g_nCdbStart));
-
-        if (!sHeader) {
+        if (!nRecNum || !sHeader) {
             resolve("fnSetObjOriginVal Break");
         }
 
         // 提取cdb中的监测信息的值并写入到Obj内
-        for (let i = 0, nInfoLen = aDataInfo.length; i < nInfoLen; ++i) {
+        for (let i = 0; i < nRecNum; ++i) {
             for (let j = 0, nSubInfoLen = aDataInfo[i].length; j < nSubInfoLen; ++j) {
                 let nSubInfoSize = aDataInfo[i][j].nSize;
                 // 无用的信息无需记录值
@@ -504,6 +506,7 @@ function fnByte2Str(byte) {
     let str = "";
 
     let tmp = byte.toString(16);
+    // 补齐长度不足2的数据，以便后续 大/小端字节序的处理
     if (tmp.length == 1) {
         tmp = "0" + tmp;
     }

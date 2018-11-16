@@ -44,12 +44,18 @@
             <tr>
                 <th>DBID</th>
                 <th>姓名</th>
-                <th>部门</th>
-                <th>职位</th>
+                <th>课/组</th>
+                <th>组</th>
+                <th>性别</th>
+                <th>岗位</th>
                 <th>职级</th>
+                <th>学历</th>
                 <th>入职日期</th>
-                <th>电话</th>          
-                <th>分机号</th>
+                <th>公司</th>          
+                <th>出生日期</th>
+                <th>年龄</th>
+                <th>工龄</th>
+
 
             </tr>
         </thead>
@@ -243,20 +249,34 @@ $(document).ready( function () {
 	}
 		
 	
+	var test=11111;
+	
 	var columnsData=[
 		{ data: 'DBID' ,"visible": false},
 		{ data: 'staffName' },
-        { data: 'dept' },
+        { data: 'deptClass' },
+        { data: 'deptGroup' },
+        { data: 'sex'},
         { data: 'postName'},
         { data: 'postLevel'},
+        { data: 'edu' },  
         { data: 'entryDate' },
-        { data: 'Phone' },    
-        { data: 'runNum'}
+        { data: 'company' },  
+        { data: 'birthday'},
+        { data: 'age'},
+        { data: 'workYears'}
+
+
 
     ];
 
 //	alert(JSON.stringify(DataPara));
 	showDBData(DataPara,columnsData);
+
+	
+	
+
+
 	
 //判断是否选中数据-------
 var table = $('#staff_DB').DataTable();

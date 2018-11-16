@@ -3,24 +3,27 @@
 function showDBData(DataPara,columnsData){
 	
 //alert(JSON.stringify(DataPara));
-	$(DataPara.tableID).DataTable({
+	var dt=$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/OA/getDBInfo',
 	        data:{DBTable:DataPara.DBTable},
 	        dataSrc: ''
 	    },
-	    columns: columnsData,
+	//    columns: columnsData,
+	    "aoColumns":columnsData,
+	    
+	    
 	    aaSorting: [0, 'desc'],//默认排序
 //	    serverSide: false,//分页，取数据等等的都放到服务端去. true为后台分页，每次点击分页时会请求后台数据，false为前台分页
 //   		dom: 'Bfrtip',
-//    	buttons: [ {
+//    	buttons: [{
 //        	extend: 'excelHtml5',
 //        	text:'导出数据',
 //        	   customize: function( xlsx ) {
 //            	var sheet = xlsx.xl.worksheets['sheet1.xml'];
 //            	$('row c[r^="C"]', sheet).attr( 's', '2' );
 //        	}
-//    	} ],
+//    	}],
 
 	    "language": {
           "url": "dataTables.german.lang",
@@ -49,6 +52,8 @@ function showDBData(DataPara,columnsData){
       }
 	});
 	
+	
+
 	
 	
 }
