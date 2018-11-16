@@ -27,18 +27,18 @@ module.exports = function(sender) {
         /* ===== 获取STD中，info机型缺省的"DDKey列数据"对应的数据行内容 ===== */
         " SELECT DDKey,CN,Visb,Prec FROM hmiprint_moni " +
         //这里限定info机型缺省的"DDKey列数据"对应的数据行内容
-        " WHERE DDKey NOT IN " +
-        " ( " +
-        " SELECT DDKey FROM hmiprint_moni " +
+        "   WHERE DDKey NOT IN " +
+        "       ( " +
+        "           SELECT DDKey FROM hmiprint_moni " +
         // 这里限定属于STD
-        " WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=?" +
-        " )" +
-        " AND Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
+        "           WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
+        "       ) " +
+        "   AND Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
         /* ===== 联合两个结果 ===== */
-        " UNION ALL" +
+        " UNION ALL " +
         /* ===== 获取info机型的数据行 =====*/
-        " SELECT DDKey,CN,Visb,Prec FROM hmiprint_moni WHERE Manufacturer=? AND CtrlType=? AND MachType=?" +
-        " AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? ";
+        " SELECT DDKey,CN,Visb,Prec FROM hmiprint_moni WHERE Manufacturer=? AND CtrlType=? AND MachType=? " +
+        "   AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? ";
 
     yjDBService.exec({
         sql: execSQL,

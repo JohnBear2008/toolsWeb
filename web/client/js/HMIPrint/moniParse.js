@@ -65,6 +65,7 @@ var aUseLess = [
     "C_MEMERY_PAD" // 内存对齐的内容
 ];
 
+var moniDataTab; // dataTable实例
 /*===========================================================================+
 |   function      Main                                                       |
 +===========================================================================*/
@@ -296,8 +297,11 @@ function fnShowMoniData(objArg) {
     return new Promise(function(resolve, reject) {
 
         // show前先清空，防止重复读取造成显示异常
-        // $("#monidata thead tr").empty();
-        // $("#monidata tbody").empty();
+        if (moniDataTab) {
+            moniDataTab.destroy();
+            $("#monidata thead tr").empty();
+            $("#monidata tbody").empty();
+        }
 
         CNtranslator(objArg.aSysInfo);
         resolve("fnShowMoniData Done");
@@ -316,12 +320,8 @@ function fnShowPreMoniData(objArg) {
         aTbElem = objArg.aTbElem;
 
     /* cell append */
-    $("#dataThTr").html(trBuff);
-    let table = crtDBTableObj("#monidata", aTheadElem);
-    /* 添加数据并绘制表格 */
-    table.clear()
-        .rows.add(aTbElem)
-        .draw(false);
+    $("#monidata thead tr").html(trBuff);
+    moniDataTab = createTable("#monidata", aTbElem, aTheadElem);
 }
 
 /*===========================================================================+
@@ -338,6 +338,7 @@ function CNtranslator(objSysArg) {
         data: { objSysArg: objSysArg },
 
         success: function(data) {
+            // console.log(data.rows);
             // console.time("CNtranslator");
             var aDataInfo = g_oMoni.aDataInfo;
             var nRecSum = aDataInfo.length; // 监测记录的条数
@@ -357,7 +358,7 @@ function CNtranslator(objSysArg) {
 
             // 当前HMI至多存储5000笔数据，生成的cdb文件里也只有5000笔，此处为预留
             var nRecOffset = 0;
-
+            let tmp = 0;
             for (let nRecx = nRecOffset; nRecx < nRecSum; ++nRecx) {
                 tdBuff += "<tr>"; // 每一条完整的监测记录加个换行
                 for (let nTitx = 0; nTitx < nTitSum; ++nTitx) {
@@ -395,6 +396,7 @@ function CNtranslator(objSysArg) {
                                 if (aDataInfo[nRecx][nTitx].Visb > 0) {
                                     aDataInfo[nRecx][nTitx].CN = data.rows[nVisbInfoInx][nArrInx.CN];
                                     trBuff += "<th>" + aDataInfo[nRecx][nTitx].CN + "</th>";
+                                    ++tmp;
                                 }
 
                             }
@@ -410,8 +412,6 @@ function CNtranslator(objSysArg) {
                 tdBuff += "</tr>";
             }
 
-            /* cell append */
-            $("#monidata thead tr").html(trBuff); // append = > html
             let aTbElem = [], // 替代DataTable内的data
                 oTbData,
                 aTheadElem = []; // 替代DataTable内的columns
@@ -422,10 +422,9 @@ function CNtranslator(objSysArg) {
                 for (let nTitx2 = 0; nTitx2 < nTitSum; ++nTitx2) {
                     if (aDataInfo[nRecx2][nTitx2].Visb) {
                         oTbData[aDataInfo[nRecx2][nTitx2].sDDKey] = aDataInfo[nRecx2][nTitx2].fValue;
-
                         if (nRecx2 === 0) {
                             // 这里必须为obj，为了给DataTable传入参数
-                            let oThead = { data: aDataInfo[nRecx2][nTitx2].sDDKey };
+                            let oThead = { "data": aDataInfo[nRecx2][nTitx2].sDDKey };
                             aTheadElem.push(oThead);
                         }
                     }
@@ -433,11 +432,15 @@ function CNtranslator(objSysArg) {
                 aTbElem.push(oTbData);
             }
 
+            // console.log(tmp);
+            // console.log(Object.getOwnPropertyNames(aTbElem[0]).length);
+            // console.log(aTheadElem.length);
+            // console.log("-----");
             /* ========== 添加数据并绘制表格 ========== */
-            let table = crtDBTableObj("#monidata", aTheadElem);
-            table.clear()
-                .rows.add(aTbElem)
-                .draw(false);
+            // 绘制表头
+            $("#monidata thead tr").html(trBuff);
+            // 绘制表数据
+            moniDataTab = createTable("#monidata", aTbElem, aTheadElem);
 
             /* ========== 将成功解析的数据们写入到indexedDB ========== */
             let mucDB = "MucDB",
@@ -559,21 +562,20 @@ function fnDeepClone(obj) {
 /*===========================================================================+
 |   function     return a  created obj                                       |
 +===========================================================================*/
-function crtDBTableObj(tableID, columns) {
+function createTable(tableID, data, columns) {
     return $(tableID).DataTable({
         /* ========== 数据显示 ========== */
         "aLengthMenu": [
             [15, 50, 200, 500, -1],
             [15, 50, 200, 500, "All"]
         ],
-        dataSrc: "",
-        // data: aTbElem,
+        data: data,
         //使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性
         //data 这里是固定不变的，name，position，salary，office 为你数据里对应的属性
         columns: columns,
 
         /* ========== 显示相关 ========== */
-        "bDestroy": true, // 下次载入前销毁
+        "destroy": true,
         "filter": false, //搜索框 // 数据呈现这边意义不大，故mark
         // "sPaginationType": "full_numbers", // 首页尾页
         "bDeferRender": true, // 延迟渲染数据
