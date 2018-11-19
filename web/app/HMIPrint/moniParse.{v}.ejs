@@ -109,6 +109,15 @@ $(window).load(function() {
         fnTrvlEvent();
     });
 
+    $("#dlink").click(() => {
+        /* 解析过才开放汇出excel功能 */
+        let sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+        if (!sPFlag) {
+            alert("请导入文件后再使用此功能！");
+            return false;
+        }
+    });
+
     /* 汇出excel功能绑定上次解析的download内容 */
     fnGetDataFrIndexedDB(mucDB, store, pageID, fnTbDataExport);
 
