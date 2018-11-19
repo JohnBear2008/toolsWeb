@@ -41,10 +41,14 @@ module.exports = function(sender) {
     
 //   console.log("SQLFilter:"+SQLFilter);
     
-    var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
+// var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
     
     
+    
+    var sqlGetTableData = "SELECT * FROM pm_orders LEFT JOIN pm_customers ON pm_orders.customer_ID=pm_customers.cust_FID WHERE "+SQLFilter;
 
+    console.log("sqlGetTableData:"+sqlGetTableData);
+    
 //    
     yjDBService.exec({
         sql: sqlGetTableData,
