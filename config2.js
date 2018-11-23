@@ -5,24 +5,26 @@ var g_dbConenctions = {
         server: '127.0.0.1',
         database: 'toolsWeb',
         user: 'root',
-        password: '123456',
+        password: '654321',
         insecureAuth: true
     },
 };
 var config = {
-    port: 18080,
+    port: 3000,
     biz_Connection: {
         engine: "remote.superagent",
         connection: {
-            url: "http://127.0.0.1:18080/biz"
+            url: "http://60.190.61.10:8091/biz"
+
+//        	url: "http://192.168.0.9:2019/"
         }
     },
-    homePage_url: "/app/index",
+    homePage_url: "/app/system/sitemap/showSitemap",
     db_Connection: g_dbConenctions,
     product: {
-        name: "mes",
+        name: "ToolsWeb",
         namePic: "/images/logo.jpg",
-        projectName:'MES',
+        projectName:'ToolsWeb',
         description: "",
         logo: "/images/logo.jpg",
         favIcon:path.join(__dirname,'/client/images/Foil.ico'),
@@ -33,6 +35,9 @@ var config = {
             website: "http://www.techmation.com.cn",
             CNName:'宁波弘讯软件开发有限公司西安分公司'
         },
+		mes:{
+			deviceType:"EEI"
+		},
         loginBackgroundImage:"/images/login/background.jpg",
         userImg:''
     },
@@ -46,6 +51,7 @@ var config = {
         isOpenRegister: false,
         login_url: "/app/account/showLogin",
         loginTypes: ["userID"],
+//        loginTypes: ["mobilePhone"],
         notNeedLogin_urls:[]
     },
     theme: {
@@ -65,7 +71,7 @@ var config = {
         }
     },
     project: {
-        edition: "v0.1"
+        edition: "mes"
     },
     isNeedView: true,
     rootDir: path.join(__dirname, "../yujiang.Foil.Node.WebServer"),
@@ -80,7 +86,7 @@ var config = {
         dir: path.join(__dirname, "../yujiang.Foil.Node.WebServer/app")
     },{
         isNeedAuthorityCheck: true,
-        rootDir: path.join(__dirname, "./biz"),
+        rootDir: path.join(__dirname),
         dir: path.join(__dirname, "./biz")
     }, {
         rootDir: path.join(__dirname, "./web"),

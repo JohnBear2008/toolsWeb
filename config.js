@@ -8,6 +8,13 @@ var g_dbConenctions = {
         password: '654321',
         insecureAuth: true
     },
+    connection_erp: {
+        server: '192.168.0.9',
+        database: 'toolsWeb',
+        user: 'root',
+        password: 'techweb123;',
+        insecureAuth: true
+    },
 };
 var config = {
     port: 3000,
@@ -15,6 +22,8 @@ var config = {
         engine: "remote.superagent",
         connection: {
             url: "http://127.0.0.1:3000/biz"
+
+//        	url: "http://192.168.0.9:2019/"
         }
     },
     homePage_url: "/app/system/sitemap/showSitemap",

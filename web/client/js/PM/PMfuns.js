@@ -262,6 +262,8 @@ function showOrdersDBData(DataPara,columnsData){
 //alert(JSON.stringify(DataPara));
 	
 	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	
 	$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getOrdersDBInfo',
@@ -270,7 +272,7 @@ function showOrdersDBData(DataPara,columnsData){
 	    },
 	    columns: columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
-	    lengthMenu:[5,10,20,50,100],
+	    lengthMenu:[10,20,50,100],
 
 
 	    "language": {
@@ -319,7 +321,7 @@ function showFilterDBData(DataPara,columnsData){
 	    },
 	    columns: columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
-	    lengthMenu:[5,10,20,50,100],
+	    lengthMenu:[5,10,20],
 
 
 	    "language": {
