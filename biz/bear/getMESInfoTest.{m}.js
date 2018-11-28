@@ -13,7 +13,8 @@ module.exports = function(sender) {
     
     console.log("connection:"+JSON.stringify(connection));
     
-    var sql="SELECT * FROM users ";
+    var sql="select PKValue from comproduct a,(select PKValue from comChangeLog where   changetime>= DATEADD(hour,-1, GETDATE())) b where a.ProdID=b.PKValue ";
+    
     yjDBService.exec({
     	
         connectionOptions:connection,
@@ -26,7 +27,7 @@ module.exports = function(sender) {
             
 //            console.log("result:"+JSON.stringify(result));
 //            
-//            console.log("data:"+JSON.stringify(data));
+            console.log("data:"+JSON.stringify(data));
 //            
             var mesData={return:true,Message:'',Data:data}
 

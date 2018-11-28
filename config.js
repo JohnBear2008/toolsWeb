@@ -88,7 +88,7 @@ var config = {
     isNeedView: true,
     rootDir: path.join(__dirname, "../yujiang.Foil.Node.WebServer"),
     logDir: path.join(__dirname, "./system/log"),
-    autoRunDirs:[],
+    autoRunDirs:[path.join(__dirname, "./biz/auto")],
     routeDirs: [{
         isNeedAuthorityCheck: true,
         rootDir: path.join(__dirname, "../yujiang.Foil.Node.BizServer"),
