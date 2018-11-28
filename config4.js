@@ -7,19 +7,14 @@ var g_dbConenctions = {
         user: 'root',
         password: '654321',
         insecureAuth: true
-    }, 
-    "erp_Connection" : {
-    	  engine:"sqlserver",
-    	  package:"msnodesqlv8",
-    	  connection:{
-    	   driver : "SQL Server Native Client 11.0",
-    	   server : '192.168.0.2',
-    	   database : 'CHIComp99',
-    	   user: 'sa',
-         password: 'techDG2218',
-    	  }
-    }
-
+    },
+    connection_erp: {
+        server: '192.168.0.9',
+        database: 'toolsWeb',
+        user: 'root',
+        password: 'techweb123;',
+        insecureAuth: true
+    },
 };
 var config = {
     port: 3000,

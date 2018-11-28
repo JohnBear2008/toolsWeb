@@ -226,25 +226,48 @@
          function getDatesFix(begin,FQNum,MonthFix){
         	 var DatesFix=new Array();
         	 var year=parseInt(begin.substring(0,4));
-        	 var month=parseInt(begin.substring(6,8));
+        	 var month=parseInt(begin.substring(5,7));//修复固定日期10 11 12 bug
+        	 
+        	 
+        	 var firstDate=moment(year+"-"+month+"-"+MonthFix).format("YYYY-MM-DD");
         	 
 
-        	 for(var i=0;i<FQNum;i++){
+        	 
+        	 if(firstDate>begin){
+  
+        		 for(var i=0;i<FQNum;i++){
+        			 
+        			 DatesFix[i]=year+"-"+month+"-"+MonthFix;
+            		 DatesFix[i]=moment(DatesFix[i]).format("YYYY-MM-DD");	 
+
+            		 month=month+1;
+            		 if(month==13){
+            			 year=year+1;
+            			 month=1;
+            		 }	 
+            		
+            	 }
+            
+            	 return DatesFix;
+
+        	 }else{
+
+            	 for(var i=0;i<FQNum;i++){
+
+            		 month=month+1;
+            		 if(month==13){
+            			 year=year+1;
+            			 month=1;
+            		 }	 
+            		 DatesFix[i]=year+"-"+month+"-"+MonthFix;
+            		 DatesFix[i]=moment(DatesFix[i]).format("YYYY-MM-DD");	 
+            	 }
+            
+            	 return DatesFix;
         		 
-        		 month=month+1;
-        		 if(month==13){
-        			 year=year+1;
-        			 month=1;
-        		 }
-        		 
-        		 
-        		 DatesFix[i]=year+"-"+month+"-"+MonthFix;
-        		 DatesFix[i]=moment(DatesFix[i]).format("YYYY-MM-DD");
         		 
         	 }
-        	 
-        	 return DatesFix;
-        	      	 
+ 	 
         	 
          }
 
