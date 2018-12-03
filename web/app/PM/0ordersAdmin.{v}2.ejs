@@ -27,7 +27,7 @@
 
 
 <div class="divcontent">
-    <h1>订单跟踪示例</h1>
+    <h1>订单管理示例</h1>
     <hr>
     <!--<button id="Add"  onclick="javascript:$('#win').window('open')">添加</button>-->
     <!-- 操作区（按钮等） -->
@@ -35,6 +35,16 @@
         <button id="Add" class="btn btn-info">添加</button>
         <button id="Upd" class="btn btn-warning">更新</button>
         <button id="Del" class="btn btn-danger">删除</button>
+    </div>
+    <br/>
+    
+    <div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <button  type="text" class="btn btn-default" disabled="disabled">过滤条件:</button>
+        <button id="dftFilterBtn" type="button" class="btn btn-info">默认</button>
+        <button id="allFilterBtn" type="button" class="btn btn-info">全部</button>
+        <button id="divFilterBtn" type="button" class="btn btn-info">自定义</button>
+     </div>
     </div>
     <br/>
 
@@ -56,55 +66,87 @@
     </table>
     
     
-    <h3>主机记录</h3>
-    <hr>
-    <!--数据呈现区-->
-    <table id="orders_DSP" class="table table-striped table-bordered"  >
-        <thead>
-            <tr>
-                <th>数据库ID</th>
-                <th>订单号</th>
-                <th>主机修改日期</th>
-                <th>主机修改内容</th>
-                <th>主机测试人员</th>
-                <th>主机测试日期</th>
 
-            </tr>
-        </thead>
-    </table>
     
-    <h3>面板记录</h3>
-    <hr>
-    <!--数据呈现区-->
-    <table id="orders_MMI" class="table table-striped table-bordered"  >
-        <thead>
-            <tr>
-                <th>数据库ID</th>
-                <th>订单号</th>
-                <th>面板修改日期</th>
-                <th>面板修改内容</th>
-                <th>面板测试人员</th>
-                <th>面板测试日期</th>
 
-            </tr>
-        </thead>
-    </table>
-    <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:400px;height:560px;">
-        <form style="padding:10px 50px;">
-            <p>厂商码 : <input id="Bill_ID" size="30" type="text" class="required"></p>
-            <p>客户名称 : <input id="Customer_ID" size="30" type="text" class="required"></p>
-            <p>联系电话 : <input id="Bill_Topic" size="30" type="text" class="required"></p>
+<!-- 点击自定义过滤弹出的窗口 -->
+<div id="divFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:600px;height:560px;">
+<form style="padding:10px 50px;">
 
-          
-            <div style="padding:5px;text-align:center;">
-                <a id="AddDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">添加</a>
-                <a id="UpdDoButton"　href="#" class="easyui-linkbutton" icon="icon-ok">更新</a>
-                <a id="CancelButton" href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
-            </div>
-        </form>
-    </div>
+<div class="form-group">   
+订单号 :
+    <select  id="from_Selector1" class="selectpicker" data-live-search="true"> 
+           <option value="=">等于</option>
+           <option value="<>">不等于</option>
+           <option value="LIKE">包含</option>
+           <option value="NOT LIKE">不包含</option>
+
+    </select>
+    	<input id="Bill_ID" size="30" type="text" class="required">
 </div>
+
+<div class="form-group">   
+客户ID :
+    <select  id="from_Selector2" class="selectpicker" data-live-search="true"> 
+           <option value="=">等于</option>
+           <option value="<>">不等于</option>
+           <option value="LIKE">包含</option>
+           <option value="NOT LIKE">不包含</option>
+    </select>
+    <input id="Customer_ID" size="30" type="text" class="required">
+</div>
+
+<div class="form-group">   
+订单日期范围:<input id="BDate1" size="30" type="date" class="required">-
+         <input id="EDate1" size="30" type="date" class="required">
+
+
+</div>
+
+    <div style="padding:5px;text-align:center;">
+        <a id="FilterComfirmBtn"　href="#" class="easyui-linkbutton" icon="icon-ok">确认</a>
+        <a id="FilterCancelBtn" href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
+    </div>
+</form>
+</div>
+
+
+</div>
+
+
+<h3>主机记录</h3>
+<hr>
+<!--数据呈现区-->
+<table id="orders_DSP" class="table table-striped table-bordered"  >
+    <thead>
+        <tr>
+            <th>数据库ID</th>
+            <th>订单号</th>
+            <th>主机修改日期</th>
+            <th>主机修改内容</th>
+            <th>主机测试人员</th>
+            <th>主机测试日期</th>
+
+        </tr>
+    </thead>
+</table>
+
+<h3>面板记录</h3>
+<hr>
+<!--数据呈现区-->
+<table id="orders_MMI" class="table table-striped table-bordered"  >
+    <thead>
+        <tr>
+            <th>数据库ID</th>
+            <th>订单号</th>
+            <th>面板修改日期</th>
+            <th>面板修改内容</th>
+            <th>面板测试人员</th>
+            <th>面板测试日期</th>
+
+        </tr>
+    </thead>
+</table>
 
 
 <script>
@@ -146,19 +188,8 @@ $(document).ready( function () {
 	}
 		
 	
-	var columnsData=[
-		{ data: 'DBID' ,"visible": false},
-        { data: 'Bill_ID' },
-        { data: 'Customer_ID'},
-        { data: 'cust_Name'},
-        { data: 'Bill_Topic'},
-        { data: 'Bill_Apply_Date'},
-        { data: 'Bill_Limit_Date'},
-        { data: 'State_Flag'},
-    ];
-
-//	alert(JSON.stringify(DataPara));
-	showOrdersDBData(DataPara,columnsData);
+	
+	
 	
 //判断是否选中数据-------
 var table = $('#orders_DB').DataTable();
@@ -272,6 +303,116 @@ $('#Del').click(function() {
 });
 
 
+
+//过滤功能组 显示默认按钮-----
+$('#dftFilterBtn').click(function() {
+	
+	var DataPara={
+			"tableID":"#orders_DB",
+			"Filter":[{"State_Flag":"4","CType":"<>"}]
+		
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date'},
+        { data: 'Bill_Limit_Date'},
+        { data: 'State_Flag'},
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showOrdersDBData(DataPara,columnsData);
+
+    
+});
+
+$('#dftFilterBtn').click();//开始时默认点击一下,加载默认数据
+
+
+//过滤功能组 显示全部按钮-----
+$('#allFilterBtn').click(function() {
+	
+	var DataPara={
+			"tableID":"#orders_DB"
+		
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date'},
+        { data: 'Bill_Limit_Date'},
+        { data: 'State_Flag'},
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showOrdersDBData(DataPara,columnsData);
+
+    
+});
+
+//过滤功能组 自定义按钮-----
+$('#divFilterBtn').click(function() {
+	
+	 $('#divFilter').window('open');
+	
+
+    
+});
+
+//过滤器确认按钮--------------------
+$('#FilterComfirmBtn').click(function() {
+	
+//	 $('#divFilter').window('open');
+
+	var DataPara={
+			"tableID":"#orders_DB",
+			"Filter":[
+				{"Bill_ID":$("#Bill_ID").val(),"CType":$("#from_Selector1").val()},
+				{"Customer_ID":$("#Customer_ID").val(),"CType":$("#from_Selector2").val()},
+				{"Bill_Apply_Date":[$("#BDate1").val(),$("#EDate1").val()]}
+				
+				]
+	}
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date'},
+        { data: 'Bill_Limit_Date'},
+        { data: 'State_Flag'},
+    ];
+	
+	 alert("Filter:"+JSON.stringify(DataPara));
+	 
+	 showOrdersDBData(DataPara,columnsData);
+	 
+	 $('#divFilter').window('close');
+	 
+});
+
+//过滤器取消按钮--------------------
+$('#FilterCancelBtn').click(function() {
+	
+	 $('#divFilter').window('close');
+
+});
+
+
+
+
 //form框添加按钮----------
 $('#AddDoButton').click(function() {
 	var DBTable="PM_orders";
@@ -283,35 +424,7 @@ $('#AddDoButton').click(function() {
 	
 	
 	addDBData(DBData);
-	
-//    var UID = "";
-//    // UID + form的数据 ==> 构造obj
-//    var aRemainVal = [];
-//    for (var ID in oInput) {
-//        ID = "#" + ID;
-//        var nVal = $(ID).val();
-//        aRemainVal.push(nVal);
-//    }
-//    var formData = new moniData(UID, ...aRemainVal);
-//    // alert("formData:" + JSON.stringify(formData));
-//
-//    if (checkinput(formData)) {
-//        // 保存本次提交表格内数据的值至obj内，便于连续操作
-//        var inputNum = $("#win").find("input").length;
-//        for (var i = 0; i < inputNum; ++i) {
-//            var inputElem = $("#win").find("input").eq(i);
-//            var inputID = inputElem.attr("id");
-//            // console.log("#1", inputID);
-//            if (oInput.hasOwnProperty(inputID) && (aIgnID.indexOf(inputID) === -1)) {
-//                var IDTmp = "#" + inputID; // id选择器要加个#
-//                oInput[inputID] = $(IDTmp).val();
-//            }
-//        }
-//        sessionStorage.setItem("lastFormData", JSON.stringify(oInput));
-//        ajaxAdd(formData);
-//    } else {
-//        //  alert("输入错误");
-//    }
+
 
 });
 

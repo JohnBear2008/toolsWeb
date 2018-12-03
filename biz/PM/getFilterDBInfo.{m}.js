@@ -33,15 +33,15 @@ module.exports = function(sender) {
 //        	console.log("AttrValue:"+Filter[i][Attr]);
 //        	console.log("AttrCType:"+Filter[i]["CType"]);
         	
-        	if(i==(Filter.length-1)){
-//    		console.log("i:"+i+"Filter.length:"+(Filter.length-1))
-        		SQLFilter=SQLFilter+Attr+Filter[i]["CType"]+"'"+Filter[i][Attr]+"'";
-        	}else{
-        		SQLFilter=SQLFilter+Attr+Filter[i]["CType"]+"'"+Filter[i][Attr]+"'"+" AND ";
+        	
+        	if(Filter[i][Attr]!=""){
+        		console.log("Filter[i][Attr]不是数组且值不为空");
+        	    SQLFilter = SQLFilter + Attr +" "+ Filter[i]['CType']+" "+ "'" + Filter[i][Attr] + "'" + " AND ";
         	}
 
-
         }
+    	
+    	 SQLFilter=SQLFilter.substring(0,SQLFilter.length-5);//去掉最后"AND"字符串
     	 var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
     }else{
     	var sqlGetTableData = "SELECT * FROM "+DBTable;

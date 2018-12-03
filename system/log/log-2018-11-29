@@ -1,0 +1,48 @@
+[2018-11-29T14:40:37.800] [ERROR] dateFileLog - { Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''2018-11-01,'' at line 1
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:94:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:148:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0,
+  sql: 'SELECT * FROM pm_orders LEFT JOIN pm_customers ON pm_orders.customer_ID=pm_customers.cust_FID WHERE Bill_ID>\'\' AND Bill_Apply_Dateundefined\'2018-11-01,\'' }
+[2018-11-29T14:40:37.808] [ERROR] dateFileLog - Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''2018-11-01,'' at line 1
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+[2018-11-29T16:37:47.433] [ERROR] dateFileLog - { Error: [Microsoft][SQL Server Native Client 11.0][SQL Server]在将 varchar 值 '43933130-1' 转换成数据类型 int 时失败。
+  sqlstate: '22018',
+  code: 245,
+  sql: 'select PKValue from comproduct a,(select PKValue from comChangeLog where   changetime>= DATEADD(minute,-10, GETDATE())) b where a.ProdID=b.PKValue  and PKValue=1' }
+[2018-11-29T16:37:48.347] [ERROR] dateFileLog - { Error: [Microsoft][SQL Server Native Client 11.0][SQL Server]在将 varchar 值 'ZMXXX' 转换成数据类型 int 时失败。
+  sqlstate: '22018',
+  code: 245,
+  sql: 'select PKValue from comproduct a,(select PKValue from comChangeLog where   changetime>= DATEADD(minute,-10, GETDATE())) b where a.ProdID=b.PKValue  and PKValue=1' }
+[2018-11-29T16:37:49.347] [ERROR] dateFileLog - { Error: [Microsoft][SQL Server Native Client 11.0][SQL Server]在将 varchar 值 'ZMXXX' 转换成数据类型 int 时失败。
+  sqlstate: '22018',
+  code: 245,
+  sql: 'select PKValue from comproduct a,(select PKValue from comChangeLog where   changetime>= DATEADD(minute,-10, GETDATE())) b where a.ProdID=b.PKValue  and PKValue=1' }

@@ -20,46 +20,57 @@ module.exports = function(sender) {
             }
 
             var Attr = getAttr(Filter[i]);
-            //        	console.log("Attr:"+Attr);
-            //        	console.log("AttrValue:"+Filter[i][Attr]);
-            //        	console.log("AttrCType:"+Filter[i]["CType"]);
-            
-            
-//            if(Filter[i][Attr] instanceof Array){
-//            	
-//            	//console.log("Filter[i][Attr]是数组");
-//            	console.log(Filter[i][Attr][0]+"-"+Filter[i][Attr][1])
-//            	
-//            	if(Filter[i][Attr][0]!=""&&Filter[i][Attr][1]!=""){
-//            		
-//            		SQLFilter=SQLFilter+ Attr +"between  '"+Filter[i][Attr][0] + " ' and "+Filter[i][Attr][1];
-//            		
-//            	}
-//	
-//            }
-            
-            
-            if (i == (Filter.length - 1)) {
-            	
-            	
-                //    		console.log("i:"+i+"Filter.length:"+(Filter.length-1))
-                SQLFilter = SQLFilter + Attr + Filter[i]["CType"] + "'" + Filter[i][Attr] + "'";
-            } else {
-                SQLFilter = SQLFilter + Attr + Filter[i]["CType"] + "'" + Filter[i][Attr] + "'" + " AND ";
+                    	console.log("Attr:"+Attr);
+                    	console.log("AttrValue:"+Filter[i][Attr]);
+                    	console.log("AttrCType:"+Filter[i]["CType"]);
+
+            if(Filter[i][Attr] instanceof Array){
+            	console.log("Filter[i][Attr]是数组");
+            	console.log(Filter[i][Attr][0]+"-"+Filter[i][Attr][1])
+
+            	if(Filter[i][Attr][0]!=""){            		
+            		SQLFilter=SQLFilter+ Attr +">="+"'"+Filter[i][Attr][0]+"'"+" AND ";            		
+            		console.log("SQLFilter:"+SQLFilter);            		
+            	}            	
+                if(Filter[i][Attr][1]!=""){            		
+            		SQLFilter=SQLFilter+ Attr +"<="+"'"+Filter[i][Attr][1]+"'"+" AND ";           		
+            		console.log("SQLFilter:"+SQLFilter);            		
+            	}
+                
+                
+            }else{
+            	if(Filter[i][Attr]!=""){
+            		console.log("Filter[i][Attr]不是数组且值不为空");
+            		
+            		if(Filter[i]['CType']=="LIKE"||Filter[i]['CType']=="NOT LIKE"){
+            			SQLFilter = SQLFilter + Attr +" "+ Filter[i]['CType']+" "+ "'%" + Filter[i][Attr] + "%'" + " AND ";
+            		}else{
+            			SQLFilter = SQLFilter + Attr +" "+ Filter[i]['CType']+" "+ "'" + Filter[i][Attr] + "'" + " AND ";
+            		}
+            		
+            		
+            	}
             }
-            
-            
-            
             
 
         }
 
-        //   console.log("SQLFilter:"+SQLFilter);
+           console.log("SQLFilter:"+SQLFilter);
         // var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
+           
+           if(SQLFilter==""){
+        	   var sqlGetTableData = "SELECT * FROM pm_orders LEFT JOIN pm_customers ON pm_orders.customer_ID=pm_customers.cust_FID ";
+           }else{
+        	   
+        	   var sqlGetTableData = "SELECT * FROM pm_orders LEFT JOIN pm_customers ON pm_orders.customer_ID=pm_customers.cust_FID WHERE " + SQLFilter;
+               
+               sqlGetTableData=sqlGetTableData.substring(0,sqlGetTableData.length-5);//去掉最后"AND"字符串
 
-        var sqlGetTableData = "SELECT * FROM pm_orders LEFT JOIN pm_customers ON pm_orders.customer_ID=pm_customers.cust_FID WHERE " + SQLFilter;
+               console.log("sqlGetTableData:"+sqlGetTableData);
+        	   
+           }
 
-        //   console.log("sqlGetTableData:"+sqlGetTableData);
+       
     } else {
         var sqlGetTableData = "SELECT * FROM pm_orders LEFT JOIN pm_customers ON pm_orders.customer_ID=pm_customers.cust_FID "
     }

@@ -7,14 +7,26 @@ var g_dbConenctions = {
         user: 'root',
         password: '654321',
         insecureAuth: true
-    },
+    }, 
+    "erp_Connection" : {
+    	  engine:"sqlserver",
+    	  package:"msnodesqlv8",
+    	  connection:{
+    	   driver : "SQL Server Native Client 11.0",
+    	   server : '192.168.0.2',
+    	   database : 'CHIComp99',
+    	   user: 'sa',
+         password: 'techDG2218',
+    	  }
+    }
+
 };
 var config = {
     port: 3000,
     biz_Connection: {
         engine: "remote.superagent",
         connection: {
-            url: "http://60.190.61.10:8091/biz"
+            url: "http://127.0.0.1:3000/biz"
 
 //        	url: "http://192.168.0.9:2019/"
         }
@@ -76,7 +88,7 @@ var config = {
     isNeedView: true,
     rootDir: path.join(__dirname, "../yujiang.Foil.Node.WebServer"),
     logDir: path.join(__dirname, "./system/log"),
-    autoRunDirs:[],
+    autoRunDirs:[path.join(__dirname, "./biz/auto")],
     routeDirs: [{
         isNeedAuthorityCheck: true,
         rootDir: path.join(__dirname, "../yujiang.Foil.Node.BizServer"),

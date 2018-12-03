@@ -263,6 +263,8 @@ function showOrdersDBData(DataPara,columnsData){
 	
 	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 	
+
+	
 	
 	$(DataPara.tableID).DataTable({
 	    ajax: {
