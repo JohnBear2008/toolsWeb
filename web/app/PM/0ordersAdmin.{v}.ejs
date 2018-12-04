@@ -126,9 +126,9 @@
 
 
 <!-- 点击报表弹出的窗口 -->
-<div id="ReprotWin" class="easyui-window" title="报表" closed="true" style="width:900px;height:900px;">
+<div id="ReprotWin" class="easyui-window" title="报表" closed="true" style="width:900px;height:600px;">
 
-<table class="table">
+<table class="table" id="reportTable">
 <caption>报表示例</caption>
 <thead>
   <tr>
@@ -152,7 +152,7 @@
   
 </tbody>
 </table>
-
+<button id="sendMailBtn" type="button" class="btn btn-success">发送邮件</button>
 </div>
 
 <script>
@@ -508,7 +508,18 @@ $('#yearReportBtn').click(function() {
 	
 });
 
+//发送email 按钮------------
 
+$('#sendMailBtn').click(function() {
+	
+	var Maildata={"dataRows":dataRows,"fnum":fnum,"frate":frate}
+	
+	  ajaxMail(Maildata);
+	  
+	  
+//	 $('#ReprotWin').window('close');
+	
+});
 
 
 //当前数据报表-----
@@ -526,7 +537,7 @@ $('#divReportBtn').click(function() {
 	  
 	  $("#RowsTotal").html(dataRows);//向指定td输出信息
 	  
-	  var fnum=0;
+	   fnum=0;
 	  
 	  for(var i=0;i<dataRows;i++){
 		  if(ordersTable.row(i).data().State_Flag=="4"){
@@ -536,7 +547,7 @@ $('#divReportBtn').click(function() {
 	  
 	  $("#fnum").html(fnum);
 	  
-	  var frate=(fnum/dataRows).toFixed(4)*100+"%";
+	  frate=(fnum/dataRows).toFixed(4)*100+"%";
 	  
 	//  alert(frate);
 	  $("#frate").html(frate);

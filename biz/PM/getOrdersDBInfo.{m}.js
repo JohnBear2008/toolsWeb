@@ -20,27 +20,27 @@ module.exports = function(sender) {
             }
 
             var Attr = getAttr(Filter[i]);
-                    	console.log("Attr:"+Attr);
-                    	console.log("AttrValue:"+Filter[i][Attr]);
-                    	console.log("AttrCType:"+Filter[i]["CType"]);
+//                    	console.log("Attr:"+Attr);
+//                    	console.log("AttrValue:"+Filter[i][Attr]);
+//                    	console.log("AttrCType:"+Filter[i]["CType"]);
 
             if(Filter[i][Attr] instanceof Array){
-            	console.log("Filter[i][Attr]是数组");
-            	console.log(Filter[i][Attr][0]+"-"+Filter[i][Attr][1])
+//            	console.log("Filter[i][Attr]是数组");
+//            	console.log(Filter[i][Attr][0]+"-"+Filter[i][Attr][1]);
 
             	if(Filter[i][Attr][0]!=""){            		
             		SQLFilter=SQLFilter+ Attr +">="+"'"+Filter[i][Attr][0]+"'"+" AND ";            		
-            		console.log("SQLFilter:"+SQLFilter);            		
+//            		console.log("SQLFilter:"+SQLFilter);            		
             	}            	
                 if(Filter[i][Attr][1]!=""){            		
             		SQLFilter=SQLFilter+ Attr +"<="+"'"+Filter[i][Attr][1]+"'"+" AND ";           		
-            		console.log("SQLFilter:"+SQLFilter);            		
+//            		console.log("SQLFilter:"+SQLFilter);            		
             	}
                 
                 
             }else{
             	if(Filter[i][Attr]!=""){
-            		console.log("Filter[i][Attr]不是数组且值不为空");
+//            		console.log("Filter[i][Attr]不是数组且值不为空");
             		
             		if(Filter[i]['CType']=="LIKE"||Filter[i]['CType']=="NOT LIKE"){
             			SQLFilter = SQLFilter + Attr +" "+ Filter[i]['CType']+" "+ "'%" + Filter[i][Attr] + "%'" + " AND ";
@@ -55,7 +55,7 @@ module.exports = function(sender) {
 
         }
 
-           console.log("SQLFilter:"+SQLFilter);
+//           console.log("SQLFilter:"+SQLFilter);
         // var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
            
            if(SQLFilter==""){
@@ -66,7 +66,7 @@ module.exports = function(sender) {
                
                sqlGetTableData=sqlGetTableData.substring(0,sqlGetTableData.length-5);//去掉最后"AND"字符串
 
-               console.log("sqlGetTableData:"+sqlGetTableData);
+//               console.log("sqlGetTableData:"+sqlGetTableData);
         	   
            }
 

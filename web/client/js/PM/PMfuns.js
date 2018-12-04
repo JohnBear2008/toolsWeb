@@ -1,3 +1,27 @@
+//定义语言包--------------------------
+
+//var languageCN=[{
+//    "url": "dataTables.german.lang",
+//    "sProcessing":   "处理中...",
+//    "sLengthMenu":   "显示 _MENU_ 项结果",
+//    "sZeroRecords":  "没有匹配结果",
+//    "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+//    "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+//    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+//    "sInfoPostFix":  "",
+//    "sSearch":       "搜索:",
+//    "sUrl":          "",
+//    "sEmptyTable":     "表中数据为空",
+//    "sLoadingRecords": "载入中...",
+//    "sInfoThousands":  ",",
+//    "oPaginate": {
+//        "sFirst":    "首页",
+//        "sPrevious": "上页",
+//        "sNext":     "下页",
+//        "sLast":     "末页"
+//    }]
+
+
 //定义表格加载数据函数----------
 
 function showDBData(DataPara,columnsData){
@@ -358,3 +382,22 @@ function showFilterDBData(DataPara,columnsData){
 
 }
 
+
+//发送邮件函数-----------------------
+
+function ajaxMail(data) {
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/sendMail',
+        data: data,
+        success: function(data, textStatus) {
+              alert("发送成功:"+JSON.stringify(textStatus));
+
+
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        	
+        	 alert("发送失败:"+JSON.stringify(textStatus));
+        }
+    });
+}
