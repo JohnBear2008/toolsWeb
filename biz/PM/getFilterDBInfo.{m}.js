@@ -35,7 +35,7 @@ module.exports = function(sender) {
         	
         	
         	if(Filter[i][Attr]!=""){
-        		console.log("Filter[i][Attr]不是数组且值不为空");
+//     		console.log("Filter[i][Attr]不是数组且值不为空");
         	    SQLFilter = SQLFilter + Attr +" "+ Filter[i]['CType']+" "+ "'" + Filter[i][Attr] + "'" + " AND ";
         	}
 
@@ -49,7 +49,7 @@ module.exports = function(sender) {
     
     
     
-   console.log("sqlGetTableData:"+sqlGetTableData);
+ //  console.log("sqlGetTableData:"+sqlGetTableData);
     
 
     

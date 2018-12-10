@@ -1,4 +1,29 @@
 /*jshint esversion: 6 */
+var dataTable_CN = {
+    "sProcessing": "数据加载中 ...",
+    // "sProcessing": "<img src='/images/gif/loading4.gif'>", // mark，显示效果需通过css来处理
+    "sLengthMenu": "显示 _MENU_ 项结果",
+    "sZeroRecords": "没有匹配结果",
+    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+    "sInfoPostFix": "",
+    "sSearch": "搜索： ",
+    "sUrl": "",
+    "sEmptyTable": "- 无数据 -",
+    "sLoadingRecords": "数据加载中 ...",
+    "sInfoThousands": ",",
+    "oPaginate": {
+        "sFirst": "首页",
+        "sPrevious": "<",
+        "sNext": ">",
+        "sLast": "尾页"
+    },
+    "oAria": {
+        "sSortAscending": ": 以升序排列此列",
+        "sSortDescending": ": 以降序排列此列"
+    }
+};
 /*===========================================================================+
 |   prototype expend                                                         |
 +===========================================================================*/
@@ -111,6 +136,76 @@ function fnTableBuffExport(trBuffArg, tdBuffArg, anchorIDArg, fileNameArg, fileT
     $anchor.download = fileNameArg + fileTypeArg;
 }
 
+
+/**
+ * @Describle [导出excel S2版本]
+ * @Details   [包含：多个sheet]
+ * @annotate  [S2 随便取的，这里只是为了区分其他的导出excel功能]
+ * @Author    Muc
+ * @DateTime  2018-12-04
+ * @param     {[type]}    aTableID  [tableID 数组集合]
+ * @param     {[type]}    aWkSheet [atableID 对应的sheet名]
+ * @param     {[type]}    sWbName  [汇出的excel名字，wb代表workbook，此处参照python命名]
+ * @param     {[type]}    appname [格式，这里用excel]
+ */
+function fnExpBtnBind(linkID, aTableID, aWkSheet, sWbName, appname) {
+    var uri = 'data:application/vnd.ms-excel;base64,',
+        tmplWorkbookXML = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
+        '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Axel Richter</Author><Created>{created}</Created></DocumentProperties>' +
+        '<Styles>' +
+        '<Style ss:ID="Currency"><NumberFormat ss:Format="Currency"></NumberFormat></Style>' +
+        '<Style ss:ID="Date"><NumberFormat ss:Format="Medium Date"></NumberFormat></Style>' +
+        '</Styles>' +
+        '{worksheets}</Workbook>',
+        tmplWorksheetXML = '<Worksheet ss:Name="{nameWS}"><Table>{rows}</Table></Worksheet>',
+        tmplCellXML = '<Cell{attributeStyleID}{attributeFormula}><Data ss:Type="{nameType}">{data}</Data></Cell>',
+        base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))); },
+        format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }); };
+
+    var ctx = "";
+    var workbookXML = "";
+    var worksheetsXML = "";
+    var rowsXML = "";
+
+    for (var i = 0; i < aTableID.length; i++) {
+        if (!aTableID[i].nodeType) aTableID[i] = document.getElementById(aTableID[i]);
+
+        // 控制要导出的行数
+        for (var j = 0; j < aTableID[i].rows.length; j++) {
+            rowsXML += '<Row>';
+
+            for (var k = 0; k < aTableID[i].rows[j].cells.length; k++) {
+                var dataType = aTableID[i].rows[j].cells[k].getAttribute("data-type");
+                var dataStyle = aTableID[i].rows[j].cells[k].getAttribute("data-style");
+                var dataValue = aTableID[i].rows[j].cells[k].getAttribute("data-value");
+                dataValue = (dataValue) ? dataValue : aTableID[i].rows[j].cells[k].innerHTML;
+                var dataFormula = aTableID[i].rows[j].cells[k].getAttribute("data-formula");
+                dataFormula = (dataFormula) ? dataFormula : (appname == 'Calc' && dataType == 'DateTime') ? dataValue : null;
+                ctx = {
+                    attributeStyleID: (dataStyle == 'Currency' || dataStyle == 'Date') ? ' ss:StyleID="' + dataStyle + '"' : '',
+                    nameType: (dataType == 'Number' || dataType == 'DateTime' || dataType == 'Boolean' || dataType == 'Error') ? dataType : 'String',
+                    data: (dataFormula) ? '' : dataValue,
+                    attributeFormula: (dataFormula) ? ' ss:Formula="' + dataFormula + '"' : ''
+                };
+                rowsXML += format(tmplCellXML, ctx);
+            }
+            rowsXML += '</Row>';
+        }
+        ctx = { rows: rowsXML, nameWS: aWkSheet[i] || 'Sheet' + i };
+        worksheetsXML += format(tmplWorksheetXML, ctx);
+        rowsXML = "";
+    }
+
+    ctx = { created: (new Date()).getTime(), worksheets: worksheetsXML };
+    workbookXML = format(tmplWorkbookXML, ctx);
+    // console.log(workbookXML);
+
+    var link = document.getElementById(linkID);
+    link.href = uri + base64(workbookXML);
+    link.download = sWbName || 'Workbook.xls';
+    link.target = '_blank';
+}
+
 /*===========================================================================+
 |   function      js                                                         |
 +===========================================================================*/
@@ -141,6 +236,51 @@ function fnSetData2IndexedDB(dbArg, storeArg, sIDArg, oDataArg) {
 
         let objStore = transaction.objectStore(storeArg);
         let putReq = objStore.put({ id: sIDArg, data: oDataArg });
+        putReq.onsuccess = (e) => {};
+    };
+    // 数据库打开失败
+    DBReq.onerror = (e) => {
+        alert("检测到IndexedDB被禁用，影响：无法保存上次成功解析的数据");
+    };
+
+}
+/**
+ * @Describle [将构造的数据对象存储到IndexedDB V1.1.0 改良版]
+ * @Details   [附带 sessionStorege 存储流程]
+ * @Author    Muc
+ * @DateTime  2018-12-04
+ * @param     {[type]}    obj        [创建的全局数据对象，例：g_oMold]
+ * @param     {[type]}    store      [数据仓库（表）, def === "HMIPrint"]
+ * @param     {[type]}    pageID     [仓库的key，def === obj.sFolderName]
+ * @param     {[type]}    sParseFlag [临时会话，记录解析状态，如果解析过就给true, def === (obj.sFolderName+"ParseStat")]
+ * @param     {[type]}    InxDB      [自订的IndexDB名字，def === MucDB]
+ */
+function fnSaveObj2InxDB(obj, store, pageID, sParseFlag, InxDB = "MucDB") {
+    pageID = pageID || obj.sFolderName;
+    sParseFlag = sParseFlag || (pageID + "ParseStat");
+    sessionStorage.setItem(sParseFlag, "true");
+
+    let db,
+        DBReq;
+
+    pageID = pageID || obj.sFolderName;
+
+    DBReq = indexedDB.open(InxDB); // second opt_arg : vers def == 1
+    // 初次创建DB或者版本更新时调用
+    DBReq.onupgradeneeded = function(event) {
+        db = event.target.result;
+        // if store not exist, then create
+        if (!db.objectStoreNames.contains(store)) {
+            let objectStore = db.createObjectStore(store, { keyPath: "id" }); // 主键为id
+        }
+    };
+    // 数据库打开成功后 rewrite数据
+    DBReq.onsuccess = (e) => {
+        db = e.target.result;
+        let transaction = db.transaction([store], "readwrite"); // second arg def == read
+
+        let objStore = transaction.objectStore(store);
+        let putReq = objStore.put({ id: pageID, data: obj });
         putReq.onsuccess = (e) => {};
     };
     // 数据库打开失败
@@ -188,7 +328,44 @@ function fnGetDataFrIndexedDB(dbArg, storeArg, sIDArg, callback) {
     };
 
 }
+/**
+ * @Author    Muc
+ * @DateTime  2018-11-08
+ * @Describle [从IndexedDB获取记录 v1.0.1 改良版 ]
+ * @Warning   [必须通过callback获取结果]
+ * @purpose   [purpose]
+ */
+function fnGetObjFrInxDB(dbArg, storeArg, sIDArg, callback) {
+    let db,
+        DBReq,
+        data;
 
+    DBReq = indexedDB.open(dbArg); // second opt_arg : vers def == 1
+    // 初次创建DB或者版本更新时调用
+    DBReq.onupgradeneeded = function(event) {
+        db = event.target.result;
+        // if store not exist, then create
+        if (!db.objectStoreNames.contains(storeArg)) {
+            db.createObjectStore(storeArg, { keyPath: "id" }); // 主键为id
+        }
+    };
+    // 数据库打开成功后 rewrite数据
+    DBReq.onsuccess = (e) => {
+        db = e.target.result;
+        let transaction = db.transaction([storeArg], "readwrite"); // second arg def == read
+
+        let objStore = transaction.objectStore(storeArg);
+        let getReq = objStore.get(sIDArg);
+        getReq.onsuccess = function(e) {
+            // console.log("#1", e.target.result);
+            if (e.target.result) {
+                data = e.target.result.data;
+                callback(data);
+            }
+        };
+    };
+
+}
 /**
  * @Author    Muc
  * @DateTime  2018-09-27

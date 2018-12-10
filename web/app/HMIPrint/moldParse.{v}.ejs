@@ -1,63 +1,193 @@
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/divContent.css">
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/tableDiv.css">
+<!--本地路径-->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 其他的标准/第三方库-->
+<link rel="stylesheet" type="text/css" href="/bootstrap/v3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/DataTables/v1.10.15/css/dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="/layui/v2.4.5/css/layui.css">
+
+<script src="/bootstrap/v3.3.7/js/bootstrap.min.js"></script>
+<script src="/DataTables/v1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="/DataTables/v1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+<!--自己写的-->
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/master.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/mold-nav-tabs.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/upFolderDiv.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/dataTableExtend.css">
+
 <script type="text/javascript" src="/js/muc_jsExtend.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/common.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/moldParse.js"></script>
-<script src="/js/HMIPrint/FileSaver.min.js"></script>
-<script src="/js/HMIPrint/tableExport.js"></script>
-<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
-<div class="divContent">
-    <!-- 欢迎区 -->
-    <p>欢迎用户：
-        <%-(locals.session==null)?"什么？你居然跳过了登录界面？":locals.session.yjUser.AID%>
-    </p>
-    <hr /><br />
-    <!-- 操作区（按钮等） -->
-    <div id="OperDiv" class="upfold-blue">
-        <!-- <input type="file" id="upFolder" onchange="fnTrvlEvent()" webkitdirectory>点击选择文件夹 -->
-        <input type="file" id="upFolder" webkitdirectory>点击选择文件夹
+
+<div class="content">
+    <!-- 标题区 -->
+    <div class="content-title">
+        <h1>Mold 文件解析</h1>
+        <hr />
     </div>
-    <button id="remitExcel">汇出EXCEL</button>
-    <hr /><br />
-    <!--数据呈现区-->
-    <div class="table-gray">
-        <table id="moldData" border="1">
-            <!-- thead 存放标题， eg. 开模序号、循环计时 。。。 -->
-            <thead>
-                <tr></tr>
-            </thead>
-            <!-- tbody 存放资料信息， eg.  1， 17.69 。。。 -->
-            <tbody>
-            </tbody>
-        </table>
+
+    <!-- 操作区（按钮等） -->
+    <div class="content-operate">
+        <!-- 导出文件 按键 （注：默认为TM54） # TMD这个地方没办法语义化标签，只能加个 anchor-->
+        <input type="file" id="upFolder" style="display:none;" webkitdirectory />
+        <a class="btn btn-lg btn-info" onclick="$('#upFolder').click();">导入文件</a>
+
+        <!--  汇出excel按键 -->
+        <a id="dlink" class="btn btn-lg btn-default">汇出excel</a>
+
+        <!-- 进度提示 -->
+        <label id="PMsg" style="font-weight: bold;font-size: 15px;color: red;margin-left: 20px"></label>
+
+        <!-- 记录单选框 加个hidden是为了防止加载中留下残影 Muc mark, 暂不需要-->
+        <!-- <input id="recBox" type="checkbox" name="check-1" value="recOn" class="lcs_check" autocomplete="off" style="visibility: hidden;" checked="checked" /> -->
+    </div>
+    </br>
+
+    <!-- moldhdr呈现区 -->
+    <div class="mold-hdr" id="moldhdr">
+    </div>
+
+    <!-- DataTable呈现区 mark的元素勿删，是给你做元素结构参考的-->
+    <div class="tab" role="tabpanel">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist" id="DataUl">
+            <!--
+            <li role="presentation" class="active"><a href="#Section1" role="tab" data-toggle="tab">模具</a></li>
+            <li role="presentation"><a href="#Section2" role="tab" data-toggle="tab">射出</a></li>
+        -->
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content" id="tab_content">
+            <!--
+            <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+                <p>1</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="Section2">
+                <p>2</p>
+            </div>
+        -->
+        </div>
     </div>
 </div>
-<script type="text/javascript">
-/* 操作控件事件绑定 */
-$(function() {
-    // 上传文件夹
-    $("#upFolder").change(function() {
-        fnTrvlEvent();
-    });
 
-    // 汇出excel文件
-    $("#remitExcel").click(function() {
-        // 以obj的FolderName作为excel的名字，eg. 监测则为 moni.xls
-        // 因obj无法再此处直接获取，故特殊指定excelName为moni
-        var excelName = "mold";
-        var elemID = "#moldData";
-        fnRemitExcel(elemID, excelName);
-    });
-
+<!-- Muc mark，写着玩的，后续可用作提示美化 -->
+<!-- <script>
+layui.use('element', function() {
+    var $ = layui.jquery,
+        element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+    //触发事件
 });
 
-// 呈现先前成功解析的obj
-$(window).load(function() {
-    var oParsed = JSON.parse(sessionStorage.getItem("mold")); // 当前页面缓存的Obj数据
-    if (oParsed) {
-        fnShowPreMoniData(oParsed);
+</script> -->
+
+
+<script type="text/javascript">
+/*jshint esversion:6*/
+
+/*===========================================================================+
+|   $(document).ready                                                        |
++===========================================================================*/
+$(function(e) {
+    /* “记录”checkbox初始化与事件绑定 */
+    // waring:不能写在onload
+    // Chenly 2018-11-09 默认改为自动记录
+    // fnBindRecTrigger("sMoldRec", "#recBox", "记录", "关闭");
+    /* 单选数据行并高亮显示 */
+});
+
+/*===========================================================================+
+|   document.ready                                                           |
++===========================================================================*/
+$(document).ready(function() {
+    var $pMsgID = $("#PMsg");
+
+    let mucDB = "MucDB",
+        store = "HMIPrint",
+        pageID = "mold",
+        sParseFlag = "moldParseStat", // 假使当前页面解析过，则为true
+        obj = g_oMold,
+        sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+
+    /* === 自动呈现最后一次解析的内容 === */
+    if (sPFlag == "true") {
+        $pMsgID.text("正在呈现最后一次解析结果，请稍后 . . .");
+        fnGetObjFrInxDB(mucDB, store, pageID, callbackInxDB);
     }
+
+    /* === 操作控件事件绑定 === */
+    // 上传文件夹名字变化后
+    $("#upFolder").change(function() {
+        fnTrvlEvent('upFolder');
+    });
+
+    $("#dlink").click(() => {
+        /* 解析过才开放汇出excel功能 */
+        let sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+        if (!sPFlag) {
+            alert("请导入文件后再使用此功能！");
+            return false;
+        }
+    });
+
+    function callbackInxDB(objArg) {
+        if (objArg) {
+            /* 呈现上次的数据快照 */
+            fnShowSnap(objArg);
+
+            /* 汇出excel事件绑定 */
+            let sWbName = objArg.sFolderName;
+            let g_aTableID = ["dtMold", "dtInject", "dtGate", "dtChrg", "dtEject", "dtAirBlast",
+                    "dtCore", "dtNozzl", "dtTemper", "dtProduct", "dtMoni", "dtAlarm", "dtOther"
+                ],
+                g_aWkSheet = ["模具", "射出", "阀门", "储料", "托模", "吹气",
+                    "中子", "座台", "温度", "生产", "监测", "警报", "其他"
+                ];
+            fnExpBtnBind("dlink", g_aTableID, g_aWkSheet, sWbName, "Excel");
+
+            // Muc 2018-12-05 mark，已在呈现处做类似处理
+            /* 解决dataTable加入垂直滚动条后，切换tab表头width变为0px的现象 */
+            // $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            // 获取已激活的标签页的名称
+            // var activeTab = $(e.target).text();
+            // 获取前一个激活的标签页的名称
+            // var previousTab = $(e.relatedTarget).text();
+            // $(".active-tab span").html(activeTab);
+            // $(".previous-tab span").html(previousTab);
+            // console.log(activeTab);
+            // $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            // });
+
+
+        }
+        $pMsgID.text("");
+    }
+
+    /*    indexedDB.deleteDatabase("MucDB");
+        let mucDB = "MucDB",
+            store = "HMIPrint",
+            pageName = "Mold",
+            sRecFlag = "sMoldRec";*/
+
+    // Chenly 2018-11-09 mark，默认为自动记录，同时存在checkbox已经为check的状态，必须要trigger click一下的问题现象
+    /*    let sRecStat = sessionStorage.getItem(sRecFlag); // String类型
+
+        // 呈现先前成功解析的obj
+        function callbackInxDB(data) {
+            // console.log(data);
+            if (data) {
+                fnShowPreMoldData(data);
+            }
+
+            $("#PMsg").text("");
+        }
+
+        if (sRecStat === "true" || sRecCheckStat == "checked") {
+            $("#PMsg").text("正在获取/解析数据文件，请稍后 . . .");
+            fnGetDataFrIndexedDB(mucDB, store, pageName, callbackInxDB);
+        }*/
+
+    // };
 });
 
 </script>

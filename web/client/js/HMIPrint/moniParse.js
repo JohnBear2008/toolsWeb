@@ -572,9 +572,20 @@ function createTable(tableID, data, columns) {
             [15, 50, 200, 500, -1],
             [15, 50, 200, 500, "All"]
         ],
+        /* 使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性 */
+        /* data = [
+                {col1:val, col2:val, col3:val ...},
+                {col1:val, col2:val, col3:val ...},
+                ... ]
+         */
         data: data,
-        //使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性
-        //data 这里是固定不变的，name，position，salary，office 为你数据里对应的属性
+
+        /* columns = [
+                {data:'col1'},
+                {data:'col2'},
+                {data:'col3'},
+                ... ]
+         */
         columns: columns,
 
         /* ========== 显示相关 ========== */
