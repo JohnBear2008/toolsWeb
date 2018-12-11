@@ -401,3 +401,21 @@ function ajaxMail(data) {
         }
     });
 }
+
+
+//发送钉钉消息-----------
+function sendDingMsg(Msg) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/sendDingTalk',
+        data: Msg,
+        success: function(data, textStatus) {
+            alert("成功数据:" + JSON.stringify(data));
+           
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            
+        }
+    });
+}

@@ -1,0 +1,97 @@
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<link rel="stylesheet" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
+<link rel="stylesheet" href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" >
+
+
+<!-- JS -->
+<script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script src="/js/PM/PMfuns.js"></script>
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+<div class="divcontent">
+
+	<h1>钉钉机器人示例</h1>
+	<hr>
+
+	<div class="panel panel-info">
+	
+    <div class="panel-heading">
+        <h3 class="panel-title">消息框</h3>
+    </div>
+    
+    <div class="panel-body">
+
+
+   <form class="form-horizontal" > 
+   
+  
+    
+    
+    <!-------------------------------------------------------------------------->
+    <div class="form-group">
+    <label  class="col-sm-1 control-label" for="name">文本框</label>    
+    <div class="col-sm-6">
+    <textarea id="MsgArea" class="form-control" rows="6"></textarea>
+    </div>
+    </div>
+    
+   
+    <!-------------------------------------------------------------------------->
+    <div class="form-group">    
+    <label  class="col-sm-1 control-label" for="name"></label>  
+    <div class="col-sm-6">
+    <button id="DingSendBtn" class="btn btn-info">发送</button>
+    </div>    
+    </div>
+    <!-------------------------------------------------------------------------->
+    
+    </form>
+    
+
+    </div>
+   </div>
+	
+
+</div>
+
+<script>
+$(document).ready( function () {
+	
+	
+	//发送按钮-----
+	$('#DingSendBtn').click(function() {
+		
+		
+		var Msg={"Msg":$('#MsgArea').val()};
+
+		sendDingMsg(Msg);
+	   
+	    
+	});
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+});
+
+</script>
