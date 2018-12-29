@@ -144,7 +144,7 @@ function delDBData(IDData) {
 //AJAX获取select数据函数
 function getSelectDBData(selectPara,selectorID) {
 	
-//	$(selectorID).empty();//用select组件不用先清空
+	$(selectorID).empty();//用select组件不用先清空
 	  
 	  $.ajax({
           method:'get',
