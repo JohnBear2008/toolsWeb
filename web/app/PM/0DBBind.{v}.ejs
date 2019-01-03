@@ -37,7 +37,7 @@
         <h3 class="panel-title">数据绑定</h3>
     </div>
     
-    <div class="panel-body" style="height:500px;y-overflow:scroll" >
+    <div class="panel-body" style="height:300px;" >
 
 
    <form class="form-horizontal" > 
@@ -95,13 +95,67 @@
     <button id="Add" class="btn btn-info">添加绑定</button>
     </div>    
     </div>
+    
+    <hr>
+    
     <!-------------------------------------------------------------------------->
+    
+    <div class="form-group" >
+    
+    <label  class="col-sm-1 control-label" for="name">选择数据:</label>    
+    <div class="col-sm-2">
+    <select  id="ChoDBType" class="selectpicker" data-live-search="true" > 
+    <option>请选择</option>
+    <option value="pm_customers">客户</option>
+    <option value="pm_functions">功能</option>
+    <option value="pm_staffs">人员</option>
+    <option value="pm_machinetypes">机器类型</option>
+    </select>
+    </div>
+      
+    <div class="col-sm-2" >
+    <select  id="ChoDBTypeSub" class="selectpicker" data-live-search="true" > 
+    </select>
+    </div>
+    
+    <div class="col-sm-1" >
+    <button id="GetInfo" class="btn btn-info">验证数据</button>
+    </div>
+    
+    
+    
+    </div>
+    
     
     </form>
     
 
     </div>
    </div>
+   
+   <hr>
+   
+   <!-- 操作区（按钮等） -->
+   <div class="lineitem">
+
+       <button id="Del" class="btn btn-danger">解除绑定</button>
+   </div>
+   <br/>
+
+   <!--数据呈现区-->
+   <table id="bind_DB" class="table table-striped table-bordered"  >
+       <thead>
+           <tr>
+               <th>源数据类型</th>
+               <th>源数据值</th>
+               <th>绑定数据类型</th>
+               <th>绑定数据值</th>
+           </tr>
+       </thead>
+   </table>
+   
+   
+   
 	
 
 </div>
@@ -190,7 +244,42 @@ $(document).ready( function () {
 		
 	})
 	
-	
+//定义选择数据变更事件---------------------------------	
+	$("#ChoDBType").change(function(){
+
+		var DBtype=$("#ChoDBType").val();
+
+		switch(DBtype)
+		{
+		    case "pm_customers":
+//		    	alert("case1");
+		    	var Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
+		    	getSelectDBData(Select_Para,"#ChoDBTypeSub");
+		        break;
+		    case "pm_staffs":
+//		    	alert("case2");
+		    	var Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+		    	getSelectDBData(Select_Para,"#ChoDBTypeSub");
+		        break;
+		    case "pm_machinetypes":
+//		    	alert("case3");
+		    	var Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
+		    	getSelectDBData(Select_Para,"#ChoDBTypeSub");
+		        break;
+		        
+		    case "pm_functions":
+//		    	alert("case4");
+		    	var Select_Para={DBTable:"pm_functions",selectTitle:"funct_Name"};
+		    	getSelectDBData(Select_Para,"#ChoDBTypeSub");
+		        break;
+		        
+		    default:
+		    	alert("case0");
+		    	break;
+		      
+		}
+		
+	})	
 	
 	
 	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
@@ -220,7 +309,61 @@ $(document).ready( function () {
     });
     
     
+  //定义绑定发送数据结构---------------------
+
+    function Fun_bindDataInfo(OrgDBTypeVal,OrgDBTypeName,OrgDBTypeSubVal,OrgDBTypeSubName,BindDBTypeVal,BindDBTypeName,BindDBTypeSubVal,BindDBTypeSubName){
+    	this.OrgDBTypeVal=OrgDBTypeVal;
+    	this.OrgDBTypeName=OrgDBTypeName;
+    	this.OrgDBTypeSubVal=OrgDBTypeSubVal;
+    	this.OrgDBTypeSubName=OrgDBTypeSubName;
+    	this.BindDBTypeVal=BindDBTypeVal;
+    	this.BindDBTypeName=BindDBTypeName;
+    	this.BindDBTypeSubVal=BindDBTypeSubVal;
+    	this.BindDBTypeSubName=BindDBTypeSubName;
+    } 
     
+    
+  //检查输入信息-------------------
+    function Fun_checkinput(Data) {
+        if (Data.OrgDBTypeVal=="") {
+            alert('源数据类型未选择，请检查!');
+            return false;
+        } else if (Data.OrgDBTypeSubVal=="") {
+            alert('源数据值未选择，请检查!');
+            return false;
+        }else if (Data.BindDBTypeVal=="") {
+            alert('绑定数据类型未选择，请检查!');
+            return false;
+        }else if (Data.BindDBTypeSubVal=="") {
+            alert('绑定数据值未选择，请检查!');
+            return false;
+        }else if (Data.OrgDBTypeSubVal==Data.BindDBTypeVal) {
+            alert('选择同类型数据不能绑定，请检查!');
+            return false;
+        }
+        return true;
+    }  
+    
+    
+  //添加按钮-----
+    $('#Add').click(function() {
+    	
+    	var OrgDBTypeVal=$('#OrgDBType').val();
+    	var OrgDBTypeName=$('#OrgDBType').find("option:selected").text();
+    	var OrgDBTypeSubVal=$('#OrgDBTypeSub').val();
+    	var OrgDBTypeSubName=$('#OrgDBTypeSub').find("option:selected").text();
+    	var BindDBTypeVal=$('#BindDBType').val();
+    	var BindDBTypeName=$('#BindDBType').find("option:selected").text();
+    	var BindDBTypeSubVal=$('#BindDBTypeSub').val();
+    	var BindDBTypeSubName=$('#BindDBTypeSub').find("option:selected").text();
+    	
+    	var postInfo=new Fun_bindDataInfo(OrgDBTypeVal,OrgDBTypeName,OrgDBTypeSubVal,OrgDBTypeSubName,BindDBTypeVal,BindDBTypeName,BindDBTypeSubVal,BindDBTypeSubName);
+    	
+    	Fun_checkinput(postInfo);
+
+    	alert("postInfo:"+JSON.stringify(postInfo));
+    	
+    });
 
 
 	

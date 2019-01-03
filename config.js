@@ -38,7 +38,7 @@ var config = {
         engine: "remote.superagent",
         connection: {
             url: "http://127.0.0.1:2019/biz"
-            //          url: "http://192.168.0.9:2019/" // 这个是我们公司服务器的地址
+            // url: "http://192.168.0.9:2019/" // 这个是我们公司服务器的地址
         }
     },
     homePage_url: "/app/system/sitemap/showSitemap",
@@ -60,9 +60,12 @@ var config = {
         mes: {
             deviceType: "EEI"
         },
+        isNeedReleaseLog:false, 
+        isNeedMultilingual:false,
         loginBackgroundImage: "/images/login/background.jpg",
         userImg: ''
     },
+    
     processTree: {
         isNeedAuthorityCheck: true,
         style: "mes_accordion"
@@ -77,24 +80,39 @@ var config = {
         notNeedLogin_urls: []
     },
     theme: {
-
         layout: {
-            foil: ["mes"][0]
+            foil: ["bright"][0]
         },
         style: {
             easyui: ["default", "black", "bootstrap", "gray", "metro"][3],
-            foil: ["mes", "modern"][0]
-        }
-    },
+            foil: ["bright", "modern"][0]
+        },
+	    lefttree:{
+	    	border_right:'none',
+	    	textcolor: 'rgb(0,0,0)',
+	    	laststage: '#fff',
+	    	laststageunderline:'1px solid #313131',
+	    	getselectedlinebg:'#f1f1f1',
+	    	getselectedlinetext:'#000',
+		}	
+  },
+  project: {
+         status:{//测试中的样式 分别为 文本 颜色 位置 
+             text: '',//为空时不显示测试中的信息
+             color: '#FFFFFF',
+             padding: '22px 0px'
+         },
+		 edition: "mes"
+     },
     packages: {
         version: {
             "jquery-easyui": "1.5",
             "jquery": '1.7.2'
         }
     },
-    project: {
-        edition: "mes"
-    },
+//    project: {
+//        edition: "mes"
+//    },
     isNeedView: true,
     rootDir: path.join(__dirname, "../yujiang.Foil.Node.WebServer"),
     logDir: path.join(__dirname, "./system/log"),
