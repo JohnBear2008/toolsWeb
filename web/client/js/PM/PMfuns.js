@@ -26,7 +26,7 @@
 
 function showDBData(DataPara,columnsData){
 	
-//alert(JSON.stringify(DataPara));
+ //alert(JSON.stringify(DataPara));
 	$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getDBInfo',
@@ -88,14 +88,16 @@ function addDBData(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data, textStatus) {
-            // alert("成功数据:" + JSON.stringify(data));
+             alert("成功数据:" + JSON.stringify(data));
             if (data.affectedRows != 0) {
                 alert("新增数据成功!");
-                window.location.reload();
+//                window.location.reload();
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            alert('新增失败！失败原因：相同内容的数据已存在，请以更新的方式更新此数据！');
+        error: function(err, textStatus, errorThrown) {
+        
+        	alert("失败数据:"+JSON.stringify(err));
+//            alert('新增失败！失败原因：相同内容的数据已存在，请以更新的方式更新此数据！');
         }
     });
 }
@@ -419,3 +421,26 @@ function sendDingMsg(Msg) {
         }
     });
 }
+
+//函数 获取绑定数据----------------------
+function F_getBindDBData(choData){
+	//alert("choData:"+JSON.stringify(choData));
+	
+	 $.ajax({
+	        method: 'get',
+	        url: '/app/PM/getBindDBData',
+	        data: choData,
+	        success: function(data, textStatus) {
+	            alert("成功数据:" + JSON.stringify(data));
+	           
+	        },
+	        error: function(data,XMLHttpRequest, textStatus, errorThrown) {
+	        	alert("失败数据:"+JSON.stringify(data)+XMLHttpRequest+textStatus+errorThrown);
+	            
+	        }
+	    });
+
+	
+}
+
+

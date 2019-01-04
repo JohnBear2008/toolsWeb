@@ -1,8 +1,32 @@
+//定义语言包--------------------------
+
+//var languageCN=[{
+//    "url": "dataTables.german.lang",
+//    "sProcessing":   "处理中...",
+//    "sLengthMenu":   "显示 _MENU_ 项结果",
+//    "sZeroRecords":  "没有匹配结果",
+//    "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+//    "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+//    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+//    "sInfoPostFix":  "",
+//    "sSearch":       "搜索:",
+//    "sUrl":          "",
+//    "sEmptyTable":     "表中数据为空",
+//    "sLoadingRecords": "载入中...",
+//    "sInfoThousands":  ",",
+//    "oPaginate": {
+//        "sFirst":    "首页",
+//        "sPrevious": "上页",
+//        "sNext":     "下页",
+//        "sLast":     "末页"
+//    }]
+
+
 //定义表格加载数据函数----------
 
 function showDBData(DataPara,columnsData){
 	
-//alert(JSON.stringify(DataPara));
+ //alert(JSON.stringify(DataPara));
 	$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getDBInfo',
@@ -64,14 +88,15 @@ function addDBData(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data, textStatus) {
-            // alert("成功数据:" + JSON.stringify(data));
+             alert("成功数据:" + JSON.stringify(data));
             if (data.affectedRows != 0) {
                 alert("新增数据成功!");
                 window.location.reload();
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            alert('新增失败！失败原因：相同内容的数据已存在，请以更新的方式更新此数据！');
+        error: function(err, textStatus, errorThrown) {
+        	alert("失败数据:"+JSON.stringify(err));
+//            alert('新增失败！失败原因：相同内容的数据已存在，请以更新的方式更新此数据！');
         }
     });
 }
@@ -120,7 +145,7 @@ function delDBData(IDData) {
 //AJAX获取select数据函数
 function getSelectDBData(selectPara,selectorID) {
 	
-//	$(selectorID).empty();//用select组件不用先清空
+	$(selectorID).empty();//用select组件不用先清空
 	  
 	  $.ajax({
           method:'get',
@@ -255,7 +280,7 @@ function deleteFile() {
 }
 //---------------------------------------
 
-//定义表格加载数据函数----------
+//定义订单表格加载数据函数----------
 
 function showOrdersDBData(DataPara,columnsData){
 	
@@ -263,7 +288,8 @@ function showOrdersDBData(DataPara,columnsData){
 	
 	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 	
-	$(DataPara.tableID).DataTable({
+	
+	var dataTable=$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getOrdersDBInfo',
 	        data:DataPara,
@@ -271,6 +297,61 @@ function showOrdersDBData(DataPara,columnsData){
 	    },
 	    columns: columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[10,20,50,100],
+
+
+	    "language": {
+          "url": "dataTables.german.lang",
+          "sProcessing":   "处理中...",
+          "sLengthMenu":   "显示 _MENU_ 项结果",
+          "sZeroRecords":  "没有匹配结果",
+          "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+          "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+          "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+          "sInfoPostFix":  "",
+          "sSearch":       "搜索:",
+          "sUrl":          "",
+          "sEmptyTable":     "表中数据为空",
+          "sLoadingRecords": "载入中...",
+          "sInfoThousands":  ",",
+          "oPaginate": {
+              "sFirst":    "首页",
+              "sPrevious": "上页",
+              "sNext":     "下页",
+              "sLast":     "末页"
+          },
+          "oAria": {
+              "sSortAscending":  ": 以升序排列此列",
+              "sSortDescending": ": 以降序排列此列"
+          }
+      }
+	});
+	
+	
+//	var TableData=dataTable.$("input").serialize();
+//	
+//	alert("TableData:"+JSON.stringify(TableData));
+
+}
+
+
+
+//定义待过滤调节表格加载函数
+
+function showFilterDBData(DataPara,columnsData){
+	
+//alert(JSON.stringify(DataPara));
+	
+	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	$(DataPara.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getFilterDBInfo',
+	        data:DataPara,
+	        dataSrc: ''
+	    },
+	    columns: columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[5,10,20],
 
 
 	    "language": {
@@ -301,3 +382,64 @@ function showOrdersDBData(DataPara,columnsData){
 	});
 
 }
+
+
+//发送邮件函数-----------------------
+
+function ajaxMail(data) {
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/sendMail',
+        data: data,
+        success: function(data, textStatus) {
+              alert("发送成功:"+JSON.stringify(textStatus));
+
+
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        	
+        	 alert("发送失败:"+JSON.stringify(textStatus));
+        }
+    });
+}
+
+
+//发送钉钉消息-----------
+function sendDingMsg(Msg) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/sendDingTalk',
+        data: Msg,
+        success: function(data, textStatus) {
+            alert("成功数据:" + JSON.stringify(data));
+           
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            
+        }
+    });
+}
+
+//函数 获取绑定数据----------------------
+function F_getBindDBData(choData){
+	//alert("choData:"+JSON.stringify(choData));
+	
+	 $.ajax({
+	        method: 'get',
+	        url: '/app/PM/getBindDBData',
+	        data: choData,
+	        success: function(data, textStatus) {
+	            alert("成功数据:" + JSON.stringify(data));
+	           
+	        },
+	        error: function(data,XMLHttpRequest, textStatus, errorThrown) {
+	        	alert("失败数据:"+JSON.stringify(data)+XMLHttpRequest+textStatus+errorThrown);
+	            
+	        }
+	    });
+
+	
+}
+
+

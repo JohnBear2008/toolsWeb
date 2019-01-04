@@ -6,8 +6,14 @@ module.exports = function(sender) {
         params : ["PM","addDBData"],
         query : sender.req.body,
         success : function(data){
+        	console.log("dddddddddddd")
+        	console.log(data);
             sender.success(data);
         },
-        error : sender.error
+        error : function(err){
+        	sender.success(err)
+        	console.log(err)
+        	console.log('eeee')
+        }
     });
 }

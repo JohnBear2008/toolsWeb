@@ -1,5 +1,4 @@
 module.exports = function(sender) {
-	console.log("-23---")
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     
@@ -28,25 +27,24 @@ module.exports = function(sender) {
 //    console.log("tableTitle:"+tableTitle);
 //	console.log("tableData:"+tableData);
 	
-var SQLInsert="insert into `"+DBTable+"` ("+tableTitle+") values "+"("+tableData+")";
+var SQLInsert="insert into "+DBTable+" ("+tableTitle+") values "+"("+tableData+")";
 
-console.log(SQLInsert)
+
 //var SQLInsert="insert into PM_customer (cust_FID,cust_Name) values(110,110)";
-	console.log("SQLInsert:"+SQLInsert);
+//	console.log("SQLInsert:"+SQLInsert);
 
-yjDBService.exec({
-    sql: SQLInsert,
-    parameters: [],
-    success:  function(result) {
-    	console.log("result:"+JSON.stringify(result));
+    yjDBService.exec({
+        sql: SQLInsert,
+        parameters: [],
+        success:  function(result) {
+        	console.log("result:"+JSON.stringify(result));
+            sender.success(result);
+        },
+        error:  function(err) {
+        	console.log("err:"+JSON.stringify(err));
+            sender.error(err);
+        },
+    });
 
-    	sender.success({status:1})
-    },
-    error:  function(err) {
-    	console.log("err:"+JSON.stringify(err));
-        sender.error(err);
-    },
-});
-//sender.success({status:1})
 
 };

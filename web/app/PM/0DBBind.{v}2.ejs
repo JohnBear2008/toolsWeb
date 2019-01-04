@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
 <link rel="stylesheet" href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" >
-<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
 
 <!-- JS -->
 <script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,12 +33,11 @@
         <h3 class="panel-title">数据绑定</h3>
     </div>
     
-    
-    
     <div class="panel-body" style="height:300px;" >
 
 
-    <form class="form-horizontal" > 
+   <form class="form-horizontal" > 
+   
 
     <!-------------------------------------------------------------------------->
     <div class="form-group" >
@@ -86,11 +85,10 @@
    
     
     <!-------------------------------------------------------------------------->
-    <div class="form-group">  
-    
+    <div class="form-group">    
     <label  class="col-sm-1 control-label" for="name"></label>  
-    <div class="col-sm-1">
-    <button id="bindBtn" class="btn btn-info">添加绑定</button>
+    <div class="col-sm-6">
+    <button id="Add" class="btn btn-info">添加绑定</button>
     </div>    
     </div>
     
@@ -117,33 +115,26 @@
     </div>
     
     <div class="col-sm-1" >
-    <button id="getBindInfoBtn" class="btn btn-info">验证数据</button>
+    <button id="GetInfo" class="btn btn-info">验证数据</button>
     </div>
     
+    
+    
     </div>
-    <!-------------------------------------------------------------------------->
-
+    
+    
     </form>
     
 
     </div>
-    
-    
-    
-   
-    
-    
-    
-    
    </div>
-   
    
    <hr>
    
    <!-- 操作区（按钮等） -->
    <div class="lineitem">
 
-       <button id="unbindBtn" class="btn btn-danger">解除绑定</button>
+       <button id="Del" class="btn btn-danger">解除绑定</button>
    </div>
    <br/>
 
@@ -151,7 +142,6 @@
    <table id="bind_DB" class="table table-striped table-bordered"  >
        <thead>
            <tr>
-               <th>ID</th>
                <th>源数据类型</th>
                <th>源数据值</th>
                <th>绑定数据类型</th>
@@ -159,8 +149,6 @@
            </tr>
        </thead>
    </table>
-   
-  
    
    
    
@@ -171,46 +159,6 @@
 <script>
 
 
-//定义绑定发送数据结构---------------------
-
-function Fun_bindDataInfo(DBTable,OrgDBType,OrgDBTypeName,OrgDBTypeSub,OrgDBTypeSubName,BindDBType,BindDBTypeName,BindDBTypeSub,BindDBTypeSubName){
-	this.DBTable=DBTable;
-	this.OrgDBType=OrgDBType;
-	this.OrgDBTypeName=OrgDBTypeName;
-	this.OrgDBTypeSub=OrgDBTypeSub;
-	this.OrgDBTypeSubName=OrgDBTypeSubName;
-	this.BindDBType=BindDBType;
-	this.BindDBTypeName=BindDBTypeName;
-	this.BindDBTypeSub=BindDBTypeSub;
-	this.BindDBTypeSubName=BindDBTypeSubName;
-} 
-
-
-//检查输入信息-------------------
-function Fun_checkinput(Data) {
-	
-	alert(JSON.stringify(Data));
-	
-    if (Data.OrgDBType=="0") {
-        alert('源数据类型未选择，请检查!');
-        return false;
-    } else if (Data.OrgDBTypeSub==null) {
-        alert('源数据值未选择，请检查!');
-        return false;
-    }else if (Data.BindDBType=="0") {
-        alert('绑定数据类型未选择，请检查!');
-        return false;
-    }else if (Data.BindDBTypeSub==null) {
-        alert('绑定数据值未选择，请检查!');
-        return false;
-    }else if (Data.OrgDBType==Data.BindDBType) {
-        alert('选择同类型数据不能绑定，请检查!');
-        return false;
-    }
-    return true;
-}  
-
-
 
 
 
@@ -219,7 +167,58 @@ $(document).ready( function () {
 	
 	
 	
+	//表加载数据------------------
+	var DataPara={
+			"tableID":"#bind_DB",
+			"DBTable":"PM_dbbinds"			
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'OrgDBTypeName' },
+        { data: 'OrgDBTypeSubName'},
+        { data: 'BindDBTypeName'},
+        { data: 'BindDBTypeSubName'}
+    ];
 
+// alert(JSON.stringify(DataPara));
+	showDBData(DataPara,columnsData);
+	
+////判断是否选中数据-------
+//var table = $('#bind_DB').DataTable();
+//$('#bind_DB tbody').on('click', 'tr', function() {
+//    if ($(this).hasClass('selected')) {
+//        $(this).removeClass('selected');
+//    } else {
+//        table.$('tr.selected').removeClass('selected');
+//        $(this).addClass('selected');
+//    }
+//});
+//
+////删除按钮----------
+//$('#Del').click(function() {
+//    var dataSelect = table.row('.selected').data();
+//    
+////    alert(JSON.stringify(dataSelect));
+//    
+//    if (dataSelect == undefined) {
+//        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+//    } else {
+//        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+//        if (msg1 === true) {
+//            var msg2 = confirm("确认删除此行数据？");
+//            if (msg2 === true) {
+//            	
+//            //	alert(dataSelect.DBID);
+//                var IDData = {"DBTable":"bind_DB","DBID":dataSelect.DBID};
+//             //   alert("IDData:"+JSON.stringify(IDData));
+//                delDBData(IDData);
+//            }
+//        }
+//    }
+//    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+//});
 	
 	
 
@@ -362,11 +361,48 @@ $(document).ready( function () {
     });
     
     
+  //定义绑定发送数据结构---------------------
 
+    function Fun_bindDataInfo(DBTable,OrgDBType,OrgDBTypeName,OrgDBTypeSub,OrgDBTypeSubName,BindDBType,BindDBTypeName,BindDBTypeSub,BindDBTypeSubName){
+    	this.DBTable=DBTable;
+    	this.OrgDBType=OrgDBType;
+    	this.OrgDBTypeName=OrgDBTypeName;
+    	this.OrgDBTypeSub=OrgDBTypeSub;
+    	this.OrgDBTypeSubName=OrgDBTypeSubName;
+    	this.BindDBType=BindDBType;
+    	this.BindDBTypeName=BindDBTypeName;
+    	this.BindDBTypeSub=BindDBTypeSub;
+    	this.BindDBTypeSubName=BindDBTypeSubName;
+    } 
+    
+    
+  //检查输入信息-------------------
+    function Fun_checkinput(Data) {
+    	
+  	alert(JSON.stringify(Data));
+    	
+        if (Data.OrgDBType=="0") {
+            alert('源数据类型未选择，请检查!');
+            return false;
+        } else if (Data.OrgDBTypeSub==null) {
+            alert('源数据值未选择，请检查!');
+            return false;
+        }else if (Data.BindDBType=="0") {
+            alert('绑定数据类型未选择，请检查!');
+            return false;
+        }else if (Data.BindDBTypeSub==null) {
+            alert('绑定数据值未选择，请检查!');
+            return false;
+        }else if (Data.OrgDBType==Data.BindDBType) {
+            alert('选择同类型数据不能绑定，请检查!');
+            return false;
+        }
+        return true;
+    }  
     
     
   //添加按钮-----
-    $('#bindBtn').click(function() {
+    $('#Add').click(function() {
     	var DBTable="PM_dbbinds";
     	var OrgDBType=$('#OrgDBType').val();
     	var OrgDBTypeName=$('#OrgDBType').find("option:selected").text();
@@ -387,76 +423,6 @@ $(document).ready( function () {
 //    	alert("postInfo:"+JSON.stringify(postInfo));
     	
     });
-    
-    
-    
-    
-    //获取绑定数据按钮-----
-    $('#getBindInfoBtn').click(function() {
-
-    	var ChoDBType=$('#ChoDBType').val();
-    	var ChoDBTypeSub=$('#ChoDBTypeSub').val();
-    	
-    	var ChoData={"OrgDBType":ChoDBType,"OrgDBTypeSub":ChoDBTypeSub};
- 	
-    	F_getBindDBData(ChoData);
-    	
-    });
-    
-    
-    
-	//表加载数据------------------
-	var DataPara={
-			"tableID":"#bind_DB",
-			"DBTable":"PM_dbbinds"			
-	}
-		
-	
-	var columnsData=[
-		{ data: 'DBID' ,"visible": false},
-        { data: 'OrgDBTypeName' },
-        { data: 'OrgDBTypeSubName'},
-        { data: 'BindDBTypeName'},
-        { data: 'BindDBTypeSubName'}
-    ];
-
-// alert(JSON.stringify(DataPara));
-	showDBData(DataPara,columnsData);
-	
-////判断是否选中数据-------
-var table = $('#bind_DB').DataTable();
-$('#bind_DB tbody').on('click', 'tr', function() {
-    if ($(this).hasClass('selected')) {
-        $(this).removeClass('selected');
-    } else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
-    }
-});
-
-//解除绑定按钮----------
-$('#unbindBtn').click(function() {
-    var dataSelect = table.row('.selected').data();
-    
-//    alert(JSON.stringify(dataSelect));
-    
-    if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先点击需要删除的数据行!");
-    } else {
-        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-        if (msg1 === true) {
-            var msg2 = confirm("确认删除此行数据？");
-            if (msg2 === true) {
-            	
-            //	alert(dataSelect.DBID);
-                var IDData = {"DBTable":"PM_dbbinds","DBID":dataSelect.DBID};
-             //   alert("IDData:"+JSON.stringify(IDData));
-                delDBData(IDData);
-            }
-        }
-    }
-    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
-});
     
     
     
