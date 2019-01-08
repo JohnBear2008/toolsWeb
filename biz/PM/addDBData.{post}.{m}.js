@@ -40,12 +40,9 @@ yjDBService.exec({
     success:  function(result) {
     	console.log("result:"+JSON.stringify(result));
 
-    	sender.success({status:1})
+    	sender.success(result)
     },
-    error:  function(err) {
-    	console.log("err:"+JSON.stringify(err));
-        sender.error(err);
-    },
+    error: {},
 });
 //sender.success({status:1})
 

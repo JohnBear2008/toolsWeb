@@ -1,0 +1,629 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
+<div class="divcontent">
+    <h1>订单管理示例</h1>
+    <hr>
+
+    <br/>
+    
+    <div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <button  type="text" class="btn btn-default" disabled="disabled">过滤条件:</button>
+        <button id="dftFilterBtn" type="button" class="btn btn-info">默认</button> 
+        <button id="divFilterBtn" type="button" class="btn btn-info">自定义</button>
+        <button id="allFilterBtn" type="button" class="btn btn-info">全部</button>
+     </div>
+     
+     <div class="btn-group">
+     <button  type="text" class="btn btn-default" disabled="disabled">报表工具:</button>
+
+     <button id="monthReportBtn" type="button" class="btn btn-info">月报</button>
+     <button id="yearReportBtn" type="button" class="btn btn-info">年报</button>
+     <button id="divReportBtn" type="button" class="btn btn-success">生成报表</button>
+     </div>
+     
+    </div>
+    <br/>
+    
+
+    <!--数据呈现区-->
+    <table id="orders_DB" class="table table-striped table-bordered"  >
+        <thead>
+            <tr>
+                <th>数据库ID</th>
+                <th>订单号</th>
+                <th>客户ID</th>
+                <th>客户简称</th>
+                <th>主题</th>
+                <th>申请日期</th>
+                <th>完成期限</th>
+                <th>当前状态</th>
+
+            </tr>
+        </thead>
+    </table>
+    
+    
+
+    
+
+<!-- 点击自定义过滤弹出的窗口 -->
+<div id="divFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:600px;height:560px;">
+<form style="padding:10px 50px;">
+
+<div class="form-group">   
+订单号 :
+    <select  id="from_Selector1" class="selectpicker" data-live-search="true"> 
+           
+           <option value="LIKE">包含</option>
+           <option value="NOT LIKE">不包含</option>
+           <option value="=">等于</option>
+           <option value="<>">不等于</option>
+
+    </select>
+    	<input id="Bill_ID" size="30" type="text" class="required">
+</div>
+
+<div class="form-group">   
+客户ID :
+    <select  id="from_Selector2" class="selectpicker" data-live-search="true"> 
+           <option value="LIKE">包含</option>
+           <option value="NOT LIKE">不包含</option>
+           <option value="=">等于</option>
+           <option value="<>">不等于</option>
+    </select>
+    <input id="Customer_ID" size="30" type="text" class="required">
+</div>
+
+<div class="form-group">   
+订单日期范围:<input id="BDate1" size="30" type="date" class="required">-
+         <input id="EDate1" size="30" type="date" class="required">
+
+
+</div>
+
+    <div style="padding:5px;text-align:center;">
+        <a id="FilterComfirmBtn"　href="#" class="easyui-linkbutton" icon="icon-ok">确认</a>
+        <a id="FilterCancelBtn" href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
+    </div>
+</form>
+</div>
+
+
+</div>
+
+
+<!-- 点击报表弹出的窗口 -->
+<div id="ReprotWin" class="easyui-window" title="报表" closed="true" style="width:900px;height:600px;">
+
+<table class="table" id="reportTable">
+<caption>报表示例</caption>
+<thead>
+  <tr>
+     <th>项目</th>
+     <th>内容</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+     <td>订单总数</td>
+     <td id="RowsTotal"></td>
+  </tr>
+  <tr>
+     <td>已完成订单数</td>
+     <td id="fnum"></td>
+  </tr>
+  <tr>
+  <td>完成率</td>
+  <td id="frate"></td>
+  </tr>
+  
+</tbody>
+</table>
+<button id="sendMailBtn" type="button" class="btn btn-success">发送邮件</button>
+</div>
+
+<script>
+
+////定义显示客户信息数据参数结构-------------
+//function factDataPara(tableID,DBTable,Bill_Topic) {
+//    this.tableID = tableID;
+//    this.DBTable = DBTable;
+//    this.Bill_Topic = Bill_Topic;
+//}
+//检查输入信息-------------------
+function checkinput(Data) {
+    if (Data.Bill_ID=="") {
+        alert('厂商码不能为空，请检查!');
+        return false;
+    } else if (Data.Customer_ID=="") {
+        alert('厂商名称不能为空，请检查!');
+        return false;
+    }
+    return true;
+}
+
+//定义添加发送数据结构---------------------
+
+function addDataInfo(DBTable,Bill_ID,Customer_ID,Bill_Topic){
+	this.DBTable=DBTable;
+	this.Bill_ID=Bill_ID;
+	this.Customer_ID=Customer_ID;
+	this.Bill_Topic=Bill_Topic;
+}
+
+
+//页面加载函数---------------
+$(document).ready( function () {
+		
+//	var DataPara={
+//			"tableID":"#orders_DB",
+//			"Filter":[{"State_Flag":"4","CType":"<>"}]
+//	}
+		
+	
+
+	
+	
+
+	
+
+
+
+
+//添加按钮-----
+$('#Add').click(function() {
+    $('#win').window('open');
+    $('#AddDoButton').show();
+    $('#UpdDoButton').hide();
+    
+});
+
+
+//更新按钮---------
+$('#Upd').click(function() {
+ //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
+    // table.row('.selected').remove().draw( false );
+    var dataSelect = table.row('.selected').data();
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要更新的数据行!");
+    } else {
+        $('#win').window('open');
+        $('#AddDoButton').hide();
+        $('#UpdDoButton').show();
+        
+        $('#Bill_ID').val(dataSelect.Bill_ID);
+        $('#Customer_ID').val(dataSelect.Customer_ID);
+        $('#Bill_Topic').val(dataSelect.Bill_Topic);
+        
+    }
+});
+
+
+//删除按钮----------
+$('#Del').click(function() {
+    var dataSelect = table.row('.selected').data();
+    
+//    alert(JSON.stringify(dataSelect));
+    
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+        if (msg1 === true) {
+            var msg2 = confirm("确认删除此行数据？");
+            if (msg2 === true) {
+            	
+            //	alert(dataSelect.DBID);
+                var IDData = {"DBTable":"PM_orders","DBID":dataSelect.DBID};
+             //   alert("IDData:"+JSON.stringify(IDData));
+                delDBData(IDData);
+            }
+        }
+    }
+    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+});
+
+
+
+//过滤功能组 显示默认按钮-----
+$('#dftFilterBtn').click(function() {
+	
+	
+	
+	var DataPara={
+			"tableID":"#orders_DB",
+			"Filter":[{"State_Flag":"4","CType":"<>"}]
+		
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date_Char'},
+        { data: 'Bill_Limit_Date_Char'},
+        { data: 'State_Flag'},
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showOrdersDBData(DataPara,columnsData);
+	
+	 defineTableSelect();
+
+
+});
+
+$('#dftFilterBtn').click();//开始时默认点击一下,加载默认数据
+
+
+//过滤功能组 显示全部按钮-----
+$('#allFilterBtn').click(function() {
+	
+	var DataPara={
+			"tableID":"#orders_DB"
+		
+	}
+
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date_Char'},
+        { data: 'Bill_Limit_Date_Char'},
+        { data: 'State_Flag'},
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showOrdersDBData(DataPara,columnsData);
+	
+	 defineTableSelect();
+
+
+
+
+});
+
+//过滤功能组 自定义按钮-----
+$('#divFilterBtn').click(function() {
+	
+	 $('#divFilter').window('open');
+	
+
+    
+});
+
+//过滤器确认按钮--------------------
+$('#FilterComfirmBtn').click(function() {
+	
+//	 ordersTable.$('tr.selected').removeClass('selected');
+	
+//	 $('#divFilter').window('open');
+
+	var DataPara={
+			"tableID":"#orders_DB",
+			"Filter":[
+				{"Bill_ID":$("#Bill_ID").val(),"CType":$("#from_Selector1").val()},
+				{"Customer_ID":$("#Customer_ID").val(),"CType":$("#from_Selector2").val()},
+				{"Bill_Apply_Date":[$("#BDate1").val(),$("#EDate1").val()]}
+				
+				]
+	}
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date_Char'},
+        { data: 'Bill_Limit_Date_Char'},
+        { data: 'State_Flag'},
+    ];
+	
+ alert("Filter:"+JSON.stringify(DataPara));
+	 
+	 showOrdersDBData(DataPara,columnsData);
+	 
+	 $('#divFilter').window('close');
+	 
+	 defineTableSelect();
+	 
+
+
+});
+
+//过滤器取消按钮--------------------
+$('#FilterCancelBtn').click(function() {
+	
+	 $('#divFilter').window('close');
+
+});
+
+
+
+
+//判断是否选中数据函数-------
+
+function defineTableSelect(){
+	
+	$('#orders_DB tbody').unbind();//先解绑原有事件,防止重复定义
+	
+		
+		 ordersTable = $('#orders_DB').DataTable();
+		
+
+		$('#orders_DB tbody').on('click', 'tr', function() {
+		    if ($(this).hasClass('selected')) {
+		        $(this).removeClass('selected');
+		    } else {
+		        ordersTable.$('tr.selected').removeClass('selected');
+		        $(this).addClass('selected');
+		    }
+		    
+		    
+		    dataSelect = ordersTable.row('.selected').data();
+	    
+//		    alert("dataSelect:"+JSON.stringify(dataSelect));
+		    
+//		    alert("length:"+ordersTable.row());
+		    
+		    
+
+		});
+		
+	}
+	
+
+
+
+//报表功能键按钮-----
+
+
+//月报过滤-----
+$('#monthReportBtn').click(function() {
+
+	
+    var date=new Date;
+    var Year=date.getFullYear(); 
+    
+    var preMonth=date.getMonth(); 
+    
+    if(preMonth==0){
+    	preMonth=12;
+    	Year=Year-1;
+    }
+    
+    
+
+//	alert(preMonth);
+	
+	var DataPara={
+			"tableID":"#orders_DB",
+			"Filter":[
+				
+				{"Bill_Apply_Date":[Year+"-"+preMonth+"-01",Year+"-"+preMonth+"-31"]}
+				
+				]
+	}
+	
+alert("Filter:"+JSON.stringify(DataPara));
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date_Char'},
+        { data: 'Bill_Limit_Date_Char'},
+        { data: 'State_Flag'},
+    ];
+	
+// alert("Filter:"+JSON.stringify(DataPara));
+	 
+	 showOrdersDBData(DataPara,columnsData);
+	 
+	 $('#divFilter').window('close');
+	 
+	 defineTableSelect();
+	
+});
+
+
+//年报过滤-----
+$('#yearReportBtn').click(function() {
+	
+    var date=new Date;
+    var preYear=date.getFullYear()-1; 
+
+	
+	
+	var DataPara={
+			"tableID":"#orders_DB",
+			"Filter":[
+				
+				{"Bill_Apply_Date":[preYear+"-01-01",preYear+"-12-31"]}
+				
+				]
+	}
+	
+//	alert("Filter:"+JSON.stringify(DataPara));
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Bill_ID' },
+        { data: 'Customer_ID'},
+        { data: 'cust_Name'},
+        { data: 'Bill_Topic'},
+        { data: 'Bill_Apply_Date_Char'},
+        { data: 'Bill_Limit_Date_Char'},
+        { data: 'State_Flag'},
+    ];
+	
+// alert("Filter:"+JSON.stringify(DataPara));
+	 
+	 showOrdersDBData(DataPara,columnsData);
+	 
+	 $('#divFilter').window('close');
+	 
+	 defineTableSelect();
+	
+});
+
+//发送email 按钮------------
+
+$('#sendMailBtn').click(function() {
+	
+	var Maildata={"dataRows":dataRows,"fnum":fnum,"frate":frate}
+	
+	  ajaxMail(Maildata);
+	  
+	  
+//	 $('#ReprotWin').window('close');
+	
+});
+
+
+//当前数据报表-----
+$('#divReportBtn').click(function() {
+	
+	 $('#ReprotWin').window('open');
+	     
+	    info = ordersTable.page.info();
+		dataRows = info.recordsTotal;		    
+
+	  
+//	  alert("dataRowsData:"+JSON.stringify(ordersTable.row(10).data()));
+//	  
+//	  alert("dataRowsData:"+ordersTable.row(10).data().State_Flag);
+	  
+	  $("#RowsTotal").html(dataRows);//向指定td输出信息
+	  
+	   fnum=0;
+	  
+	  for(var i=0;i<dataRows;i++){
+		  if(ordersTable.row(i).data().State_Flag=="4"){
+			  fnum=fnum+1;
+		  }
+	  }
+	  
+	  $("#fnum").html(fnum);
+	  
+	  frate=(fnum/dataRows).toFixed(4)*100+"%";
+	  
+	//  alert(frate);
+	  $("#frate").html(frate);
+
+    
+});
+
+
+
+//form框添加按钮----------
+$('#AddDoButton').click(function() {
+	var DBTable="PM_orders";
+	var Bill_ID=$("#Bill_ID").val();
+	var Customer_ID=$("#Customer_ID").val();
+	var Bill_Topic=$("#Bill_Topic").val();
+	
+	var DBData=new addDataInfo(DBTable,Bill_ID,Customer_ID,Bill_Topic);
+
+	addDBData(DBData);
+
+
+});
+
+
+
+
+//form 更新按钮------------
+$('#UpdDoButton').click(function() {
+	
+ //   var UID = table.row('.selected').data().UID;
+	
+//	var Bill_ID=$('#Bill_ID').val();
+//    var Customer_ID=$('#Customer_ID').val();
+//    var Bill_Topic=$('#Bill_Topic').val();
+	
+	var updInput={
+			Bill_ID:$('#Bill_ID').val(),
+			Customer_ID:$('#Customer_ID').val(),
+			Bill_Topic:$('#Bill_Topic').val()			
+	}
+
+   
+    var updJSON={
+			'DBTable':"PM_orders",
+			'DBID':table.row('.selected').data().DBID
+    	};
+	var changed=0;
+
+    for (var key in updInput) {   	
+//   	alert(key);
+    	if(updInput[key]!=table.row('.selected').data()[key]){    		
+//    		alert("updInput:"+updInput[key]);
+//    		alert("selected:"+table.row('.selected').data()[key]);    		
+    		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
+    		changed=changed+1;
+    	}
+    }
+
+//   alert("updJSON:"+JSON.stringify(updJSON));
+    
+    if(changed!=0){
+    	if (checkinput(updJSON)) {
+    		 var msg = confirm("共调整"+changed+"处信息,请确认！");
+    		 if(msg==true){
+    			 updDBData(updJSON);
+    		 }
+    		 
+    	}
+    }else{
+    	alert("未有任何信息修改!");
+    }
+    
+});
+
+
+//form框 取消按钮----------------
+$('#CancelButton').click(function() {
+    $('#win').window('close');
+});
+
+	
+	
+}); 
+
+</script>

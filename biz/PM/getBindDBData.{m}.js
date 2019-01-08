@@ -59,8 +59,7 @@ module.exports = function(sender) {
         	        	if(bindDBResult.length==dataM.length){
         	        		sender.success(bindDBResult);
         	        	}
-        	        	
-        	        	
+
         	        },
         	        error: sender.error
         	    });

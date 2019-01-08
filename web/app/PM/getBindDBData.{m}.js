@@ -1,17 +1,15 @@
 var yjBizService = global.yjRequire("yujiang.Foil").yjBizService;
 var yjPusher = yjRequire("yujiang.Foil").yjPusher;
-
 module.exports = function(sender) {
     var yjMultiLang = global.yjRequire("yujiang.Foil").yjMultiLang;
     var LCID = yjMultiLang.getCurrentLCID();
-
     sender.req.query.LCID = LCID;
     yjBizService.get({
-        params: ["PM", "getBindDBData"], // Chenly 2018-10-15 关联：biz下的文件夹 与 文件.{m}.ejs
+        params: ["PM", "getBindDBData"], 
         query: sender.req.query,
-
-        success: function(data) {
-            sender.success(data); // Chenly 2018-10-15 如上biz文件内容执行成功则返回数据
+        success: function(data) {       	
+        	console.log("get方式前端success结果:"+JSON.stringify(data))
+            sender.success(data); 
         },
         error: sender.error
     });
