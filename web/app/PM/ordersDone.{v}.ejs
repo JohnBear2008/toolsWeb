@@ -20,193 +20,140 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 
-
-
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 
 
 <div class="divcontent">
-    <h1>预审</h1>
+    <h1>审核发布</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
-    <div class="lineitem">
-        
-     <!--   <button id="DetailBtn" class="btn btn-warning">详情</button> -->
-        
+        <div class="lineitem">
         <!-- 按钮触发模态框 -->
-        <button id="DetailBtn" class="btn btn-primary" data-toggle="modal" >详情</button>
+        <button id="DetailBtn" class="btn btn-primary" data-toggle="modal" >查看详情</button>
+        </div>
+        
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:90%">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">需求单详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">需求单信息汇总</h4>
                     </div>
                     <div class="modal-body">
 
                     <div class="panel panel-info">
+                    
+                    <!--------------需求单基本信息---------------------->
                 	
                     <div class="panel-heading">
-                        <h3 class="panel-title">基本信息</h3>
+                        <h3 class="panel-title">需求单基本信息</h3>
                     </div>
                     
                     <div class="panel-body">
-
-                    <form class="form-horizontal" > 
+                    
+                    <div>
+                    
+                        <span id="SPAN_Bill_ID"></span></br>
+                        <span id="SPAN_Customer_ID"></span>
+                        <span id="SPAN_Customer_Name"></span>    
+                        <span id="SPAN_Bill_From"></span></br>
+                        <span id="SPAN_Bill_Apply_Date_Char"></span>
+                        <span id="SPAN_Bill_Limit_Date_Char"></span></br>
+                        <span id="SPAN_Bill_Topic"></span></br>
+                        <span id="SPAN_Bill_Describe"></span></br>
+                        <span id="SPAN_State_Flag"></span>
+                        
+                    </div>
+                    
+                    </div>
+                    
+                    <!--------------需求单基本信息---------------------->
+                 
+                    
+                    <!--------------核心处理记录---------------------->
+                    
+                  
                    
-                   <!-----form group   分行符------>
-                    <div class="form-group">
-                      <label class="col-sm-1 control-label">单号:</label>
-                      <div class="col-sm-5">
-                        <input id="Bill_ID" class="form-control" id="focusedInput" type="text" value="">
-                      </div>
-                    </div>
-                    
-                    <!-----form group   分行符------>
-                    <div class="form-group">
-                    <label  class="col-sm-1 control-label" for="name">客户:</label>    
-                    <div class="col-sm-2">
-                    <select  id="cust_Selector" class="selectpicker" data-live-search="true"> 
-                    </select>
-                    </div>
-                    
-                    <label  class="col-sm-1 control-label" for="name">主机负责人:</label>    
-                    <div class="col-sm-2">
-                    <select  id="staff_Selector" class="selectpicker" data-live-search="true"> 
-                    </select>
-                    </div>
-                    
-                    <label  class="col-sm-1 control-label" for="name">面板负责人:</label>    
-                    <div class="col-sm-2">
-                    <select  id="staff_Selector" class="selectpicker" data-live-search="true"> 
-                    </select>
-                    </div>
-                    
-                    </div>
-                    <!-----form group   分行符------>
-                    
-                    
-                    <div class="form-group">
-                    <label class="col-sm-1 control-label">修改主题:</label>
-                    <div class="col-sm-5">
-                      <input id="Bill_Topic" class="form-control" id="focusedInput" type="text">
-                    </div>
-                    </div>
-                    
-                    
-                    <!-----form group   分行符------>
-                    <div class="form-group">
-                    <label  class="col-sm-1 control-label" for="name">详情及要求:</label>    
-                    <div class="col-sm-6">
-                    <textarea id="Bill_Describe" class="form-control" rows="6"></textarea>
-                    </div>
-                    </div>
-                    
-                    
-                    <!-----form group   分行符------>
-                    <div class="form-group">   
-                    
-                    <label  class="col-sm-1 control-label" for="name">机型:</label>    
-                    <div class="col-sm-2">
-                    <select  id="mach_Type_Selector" class="selectpicker" data-live-search="true"> 
-                    </select>
-                    </div>
-                    
-                    <label  class="col-sm-1 control-label" for="name">系统:</label>    
-                    <div class="col-sm-2">
-                    <select  id="mach_Type_Selector" class="selectpicker" data-live-search="true"> 
-                    </select>
-                    </div>
-                    
-                    <label  class="col-sm-1 control-label" for="name">原版本号:</label>    
-                    <div class="col-sm-2">
-                    <select  id="mach_Type_Selector" class="selectpicker" data-live-search="true"> 
-                    </select>
-                    </div>
-                    
-                    
-                    </div>
-                    
-                    <!-----form group   分行符------>
-                    <div class="form-group">   
-                    <label  class="col-sm-1 control-label" for="name">来源:</label>    
-                    <div class="col-sm-5">
-                    <select  id="from_Selector" class="selectpicker" data-live-search="true"> 
-                    <option>邮件</option>
-                    <option>电话</option>
-                    <option>传真</option>
-                    <option>微信</option>
-                    <option>其他</option>
-                    </select>
-                    </div>  
-                    </div>
-                    
-                    
-                    <!-----form group   分行符------>
-                    <div class="form-group">
-                    
-                    
-                    <label for="dtp_input2" class="col-sm-1 control-label">申请日期:</label>
-                    <div class="col-sm-2">
-                    <div  class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                        <input id="order_BeginDate" class="form-control " size="16" type="text" value="" readonly>
-                		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                    </div>
-                	<input type="hidden" id="dtp_input2" value="" />	
-                	</div>
-                	
-                	<label for="dtp_input2" class="col-sm-1 control-label">完成期限:</label>
-                    <div class="col-sm-2">
-                    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                        <input  id="order_EndDate" class="form-control " size="16" type="text" value="" readonly>
-                		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                    </div>
-                	<input type="hidden" id="dtp_input2" value="" />	
-                	</div>
-                	
-                	</div>
-                	
-                	
-                	
-                	<div class="form-group">   
-                    
-                    <label  class="col-sm-1 control-label" for="name">审核人:</label>    
-                    <div class="col-sm-2">
-                    <input class="form-control" id="focusedInput" type="text" disabled="disabled" value="<%-(locals.session==null)?"":locals.session.yjUser.Name%>">
-                    </div>
-                    
-
-                    </div>
-                	
-                	
-                	
-                	
-                	
-                	
-                	<!-----form group   分行符------>
-
-                   </form>
-                    
-
-                    </div>
+                   <div class="panel-heading">
+                   <h3 class="panel-title">核心处理记录</h3>
                    </div>
+               
+                    <div class="panel-body">
+
+                    </div>
+                   
+                    <!--------------核心处理记录---------------------->
+                    
+                   
+                    <!--------------DSP处理记录---------------------->
+                    
+                   <div class="panel-heading">
+                   <h3 class="panel-title">DSP处理记录</h3>
+                   </div>
+               
+                   <div class="panel-body">
+                   
+                   <div id="DSPRecordDiv"></div>
+                   
+                   <span id="Bill_DSP_Describe"></span></br>
+                   <span id="Bill_DSP_EndTime_Char"></span>
+                   <span id="Bill_DSPTestMan"></span>    
+                   <span id="Bill_DSPTestTime_Char"></span></br>
+                 
+
+
+                    </div>
+                    <!--------------DSP处理记录---------------------->
+                    
+                    <!--------------HMI处理记录---------------------->
+                    
+                    <div class="panel-heading">
+                    <h3 class="panel-title">HMI处理记录</h3>
+                    </div>
+                
+                     <div class="panel-body">
+
+                     <span id="Bill_MMI_Describe"></span></br>
+                     <span id="Bill_MMI_EndTime_Char"></span>
+                     <span id="Bill_MMITestMan"></span>    
+                     <span id="Bill_MMITestTime_Char"></span></br>
+
+
+                     </div>
+                     <!--------------HMI处理记录---------------------->
+                     
+                     <!--------------测试记录---------------------->
+                     
+                     <div class="panel-heading">
+                     <h3 class="panel-title">测试记录</h3>
+                     </div>
+                 
+                      <div class="panel-body">
+
+                      <div id="MMIRecordDiv"></div>
+
+
+                      </div>
+                      <!--------------测试记录---------------------->
+                     
                     
 
-                    
-                    
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         
-                        <button type="button" class="btn btn-primary">更新需求单</button>
+                        <button type="button" class="btn btn-primary">最终审核</button>
                         
-                        <button type="button" class="btn btn-primary">通过预审</button>
+                        <button id="emailBtn" type="button" class="btn btn-primary">发布邮件</button>
+                        
+                        <button type="button" class="btn btn-primary">完结归档</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
+            
         </div>
         
         
@@ -235,24 +182,31 @@
         </thead>
     </table>
     
-
+    
+   
+    
     
     <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
-    
+    <div id="win" class="easyui-window" title="表单详情" closed="true" style="width:800px;height:500px;"> 
     <div class="divcontent">
 
-	<h1>新单录入</h1>
+	<h3>通知邮件</h3>
 	<hr>
-
 	
+	收件人:***@**.com</br>
+	
+	主题:测试邮件主题</br>
+		
+    内容:测试邮件内容</br></br></br></br></br>
+    	
+    附件:<a>附件程序下下载</a></br>
+	
+	
+	
+	  <button id="emailBtn" type="button" class="btn btn-primary">发布邮件</button>
 	
 
     </div>
-        
-        
-        
-        
     </div>
     <!-- 点击更新、添加按钮后弹出的窗口 -->
     
@@ -293,11 +247,11 @@ function addDataInfo(DBTable,Bill_ID,Customer_ID,Bill_Topic){
 
 
 //函数详情页加载内容------------------------
-function Fun_winInit(dataSelect){
+function Fun_winInit(){
 	
 	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
 	var cust_selectorID="#cust_Selector";
-    getSelectDBData(cust_Select_Para,cust_selectorID,dataSelect.cust_Name);
+    getSelectDBData(cust_Select_Para,cust_selectorID);
 	
     
 	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
@@ -323,11 +277,6 @@ function Fun_winInit(dataSelect){
     
     $('#order_BeginDate').val(Ndate);
     $('#order_EndDate').val(Fun_getEndDate(Ndate,3));
-    
-    
-    $('#Bill_ID').val(dataSelect.Bill_ID);
-    $('#Bill_Topic').val(dataSelect.Bill_Topic);
-    $('#Bill_Describe').val(dataSelect.Bill_Describe);
 	
 	
 	
@@ -390,13 +339,82 @@ $('#DetailBtn').click(function() {
     } else {
     	
     	
-    	$('#myModal').modal('show')
-    	Fun_winInit(dataSelect);
+    	$('#myModal').modal('show');
+    	Fun_winInit();
+    	
+//	alert("dataSelect:"+JSON.stringify(dataSelect));
     	
         
-       
+        $('#SPAN_Bill_ID').html("单号:"+dataSelect.Bill_ID);
+        $('#SPAN_Customer_ID').html("客户ID:"+dataSelect.Customer_ID);
+        $('#SPAN_Customer_Name').html("客户名称:"+dataSelect.cust_Name);
+        $('#SPAN_Bill_From').html("来源:"+dataSelect.Bill_From);
+        $('#SPAN_Bill_Apply_Date_Char').html("申请日期:"+dataSelect.Bill_Apply_Date_Char);
+        $('#SPAN_Bill_Limit_Date_Char').html("完成日期:"+dataSelect.Bill_Limit_Date_Char);
+        $('#SPAN_Bill_Topic').html("主题:"+dataSelect.Bill_Topic);
+        $('#SPAN_Bill_Describe').html("描述:"+dataSelect.Bill_Describe);
+        $('#SPAN_State_Flag').html("状态:"+dataSelect.State_Flag);
+        
+        
+        //--抓取主机对应数据-------------------------   
+        var DSPDataPara={
+    			"tableID":"#orders_DSP",
+    			"DBTable":"PM_orders_DSP",
+    			"Filter":[{"Bill_ID":dataSelect.Bill_ID,"CType":"="}]
+    			
+    	}
+    		
+        var DSPRecordDiv="#DSPRecordDiv";
+
+      
+        
+        var DSPRecordShow={
+        		"Bill_DSP_Describe":"#Bill_DSP_Describe",
+        		"Bill_DSP_EndTime_Char":"#Bill_DSP_EndTime_Char",
+        		"Bill_DSPTestMan":"#Bill_DSPTestMan",
+        		"Bill_DSPTestTime_Char":"#Bill_DSPTestTime_Char"
+        }
+        	
+        Fun_getFilterDBData(DSPDataPara,DSPRecordShow);
+        
+        
+      //--抓取面板对应数据-------------------------   
+        var MMIDataPara={
+    			"tableID":"#orders_MMI",
+    			"DBTable":"PM_orders_MMI",
+    			"Filter":[{"Bill_ID":dataSelect.Bill_ID,"CType":"="}]
+    			
+    	}
+    		
+        var MMIRecordShow={
+        		"Bill_MMI_Describe":"#Bill_MMI_Describe",
+        		"Bill_MMI_EndTime_Char":"#Bill_MMI_EndTime_Char",
+        		"Bill_MMITestMan":"#Bill_MMITestMan",
+        		"Bill_MMITestTime_Char":"#Bill_MMITestTime_Char"
+        }
+        	
+        Fun_getFilterDBData(MMIDataPara,MMIRecordShow);
+        
+
+        
+
+        
+        
+        
+
+
         
     }
+});
+
+
+
+
+//email按钮-----
+$('#emailBtn').click(function() {
+    $('#win').window('open');
+
+    
 });
 
 
@@ -437,6 +455,7 @@ $('#AddDoButton').click(function() {
 	
 	addDBData(DBData);
 	
+
 
 });
 

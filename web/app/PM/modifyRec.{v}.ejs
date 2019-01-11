@@ -25,7 +25,7 @@
 
 
 <div class="divcontent">
-    <h1>DSP记录</h1>
+    <h1>核心修改记录</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -43,7 +43,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">需求单详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">需求单信息</h4>
                     </div>
                     <div class="modal-body">
 
@@ -55,15 +55,24 @@
                     
                     <div class="panel-body">
 
-                        <span id="SPAN_Bill_ID"></span></br>
-                        <span id="SPAN_Customer_ID"></span>
-                        <span id="SPAN_Customer_Name"></span>
+                    <div>
+                    <span id="SPAN_Bill_ID"></span></br>
+                    <span id="SPAN_Customer_ID"></span>
+                    <span id="SPAN_Customer_Name"></span>    
+                    <span id="SPAN_Bill_From"></span></br>
+                    <span id="SPAN_Bill_Apply_Date_Char"></span>
+                    <span id="SPAN_Bill_Limit_Date_Char"></span></br>
+                    <span id="SPAN_Bill_Topic"></span></br>
+                    <span id="SPAN_Bill_Describe"></span></br>
+                    <span id="SPAN_State_Flag"></span>
+                    
+                    </div>
                  
                     
                    </div>
                    
                    <div class="panel-heading">
-                   <h3 class="panel-title">处理记录</h3>
+                   <h3 class="panel-title">申请记录</h3>
                    </div>
                
                     <div class="panel-body">
@@ -76,7 +85,7 @@
                     
 
                     <div class="panel-heading">
-                    <h3 class="panel-title">DSP 处理登记</h3>
+                    <h3 class="panel-title">核心修改记录</h3>
                     </div>
 
                      <div class="panel-body">
@@ -86,7 +95,7 @@
                      
                      <!-------------------------------------------------------------------------->
                       <div class="form-group">
-                        <label class="col-sm-1 control-label">DSP记录号:</label>
+                        <label class="col-sm-1 control-label">申请单号:</label>
                         <div class="col-sm-5">
                           <input class="form-control" id="focusedInput" type="text" value="">
                         </div>
@@ -166,7 +175,7 @@
                       
                       <!-------------------------------------------------------------------------->
                       <div class="form-group">
-                      <label  class="col-sm-1 control-label" for="name">DSP备注</label>    
+                      <label  class="col-sm-1 control-label" for="name">描述</label>    
                       <div class="col-sm-6">
                       <textarea class="form-control" rows="6"></textarea>
                       </div>
@@ -216,14 +225,14 @@
                     
                     <label  class="col-sm-1 control-label" for="name">记录人:</label>    
                     <div class="col-sm-2">
-                    <input class="form-control" id="focusedInput" type="text" value="">
+                    <input class="form-control" id="focusedInput" type="text" disabled="disabled" value="<%-(locals.session==null)?"":locals.session.yjUser.Name%>">
                     </div>
                     
                     
                     
                     <label for="dtp_input2" class="col-sm-1 control-label">记录日期:</label>
                     <div class="col-sm-2">
-                    <input class="form-control" id="focusedInput" type="text" value="">
+                    <input id="ReqDate" class="form-control" disabled="disabled" id="focusedInput" type="text" value="">
                     </div>
                 	  
                     </div>
@@ -251,13 +260,14 @@
                     
                     
                     </div>
+                    
+                    
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        
-                        <button type="button" class="btn btn-primary">更新需求单</button>
-                        
-                        <button type="button" class="btn btn-primary">通过预审</button>
+                    
                     </div>
+                    
+                    
+                    
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
@@ -376,7 +386,7 @@ function Fun_winInit(){
 		forceParse: 0
     });
     
-    $('#order_BeginDate').val(Ndate);
+    $('#ReqDate').val(Ndate);
     $('#order_EndDate').val(Fun_getEndDate(Ndate,3));
 	
 	
@@ -446,21 +456,18 @@ $('#DetailBtn').click(function() {
     //	alert("dataSelect:"+JSON.stringify(dataSelect));
     	
         
-        $('#SPAN_Bill_ID').html("单号:"+dataSelect.Bill_ID);
-        $('#SPAN_Customer_ID').html("客户ID:"+dataSelect.Customer_ID);
-        $('#SPAN_Customer_Name').html("客户名称:"+dataSelect.cust_Name);
+    	  $('#SPAN_Bill_ID').html("单号:"+dataSelect.Bill_ID);
+          $('#SPAN_Customer_ID').html("客户ID:"+dataSelect.Customer_ID);
+          $('#SPAN_Customer_Name').html("客户名称:"+dataSelect.cust_Name);
+          $('#SPAN_Bill_From').html("来源:"+dataSelect.Bill_From);
+          $('#SPAN_Bill_Apply_Date_Char').html("申请日期:"+dataSelect.Bill_Apply_Date_Char);
+          $('#SPAN_Bill_Limit_Date_Char').html("完成日期:"+dataSelect.Bill_Limit_Date_Char);
+          $('#SPAN_Bill_Topic').html("主题:"+dataSelect.Bill_Topic);
+          $('#SPAN_Bill_Describe').html("描述:"+dataSelect.Bill_Describe);
+          $('#SPAN_State_Flag').html("状态:"+dataSelect.State_Flag);
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+      
         
         
         
@@ -508,34 +515,7 @@ $('#AddDoButton').click(function() {
 	
 	addDBData(DBData);
 	
-//    var UID = "";
-//    // UID + form的数据 ==> 构造obj
-//    var aRemainVal = [];
-//    for (var ID in oInput) {
-//        ID = "#" + ID;
-//        var nVal = $(ID).val();
-//        aRemainVal.push(nVal);
-//    }
-//    var formData = new moniData(UID, ...aRemainVal);
-//    // alert("formData:" + JSON.stringify(formData));
-//
-//    if (checkinput(formData)) {
-//        // 保存本次提交表格内数据的值至obj内，便于连续操作
-//        var inputNum = $("#win").find("input").length;
-//        for (var i = 0; i < inputNum; ++i) {
-//            var inputElem = $("#win").find("input").eq(i);
-//            var inputID = inputElem.attr("id");
-//            // console.log("#1", inputID);
-//            if (oInput.hasOwnProperty(inputID) && (aIgnID.indexOf(inputID) === -1)) {
-//                var IDTmp = "#" + inputID; // id选择器要加个#
-//                oInput[inputID] = $(IDTmp).val();
-//            }
-//        }
-//        sessionStorage.setItem("lastFormData", JSON.stringify(oInput));
-//        ajaxAdd(formData);
-//    } else {
-//        //  alert("输入错误");
-//    }
+
 
 });
 

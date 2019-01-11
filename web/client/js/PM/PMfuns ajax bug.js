@@ -61,6 +61,7 @@ function showDBData(DataPara,columnsData){
 
 
 
+
 //AJAX新增数据库数据函数-----------
 function addDBData(DBData) {
 	
@@ -68,16 +69,22 @@ function addDBData(DBData) {
         method: 'post',
         url: '/app/PM/addDBData',
         data: DBData,
-        success: function(data) {
-            alert("成功数据:" + JSON.stringify(data));
-           if (data.affectedRows != 0) {
-               alert("新增数据成功!");
-//               window.location.reload();
-           }
-       },
-       error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
-       }
+        success: function(data, textStatus) {
+             alert("成功数据:" + JSON.stringify(data));
+            if (data.affectedRows != 0) {
+                alert("新增数据成功!");
+//                window.location.reload();
+            }
+        },
+        
+        error:function(err){
+        	alert("失败数据:"+JSON.stringify(err));
+        }
+//        error: function(err, textStatus, errorThrown) {
+//        
+//        	alert("失败数据:"+JSON.stringify(err));
+////            alert('新增失败！失败原因：相同内容的数据已存在，请以更新的方式更新此数据！');
+//        }
     });
 }
 
@@ -123,7 +130,7 @@ function delDBData(IDData) {
 
 
 //AJAX获取select数据函数
-function getSelectDBData(selectPara,selectorID,InitValue) {
+function getSelectDBData(selectPara,selectorID) {
 	
 	$(selectorID).empty();//用select组件不用先清空
 	  
@@ -137,7 +144,7 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
         	  
         	  
         		$(selectorID).selectpicker({
-        			noneSelectedText : InitValue//默认显示内容
+        			noneSelectedText : '请选择'//默认显示内容
    
         		});
         	  
@@ -341,53 +348,6 @@ function showFilterDBData(DataPara,columnsData){
 
 }
 
-//函数 获取数据库信息 带过滤器
-
-function Fun_getFilterDBData(DataPara,DivID){
-	
-//alert(JSON.stringify(DataPara));
-	
-	$.ajax({
-	      type: "get",      //data 传送数据类型。post 传递
-	      dataType: 'json',  // 返回数据的数据类型json
-	      url: '/app/PM/getFilterDBInfo',  // yii 控制器/方法
-	      cache: false,      
-	      data: DataPara,  //传送的数据
-	      error:function(){
-	         alert("数据传输错误");
-	      },
-	      success: function (data) {
-//	    	  alert("成功返回数据:"+JSON.stringify(data));
-	    	  
-	    	  console.log("成功返回数据:"+JSON.stringify(data[0]));
-	    	  
-	    	  for(var key in DivID){
-	    		  console.log(key +":"+ DivID[key]);
-	    		  
-	    		  for(var dkey in data[0]){
-	    			  
-	    			  if(key==dkey){
-	    				  $(DivID[key]).html(data[0][dkey]);
-	    			  }
-	    		  }
-
-	    	  }
-	    	  
-	    	  
-	    	  
-//	    	  $(DivID).html(JSON.stringify(data));
-	    	  
-//	         if(window.console){
-//	            console.log(data);
-//	         }
-	         
-//	         return data;
-	      }
-	})   
-
-}
-
-
 
 //发送邮件函数-----------------------
 
@@ -434,11 +394,11 @@ function F_getBindDBData(choData){
 	        method: 'get',
 	        url: '/app/PM/getBindDBData',
 	        data: choData,
-	        success: function(data) {
+	        success: function(data, textStatus) {
 	            alert("成功数据:" + JSON.stringify(data));
 	        },
-	        error: function(err) {
-	        	alert("失败数据:"+JSON.stringify(err));   
+	        error: function(data,XMLHttpRequest, textStatus, errorThrown) {
+	        	alert("失败数据:"+JSON.stringify(data)+XMLHttpRequest+textStatus+errorThrown);   
 	        }
 	    });
 

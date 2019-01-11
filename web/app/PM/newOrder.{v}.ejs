@@ -124,6 +124,55 @@
 	
 	
 	
+	
+<!-------------------------------------------------------------------------->
+    
+    <div class="form-group">
+    <label  class="col-sm-1 control-label" for="name">上传</label>  
+    
+    <div class="col-sm-6">
+    <div id="div_previewImages"></div>
+    <div id="progressNumber"></div>
+    
+    
+    <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
+    <a class="btn btn-info" onclick="$('#fileToUpload').click();">选择文件</a>
+    
+    
+	<input type="button" class="btn " onclick="uploadFile()" value="确认上传" >
+	<input type="button" class="btn " onclick="deleteFile()" value="delete" >
+    
+    
+    </div>
+
+    
+   
+
+	
+	</div>
+	
+	<!-------------------------------------------------------------------------->
+	 <div class="form-group">
+	<label  class="col-sm-1 control-label" for="name">服务器获取</label>
+	
+	<div class="col-sm-6">
+
+	<div id="div_images"></div>
+	</div>
+	
+	
+	</div>
+	
+    <div class="form-group">   
+    
+    <label  class="col-sm-1 control-label" for="name">制单人:</label>    
+    <div class="col-sm-2">
+    <input class="form-control" id="focusedInput" type="text" disabled="disabled" value="<%-(locals.session==null)?"":locals.session.yjUser.Name%>">
+    </div>
+    
+
+	
+    </div>
 
     
     
@@ -152,17 +201,17 @@ $(document).ready( function () {
 	
 	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
 	var cust_selectorID="#cust_Selector";
-    getSelectDBData(cust_Select_Para,cust_selectorID);
+    getSelectDBData(cust_Select_Para,cust_selectorID,"请选择");
 	
     
 	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
 	var staff_selectorID="#staff_Selector";
-    getSelectDBData(staff_Select_Para,staff_selectorID);
+    getSelectDBData(staff_Select_Para,staff_selectorID,"请选择");
     
     
     var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
 	var mach_Type_selectorID="#mach_Type_Selector";
-    getSelectDBData(mach_Type_Select_Para,mach_Type_selectorID);
+    getSelectDBData(mach_Type_Select_Para,mach_Type_selectorID,"请选择");
     
     
     $('.form_date').datetimepicker({
