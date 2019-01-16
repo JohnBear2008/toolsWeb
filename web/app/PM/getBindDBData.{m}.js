@@ -7,7 +7,8 @@ module.exports = function(sender) {
     yjBizService.get({
         params: ["PM", "getBindDBData"], 
         query: sender.req.query,
-        success: function(data) {       	
+        success: function(data) {  
+        	console.log("get方式前端query:"+JSON.stringify(sender.req.query))
         	console.log("get方式前端success结果:"+JSON.stringify(data))
             sender.success(data); 
         },

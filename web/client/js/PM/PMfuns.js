@@ -69,10 +69,10 @@ function addDBData(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-            alert("成功数据:" + JSON.stringify(data));
+//            alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
                alert("新增数据成功!");
-//               window.location.reload();
+               window.location.reload();
            }
        },
        error:function(err){
