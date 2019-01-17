@@ -48,6 +48,8 @@
      <button id="divReportBtn" type="button" class="btn btn-success">生成报表</button>
      </div>
      
+     <button id="testBtn" type="button" class="btn btn-info">数据销毁</button> 
+     
     </div>
     <br/>
     
@@ -188,7 +190,18 @@ $(document).ready( function () {
 //	}
 		
 	
+	//数据销毁按钮-----
+	$('#testBtn').click(function() {
+		
+		$("#orders_DB").DataTable().destroy();
+		
+//		$("#orders_DB tbody").html("");
 
+//		$("#orders_DB").DataTable().Clear();
+//
+
+
+	});
 	
 	
 
@@ -352,7 +365,7 @@ $('#FilterComfirmBtn').click(function() {
         { data: 'State_Flag'},
     ];
 	
- alert("Filter:"+JSON.stringify(DataPara));
+// alert("Filter:"+JSON.stringify(DataPara));
 	 
 	 showOrdersDBData(DataPara,columnsData);
 	 
@@ -438,7 +451,7 @@ $('#monthReportBtn').click(function() {
 				]
 	}
 	
-alert("Filter:"+JSON.stringify(DataPara));
+//alert("Filter:"+JSON.stringify(DataPara));
 	
 	var columnsData=[
 		{ data: 'DBID' ,"visible": false},
@@ -487,8 +500,8 @@ $('#yearReportBtn').click(function() {
         { data: 'Customer_ID'},
         { data: 'cust_Name'},
         { data: 'Bill_Topic'},
-        { data: 'Bill_Apply_Date_Char'},
-        { data: 'Bill_Limit_Date_Char'},
+        { data: 'Bill_Apply_Date'},
+        { data: 'Bill_Limit_Date'},
         { data: 'State_Flag'},
     ];
 	

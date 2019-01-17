@@ -1,3 +1,5 @@
+require("../../client/js/Date.js");
+
 module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;

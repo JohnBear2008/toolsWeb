@@ -325,6 +325,8 @@ function showFilterDBData(DataPara,columnsData){
 //alert(JSON.stringify(DataPara));
 	
 	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	
 	$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getFilterDBInfo',

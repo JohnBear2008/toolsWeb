@@ -17,6 +17,7 @@ var g_dbConenctions = {
         user: 'root',
         password: '654321',
         insecureAuth: true
+//       timezone:'GMT' //时区
     },
 
     "erp_Connection": {

@@ -63,8 +63,8 @@
                         <span id="SPAN_Customer_ID"></span>
                         <span id="SPAN_Customer_Name"></span>    
                         <span id="SPAN_Bill_From"></span></br>
-                        <span id="SPAN_Bill_Apply_Date_Char"></span>
-                        <span id="SPAN_Bill_Limit_Date_Char"></span></br>
+                        <span id="SPAN_Bill_Apply_Date"></span>
+                        <span id="SPAN_Bill_Limit_Date"></span></br>
                         <span id="SPAN_Bill_Topic"></span></br>
                         <span id="SPAN_Bill_Describe"></span></br>
                         <span id="SPAN_State_Flag"></span>
@@ -102,9 +102,9 @@
                    <div id="DSPRecordDiv"></div>
                    
                    <span id="Bill_DSP_Describe"></span></br>
-                   <span id="Bill_DSP_EndTime_Char"></span>
+                   <span id="Bill_DSP_EndTime"></span>
                    <span id="Bill_DSPTestMan"></span>    
-                   <span id="Bill_DSPTestTime_Char"></span></br>
+                   <span id="Bill_DSPTestTime"></span></br>
                  
 
 
@@ -120,9 +120,9 @@
                      <div class="panel-body">
 
                      <span id="Bill_MMI_Describe"></span></br>
-                     <span id="Bill_MMI_EndTime_Char"></span>
+                     <span id="Bill_MMI_EndTime"></span>
                      <span id="Bill_MMITestMan"></span>    
-                     <span id="Bill_MMITestTime_Char"></span></br>
+                     <span id="Bill_MMITestTime"></span></br>
 
 
                      </div>
@@ -429,8 +429,8 @@ $(document).ready( function () {
         { data: 'Customer_ID'},
         { data: 'cust_Name'},
         { data: 'Bill_Topic'},
-        { data: 'Bill_Apply_Date_Char'},
-        { data: 'Bill_Limit_Date_Char'},
+        { data: 'Bill_Apply_Date'},
+        { data: 'Bill_Limit_Date'},
         { data: 'State_Flag'},
     ];
 
@@ -479,8 +479,8 @@ $('#DetailBtn').click(function() {
         $('#SPAN_Customer_ID').html("客户ID:"+dataSelect.Customer_ID);
         $('#SPAN_Customer_Name').html("客户名称:"+dataSelect.cust_Name);
         $('#SPAN_Bill_From').html("来源:"+dataSelect.Bill_From);
-        $('#SPAN_Bill_Apply_Date_Char').html("申请日期:"+dataSelect.Bill_Apply_Date_Char);
-        $('#SPAN_Bill_Limit_Date_Char').html("完成日期:"+dataSelect.Bill_Limit_Date_Char);
+        $('#SPAN_Bill_Apply_Date').html("申请日期:"+dataSelect.Bill_Apply_Date);
+        $('#SPAN_Bill_Limit_Date').html("完成日期:"+dataSelect.Bill_Limit_Date);
         $('#SPAN_Bill_Topic').html("主题:"+dataSelect.Bill_Topic);
         $('#SPAN_Bill_Describe').html("描述:"+dataSelect.Bill_Describe);
         $('#SPAN_State_Flag').html("状态:"+dataSelect.State_Flag);
@@ -500,9 +500,9 @@ $('#DetailBtn').click(function() {
         
         var DSPRecordShow={
         		"Bill_DSP_Describe":"#Bill_DSP_Describe",
-        		"Bill_DSP_EndTime_Char":"#Bill_DSP_EndTime_Char",
+        		"Bill_DSP_EndTime":"#Bill_DSP_EndTime",
         		"Bill_DSPTestMan":"#Bill_DSPTestMan",
-        		"Bill_DSPTestTime_Char":"#Bill_DSPTestTime_Char"
+        		"Bill_DSPTestTime":"#Bill_DSPTestTime"
         }
         	
         Fun_getFilterDBData(DSPDataPara,DSPRecordShow);
@@ -518,9 +518,9 @@ $('#DetailBtn').click(function() {
     		
         var MMIRecordShow={
         		"Bill_MMI_Describe":"#Bill_MMI_Describe",
-        		"Bill_MMI_EndTime_Char":"#Bill_MMI_EndTime_Char",
+        		"Bill_MMI_EndTime":"#Bill_MMI_EndTime",
         		"Bill_MMITestMan":"#Bill_MMITestMan",
-        		"Bill_MMITestTime_Char":"#Bill_MMITestTime_Char"
+        		"Bill_MMITestTime":"#Bill_MMITestTime"
         }
         	
         Fun_getFilterDBData(MMIDataPara,MMIRecordShow);

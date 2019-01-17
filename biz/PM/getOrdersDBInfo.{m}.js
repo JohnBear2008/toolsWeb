@@ -1,9 +1,13 @@
+require("../../client/js/Date.js");
+
 module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
+    
+
 
     //    var aDataIDs = sender.req.query.t;  
-  //  console.log("get:" + JSON.stringify(sender.req.query));
+//  console.log("get:" + JSON.stringify(sender.req.query));
 
     var Filter = sender.req.query.Filter;
 
@@ -82,6 +86,9 @@ module.exports = function(sender) {
         rowsAsArray: false,
         // Chenly 2018-10-19 返回obj arr
         success: function(result) {
+        	
+//       	console.log("查询结果:"+JSON.stringify(result[0]));
+//       	console.log("查询结果:"+result[0].Bill_Limit_Date);
 
             sender.success(result);
         },
