@@ -185,19 +185,28 @@ function uploadFile() {
 	var fd = new FormData();
 	var files = document.getElementById('fileToUpload').files;
 	
-	for ( var i = 0; i < files.length; i++) {
+	if(files.length>1){
+		alert("多文件上传请统一打包成唯一压缩包!");
+		document.getElementById('div_previewImages').innerHTML="";
 		
-		alert("files[i]:"+JSON.stringify(files[i]));
-		fd.append(i, files[i]);
+	}else{
+        for ( var i = 0; i < files.length; i++) {
+			
+//			alert("files[i]:"+JSON.stringify(files[i]));
+			fd.append(i, files[i]);
+			
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.upload.addEventListener("progress", uploadProgress, false);
+		xhr.addEventListener("load", uploadComplete, false);
+		xhr.addEventListener("error", uploadFailed, false);
+		xhr.addEventListener("abort", uploadCanceled, false);
+		xhr.open("POST", "/system.files.upload/");
+		xhr.send(fd);
 		
 	}
-	var xhr = new XMLHttpRequest();
-	xhr.upload.addEventListener("progress", uploadProgress, false);
-	xhr.addEventListener("load", uploadComplete, false);
-	xhr.addEventListener("error", uploadFailed, false);
-	xhr.addEventListener("abort", uploadCanceled, false);
-	xhr.open("POST", "/system.files.upload/");
-	xhr.send(fd);
+	
+	
 }
 function uploadProgress(evt) {
 	if (evt.lengthComputable) {
@@ -216,13 +225,13 @@ var g_uploaded = null;
 
 function uploadComplete(evt) {
 	if (evt.target.status != 200) {
-		alert(evt.target.responseText);
+//		alert(evt.target.responseText);
 		return;
 	}
 	/* 服务器端返回响应时候触发event事件*/
 	//var img=document.getElementById('img_show');
-	var div = document.getElementById('div_images');
-	alert(evt.target.responseText);
+	var div = document.getElementById('divFilesUploaded');
+//	alert(evt.target.responseText);
 	g_uploaded = JSON.parse(evt.target.responseText);
 	//alert(obj[0].key);
 	var span = document.createElement("span");
@@ -232,13 +241,13 @@ function uploadComplete(evt) {
 	for ( var name in g_uploaded.files) {
 		var file=g_uploaded.files[name];
 		
-		alert("g_uploaded.files[name]:"+JSON.stringify(g_uploaded.files[name]));
+//		alert("g_uploaded.files[name]:"+JSON.stringify(g_uploaded.files[name]));
 		
 	
 		for (var i=0;i<file.length;i++){
 			if (file[i].status == "success") {
 				
-				alert("file[i]:"+JSON.stringify(file[i]));
+//				alert("file[i]:"+JSON.stringify(file[i]));
 
 				
 				var span = document.createElement("span");
@@ -247,12 +256,13 @@ function uploadComplete(evt) {
 				
 				
 				span.innerHTML = url;
+
 				div.appendChild(span);
 				div.appendChild(document.createElement("br"));
 //				var img = document.createElement("img");
 //				img.src = url;
 //				div.appendChild(img);
-				var downloadurl="<a href="+url+" download="+file[i].fileRawName+">"+file[i].fileRawName+"</a>";
+				var downloadurl="<a id='filePath' href="+url+" download="+file[i].fileRawName+">"+"<span id='fileName'>"+file[i].fileRawName+"</span></a>";
 				span.innerHTML =downloadurl;
 				div.appendChild(document.createElement("br"));
 			} else {
@@ -281,6 +291,9 @@ function deleteFile() {
 		
 	}
 	
+	document.getElementById('div_previewImages').innerHTML="";
+	document.getElementById('progressNumber').innerHTML="";
+	document.getElementById('divFilesUploaded').innerHTML="";
 	
 	alert("删除附件成功");
 }
@@ -447,13 +460,21 @@ function F_getBindDBData(choData){
 }
 
 //定义日期格式------------
-Date.prototype.format=function (){
-   var s='';
-   s+=this.getFullYear()+'-';          // 获取年份。
-   s+=(this.getMonth()+1)+"-";         // 获取月份。
-   s+= this.getDate();                 // 获取日。
-   return(s);                          // 返回日期。
-};
+Date.prototype.Format = function (fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "H+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
 
 
 //获取格式化当前日期-----------
@@ -480,9 +501,54 @@ Ndate=Fun_curentTime();
 function Fun_getEndDate(date, days) {	
 	var oldDate=new Date(date);
 	var milliseconds=oldDate.getTime()+1000*60*60*24*days;
-	var newDate= new Date(milliseconds).format("yyyy-MM-dd");	
+	var newDate= new Date(milliseconds).Format("yyyy-MM-dd");
 	return newDate;
 
 }
 
+//函数-根据自定义SQL获取数据加载表格
 
+
+function Fun_showSQLTable(SQL,tableInfo){
+	
+	//alert(JSON.stringify(DataPara));
+		
+		$(tableInfo.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+		
+		$(tableInfo.tableID).DataTable({
+		    ajax: {
+		        url: '/app/PM/getSQLDBData',
+		        data:SQL,
+		        dataSrc: ''
+		    },
+		    columns: tableInfo.columnsData,
+		    aaSorting: [0, 'desc'],//默认排序
+		    lengthMenu:[5,10,20],
+
+
+		    "language": languageCN
+		});
+
+	}
+
+
+//函数-添加附件信息数据库
+
+function Fun_addfileInfo(DBData) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/addDBData',
+        data: DBData,
+        success: function(data) {
+//            alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+               alert("订单新增附件成功!");
+//               window.location.reload();
+           }
+       },
+       error:function(err){
+       	alert("失败数据:"+JSON.stringify(err));
+       }
+    });
+}

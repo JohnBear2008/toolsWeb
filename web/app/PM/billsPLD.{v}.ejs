@@ -1,0 +1,770 @@
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+<link href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
+
+
+<!-- JS  -->
+
+<script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
+<div class="divcontent">
+    <h1>计划单汇总</h1>
+    <hr>
+
+    <!-- 操作区（按钮等） -->
+    <div class="lineitem">
+        
+     <!--   <button id="BTNInfo" class="btn btn-warning">详情</button> -->
+        
+        <!-- 按钮触发模态框 -->
+        <button id="BTNAdd" class="btn btn-primary" data-toggle="modal" >新增</button>
+        <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
+        <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width:90%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="BillPLDLabel">计划单详情</h4>
+                    </div>
+                    <div class="modal-body">
+
+                    <div class="panel panel-info">
+                	
+                    <div class="panel-heading">
+                        <h3 class="panel-title">基本信息</h3>
+                    </div>
+                    
+                    <div class="panel-body">
+
+                    <form class="form-horizontal" >  
+                    
+                    
+                    <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                       <label class="col-sm-1 control-label">计划单号:</label>
+                       <div class="col-sm-5">
+                         <input id="BPID" class="form-control" id="focusedInput" type="text" value="">
+                       </div>
+                     </div>
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     
+                     <label  class="col-sm-1 control-label" for="name">客户:</label>    
+                     <div class="col-sm-2">
+                     <select  id="CTRID" class="selectpicker" data-live-search="true" > 
+                     </select>
+                     </div>
+                     
+                     
+                     <label  class="col-sm-1 control-label" for="name">来源:</label>    
+                     <div class="col-sm-5">
+                     <select  id="orderFrom" class="selectpicker" data-live-search="true"> 
+                     <option>邮件</option>
+                     <option>电话</option>
+                     <option>传真</option>
+                     <option>微信</option>
+                     <option>其他</option>
+                     </select>
+                     </div>  
+                     
+                     
+                     
+                     
+
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">   
+                     
+                     <label  class="col-sm-1 control-label" for="name">机型:</label>    
+                     <div class="col-sm-2">
+                     <select  id="MHETypeID" class="selectpicker" data-live-search="true"> 
+                     </select>
+                     </div>  
+                     
+                     
+                     <label  class="col-sm-1 control-label" for="name">系统:</label>    
+                     <div class="col-sm-2">
+                     <select  id="MHETypeID" class="selectpicker" data-live-search="true"> 
+                     </select>
+                     </div>  
+                    
+                     </div>
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     
+                     <label for="applyDate" class="col-sm-1 control-label">申请日期:</label>                     
+                     <div class="col-sm-2">
+                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="applyDate" data-link-format="yyyy-mm-dd" >
+                         <input id="applyDate" class="form-control " size="16" type="text" value="" readonly>
+                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                     </div>
+                     <input type="hidden" id="applyDate" value="" />                 	
+                 	 </div>
+                     
+                     
+                     <label for="limitDate" class="col-sm-1 control-label">完成期限:</label>                     
+                     <div class="col-sm-2">
+                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="limitDate" data-link-format="yyyy-mm-dd" >
+                         <input id="limitDate" class="form-control " size="16" type="text" value="" readonly>
+                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                     </div>
+                     <input type="hidden" id="limitDate" value="" />                 	
+                 	 </div>
+                 	
+                 	
+                 	
+                 	
+                 	 </div>
+                 	
+                     
+                    
+                     
+                     <!-------------------------------------------------------------------------->
+
+                     <div class="form-group">
+                     <label class="col-sm-1 control-label">修改主题:</label>
+                     <div class="col-sm-5">
+                       <input id="topic" class="form-control" id="focusedInput" type="text" value="">
+                     </div>
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     <label  class="col-sm-1 control-label" for="name">问题描述:</label>    
+                     <div class="col-sm-6">
+                     <textarea id="describe" class="form-control" rows="6"></textarea>
+                     </div>
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     
+                     <div class="form-group">
+                     <label  class="col-sm-1 control-label" for="name">上传</label>  
+                     
+                     <div class="col-sm-6">
+                     
+                     
+                     
+                     <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
+                     <a class="btn btn-info" onclick="$('#fileToUpload').click();">选择文件</a>
+                     
+                     
+                 	<input type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >
+                 	<input type="button" class="btn btn-warning" onclick="deleteFile()" value="清空附件" >
+                     
+                     
+                     </div>
+
+                     
+                    
+
+                 	
+                 	</div>
+                 	
+                 	<!-------------------------------------------------------------------------->
+                 	 <div class="form-group">
+                 	<label  class="col-sm-1 control-label" for="name">附件:</label>
+                 	
+                 	<div class="col-sm-6">
+
+                 	
+                 	<div id="div_previewImages"></div>
+                    <div id="progressNumber"></div> 
+                    <div id="divFilesUploaded"></div>
+                 	</div>
+                 	
+                 	
+                 	</div>
+                 	
+                 	<!-------------------------------------------------------------------------->
+                    <div class="form-group">   
+                    <label  class="col-sm-1 control-label" for="name">方案负责人:</label>    
+                    <div class="col-sm-2">
+                    <select  id="PGEMaker" class="selectpicker" data-live-search="true"> 
+                    </select>
+                    </div>
+                    </div>
+                    
+                    
+                     <!-------------------------------------------------------------------------->
+
+                 	<div class="form-group">
+                 	
+                 	<label class="col-sm-1 control-label">审核方式:</label>   
+                 	<div class="col-sm-6">
+                       
+                 	    <label class="radio-inline">
+                 	        <input type="radio" name="auditType" id="auditTypeOption1" value="1" checked> 新增自动审核
+                 	    </label>
+                 	    <label class="radio-inline">
+                 	        <input type="radio" name="auditType" id="auditTypeOption2"  value="2"> 暂不审核
+                 	    </label>
+                 	    <label class="radio-inline">
+                	        <input type="radio" name="auditType" id="auditTypeOption3"  value="3"> 指定审核人
+                	    </label>
+                 	        
+                 	        
+                 	</div>
+                     
+                    </div>
+                     
+                    
+                     <!-------------------------------------------------------------------------->
+
+                     <div class="form-group">  
+                     
+                     <label  class="col-sm-1 control-label" for="name">制单人:</label>    
+                     <div class="col-sm-2">
+                     <input id="maker" class="form-control" id="focusedInput" type="text" disabled="true" >
+                     </div>
+                     
+                     <label  class="col-sm-1 control-label" for="name">制单日期:</label>    
+                     <div class="col-sm-2">
+                     <input id="makeDate" class="form-control" id="focusedInput" type="text" disabled="true" >
+                     </div>
+                     
+                     
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+
+                     <div class="form-group">  
+                     
+                     <label  class="col-sm-1 control-label" for="name">审核人:</label>    
+                     <div class="col-sm-2">
+                     <select  id="auditor" class="selectpicker" data-live-search="true"> 
+                     </select>
+                     </div>
+                     
+                     <label  class="col-sm-1 control-label" for="name">审核日期:</label>    
+                     <div class="col-sm-2">
+                     <input id="auditDate" class="form-control" id="focusedInput" type="text" disabled="true" >
+                     </div>
+                     
+                     
+                     </div>
+                     
+                     
+                     
+                     </form>
+                    
+
+                    </div>
+                   </div>
+                    
+
+                    
+                    
+                    </div>
+                    <div class="modal-footer">
+                      
+                        
+                        <button id="BTNFormAdd" type="button" class="btn btn-primary">新增</button>
+                        <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新</button>
+                        <button id="BTNFormAudit" type="button" class="btn btn-success">审核</button>      
+                        <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        
+        
+
+    </div>
+    
+    
+    
+    
+    <br/>
+
+    <!--数据呈现区-->
+    <table id="billsPLDTable" class="table table-striped table-bordered"  >
+        <thead>
+            <tr>
+                <th>数据库ID</th>
+                <th>订单号</th>
+                <th>客户简称</th>
+                <th>主题</th>
+                <th>审核日期</th>
+
+
+            </tr>
+        </thead>
+    </table>
+    
+
+    
+    <!-- 点击更新、添加按钮后弹出的窗口 -->
+    <div id="win" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
+    
+    <div class="divcontent">
+
+	<h1>新单录入</h1>
+	<hr>
+
+	
+	
+
+    </div>
+        
+        
+        
+        
+    </div>
+    <!-- 点击更新、添加按钮后弹出的窗口 -->
+    
+    
+</div>
+
+
+<script>
+
+//var sqltest="select * from 1111"
+//var banWord1 = new RegExp("delete");
+//var banWord2 = new RegExp("update");
+//var banWord3 = new RegExp("select");
+//var resultCheckSQL = banWord1.test(sqltest)||banWord2.test(sqltest)||banWord3.test(sqltest);
+//
+//alert("resultCheckSQL:"+resultCheckSQL);
+
+//////定义显示客户信息数据参数结构-------------
+////function factDataPara(tableID,DBTable,Bill_Topic) {
+////    this.tableID = tableID;
+////    this.DBTable = DBTable;
+////    this.Bill_Topic = Bill_Topic;
+////}
+////检查输入信息-------------------
+//function checkinput(Data) {
+//    if (Data.Bill_ID=="") {
+//        alert('厂商码不能为空，请检查!');
+//        return false;
+//    } else if (Data.Customer_ID=="") {
+//        alert('厂商名称不能为空，请检查!');
+//        return false;
+//    }
+//    return true;
+//}
+//
+////定义添加发送数据结构---------------------
+//
+//function addDataInfo(DBTable,Bill_ID,Customer_ID,Bill_Topic){
+//	this.DBTable=DBTable;
+//	this.Bill_ID=Bill_ID;
+//	this.Customer_ID=Customer_ID;
+//	this.Bill_Topic=Bill_Topic;
+//}
+//
+//
+//
+//
+////函数详情页加载内容------------------------
+//function Fun_winInit(dataSelect){
+//	
+//	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
+//	var CTRID="#cust_Selector";
+//    getSelectDBData(cust_Select_Para,CTRID,dataSelect.cust_Name);
+//	
+//    
+//	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+//	var staff_selectorID="#staff_Selector";
+//    getSelectDBData(staff_Select_Para,staff_selectorID);
+//    
+//    
+//    var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
+//	var MHETypeID="#mach_Type_Selector";
+//    getSelectDBData(mach_Type_Select_Para,MHETypeID);
+//    
+//    
+//    $('.form_date').datetimepicker({
+//        language:  'zh-CN',
+//        weekStart: 1,
+//        todayBtn:  1,
+//		autoclose: 1,
+//		todayHighlight: 1,
+//		startView: 2,
+//		minView: 2,
+//		forceParse: 0
+//    });
+//    
+//    $('#order_BeginDate').val(Ndate);
+//    $('#order_EndDate').val(Fun_getEndDate(Ndate,3));
+//    
+//    
+//    $('#Bill_ID').val(dataSelect.Bill_ID);
+//    $('#Bill_Topic').val(dataSelect.Bill_Topic);
+//    $('#Bill_Describe').val(dataSelect.Bill_Describe);
+//	
+//	
+//	
+//}
+
+//函数:计划单号生成规则
+
+function Fun_billIDCreate(para){
+	var BillID=new Date(Ndate).Format("yyyyMMdd")+para+Math.floor(Math.random()*1000);
+	return BillID;
+}
+
+
+//函数:新增详情页自动填写内容------------------------
+function Fun_winAddInit(){
+	
+	
+	
+	$('#BPID').val(Fun_billIDCreate("DG")); 
+	
+	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
+	var CTRID="#CTRID";
+    getSelectDBData(cust_Select_Para,CTRID,"请选择");
+    
+    
+    var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
+	var MHETypeID="#MHETypeID";
+    getSelectDBData(mach_Type_Select_Para,MHETypeID,"请选择");
+    
+    
+    var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+	var staff_selectorID="#PGEMaker";
+    getSelectDBData(staff_Select_Para,staff_selectorID,"请选择");  
+    
+    
+    
+	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+	var staff_selectorID="#auditor";
+    getSelectDBData(staff_Select_Para,staff_selectorID,"<%-locals.session.yjUser.Name%>");  
+    $("#auditor").attr("disabled",true);
+    
+    
+    
+  
+  $('.form_date').datetimepicker({
+      language:  'zh-CN',
+      weekStart: 1,
+      todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+  });
+  
+  $('#applyDate').val(Ndate); 
+  $('#limitDate').val(Fun_getEndDate(Ndate,3));
+  $('#maker').val("<%-locals.session.yjUser.Name%>");
+  $('#makeDate').val(Ndate);
+//  $('#auditor').val("<%-locals.session.yjUser.Name%>");
+  $('#auditDate').val(Ndate);
+  
+  
+  $("#BTNFormUpdate").hide();
+  $("#BTNFormAudit").hide();
+  
+//  alert($("input[name='auditType']:checked").val());
+  
+//  var auditType=$("input[name='auditType']:checked").val();
+  
+  
+
+}
+
+//函数:详情按钮详情页自动填写内容------------------------
+function Fun_winDetailInit(dataSelect){
+	
+	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
+	var CTRID="#CTRID";
+    getSelectDBData(cust_Select_Para,CTRID,"请选择");
+    
+    
+    var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
+	var MHETypeID="#MHETypeID";
+    getSelectDBData(mach_Type_Select_Para,MHETypeID,"请选择");
+    
+    
+    var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+	var staff_selectorID="#PGEMaker";
+    getSelectDBData(staff_Select_Para,staff_selectorID,"请选择");  
+    
+    
+    
+	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+	var staff_selectorID="#auditor";
+    getSelectDBData(staff_Select_Para,staff_selectorID,"<%-locals.session.yjUser.Name%>");  
+    $("#auditor").attr("disabled",true);
+    
+    
+    
+  
+  $('.form_date').datetimepicker({
+      language:  'zh-CN',
+      weekStart: 1,
+      todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+  });
+  
+  $('#applyDate').val(Ndate); 
+  $('#limitDate').val(Fun_getEndDate(Ndate,3));
+  $('#maker').val("<%-locals.session.yjUser.Name%>");
+  $('#makeDate').val(Ndate);
+//  $('#auditor').val("<%-locals.session.yjUser.Name%>");
+  $('#auditDate').val(Ndate);
+  
+  
+  $("#BTNFormUpdate").hide();
+  $("#BTNFormAudit").hide();
+  
+//  alert($("input[name='auditType']:checked").val());
+  
+//  var auditType=$("input[name='auditType']:checked").val();
+ 
+
+}
+
+//页面加载函数---------------
+$(document).ready( function () {
+	
+	
+	const SQLshow={"SQL":"select * from `pm_bills_plan`"};
+	
+//	const SQLshow={"SQL":"update * from `pm_bills_plan`"};
+	
+	const tableInfo={
+			"tableID":"#billsPLDTable",
+			"columnsData":[
+				{ data: 'DBID' ,"visible": false},
+		        { data: 'BPID' },
+		        { data: 'CTRID'},
+		        { data: 'topic'},
+		        { data: 'auditDate'}
+			]
+	}
+	
+	
+	Fun_showSQLTable(SQLshow,tableInfo)
+		
+//	var DataPara={
+//			"tableID":"#billsPLDTable",
+//			"Filter":[{"State_Flag":"4","CType":"<>"}]
+//	}
+//		
+//	
+//	var columnsData=[
+//		{ data: 'DBID' ,"visible": false},
+//        { data: 'Bill_ID' },
+//        { data: 'Customer_ID'},
+//        { data: 'cust_Name'},
+//        { data: 'Bill_Topic'},
+//        { data: 'Bill_Apply_Date'},
+//        { data: 'Bill_Limit_Date'},
+//        { data: 'State_Flag'},
+//    ];
+//
+////	alert(JSON.stringify(DataPara));
+//	showOrdersDBData(DataPara,columnsData);
+	
+//判断是否选中数据-------
+var table = $('#billsPLDTable').DataTable();
+$('#billsPLDTable tbody').on('click', 'tr', function() {
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+ 
+    var dataSelect = table.row('.selected').data();
+    
+    
+
+});
+	
+
+//按钮-新增计划单---------
+$('#BTNAdd').click(function() {
+	$('#BillPLD').modal('show');
+	Fun_winAddInit();
+ 
+});
+
+//按钮-表格新增计划单
+
+$('#BTNFormAdd').click(function() {
+	
+	if($('#auditDate').val()==""){
+		var orderState=0;
+	}else{
+		var orderState=1;
+	}
+	
+	var billData={
+			"DBTable":"pm_bills_plan",
+			"BPID":$('#BPID').val(),
+			"CTRID":$('#CTRID option:selected').text(),
+			"topic":$('#topic').val(),
+			"describe":$('#describe option:selected').val(),
+			"PGEMaker":$('#PGEMaker option:selected').text(),
+			"orderFrom":$('#orderFrom option:selected').text(),
+			"MHETypeID":$('#MHETypeID option:selected').text(),
+			"applyDate":$('#applyDate').val(),
+			"limitDate":$('#limitDate').val(),
+			"maker":$('#maker').text(),
+			"auditor":$('#auditor option:selected').text(),
+			"makeDate":$('#makeDate').val(),
+			"auditDate":$('#auditDate').val(),
+			"orderState":orderState
+	}
+	
+	alert("billData:"+JSON.stringify(billData));
+
+	addDBData(billData);
+	
+	
+	
+	
+	
+////记录附件信息------------------	
+//	var billID=$('#BPID').val();
+//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//	var fileName=$('#fileName').html();
+//	var fileData={
+//			"DBTable":"pm_files_upload",
+//			"billName":"pm_bills_plan",
+//			"billID":billID,
+//			"fileKey":fileKey,
+//			"fileName":fileName
+//	}
+//	
+//	Fun_addfileInfo(fileData);
+
+});
+
+//radio 定义更换按键触发事件-----------
+$('input:radio[name="auditType"]').click(function(){
+	var radioValue = $('input:radio[name="auditType"]:checked').val(); 
+//	alert(radioValue);
+	
+	switch(radioValue){
+	case "1":
+		var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+		var staff_selectorID="#auditor";
+	    getSelectDBData(staff_Select_Para,staff_selectorID,"<%-locals.session.yjUser.Name%>");  
+	    $("#auditor").attr("disabled",true);
+	    $('#auditDate').val(Ndate);
+	    break;
+	case "2":
+		var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+		var staff_selectorID="#auditor";
+	    getSelectDBData(staff_Select_Para,staff_selectorID,"");  
+	    $("#auditor").attr("disabled",true);
+	    $('#auditDate').val("");
+	    break;
+	case "3":
+	    alert("请选择指定审核人!");
+	    $('#auditDate').val("");
+	    var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+		var staff_selectorID="#auditor";
+	    getSelectDBData(staff_Select_Para,staff_selectorID,"");  
+	    $("#auditor").attr("disabled",false);
+	   
+	    break;
+		
+	
+	}
+
+	
+});
+
+
+//详情按钮---------
+$('#BTNInfo').click(function() {
+ //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
+    // table.row('.selected').remove().draw( false );
+    var dataSelect = table.row('.selected').data();
+    if (dataSelect == undefined) {
+        alert("请先点击表格中的表单!");
+    } else {
+    	
+    	
+    	$('#BillPLD').modal('show')
+    	Fun_winInit(dataSelect);
+    	
+        
+       
+        
+    }
+});
+
+
+
+
+//删除按钮----------
+$('#BTNDelete').click(function() {
+    var dataSelect = table.row('.selected').data();
+    
+ //   alert(JSON.stringify(dataSelect));
+    
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+    	
+    	
+    	if(dataSelect.auditDate!=null){
+    		alert("已审核单据禁止删除!");
+    	}else{
+    		
+    		
+    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+            if (msg1 === true) {
+                var msg2 = confirm("确认删除此行数据？");
+                if (msg2 === true) {
+                	
+                //	alert(dataSelect.DBID);
+                    var IDData = {"DBTable":"pm_bills_plan","DBID":dataSelect.DBID};
+                 //   alert("IDData:"+JSON.stringify(IDData));
+                    delDBData(IDData);
+                }
+            }
+    		
+    		
+    	}
+    	
+        
+        
+        
+    }
+    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+});
+
+
+
+	
+	
+}); 
+
+</script>

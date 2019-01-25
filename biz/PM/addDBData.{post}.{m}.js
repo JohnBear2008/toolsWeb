@@ -3,7 +3,7 @@ module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     
-//  console.log("get:"+JSON.stringify(sender.req.query));
+  console.log("get:"+JSON.stringify(sender.req.query));
     
 //   console.log("PM2333 test");
        
@@ -17,7 +17,16 @@ module.exports = function(sender) {
     		var DBTable=obj[key];
     	}else{
     		tableTitle=tableTitle+key+",";
-    		tableData=tableData+"'"+obj[key]+"',";
+    		
+    		
+    		//增加为空判断,为空则替换为null 防止插入数据库格式类型不对错误
+    		if(obj[key]==""){
+    			tableData=tableData+null+",";
+    		}else{
+    			tableData=tableData+"'"+obj[key]+"',";
+    		}
+    		
+    		
     	}
     }
     
@@ -38,7 +47,7 @@ yjDBService.exec({
     sql: SQLInsert,
     parameters: [],
     success:  function(result) {
-    	console.log("result:"+JSON.stringify(result));
+ //   	console.log("result:"+JSON.stringify(result));
 
     	sender.success(result)
     },

@@ -44,14 +44,14 @@ const https = require("https");
 			});
 		
 //报餐结果任务---------------
-		var j2 = schedule.scheduleJob({hour: 14, minute: 00, dayOfWeek:[1,2,3,4,5]}, function(){
+		var j2 = schedule.scheduleJob({hour: 14, minute: 30, dayOfWeek:[1,2,3,4,5]}, function(){
 
 			var queryParams = {
 	     		
 	     		"msgtype": "link", 
 	     	    "link": {
 	     	        "text":"报餐了，报餐了，请大家点击登记报餐！2点半之前哦！", 
-	     	        "title": "机器人报餐通知", 
+	     	        "title": "机器人报餐结果", 
 	     	        "picUrl": "", 
 	     	        "messageUrl": "http://172.16.3.42:8080/rotest/add.php",
 	     	        "at": {
