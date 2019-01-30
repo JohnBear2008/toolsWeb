@@ -6,7 +6,7 @@ module.exports = function(sender) {
         params : ["PM","addDBData"],
         query : sender.req.body,
         success : function(data){
-        	console.log("post方法前端success结果:"+JSON.stringify(data));
+//        	console.log("post方法前端success结果:"+JSON.stringify(data));
             sender.success(data);
         },
         error : {}

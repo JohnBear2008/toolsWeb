@@ -3,7 +3,7 @@ module.exports = function(sender) {
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     var obj = sender.req.query;
 
-//    console.log("get:" + JSON.stringify(sender.req.query));
+    console.log("get:" + JSON.stringify(sender.req.query));
     
 
      

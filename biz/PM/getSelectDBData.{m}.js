@@ -10,7 +10,7 @@ module.exports = function(sender) {
     var selectTitle=sender.req.query.selectTitle;
     
     
-    var sqlGetTableData = "SELECT DBID,"+selectTitle+" FROM "+DBTable;
+    var sqlGetTableData = "SELECT DBID,"+selectTitle+" FROM "+DBTable +" ORDER BY DBID";
 
     // sqlGetIDInfo = "SELECT * FROM hmiprint_mold WHERE DataID=" + DataID + " ";
     

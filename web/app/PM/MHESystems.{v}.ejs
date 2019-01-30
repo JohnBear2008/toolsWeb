@@ -1,12 +1,8 @@
 <!--本地路径-->
 <link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
 
-
 <!-- CSS -->
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
-
-
-<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
 
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
 
@@ -14,22 +10,16 @@
 <script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
 
-
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
-
-
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
-
-
-<div class="content">
-    <h1>客户信息维护</h1>
+<div class="divcontent">
+    <h1>基础信息-系统</h1>
     <hr>
-    <!--<button id="Add"  onclick="javascript:$('#win').window('open')">添加</button>-->
+
     <!-- 操作区（按钮等） -->
     <div class="lineitem">
         <button id="Add" class="btn btn-info">添加</button>
@@ -39,13 +29,13 @@
     <br/>
 
     <!--数据呈现区-->
-    <table id="cust_DB" class="table table-striped table-bordered"  >
+    <table id="pm_systems" class="table table-striped table-bordered"  >
         <thead>
             <tr>
-                <th>ID</th>
-                <th>厂商码</th>
-                <th>客户名称</th>
-                <th>联系电话</th>
+            <th>DBID</th>
+            <th>属性</th>
+            <th>系统</th>
+            <th>型号</th>
             </tr>
         </thead>
     </table>
@@ -69,13 +59,7 @@
 
 <script>
 
-////定义显示客户信息数据参数结构-------------
-//function factDataPara(tableID,DBTable,cust_Phone) {
-//    this.tableID = tableID;
-//    this.DBTable = DBTable;
-//    this.cust_Phone = cust_Phone;
-//}
-//检查输入信息-------------------
+
 function checkinput(Data) {
     if (Data.cust_FID=="") {
         alert('厂商码不能为空，请检查!');
@@ -87,38 +71,36 @@ function checkinput(Data) {
     return true;
 }
 
-//定义添加发送数据结构---------------------
-
-function addDataInfo(DBTable,cust_FID,cust_Name,cust_Phone){
-	this.DBTable=DBTable;
-	this.cust_FID=cust_FID;
-	this.cust_Name=cust_Name;
-	this.cust_Phone=cust_Phone;
-}
+////定义添加发送数据结构---------------------
+//
+//function addDataInfo(DBTable,cust_FID,cust_Name,cust_Phone){
+//	this.DBTable=DBTable;
+//	this.cust_FID=cust_FID;
+//	this.cust_Name=cust_Name;
+//	this.cust_Phone=cust_Phone;
+//}
 
 
 //页面加载函数---------------
 $(document).ready( function () {
 		
-	var DataPara={
-			"tableID":"#cust_DB",
-			"DBTable":"PM_customers"			
+	const tableSQL={"SQL":"select * from `pm_systems`"};
+	const tableInfo={
+			"tableID":"#pm_systems",
+			"columnsData":[
+				{ data: 'DBID' ,"visible": false},
+		        { data: 'belong' },
+		        { data: 'STMType'},
+		        { data: 'model'}
+		    ]
 	}
-		
-	
-	var columnsData=[
-		{ data: 'DBID' ,"visible": false},
-        { data: 'cust_FID' },
-        { data: 'cust_Name'},
-        { data: 'cust_Phone'}
-    ];
 
-//	alert(JSON.stringify(DataPara));
-	showDBData(DataPara,columnsData);
+	
+	Fun_showSQLTable(tableSQL,tableInfo);
 	
 //判断是否选中数据-------
-var table = $('#cust_DB').DataTable();
-$('#cust_DB tbody').on('click', 'tr', function() {
+var table = $('#pm_systems').DataTable();
+$('#pm_systems tbody').on('click', 'tr', function() {
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     } else {
@@ -197,34 +179,7 @@ $('#AddDoButton').click(function() {
 	
 	addDBData(DBData);
 	
-//    var UID = "";
-//    // UID + form的数据 ==> 构造obj
-//    var aRemainVal = [];
-//    for (var ID in oInput) {
-//        ID = "#" + ID;
-//        var nVal = $(ID).val();
-//        aRemainVal.push(nVal);
-//    }
-//    var formData = new moniData(UID, ...aRemainVal);
-//    // alert("formData:" + JSON.stringify(formData));
-//
-//    if (checkinput(formData)) {
-//        // 保存本次提交表格内数据的值至obj内，便于连续操作
-//        var inputNum = $("#win").find("input").length;
-//        for (var i = 0; i < inputNum; ++i) {
-//            var inputElem = $("#win").find("input").eq(i);
-//            var inputID = inputElem.attr("id");
-//            // console.log("#1", inputID);
-//            if (oInput.hasOwnProperty(inputID) && (aIgnID.indexOf(inputID) === -1)) {
-//                var IDTmp = "#" + inputID; // id选择器要加个#
-//                oInput[inputID] = $(IDTmp).val();
-//            }
-//        }
-//        sessionStorage.setItem("lastFormData", JSON.stringify(oInput));
-//        ajaxAdd(formData);
-//    } else {
-//        //  alert("输入错误");
-//    }
+
 
 });
 
@@ -234,11 +189,7 @@ $('#AddDoButton').click(function() {
 //form 更新按钮------------
 $('#UpdDoButton').click(function() {
 	
- //   var UID = table.row('.selected').data().UID;
-	
-//	var cust_FID=$('#cust_FID').val();
-//    var cust_Name=$('#cust_Name').val();
-//    var cust_Phone=$('#cust_Phone').val();
+ 
 	
 	var updInput={
 			cust_FID:$('#cust_FID').val(),
@@ -254,7 +205,7 @@ $('#UpdDoButton').click(function() {
 	var changed=0;
 
     for (var key in updInput) {   	
-//   	alert(key);
+
     	if(updInput[key]!=table.row('.selected').data()[key]){    		
 //    		alert("updInput:"+updInput[key]);
 //    		alert("selected:"+table.row('.selected').data()[key]);    		

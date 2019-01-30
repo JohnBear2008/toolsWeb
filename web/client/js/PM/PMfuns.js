@@ -125,6 +125,8 @@ function delDBData(IDData) {
 //AJAX获取select数据函数
 function getSelectDBData(selectPara,selectorID,InitValue) {
 	
+	console.log("InitValue:"+InitValue);
+	
 	$(selectorID).empty();//用select组件不用先清空
 	  
 	  $.ajax({
@@ -137,18 +139,26 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
         	  
         	  
         		$(selectorID).selectpicker({
-        			noneSelectedText : InitValue//默认显示内容
-   
+        			noneSelectedText :"未选择"//默认显示内容
         		});
-        	  
-//          	 $(selectorID).append($('<option value='+""+'>'+"请选择客户"+'</option>'));
-              for(i=0;i<data.length;i++)
-          	{
-              	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));	
-              	   
-          	}
-              
-              $(selectorID).selectpicker('val', '');//留空不设置默认选项
+        		
+        		if(InitValue==undefined){
+           		
+           		 for(i=0;i<data.length;i++){
+                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
+                 	  }
+           		 $(selectorID).selectpicker('val','');
+
+        		}else{
+        			
+        			 for(i=0;i<data.length;i++){
+                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
+                     	  if(data[i][selectPara.selectTitle]==InitValue){
+                     		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
+                     	  }
+                     }
+        		}
+
               $(selectorID).selectpicker('refresh');
 
               
@@ -157,29 +167,94 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
       })
 }
 
+//函数 获取指定SQL数据加载至selector中
+function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
+	
+	console.log("InitValue:"+InitValue);
+	
+	$(selectorID).empty();//用select组件不用先清空
+	  
+	  $.ajax({
+          method:'get',
+          data:selectSQL,
+          url:"/app/PM/getSQLDBData",
+          success:function(data){
+        	  
+        	  //alert("return1111:"+JSON.stringify(data));
+        	  
+        	  
+        		$(selectorID).selectpicker({
+        			noneSelectedText :"未选择"//默认显示内容
+        		});
+        		
+        		if(InitValue==undefined){
+           		
+           		 for(i=0;i<data.length;i++){
+                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
+                 	  }
+           		 $(selectorID).selectpicker('val','');
+
+        		}else{
+        			
+        			 for(i=0;i<data.length;i++){
+                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
+                     	  if(data[i][selectPara.selectTitle]==InitValue){
+                     		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
+                     	  }
+                     }
+        		}
+
+              $(selectorID).selectpicker('refresh');
+
+              
+          },
+          error:function(){}
+      })
+}
+
+
+
 //----文件上传功能代码----------------------------------------------
 function fileSelected() {
-	var files = document.getElementById('fileToUpload').files;
 	
-
-	var div = document.getElementById('div_previewImages');
-	for ( var i = 0; i < files.length; i++) {
-		var img = document.createElement("img");
-		div.appendChild(img);
+	
+	var filePath=$('#filePath').attr("href");
+	alert(filePath);
+	
+	if(filePath!=undefined){
 		
-		var reader = new FileReader();
-		(function(img) {
-			reader.onload = function(evt) {
-				img.width=50;//定义缩略图宽度
-				img.src = evt.target.result;
-			}
-		})(img);
+		alert("附件已存在,上传新附件请先清空!");
+		
+	}else{
+		var files = document.getElementById('fileToUpload').files;
 		
 
-		reader.readAsDataURL(files[i]);
-		/* else if (files.value) {
-			img.src = files.value; }*/
+		var div = document.getElementById('div_previewImages');
+		for ( var i = 0; i < files.length; i++) {
+			
+			//缩略图预览
+//			var img = document.createElement("img");
+//			div.appendChild(img);
+//			
+//			var reader = new FileReader();
+//			(function(img) {
+//				reader.onload = function(evt) {
+//					img.width=50;//定义缩略图宽度
+//					img.src = evt.target.result;
+//				}
+//			})(img);
+			
+
+			reader.readAsDataURL(files[i]);
+			/* else if (files.value) {
+				img.src = files.value; }*/
+		}
+		
 	}
+	
+	
+	
+	
 }
 function uploadFile() {
 	var fd = new FormData();
@@ -214,7 +289,7 @@ function uploadProgress(evt) {
 		var span = document.createElement("span");
 		span.innerHTML = percentComplete.toString() + '% - ';
 	//	document.getElementById('progressNumber').appendChild(span);//优化进度显示模式
-		document.getElementById('progressNumber').innerHTML=percentComplete+'%';
+		document.getElementById('progressNumber').innerHTML="上传进度:"+percentComplete+'%';
 	} else {
 		document.getElementById('progressNumber').innerHTML =
 			'unable to compute';
@@ -237,7 +312,7 @@ function uploadComplete(evt) {
 	var span = document.createElement("span");
 //	span.innerHTML = JSON.stringify(g_uploaded.fields);
 	div.appendChild(span);
-	div.appendChild(document.createElement("br"));
+//	div.appendChild(document.createElement("br"));
 	for ( var name in g_uploaded.files) {
 		var file=g_uploaded.files[name];
 		
@@ -279,23 +354,54 @@ function uploadCanceled(evt) {
 }
 
 function deleteFile() {
-//alert(JSON.stringify(g_uploaded.files));
-	for ( var name in g_uploaded.files) {
+	
+	var filePath=$('#filePath').attr("href");
+	alert(filePath);
+	
+	if(filePath!=undefined){
+		var fileKey=$('#filePath').attr("href").substring(23);
+		alert(fileKey);
 		var xhr = new XMLHttpRequest();
-		
-//		alert(JSON.stringify(g_uploaded.files[0][0].key));
-
-		xhr.open("delete", "/system.files/"
-			+ g_uploaded.files[name][0].key);//修改成自己的接口
+		xhr.open("delete", "/system.files/"+ fileKey);
 		xhr.send();
 		
+		alert("删除附件成功");
+		
+		document.getElementById('div_previewImages').innerHTML="";
+		document.getElementById('progressNumber').innerHTML="";
+		document.getElementById('divFilesUploaded').innerHTML="";
+		
+	}else{
+		alert("无附件,无需清空!");
 	}
+
 	
-	document.getElementById('div_previewImages').innerHTML="";
-	document.getElementById('progressNumber').innerHTML="";
-	document.getElementById('divFilesUploaded').innerHTML="";
+//	if(fileKey){
+//		
+//	}
+//	
+
+//	
 	
-	alert("删除附件成功");
+	
+// 原删除程序-----------
+////alert(JSON.stringify(g_uploaded.files));
+//	for ( var name in g_uploaded.files) {
+////		var xhr = new XMLHttpRequest();
+//		
+////		alert(JSON.stringify(g_uploaded.files[0][0].key));
+//
+//		xhr.open("delete", "/system.files/"
+//			+ g_uploaded.files[name][0].key);//修改成自己的接口
+//		xhr.send();
+//		
+//	}
+//	
+//	document.getElementById('div_previewImages').innerHTML="";
+//	document.getElementById('progressNumber').innerHTML="";
+//	document.getElementById('divFilesUploaded').innerHTML="";
+	
+	
 }
 //---------------------------------------
 
@@ -523,7 +629,7 @@ function Fun_showSQLTable(SQL,tableInfo){
 		    },
 		    columns: tableInfo.columnsData,
 		    aaSorting: [0, 'desc'],//默认排序
-		    lengthMenu:[5,10,20],
+		    lengthMenu:[10,30,50],
 
 
 		    "language": languageCN
@@ -552,3 +658,25 @@ function Fun_addfileInfo(DBData) {
        }
     });
 }
+
+////函数-获取附件信息数据库
+//
+//function Fun_getfileInfo(fileSQL) {
+//	
+//    $.ajax({
+//        method: 'get',
+//        url: '/app/PM/getSQLDBData',
+//        data: {SQL:fileSQL},
+//        success: function(data) {
+//            alert("成功数据:" + JSON.stringify(data));
+//           if (data.affectedRows != 0) {
+//
+////               window.location.reload();
+//           }
+//       },
+//       error:function(err){
+//       	alert("失败数据:"+JSON.stringify(err));
+//       }
+//    });
+//}
+

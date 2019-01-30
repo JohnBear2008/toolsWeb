@@ -56,6 +56,9 @@
                     </div>
                     
                     <div class="panel-body">
+                    
+
+                    
 
                     <form class="form-horizontal" >  
                     
@@ -63,16 +66,20 @@
                     <!-------------------------------------------------------------------------->
                      <div class="form-group">
                        <label class="col-sm-1 control-label">计划单号:</label>
-                       <div class="col-sm-5">
+                       <div class="col-sm-3">
                          <input id="BPID" class="form-control" id="focusedInput" type="text" value="">
                        </div>
+                       
+                       <label class="col-sm-1 control-label">版本号:   <span id="version"></span></label> 
+
+                       
                      </div>
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
                      
                      <label  class="col-sm-1 control-label" for="name">客户:</label>    
                      <div class="col-sm-2">
-                     <select  id="CTRID" class="selectpicker" data-live-search="true" > 
+                     <select  id="CTRName" class="selectpicker" data-live-search="true" > 
                      </select>
                      </div>
                      
@@ -99,14 +106,14 @@
                      
                      <label  class="col-sm-1 control-label" for="name">机型:</label>    
                      <div class="col-sm-2">
-                     <select  id="MHETypeID" class="selectpicker" data-live-search="true"> 
+                     <select  id="MHEType" class="selectpicker" data-live-search="true"> 
                      </select>
                      </div>  
                      
                      
                      <label  class="col-sm-1 control-label" for="name">系统:</label>    
                      <div class="col-sm-2">
-                     <select  id="MHETypeID" class="selectpicker" data-live-search="true"> 
+                     <select  id="MHEType" class="selectpicker" data-live-search="true"> 
                      </select>
                      </div>  
                     
@@ -153,8 +160,8 @@
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
                      <label  class="col-sm-1 control-label" for="name">问题描述:</label>    
-                     <div class="col-sm-6">
-                     <textarea id="describe" class="form-control" rows="6"></textarea>
+                     <div class="col-sm-5">
+                     <textarea id="detail" class="form-control" rows="6"></textarea>
                      </div>
                      </div>
                      
@@ -210,13 +217,13 @@
                     
                      <!-------------------------------------------------------------------------->
 
-                 	<div class="form-group">
+                 	<div id="auditTypeDiv" class="form-group">
                  	
                  	<label class="col-sm-1 control-label">审核方式:</label>   
                  	<div class="col-sm-6">
                        
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="auditType" id="auditTypeOption1" value="1" checked> 新增自动审核
+                 	        <input type="radio" name="auditType" id="auditTypeOption1" value="1"> 自动审核
                  	    </label>
                  	    <label class="radio-inline">
                  	        <input type="radio" name="auditType" id="auditTypeOption2"  value="2"> 暂不审核
@@ -282,8 +289,9 @@
                       
                         
                         <button id="BTNFormAdd" type="button" class="btn btn-primary">新增</button>
-                        <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新</button>
-                        <button id="BTNFormAudit" type="button" class="btn btn-success">审核</button>      
+                        <button id="BTNFormModify" type="button" class="btn btn-success">修改</button>  
+                        <button id="BTNFormAudit" type="button" class="btn btn-success">审核</button>  
+                        <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
                         <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 
                     </div>
@@ -305,9 +313,10 @@
         <thead>
             <tr>
                 <th>数据库ID</th>
-                <th>订单号</th>
+                <th>计划单号</th>
                 <th>客户简称</th>
                 <th>主题</th>
+                <th>审核人</th>
                 <th>审核日期</th>
 
 
@@ -384,8 +393,8 @@
 //function Fun_winInit(dataSelect){
 //	
 //	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
-//	var CTRID="#cust_Selector";
-//    getSelectDBData(cust_Select_Para,CTRID,dataSelect.cust_Name);
+//	var CTRName="#cust_Selector";
+//    getSelectDBData(cust_Select_Para,CTRName,dataSelect.cust_Name);
 //	
 //    
 //	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
@@ -394,8 +403,8 @@
 //    
 //    
 //    var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
-//	var MHETypeID="#mach_Type_Selector";
-//    getSelectDBData(mach_Type_Select_Para,MHETypeID);
+//	var MHEType="#mach_Type_Selector";
+//    getSelectDBData(mach_Type_Select_Para,MHEType);
 //    
 //    
 //    $('.form_date').datetimepicker({
@@ -415,7 +424,7 @@
 //    
 //    $('#Bill_ID').val(dataSelect.Bill_ID);
 //    $('#Bill_Topic').val(dataSelect.Bill_Topic);
-//    $('#Bill_Describe').val(dataSelect.Bill_Describe);
+//    $('#Bill_detail').val(dataSelect.Bill_detail);
 //	
 //	
 //	
@@ -431,33 +440,33 @@ function Fun_billIDCreate(para){
 
 //函数:新增详情页自动填写内容------------------------
 function Fun_winAddInit(){
-	
-	
-	
+
 	$('#BPID').val(Fun_billIDCreate("DG")); 
 	
 	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
-	var CTRID="#CTRID";
-    getSelectDBData(cust_Select_Para,CTRID,"请选择");
+	var CTRName="#CTRName";
+    getSelectDBData(cust_Select_Para,CTRName);
     
     
     var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
-	var MHETypeID="#MHETypeID";
-    getSelectDBData(mach_Type_Select_Para,MHETypeID,"请选择");
+	var MHEType="#MHEType";
+    getSelectDBData(mach_Type_Select_Para,MHEType);
     
     
     var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
 	var staff_selectorID="#PGEMaker";
-    getSelectDBData(staff_Select_Para,staff_selectorID,"请选择");  
+    getSelectDBData(staff_Select_Para,staff_selectorID);  
     
-    
-    
+
 	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
 	var staff_selectorID="#auditor";
     getSelectDBData(staff_Select_Para,staff_selectorID,"<%-locals.session.yjUser.Name%>");  
     $("#auditor").attr("disabled",true);
     
+    $('#topic').val(""); 
+    $('#detail').val(""); 
     
+    $('#version').text(0); 
     
   
   $('.form_date').datetimepicker({
@@ -470,21 +479,25 @@ function Fun_winAddInit(){
 		minView: 2,
 		forceParse: 0
   });
+  $('#divFilesUploaded').html("");
+  
+  $("#auditTypeOption1").attr("checked",true);
   
   $('#applyDate').val(Ndate); 
   $('#limitDate').val(Fun_getEndDate(Ndate,3));
   $('#maker').val("<%-locals.session.yjUser.Name%>");
   $('#makeDate').val(Ndate);
-//  $('#auditor').val("<%-locals.session.yjUser.Name%>");
+
   $('#auditDate').val(Ndate);
   
+  $("#auditTypeDiv").show();
   
+  $("#BTNFormAdd").show();
+  
+  $("#BTNFormModify").hide();
   $("#BTNFormUpdate").hide();
   $("#BTNFormAudit").hide();
   
-//  alert($("input[name='auditType']:checked").val());
-  
-//  var auditType=$("input[name='auditType']:checked").val();
   
   
 
@@ -493,29 +506,32 @@ function Fun_winAddInit(){
 //函数:详情按钮详情页自动填写内容------------------------
 function Fun_winDetailInit(dataSelect){
 	
+	$('#BPID').val(dataSelect.BPID); 
+	$('#version').text(dataSelect.version); 
+	
 	var cust_Select_Para={DBTable:"pm_customers",selectTitle:"cust_Name"};
-	var CTRID="#CTRID";
-    getSelectDBData(cust_Select_Para,CTRID,"请选择");
+	var CTRName="#CTRName";
+    getSelectDBData(cust_Select_Para,CTRName,dataSelect.CTRName);
     
     
     var mach_Type_Select_Para={DBTable:"pm_machinetypes",selectTitle:"mach_Type_Name"};
-	var MHETypeID="#MHETypeID";
-    getSelectDBData(mach_Type_Select_Para,MHETypeID,"请选择");
+	var MHEType="#MHEType";
+    getSelectDBData(mach_Type_Select_Para,MHEType,dataSelect.MHEType);
     
     
     var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
 	var staff_selectorID="#PGEMaker";
-    getSelectDBData(staff_Select_Para,staff_selectorID,"请选择");  
+    getSelectDBData(staff_Select_Para,staff_selectorID,dataSelect.PGEMaker);  
     
+    $('#topic').val(dataSelect.topic); 
+    $('#detail').val(dataSelect.detail); 
     
+//    var fileSQL="select * from `pm_files_upload` where billName='pm_bills_plan' and billID = '"+dataSelect.BPID+"'";
+//    
+//    alert("fileSQL:"+fileSQL);
+//    Fun_getfileInfo(fileSQL);
     
-	var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
-	var staff_selectorID="#auditor";
-    getSelectDBData(staff_Select_Para,staff_selectorID,"<%-locals.session.yjUser.Name%>");  
-    $("#auditor").attr("disabled",true);
-    
-    
-    
+
   
   $('.form_date').datetimepicker({
       language:  'zh-CN',
@@ -527,17 +543,75 @@ function Fun_winDetailInit(dataSelect){
 		minView: 2,
 		forceParse: 0
   });
+
+  $('#divFilesUploaded').html("");
   
-  $('#applyDate').val(Ndate); 
-  $('#limitDate').val(Fun_getEndDate(Ndate,3));
-  $('#maker').val("<%-locals.session.yjUser.Name%>");
-  $('#makeDate').val(Ndate);
+  if(dataSelect.fileKey!=null){
+	  
+	  console.log("不为空"+dataSelect.fileKey);
+	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
+	  $('#divFilesUploaded').html(downloadurl);
+  }
+  
+  
+  $('#applyDate').val(dataSelect.applyDate); 
+  $('#limitDate').val(dataSelect.limitDate);
+  $('#maker').val(dataSelect.maker);
+  $('#makeDate').val(dataSelect.makeDate);
 //  $('#auditor').val("<%-locals.session.yjUser.Name%>");
-  $('#auditDate').val(Ndate);
+//  $('#auditDate').val(Ndate);
   
   
-  $("#BTNFormUpdate").hide();
-  $("#BTNFormAudit").hide();
+  $("#BTNFormAdd").hide();
+  
+ 
+  //如果是已审核单据 则不显示更新和审核按钮
+  if(dataSelect.auditDate==null){
+	  
+	  $("#auditTypeDiv").show();
+	  $("#BTNFormModify").show();
+	  $("#BTNFormUpdate").hide();
+	  $("#BTNFormAudit").show();
+	  
+	  if(dataSelect.auditor==null){
+		  
+		  $("#auditTypeOption2").attr("checked",true);	
+			var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+			var staff_selectorID="#auditor";
+		    getSelectDBData(staff_Select_Para,staff_selectorID);  
+		    $("#auditor").attr("disabled",true);
+		    $('#auditDate').val("");
+
+	  }else{
+		  
+		  $("#auditTypeOption3").attr("checked",true);	
+			var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+			var staff_selectorID="#auditor";
+		    getSelectDBData(staff_Select_Para,staff_selectorID,dataSelect.auditor);  
+		    $("#auditor").attr("disabled",true);
+		    $('#auditDate').val("");
+
+		  
+	  }
+	  
+	  
+	
+	  
+  }else{
+	  
+	  var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
+	  var staff_selectorID="#auditor";
+	    getSelectDBData(staff_Select_Para,staff_selectorID,dataSelect.auditor);  
+	    $("#auditor").attr("disabled",true);
+	    $('#auditDate').val(dataSelect.auditDate);
+	    
+	    $("#BTNFormModify").hide();
+	    $("#BTNFormUpdate").show();
+	    $("#BTNFormAudit").hide();
+	    $("#auditTypeDiv").hide();
+	  
+  }
+
   
 //  alert($("input[name='auditType']:checked").val());
   
@@ -550,23 +624,24 @@ function Fun_winDetailInit(dataSelect){
 $(document).ready( function () {
 	
 	
-	const SQLshow={"SQL":"select * from `pm_bills_plan`"};
+	const tableSQL={"SQL":"select tA.*,tB.fileKey,tB.fileName from `pm_bills_plan` tA left join `pm_files_upload` tB on tA.BPID=tB.billID and tB.billName='pm_bills_plan'"};
 	
-//	const SQLshow={"SQL":"update * from `pm_bills_plan`"};
+//	const tableSQL={"SQL":"update * from `pm_bills_plan`"};
 	
 	const tableInfo={
 			"tableID":"#billsPLDTable",
 			"columnsData":[
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
-		        { data: 'CTRID'},
+		        { data: 'CTRName'},
 		        { data: 'topic'},
+		        { data: 'auditor'},
 		        { data: 'auditDate'}
 			]
 	}
 	
 	
-	Fun_showSQLTable(SQLshow,tableInfo)
+	Fun_showSQLTable(tableSQL,tableInfo)
 		
 //	var DataPara={
 //			"tableID":"#billsPLDTable",
@@ -616,28 +691,24 @@ $('#BTNAdd').click(function() {
 
 $('#BTNFormAdd').click(function() {
 	
-	if($('#auditDate').val()==""){
-		var orderState=0;
-	}else{
-		var orderState=1;
-	}
+
 	
 	var billData={
 			"DBTable":"pm_bills_plan",
 			"BPID":$('#BPID').val(),
-			"CTRID":$('#CTRID option:selected').text(),
+			"CTRName":$('#CTRName option:selected').text(),
 			"topic":$('#topic').val(),
-			"describe":$('#describe option:selected').val(),
+			"detail":$('#detail').val(),
 			"PGEMaker":$('#PGEMaker option:selected').text(),
 			"orderFrom":$('#orderFrom option:selected').text(),
-			"MHETypeID":$('#MHETypeID option:selected').text(),
+			"MHEType":$('#MHEType option:selected').text(),
 			"applyDate":$('#applyDate').val(),
 			"limitDate":$('#limitDate').val(),
-			"maker":$('#maker').text(),
+			"maker":$('#maker').val(),
 			"auditor":$('#auditor option:selected').text(),
 			"makeDate":$('#makeDate').val(),
 			"auditDate":$('#auditDate').val(),
-			"orderState":orderState
+			"version": $('#version').text()
 	}
 	
 	alert("billData:"+JSON.stringify(billData));
@@ -648,19 +719,23 @@ $('#BTNFormAdd').click(function() {
 	
 	
 	
-////记录附件信息------------------	
-//	var billID=$('#BPID').val();
-//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-//	var fileName=$('#fileName').html();
-//	var fileData={
-//			"DBTable":"pm_files_upload",
-//			"billName":"pm_bills_plan",
-//			"billID":billID,
-//			"fileKey":fileKey,
-//			"fileName":fileName
-//	}
-//	
-//	Fun_addfileInfo(fileData);
+//记录附件信息------------------	
+	var billID=$('#BPID').val();
+	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+	var fileName=$('#fileName').html();
+	var fileData={
+			"DBTable":"pm_files_upload",
+			"billName":"pm_bills_plan",
+			"billID":billID,
+			"fileKey":fileKey,
+			"fileName":fileName
+	}
+	
+	if(fileKey!=undefined){
+		Fun_addfileInfo(fileData);
+	}
+	
+	
 
 });
 
@@ -680,16 +755,16 @@ $('input:radio[name="auditType"]').click(function(){
 	case "2":
 		var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
 		var staff_selectorID="#auditor";
-	    getSelectDBData(staff_Select_Para,staff_selectorID,"");  
+	    getSelectDBData(staff_Select_Para,staff_selectorID);  
 	    $("#auditor").attr("disabled",true);
 	    $('#auditDate').val("");
 	    break;
 	case "3":
-	    alert("请选择指定审核人!");
+		alert("请选择指定审核人!");
 	    $('#auditDate').val("");
 	    var staff_Select_Para={DBTable:"pm_staffs",selectTitle:"staff_Name"};
 		var staff_selectorID="#auditor";
-	    getSelectDBData(staff_Select_Para,staff_selectorID,"");  
+	    getSelectDBData(staff_Select_Para,staff_selectorID);  
 	    $("#auditor").attr("disabled",false);
 	   
 	    break;
@@ -697,13 +772,12 @@ $('input:radio[name="auditType"]').click(function(){
 	
 	}
 
-	
 });
 
 
 //详情按钮---------
 $('#BTNInfo').click(function() {
- //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
+    alert("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
@@ -712,7 +786,7 @@ $('#BTNInfo').click(function() {
     	
     	
     	$('#BillPLD').modal('show')
-    	Fun_winInit(dataSelect);
+    	Fun_winDetailInit(dataSelect);
     	
         
        
@@ -746,7 +820,7 @@ $('#BTNDelete').click(function() {
                 	
                 //	alert(dataSelect.DBID);
                     var IDData = {"DBTable":"pm_bills_plan","DBID":dataSelect.DBID};
-                 //   alert("IDData:"+JSON.stringify(IDData));
+ //                   alert("IDData:"+JSON.stringify(IDData));
                     delDBData(IDData);
                 }
             }

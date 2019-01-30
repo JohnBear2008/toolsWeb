@@ -6,7 +6,7 @@ module.exports = function(sender) {
 
 
     
-//    console.log("get:"+JSON.stringify(sender.req.query));
+   console.log("get:"+JSON.stringify(sender.req.query));
 
     var SQL=sender.req.query.SQL;  
     
