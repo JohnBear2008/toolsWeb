@@ -36,6 +36,7 @@
             <th>属性</th>
             <th>系统</th>
             <th>型号</th>
+            <th>状态</th>
             </tr>
         </thead>
     </table>
@@ -84,14 +85,15 @@ function checkinput(Data) {
 //页面加载函数---------------
 $(document).ready( function () {
 		
-	const tableSQL={"SQL":"select * from `pm_systems`"};
+	const tableSQL={"SQL":"SQLBDMHESystems"};
 	const tableInfo={
 			"tableID":"#pm_systems",
 			"columnsData":[
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'belong' },
 		        { data: 'STMType'},
-		        { data: 'model'}
+		        { data: 'model'},
+		        { data: 'statustext'}
 		    ]
 	}
 
