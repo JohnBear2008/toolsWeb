@@ -4,8 +4,8 @@
  */
 
 
-//定义系统常用的SQL语句,全局变量
-SQLBDMHESystems="select DBID,belong,STMType,model, case status  when 1 then '正常' when 2 then '作废'  end as statustext from `pm_systems`";
+//定义系统常用的SQL语句,用全局变量
+SQLBDMHESystems="select *, case status  when 1 then '正常' when 2 then '作废'  end as statustext from `pm_systems`";
 
 
 
