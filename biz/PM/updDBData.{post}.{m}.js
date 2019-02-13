@@ -18,8 +18,9 @@ module.exports = function(sender) {
     		var DBID=obj[key];
     	}else{
 
+    		//增加为空判断,为空则替换为null 防止插入数据库格式类型不对错误
     		if(obj[key]==""){
-    			updateContent=updateContent+key+"='',";
+    			updateContent=updateContent+key+"="+null+",";
     		}else{
     			updateContent=updateContent+key+"="+"'"+obj[key]+"',";
     		}

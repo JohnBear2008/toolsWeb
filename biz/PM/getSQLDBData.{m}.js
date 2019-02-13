@@ -12,9 +12,29 @@ module.exports = function(sender) {
     console.log("SQL:"+SQL);
     //选择执行的SQL语句
     switch (SQL){
-	case "SQLBDMHESystems":
-		var SQLExecute=SQLBDMHESystems;
+    
+    case "SQLDBCustomers":
+		var SQLExecute=SQLDBCustomers;
 		break;
+	case "SQLDBMHESystems":
+		var SQLExecute=SQLDBMHESystems;
+		break;
+	case "SQLDBMachines":
+		var SQLExecute=SQLDBMachines;
+		break;
+	case "SQLSRCustomers":
+			var SQLExecute=SQLSRCustomers;
+			break;
+	case "SQLSRMachines":
+		var SQLExecute=SQLSRMachines;
+		break;
+	case "SQLSRSystems":
+		var SQLExecute=SQLSRSystems;
+		break;
+	case "SQLSRStaffs":
+		var SQLExecute=SQLSRStaffs;
+		break;
+		
 	case "SQLTableBillPlan":
 		var SQLExecute=SQLTableBillPlan;
 		break;	

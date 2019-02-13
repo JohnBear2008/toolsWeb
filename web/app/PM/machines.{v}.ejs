@@ -17,7 +17,7 @@
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 <div class="divcontent">
-    <h1>基础信息-系统</h1>
+    <h1>基础信息-机种</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -29,14 +29,12 @@
     <br/>
 
     <!--数据呈现区-->
-    <table id="ppm_systems" class="table table-striped table-bordered"  >
+    <table id="ppm_machines" class="table table-striped table-bordered"  >
         <thead>
             <tr>
             <th>DBID</th>
-            <th>属性</th>
-            <th>分类</th>
-            <th>系统</th>
-            <th>型号</th>
+            <th>机器种类</th>
+            <th>机器名称</th>
             <th>状态</th>
             </tr>
         </thead>
@@ -46,34 +44,22 @@
         <form style="padding:10px 50px;">
            
             
-            <p>属性 : 
-                <select id="belong">
-                <option value="APP">APP</option>
-                <option value="核心">核心</option>
+
+            
+            <p>机种 : 
+                <select id="MHEType">
+                <option value="卧式注塑机">卧式注塑机</option>
+                <option value="立式注塑机">立式注塑机</option>
+                <option value="吹瓶机">吹瓶机</option>
+                <option value="橡胶机">橡胶机</option>
+                <option value="压机">压机</option>
+                <option value="挤出机">挤出机</option>
+                <option value="特殊机">特殊机</option>
+                <option value="辅机设备">辅机设备</option>
                 </select>
             </p>
             
-            <p>分类 : 
-                <select id="sort">
-                <option value="DSP">DSP</option>
-                <option value="HMI">HMI</option>
-                <option value="轴卡">轴卡</option>
-                <option value="LIB">LIB</option>
-                <option value="OS">OS</option>
-                </select>
-            </p>
-            
-            <p>系统 : 
-                <select id="STMType">
-                <option value="52">52</option>
-                <option value="54">54</option>
-                <option value="55">55</option>
-                <option value="PLC">PLC</option>
-                <option value="boot">boot</option>
-                </select>
-            </p>
-            
-            <p>型号 : <input id="model" size="30" type="text" class="required"></p>
+            <p>型号 : <input id="MHEName" size="30" type="text" class="required"></p>
             <p>备注 : <textarea id="remark" rows="3" cols="30" ></textarea></p>
             
             <p>数据状态 : 
@@ -101,7 +87,7 @@ function checkinput(Data) {
     if (Data.belong=="") {
         alert('属性不能为空，请检查!');
         return false;
-    } else if (Data.model=="") {
+    } else if (Data.MHEName=="") {
         alert('型号不能为空，请检查!');
         return false;
     }
@@ -113,15 +99,13 @@ function checkinput(Data) {
 //页面加载函数---------------
 $(document).ready( function () {
 		
-	const tableSQL={"SQL":"SQLDBMHESystems"};
+	const tableSQL={"SQL":"SQLDBMachines"};
 	const tableInfo={
-			"tableID":"#ppm_systems",
+			"tableID":"#ppm_machines",
 			"columnsData":[
 				{ data: 'DBID' ,"visible": false},
-		        { data: 'belong' },
-		        { data: 'sort'},
-		        { data: 'STMType'},
-		        { data: 'model'},
+		        { data: 'MHEType'},
+		        { data: 'MHEName'},
 		        { data: 'statustext'}
 		    ]
 	}
@@ -130,8 +114,8 @@ $(document).ready( function () {
 	Fun_showSQLTable(tableSQL,tableInfo);
 	
 //判断是否选中数据-------
-var table = $('#ppm_systems').DataTable();
-$('#ppm_systems tbody').on('click', 'tr', function() {
+var table = $('#ppm_machines').DataTable();
+$('#ppm_machines tbody').on('click', 'tr', function() {
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     } else {
@@ -165,10 +149,8 @@ $('#Upd').click(function() {
         $('#AddDoButton').hide();
         $('#UpdDoButton').show();
         
-        $('#belong').val(dataSelect.belong);
-        $('#sort').val(dataSelect.sort);
-        $('#STMType').val(dataSelect.STMType);
-        $('#model').val(dataSelect.model);
+        $('#MHEType').val(dataSelect.MHEType);
+        $('#MHEName').val(dataSelect.MHEName);
         $('#remark').val(dataSelect.remark);
         $('#status').val(dataSelect.status);
         
@@ -191,7 +173,7 @@ $('#Del').click(function() {
             if (msg2 === true) {
             	
             //	alert(dataSelect.DBID);
-                var IDData = {"DBTable":"ppm_systems","DBID":dataSelect.DBID};
+                var IDData = {"DBTable":"ppm_machines","DBID":dataSelect.DBID};
              //   alert("IDData:"+JSON.stringify(IDData));
                 delDBData(IDData);
             }
@@ -203,20 +185,18 @@ $('#Del').click(function() {
 
 //form框添加按钮----------
 $('#AddDoButton').click(function() {
-	var DBTable="ppm_systems";
-	var belong=$("#belong").val();
-	var sort=$("#sort").val();
-	var STMType=$("#STMType").val();
-	var model=$("#model").val();
+	var DBTable="ppm_machines";
+
+	var MHEType=$("#MHEType").val();
+	var MHEName=$("#MHEName").val();
 	var remark=$("#remark").val();
 	var status=$("#status").val();
 	
 	var DBData={
 			"DBTable":DBTable,
-			"belong":belong,
-			"sort":sort,
-			"STMType":STMType,
-			"model":model,
+
+			"MHEType":MHEType,
+			"MHEName":MHEName,
 			"remark":remark,
 			"status":status
 	}
@@ -234,22 +214,18 @@ $('#AddDoButton').click(function() {
 //form 更新按钮------------
 $('#UpdDoButton').click(function() {
 	
-	var DBTable="ppm_systems";
+	var DBTable="ppm_machines";
 	var DBID=table.row('.selected').data().DBID;
-	var belong=$("#belong").val();
-	var sort=$("#sort").val();
-	var STMType=$("#STMType").val();
-	var model=$("#model").val();
+	var MHEType=$("#MHEType").val();
+	var MHEName=$("#MHEName").val();
 	var remark=$("#remark").val();
 	var status=$("#status").val();
 
 	var updInput={
 			"DBTable":DBTable,
 			"DBID":DBID,
-			"belong":belong,
-			"sort":sort,
-			"STMType":STMType,
-			"model":model,
+			"MHEType":MHEType,
+			"MHEName":MHEName,
 			"remark":remark,
 			"status":status		
 	}
@@ -258,7 +234,7 @@ $('#UpdDoButton').click(function() {
 
    
 //    var updJSON={
-//			'DBTable':"ppm_systems",
+//			'DBTable':"ppm_machines",
 //			'DBID':table.row('.selected').data().DBID
 //    	};
 //	var changed=1;

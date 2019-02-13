@@ -54,9 +54,7 @@ function showDBData(DataPara,columnsData){
 	    "language": languageCN
 	    
 	});
-	
-	
-	
+
 }
 
 
@@ -82,7 +80,7 @@ function addDBData(DBData) {
 }
 
 //AJAX更新数据库数据函数
-function updDBData(DBData) {
+function updDBData(DBData,showText) {
     $.ajax({
         method: 'post',
         url: '/app/PM/updDBData',
@@ -90,10 +88,10 @@ function updDBData(DBData) {
         success: function(data, textStatus) {
  //                alert("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
-                alert("更新数据成功!");
-                window.location.reload();
+                alert(showText+"更新数据成功!");
+//                window.location.reload();
             } else {
-                alert("未有数据更新!");
+                alert(showText+"未有数据更新!");
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -180,7 +178,7 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
           url:"/app/PM/getSQLDBData",
           success:function(data){
         	  
-        	  //alert("return1111:"+JSON.stringify(data));
+        //	  alert("return1111:"+JSON.stringify(data));
         	  
         	  
         		$(selectorID).selectpicker({
@@ -190,15 +188,15 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
         		if(InitValue==undefined){
            		
            		 for(i=0;i<data.length;i++){
-                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
+                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
                  	  }
            		 $(selectorID).selectpicker('val','');
 
         		}else{
         			
         			 for(i=0;i<data.length;i++){
-                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
-                     	  if(data[i][selectPara.selectTitle]==InitValue){
+                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
+                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue){
                      		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
                      	  }
                      }
@@ -217,19 +215,14 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 //----文件上传功能代码----------------------------------------------
 function fileSelected() {
 	
-	
-	var filePath=$('#filePath').attr("href");
-	alert(filePath);
-	
-	if(filePath!=undefined){
-		
-		alert("附件已存在,上传新附件请先清空!");
-		
-	}else{
+
 		var files = document.getElementById('fileToUpload').files;
 		
 
 		var div = document.getElementById('div_previewImages');
+		
+		document.getElementById('div_previewImages').innerHTML="已选择文件!";
+		
 		for ( var i = 0; i < files.length; i++) {
 			
 			//缩略图预览
@@ -249,14 +242,24 @@ function fileSelected() {
 			/* else if (files.value) {
 				img.src = files.value; }*/
 		}
-		
-	}
+
 	
 	
 	
 	
 }
+
 function uploadFile() {
+	
+
+	var filePath=$('#filePath').attr("href");
+	
+	if(filePath!=undefined){
+		
+		alert("附件已存在,上传新附件请先清空!");
+		
+	}else{
+	
 	var fd = new FormData();
 	var files = document.getElementById('fileToUpload').files;
 	
@@ -281,8 +284,10 @@ function uploadFile() {
 		
 	}
 	
+	}
 	
 }
+
 function uploadProgress(evt) {
 	if (evt.lengthComputable) {
 		var percentComplete = Math.round(evt.loaded * 100 / evt.total);
@@ -346,9 +351,11 @@ function uploadComplete(evt) {
 		}
 	}
 }
+
 function uploadFailed(evt) {
 	alert("There was an error attempting to upload the file.");
 }
+
 function uploadCanceled(evt) {
 	alert("The upload has been canceled by the user or the browser dropped the connection.");
 }
@@ -649,7 +656,7 @@ function Fun_addfileInfo(DBData) {
         success: function(data) {
 //            alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("订单新增附件成功!");
+               alert("附件添加绑定成功!");
 //               window.location.reload();
            }
        },
@@ -658,6 +665,16 @@ function Fun_addfileInfo(DBData) {
        }
     });
 }
+
+//函数 截取selector选择内容
+function Fun_getSelectText(obj){
+
+    var index=obj.lastIndexOf("\-");
+    obj=obj.substring(index+1,obj.length);
+//  console.log(obj);
+    return obj;
+}
+
 
 ////函数-获取附件信息数据库
 //
