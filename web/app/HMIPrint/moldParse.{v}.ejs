@@ -11,13 +11,13 @@
 <script src="/DataTables/v1.10.15/js/dataTables.bootstrap.min.js"></script>
 
 <!--自己写的-->
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/master.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-master.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/mold-nav-tabs.css">
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/upFolderDiv.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-upFolderDiv.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/dataTableExtend.css">
 
 <script type="text/javascript" src="/js/muc_jsExtend.js"></script>
-<script type="text/javascript" src="/js/HMIPrint/common.js"></script>
+<script type="text/javascript" src="/js/HMIPrint/hmiprint-common.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/moldParse.js"></script>
 
 <div class="content">
@@ -29,7 +29,7 @@
 
     <!-- 操作区（按钮等） -->
     <div class="content-operate">
-        <!-- 导出文件 按键 （注：默认为TM54） # TMD这个地方没办法语义化标签，只能加个 anchor-->
+        <!-- 导出文件 按键  # TMD这个地方没办法语义化标签，只能加个 anchor-->
         <input type="file" id="upFolder" style="display:none;" webkitdirectory />
         <a class="btn btn-lg btn-info" onclick="$('#upFolder').click();">导入文件</a>
 
@@ -48,7 +48,7 @@
     <div class="mold-hdr" id="moldhdr">
     </div>
 
-    <!-- DataTable呈现区 mark的元素勿删，是给你做元素结构参考的-->
+    <!-- DataTable呈现区 mark的元素勿删，DOM参考用-->
     <div class="tab" role="tabpanel">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist" id="DataUl">
@@ -70,36 +70,64 @@
         </div>
     </div>
 </div>
-
-<!-- Muc mark，写着玩的，后续可用作提示美化 -->
-<!-- <script>
-layui.use('element', function() {
-    var $ = layui.jquery,
-        element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-    //触发事件
-});
-
-</script> -->
-
-
 <script type="text/javascript">
 /*jshint esversion:6*/
+// tab标签页的顺序随着arr_Inx的增加依次减小
+// 若有新增直接在这里按序加即可
+const g_aTabOrder = ["Mold",
+    "Inject",
+    "InjectB",
+    // "Gate",
+    "Rotary",
+    "Chrg",
+    "ChrgB",
+    "Eject",
+    "EjectB",
+    "AirBlast",
+    "Core",
+    "Nozzl",
+    "NozzlB",
+    "Temper",
+    // "Product",
+    // "Moni",
+    // "Alarm",
+    "Other"
+];
+/* 用来翻译水平标签页上的文字，表示资料分组，例：吹气，模具、储料 */
+// 若有新增直接在这里加即可
+const g_mTabs = new Map([
+    ["Mold", "模座"],
+    ["Inject", "射出"],
+    ["InjectB", "射出B"],
+    // ["Gate", "阀门"],
+    ["Rotary", "转台"],
+    ["Chrg", "储料"],
+    ["ChrgB", "储料B"],
+    ["Eject", "托模"],
+    ["EjectB", "托模B"],
+    ["AirBlast", "吹气"],
+    ["Core", "中子"],
+    ["Nozzl", "座台"],
+    ["NozzlB", "座台B"],
+    ["Temper", "温度"],
+    // ["Product", "生产"],
+    // ["Moni", "监测"],
+    // ["Alarm", "警报限"],
+    ["Other", "其他"],
+]);
+
 
 /*===========================================================================+
-|   $(document).ready                                                        |
+|   load                                                                     |
 +===========================================================================*/
-$(function(e) {
-    /* “记录”checkbox初始化与事件绑定 */
-    // waring:不能写在onload
-    // Chenly 2018-11-09 默认改为自动记录
-    // fnBindRecTrigger("sMoldRec", "#recBox", "记录", "关闭");
-    /* 单选数据行并高亮显示 */
+$(window).load(function() {
+    // alert("text1");
 });
 
 /*===========================================================================+
-|   document.ready                                                           |
+|   ready                                                                    |
 +===========================================================================*/
-$(document).ready(function() {
+$(function(e) {
     var $pMsgID = $("#PMsg");
 
     let mucDB = "MucDB",
@@ -111,8 +139,9 @@ $(document).ready(function() {
 
     /* === 自动呈现最后一次解析的内容 === */
     if (sPFlag == "true") {
+        // $pMsgID.text("调试中，#1 MUC 把上次呈现给关了");
         $pMsgID.text("正在呈现最后一次解析结果，请稍后 . . .");
-        fnGetObjFrInxDB(mucDB, store, pageID, callbackInxDB);
+        fnGetObjFrInxDB(mucDB, store, pageID, callbackInxDB); // common.js
     }
 
     /* === 操作控件事件绑定 === */
@@ -135,15 +164,20 @@ $(document).ready(function() {
             /* 呈现上次的数据快照 */
             fnShowSnap(objArg);
 
-            /* 汇出excel事件绑定 */
-            let sWbName = objArg.sFolderName;
-            let g_aTableID = ["dtMold", "dtInject", "dtGate", "dtChrg", "dtEject", "dtAirBlast",
-                    "dtCore", "dtNozzl", "dtTemper", "dtProduct", "dtMoni", "dtAlarm", "dtOther"
-                ],
-                g_aWkSheet = ["模具", "射出", "阀门", "储料", "托模", "吹气",
-                    "中子", "座台", "温度", "生产", "监测", "警报", "其他"
-                ];
-            fnExpBtnBind("dlink", g_aTableID, g_aWkSheet, sWbName, "Excel");
+            /* --- export xls event bind --- */
+            let aTableID = [], // 各个DataTable的ID
+                aWkSheet = [], // 各个DataTable的Tab标签页中文翻译，用于构建汇出excel的sheet名
+                sWbName = objArg.sFolderName;
+            g_mTabs.forEach((v, k) => {
+                k = "dt" + k;
+                if ($("#" + k).length > 0) {
+                    // 当对应的table存在时，再处理
+                    aTableID.push(k);
+                    aWkSheet.push(v);
+                }
+            });
+
+            fnExpBtnBind("dlink", aTableID, aWkSheet, sWbName, "Excel"); // common.js
 
             // Muc 2018-12-05 mark，已在呈现处做类似处理
             /* 解决dataTable加入垂直滚动条后，切换tab表头width变为0px的现象 */
@@ -184,7 +218,7 @@ $(document).ready(function() {
 
         if (sRecStat === "true" || sRecCheckStat == "checked") {
             $("#PMsg").text("正在获取/解析数据文件，请稍后 . . .");
-            fnGetDataFrIndexedDB(mucDB, store, pageName, callbackInxDB);
+            fnGetObjFrInxDB(mucDB, store, pageName, callbackInxDB);
         }*/
 
     // };

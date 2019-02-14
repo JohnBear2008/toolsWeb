@@ -3,7 +3,7 @@ module.exports = function(sender) {
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 
     var aDataIDs = sender.req.query.t,
-        sqlGetAllDataID = "SELECT * FROM hmiprint_mold_tm55 order by UID DESC";
+        sqlGetAllDataID = "SELECT * FROM hmiprint_mold_tm55 ORDER BY UID ASC"; // 默认升序，降低DataTables排序开销
 
     yjDBService.exec({
         sql: sqlGetAllDataID,

@@ -388,7 +388,7 @@ function CNtranslator(objSysArg) {
                                 aDataInfo[nRecx][nTitx].Visb = data.rows[nVisbInfoInx][nArrInx.Visb];
                             }
 
-                            /*Mark，这里可删除不再使用的信息，用以缩小g_variate 所占空间*/
+                            // Muc 2018-12-29 mark，先留着，但占空间
                             // delete aDataInfo[nRecx][nTitx].nSize;
                             // delete aDataInfo[nRecx][nTitx].Prec;
                             // delete aDataInfo[nRecx][nTitx].nDispPrec;
@@ -569,8 +569,8 @@ function createTable(tableID, data, columns) {
     return $(tableID).DataTable({
         /* ========== 数据显示 ========== */
         "aLengthMenu": [
-            [15, 50, 200, 500, -1],
-            [15, 50, 200, 500, "All"]
+            [15, 50, 200],
+            [15, 50, 200]
         ],
         /* 使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性 */
         /* data = [
@@ -600,7 +600,6 @@ function createTable(tableID, data, columns) {
         ],
 
         "oLanguage": {
-            "url": "dataTables.german.lang",
             "sProcessing": "正在加载数据中，请稍后 ...",
             // "sProcessing": "<img src='/images/gif/loading4.gif'>", // mark，显示效果需通过css来处理
             "sLengthMenu": "显示 _MENU_ 项结果",

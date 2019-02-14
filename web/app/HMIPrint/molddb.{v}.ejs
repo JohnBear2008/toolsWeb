@@ -12,22 +12,22 @@
 <script type="text/javascript" src="/layui/v2.4.5/layui.js"></script>
 
 <!--自己写的-->
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/master.css">
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/font.css">
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/form.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-master.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-font.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-form.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/mold-nav-tabs.css">
-<link rel="stylesheet" type="text/css" href="/css/HMIPrint/upFolderDiv.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-upFolderDiv.css">
 <link rel="stylesheet" type="text/css" href="/css/HMIPrint/dataTableExtend.css">
 
 <!-- <script type="text/javascript" src="/js/muc_jsExtend.js"></script> -->
-<script type="text/javascript" src="/js/HMIPrint/common.js"></script>
+<script type="text/javascript" src="/js/HMIPrint/hmiprint-common.js"></script>
 <script type="text/javascript" src="/js/HMIPrint/js_view/moldDBform.js"></script>
 
 <!-- 这里开始是界面 -->
 <div class="content">
     <!-- 标题区 -->
     <div class="content-title">
-        <h1>Mold 数据库维护</h1>
+        <h1>TM55 模具 数据表维护</h1>
         <hr />
     </div>
 
@@ -68,6 +68,7 @@
 |   document.ready                                                           |
 +========================================================================== */
 $(function() {
+    // 这个鬼东西最好放在最前面，详见官方文档
     layui.use(['form', 'layer', 'layedit'], function() { //如果只加载一个模块，可以不填数组。如：layui.use('form')
         let form = layui.form, // 获取form模块
             layer = layui.layer, //获取upload模块
@@ -75,11 +76,12 @@ $(function() {
 
         form.render();
 
-        /* --- bind --- */
+        /* --- add button event bind --- */
         $("#add_btn").click(function() {
             fnDBAddform(form, layer, layedit);
         });
 
+        /* --- update button event bind --- */
         $("#upd_btn").click(function() {
             let curDataRow = g_elDBTable.row('.tbody-selected').data();
             if (curDataRow) {
@@ -87,11 +89,12 @@ $(function() {
             } else {
                 layer.msg("请点击数据行后再进行操作", {
                     time: 5000,
-                    icon: WARNICON,
+                    icon: WARN_ICON,
                 });
             }
         });
 
+        /* --- delete button event bind --- */
         $("#del_btn").click(function() {
             let curDataRow = g_elDBTable.row('.tbody-selected').data();
             /* 有选择则进行数据删除操作 */
@@ -100,7 +103,7 @@ $(function() {
             } else {
                 layer.msg("请点击数据行后再进行操作", {
                     time: 5000,
-                    icon: WARNICON,
+                    icon: WARN_ICON,
                 });
             }
         });
@@ -108,8 +111,8 @@ $(function() {
         /* --- 创建DataTable实例 --- */
         g_elDBTable = $('#DBTable').DataTable({
             "aLengthMenu": [
-                [25, 50, 200, 300, -1],
-                [25, 50, 200, 300, "所有"],
+                [25, 50, 200],
+                [25, 50, 200],
             ],
             ajax: {
                 url: '/app/HMIPrint/getMoldDBMaint',
@@ -139,6 +142,7 @@ $(function() {
             "scrollCollapse": "true",
             // "scrollX": true,
 
+            // stateSave: true, // 保存最后一次分页信息、排序信息等，默认保存2小时
             "bAutoWidth": false, // 关闭自动列宽，可提高性能，同时防止自动列宽后的紧缩风格
             "destroy": true,
             "bDeferRender": true, // 延迟渲染数据
@@ -182,9 +186,24 @@ var g_form,
     g_layedit;
 
 /*===========================================================================+
-|   global  variate                                                          |
+|   global element                                                           |
 +========================================================================== */
-var g_oStdTmp = {
+var g_elDBTable;
+
+/*===========================================================================+
+|   global  const                                                            |
++========================================================================== */
+/* layui图标序号 */
+const WARN_ICON = 0,
+    YES_ICON = 1,
+    NO_ICON = 2,
+    QUERY_ICON = 3,
+    LOCK_ICON = 4,
+    FAIL_ICON = 5,
+    SUCCESS_ICON = 6,
+    LOAD_ICON = 16;
+
+const STD_INFO = {
     "Manufacturer": "STD",
     "CtrlType": "0000",
     "MachType": "00000000",
@@ -194,25 +213,6 @@ var g_oStdTmp = {
     "Reserved3": "0",
     "Reserved4": "0"
 };
-
-/*===========================================================================+
-|   global element                                                           |
-+========================================================================== */
-var g_elDBTable;
-
-/*===========================================================================+
-|   global  const                                                            |
-+========================================================================== */
-/* layui图标序号 */
-var WARNICON = 0,
-    YESICON = 1,
-    NOICON = 2,
-    QUERYICON = 3,
-    LOCKICON = 4,
-    FAILICON = 5,
-    SUCCESSICON = 6,
-    LOADICON = 16;
-
 /*===========================================================================+
 |   Object function                                                          |
 +========================================================================== */
@@ -233,7 +233,8 @@ function fnDBAddform(form, layer, layedit) {
         scrollbar: false, // 可提高效率
         /* 关闭form后刷新页面，以获取最新的数据库信息 */
         end: function() {
-            window.location.reload();
+            $('#DBTable').DataTable().ajax.reload();
+            // window.location.reload();
         }
     });
 
@@ -246,7 +247,7 @@ function fnDBAddform(form, layer, layedit) {
 
     /* --- form验证规则 --- */
     // 要先创建一个编辑器
-    var editIndex = layedit.build('LAY_demo_editor');
+    let editIndex = layedit.build('LAY_demo_editor');
     form.verify({
         /* 支付串长度限制 */
         maxstr_1: function(val) {
@@ -308,6 +309,7 @@ function fnDBAddform(form, layer, layedit) {
     // 此处sublimt绑定的元素为 button，且其属性 lay-filter="form_submit"
     form.on('submit(form_submit)', function(data) {
         let formData = data.field; // 这里是模具数据对象  eg. {Manufacturer:"STD", "CtrlType"：＂0000＂}
+        // formData.UID = ""; // Mark, 加不加无所谓，反正SQL会默认给
         ajaxDBAdd(formData);
         return false; // 提交后不自动关闭form
     });
@@ -321,7 +323,7 @@ function fnDBAddform(form, layer, layedit) {
  * @Author    Muc
  * @DateTime  2018-12-07
  */
-function fnDBShowUpdForm(curDataRow, form, layer, layedit) {
+function fnDBShowUpdForm(curDataRow, form, layer, layedit, bStd = false) {
     /* --- 基本配置 --- */
     layer.open({
         type: 1,
@@ -339,9 +341,12 @@ function fnDBShowUpdForm(curDataRow, form, layer, layedit) {
     layer.ready(() => {
         /* form内，所有不允许被更新的元素变为不可编辑，以防呆*/
         // DataID 不允许被更新
-        $("#DBform_DataID").addClass("layui-disabled");
-        $("#DBform_DataID").attr("disabled", "true");
-        // let $el_non_upd = $("#DBform").find("[lay-filter='non-update']");
+        $("#DBform .sysinfo").addClass("layui-disabled");
+        $("#DBform .sysinfo").attr("disabled", "true");
+
+        // $("#DBform_DataID").addClass("layui-disabled");
+        // $("#DBform_DataID").attr("disabled", "true");
+
         /* 单选项无法通过设置默认值给值，故特殊处理 */
         if (curDataRow.Visb)
             $("#radio_visb").attr('checked', 'true');
@@ -353,7 +358,7 @@ function fnDBShowUpdForm(curDataRow, form, layer, layedit) {
 
     /* --- form验证规则 --- */
     // 要先创建一个编辑器
-    var editIndex = layedit.build('LAY_demo_editor');
+    let editIndex = layedit.build('LAY_demo_editor');
     form.verify({
         /* 支付串长度限制 */
         maxstr_1: function(val) {
@@ -418,23 +423,25 @@ function fnDBShowUpdForm(curDataRow, form, layer, layedit) {
  * @DateTime  2018-12-07
  */
 function fnUpdData(objArg, form, layer, layedit) {
-    let nStdKNum = Object.getOwnPropertyNames(g_oStdTmp).length,
+    let nStdKNum = Object.getOwnPropertyNames(STD_INFO).length,
         nObjKNum = 0;
     /* -- 只对所罗列的key进行判断 --*/
-    for (let k in g_oStdTmp) {
-        if (objArg[k] && (objArg[k] === g_oStdTmp[k])) {
+    for (let k in STD_INFO) {
+        if (objArg[k] && (objArg[k] === STD_INFO[k])) {
             ++nObjKNum;
         }
     }
-    /* 当传入的objArg是标准g_oStdTmp对象的超集时，则做msg提示 */
+    /* 当传入的objArg是标准STD_INFO对象的超集时，则做msg提示 */
     /* msg点下确认后弹出DBUpdform*/
     if (nObjKNum === nStdKNum) {
-        layer.msg("变更此标准数据行或影响所有HMI程式解析结果 是否继续？", {
+        layer.msg("变更此标准数据行或影响所有HMI程式解析结果 请确认操作无误！", {
             time: 0,
             btn: ['继续', '我点错了'],
             yes: function(index) {
                 layer.close(index);
-                fnDBShowUpdForm(objArg, form, layer, layedit);
+
+                let bStd = true;
+                fnDBShowUpdForm(objArg, form, layer, layedit, bStd);
             }
         });
     } else {
@@ -449,15 +456,15 @@ function fnUpdData(objArg, form, layer, layedit) {
  * @DateTime  2018-12-07
  */
 function fnDelDBData(objArg, form, layer, layedit) {
-    let nStdKNum = Object.getOwnPropertyNames(g_oStdTmp).length,
+    let nStdKNum = Object.getOwnPropertyNames(STD_INFO).length,
         nObjKNum = 0;
     /* -- 只对所罗列的key进行判断 --*/
-    for (let k in g_oStdTmp) {
-        if (objArg[k] && (objArg[k] === g_oStdTmp[k])) {
+    for (let k in STD_INFO) {
+        if (objArg[k] && (objArg[k] === STD_INFO[k])) {
             ++nObjKNum;
         }
     }
-    /* 当传入的objArg是标准g_oStdTmp对象的超集时，则做msg提示 */
+    /* 当传入的objArg是标准STD_INFO对象的超集时，则做msg提示 */
     /* msg点下确认后弹出DBUpdform*/
     if (nObjKNum === nStdKNum) {
         layer.msg('操作无效，如需删除该标准数据行，请联系开发者 Muc', function() {});
@@ -496,12 +503,12 @@ function ajaxDBAdd(ObjNoUID) {
         success: function(data, textStatus) {
             if (data.affectedRows != 0) {
                 layer.msg("添加成功！", {
-                    icon: SUCCESSICON,
+                    icon: SUCCESS_ICON,
                 });
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            layer.msg("该数据标识符已存在，请以更新的方式更新此数据！", { icon: FAILICON });
+            layer.msg("该数据的标识信息已存在，请以更新的方式更新此数据！", { icon: FAIL_ICON });
         }
     });
 }
@@ -521,10 +528,11 @@ function ajaxDBUpd(ObjHaveUID) {
         success: function(data, textStatus) {
             if (data.changedRows != 0) {
                 layer.msg("更新成功！", {
-                    icon: SUCCESSICON,
+                    icon: SUCCESS_ICON,
                     time: 1000,
                     end: function() {
-                        window.location.reload();
+                        $('#DBTable').DataTable().ajax.reload();
+                        // window.location.reload();
                     }
                 });
             }
@@ -547,10 +555,11 @@ function ajaxDBDel(UID) {
         success: function(data, textStatus) {
             if (data.affectedRows != 0) {
                 layer.msg("删除成功！", {
-                    icon: SUCCESSICON,
+                    icon: SUCCESS_ICON,
                     time: 1000,
                     end: function() {
-                        window.location.reload();
+                        $('#DBTable').DataTable().ajax.reload();
+                        // window.location.reload();
                     }
                 });
             }

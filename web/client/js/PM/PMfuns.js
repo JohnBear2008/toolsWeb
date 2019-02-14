@@ -545,7 +545,7 @@ function sendDingMsg(Msg) {
         url: '/app/PM/sendDingTalk',
         data: Msg,
         success: function(data, textStatus) {
-            alert("成功数据:" + JSON.stringify(data));
+            console.log("成功数据:" + JSON.stringify(data));
            
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -637,8 +637,6 @@ function Fun_showSQLTable(SQL,tableInfo){
 		    columns: tableInfo.columnsData,
 		    aaSorting: [0, 'desc'],//默认排序
 		    lengthMenu:[10,30,50],
-
-
 		    "language": languageCN
 		});
 
@@ -697,3 +695,25 @@ function Fun_getSelectText(obj){
 //    });
 //}
 
+//函数-增加数据并发送钉钉消息
+function Fun_addDBDataDD(DBData,DDMsg) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/addDBData',
+        data: DBData,
+        success: function(data) {
+//            alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+               alert("新增数据成功!");
+               if(DDMsg!=""){
+            	   sendDingMsg(DDMsg);
+               }
+               window.location.reload();
+           }
+       },
+       error:function(err){
+       	alert("失败数据:"+JSON.stringify(err));
+       }
+    });
+}

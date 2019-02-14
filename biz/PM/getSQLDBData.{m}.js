@@ -5,11 +5,15 @@ module.exports = function(sender) {
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 
 
-//    console.log("get:"+JSON.stringify(sender.req.query));
+    console.log("get:"+JSON.stringify(sender.req.query));
 
     var SQL=sender.req.query.SQL;  
+    var DBTable=sender.req.query.DBTable;  
+    var DBID=sender.req.query.DBID;  
     
-    console.log("SQL:"+SQL);
+//    console.log("SQL:"+SQL);
+//    console.log("DBTable:"+DBTable);
+//    console.log("DBID:"+DBID);
     //选择执行的SQL语句
     switch (SQL){
     
@@ -35,14 +39,28 @@ module.exports = function(sender) {
 		var SQLExecute=SQLSRStaffs;
 		break;
 		
-	case "SQLTableBillPlan":
-		var SQLExecute=SQLTableBillPlan;
+	case "SQLTableBillsTrack":
+		var SQLExecute=SQLTableBillsTrack;
 		break;	
+		
+	case "SQLTableBillsPLD":
+		var SQLExecute=SQLTableBillsPLD;
+		break;	
+	case "SQLTableBillsBPT":
+		var SQLExecute=SQLTableBillsBPT;
+		break;
+		
+		
 	default:
 		var SQLExecute=SQL;
 		break;
 	}
     
+    if(DBID!=""&&DBID!=undefined){
+    	SQLExecute=SQLExecute+" WHERE A.DBID="+DBID;
+    }
+    
+   // console.log("SQLExecute:"+SQLExecute);
     
     //增加关键字防护,防止使用非法关键字操作数据库
     var banWord1 = new RegExp("delete");

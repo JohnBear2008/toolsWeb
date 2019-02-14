@@ -1,0 +1,171 @@
+-- --------------------------------------------------------
+-- 主机:                           127.0.0.1
+-- 服务器版本:                        10.3.9-MariaDB - mariadb.org binary distribution
+-- 服务器操作系统:                      Win64
+-- HeidiSQL 版本:                  9.4.0.5125
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+-- 导出 toolsweb 的数据库结构
+CREATE DATABASE IF NOT EXISTS `toolsweb` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `toolsweb`;
+
+-- 导出  表 toolsweb.hmiprint_moni 结构
+DROP TABLE IF EXISTS `hmiprint_moni`;
+CREATE TABLE IF NOT EXISTS `hmiprint_moni` (
+  `UID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Manufacturer` varchar(8) COLLATE utf8_bin DEFAULT 'STD' COMMENT '4位 [标准, STD]',
+  `CtrlType` varchar(8) COLLATE utf8_bin DEFAULT '0000' COMMENT '4位 [标准, 0000]',
+  `MachType` varchar(10) COLLATE utf8_bin DEFAULT '00000000' COMMENT '8位 [标准, 00000000]',
+  `Reserved0` varchar(32) COLLATE utf8_bin DEFAULT '0' COMMENT '预留 [标准, 0]',
+  `Reserved1` varchar(32) COLLATE utf8_bin DEFAULT '0' COMMENT '预留 [标准, 0]',
+  `Reserved2` varchar(32) COLLATE utf8_bin DEFAULT '0' COMMENT '预留 [标准, 0]',
+  `Reserved3` varchar(32) COLLATE utf8_bin DEFAULT '0' COMMENT '预留 [标准, 0]',
+  `Reserved4` varchar(32) COLLATE utf8_bin DEFAULT '0' COMMENT '预留 [标准, 0]',
+  `Prec` tinyint(5) DEFAULT 0 COMMENT 'Precision',
+  `DDKey` varchar(32) COLLATE utf8_bin DEFAULT '0' COMMENT 'HMI 生成的 ini中的[Parameter]英文内容',
+  `CN` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '中文',
+  `TW` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+  `EN` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+  `Visb` tinyint(1) unsigned DEFAULT 1 COMMENT 'visible',
+  PRIMARY KEY (`UID`),
+  UNIQUE KEY `UniqueA` (`Manufacturer`,`CtrlType`,`MachType`,`Reserved0`,`Reserved1`,`Reserved2`,`Reserved3`,`Reserved4`,`DDKey`)
+) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
+
+-- 正在导出表  toolsweb.hmiprint_moni 的数据：~123 rows (大约)
+/*!40000 ALTER TABLE `hmiprint_moni` DISABLE KEYS */;
+REPLACE INTO `hmiprint_moni` (`UID`, `Manufacturer`, `CtrlType`, `MachType`, `Reserved0`, `Reserved1`, `Reserved2`, `Reserved3`, `Reserved4`, `Prec`, `DDKey`, `CN`, `TW`, `EN`, `Visb`) VALUES
+	(1, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwShotCount', '开模序号', NULL, NULL, 1),
+	(2, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmlCycle', '循环计时', NULL, NULL, 1),
+	(3, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmlInject', '射出计时', NULL, NULL, 1),
+	(4, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmllTurnToHold', '保压转换时间', NULL, NULL, 1),
+	(5, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmlCharge', '储料计时', NULL, NULL, 1),
+	(6, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectStart', '射出起点', NULL, NULL, 1),
+	(7, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_TurnToHold', '保压起点', NULL, NULL, 1),
+	(8, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectEnd', '射出终点', NULL, NULL, 1),
+	(9, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectCushion', '射出监控位置', NULL, NULL, 1),
+	(10, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectPeak', '射出尖峰位置', NULL, NULL, 1),
+	(11, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_TurnToHold', '保压转换压力', NULL, NULL, 1),
+	(12, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'cnChargeRPM', '储料RPM', NULL, NULL, 1),
+	(13, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmSuckBack', '射退计时', NULL, NULL, 1),
+	(14, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmEject', '托模计时', NULL, NULL, 1),
+	(15, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmEjectAdvance', '托进计时', NULL, NULL, 1),
+	(16, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmEjectReturn', '托退计时', NULL, NULL, 1),
+	(17, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_InjectPeak', '射出尖峰压力', NULL, NULL, 1),
+	(18, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_ChargePeak', '储料尖峰压力', NULL, NULL, 1),
+	(19, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmlInjectB', 'B组射出计时', NULL, NULL, 1),
+	(20, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmlChargeB', 'B组储料计时', NULL, NULL, 1),
+	(21, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectStartB', 'B组射出起点', NULL, NULL, 1),
+	(22, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_TurnToHoldB', 'B组保压起点', NULL, NULL, 1),
+	(23, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectCushionB', 'B组射出终点', NULL, NULL, 1),
+	(24, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_InjecterB', 'B组射出压力', NULL, NULL, 1),
+	(25, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_ChargeBackB', 'B组储料背压', NULL, NULL, 1),
+	(26, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmTake', '取件时间', NULL, NULL, 1),
+	(27, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_OpenMoldEnd', '开模终点', NULL, NULL, 1),
+	(28, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPress_TurnToHoldB', 'B组实际转保压力', NULL, NULL, 1),
+	(29, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 2, 'tmlTurnToHoldB', 'B组转保压计时', NULL, NULL, 1),
+	(30, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectHoldEndB', 'B组实际射出终点位置', NULL, NULL, 1),
+	(31, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_InjectMiddleB', 'B组实际射出尖峰压力', NULL, NULL, 1),
+	(32, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'daPres_ChargeMiddleB', 'B组实际储料尖峰压力', NULL, NULL, 1),
+	(33, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'InjectMaxSpeed', '最大射速', NULL, NULL, 1),
+	(34, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'InjectMaxSpeedB', 'B组最大射速', NULL, NULL, 1),
+	(35, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG0', '预留', NULL, NULL, 0),
+	(36, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG1', '预留', NULL, NULL, 0),
+	(37, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG2', '预留', NULL, NULL, 0),
+	(38, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG3', '预留', NULL, NULL, 0),
+	(39, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG4', '预留', NULL, NULL, 0),
+	(40, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG5', '预留', NULL, NULL, 0),
+	(41, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG6', '预留', NULL, NULL, 0),
+	(42, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG7', '预留', NULL, NULL, 0),
+	(43, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG8', '预留', NULL, NULL, 0),
+	(44, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG9', '预留', NULL, NULL, 0),
+	(45, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG10', '预留', NULL, NULL, 0),
+	(46, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG11', '预留', NULL, NULL, 0),
+	(47, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG12', '预留', NULL, NULL, 0),
+	(48, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG13', '预留', NULL, NULL, 0),
+	(49, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG14', '预留', NULL, NULL, 0),
+	(50, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG15', '预留', NULL, NULL, 0),
+	(51, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG16', '预留', NULL, NULL, 0),
+	(52, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG17', '预留', NULL, NULL, 0),
+	(53, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG18', '预留', NULL, NULL, 0),
+	(54, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wReservedMG19', '预留', NULL, NULL, 0),
+	(55, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG0', '预留', NULL, NULL, 0),
+	(56, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG1', '预留', NULL, NULL, 0),
+	(57, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG2', '预留', NULL, NULL, 0),
+	(58, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG3', '预留', NULL, NULL, 0),
+	(59, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG4', '预留', NULL, NULL, 0),
+	(60, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG5', '预留', NULL, NULL, 0),
+	(61, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG6', '预留', NULL, NULL, 0),
+	(62, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG7', '预留', NULL, NULL, 0),
+	(63, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG8', '预留', NULL, NULL, 0),
+	(64, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'dwReservedMG9', '预留', NULL, NULL, 0),
+	(65, 'STD', '0000', '00000000', '0', '0', '0', '0', '0', 0, 'wSource', '来源', NULL, NULL, 1),
+	(66, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_OpenMoldEnd', '开模终点', NULL, NULL, 1),
+	(67, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'cnChargeRPM', '储料RPM', NULL, NULL, 0),
+	(68, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_InjectStart', '射出起点', NULL, NULL, 1),
+	(69, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_TurnToHold', '保压起点', NULL, NULL, 1),
+	(70, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_InjectEnd', '射出终点', NULL, NULL, 1),
+	(71, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_InjectCushion', '射出监测', NULL, NULL, 1),
+	(72, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'tmEject', '托模计时', NULL, NULL, 1),
+	(73, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'daPres_ChargePeak', '储料尖峰压力', NULL, NULL, 0),
+	(74, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'tmlInjectB', 'B组射出计时', NULL, NULL, 0),
+	(75, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'tmlChargeB', 'B组储料计时', NULL, NULL, 0),
+	(76, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_InjectStartB', 'B组射出起点', NULL, NULL, 0),
+	(77, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_TurnToHoldB', 'B组保压起点', NULL, NULL, 0),
+	(78, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_InjectCushionB', 'B组射出终点', NULL, NULL, 0),
+	(79, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'daPres_InjecterB', 'B组射出压力', NULL, NULL, 0),
+	(80, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'daPres_ChargeBackB', 'B组储料背压', NULL, NULL, 0),
+	(81, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'daPress_TurnToHoldB', 'B组转保压力实际值', NULL, NULL, 0),
+	(82, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'tmlTurnToHoldB', 'B组转保压计时', NULL, NULL, 0),
+	(83, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'adPosi_InjectHoldEndB', 'B组射出终点位置实际值', NULL, NULL, 0),
+	(84, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'daPres_InjectMiddleB', 'B组射出尖峰压力实际值', NULL, NULL, 0),
+	(85, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 1, 'InjectMaxSpeedB', 'B组最大射速', NULL, NULL, 0),
+	(86, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'wReservedMG9', '开模计时', NULL, NULL, 1),
+	(87, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'wReservedMG10', '关模时间', NULL, NULL, 1),
+	(88, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'wReservedMG18', '转模进计时', NULL, NULL, 1),
+	(89, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'wReservedMG19', '转模退计时', NULL, NULL, 1),
+	(90, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 0, 'daPres_ChargeMiddleB', 'B组储料尖峰压力', NULL, NULL, 0),
+	(91, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 2, 'tmTake', '取件时间', NULL, NULL, 0),
+	(92, '7AK', '1100', '10010000', '0', '0', '0', '0', '0', 1, 'InjectMaxSpeed', '最大射速', NULL, NULL, 0),
+	(93, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'tmllTurnToHold', '0', NULL, NULL, 0),
+	(94, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'daPres_TurnToHold', '0', NULL, NULL, 0),
+	(95, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'adPosi_InjectEnd', '0', NULL, NULL, 0),
+	(96, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'cnChargeRPM', '0', NULL, NULL, 0),
+	(97, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'tmSuckBack', '防涎时间', NULL, NULL, 1),
+	(98, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'tmEject', '0', NULL, NULL, 0),
+	(99, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'tmEjectReturn', '托退一段时间', '', '', 1),
+	(100, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'daPres_InjectPeak', '0', NULL, NULL, 0),
+	(101, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'daPres_ChargePeak', '0', NULL, NULL, 0),
+	(102, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'tmlInjectB', '0', NULL, NULL, 0),
+	(103, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'tmlChargeB', '0', NULL, NULL, 0),
+	(104, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 1, 'adPosi_InjectStartB', '注合终点', NULL, NULL, 1),
+	(105, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 1, 'adPosi_TurnToHoldB', '0', NULL, NULL, 0),
+	(106, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'adPosi_InjectCushionB', '0', NULL, NULL, 0),
+	(107, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'daPres_InjecterB', '0', NULL, NULL, 0),
+	(108, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'daPres_ChargeBackB', '0', NULL, NULL, 0),
+	(109, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'wReserved', '0', NULL, NULL, 0),
+	(110, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'tmTake', '0', NULL, NULL, 0),
+	(111, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'adPosi_OpenMoldEnd', '转塔下降时间', '', '', 1),
+	(112, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'daPress_TurnToHoldB', '0', NULL, NULL, 0),
+	(113, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'tmlTurnToHoldB', '0', NULL, NULL, 0),
+	(114, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'adPosi_InjectHoldEndB', '0', NULL, NULL, 0),
+	(115, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 1, 'daPres_InjectMiddleB', '外冷位置', NULL, NULL, 1),
+	(116, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 1, 'daPres_ChargeMiddleB', '托进终点', '', '', 1),
+	(117, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'InjectMaxSpeed', '0', NULL, NULL, 0),
+	(118, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 0, 'InjectMaxSpeedB', '0', NULL, NULL, 0),
+	(119, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'wReservedMG10', '关模时间', NULL, NULL, 1),
+	(120, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'wReservedMG11', '开模时间', NULL, NULL, 1),
+	(121, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'wReservedMG12', '转位进时间', NULL, NULL, 1),
+	(122, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'wReservedMG13', '转塔上升时间', NULL, NULL, 1),
+	(123, '7WE', '0000', '07000000', '0', '0', '0', '0', '0', 2, 'wReservedMG14', '外冷时间', NULL, NULL, 1);
+/*!40000 ALTER TABLE `hmiprint_moni` ENABLE KEYS */;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
