@@ -89,7 +89,7 @@ function updDBData(DBData,showText) {
  //                alert("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
                 alert(showText+"更新数据成功!");
-//                window.location.reload();
+               window.location.reload();
             } else {
                 alert(showText+"未有数据更新!");
             }
@@ -185,7 +185,9 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
         			noneSelectedText :"未选择"//默认显示内容
         		});
         		
-        		if(InitValue==undefined){
+        		if(InitValue==undefined||InitValue==""){
+        			
+//        			console.log("InitValue11:"+InitValue);
            		
            		 for(i=0;i<data.length;i++){
                  	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
@@ -641,6 +643,10 @@ function Fun_showSQLTable(SQL,tableInfo){
 		});
 
 	}
+
+
+
+
 
 
 //函数-添加附件信息数据库

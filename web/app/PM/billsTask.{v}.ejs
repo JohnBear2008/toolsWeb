@@ -27,17 +27,18 @@
 
 
 <div class="divcontent">
-    <h1>工作流程-方案单</h1>
+    <h1>工作流程-任务单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
     <div class="lineitem">
         
+     <!--   <button id="BTNInfo" class="btn btn-warning">详情</button> -->
         
         <!-- 按钮触发模态框 -->
-
-        <button id="BTNBPTInfo" class="btn btn-info" data-toggle="modal" >方案维护</button>
-        <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >方案审核</button>
+       <!-- <button id="BTNAdd" class="btn btn-primary" data-toggle="modal" >新增</button>-->
+        <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >添加记录</button>
+        <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:98%">
@@ -50,7 +51,7 @@
                     
                     <!--------------跟踪面板----------------->
                     
-                    <div class="panel panel-info" style="width:20%;float:left;">
+                    <div class="panel panel-info" style="width:34%;float:left;">
                     
                     <!--------------panel--------------------->
                     <div class="panel-heading">
@@ -60,41 +61,39 @@
                     
                     <table class="table table-bordered">
                     <tr>
-                      <td>计划单号:</td>
-                      <td id="Left-billPLD-BPID"></td>
+                      <td id="TBillPLD-BPID"></td>
+                      <td id="TBillPLD-version"></td>
+                      <td id="TBillPLD-CTRName"></td>
+                      <td id="TBillPLD-orderFrom"></td>
                     </tr>
                     <tr>
-                      <td>版本号:</td>
-                      <td id="Left-billPLD-version"></td>
+                      <td id="TBillPLD-MHEName"></td>
+                      <td id="TBillPLD-model"></td>
+                      <td id="TBillPLD-OGNSystemVersion"></td>
+                      <td id="TBillPLD-urgency"></td>
                     </tr>
                     <tr>
-                       <td>客户名称:</td>
-                       <td id="Left-billPLD-CTRName"></td>
+                    <td id="TBillPLD-applyDate"></td>
+                    <td id="TBillPLD-limitDate"></td>
+                    <td id="TBillPLD-PGEMaker"></td>
+                    <td id="TBillPLD-fileName"></td>
+                    </tr>
+
+                    <tr>
+                    <td id="TBillPLD-topic" colspan="2"></td>
+                    <td id="TBillPLD-detail" colspan="2"></td>
+
                     </tr>
                     
                     <tr>
-                    <td>单据状态:</td>
-                    <td id="Left-billPLD-auditText"></td>
+                    <td id="TBillPLD-maker"></td>
+                    <td id="TBillPLD-makeDate"></td>
+                    <td id="TBillPLD-auditor"></td>
+                    <td id="TBillPLD-auditDate"></td>
                     </tr>
-                    
-                    <tr>
-                    <td colspan="2"> 
-                    
-                    <button type="button" class="btn btn-warning" title="计划单详情"  
-            			data-container="body" data-toggle="popover" data-placement="right" 
-            			data-content="<div id='billPLDDetailDIV'>ddd</div>">
-            		计划单详情
-            	    </button>
-                    
-                    </td> 
-                    </tr>
-                    
                     
                     </table>
                     
-                    
-                    
-                   
                     
                     </div>
                     <!--------------panel--------------------->
@@ -105,7 +104,19 @@
                     
                     <div class="panel-body">
                     
-                   
+                    <table class="table table-bordered">
+                    
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td colspan="3">&nbsp;</td>
+                      <td>&nbsp;</td>
+                      <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td colspan="7">&nbsp;</td>
+                    </tr>
+                    </table>
                     </div>
                     <!--------------panel--------------------->
                     </div>
@@ -117,7 +128,7 @@
                     
                     <!--------------方案单面板----------------->
 
-                    <div class="panel panel-info" style="width:75%;float:right;">
+                    <div class="panel panel-info" style="width:65%;float:right;">
                 	
                     <div class="panel-heading">
                         <h3 class="panel-title">方案单</h3>
@@ -137,42 +148,52 @@
                     <input id="auditResult" type="text" value="" style="display:none;">
                     
                     
-                   
-                     <!-------------------------------------------------------------------------->
-
+                    <!-------------------------------------------------------------------------->
                      <div class="form-group">
-                       <label class="col-sm-1 control-label">计划单号:</label>
-                       <div class="col-sm-3">
-                         <input id="BPID" class="form-control"  type="text" value="">
-                       </div>
                        
-                       <label class="col-sm-1 control-label">客户名称:</label>
-                       <div class="col-sm-3">
-                         <input id="CTRName" class="form-control"  type="text" value="">
-                       </div>
                        
-                       <label class="col-sm-2 control-label">方案单版本号: <span id="version"></span></label>
+                       <table class="table table-bordered" style="table-layout:fixed;">
+                       
+                       <tr>
+                         <td>计划单号:</td>
+                         <td colspan="2"><span id="BPID"></span></td>
+                         <td>版本号:</td>
+                         <td colspan="2"><span id="version"></span></td>
+                         <td>客户:</td>
+                         <td colspan="2"><span id="CTRName"></span></td>
+                         <td>紧急度:</td>
+                         <td colspan="2"><span id="urgency"></span></td>
+                         
+                       </tr>
+                       <tr>
+                         <td>方案人:</td>
+                         <td><span id="PGEMaker"></span></td>
+                         <td>修改主题:</td>
+                         <td colspan="3"><span id="topic"></span></td>
+                         <td>客户要求:</td>
+                         <td colspan="5"><span id="detail"></span></td>
+                       </tr>
+                       </table>
+                       
 
-                       
                      </div>
-                     
+                     <!-------------------------------------------------------------------------->
                      
                      <div class="form-group">
                      
                      <label class="col-sm-1 control-label">方案单号:</label>
                      <div class="col-sm-3">
-                       <input id="BPTID" class="form-control"  type="text" value="">
-                     </div>
-                     
-                     <label class="col-sm-1 control-label">方案人:</label>
-                     <div class="col-sm-3">
-                       <input id="PGEMaker" class="form-control"  type="text" value="">
+                       <input id="FA" class="form-control"  type="text" value="">
                      </div>
                      
                      <label for="limitDate" class="col-sm-1 control-label">完成期限:</label>                     
                      <div class="col-sm-3">
-                     <input id="limitDate" class="form-control"  type="text" value="">
+                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="limitDate" data-link-format="yyyy-mm-dd" >
+                         <input id="limitDate" class="form-control " size="16" type="text" value="" readonly>
+                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                      </div>
+                     <input type="hidden" id="limitDate" value="" />                 	
+                 	 </div>
                      
                      </div>
                     
@@ -208,17 +229,17 @@
                   	 <div class="col-sm-6">
                         
                   	    <label class="radio-inline">
-                  	        <input type="radio" name="modifyType" id="modifyTypeOption1" value="1"> 修改
+                  	        <input type="radio" name="urgency" id="urgencyOption1" value="1"> 修改
                   	    </label>
                   	    <label class="radio-inline">
-                  	        <input type="radio" name="modifyType" id="modifyTypeOption2"  value="2"> 程序已有不处理
+                  	        <input type="radio" name="urgency" id="urgencyOption2"  value="2"> 程序已有不处理
                   	    </label>
                   	    <label class="radio-inline">
-                 	        <input type="radio" name="modifyType" id="modifyTypeOption3"  value="3"> 要求不合理
+                 	        <input type="radio" name="urgency" id="urgencyOption3"  value="3"> 要求不合理
                  	    </label> 
                  	        
                  	    <label class="radio-inline">
-                	        <input type="radio" name="modifyType" id="modifyTypeOption4"  value="4"> 非常规维护产品
+                	        <input type="radio" name="urgency" id="urgencyOption3"  value="4"> 非常规维护产品
                 	    </label>     
                  	    
                   	</div>
@@ -231,16 +252,20 @@
                      <label class="col-sm-1 control-label">修改原因:</label>   
                  	 <div class="col-sm-8">
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modifyReason" id="modifyReasonCheckbox1" value="R1"> 功能修改
+                 	        <input type="checkbox" id="inlineCheckbox1" value="option1"> 功能修改
                  	    </label>
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modifyReason" id="modifyReasonCheckbox2" value="R2"> 功能新增
+                 	        <input type="checkbox" id="inlineCheckbox2" value="option2"> 功能新增
                  	    </label>
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modifyReason" id="modifyReasonCheckbox3" value="R3"> 优化
+                 	        <input type="checkbox" id="inlineCheckbox3" value="option3"> 优化
                  	    </label>
+                 	        
                  	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modifyReason" id="modifyReasonCheckbox3" value="R4">测试程序
+                	        <input type="checkbox" id="inlineCheckbox3" value="option3">bug修正
+                	    </label>   
+                	        <label class="checkbox-inline">
+                	        <input type="checkbox" id="inlineCheckbox3" value="option3">测试程序
                 	    </label>
                  	 </div>
                  	 
@@ -248,7 +273,25 @@
                      </div>
                      
 
-                    
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     
+                     <label class="col-sm-1 control-label">核心处理范围:</label>   
+                 	 <div class="col-sm-8">
+                 	    <label class="checkbox-inline">
+                 	        <input type="checkbox" id="inlineCheckbox1" value="option1"> kernel
+                 	    </label>
+                 	    <label class="checkbox-inline">
+                 	        <input type="checkbox" id="inlineCheckbox2" value="option2"> LIB
+                 	    </label>
+                 	    <label class="checkbox-inline">
+                 	        <input type="checkbox" id="inlineCheckbox3" value="option3"> OS
+                 	    </label>
+                 	   
+                 	 </div>
+                 	 
+                 	 
+                     </div>
                      
                      
                      <!-------------------------------------------------------------------------->
@@ -258,40 +301,6 @@
                      <textarea id="detail" class="form-control" rows="3"></textarea>
                      </div>
                      </div>
-                     
-                     
- <!-------------------------------------------------------------------------->
-                     
-                     <div class="form-group">
-                     <label  class="col-sm-1 control-label" for="name">上传</label>  
-                     
-                     <div class="col-sm-8">
-                     <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
-                     <a class="btn btn-info" onclick="$('#fileToUpload').click()">选择文件</a>
-                     
-                     
-                 	<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >
-                 	<input type="button" class="btn btn-warning" onclick="deleteFile()" value="清空附件" >
-
-                     </div>
-
-                 	</div>
-                 	
-                 	<!-------------------------------------------------------------------------->
-                 	 <div class="form-group">
-                 	<label  class="col-sm-1 control-label" for="name">附件:</label>
-                 	
-                 	<div class="col-sm-8">
-
-                 	
-                 	<div id="div_previewImages"></div>
-                    <div id="progressNumber"></div> 
-                    <div id="divFilesUploaded"></div>
-                 	</div>
-                 	
-                 	
-                 	</div>
-                     
                      
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
@@ -307,13 +316,13 @@
                      <label class="col-sm-2 control-label">类型:</label>   
                  	 <div class="col-sm-10">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio1" value="T1"> DSP任务单
+                 	        <input type="radio" name="taskType" id="radio1" value="option1"> DSP任务单
                  	    </label>
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio2" value="T2"> HMI任务单
+                 	        <input type="radio" name="taskType" id="radio2" value="option2"> HMI任务单
                  	    </label>
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio3" value="T3"> 内核任务单
+                 	        <input type="radio" name="taskType" id="radio3" value="option3"> 内核任务单
                  	    </label>
                  	   
                  	        
@@ -331,30 +340,21 @@
                      <label class="col-sm-2 control-label">修改属性:</label>   
                  	 <div class="col-sm-8">
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE1"> 画面
+                 	        <input type="checkbox" id="inlineCheckbox1" value="option1"> 画面
                  	    </label>
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE2"> 结构
+                 	        <input type="checkbox" id="inlineCheckbox2" value="option2"> 结构
                  	    </label>
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE3"> 参数
+                 	        <input type="checkbox" id="inlineCheckbox3" value="option3"> 参数
                  	    </label>
                  	        
                  	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE4">通信
+                	        <input type="checkbox" id="inlineCheckbox3" value="option3">通信
                 	    </label>   
                 	        <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE5">逻辑
+                	        <input type="checkbox" id="inlineCheckbox3" value="option3">逻辑
                 	    </label>
-                	        <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE6"> kernel
-                 	    </label>
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE7"> LIB
-                 	    </label>
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE8"> OS
-                 	    </label>
                  	 </div>
                  	 
                  	 
@@ -365,15 +365,17 @@
                      
                      <label class="col-sm-2 control-label">任务单号:</label>
                      <div class="col-sm-3">
-                       <input id="taskBPID" class="form-control"  type="hidden" value="">
-                       <input id="taskBPTID" class="form-control"  type="hidden" value="">
-                       <input id="BTID" class="form-control"  type="text" value="">
+                       <input id="FA" class="form-control"  type="text" value="">
                      </div>
                      
-                     <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
-                     
-                     <label class="col-sm-2 control-label">任务单状态: <span id="BTStatusText"></span></label>
-                    
+                     <label for="limitDate" class="col-sm-2 control-label">完成期限:</label>                     
+                     <div class="col-sm-3">
+                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="limitDate" data-link-format="yyyy-mm-dd" >
+                         <input id="limitDate" class="form-control " size="16" type="text" value="" readonly>
+                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                     </div>
+                     <input type="hidden" id="limitDate" value="" />                 	
+                 	 </div>
                      
                      </div>
                      
@@ -382,18 +384,9 @@
                      
                      <label  class="col-sm-2 control-label" for="name">负责人:</label>    
                      <div class="col-sm-2">
-                     <select  id="taskStaff" class="selectpicker" data-live-search="true"> 
+                     <select  id="auditor" class="selectpicker" data-live-search="true"> 
                      </select>
                      </div>
-                     
-                     <label for="limitDate" class="col-sm-2 control-label">任务完成期限:</label>                     
-                     <div class="col-sm-3">
-                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="limitDate" data-link-format="yyyy-mm-dd" >
-                         <input id="taskLimitDate" class="form-control " size="16" type="text" value="" readonly>
-                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                     </div>
-                     <input type="hidden" id="taskLimitDate" value="" />                 	
-                 	 </div>
 
                      </div>
                      <!-------------------------------------------------------------------------->
@@ -401,7 +394,7 @@
                      <div class="form-group"> 
                      <label class="col-sm-2 control-label">任务要求:</label>
                      <div class="col-sm-8">
-                     <textarea id="taskDBE" class="form-control" rows="2"></textarea>
+                       <input id="FA" class="form-control"  type="text" value="">
                      </div>
                      
                      </div>
@@ -410,14 +403,11 @@
                     
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
-                     <label class="col-sm-2 control-label"></label>   
-                  	 <div class="col-sm-6">
+                     <label class="col-sm-10 control-label"></label>   
+                  	<div class="col-sm-2">
                   	 <button id="BTNTaskAdd" type="button" class="btn btn-primary">新增任务</button>
-                  	 <button id="BTNTaskMod" type="button" class="btn btn-warning">修改任务</button>
-                  	 <button id="BTNTaskUpdVer" type="button" class="btn btn-warning">更新版本</button>
-                  	 <button id="BTNTaskDel" type="button" class="btn btn-danger">删除任务</button>
-                  	 </div>
-                  	 </div>
+                  	</div>
+                  	</div>
                   	
                   	 <!-------------------------------------------------------------------------->
 
@@ -435,25 +425,11 @@
                      
                      <div class="panel panel-default">
                      <div class="panel-heading">任务清单</div>
-                     
-                     
-                     
-
-                     
-                     <table id="billsTaskTable" class="table table-bordered" style="width:95%;margin-left:15px;" >
-                     <thead>
-                         <tr>
-                             <th>数据库ID</th>
-                             <th>任务单号</th>
-                             <th>任务单版本号</th>
-                             <th>任务类型</th>
-                             <th>任务负责人</th>
-                             <th>任务完成期限</th>
-                             <th>任务状态</th>
-                         </tr>
-                     </thead>
+                     <table class="table">
+                         <th>任务单号</th><th>负责人</th><th>任务说明</th><th>完成期限</th><th>删除</th>
+                         <tr><td>20190215T1</td><td>熊奇龙</td><td>调节123123123123131231233123123</td><td>2019-03-31</td><td>删除</td></tr>
+                         <tr><td>20190215T2</td><td>李明</td><td>调节123123123123131231233123123</td><td>2019-03-31</td><td>删除</td></tr>
                      </table>
-                     
                      </div>
                      
                      </div>
@@ -530,7 +506,8 @@
                     
                     <div class="panel-footer">
                     
-                    <button id="BTNFormSave" type="button" class="btn btn-primary">保存方案</button>
+                    <button id="BTNFormAdd" type="button" class="btn btn-primary">新增</button>
+                    <button id="BTNFormModify" type="button" class="btn btn-info">修改</button> 
                     <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
                     <button id="BTNFormAuditYes" type="button" class="btn btn-success">审核通过</button>
                     <button id="BTNFormAuditNo" type="button" class="btn btn-danger">审核驳回</button>
@@ -577,18 +554,18 @@
     <br/>
 
     <!--数据呈现区-->
-    <table id="billsBPTTable" class="table table-striped table-bordered"  >
+    <table id="billsTaskTable" class="table table-striped table-bordered"  >
         <thead>
             <tr>
                 <th>数据库ID</th>
+                <th>任务单号</th>
+                <th>版本号</th>
+                <th>任务类型</th>
+                <th>任务负责人</th>
+                <th>完成期限</th>
                 <th>计划单号</th>
-                <th>计划单版本号</th>
                 <th>客户简称</th>
-                <th>计划单完成期限</th>
-                <th>方案人</th>
-                <th>方案单号</th>
-                <th>方案单版本号</th>
-                <th>方案单状态</th>
+
 
             </tr>
         </thead>
@@ -608,142 +585,126 @@ function Fun_billIDCreate(para){
 	return BillID;
 }
 
-//函数 获取checkbox值
-function getCheckBoxValue(CBName){
-	var test = $("input[name='"+CBName+"']:checked");
-	var checkBoxValue = ""; 
-	test.each(function(){
-		checkBoxValue += $(this).val()+",";
-	})
-	checkBoxValue = checkBoxValue.substring(0,checkBoxValue.length-1);
-	console.log("checkBoxValue:"+checkBoxValue);
-	return checkBoxValue;
-}
-//函数 设定根据值设定checkbox选中状态
-function setCheckBoxValue(CBName,CBVals){
-	var checkBox = CBVals;
-	var checkBoxArray = checkBox.split(",");
-	for(var i=0;i<checkBoxArray.length;i++){
-		$("input[name='"+CBName+"']").each(function(){
-			if($(this).val()==checkBoxArray[i]){
-				$(this).attr("checked","checked");
-			}
-		})
-	}
 
-}
-
+////函数:新增详情页自动填写内容------------------------
+//function Fun_winAddInit(){
+//
+//	$('#BPID').val(Fun_billIDCreate("DG")); 
+//	
+//	var SQLCTRName={SQL:"SQLSRCustomers"};
+//	var CTRName="#CTRName";
+//	Fun_getSQLSelectDBData(SQLCTRName,CTRName);
+//    	
+//	var SQLMHEName={SQL:"SQLSRMachines"};
+//	var MHEName="#MHEName";
+//	Fun_getSQLSelectDBData(SQLMHEName,MHEName);
+//	
+//	var SQLModel={SQL:"SQLSRSystems"};
+//	var model="#model";
+//	Fun_getSQLSelectDBData(SQLModel,model);
+//	
+//	var SQLPGEMaker={SQL:"SQLSRStaffs"};
+//	var PGEMaker="#PGEMaker";
+//	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker);
+//	
+//	var SQLAuditor={SQL:"SQLSRStaffs"};
+//	var auditor="#auditor";
+//	Fun_getSQLSelectDBData(SQLAuditor,auditor,"<%-locals.session.yjUser.Name%>");
+//
+//
+//	
+//	
+////    var staff_Select_Para={DBTable:"ppm_staffs",selectTitle:"staff_Name"};
+////	var staff_selectorID="#PGEMaker";
+////    getSelectDBData(staff_Select_Para,staff_selectorID);  
+////    
+////
+////	var staff_Select_Para={DBTable:"ppm_staffs",selectTitle:"staff_Name"};
+////	var staff_selectorID="#auditor";
+////    getSelectDBData(staff_Select_Para,staff_selectorID,"<%-locals.session.yjUser.Name%>");  
+//    
+//    
+//    $("#auditor").attr("disabled",true);
+//    
+//    $('#topic').val(""); 
+//    $('#detail').val(""); 
+//    
+//    $('#version').text(0); 
+//    
+//  
+//  $('.form_date').datetimepicker({
+//      language:  'zh-CN',
+//      weekStart: 1,
+//      todayBtn:  1,
+//		autoclose: 1,
+//		todayHighlight: 1,
+//		startView: 2,
+//		minView: 2,
+//		forceParse: 0
+//  });
+//  
+//  $('#divFilesUploaded').html("");
+//  
+//  $("#auditTypeOption1").attr("checked",true);
+//  $("#urgencyOption1").attr("checked",true);
+//  
+//  
+//  $('#applyDate').val(Ndate); 
+//  $('#limitDate').val(Fun_getEndDate(Ndate,3));
+//  $('#maker').val("<%-locals.session.yjUser.Name%>");
+//  $('#makeDate').val(Ndate);
+//
+//  $('#auditDate').val(Ndate);
+//  $('#auditResult').val(1);
+//  
+//  $("#auditTypeDiv").show();
+//  
+//  $("#BTNFormAdd").show();
+//  
+//  $("#BTNFormModify").hide();
+//  $("#BTNFormUpdate").hide();
+//  $("#BTNFormAuditYes").hide();
+//  $("#BTNFormAuditNo").hide();
+//  
+//  
+//
+//}
 
 //函数:详情按钮详情页自动填写内容------------------------
-function Fun_BPTDetailInit(dataSelect){
+function Fun_winDetailInit(dataSelect){
 	
-	$('#DBID').val(dataSelect.DBID); 	
+	$('#DBID').val(dataSelect.DBID); 
+	$('#fileDBID').val(dataSelect.fileDBID); 
 	
-	$('#BPID').val(dataSelect.BPID); 
-	$("#BPID").attr("disabled",true);
+	console.log("fileDBID:"+dataSelect.fileDBID);
 	
-	$('#CTRName').val(dataSelect.CTRName); 
-	$("#CTRName").attr("disabled",true);
+	$('#BPID').text(dataSelect.BPID); 
+	$('#version').text(dataSelect.version); 
+	$('#CTRName').text(dataSelect.CTRName); 
+	$('#topic').text(dataSelect.topic); 
+	$('#detail').text(dataSelect.detail); 
+	$('#urgency').text(dataSelect.urgency);
+	$('#PGEMaker').text(dataSelect.PGEMaker);
 	
-	var BPTID=Fun_billIDCreate('FA');
-	$('#BPTID').val(BPTID); 
-	
-	$('#PGEMaker').val(dataSelect.PGEMaker); 
-	$("#PGEMaker").attr("disabled",true);
-	
-	$('#limitDate').val(dataSelect.limitDate); 
-	$("#limitDate").attr("disabled",true);
-	
-	$('#taskLimitDate').val(dataSelect.limitDate); 
-	
-	
-	
-	if(dataSelect.version==null){
-		$('#version').text(0); 
-	}else{
-		$('#version').text(dataSelect.version); 
-	}
-	
+//	var SQLCTRName={SQL:"SQLSRCustomers"};
+//	var CTRName="#CTRName";
+//	Fun_getSQLSelectDBData(SQLCTRName,CTRName,dataSelect.CTRName);
+//	
 	var SQLMHEName={SQL:"SQLSRMachines"};
 	var MHEName="#MHEName";
-	Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.PLDMHEName);
+	Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.MHEName);
 	
 	var SQLModel={SQL:"SQLSRSystems"};
 	var model="#model";
-	Fun_getSQLSelectDBData(SQLModel,model,dataSelect.PLDModel);
-	
-	 switch(dataSelect.modifyType){
-	  case 1:
-		  $("#modifyTypeOption1").attr("checked",true);
-		  break;
-	  case 2:
-		  $("#modifyTypeOption2").attr("checked",true);
-		  break;
-	  case 3:
-		  $("#modifyTypeOption3").attr("checked",true);
-		  break;  
-      case 4:
-	      $("#modifyTypeOption4").attr("checked",true);
-	      break;  
-	  default:
-		  $("#modifyTypeOption1").attr("checked",true);
-      }
-	
-	 if(dataSelect.modifyReason!=null){
-		 setCheckBoxValue("modifyReason",dataSelect.modifyReason);
-	 }
-	 
-	 $('#BPTDescribe').val(dataSelect.BPTDescribe); 
-	 
-	 
-	 $('#taskBPID').val(dataSelect.BPID); 
-	 
-	 //方案单号已有则绑定,如无则绑定新方案单号
-	 if(dataSelect.BPTID!=null){
-		 $('#taskBPTID').val(dataSelect.BPTID);
-	 }else{
-		 $('#taskBPTID').val(BPTID);
-	 }
-	 
-	 
-	 
-	 var tasksTableSQL={"SQL":"SQLTableBillsTask"};
-
-	 var tasksTableInfo={
-				"tableID":"#billsTaskTable",
-				"columnsData":[
-					{ data: 'DBID' ,"visible": false},
-			        { data: 'BTID' },
-			        { data: 'BTVersion'},
-			        { data: 'taskType'},
-			        { data: 'taskStaff'},
-			        { data: 'taskLimitDate'},
-			        { data: 'BTAuditResult'}
-				]
-		}
-
-	 Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-
-
-	
-	
-	 
-	
-	
-//	$('#topic').text(dataSelect.topic); 
-//	$('#detail').text(dataSelect.detail); 
-//	$('#urgency').text(dataSelect.urgency);
-
-
-	
+	Fun_getSQLSelectDBData(SQLModel,model,dataSelect.model);
 	
 //	var SQLPGEMaker={SQL:"SQLSRStaffs"};
 //	var PGEMaker="#PGEMaker";
 //	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker,dataSelect.PGEMaker);
 
     
-//    $('#topic').val(dataSelect.topic); 
-//    $('#detail').val(dataSelect.detail); 
+    $('#topic').val(dataSelect.topic); 
+    $('#detail').val(dataSelect.detail); 
     
   
   $('.form_date').datetimepicker({
@@ -754,9 +715,7 @@ function Fun_BPTDetailInit(dataSelect){
 		todayHighlight: 1,
 		startView: 2,
 		minView: 2,
-		forceParse: 0,
-		startDate:Ndate,//设置最小日期
-		endDate:dataSelect.limitDate//设置最大日期
+		forceParse: 0
   });
 
   $('#divFilesUploaded').html("");
@@ -777,8 +736,20 @@ function Fun_BPTDetailInit(dataSelect){
 //  $('#auditDate').val(Ndate);
   
   
-  $("#BTNFormSave").hide();
-
+  $("#BTNFormAdd").hide();
+  
+  switch(dataSelect.urgency){
+  case 1:
+	  $("#urgencyOption1").attr("checked",true);
+	  break;
+  case 2:
+	  $("#urgencyOption2").attr("checked",true);
+	  break;
+  case 3:
+	  $("#urgencyOption3").attr("checked",true);
+	  break;  
+  }
+  
   $('#auditResult').val(dataSelect.auditResult);
 
   //如果是已审核单据 则不显示更新和审核按钮
@@ -838,92 +809,11 @@ function Fun_BPTDetailInit(dataSelect){
 	
 	  
   }
+  
+
+ 
 
 }
-
-//函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
-
-
-function Fun_showSQLLiteTable(SQL,tableInfo){
-	
-	//alert(JSON.stringify(DataPara));
-		
-		$(tableInfo.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
-		
-		$(tableInfo.tableID).DataTable({
-		    ajax: {
-		        url: '/app/PM/getSQLDBData',
-		        data:SQL,
-		        dataSrc: ''
-		    },
-		    columns: tableInfo.columnsData,
-		    aaSorting: [0, 'desc'],//默认排序
-		    paging: false, // 禁止分页
-		    bFilter: false,    //去掉搜索框方法三：这种方法可以
-//	        bLengthChange: false,   //去掉每页显示多少条数据方法
-		    "language": languageCN
-		});
-		
-		//判断是否选中数据-------
-		
-		 $(tableInfo.tableID+' tbody').unbind();//解除事件绑定,防止重复定义.
-		 
-		 var table = $(tableInfo.tableID).DataTable();
-		 $(tableInfo.tableID+' tbody').on('click', 'tr', function() {
-		     if ($(this).hasClass('selected')) {
-		         $(this).removeClass('selected');
-		     } else {
-		    	 table.$('tr.selected').removeClass('selected');
-		         $(this).addClass('selected');
-		     }
-		  
-		     var dataSelectTask = table.row('.selected').data();
-
-		 });
-
-}
-
-
-
-//函数-添加任务单,并刷新任务单列表
-function Fun_addTask(DBData) {
-	
-    $.ajax({
-        method: 'post',
-        url: '/app/PM/addDBData',
-        data: DBData,
-        success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
-           if (data.affectedRows != 0) {
-               alert("新增数据成功!");
-               
-               
-             var tasksTableSQL={"SQL":"SQLTableBillsTask"};
-
-          	 var tasksTableInfo={
-          				"tableID":"#billsTaskTable",
-          				"columnsData":[
-          					{ data: 'DBID' ,"visible": false},
-          			        { data: 'BTID' },
-          			        { data: 'BTVersion'},
-          			        { data: 'taskType'},
-          			        { data: 'taskStaff'},
-          			        { data: 'taskLimitDate'},
-          			        { data: 'BTAuditResult'}
-          				]
-          		}
-
-          	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-
-           }
-       },
-       error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
-       }
-    });
-}
-
-
 
 //页面加载函数---------------
 $(document).ready( function () {
@@ -937,28 +827,25 @@ $(document).ready( function () {
 	
 	
 	const tableInfo={
-			"tableID":"#billsBPTTable",
+			"tableID":"#billsTaskTable",
 			"columnsData":[
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
-		        { data: 'PLDVersion'},
-		        { data: 'CTRName'},
-		        { data: 'limitDate'},
-		        { data: 'PGEMaker'},
-		        { data: 'BPTID'},
 		        { data: 'version'},
-		        { data: 'BPTStatusText'}
-
+		        { data: 'CTRName'},
+		        { data: 'topic'},
+		        { data: 'PGEMaker'},
+		        { data: 'auditText'}
 			]
 	}
 	
 	
-	Fun_showSQLTable(tableSQL,tableInfo);
+	Fun_showSQLTable(tableSQL,tableInfo)
 
 	
 //判断是否选中数据-------
-var table = $('#billsBPTTable').DataTable();
-$('#billsBPTTable tbody').on('click', 'tr', function() {
+var table = $('#billsTaskTable').DataTable();
+$('#billsTaskTable tbody').on('click', 'tr', function() {
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     } else {
@@ -967,15 +854,10 @@ $('#billsBPTTable tbody').on('click', 'tr', function() {
     }
  
     var dataSelect = table.row('.selected').data();
-
+    
+    
 
 });
-
-
-
-
-//定义左侧跟踪栏按钮效果,设定可添加html
-$("[data-toggle='popover']").popover({html : true });
 	
 
 //按钮-新增计划单---------
@@ -1025,69 +907,18 @@ $('input:radio[name="auditType"]').click(function(){
 });
 
 
-//radio 定义taskType更换按键触发事件-----------
-$('input:radio[name="taskType"]').click(function(){
-	var radioValue = $('input:radio[name="taskType"]:checked').val(); 
-//	alert(radioValue);
-	
-	switch(radioValue){
-	case "T1":
-		var BTID=Fun_billIDCreate('DSP');
-		$('#BTID').val(BTID);
-		$('#BTVersion').text(0); 
-		$('#BTStatusText').text('新增');
-		var SQLTaskStaff={SQL:"SQLSRStaffs"};
-		var taskStaff="#taskStaff";
-		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
-		
-		$('#BTNTaskUpdVer').hide();
-		
-	    break;
-	case "T2":
-		var BTID=Fun_billIDCreate('HMI');
-		$('#BTID').val(BTID);
-		$('#BTVersion').text(0);
-		$('#BTStatusText').text('新增');
-		var SQLTaskStaff={SQL:"SQLSRStaffs"};
-		var taskStaff="#taskStaff";
-		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
-		$('#BTNTaskUpdVer').hide();
-	    break;
-	case "T3":
-		var BTID=Fun_billIDCreate('KEN');
-		$('#BTID').val(BTID);
-		$('#BTVersion').text(0); 
-		$('#BTStatusText').text('新增');
-		var SQLTaskStaff={SQL:"SQLSRStaffs"};
-		var taskStaff="#taskStaff";
-		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
-		$('#BTNTaskUpdVer').hide();
-	    break;
-
-	}
-
-});
-
-
-//checkbox 键触发事件-----------
-
-
-$("input:checkbox[name='modifyReason']").change(function() { 
-	getCheckBoxValue('modifyReason');
-
-});
-
 //详情按钮---------
-$('#BTNBPTInfo').click(function() {
+$('#BTNInfo').click(function() {
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请点击表格先选中需要维护方案的计划单!");
+        alert("请先点击表格中的表单!");
     } else {
     	
-    	$('#BillPLD').modal('show');
-    	Fun_BPTDetailInit(dataSelect);
+    	
+    	$('#BillPLD').modal('show')
+    	Fun_winDetailInit(dataSelect);
     	
 
     }
@@ -1132,60 +963,9 @@ $('#BTNDelete').click(function() {
 });
 
 
-
-
-//按钮-任务新增
-
-$('#BTNTaskAdd').click(function(){
-	
-	var taskType = $('input:radio[name="taskType"]:checked').val();
-	var taskBPID=$('#taskBPID').val();
-	var taskBPTID=$('#taskBPTID').val();
-	var modfiyABE=getCheckBoxValue('modfiyABE');
-
-	
-	var billData={
-			"DBTable":"ppm_bills_task",
-			"BTID":$('#BTID').val(),
-			"BTVersion":0,
-			"taskBPID":taskBPID,
-			"taskBPTID":taskBPTID,
-			"taskType":$('input:radio[name="taskType"]:checked').val(),
-			"taskStaff":$('#taskStaff option:selected').text(),
-			"modfiyABE":modfiyABE,
-			"taskDBE":$('#taskDBE').val(),
-			"taskLimitDate":$('#taskLimitDate').val(),
-			"BTAuditResult":0,
-			"BTStatus":1
-	}
-	
-	console.log("billData:"+JSON.stringify(billData));
-	Fun_addTask(billData);
-	
-//    //记录附件信息------------------	
-//	var billID=$('#BPID').val();
-//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-//	var fileName=$('#fileName').html();
-//	var fileData={
-//			"DBTable":"ppm_files_upload",
-//			"billName":"ppm_bills_plan",
-//			"billID":billID,
-//			"billVersion":$('#version').text(),
-//			"fileKey":fileKey,
-//			"fileName":fileName
-//	}
-//	
-//	if(fileKey!=undefined){
-//		Fun_addfileInfo(fileData);
-//	}
-
-
-});
-
-
 //按钮-表格新增计划单
 
-$('#BTNFormSave').click(function(){
+$('#BTNFormAdd').click(function(){
 	
 	var radioValue = $('input:radio[name="auditType"]:checked').val();
 	
@@ -1374,6 +1154,7 @@ $('#BTNFormUpdate').click(function() {
         		Fun_addfileInfo(fileData);
         	}
 
+        	
         }
     }
 

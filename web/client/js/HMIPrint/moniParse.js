@@ -144,8 +144,8 @@ function fnTrvlFolder() {
             .then(() => {
                 return fnSetObjOriginVal(g_oMoni);
             })
-            .then((Rslt) => {
-                if (Rslt.indexOf("Done") !== -1) {
+            .then((pre_func_back) => {
+                if (pre_func_back.indexOf("Done") !== -1) {
                     return fnShowMoniData(g_oMoni);
                 } else {
                     throw '所选文件夹内的文件内容无效，请核查';
@@ -266,8 +266,15 @@ function fnSetObjOriginVal(objArg) {
         /* ===== 判断cdb数据是否有效，无效条件如下 =====
             1、 监测条数为0
             2、 数据全为0                        */
-        let sHeader = parseInt(g_aMoniCdb.slice(0, g_nCdbStart));
-        if (!nRecNum || !sHeader) {
+        let aHeader = g_aMoniCdb.slice(0, g_nCdbStart),
+            nZeroCount = 0;
+        for (let inx = 0; inx < 12; ++inx) {
+            if (aHeader[inx] == 0) {
+                ++nZeroCount;
+            }
+        }
+        let bHeadZeros = (nZeroCount === aHeader.length); // 数组内全是0 的 flag
+        if (!nRecNum || bHeadZeros) {
             resolve("fnSetObjOriginVal Break");
         }
 

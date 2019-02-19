@@ -100,6 +100,10 @@
                      <option>其他</option>
                      </select>
                      </div>  
+                     
+                     
+                     
+                     
 
                      </div>
                      
@@ -249,11 +253,15 @@
                  	<div class="col-sm-8">
                  	    
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="auditType" id="auditTypeOption1" value="1"> 方案人审核
+         	            <input type="radio" name="auditType" id="auditTypeOption2"  value="2"> 暂不审核
+         	            </label>
+                       
+                 	    <label class="radio-inline">
+                 	        <input type="radio" name="auditType" id="auditTypeOption1" value="1"> 自我审核
                  	    </label>
                  	    
                  	    <label class="radio-inline">
-                	        <input type="radio" name="auditType" id="auditTypeOption2"  value="2"> 指定审核人
+                	        <input type="radio" name="auditType" id="auditTypeOption3"  value="3"> 指定审核人
                 	    </label>
                  	        
                  	        
@@ -297,15 +305,6 @@
                      
                      </div>
                      
-                     <!-------------------------------------------------------------------------->
-                     
-                     <div class="form-group" id="auditOpinionDiv">
-                     <label  class="col-sm-1 control-label" for="name">审核意见:</label>    
-                     <div class="col-sm-8">
-                     <textarea id="auditOpinion" class="form-control" rows="6"></textarea>
-                     </div>
-                     </div>
-                     
                      
                      
                      </form>
@@ -317,8 +316,6 @@
                     <button id="BTNFormAdd" type="button" class="btn btn-primary">新增</button>
                     <button id="BTNFormModify" type="button" class="btn btn-info">修改</button> 
                     <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
-                    
-                    
                     <button id="BTNFormAuditYes" type="button" class="btn btn-success">审核通过</button>
                     <button id="BTNFormAuditNo" type="button" class="btn btn-danger">审核驳回</button>
                     </div>
@@ -425,8 +422,12 @@ function Fun_winAddInit(){
 	
 	var SQLAuditor={SQL:"SQLSRStaffs"};
 	var auditor="#auditor";
-	Fun_getSQLSelectDBData(SQLAuditor,auditor);
+	Fun_getSQLSelectDBData(SQLAuditor,auditor,"<%-locals.session.yjUser.Name%>");
 
+
+
+    
+    
     $("#auditor").attr("disabled",true);
     
     $('#topic').val(""); 
@@ -458,8 +459,7 @@ function Fun_winAddInit(){
   $('#makeDate').val(Ndate);
 
   $('#auditDate').val(Ndate);
-  
-  $('#auditOpinionDiv').hide();
+  $('#auditResult').val(1);
   
   $("#auditTypeDiv").show();
   
@@ -500,10 +500,6 @@ function Fun_winDetailInit(dataSelect){
 	var SQLPGEMaker={SQL:"SQLSRStaffs"};
 	var PGEMaker="#PGEMaker";
 	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker,dataSelect.PGEMaker);
-	
-	var SQLAuditor={SQL:"SQLSRStaffs"};
-	var auditor="#auditor";
-	Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
 
 	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
     $('#topic').val(dataSelect.topic); 
@@ -554,45 +550,50 @@ function Fun_winDetailInit(dataSelect){
   }
   
   $('#auditResult').val(dataSelect.auditResult);
-  
-  $("#auditOpinionDiv").hide();
-  
-  //已经审核 或者登陆人为审核人则显示
-  
 
   //如果是已审核单据 则不显示更新和审核按钮
-  if(dataSelect.auditResult==null){
+  if(dataSelect.auditDate==null){
 	  
-	  
-
 
 	  $("#BTNFormModify").show();
 	  $("#BTNFormUpdate").hide();
 	  $("#BTNFormAuditYes").show();
 	  $("#BTNFormAuditNo").show();
 	  
-	  var sessionName="<%-locals.session.yjUser.Name%>";
-	  if(sessionName==dataSelect.auditor){
-		  $("#auditOpinionDiv").show();
-	  }
-
-
-  }else{ 
+	  var SQLAuditor={SQL:"SQLSRStaffs"};
+	  var auditor="#auditor";
 	  
-	  $("#auditOpinionDiv").show();
+	  if(dataSelect.auditor==null){
+		  
+		  console.log("审核日期空,审核人空");
+		  
+		    $("#auditTypeOption2").attr("checked",true);	 
+			Fun_getSQLSelectDBData(SQLAuditor,auditor);	   
+		    $("#auditor").attr("disabled",true);
+		    $('#auditDate').val("");
+
+	  }else{
+		  
+		  console.log("审核日期空,审核人有");
+		  
+		    $("#auditTypeOption3").attr("checked",true);
+		    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);	   
+		    $("#auditor").attr("disabled",true);
+		    $('#auditDate').val("");
+	  }
+	  
+	  
+	
+	  
+  }else{ 
 
 	    var SQLAuditor={SQL:"SQLSRStaffs"};
 	    var auditor="#auditor";
 	    $("#BPID").attr("disabled",true);
 	    $("#auditTypeOption1").attr("checked",true);
-	    
 	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
 	    $("#auditor").attr("disabled",true);
-	    
 	    $('#auditDate').val(dataSelect.auditDate);
-	    
-	    $('#auditOpinion').val(dataSelect.auditOpinion);
-	    
 	    $("#BTNFormModify").hide();
 	    $("#BTNFormUpdate").show();
 	    $("#BTNFormAuditYes").hide();
@@ -661,67 +662,40 @@ $('#BTNAdd').click(function() {
 
 //radio 定义更换按键触发事件-----------
 $('input:radio[name="auditType"]').click(function(){
+	var radioValue = $('input:radio[name="auditType"]:checked').val(); 
+//	alert(radioValue);
 	
-	  var PGEMaker=$('#PGEMaker').children('option:selected').text();
-	  console.log("PGEMaker:"+PGEMaker);
-	  var radioValue = $('input:radio[name="auditType"]:checked').val(); 
-	     switch(radioValue){
-	 	case "1":		
-	 		var SQLAuditor={SQL:"SQLSRStaffs"};
-	 		var auditor="#auditor";
-	 		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
-	 	    $("#auditor").attr("disabled",true);
-	 	    $('#auditDate').val("");
-     	    $('#auditResult').val("");
-	 	    break;
-	 	case "2":
-	 	   
-	 	    var SQLAuditor={SQL:"SQLSRStaffs"};
-	 		var auditor="#auditor";
-	 		Fun_getSQLSelectDBData(SQLAuditor,auditor);
-	 	    $("#auditor").attr("disabled",false);
-	 	    $('#auditDate').val("");
-	 	    $('#auditResult').val("");
-	 	    break;
-	 	}
+	switch(radioValue){
+	case "1":		
+		var SQLAuditor={SQL:"SQLSRStaffs"};
+		var auditor="#auditor";
+		Fun_getSQLSelectDBData(SQLAuditor,auditor,sessionName);	 
+	    $("#auditor").attr("disabled",true);
+	    $('#auditDate').val(Ndate);
+	    $('#auditResult').val(1);
+	    break;
+	case "2":
+		var SQLAuditor={SQL:"SQLSRStaffs"};
+		var auditor="#auditor";
+		Fun_getSQLSelectDBData(SQLAuditor,auditor);
+	    $("#auditor").attr("disabled",true);
+	    $('#auditDate').val("");
+	    $('#auditResult').val("");
+	    break;
+	case "3":
+		alert("请选择指定审核人!");
+	    $('#auditDate').val("");
+	    var SQLAuditor={SQL:"SQLSRStaffs"};
+		var auditor="#auditor";
+		Fun_getSQLSelectDBData(SQLAuditor,auditor);
+	    $("#auditor").attr("disabled",false);
+	    $('#auditResult').val("");
+	    break;
+		
+	
+	}
 
 });
-
-
-
-//方案人change事件
-$('#PGEMaker').change(function(){  
-　　　　console.log($(this).children('option:selected').text());
-     var PGEMaker=$(this).children('option:selected').text();
-
-     var radioValue = $('input:radio[name="auditType"]:checked').val(); 
-     switch(radioValue){
- 	case "1":		
- 		var SQLAuditor={SQL:"SQLSRStaffs"};
- 		var auditor="#auditor";
- 		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
- 	    $("#auditor").attr("disabled",true);
- 	   $('#auditDate').val("");
-	    $('#auditResult').val("");
- 	    break;
- 	case "2":
- 	    $('#auditDate').val("");
- 	    var SQLAuditor={SQL:"SQLSRStaffs"};
- 		var auditor="#auditor";
- 		Fun_getSQLSelectDBData(SQLAuditor,auditor);
- 	    $("#auditor").attr("disabled",false);
- 	   $('#auditDate').val("");
-	    $('#auditResult').val("");
- 	    break;
- 	}
-     
-
-
-
-
-
-
-　　})  
 
 
 //详情按钮---------
@@ -754,7 +728,7 @@ $('#BTNDelete').click(function() {
     } else {
     	
     	
-    	if(dataSelect.auditResult!=null){
+    	if(dataSelect.auditDate!=null){
     		alert("已审核单据禁止删除!");
     	}else{
     		
@@ -816,13 +790,13 @@ $('#BTNFormAdd').click(function(){
 	
 //	alert("billData:"+JSON.stringify(billData));
 	
-	if(billData.auditor!=""){
+	if(billData.auditor!=""&&billData.auditDate==""){
 
 		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
 		
 		Fun_addDBDataDD(billData,DDMsg);
 	}else{
-		alert("该计划单没有指定审核人,请检查!");
+		addDBData(billData);
 	}
 	
 	
@@ -873,9 +847,6 @@ $('#BTNFormModify').click(function() {
 			"version": $('#version').text(),
 			"WFStatus":2
 	}
-	
-	
-	console.log("billData:"+JSON.stringify(billData));
 
 	updDBData(billData,"表单");
 	
@@ -1012,7 +983,6 @@ $('#BTNFormAuditYes').click(function() {
 					"auditor":sessionName,
 					"auditDate":Ndate,
 					"auditResult":1,
-					"auditOpinion":$('#auditOpinion').val(),
 					"WFStatus":10
 
 			}
@@ -1039,7 +1009,6 @@ $('#BTNFormAuditNo').click(function() {
 					"auditor":sessionName,
 					"auditDate":Ndate,
 					"auditResult":2,
-					"auditOpinion":$('#auditOpinion').val(),
 					"WFStatus":9
 			}
 
