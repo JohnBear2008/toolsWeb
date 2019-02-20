@@ -10,6 +10,7 @@ module.exports = function(sender) {
     var SQL=sender.req.query.SQL;  
     var DBTable=sender.req.query.DBTable;  
     var DBID=sender.req.query.DBID;  
+    var filter=sender.req.query.filter; 
     
 //    console.log("SQL:"+SQL);
 //    console.log("DBTable:"+DBTable);
@@ -61,6 +62,10 @@ module.exports = function(sender) {
     
     if(DBID!=""&&DBID!=undefined){
     	SQLExecute=SQLExecute+" WHERE A.DBID="+DBID;
+    }
+    
+    if(filter!=""&&filter!=undefined){
+    	SQLExecute=SQLExecute+" WHERE "+filter;
     }
     
    // console.log("SQLExecute:"+SQLExecute);

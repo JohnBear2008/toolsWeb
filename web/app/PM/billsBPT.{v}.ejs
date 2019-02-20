@@ -39,7 +39,7 @@
         <button id="BTNBPTInfo" class="btn btn-info" data-toggle="modal" >方案维护</button>
         <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >方案审核</button>
         <!-- 模态框（Modal） -->
-        <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
+        <div class="modal fade" id="BillBPT" tabindex="-1" role="dialog" aria-labelledby="BillBPTLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:98%">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -150,20 +150,14 @@
                        <div class="col-sm-3">
                          <input id="CTRName" class="form-control"  type="text" value="">
                        </div>
-                       
-                       <label class="col-sm-2 control-label">方案单版本号: <span id="version"></span></label>
 
-                       
                      </div>
                      
+                    
+                     
+                     <!-------------------------------------------------------------------------->
                      
                      <div class="form-group">
-                     
-                     <label class="col-sm-1 control-label">方案单号:</label>
-                     <div class="col-sm-3">
-                       <input id="BPTID" class="form-control"  type="text" value="">
-                     </div>
-                     
                      <label class="col-sm-1 control-label">方案人:</label>
                      <div class="col-sm-3">
                        <input id="PGEMaker" class="form-control"  type="text" value="">
@@ -173,6 +167,20 @@
                      <div class="col-sm-3">
                      <input id="limitDate" class="form-control"  type="text" value="">
                      </div>
+                     
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     
+                     <label class="col-sm-1 control-label">方案单号:</label>
+                     <div class="col-sm-3">
+                       <input id="BPTID" class="form-control"  type="text" value="">
+                     </div>
+                     
+                     <label class="col-sm-2 control-label">方案单版本号: <span id="version"></span></label>
+                     
+                     <label class="col-sm-2 control-label">方案单状态: <span id="BPTAuditResultText"></span></label>
                      
                      </div>
                     
@@ -293,12 +301,60 @@
                  	</div>
                      
                      
+                    
+                     
+                 	
+                     
+                     
+                 	
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
-                     <label  class="col-sm-1 control-label" for="name">添加任务:</label>    
+                     <label  class="col-sm-1 control-label" for="name">任务清单:</label>    
                      <div class="col-sm-11">
                      
                      <div class="panel panel-default">
+                     <div class="panel-heading">任务清单</div>
+                     
+                     <div style="margin:10px;">
+                  	 <table id="billsTaskTable" class="table table-bordered" style="width:100%;" >
+                     <thead>
+                         <tr>
+                             <th>数据库ID</th>
+                             <th>任务单号</th>
+                             <th>任务单版本号</th>
+                             <th>任务类型</th>
+                             <th>任务负责人</th>
+                             <th>任务完成期限</th>
+                             <th>任务单审核状态</th>
+                         </tr>
+                     </thead>
+                     </table>
+                     </div>
+
+                     </div>
+                     </div>
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     <label  class="col-sm-1 control-label" for="name">任务管理:</label> 
+                     
+                     <div class="col-sm-11">
+                     
+                     <button id="BTNTaskAdd" type="button" class="btn btn-primary">新增任务</button>
+
+                 	 <button id="BTNTaskDel" type="button" class="btn btn-danger">删除任务</button>
+                 	 </div>
+                 	 </div>
+                    
+                 	 <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     <label  class="col-sm-1 control-label" for="name"></label> 
+                 	 
+                     <div class="col-sm-11">
+
+                     
+                     <div class="panel panel-default" id="billTaskPanel" >
                      <div class="panel-heading">任务单填写</div>
                      
                      <!-------------------------------------------------------------------------->
@@ -372,7 +428,7 @@
                      
                      <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
                      
-                     <label class="col-sm-2 control-label">任务单状态: <span id="BTStatusText"></span></label>
+                     <label class="col-sm-2 control-label">任务单审核状态: <span id="BTAuditResultText"></span></label>
                     
                      
                      </div>
@@ -412,10 +468,9 @@
                      <div class="form-group">
                      <label class="col-sm-2 control-label"></label>   
                   	 <div class="col-sm-6">
-                  	 <button id="BTNTaskAdd" type="button" class="btn btn-primary">新增任务</button>
-                  	 <button id="BTNTaskMod" type="button" class="btn btn-warning">修改任务</button>
-                  	 <button id="BTNTaskUpdVer" type="button" class="btn btn-warning">更新版本</button>
-                  	 <button id="BTNTaskDel" type="button" class="btn btn-danger">删除任务</button>
+                  	<button id="BTNTaskSave" type="button" class="btn btn-success">保存</button>
+                  	
+                  	
                   	 </div>
                   	 </div>
                   	
@@ -423,67 +478,16 @@
 
 
                      </div>
+                     
+                     
+                     
+                 	 
                      </div>
                      </div>
                      
-                    
-                 	
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     <label  class="col-sm-1 control-label" for="name">任务清单:</label>    
-                     <div class="col-sm-11">
-                     
-                     <div class="panel panel-default">
-                     <div class="panel-heading">任务清单</div>
-                     
-                     
-                     
-
-                     
-                     <table id="billsTaskTable" class="table table-bordered" style="width:95%;margin-left:15px;" >
-                     <thead>
-                         <tr>
-                             <th>数据库ID</th>
-                             <th>任务单号</th>
-                             <th>任务单版本号</th>
-                             <th>任务类型</th>
-                             <th>任务负责人</th>
-                             <th>任务完成期限</th>
-                             <th>任务状态</th>
-                         </tr>
-                     </thead>
-                     </table>
-                     
-                     </div>
-                     
-                     </div>
-                     </div>
-                    
-                    <!-------------------------------------------------------------------------->
-
-                 
-
-                 	<div id="auditTypeDiv" class="form-group">
-                 	
-                 	<label class="col-sm-1 control-label">审核方式:</label>   
-                 	<div class="col-sm-6">
-                 	    
-                 	    <label class="radio-inline">
-         	            <input type="radio" name="auditType" id="auditTypeOption2"  value="2"> 暂不审核
-         	            </label>
-                       
-                 	    <label class="radio-inline">
-                 	        <input type="radio" name="auditType" id="auditTypeOption1" value="1"> 自我审核
-                 	    </label>
-                 	    
-                 	    <label class="radio-inline">
-                	        <input type="radio" name="auditType" id="auditTypeOption3"  value="3"> 指定审核人
-                	    </label>
-                 	        
-                 	        
-                 	</div>
-                     
-                    </div>
+                 	 
+                 	 
+                   
                      
                     
                      <!-------------------------------------------------------------------------->
@@ -501,6 +505,32 @@
                      </div>
                      
                      
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+
+                     
+
+                  	<div id="auditTypeDiv" class="form-group">
+                  	
+                  	<label class="col-sm-1 control-label">审核方式:</label>   
+                  	<div class="col-sm-6">
+                  	    
+                  	    <label class="radio-inline">
+          	            <input type="radio" name="auditType" id="auditTypeOption2"  value="2"> 暂不审核
+          	            </label>
+                        
+                  	    <label class="radio-inline">
+                  	        <input type="radio" name="auditType" id="auditTypeOption1" value="1"> 自我审核
+                  	    </label>
+                  	    
+                  	    <label class="radio-inline">
+                 	        <input type="radio" name="auditType" id="auditTypeOption3"  value="3"> 指定审核人
+                 	    </label>
+                  	        
+                  	        
+                  	</div>
+                      
                      </div>
                      
                      <!-------------------------------------------------------------------------->
@@ -530,10 +560,10 @@
                     
                     <div class="panel-footer">
                     
-                    <button id="BTNFormSave" type="button" class="btn btn-primary">保存方案</button>
-                    <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
-                    <button id="BTNFormAuditYes" type="button" class="btn btn-success">审核通过</button>
-                    <button id="BTNFormAuditNo" type="button" class="btn btn-danger">审核驳回</button>
+                    <button id="BTNBPTSave" type="button" class="btn btn-primary">保存方案</button>
+                    <button id="BTNBPTUpdate" type="button" class="btn btn-warning">更新版本</button>
+                    <button id="BTNBPTAuditYes" type="button" class="btn btn-success">审核通过</button>
+                    <button id="BTNBPTAuditNo" type="button" class="btn btn-danger">审核驳回</button>
 
                     
                     </div>
@@ -560,7 +590,7 @@
                         
                        
                      
-                        <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button id="BTNBPTClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 
                     </div>
                 </div><!-- /.modal-content -->
@@ -621,14 +651,24 @@ function getCheckBoxValue(CBName){
 }
 //函数 设定根据值设定checkbox选中状态
 function setCheckBoxValue(CBName,CBVals){
+
 	var checkBox = CBVals;
-	var checkBoxArray = checkBox.split(",");
-	for(var i=0;i<checkBoxArray.length;i++){
-		$("input[name='"+CBName+"']").each(function(){
-			if($(this).val()==checkBoxArray[i]){
-				$(this).attr("checked","checked");
-			}
-		})
+	
+	if(CBVals!=null){
+		var checkBoxArray = checkBox.split(",");
+		for(var i=0;i<checkBoxArray.length;i++){
+			$("input[name='"+CBName+"']").each(function(){
+				if($(this).val()==checkBoxArray[i]){
+					
+					console.log("thisval:"+$(this).val());
+					console.log("checkBoxArray:"+checkBoxArray[i]);
+					console.log("this:"+JSON.stringify(this));
+					
+					$(this).prop('checked', true);
+				}
+			})
+		}
+		
 	}
 
 }
@@ -664,6 +704,10 @@ function Fun_BPTDetailInit(dataSelect){
 		$('#version').text(dataSelect.version); 
 	}
 	
+	
+	$('#BPTAuditResultText').text(dataSelect.BPTAuditResultText);
+	
+	
 	var SQLMHEName={SQL:"SQLSRMachines"};
 	var MHEName="#MHEName";
 	Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.PLDMHEName);
@@ -674,19 +718,19 @@ function Fun_BPTDetailInit(dataSelect){
 	
 	 switch(dataSelect.modifyType){
 	  case 1:
-		  $("#modifyTypeOption1").attr("checked",true);
+		  $("#modifyTypeOption1").prop("checked",true);
 		  break;
 	  case 2:
-		  $("#modifyTypeOption2").attr("checked",true);
+		  $("#modifyTypeOption2").prop("checked",true);
 		  break;
 	  case 3:
-		  $("#modifyTypeOption3").attr("checked",true);
+		  $("#modifyTypeOption3").prop("checked",true);
 		  break;  
       case 4:
-	      $("#modifyTypeOption4").attr("checked",true);
+	      $("#modifyTypeOption4").prop("checked",true);
 	      break;  
 	  default:
-		  $("#modifyTypeOption1").attr("checked",true);
+		  $("#modifyTypeOption1").prop("checked",true);
       }
 	
 	 if(dataSelect.modifyReason!=null){
@@ -706,44 +750,28 @@ function Fun_BPTDetailInit(dataSelect){
 	 }
 	 
 	 
-	 
-	 var tasksTableSQL={"SQL":"SQLTableBillsTask"};
+	  tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
 
-	 var tasksTableInfo={
-				"tableID":"#billsTaskTable",
-				"columnsData":[
-					{ data: 'DBID' ,"visible": false},
-			        { data: 'BTID' },
-			        { data: 'BTVersion'},
-			        { data: 'taskType'},
-			        { data: 'taskStaff'},
-			        { data: 'taskLimitDate'},
-			        { data: 'BTAuditResult'}
-				]
-		}
+	  tasksTableInfo={
+ 				"tableID":"#billsTaskTable",
+ 				"columnsData":[
+ 					{ data: 'DBID' ,"visible": false},
+ 			        { data: 'BTID' },
+ 			        { data: 'BTVersion'},
+ 			        { data: 'taskTypeText'},
+ 			        { data: 'taskStaff'},
+ 			        { data: 'taskLimitDate'},
+ 			        { data: 'BTAuditResultText'}
+ 				]
+ 	     }
+	 
 
 	 Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-
-
-	
-	
 	 
+	 
+	 $('#billTaskPanel').hide();
 	
-	
-//	$('#topic').text(dataSelect.topic); 
-//	$('#detail').text(dataSelect.detail); 
-//	$('#urgency').text(dataSelect.urgency);
 
-
-	
-	
-//	var SQLPGEMaker={SQL:"SQLSRStaffs"};
-//	var PGEMaker="#PGEMaker";
-//	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker,dataSelect.PGEMaker);
-
-    
-//    $('#topic').val(dataSelect.topic); 
-//    $('#detail').val(dataSelect.detail); 
     
   
   $('.form_date').datetimepicker({
@@ -777,7 +805,7 @@ function Fun_BPTDetailInit(dataSelect){
 //  $('#auditDate').val(Ndate);
   
   
-  $("#BTNFormSave").hide();
+//  $("#BTNBPTSave").hide();
 
   $('#auditResult').val(dataSelect.auditResult);
 
@@ -785,10 +813,10 @@ function Fun_BPTDetailInit(dataSelect){
   if(dataSelect.auditDate==null){
 	  
 
-	  $("#BTNFormModify").show();
-	  $("#BTNFormUpdate").hide();
-	  $("#BTNFormAuditYes").show();
-	  $("#BTNFormAuditNo").show();
+	  $("#BTNBPTModify").show();
+	  $("#BTNBPTUpdate").hide();
+	  $("#BTNBPTAuditYes").show();
+	  $("#BTNBPTAuditNo").show();
 	  
 	  var SQLAuditor={SQL:"SQLSRStaffs"};
 	  var auditor="#auditor";
@@ -797,7 +825,7 @@ function Fun_BPTDetailInit(dataSelect){
 		  
 		  console.log("审核日期空,审核人空");
 		  
-		    $("#auditTypeOption2").attr("checked",true);	 
+		    $("#auditTypeOption2").prop("checked",true);	 
 			Fun_getSQLSelectDBData(SQLAuditor,auditor);	   
 		    $("#auditor").attr("disabled",true);
 		    $('#auditDate').val("");
@@ -806,7 +834,7 @@ function Fun_BPTDetailInit(dataSelect){
 		  
 		  console.log("审核日期空,审核人有");
 		  
-		    $("#auditTypeOption3").attr("checked",true);
+		    $("#auditTypeOption3").prop("checked",true);
 		    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);	   
 		    $("#auditor").attr("disabled",true);
 		    $('#auditDate').val("");
@@ -817,24 +845,23 @@ function Fun_BPTDetailInit(dataSelect){
 	  
   }else{ 
 	  
-	    
-	    
+
 	    var SQLAuditor={SQL:"SQLSRStaffs"};
 	    var auditor="#auditor";
 	    
 	    $("#BPID").attr("disabled",true);
 	  
-	    $("#auditTypeOption1").attr("checked",true);
+	    $("#auditTypeOption1").prop("checked",true);
 	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);	 
 	    
 	    $("#auditor").attr("disabled",true);
 	    
 	    $('#auditDate').val(dataSelect.auditDate);
 	    
-	    $("#BTNFormModify").hide();
-	    $("#BTNFormUpdate").show();
-	    $("#BTNFormAuditYes").hide();
-	    $("#BTNFormAuditNo").hide();
+	    $("#BTNBPTModify").hide();
+	    $("#BTNBPTUpdate").show();
+	    $("#BTNBPTAuditYes").hide();
+	    $("#BTNBPTAuditNo").hide();
 	
 	  
   }
@@ -868,16 +895,54 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 		
 		 $(tableInfo.tableID+' tbody').unbind();//解除事件绑定,防止重复定义.
 		 
-		 var table = $(tableInfo.tableID).DataTable();
+		 var tableTask = $(tableInfo.tableID).DataTable();
+		 
 		 $(tableInfo.tableID+' tbody').on('click', 'tr', function() {
+			 
+			 
+			 
 		     if ($(this).hasClass('selected')) {
 		         $(this).removeClass('selected');
+		         $('#billTaskPanel').hide();
 		     } else {
-		    	 table.$('tr.selected').removeClass('selected');
+		    	 tableTask.$('tr.selected').removeClass('selected');
 		         $(this).addClass('selected');
+		         $('#billTaskPanel').show();
+		         
+		         var dataSelectTask = tableTask.row('.selected').data();
+			     
+			     console.log("dataSelectTask:"+JSON.stringify(dataSelectTask));
+			     
+			     //控制其他组件防止误操作.bear
+
+			     $("input:radio[name=taskType][value="+dataSelectTask.taskType+"]").prop("checked",true); 
+			     $('input:radio[name="taskType"]').attr("disabled",true);
+			     
+			     
+			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
+			 	 
+			     setCheckBoxValue("modfiyABE",dataSelectTask.modfiyABE);
+			     
+			     
+			     $("#BTID").val(dataSelectTask.BTID);
+			     $("#BTID").attr("disabled","true");
+			     
+			    var SQLTaskStaff={SQL:"SQLSRStaffs"};
+				var taskStaff="#taskStaff";
+				Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff,dataSelectTask.taskStaff);	 
+
+				 $("#BTVersion").text(dataSelectTask.BTVersion);
+				 
+				 $("#BTAuditResultText").text(dataSelectTask.BTAuditResultText);
+		         
+				 $("#taskDBE").val(dataSelectTask.taskDBE);
+		         
+		         
 		     }
 		  
-		     var dataSelectTask = table.row('.selected').data();
+		     
+			 
+
 
 		 });
 
@@ -895,25 +960,10 @@ function Fun_addTask(DBData) {
         success: function(data) {
 //            alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("新增数据成功!");
-               
-               
-             var tasksTableSQL={"SQL":"SQLTableBillsTask"};
-
-          	 var tasksTableInfo={
-          				"tableID":"#billsTaskTable",
-          				"columnsData":[
-          					{ data: 'DBID' ,"visible": false},
-          			        { data: 'BTID' },
-          			        { data: 'BTVersion'},
-          			        { data: 'taskType'},
-          			        { data: 'taskStaff'},
-          			        { data: 'taskLimitDate'},
-          			        { data: 'BTAuditResult'}
-          				]
-          		}
-
+               alert("新增任务单成功!");
           	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+          	   $('#BTNTaskAdd').click();
+          	   $('#billTaskPanel').hide();
 
            }
        },
@@ -924,19 +974,66 @@ function Fun_addTask(DBData) {
 }
 
 
+///函数-更新任务单,并刷新任务单列表
+function Fun_updTask(DBData) {
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/updDBData',
+        data: DBData,
+        success: function(data, textStatus) {
+ //                alert("成功数据:"+JSON.stringify(data));
+            if (data.changedRows != 0) {
+                alert("更新任务单数据成功!");
+                
+                Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+                
+                $('#BTNTaskAdd').click();
+           	    $('#billTaskPanel').hide();
+
+            } else {
+                alert("未有任务单数据更新!");
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+    });
+}
+
+
+//函数-添加任务单,并刷新任务单列表
+function Fun_delTask(IDData) {
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/delDBData',
+        data: IDData,
+        success: function(data, textStatus) {
+            //  alert("成功数据:"+JSON.stringify(data));
+            if (data.affectedRows != 0) {
+                alert("删除任务单成功!");
+             	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+             	  $('#BTNTaskAdd').click();
+             	  $('#billTaskPanel').hide();
+                
+            } else {
+                alert("删除任务单失败!");
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+    });
+}
+
 
 //页面加载函数---------------
 $(document).ready( function () {
 	
 	
-	const tableSQL={"SQL":"SQLTableBillsBPT"};
+    tableSQL={"SQL":"SQLTableBillsBPT"};
 	
-	var sessionName="<%-locals.session.yjUser.Name%>";
+    sessionName="<%-locals.session.yjUser.Name%>";
 	
-	console.log("sessionName:"+sessionName);
+//	console.log("sessionName:"+sessionName);
 	
 	
-	const tableInfo={
+    tableInfo={
 			"tableID":"#billsBPTTable",
 			"columnsData":[
 				{ data: 'DBID' ,"visible": false},
@@ -947,10 +1044,14 @@ $(document).ready( function () {
 		        { data: 'PGEMaker'},
 		        { data: 'BPTID'},
 		        { data: 'version'},
-		        { data: 'BPTStatusText'}
+		        { data: 'BPTAuditResultText'}
 
 			]
 	}
+	
+	
+	
+	
 	
 	
 	Fun_showSQLTable(tableSQL,tableInfo);
@@ -980,7 +1081,7 @@ $("[data-toggle='popover']").popover({html : true });
 
 //按钮-新增计划单---------
 $('#BTNAdd').click(function() {
-	$('#BillPLD').modal('show');
+	$('#BillBPT').modal('show');
 	Fun_winAddInit();
  
 });
@@ -1028,40 +1129,29 @@ $('input:radio[name="auditType"]').click(function(){
 //radio 定义taskType更换按键触发事件-----------
 $('input:radio[name="taskType"]').click(function(){
 	var radioValue = $('input:radio[name="taskType"]:checked').val(); 
+	
+	
+	
+//	$('#BTNTaskMod').hide();
+//	$('#BTNTaskUpdVer').hide();
+//	$('#BTNTaskDel').hide();
 //	alert(radioValue);
 	
 	switch(radioValue){
 	case "T1":
 		var BTID=Fun_billIDCreate('DSP');
 		$('#BTID').val(BTID);
-		$('#BTVersion').text(0); 
-		$('#BTStatusText').text('新增');
-		var SQLTaskStaff={SQL:"SQLSRStaffs"};
-		var taskStaff="#taskStaff";
-		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
-		
-		$('#BTNTaskUpdVer').hide();
 		
 	    break;
 	case "T2":
 		var BTID=Fun_billIDCreate('HMI');
 		$('#BTID').val(BTID);
-		$('#BTVersion').text(0);
-		$('#BTStatusText').text('新增');
-		var SQLTaskStaff={SQL:"SQLSRStaffs"};
-		var taskStaff="#taskStaff";
-		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
-		$('#BTNTaskUpdVer').hide();
+	
 	    break;
 	case "T3":
 		var BTID=Fun_billIDCreate('KEN');
 		$('#BTID').val(BTID);
-		$('#BTVersion').text(0); 
-		$('#BTStatusText').text('新增');
-		var SQLTaskStaff={SQL:"SQLSRStaffs"};
-		var taskStaff="#taskStaff";
-		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
-		$('#BTNTaskUpdVer').hide();
+		
 	    break;
 
 	}
@@ -1086,7 +1176,7 @@ $('#BTNBPTInfo').click(function() {
         alert("请点击表格先选中需要维护方案的计划单!");
     } else {
     	
-    	$('#BillPLD').modal('show');
+    	$('#BillBPT').modal('show');
     	Fun_BPTDetailInit(dataSelect);
     	
 
@@ -1138,29 +1228,50 @@ $('#BTNDelete').click(function() {
 
 $('#BTNTaskAdd').click(function(){
 	
-	var taskType = $('input:radio[name="taskType"]:checked').val();
-	var taskBPID=$('#taskBPID').val();
-	var taskBPTID=$('#taskBPTID').val();
-	var modfiyABE=getCheckBoxValue('modfiyABE');
+//	billTaskPanel
+	
+	$('#billTaskPanel').show();
+	
+	$('input:radio[name="taskType"]').prop("checked",false);
+	
+	$('input:radio[name="taskType"]').attr("disabled",false);
+	
+	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
+	
+	$('#BTID').val(""); 
+	
+	$('#BTVersion').text(0); 
+	$('#BTAuditResultText').text('新增');
+	
+	var SQLTaskStaff={SQL:"SQLSRStaffs"};
+	var taskStaff="#taskStaff";
+	Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
+	
+	$('#taskDBE').val(""); 
+	
+//	var taskType = $('input:radio[name="taskType"]:checked').val();
+//	var taskBPID=$('#taskBPID').val();
+//	var taskBPTID=$('#taskBPTID').val();
+//	var modfiyABE=getCheckBoxValue('modfiyABE');
 
 	
-	var billData={
-			"DBTable":"ppm_bills_task",
-			"BTID":$('#BTID').val(),
-			"BTVersion":0,
-			"taskBPID":taskBPID,
-			"taskBPTID":taskBPTID,
-			"taskType":$('input:radio[name="taskType"]:checked').val(),
-			"taskStaff":$('#taskStaff option:selected').text(),
-			"modfiyABE":modfiyABE,
-			"taskDBE":$('#taskDBE').val(),
-			"taskLimitDate":$('#taskLimitDate').val(),
-			"BTAuditResult":0,
-			"BTStatus":1
-	}
+//	var billData={
+//			"DBTable":"ppm_bills_task",
+//			"BTID":$('#BTID').val(),
+//			"BTVersion":0,
+//			"taskBPID":taskBPID,
+//			"taskBPTID":taskBPTID,
+//			"taskType":$('input:radio[name="taskType"]:checked').val(),
+//			"taskStaff":$('#taskStaff option:selected').text(),
+//			"modfiyABE":modfiyABE,
+//			"taskDBE":$('#taskDBE').val(),
+//			"taskLimitDate":$('#taskLimitDate').val(),
+//			"BTAuditResult":0,
+//			"BTStatus":1
+//	}
 	
-	console.log("billData:"+JSON.stringify(billData));
-	Fun_addTask(billData);
+//	console.log("billData:"+JSON.stringify(billData));
+//	Fun_addTask(billData);
 	
 //    //记录附件信息------------------	
 //	var billID=$('#BPID').val();
@@ -1183,9 +1294,133 @@ $('#BTNTaskAdd').click(function(){
 });
 
 
+//按钮-任务删除---------
+$('#BTNTaskDel').click(function() {
+	
+	var tableTask = $('#billsTaskTable').DataTable();
+    var dataSelectTask = tableTask.row('.selected').data();
+    
+   console.log(JSON.stringify(dataSelectTask));
+    
+    if (dataSelectTask == undefined) {
+        alert("未选择任何任务单,请在任务清单中选中需要删除的任务单!");
+    } else {
+
+    	if(dataSelectTask.BTAuditResult!=0){
+    		alert("已审核单据禁止删除!");
+    	}else{
+
+    		var msg = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+            if (msg === true) {
+
+                    var IDData = {"DBTable":"ppm_bills_task","DBID":dataSelectTask.DBID};
+ //                   console.log("IDData:"+JSON.stringify(IDData));
+                    Fun_delTask(IDData);
+            
+            }
+    		
+    		
+    	}
+
+    }
+   
+});
+
+
+//按钮-任务新增
+
+$('#BTNTaskSave').click(function(){
+
+	var taskType = $('input:radio[name="taskType"]:checked').val();
+	var taskBPID=$('#taskBPID').val();
+	var taskBPTID=$('#taskBPTID').val();
+	var modfiyABE=getCheckBoxValue('modfiyABE');
+	
+	var BTAuditResultText=$('#BTAuditResultText').text();
+	
+	switch(BTAuditResultText){
+	case '新增':
+		var billData={
+		"DBTable":"ppm_bills_task",
+		"BTID":$('#BTID').val(),
+		"BTVersion":0,
+		"taskBPID":taskBPID,
+		"taskBPTID":taskBPTID,
+		"taskType":$('input:radio[name="taskType"]:checked').val(),
+		"taskStaff":$('#taskStaff option:selected').text(),
+		"modfiyABE":modfiyABE,
+		"taskDBE":$('#taskDBE').val(),
+		"taskLimitDate":$('#taskLimitDate').val(),
+		"BTAuditResult":0,
+		"BTStatus":1
+        }
+		
+        console.log("billData:"+JSON.stringify(billData));
+        Fun_addTask(billData);
+	
+	break;
+	case '未审核':
+		
+		var tableTask = $('#billsTaskTable').DataTable();
+	    var dataSelectTask = tableTask.row('.selected').data();
+		
+		var billData={
+		"DBTable":"ppm_bills_task",
+		"DBID":dataSelectTask.DBID,
+		"BTID":$('#BTID').val(),
+		"BTVersion":0,
+		"taskBPID":taskBPID,
+		"taskBPTID":taskBPTID,
+		"taskType":$('input:radio[name="taskType"]:checked').val(),
+		"taskStaff":$('#taskStaff option:selected').text(),
+		"modfiyABE":modfiyABE,
+		"taskDBE":$('#taskDBE').val(),
+		"taskLimitDate":$('#taskLimitDate').val(),
+		"BTAuditResult":0,
+		"BTStatus":1
+        }
+		
+        console.log("billData:"+JSON.stringify(billData));
+		Fun_updTask(billData);
+	
+	break;
+	
+	
+	
+	
+	}
+	
+	
+
+	
+
+	
+//    //记录附件信息------------------	
+//	var billID=$('#BPID').val();
+//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//	var fileName=$('#fileName').html();
+//	var fileData={
+//			"DBTable":"ppm_files_upload",
+//			"billName":"ppm_bills_plan",
+//			"billID":billID,
+//			"billVersion":$('#version').text(),
+//			"fileKey":fileKey,
+//			"fileName":fileName
+//	}
+//	
+//	if(fileKey!=undefined){
+//		Fun_addfileInfo(fileData);
+//	}
+
+
+});
+
+
+
+
 //按钮-表格新增计划单
 
-$('#BTNFormSave').click(function(){
+$('#BTNBPTSave').click(function(){
 	
 	var radioValue = $('input:radio[name="auditType"]:checked').val();
 	
@@ -1243,7 +1478,7 @@ $('#BTNFormSave').click(function(){
 
 //按钮-表格修改计划单
 
-$('#BTNFormModify').click(function() {
+$('#BTNBPTModify').click(function() {
 
 	var billData={
 			"DBTable":"ppm_bills_plan",
@@ -1325,7 +1560,7 @@ $('#BTNFormModify').click(function() {
 
 
 
-$('#BTNFormUpdate').click(function() {
+$('#BTNBPTUpdate').click(function() {
 	
 	var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
     if (msg1 === true) {
@@ -1380,7 +1615,7 @@ $('#BTNFormUpdate').click(function() {
 });
 
 //按钮-表单审核通过按钮
-$('#BTNFormAuditYes').click(function() {
+$('#BTNBPTAuditYes').click(function() {
 	
 	if(sessionName==$('#auditor option:selected').text()){
 		var msg = confirm("审核后无法修改单据,是否立即审核通过?");
@@ -1406,7 +1641,7 @@ $('#BTNFormAuditYes').click(function() {
 });
 
 //按钮-表单审核驳回按钮
-$('#BTNFormAuditNo').click(function() {
+$('#BTNBPTAuditNo').click(function() {
 	
 	if(sessionName==$('#auditor option:selected').text()){
 		var msg = confirm("如计划单信息有误,可先修改后再审核,驳回后此单立即完结,是否立即审核驳回?");
@@ -1433,7 +1668,7 @@ $('#BTNFormAuditNo').click(function() {
 
 
 //按钮-表单关闭按钮,添加刷新数据功能
-$('#BTNFormClose').click(function() {
+$('#BTNBPTClose').click(function() {
 	 window.location.reload();
 });
 	
