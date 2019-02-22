@@ -70,7 +70,7 @@ function addDBData(DBData) {
 //            alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
                alert("新增数据成功!");
-               window.location.reload();
+//               window.location.reload();
            }
        },
        error:function(err){
@@ -89,9 +89,10 @@ function updDBData(DBData,showText) {
  //                alert("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
                 alert(showText+"更新数据成功!");
-               window.location.reload();
+//               window.location.reload();
             } else {
                 alert(showText+"未有数据更新!");
+//                window.location.reload();
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -109,7 +110,7 @@ function delDBData(IDData) {
             //  alert("成功数据:"+JSON.stringify(data));
             if (data.affectedRows != 0) {
                 alert("删除数据成功!");
-                window.location.reload();
+//                window.location.reload();
             } else {
                 alert("删除数据失败!");
             }
@@ -256,7 +257,10 @@ function uploadFile() {
 
 	var filePath=$('#filePath').attr("href");
 	
-	if(filePath!=undefined){
+	var fileName=$('#fileName').html();
+	console.log("fileName:"+fileName);
+	
+	if(fileName!=undefined&&fileName!=""){
 		
 		alert("附件已存在,上传新附件请先清空!");
 		
@@ -379,6 +383,7 @@ function deleteFile() {
 		document.getElementById('div_previewImages').innerHTML="";
 		document.getElementById('progressNumber').innerHTML="";
 		document.getElementById('divFilesUploaded').innerHTML="";
+//		document.getElementById('fileName').innerHTML="";
 		
 	}else{
 		alert("无附件,无需清空!");
@@ -651,7 +656,7 @@ function Fun_showSQLTable(SQL,tableInfo){
 
 //函数-添加附件信息数据库
 
-function Fun_addfileInfo(DBData) {
+function Fun_addFileInfo(DBData) {
 	
     $.ajax({
         method: 'post',
@@ -662,6 +667,27 @@ function Fun_addfileInfo(DBData) {
            if (data.affectedRows != 0) {
                alert("附件添加绑定成功!");
 //               window.location.reload();
+           }
+       },
+       error:function(err){
+       	alert("失败数据:"+JSON.stringify(err));
+       }
+    });
+}
+
+//函数-更新附件信息数据库
+
+function Fun_updFileInfo(DBData) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/updDBData',
+        data: DBData,
+        success: function(data) {
+//            alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+               alert("更新附件绑定成功!");
+//             window.location.reload();
            }
        },
        error:function(err){
@@ -715,11 +741,90 @@ function Fun_addDBDataDD(DBData,DDMsg) {
                if(DDMsg!=""){
             	   sendDingMsg(DDMsg);
                }
-               window.location.reload();
+//               window.location.reload();
            }
        },
        error:function(err){
        	alert("失败数据:"+JSON.stringify(err));
        }
     });
+}
+
+//函数-更新数据并发送钉钉消息
+function Fun_updDBDataDD(DBData,DDMsg,showText) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/updDBData',
+        data: DBData,
+        success: function(data) {
+//            alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+        	   alert(showText+"更新数据成功!");
+               if(DDMsg!=""){
+            	   sendDingMsg(DDMsg);
+               }
+//               window.location.reload();
+           }else{
+        	   alert(showText+"未有数据更新!");
+//        	   window.location.reload();
+           }
+       },
+       error:function(err){
+       	alert("失败数据:"+JSON.stringify(err));
+       }
+    });
+}
+
+
+//函数:加载附件信息
+function Fun_getBillFile(Para,DivID,feedBack){
+/*
+ * para格式
+ * 
+ * Para={"billName":*,"billID":*,"billVersion":*}
+ * 
+ * DivID="#divFilesUploaded";
+ * 
+ * feedBack=true or false;
+ * 
+ * 
+ * */	
+
+	  $(DivID).html("");
+	  
+	  
+	  $.ajax({
+          method:'get',
+          data:Para,
+          url:"/app/PM/getBillFileInfo",
+          success:function(dataReturn){
+        	  
+        	  console.log("dataReturn:"+JSON.stringify(dataReturn));
+        	  
+        	  if(dataReturn.length!=0){
+        		  
+        		  if(dataReturn[0].fileKey!=null){
+            		  console.log("不为空"+dataReturn[0].fileKey);
+            		  
+            		  if(feedBack==true){
+            			  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span id='fileName'>"+dataReturn[0].fileName+"</span></a>";
+            			  $("#fileDBID").html(dataReturn[0].DBID);
+            		  }else{
+            			  var downloadurl="<a href="+'/system.files.download/upload_'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span>"+dataReturn[0].fileName+"</span></a>";
+            		  }
+            		
+            		  $(DivID).html(downloadurl);
+            		  
+            		  }
+        		  
+        	  }
+        	  
+        	  
+        	  
+        	  
+          },
+          error:function(){}
+      })
+
 }
