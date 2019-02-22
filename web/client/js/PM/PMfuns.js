@@ -369,11 +369,11 @@ function uploadCanceled(evt) {
 function deleteFile() {
 	
 	var filePath=$('#filePath').attr("href");
-	alert(filePath);
+//	alert(filePath);
 	
 	if(filePath!=undefined){
 		var fileKey=$('#filePath').attr("href").substring(23);
-		alert(fileKey);
+//		alert(fileKey);
 		var xhr = new XMLHttpRequest();
 		xhr.open("delete", "/system.files/"+ fileKey);
 		xhr.send();
@@ -790,6 +790,13 @@ function Fun_getBillFile(Para,DivID,feedBack){
  * 
  * 
  * */	
+	
+	
+	
+	//清空默认div内容,防止残留
+	 $("#div_previewImages").html("");
+	 $("#progressNumber").html("");
+	 $("#divFilesUploaded").html("");
 
 	  $(DivID).html("");
 	  
@@ -828,3 +835,40 @@ function Fun_getBillFile(Para,DivID,feedBack){
       })
 
 }
+
+
+////AJAX+ 新增数据库数据函数- 添加回调返回结果功能更 ---------
+//function CB_addDBData(DBData,callback) {
+//	
+//	
+//	
+//    $.ajax({
+//        method: 'post',
+//        url: '/app/PM/addDBData',
+//        data: DBData,
+//        success: function(data) {
+////            alert("成功数据:" + JSON.stringify(data));
+//           if (data.affectedRows != 0) {
+//               alert("新增数据成功!");
+//               
+//               callback(data){
+//            	   return data
+//               }
+////               window.location.reload();
+//               
+//               
+//           }
+//       },
+//       error:function(err){
+//       	alert("失败数据:"+JSON.stringify(err));
+//       }
+//    });
+//    
+//    
+//    return data;
+//}
+//
+//
+//var getdata=CB_addDBData();
+
+

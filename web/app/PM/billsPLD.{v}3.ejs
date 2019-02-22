@@ -63,7 +63,8 @@
                     <div class="form-horizontal" >  
                     
                     <input id="DBID" type="text" value="" style="display:none;">
-           
+                    
+                    <input id="fileDBID" type="text" value="" style="display:none;">
                     
                     <input id="auditResult" type="text" value="" style="display:none;">
                     
@@ -176,7 +177,7 @@
                      </div>
                      </div>
                      
- <!-------------------------------------------------------------------------->
+                     <!-------------------------------------------------------------------------->
                      
                      <div class="form-group">
                      <label  class="col-sm-1 control-label" for="name">上传</label>  
@@ -202,9 +203,7 @@
                  	
                  	<div id="div_previewImages"></div>
                     <div id="progressNumber"></div> 
-                    <span id="fileDBID" style="display:none"></span>
                     <div id="divFilesUploaded"></div>
-                    
                  	</div>
                  	
                  	
@@ -479,7 +478,7 @@ function Fun_winAddInit(){
 function Fun_winDetailInit(dataSelect){
 	
 	$('#DBID').val(dataSelect.DBID); 
-
+	$('#fileDBID').val(dataSelect.fileDBID); 
 	
 	console.log("fileDBID:"+dataSelect.fileDBID);
 	
@@ -509,10 +508,6 @@ function Fun_winDetailInit(dataSelect){
 	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
     $('#topic').val(dataSelect.topic); 
     $('#detail').val(dataSelect.detail); 
-    
-    
-    var Para={"billName":"ppm_bills_plan","billID":dataSelect.BPID,"billVersion":dataSelect.version}
-	Fun_getBillFile(Para,"#divFilesUploaded",true);
     
   
   $('.form_date').datetimepicker({
@@ -781,7 +776,7 @@ $('#BTNDelete').click(function() {
 
     }
     
- //   window.location.reload();
+    window.location.reload();
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
 });
 
@@ -855,7 +850,7 @@ $('#BTNFormAdd').click(function(){
     
 	
 	
-//	window.location.reload();
+	window.location.reload();
 
 
 });
@@ -955,7 +950,7 @@ $('#BTNFormModify').click(function() {
 	
     
 	
-//	window.location.reload();
+	window.location.reload();
 
 
 });
@@ -1038,7 +1033,7 @@ $('#BTNFormAuditYes').click(function() {
 			}
 
 			updDBData(auditData,"表单审核状态");
-//			window.location.reload();
+			window.location.reload();
 		}
 	}else{
 		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
@@ -1064,7 +1059,7 @@ $('#BTNFormAuditNo').click(function() {
 			}
 
 			updDBData(auditData,"表单审核状态");
-//			window.location.reload();
+			window.location.reload();
 		}
 	}else{
 		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
@@ -1074,7 +1069,7 @@ $('#BTNFormAuditNo').click(function() {
 });
 
 
-u
+
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNFormClose').click(function() {
 	 window.location.reload();
