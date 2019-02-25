@@ -39,6 +39,7 @@
         <button id="BTNAdd" class="btn btn-primary" data-toggle="modal" >新增</button>
         <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
         <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
+        <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >审核</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:75%">
@@ -502,9 +503,7 @@ function Fun_winDetailInit(dataSelect){
 	var PGEMaker="#PGEMaker";
 	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker,dataSelect.PGEMaker);
 	
-	var SQLAuditor={SQL:"SQLSRStaffs"};
-	var auditor="#auditor";
-	Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
+	
 
 	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
     $('#topic').val(dataSelect.topic); 
@@ -558,9 +557,18 @@ function Fun_winDetailInit(dataSelect){
 	  break;  
   }
   
-  $('#auditResult').val(dataSelect.auditResult);
+
   
   $("#auditOpinionDiv").hide();
+  
+  $('#auditResult').val(dataSelect.auditResult);
+  
+  var SQLAuditor={SQL:"SQLSRStaffs"};
+  var auditor="#auditor";
+  Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
+  
+
+  $('#auditDate').val(dataSelect.auditDate);
   
   //已经审核 或者登陆人为审核人则显示
   
@@ -568,18 +576,16 @@ function Fun_winDetailInit(dataSelect){
   //如果是已审核单据 则不显示更新和审核按钮
   if(dataSelect.auditResult==null){
 	  
-	  
-
+	  $("#auditOpinionDiv").show();
 
 	  $("#BTNFormModify").show();
 	  $("#BTNFormUpdate").hide();
-	  $("#BTNFormAuditYes").show();
-	  $("#BTNFormAuditNo").show();
+	  $("#BTNFormAuditYes").hide();
+	  $("#BTNFormAuditNo").hide();
 	  
-	  var sessionName="<%-locals.session.yjUser.Name%>";
-	  if(sessionName==dataSelect.auditor){
-		  $("#auditOpinionDiv").show();
-	  }
+
+		
+	 
 
 
   }else{ 
@@ -589,7 +595,7 @@ function Fun_winDetailInit(dataSelect){
 	    var SQLAuditor={SQL:"SQLSRStaffs"};
 	    var auditor="#auditor";
 	    $("#BPID").attr("disabled",true);
-	    $("#auditTypeOption1").attr("checked",true);
+//	    $("#auditTypeOption1").attr("checked",true);
 	    
 	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
 	    $("#auditor").attr("disabled",true);
@@ -785,36 +791,75 @@ $('#BTNDelete').click(function() {
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
 });
 
+//按钮-审核---------
+$('#BTNAudit').click(function() {
+    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
+    // table.row('.selected').remove().draw( false );
+    var dataSelect = table.row('.selected').data();
+    if (dataSelect == undefined) {
+        alert("请先点击表格中的表单!");
+    } else {
+    	
+    	if(dataSelect.auditResult==null){
+    		$('#BillPLD').modal('show')
+        	Fun_winDetailInit(dataSelect);
+    		
+    		$("#BTNFormModify").hide();
+    		$("#BTNFormUpdate").hide();
+        	
+        	$("#BTNFormAuditYes").show();
+     	    $("#BTNFormAuditNo").show();
+    		
+    	}else{
+    		alert("此计划单已审核,无需再审,可点击详情查看!");
+    	}
+
+    	
+    	
+
+    }
+});
+
 
 //按钮-表格新增计划单
 
 $('#BTNFormAdd').click(function(){
 	
-	//记录附件信息------------------	
-	var billID=$('#BPID').val();
-	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-	var fileName=$('#fileName').html();
-	var fileData={
-			"DBTable":"ppm_files_upload",
-			"billName":"ppm_bills_plan",
-			"billID":billID,
-			"billVersion":$('#version').text(),
-			"fileKey":fileKey,
-			"fileName":fileName
-	}
+//	//记录附件信息------------------	
+//	var billID=$('#BPID').val();
+//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//	var fileName=$('#fileName').html();
 	
-	if(fileKey!=undefined){
-		Fun_addFileInfo(fileData);
-	}
+//	var fileData={
+//			"DBTable":"ppm_files_upload",
+//			"billName":"ppm_bills_plan",
+//			"billID":billID,
+//			"billVersion":$('#version').text(),
+//			"fileKey":fileKey,
+//			"fileName":fileName
+//	}
+//	
+//	if(fileKey!=undefined){
+//		Fun_addFileInfo(fileData);
+//	}
 	
 	
 	
-	var radioValue = $('input:radio[name="auditType"]:checked').val();
+//	var radioValue = $('input:radio[name="auditType"]:checked').val();
+//	
+//	if(radioValue==1){
+//		var WFStatus=10;
+//	}else{
+//		var WFStatus=1;
+//	}
 	
-	if(radioValue==1){
-		var WFStatus=10;
+	if($('#filePath').attr('href')!=undefined){
+		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+		var fileName=$('#fileName').html();
+		
 	}else{
-		var WFStatus=1;
+		var fileKey="";
+		var fileName="";
 	}
 	
 	var billData={
@@ -837,7 +882,9 @@ $('#BTNFormAdd').click(function(){
 			"auditDate":$('#auditDate').val(),
 			"auditResult":$('#auditResult').val(),
 			"version": $('#version').text(),
-			"WFStatus":WFStatus
+			"fileKey":fileKey,
+			"fileName":fileName,
+			"WFStatus":1
 	}
 	
 //	alert("billData:"+JSON.stringify(billData));
@@ -846,7 +893,7 @@ $('#BTNFormAdd').click(function(){
 
 		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
 		
-		Fun_addDBDataDD(billData,DDMsg);
+		Fun_addDBDataDD(billData,DDMsg,"计划单");
 	}else{
 		alert("该计划单没有指定审核人,请检查!");
 	}
@@ -856,6 +903,7 @@ $('#BTNFormAdd').click(function(){
 	
 	
 //	window.location.reload();
+	$('#BillPLD').modal('hide');//用隐藏表单模块方式取代刷新,避免因刷新照成的ajax错误
 
 
 });
@@ -866,55 +914,63 @@ $('#BTNFormAdd').click(function(){
 $('#BTNFormModify').click(function() {
 	
 	
-	//记录附件信息------------------	
-	var fileDBID=$('#fileDBID').val();
-	var billID=$('#BPID').val();
-
+//	//记录附件信息------------------	
+//	var fileDBID=$('#fileDBID').val();
+//	var billID=$('#BPID').val();
+//
+//	if($('#filePath').attr('href')!=undefined){
+//		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//		var fileName=$('#fileName').html();
+//		
+//	}else{
+//		var fileKey="";
+//		var fileName="";
+//	}
+//	
+//
+//	var fileData={
+//			"DBTable":"ppm_files_upload",
+//			"DBID":fileDBID,
+//			"billID":billID,
+//			"fileKey":fileKey,
+//			"fileName":fileName
+//	}
+//	
+//	console.log("fileData:"+JSON.stringify(fileData));
+//	
+//
+//	if(fileKey!=undefined){
+//		
+//		console.log("fileKey:"+fileKey);
+//		console.log("fileDBID:"+fileDBID);
+//		if(fileDBID==""){
+//			console.log("fileDBID:null");			
+//			var fileAddData={
+//					"DBTable":"ppm_files_upload",
+//					"billName":"ppm_bills_plan",
+//					"billID":billID,
+//					"billVersion":$('#version').text(),
+//					"fileKey":fileKey,
+//					"fileName":fileName
+//			}
+//			
+//			console.log("fileAddData:"+fileAddData);
+//			Fun_addFileInfo(fileAddData);
+//			
+//		}else{
+//			console.log("fileDBID:not null,"+fileDBID);
+//			updDBData(fileData,"附件");
+//		}
+//	}
+//	
+	
 	if($('#filePath').attr('href')!=undefined){
-		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-		var fileName=$('#fileName').html();
-		
+	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+	var fileName=$('#fileName').html();
 	}else{
-		var fileKey="";
-		var fileName="";
+	var fileKey="";
+	var fileName="";
 	}
-	
-
-	var fileData={
-			"DBTable":"ppm_files_upload",
-			"DBID":fileDBID,
-			"billID":billID,
-			"fileKey":fileKey,
-			"fileName":fileName
-	}
-	
-	console.log("fileData:"+JSON.stringify(fileData));
-	
-
-	if(fileKey!=undefined){
-		
-		console.log("fileKey:"+fileKey);
-		console.log("fileDBID:"+fileDBID);
-		if(fileDBID==""){
-			console.log("fileDBID:null");			
-			var fileAddData={
-					"DBTable":"ppm_files_upload",
-					"billName":"ppm_bills_plan",
-					"billID":billID,
-					"billVersion":$('#version').text(),
-					"fileKey":fileKey,
-					"fileName":fileName
-			}
-			
-			console.log("fileAddData:"+fileAddData);
-			Fun_addFileInfo(fileAddData);
-			
-		}else{
-			console.log("fileDBID:not null,"+fileDBID);
-			updDBData(fileData,"附件");
-		}
-	}
-	
 
 	var billData={
 			"DBTable":"ppm_bills_plan",
@@ -936,7 +992,9 @@ $('#BTNFormModify').click(function() {
 			"makeDate":$('#makeDate').val(),
 			"auditDate":$('#auditDate').val(),
 			"version": $('#version').text(),
-			"WFStatus":2
+			"fileKey":fileKey,
+			"fileName":fileName,
+			"WFStatus":1
 	}
 	
 	
@@ -956,7 +1014,7 @@ $('#BTNFormModify').click(function() {
     
 	
 //	window.location.reload();
-
+//	$('#BillPLD').modal('hide');
 
 });
 
@@ -971,7 +1029,19 @@ $('#BTNFormUpdate').click(function() {
         var msg2 = confirm("确认更新版本？");
         if (msg2 === true) {
         	
+        	
+        	
+        	
         	var newVersion=parseInt($('#version').text())+1;
+        	
+        	
+        	if($('#filePath').attr('href')!=undefined){
+        		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+        		var fileName=$('#fileName').html();
+        		}else{
+        		var fileKey="";
+        		var fileName="";
+        		}
   
         	var billData={
         			"DBTable":"ppm_bills_plan",
@@ -991,32 +1061,43 @@ $('#BTNFormUpdate').click(function() {
         			"auditor":$('#auditor option:selected').text(),
         			"makeDate":$('#makeDate').val(),
         			"auditDate":$('#auditDate').val(),
-        			"version": newVersion
-        	}
-        	
-//        	alert("billData:"+JSON.stringify(billData));
-        	addDBData(billData);
-        	
-            //记录附件信息------------------	
-        	var billID=$('#BPID').val();
-        	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-        	var fileName=$('#fileName').html();
-        	var fileData={
-        			"DBTable":"ppm_files_upload",
-        			"billName":"ppm_bills_plan",
-        			"billID":billID,
-        			"billVersion":newVersion,
         			"fileKey":fileKey,
-        			"fileName":fileName
+        			"fileName":fileName,
+        			"version": newVersion,
+        			"WFStatus":1
         	}
         	
-        	if(fileKey!=undefined){
-        		Fun_addFileInfo(fileData);
+        	if(billData.auditor!=""){
+
+        		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
+        		
+        		Fun_addDBDataDD(billData,DDMsg,"新版本计划单");
+        	}else{
+        		alert("该计划单没有指定审核人,请检查!");
         	}
+        	
+//            //记录附件信息------------------	
+//        	var billID=$('#BPID').val();
+//        	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//        	var fileName=$('#fileName').html();
+//        	var fileData={
+//        			"DBTable":"ppm_files_upload",
+//        			"billName":"ppm_bills_plan",
+//        			"billID":billID,
+//        			"billVersion":newVersion,
+//        			"fileKey":fileKey,
+//        			"fileName":fileName
+//        	}
+//        	
+//        	if(fileKey!=undefined){
+//        		Fun_addFileInfo(fileData);
+//        	}
 
         	
         }
     }
+    
+//    $('#BillPLD').modal('hide');
 
 });
 
@@ -1043,6 +1124,8 @@ $('#BTNFormAuditYes').click(function() {
 	}else{
 		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 	}
+	
+//	$('#BillPLD').modal('hide');
 
 
 });
@@ -1069,12 +1152,14 @@ $('#BTNFormAuditNo').click(function() {
 	}else{
 		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 	}
+	
+//	$('#BillPLD').modal('hide');
 
 
 });
 
 
-u
+
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNFormClose').click(function() {
 	 window.location.reload();

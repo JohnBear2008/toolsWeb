@@ -67,10 +67,10 @@ function addDBData(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+           alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
                alert("新增数据成功!");
-//               window.location.reload();
+              window.location.reload();
            }
        },
        error:function(err){
@@ -89,10 +89,10 @@ function updDBData(DBData,showText) {
  //                alert("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
                 alert(showText+"更新数据成功!");
-//               window.location.reload();
+               window.location.reload();
             } else {
                 alert(showText+"未有数据更新!");
-//                window.location.reload();
+                window.location.reload();
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -110,7 +110,7 @@ function delDBData(IDData) {
             //  alert("成功数据:"+JSON.stringify(data));
             if (data.affectedRows != 0) {
                 alert("删除数据成功!");
-//                window.location.reload();
+                window.location.reload();
             } else {
                 alert("删除数据失败!");
             }
@@ -728,7 +728,7 @@ function Fun_getSelectText(obj){
 //}
 
 //函数-增加数据并发送钉钉消息
-function Fun_addDBDataDD(DBData,DDMsg) {
+function Fun_addDBDataDD(DBData,DDMsg,showText) {
 	
     $.ajax({
         method: 'post',
@@ -737,11 +737,11 @@ function Fun_addDBDataDD(DBData,DDMsg) {
         success: function(data) {
 //            alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("新增数据成功!");
+               alert(showText+"新增成功!");
                if(DDMsg!=""){
             	   sendDingMsg(DDMsg);
                }
-//               window.location.reload();
+              window.location.reload();
            }
        },
        error:function(err){
@@ -764,10 +764,10 @@ function Fun_updDBDataDD(DBData,DDMsg,showText) {
                if(DDMsg!=""){
             	   sendDingMsg(DDMsg);
                }
-//               window.location.reload();
+              window.location.reload();
            }else{
         	   alert(showText+"未有数据更新!");
-//        	   window.location.reload();
+        	   window.location.reload();
            }
        },
        error:function(err){
