@@ -27,7 +27,7 @@
 
 <!------begin view-------------------------->
 <div class="divcontent">
-    <h1>工作流程-任务单</h1>
+    <h1>工作流程-IPQC单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -36,8 +36,8 @@
      <!--   <button id="BTNInfo" class="btn btn-warning">详情</button> -->
         
         <!-- 按钮触发模态框 -->
-        <button id="BTNTaskAudit" class="btn btn-primary" data-toggle="modal" >审核确认</button>
-        <button id="BTNTaskRecord" class="btn btn-info" data-toggle="modal" >任务登记</button>
+        <button id="BTNIPQCAudit" class="btn btn-primary" data-toggle="modal" >审核确认</button>
+        <button id="BTNIPQCRecord" class="btn btn-info" data-toggle="modal" >IPQC登记</button>
         <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
@@ -274,8 +274,8 @@
                      <div class="form-group" id="DivTaskAuditBTNS"> 
                      <label class="col-sm-1 control-label">审核:</label>
                      <div class="col-sm-10">
-                     <button id="BTNTaskAuditYes" class="btn btn-success" data-toggle="modal" >审核通过</button>
-                     <button id="BTNTaskAuditNo" class="btn btn-warning" data-toggle="modal" >审核驳回</button>
+                     <button id="BTNIPQCAuditYes" class="btn btn-success" data-toggle="modal" >审核通过</button>
+                     <button id="BTNIPQCAuditNo" class="btn btn-warning" data-toggle="modal" >审核驳回</button>
                      </div>
                      
                      </div>
@@ -377,8 +377,8 @@
                     <div class="form-group" id="DivRecordBTNS"> 
                     <label class="col-sm-1 control-label">登记:</label>
                     <div class="col-sm-10">
-                    <button id="BTNTaskRecordSave" class="btn btn-success" data-toggle="modal" >保存记录</button>
-                    <button id="BTNTaskRecordAudit" class="btn btn-warning" data-toggle="modal" >审核记录</button>
+                    <button id="BTNIPQCRecordSave" class="btn btn-success" data-toggle="modal" >保存记录</button>
+                    <button id="BTNIPQCRecordAudit" class="btn btn-warning" data-toggle="modal" >审核记录</button>
                     </div>
                     
                     </div>
@@ -653,7 +653,7 @@ $('#billsTaskTable tbody').on('click', 'tr', function() {
 	
 
 //按钮-审核任务单---------
-$('#BTNTaskAudit').click(function() {
+$('#BTNIPQCAudit').click(function() {
 	
 	  var dataSelect = table.row('.selected').data();
 	    if (dataSelect == undefined) {
@@ -675,7 +675,7 @@ $('#BTNTaskAudit').click(function() {
 });
 
 //按钮-任务审核通过按钮
-$('#BTNTaskAuditYes').click(function() {
+$('#BTNIPQCAuditYes').click(function() {
 	
 	if(sessionName==$('#taskStaff').text()){
 		var msg = confirm("审核后无法修改单据,是否立即审核通过?");
@@ -702,7 +702,7 @@ $('#BTNTaskAuditYes').click(function() {
 
 
 //按钮-任务审核驳回按钮
-$('#BTNTaskAuditNo').click(function() {
+$('#BTNIPQCAuditNo').click(function() {
 	
 	if(sessionName==$('#taskStaff').text()){
 		var msg = confirm("审核后无法修改单据,是否立即审核驳回?");
@@ -729,7 +729,7 @@ $('#BTNTaskAuditNo').click(function() {
 });
 
 //按钮-记录任务单---------
-$('#BTNTaskRecord').click(function() {
+$('#BTNIPQCRecord').click(function() {
 	
 	  var dataSelect = table.row('.selected').data();
 	    if (dataSelect == undefined) {
@@ -746,7 +746,7 @@ $('#BTNTaskRecord').click(function() {
 });
 
 //按钮-任务记录保存按钮
-$('#BTNTaskRecordSave').click(function() {
+$('#BTNIPQCRecordSave').click(function() {
 	
 	if(sessionName==$('#taskStaff').text()){
 		
@@ -793,7 +793,7 @@ $('#BTNTaskRecordSave').click(function() {
 
 
 //按钮-任务记录审核按钮
-$('#BTNTaskRecordAudit').click(function() {
+$('#BTNIPQCRecordAudit').click(function() {
 	
 	var msg = confirm("审核后无法再次进行任务登记,如任务记录有误,请修改后再审核,是否立即审核通过?");
 	if(msg==true){	

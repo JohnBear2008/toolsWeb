@@ -144,7 +144,7 @@
                      <div class="form-group">
                        <label class="col-sm-1 control-label">计划单号:</label>
                        <div class="col-sm-3">
-                         <input id="BPID" class="form-control"  type="text" value="">
+                         <input id="BPTBPID" class="form-control"  type="text" value="">
                        </div>
                        
                        <label class="col-sm-1 control-label">客户名称:</label>
@@ -300,7 +300,7 @@
                  	
                  	<div id="div_previewImages"></div>
                     <div id="progressNumber"></div> 
-                    <span id="fileDBID" style="display:none"></span>
+ 
                     <div id="divFilesUploaded"></div>
                     
                  	</div>
@@ -383,9 +383,6 @@
                  	        
                  	      
                  	 </div>
-                 	 
-                 	
-                 	
                  	
                      </div>
                      
@@ -656,40 +653,7 @@ function Fun_billIDCreate(para){
 	return BillID;
 }
 
-//函数 获取checkbox值
-function getCheckBoxValue(CBName){
-	var test = $("input[name='"+CBName+"']:checked");
-	var checkBoxValue = ""; 
-	test.each(function(){
-		checkBoxValue += $(this).val()+",";
-	})
-	checkBoxValue = checkBoxValue.substring(0,checkBoxValue.length-1);
-	console.log("checkBoxValue:"+checkBoxValue);
-	return checkBoxValue;
-}
-//函数 设定根据值设定checkbox选中状态
-function setCheckBoxValue(CBName,CBVals){
 
-	var checkBox = CBVals;
-	
-	if(CBVals!=null){
-		var checkBoxArray = checkBox.split(",");
-		for(var i=0;i<checkBoxArray.length;i++){
-			$("input[name='"+CBName+"']").each(function(){
-				if($(this).val()==checkBoxArray[i]){
-					
-					console.log("thisval:"+$(this).val());
-					console.log("checkBoxArray:"+checkBoxArray[i]);
-					console.log("this:"+JSON.stringify(this));
-					
-					$(this).prop('checked', true);
-				}
-			})
-		}
-		
-	}
-
-}
 
 //函数:详情按钮详情页自动填写内容1:所有情况必定加载------------------------
 
@@ -700,10 +664,10 @@ function Fun_BPTDetailInitPart1(dataSelect){
 	
     $('#DBID').val(dataSelect.DBID); 	
 	
-	$('#BPID').val(dataSelect.BPID); 
-	$("#BPID").attr("disabled",true);
+	$('#BPTBPID').val(dataSelect.BPID); 
+	$("#BPTBPID").attr("disabled",true);
 	
-	$('#CTRName').val(dataSelect.CTRName); 
+	$('#CTRName').val(dataSelect.PLDCTRName); 
 	$("#CTRName").attr("disabled",true);
 	
 	$('#BPTID').val(dataSelect.BPID); 
@@ -712,18 +676,18 @@ function Fun_BPTDetailInitPart1(dataSelect){
 //	var BPTID=Fun_billIDCreate('FA');
 //	$('#BPTID').val(BPTID); 
 	
-	$('#PGEMaker').val(dataSelect.PGEMaker); 
+	$('#PGEMaker').val(dataSelect.PLDPGEMaker); 
 	$("#PGEMaker").attr("disabled",true);
 	
-	$('#limitDate').val(dataSelect.limitDate); 
+	$('#limitDate').val(dataSelect.PLDLimitDate); 
 	$("#limitDate").attr("disabled",true);
 	
 	$('#taskLimitDate').val(dataSelect.limitDate); 
 
-	if(dataSelect.version==null){
+	if(dataSelect.BPTVersion==null){
 		$('#version').text(0); 
 	}else{
-		$('#version').text(dataSelect.version); 
+		$('#version').text(dataSelect.BPTVersion); 
 	}
 	
 	
@@ -744,7 +708,7 @@ function Fun_BPTDetailInitPart1(dataSelect){
 	
 	
 	
-	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion); 
+	
 	
 	$('#billTaskPanel').hide();
 	
@@ -806,8 +770,17 @@ function Fun_BPTDetailInitPart2(dataSelect){
 	 
 	 $('#BPTDescribe').val(dataSelect.BPTDescribe); 
 	 
-	 var Para={"billName":"ppm_bills_blueprint","billID":dataSelect.BPTID,"billVersion":dataSelect.version}
-	 Fun_getBillFile(Para,"#divFilesUploaded",true);
+//	 var Para={"billName":"ppm_bills_blueprint","billID":dataSelect.BPTID,"billVersion":dataSelect.version}
+//	 Fun_getBillFile(Para,"#divFilesUploaded",true);
+	 
+	 $('#divFilesUploaded').html("");
+	  
+	  if(dataSelect.fileKey!=null){
+		  
+		  console.log("不为空"+dataSelect.fileKey);
+		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
+		  $('#divFilesUploaded').html(downloadurl);
+	  }
 	 
 
 	  Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
@@ -841,6 +814,8 @@ function Fun_BPTDetailInit(dataSelect){
 		var SQLModel={SQL:"SQLSRSystems"};
 		var model="#model";
 		Fun_getSQLSelectDBData(SQLModel,model,dataSelect.PLDModel);
+		
+		$('#OGNSystemVersion').val(dataSelect.PLDOGNSystemVersion); 
 	}else{
 		var SQLMHEName={SQL:"SQLSRMachines"};
 		var MHEName="#MHEName";
@@ -850,6 +825,7 @@ function Fun_BPTDetailInit(dataSelect){
 		var model="#model";
 		Fun_getSQLSelectDBData(SQLModel,model,dataSelect.model);
 		
+		$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion); 
 	}
 	
 	
@@ -884,16 +860,8 @@ function Fun_BPTDetailInit(dataSelect){
 		 $("#BTNBPTSave").show();
 		 $("#BTNBPTUpdate").hide();
 		 
-		 if(auditor==""){
-			 console.log("auditor case0:"+auditor)
-			 
-			 $("#BTNBPTAuditYes").hide();
-			 $("#BTNBPTAuditNo").hide();
-			 
-		 }else{
-			 $("#BTNBPTAuditYes").show();
-			 $("#BTNBPTAuditNo").show();
-		 }
+		 $("#BTNBPTAuditYes").hide();
+		 $("#BTNBPTAuditNo").hide();
 		 
 		 
 		break;
@@ -1061,51 +1029,51 @@ function Fun_delTask(IDData) {
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
     });
 }
-//函数:添加方案单附件记录
-function Fun_addPGEFile(){
-	
-	
-
-	var billID=$('#BPTID').val();
-	console.log("fileKey:"+$('#filePath').attr('href'));
-	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-	var fileName=$('#fileName').html();
-	var fileData={
-			"DBTable":"ppm_files_upload",
-			"billName":"ppm_bills_blueprint",
-			"billID":billID,
-			"billVersion":$('#version').text(),
-			"fileKey":fileKey,
-			"fileName":fileName
-	}
-	
-	if(fileKey!=undefined){
-		Fun_addFileInfo(fileData);
-	}
-}
-
-//函数:添加方案单附件记录
-function Fun_updPGEFile(){
-
-	var billID=$('#BPTID').val();
-	var fileDBID=$('#fileDBID').html();
-	console.log("fileKey:"+$('#filePath').attr('href'));
-	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-	var fileName=$('#fileName').html();
-	var fileData={
-			"DBTable":"ppm_files_upload",
-			"DBID":fileDBID,
-			"billName":"ppm_bills_blueprint",
-			"billID":billID,
-			"billVersion":$('#version').text(),
-			"fileKey":fileKey,
-			"fileName":fileName
-	}
-	
-	console.log("upd:"+JSON.stringify(fileData));
-		Fun_updFileInfo(fileData);
-
-}
+////函数:添加方案单附件记录
+//function Fun_addPGEFile(){
+//	
+//	
+//
+//	var billID=$('#BPTID').val();
+//	console.log("fileKey:"+$('#filePath').attr('href'));
+//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//	var fileName=$('#fileName').html();
+//	var fileData={
+//			"DBTable":"ppm_files_upload",
+//			"billName":"ppm_bills_blueprint",
+//			"billID":billID,
+//			"billVersion":$('#version').text(),
+//			"fileKey":fileKey,
+//			"fileName":fileName
+//	}
+//	
+//	if(fileKey!=undefined){
+//		Fun_addFileInfo(fileData);
+//	}
+//}
+//
+////函数:添加方案单附件记录
+//function Fun_updPGEFile(){
+//
+//	var billID=$('#BPTID').val();
+//	var fileDBID=$('#fileDBID').html();
+//	console.log("fileKey:"+$('#filePath').attr('href'));
+//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//	var fileName=$('#fileName').html();
+//	var fileData={
+//			"DBTable":"ppm_files_upload",
+//			"DBID":fileDBID,
+//			"billName":"ppm_bills_blueprint",
+//			"billID":billID,
+//			"billVersion":$('#version').text(),
+//			"fileKey":fileKey,
+//			"fileName":fileName
+//	}
+//	
+//	console.log("upd:"+JSON.stringify(fileData));
+//		Fun_updFileInfo(fileData);
+//
+//}
 
 
 
@@ -1129,11 +1097,11 @@ $(document).ready( function () {
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'PLDVersion'},
-		        { data: 'CTRName'},
-		        { data: 'limitDate'},
-		        { data: 'PGEMaker'},
+		        { data: 'PLDCTRName'},
+		        { data: 'PLDLimitDate'},
+		        { data: 'PLDPGEMaker'},
 		        { data: 'BPTID'},
-		        { data: 'version'},
+		        { data: 'BPTVersion'},
 		        { data: 'BPTAuditResultText'}
 
 			]
@@ -1275,6 +1243,8 @@ $('#BTNBPTAudit').click(function() {
     		$('#BillBPT').modal('show');
         	Fun_BPTDetailInit(dataSelect);
         	$('#BTNBPTSave').hide();
+        	 $("#BTNBPTAuditYes").show();
+    		 $("#BTNBPTAuditNo").show();
         	break;
     	default:
     		alert("该方案已经审核,无需再次审核!");
@@ -1372,6 +1342,7 @@ $('#BTNTaskSave').click(function(){
 		"BTVersion":0,
 		"taskBPID":taskBPID,
 		"taskType":$('input:radio[name="taskType"]:checked').val(),
+		"taskCTRName":$('#CTRName').val(),
 		"taskStaff":$('#taskStaff option:selected').text(),
 		"modfiyABE":modfiyABE,
 		"taskDBE":$('#taskDBE').val(),
@@ -1450,7 +1421,7 @@ $('#BTNTaskSave').click(function(){
 
 $('#BTNBPTSave').click(function(){
 	
-	var BPID=$('#BPID').val();
+	var BPTBPID=$('#BPTBPID').val();
 	var BPTID=$('#BPTID').val();
 	var version=$('#version').text();
 	var CTRName=$('#CTRName').val();
@@ -1468,6 +1439,14 @@ $('#BTNBPTSave').click(function(){
     var auditor=Fun_getSelectText($('#auditor option:selected').text());
     console.log("auditor:"+auditor);
     
+    if($('#filePath').attr('href')!=undefined){
+		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+		var fileName=$('#fileName').html();
+		}else{
+		var fileKey="";
+		var fileName="";
+	}
+    
 
     var BPTAuditResultText=$('#BPTAuditResultText').text();
     
@@ -1475,7 +1454,7 @@ $('#BTNBPTSave').click(function(){
     case '无方案':
     	var billData={
 			"DBTable":"ppm_bills_blueprint",
-			"BPID":BPID,
+			"BPTBPID":BPTBPID,
 			"BPTID":BPTID,
 			"version":version,
 			"CTRName":CTRName,
@@ -1490,34 +1469,34 @@ $('#BTNBPTSave').click(function(){
 			"maker":sessionName,
 			"makeDate":Ndate,
 			"auditResult":0,
-			"auditor":auditor
+			"auditor":auditor,
+			"fileKey":fileKey,
+			"fileName":fileName
 			}
     	
     	console.log("无方案 billData:"+JSON.stringify(billData));
     	
     	if(auditor!=null&&auditor!=""){
     		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
-    		Fun_addDBDataDD(billData,DDMsg);
-    		Fun_addPGEFile();
+    		Fun_addDBDataDD(billData,DDMsg,"方案");
+//    		Fun_addPGEFile();
     		
     	}else{
-    		
-    		
+
     		console.log("billData:"+JSON.stringify(billData));
         	addDBData(billData);
-        	Fun_addPGEFile();
+//        	Fun_addPGEFile();
     	}
 
     	break;
     	
     case '未审核':
     	var DBID=$('#DBID').val();
-    	var fileDBID=$('#fileDBID').text();
-    	
+
     	var billData={
 			"DBTable":"ppm_bills_blueprint",
 			"DBID":DBID,
-			"BPID":BPID,
+			"BPTBPID":BPTBPID,
 			"BPTID":BPTID,
 			"version":version,
 			"CTRName":CTRName,
@@ -1532,16 +1511,18 @@ $('#BTNBPTSave').click(function(){
 			"maker":sessionName,
 			"makeDate":Ndate,
 			"auditResult":0,
-			"auditor":auditor
+			"auditor":auditor,
+			"fileKey":fileKey,
+			"fileName":fileName
 			}
     	
     	console.log("未审核 billData:"+JSON.stringify(billData));
     	
-    	if(fileDBID==""){
-    		Fun_addPGEFile();
-    	}else{
-    		Fun_updPGEFile();
-    	}
+//    	if(fileDBID==""){
+//    		Fun_addPGEFile();
+//    	}else{
+//    		Fun_updPGEFile();
+//    	}
 
     	if(auditor!=null&&auditor!=""){
     		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
@@ -1562,7 +1543,82 @@ $('#BTNBPTSave').click(function(){
 });
 
 
+//按钮-方案更新
 
+$('#BTNBPTUpdate').click(function(){
+	
+	
+	var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
+    if (msg1 === true) {
+        var msg2 = confirm("确认更新版本？");
+        if (msg2 === true) {
+        	
+        	var BPTBPID=$('#BPTBPID').val();
+        	var BPTID=$('#BPTID').val();
+        	var newVersion=parseInt($('#version').text())+1;
+        	var CTRName=$('#CTRName').val();
+        	var PGEMaker=$('#PGEMaker').val();
+        	var limitDate=$('#limitDate').val();
+            var	MHEName=Fun_getSelectText($('#MHEName option:selected').text());
+            var	model=Fun_getSelectText($('#model option:selected').text());
+            var OGNSystemVersion=$('#OGNSystemVersion').val();
+
+            var modifyType=$('input:radio[name="modifyType"]:checked').val();
+            var	modifyReason=getCheckBoxValue("modifyReason");
+            var BPTDescribe=$('#BPTDescribe').val();
+            var auditor=Fun_getSelectText($('#auditor option:selected').text());
+            console.log("auditor:"+auditor);
+            
+            if($('#filePath').attr('href')!=undefined){
+        		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+        		var fileName=$('#fileName').html();
+        		}else{
+        		var fileKey="";
+        		var fileName="";
+        	}
+            
+            
+            var billData={
+        			"DBTable":"ppm_bills_blueprint",
+        			"BPTBPID":BPTBPID,
+        			"BPTID":BPTID,
+        			"version":newVersion,
+        			"CTRName":CTRName,
+        			"PGEMaker":PGEMaker,
+        			"limitDate":limitDate,
+        			"MHEName":MHEName,
+        			"model":model,
+        			"OGNSystemVersion":OGNSystemVersion,
+        			"modifyType":modifyType,
+        			"modifyReason":modifyReason,
+        			"BPTDescribe":BPTDescribe,
+        			"maker":sessionName,
+        			"makeDate":Ndate,
+        			"auditResult":0,
+        			"auditor":auditor,
+        			"fileKey":fileKey,
+        			"fileName":fileName
+        			}
+            	
+            	console.log("无方案 billData:"+JSON.stringify(billData));
+            	
+            	if(auditor!=null&&auditor!=""){
+            		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
+            		Fun_addDBDataDD(billData,DDMsg,"新版本方案单");
+            		
+            	}else{
+
+            		console.log("billData:"+JSON.stringify(billData));
+                	addDBData(billData);
+
+            	}
+        	
+        	}
+        }
+	
+
+
+});
 
 
 

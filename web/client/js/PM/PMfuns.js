@@ -1,3 +1,5 @@
+
+
 //定义语言包--------------------------
 
 var languageCN={
@@ -871,4 +873,37 @@ function Fun_getBillFile(Para,DivID,feedBack){
 //
 //var getdata=CB_addDBData();
 
+//函数 获取checkbox值
+function getCheckBoxValue(CBName){
+	var test = $("input[name='"+CBName+"']:checked");
+	var checkBoxValue = ""; 
+	test.each(function(){
+		checkBoxValue += $(this).val()+",";
+	})
+	checkBoxValue = checkBoxValue.substring(0,checkBoxValue.length-1);
+	console.log("checkBoxValue:"+checkBoxValue);
+	return checkBoxValue;
+}
+//函数 设定根据值设定checkbox选中状态
+function setCheckBoxValue(CBName,CBVals){
 
+	var checkBox = CBVals;
+	
+	if(CBVals!=null){
+		var checkBoxArray = checkBox.split(",");
+		for(var i=0;i<checkBoxArray.length;i++){
+			$("input[name='"+CBName+"']").each(function(){
+				if($(this).val()==checkBoxArray[i]){
+					
+					console.log("thisval:"+$(this).val());
+					console.log("checkBoxArray:"+checkBoxArray[i]);
+					console.log("this:"+JSON.stringify(this));
+					
+					$(this).prop('checked', true);
+				}
+			})
+		}
+		
+	}
+
+}
