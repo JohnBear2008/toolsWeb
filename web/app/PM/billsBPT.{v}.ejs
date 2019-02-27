@@ -276,7 +276,7 @@
                      
                       <!-------------------------------------------------------------------------->
                      
-                     <div class="form-group">
+                     <div class="form-group" id="DivFileBTNS">
                      <label  class="col-sm-1 control-label" for="name">上传</label>  
                      
                      <div class="col-sm-8">
@@ -333,7 +333,7 @@
                              <th>任务类型</th>
                              <th>任务负责人</th>
                              <th>任务完成期限</th>
-                             <th>任务单审核状态</th>
+                             <th>任务状态</th>
                          </tr>
                      </thead>
                      </table>
@@ -344,7 +344,7 @@
                      </div>
                      
                      <!-------------------------------------------------------------------------->
-                     <div class="form-group">
+                     <div class="form-group" id="DivTaskBTNS">
                      <label  class="col-sm-1 control-label" for="name">任务管理:</label> 
                      
                      <div class="col-sm-11">
@@ -433,7 +433,7 @@
                      
                      <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
                      
-                     <label class="col-sm-2 control-label">任务单审核状态: <span id="BTAuditResultText"></span></label>
+                     <label class="col-sm-2 control-label">任务单审核状态: <span id="BTAcceptResultText"></span></label>
                     
                      
                      </div>
@@ -738,7 +738,7 @@ function Fun_BPTDetailInitPart1(dataSelect){
 			        { data: 'taskTypeText'},
 			        { data: 'taskStaff'},
 			        { data: 'taskLimitDate'},
-			        { data: 'BTAuditResultText'}
+			        { data: 'BTAcceptResultText'}
 				]
 	     }
 
@@ -846,6 +846,9 @@ function Fun_BPTDetailInit(dataSelect){
 
 		 $("#modifyTypeOption1").prop("checked",true);
 		 $('#maker').val(sessionName); 
+		 
+		 $("#DivFileBTNS").show();
+		 $("#DivTaskBTNS").show();
 		
 		 
 		 $("#BTNBPTSave").show();
@@ -856,6 +859,9 @@ function Fun_BPTDetailInit(dataSelect){
 		 break;
 	case 0:
 		Fun_BPTDetailInitPart2(dataSelect);
+		
+		 $("#DivFileBTNS").show();
+		 $("#DivTaskBTNS").show();
 
 		 $("#BTNBPTSave").show();
 		 $("#BTNBPTUpdate").hide();
@@ -864,17 +870,26 @@ function Fun_BPTDetailInit(dataSelect){
 		 $("#BTNBPTAuditNo").hide();
 		 
 		 
+		 
+		 
 		break;
 	default:
 		Fun_BPTDetailInitPart2(dataSelect);
 	
 	  $('#auditDate').val(dataSelect.auditDate);
 	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
+	  
+	  $("#DivFileBTNS").hide();
+	  $("#DivTaskBTNS").hide();
 	    
-	   $("#BTNBPTSave").hide();
-	   $("#BTNBPTUpdate").show();
-	   $("#BTNBPTAuditYes").hide();
-	   $("#BTNBPTAuditNo").hide();
+	  $("#BTNBPTSave").hide();
+	  $("#BTNBPTUpdate").show();
+	  $("#BTNBPTAuditYes").hide();
+	  $("#BTNBPTAuditNo").hide();
+	  
+	   
+	   
+	   
 
 	
 	}
@@ -910,9 +925,13 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 		 $(tableInfo.tableID+' tbody').unbind();//解除事件绑定,防止重复定义.
 		 
 		 var tableTask = $(tableInfo.tableID).DataTable();
+		
 		 
 		 $(tableInfo.tableID+' tbody').on('click', 'tr', function() {
 			 
+
+			 
+			
 			 
 			 
 		     if ($(this).hasClass('selected')) {
@@ -947,7 +966,7 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 
 				 $("#BTVersion").text(dataSelectTask.BTVersion);
 				 
-				 $("#BTAuditResultText").text(dataSelectTask.BTAuditResultText);
+				 $("#BTAcceptResultText").text(dataSelectTask.BTAcceptResultText);
 		         
 				 $("#taskDBE").val(dataSelectTask.taskDBE);
 
@@ -1190,6 +1209,7 @@ $('input:radio[name="taskType"]').click(function(){
 		var BTID=Fun_billIDCreate('DSP');
 		$('#BTID').val(BTID);
 		
+		
 	    break;
 	case "T2":
 		var BTID=Fun_billIDCreate('HMI');
@@ -1242,7 +1262,11 @@ $('#BTNBPTAudit').click(function() {
     	case 0:
     		$('#BillBPT').modal('show');
         	Fun_BPTDetailInit(dataSelect);
-        	$('#BTNBPTSave').hide();
+        	
+        	 $("#DivFileBTNS").hide();
+      	     $("#DivTaskBTNS").hide();
+        	
+        	 $('#BTNBPTSave').hide();
         	 $("#BTNBPTAuditYes").show();
     		 $("#BTNBPTAuditNo").show();
         	break;
@@ -1279,11 +1303,13 @@ $('#BTNTaskAdd').click(function(){
 	$('#BTID').val(""); 
 	
 	$('#BTVersion').text(0); 
-	$('#BTAuditResultText').text('新增');
+	$('#BTAcceptResultText').text('新增');
 	
 	var SQLTaskStaff={SQL:"SQLSRStaffs"};
 	var taskStaff="#taskStaff";
 	Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
+	
+	$('#taskLimitDate').val($('#limitDate').val()); 
 	
 	$('#taskDBE').val(""); 
 
@@ -1303,7 +1329,7 @@ $('#BTNTaskDel').click(function() {
         alert("未选择任何任务单,请在任务清单中选中需要删除的任务单!");
     } else {
 
-    	if(dataSelectTask.BTAuditResult!=0){
+    	if(dataSelectTask.BTAcceptResult!=0){
     		alert("已审核单据禁止删除!");
     	}else{
 
@@ -1332,9 +1358,9 @@ $('#BTNTaskSave').click(function(){
 	var taskBPID=$('#taskBPID').val();
 	var modfiyABE=getCheckBoxValue('modfiyABE');
 	
-	var BTAuditResultText=$('#BTAuditResultText').text();
+	var BTAcceptResultText=$('#BTAcceptResultText').text();
 	
-	switch(BTAuditResultText){
+	switch(BTAcceptResultText){
 	case '新增':
 		var billData={
 		"DBTable":"ppm_bills_task",
@@ -1347,7 +1373,7 @@ $('#BTNTaskSave').click(function(){
 		"modfiyABE":modfiyABE,
 		"taskDBE":$('#taskDBE').val(),
 		"taskLimitDate":$('#taskLimitDate').val(),
-		"BTAuditResult":0,
+		"BTAcceptResult":0,
 		"BTStatus":1
         }
 		
@@ -1355,7 +1381,7 @@ $('#BTNTaskSave').click(function(){
         Fun_addTask(billData);
 	
 	break;
-	case '未审核':
+	case '未确认':
 		
 		var tableTask = $('#billsTaskTable').DataTable();
 	    var dataSelectTask = tableTask.row('.selected').data();
@@ -1371,7 +1397,7 @@ $('#BTNTaskSave').click(function(){
 		"modfiyABE":modfiyABE,
 		"taskDBE":$('#taskDBE').val(),
 		"taskLimitDate":$('#taskLimitDate').val(),
-		"BTAuditResult":0,
+		"BTAcceptResult":0,
 		"BTStatus":1
         }
 		
@@ -1398,7 +1424,7 @@ $('#BTNTaskSave').click(function(){
             		"modfiyABE":modfiyABE,
             		"taskDBE":$('#taskDBE').val(),
             		"taskLimitDate":$('#taskLimitDate').val(),
-            		"BTAuditResult":0,
+            		"BTAcceptResult":0,
             		"BTStatus":1
                     }
             		
@@ -1625,9 +1651,36 @@ $('#BTNBPTUpdate').click(function(){
 //按钮-表单审核通过按钮
 $('#BTNBPTAuditYes').click(function() {
 	
+
 	if(sessionName==$('#auditor option:selected').text()){
 		var msg = confirm("审核后无法修改单据,是否立即审核通过?");
 		if(msg==true){	
+			
+			
+			 var tableTask = $('#billsTaskTable').DataTable();
+			 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
+			 alert("TaskNum:"+TaskNum);
+			 
+			 
+			 var PLDUpdData={
+						"DBTable":"ppm_bills_plan",
+						"BillIDName":"BPID",
+						"BillID":$('#BPTBPID').val(),
+						"TaskNum":TaskNum,
+						"WFStatus":20
+				}
+				
+	//		 updDBDataS(PLDUpdData);
+			 
+			 var ajax1=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updBillStatus',
+			        data: PLDUpdData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+			 
 			
 			var BPTAuditData={
 					"DBTable":"ppm_bills_blueprint",
@@ -1638,16 +1691,26 @@ $('#BTNBPTAuditYes').click(function() {
 					"BPTAuditOpinion":$('#BPTAuditOpinion').val()
 			}
 			
-			updDBData(BPTAuditData,"方案审核状态");
+			var ajax2=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updDBData',
+		        data: BPTAuditData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+			
+	//		updDBData(BPTAuditData,"方案审核状态");
 			
 			
-			var PLDUpdData={
-					"DBTable":"ppm_bills_plan",
-					"DBID":$('#PLDDBID').val(),
-					"WFStatus":20
-			}
+			$.when(ajax1,ajax2).done(function(){
+				alert("双异步测试成功");
+				window.location.reload();
+				
+			});
 			
-			updDBData(PLDUpdData,"计划单流程状态");
+			
+			
 			
 //	window.location.reload();
 		}
