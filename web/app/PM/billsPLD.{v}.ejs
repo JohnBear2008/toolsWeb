@@ -179,7 +179,7 @@
                      
  <!-------------------------------------------------------------------------->
                      
-                     <div class="form-group">
+                     <div class="form-group" id="DivFileBTNS">
                      <label  class="col-sm-1 control-label" for="name">上传</label>  
                      
                      <div class="col-sm-8">
@@ -576,6 +576,9 @@ function Fun_winDetailInit(dataSelect){
   //如果是已审核单据 则不显示更新和审核按钮
   if(dataSelect.auditResult==null){
 	  
+	  
+	  $("#DivFileBTNS").show();
+	  
 	  $("#auditOpinionDiv").show();
 
 	  $("#BTNFormModify").show();
@@ -604,7 +607,13 @@ function Fun_winDetailInit(dataSelect){
 	    
 	    $('#auditOpinion').val(dataSelect.auditOpinion);
 	    
+	    
+	    
+	    $("#DivFileBTNS").hide();
+	    
 	    $("#BTNFormModify").hide();
+	    
+	    
 	    $("#BTNFormUpdate").show();
 	    $("#BTNFormAuditYes").hide();
 	    $("#BTNFormAuditNo").hide();
@@ -804,6 +813,8 @@ $('#BTNAudit').click(function() {
     		$('#BillPLD').modal('show')
         	Fun_winDetailInit(dataSelect);
     		
+    		$("#DivFileBTNS").hide();
+    		
     		$("#BTNFormModify").hide();
     		$("#BTNFormUpdate").hide();
         	
@@ -898,13 +909,6 @@ $('#BTNFormAdd').click(function(){
 		alert("该计划单没有指定审核人,请检查!");
 	}
 	
-	
-    
-	
-	
-//	window.location.reload();
-	$('#BillPLD').modal('hide');//用隐藏表单模块方式取代刷新,避免因刷新照成的ajax错误
-
 
 });
 
@@ -1013,8 +1017,7 @@ $('#BTNFormModify').click(function() {
 	
     
 	
-//	window.location.reload();
-//	$('#BillPLD').modal('hide');
+
 
 });
 

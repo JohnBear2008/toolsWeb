@@ -2,7 +2,7 @@ module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     
-// console.log("get:"+JSON.stringify(sender.req.query));
+ console.log("get:"+JSON.stringify(sender.req.query));
     
 ////   console.log("PM2333 test");
 //       
@@ -23,6 +23,9 @@ module.exports = function(sender) {
         case "BillID":
         	var BillID=obj[key];
         	break;		
+        case "TaskNumDone":
+        	updateContent=updateContent+"TaskNumDone=TaskNumDone+1,";
+        	break;	
         default:
         	if(obj[key]==""){
     			updateContent=updateContent+key+"="+null+",";
@@ -40,14 +43,10 @@ module.exports = function(sender) {
     
     	var SQLUpdate=" update "+DBTable+" set "+updateContent +" where  "+BillIDName+"='"+BillID+"'";
     	
-    	
 
-    
-//
-//
 ////var SQLInsert="insert into PM_customer (cust_FID,cust_Name) values(110,110)";
     
-//	console.log("SQLUpdate:"+SQLUpdate);
+	console.log("SQLUpdate:"+SQLUpdate);
 //
     yjDBService.exec({
         sql: SQLUpdate,

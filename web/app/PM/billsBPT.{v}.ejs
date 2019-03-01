@@ -849,7 +849,7 @@ function Fun_BPTDetailInit(dataSelect){
 		 
 		 $("#DivFileBTNS").show();
 		 $("#DivTaskBTNS").show();
-		
+		 $('#BTNTaskSave').show();
 		 
 		 $("#BTNBPTSave").show();
 		 $("#BTNBPTUpdate").hide();
@@ -862,6 +862,7 @@ function Fun_BPTDetailInit(dataSelect){
 		
 		 $("#DivFileBTNS").show();
 		 $("#DivTaskBTNS").show();
+		 $('#BTNTaskSave').show();
 
 		 $("#BTNBPTSave").show();
 		 $("#BTNBPTUpdate").hide();
@@ -881,6 +882,7 @@ function Fun_BPTDetailInit(dataSelect){
 	  
 	  $("#DivFileBTNS").hide();
 	  $("#DivTaskBTNS").hide();
+	  $('#BTNTaskSave').hide();
 	    
 	  $("#BTNBPTSave").hide();
 	  $("#BTNBPTUpdate").show();
@@ -1373,7 +1375,7 @@ $('#BTNTaskSave').click(function(){
 		"modfiyABE":modfiyABE,
 		"taskDBE":$('#taskDBE').val(),
 		"taskLimitDate":$('#taskLimitDate').val(),
-		"BTAcceptResult":0,
+//		"BTAcceptResult":0,
 		"BTStatus":1
         }
 		
@@ -1397,7 +1399,7 @@ $('#BTNTaskSave').click(function(){
 		"modfiyABE":modfiyABE,
 		"taskDBE":$('#taskDBE').val(),
 		"taskLimitDate":$('#taskLimitDate').val(),
-		"BTAcceptResult":0,
+//		"BTAcceptResult":0,
 		"BTStatus":1
         }
 		
@@ -1424,7 +1426,7 @@ $('#BTNTaskSave').click(function(){
             		"modfiyABE":modfiyABE,
             		"taskDBE":$('#taskDBE').val(),
             		"taskLimitDate":$('#taskLimitDate').val(),
-            		"BTAcceptResult":0,
+//            		"BTAcceptResult":0,
             		"BTStatus":1
                     }
             		
@@ -1672,14 +1674,7 @@ $('#BTNBPTAuditYes').click(function() {
 				
 	//		 updDBDataS(PLDUpdData);
 			 
-			 var ajax1=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updBillStatus',
-			        data: PLDUpdData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
+			
 			 
 			
 			var BPTAuditData={
@@ -1690,7 +1685,25 @@ $('#BTNBPTAuditYes').click(function() {
 					"auditResult":1,
 					"BPTAuditOpinion":$('#BPTAuditOpinion').val()
 			}
+			 
+			 
+			 var taskUpdData={
+						"DBTable":"ppm_bills_task",
+						"BillIDName":"taskBPID",
+						"BillID":$('#BPTBPID').val(),
+						"BTAcceptResult":0
+			}
 			
+			 
+			 var ajax1=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updBillStatus',
+			        data: PLDUpdData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+			 
 			var ajax2=$.ajax({
 		        method: 'post',
 		        url: '/app/PM/updDBData',
@@ -1700,11 +1713,21 @@ $('#BTNBPTAuditYes').click(function() {
 		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 		        });
 			
+			var ajax3=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updBillStatus',
+			        data: taskUpdData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+			
+			
 	//		updDBData(BPTAuditData,"方案审核状态");
 			
 			
-			$.when(ajax1,ajax2).done(function(){
-				alert("双异步测试成功");
+			$.when(ajax1,ajax2,ajax3).done(function(){
+				alert("方案已审核通过!");
 				window.location.reload();
 				
 			});
@@ -1728,6 +1751,18 @@ $('#BTNBPTAuditNo').click(function() {
 		var msg = confirm("如计划单信息有误,可先修改后再审核,驳回后此单立即完结,是否立即审核驳回?");
 		if(msg==true){	
 			
+			
+			
+			
+			var PLDUpdData={
+					"DBTable":"ppm_bills_plan",
+					"BillIDName":"BPID",
+					"DBID":$('#PLDDBID').val(),
+					"WFStatus":19
+			}
+			
+
+			
 			var BPTAuditData={
 					"DBTable":"ppm_bills_blueprint",
 					"DBID":$('#DBID').val(),
@@ -1737,18 +1772,42 @@ $('#BTNBPTAuditNo').click(function() {
 					"BPTAuditOpinion":$('#BPTAuditOpinion').val()
 			}
 			
-			updDBData(BPTAuditData,"方案审核状态");
-			
-			
-			var PLDUpdData={
-					"DBTable":"ppm_bills_plan",
+			var taskUpdData={
+					"DBTable":"ppm_bills_task",
+					"BillIDName":"taskBPID",
 					"DBID":$('#PLDDBID').val(),
-					"WFStatus":19
+					"BTAcceptResult":19
 			}
 			
-			updDBData(PLDUpdData,"计划单流程状态");
 			
-//		window.location.reload();
+			var ajax1=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updBillStatus',
+		        data: PLDUpdData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+			
+			var ajax2=$.ajax({
+	        method: 'post',
+	        url: '/app/PM/updDBData',
+	        data: BPTAuditData,
+	        success: function(data, textStatus) {
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+	        });
+
+		
+		
+		$.when(ajax1,ajax2).done(function(){
+			alert("方案已审核驳回!");
+			window.location.reload();
+			
+		});
+			
+			
+
 		}
 	}else{
 		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");

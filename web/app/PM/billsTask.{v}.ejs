@@ -213,11 +213,11 @@
                      </div>
                      
                      <label class="col-sm-2 control-label">任务单版本号:</label>
-                     <div class="col-sm-2">
+                     <div class="col-sm-1">
                      <span id="BTVersion" class="help-block"></span>
                      </div>
                      
-                     <label class="col-sm-2 control-label">客户名称:</label>
+                     <label class="col-sm-1 control-label">客户名称:</label>
                      <div class="col-sm-1">
                      <span id="taskCTRName" class="help-block"></span>
                      </div>
@@ -240,12 +240,32 @@
                      <div class="col-sm-2">
                      <span id="taskLimitDate" class="help-block"></span>  	
                  	 </div>
-                 	 
-                 	 <label class="col-sm-2 control-label">任务单确认状态:</label>
+
+                     </div>
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">  
+                     
+                     <label class="col-sm-1 control-label">确认状态:</label>
                      <div class="col-sm-1">
                      <span id="BTAcceptResultText" class="help-block"></span>
                      </div>
+                     
+                     <label class="col-sm-1 control-label">记录状态:</label>
+                     <div class="col-sm-1">
+                     <span id="recordAuditResultText" class="help-block"></span>
+                     </div>
                  	 
+                     <label class="col-sm-1 control-label">IPQC状态:</label>
+                     <div class="col-sm-1">
+                     <span id="IPQCAuditResultText" class="help-block"></span>
+                     </div>
+                     
+                     <label class="col-sm-1 control-label">最终结果:</label>
+                     <div class="col-sm-1">
+                     <span id="IPQCResultText" class="help-block"></span>
+                     </div>
+                 	 
+
 
                      </div>
                      <!-------------------------------------------------------------------------->
@@ -501,12 +521,14 @@
                 <th>数据库ID</th>
                 <th>任务单号</th>
                 <th>版本号</th>
+                <th>客户名称</th>
                 <th>任务类型</th>
                 <th>任务负责人</th>
                 <th>完成期限</th>
-                <th>计划单号</th>
-                <th>任务确认状态</th>
-                <th>任务记录状态</th>
+                <th>确认状态</th>
+                <th>记录状态</th>
+                <th>IPQC状态</th>
+                <th>最终结果</th>
 
 
             </tr>
@@ -552,6 +574,9 @@ function Fun_taskAuditInit(dataSelect){
 	$('#taskStaff').text(dataSelect.taskStaff);
 	$('#taskLimitDate').text(dataSelect.taskLimitDate);
 	$('#BTAcceptResultText').text(dataSelect.BTAcceptResultText);
+	$('#recordAuditResultText').text(dataSelect.recordAuditResultText);
+	$('#IPQCAuditResultText').text(dataSelect.IPQCAuditResultText);
+	$('#IPQCResultText').text(dataSelect.IPQCResultText);
 	
 	$('#taskDBE').text(dataSelect.taskDBE);
 	
@@ -594,6 +619,9 @@ function Fun_taskRecordInit(dataSelect){
 	$('#taskStaff').text(dataSelect.taskStaff);
 	$('#taskLimitDate').text(dataSelect.taskLimitDate);
 	$('#BTAcceptResultText').text(dataSelect.BTAcceptResultText);
+	$('#recordAuditResultText').text(dataSelect.recordAuditResultText);
+	$('#IPQCAuditResultText').text(dataSelect.IPQCAuditResultText);
+	$('#IPQCResultText').text(dataSelect.IPQCResultText);
 	
 	$('#taskDBE').text(dataSelect.taskDBE);
 	$('#BTAuditOpinionShow').text(dataSelect.BTAuditOpinion);
@@ -678,7 +706,7 @@ function Fun_taskRecordInit(dataSelect){
 $(document).ready( function () {
 	
 	
-	const tableSQL={"SQL":"SQLTableBillsTask"};
+	const tableSQL={"SQL":"SQLTableBillsTaskRecord"};
 	
     sessionName="<%-locals.session.yjUser.Name%>";
 	
@@ -691,12 +719,14 @@ $(document).ready( function () {
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BTID' },
 		        { data: 'BTVersion'},
+		        { data: 'taskCTRName'},
 		        { data: 'taskTypeText'},
 		        { data: 'taskStaff'},
 		        { data: 'taskLimitDate'},
-		        { data: 'taskBPID'},
 		        { data: 'BTAcceptResultText'},
-		        { data: 'recordAuditResultText'}
+		        { data: 'recordAuditResultText'},
+		        { data: 'IPQCAuditResultText'},
+		        { data: 'IPQCResultText'}
 			]
 	}
 	
@@ -899,6 +929,9 @@ $('#BTNTaskRecordAudit').click(function() {
 						
 						console.log("recordAuditData:"+JSON.stringify(recordAuditData));
 						updDBData(recordAuditData,"任务单记录审核状态");
+						
+						
+						
 			}
 		}
 	
@@ -939,13 +972,24 @@ $('#BTNTaskUpdVer').click(function() {
         var msg2 = confirm("再次确认？");
         if (msg2 === true) {
         	
-        	var newBTVersion=parseInt($('#BTVersion').text())+1
+        	var newBTVersion=parseInt($('#BTVersion').text())+1;
+        	
+        	var IPQCResultText=$('#IPQCResultText').text();
+        	
+        	if(IPQCResultText=="出货后修正"){
+        		var taskRepeat=1;
+        	}else{
+        		var taskRepeat=0;
+        	}
+        	
+//        	
         	
         	var taskData={
 					"DBTable":"ppm_bills_task",
 					"BTID":$('#BTID').text(),
 					"BTVersion":newBTVersion,
 					"taskType":$('input:radio[name="taskType"]:checked').val(),
+					"taskRepeat":taskRepeat,
 					"taskCTRName":$('#taskCTRName').text(),
 					"taskStaff":$('#taskStaff').text(),
 					"taskBPID":$('#taskBPID').text(),

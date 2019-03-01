@@ -53,11 +53,19 @@ module.exports = function(sender) {
 	case "SQLTableBillsTask":
 		var SQLExecute=SQLTableBillsTask;
 		break;
+	case "SQLTableBillsTaskRecord":
+		var SQLExecute=SQLTableBillsTaskRecord;
+		break;
 	case "SQLTableBillsTaskIPQC":
 		var SQLExecute=SQLTableBillsTaskIPQC;
 		break;
-		
-		
+	case "SQLTableBillsFQC":
+		var SQLExecute=SQLTableBillsFQC;
+		break;
+	case "SQLTableTestContents":
+		var SQLExecute=SQLTableTestContents;
+		break;
+
 	default:
 		var SQLExecute=SQL;
 		break;
