@@ -27,7 +27,7 @@
 
 
 <div class="divcontent">
-    <h1>工作流程-FQC单</h1>
+    <h1>工作流程-发布单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -35,7 +35,7 @@
 
 
         <!-- 按钮触发模态框 -->
-        <button id="BTNFQCDetail" class="btn btn-primary" data-toggle="modal" >FQC维护</button>
+        <button id="BTNPBHDetail" class="btn btn-primary" data-toggle="modal" >发布维护</button>
 
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
@@ -184,82 +184,103 @@
                    <!--panel------------------------------------------------------------------------>
                    <div class="panel panel-success">
                    <div class="panel-heading">
-                       <h3 class="panel-title">FQC记录</h3>
+                       <h3 class="panel-title">发布记录</h3>
                    </div>
                    <div class="panel-body">
 
 
                    <div class="form-horizontal" >
+                   
+                   <!-------------------------------------------------------------------------->
+                   <div class="form-group">
+                   <label class="col-sm-1 control-label">收件人:</label>
+                   <div class="col-sm-10">
+                     <input id="emailADRS" class="form-control"  type="text" value="">
+                   </div>
+                   </div>
+                   <!-------------------------------------------------------------------------->
+                   <div class="form-group">
+                   <label class="col-sm-1 control-label">抄送:</label>
+                   <div class="col-sm-10">
+                     <input id="BPID" class="form-control"  type="text" value="">
+                   </div>
+                   </div>
+                   <!-------------------------------------------------------------------------->
+                   <div class="form-group">
+                   <label class="col-sm-1 control-label">主题:</label>
+                   <div class="col-sm-10">
+                     <input id="emailTitle" class="form-control"  type="text" value="">
+                   </div>
+                   </div>
+                   <!-------------------------------------------------------------------------->
+                   <div class="form-group">
+                   <label class="col-sm-1 control-label">附件:</label>
+                   <div class="col-sm-10">
+                   <span id="PBHRemarkShow" class="help-block"></span>
+                   </div>
+                   </div>
+                   <!-------------------------------------------------------------------------->
+                   <div class="form-group">
+                   <label class="col-sm-1 control-label">邮件内容:</label>
+                   <div class="col-sm-10">
+                   <div id="DIVEmailContent">
+                   Dear <span id="contact" ></span>:</br>
+                   您好，程序已修改完成，请查收，谢谢！
+                   
+                   
+                   </div>
+                   
+                  
+                   </div>
+                   </div>
                    <!-------------------------------------------------------------------------->
 
                    <div class="form-group">
                    <label class="col-sm-1 control-label">备注:</label>
                    <div class="col-sm-10">
-                   <span id="FQCRemarkShow" class="help-block"></span>
-                   <textarea id="FQCRemark" class="form-control" rows="2"></textarea>
+                   <span id="PBHRemarkShow" class="help-block"></span>
+                   <input id="PBHRemark" class="form-control"  type="text" value="">
                    </div>
                    </div>
 
-                   <!-------------------------------------------------------------------------->
-                   <div class="form-group">
-                   <label class="col-sm-1 control-label">测试结果:</label>
-               	   <div class="col-sm-10">
-               	    <label class="radio-inline">
-               	        <input type="radio" name="FQCResult" id="radio1" value="1" checked> 测试通过
-               	    </label>
-               	    <label class="radio-inline">
-               	        <input type="radio" name="FQCResult" id="radio2" value="2"> 出货后修正
-               	    </label>
-               	    <label class="radio-inline">
-               	        <input type="radio" name="FQCResult" id="radio3" value="3"> 立即修正
-               	    </label>
-               	 </div>
-               	 
-               	 
-               	 
-               	
-               	 
-               	 
-               	 
-               	 
-               	 </div>
+                  
 
 
                	<!-------------------------------------------------------------------------->
                 <div class="form-group" >
 
-                <label  class="col-sm-1 control-label" for="name">FQC制单人:</label>
+                <label  class="col-sm-1 control-label" for="name">发布制单人:</label>
                 <div class="col-sm-2">
-                <span id="FQCMaker" class="help-block"></span>
+                <span id="PBHMaker" class="help-block"></span>
                 </div>
 
                 <label class="col-sm-1 control-label"></label>
-                <label for="FQCMakeDate" class="col-sm-2 control-label">FQC制单日期:</label>
+                <label for="PBHMakeDate" class="col-sm-2 control-label">发布制单日期:</label>
                 <div class="col-sm-2">
-                <span id="FQCMakeDate" class="help-block"></span>
+                <span id="PBHMakeDate" class="help-block"></span>
             	 </div>
 
 
                 </div>
 
                 <!-------------------------------------------------------------------------->
-                    <div class="form-group" id="DivFQCAuditInfo">
+                    <div class="form-group" id="DivPBHAuditInfo">
 
-                    <label  class="col-sm-1 control-label" for="name">FQC审核人:</label>
+                    <label  class="col-sm-1 control-label" for="name">发布审核人:</label>
                     <div class="col-sm-2">
-                    <select  id="FQCAuditor" class="selectpicker" data-live-search="true">
+                    <select  id="PBHAuditor" class="selectpicker" data-live-search="true">
                     </select>
                     </div>
 
                     <label class="col-sm-1 control-label"></label>
-                    <label for="recordAuditDate" class="col-sm-2 control-label">FQC审核日期:</label>
+                    <label for="recordAuditDate" class="col-sm-2 control-label">发布审核日期:</label>
                     <div class="col-sm-2">
-                    <span id="FQCAuditDate" class="help-block"></span>
+                    <span id="PBHAuditDate" class="help-block"></span>
                 	 </div>
 
-                	<label class="col-sm-1 control-label">FQC结果:</label>
+                	<label class="col-sm-1 control-label">发布结果:</label>
                     <div class="col-sm-1">
-                    <span id="FQCResultText" class="help-block"></span>
+                    <span id="PBHResultText" class="help-block"></span>
                     </div>
 
                     </div>
@@ -268,11 +289,14 @@
 
 
 
-               	 <div class="form-group" id="DivFQCBTNS">
+               	    <div class="form-group" id="DivPBHBTNS">
                     <label class="col-sm-1 control-label">登记:</label>
                     <div class="col-sm-10">
-                    <button id="BTNFQCSave" class="btn btn-success" data-toggle="modal" >保存FQC记录</button>
-                    <button id="BTNFQCAudit" class="btn btn-warning" data-toggle="modal" >审核FQC记录</button>
+                    <button id="BTNPBHSave" class="btn btn-success" data-toggle="modal" >保存发布信息</button>
+                    <button id="BTNPBHAudit" class="btn btn-warning" data-toggle="modal" >审核发布信息</button>
+                    <button id="BTNModelEmail" class="btn btn-warning" data-toggle="modal" >生成模版邮件</button>
+                    <button id="BTNSendEmail" class="btn btn-warning" data-toggle="modal" >发送邮件</button>
+                    <a id="mailhref"><button id="BTNSendEmailDiv" class="btn btn-warning" data-toggle="modal" >发送自定义邮件</button></a>
                     </div>
 
                     </div>
@@ -320,7 +344,7 @@
                 <th>任务数量</th>
                 <th>任务完结数量</th>
                 <th>流程状态</th>
-                <th>FQC结果</th>
+                <th>PBH结果</th>
             </tr>
         </thead>
     </table>
@@ -328,11 +352,11 @@
 
 
     <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
+    <div id="winEmail" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
 
     <div class="divcontent">
 
-	<h1>新单录入</h1>
+	<h3>邮件预览</h3>
 	<hr>
 
 
@@ -363,7 +387,7 @@ function Fun_showSQLFileTable(SQL,tableID){
          data:SQL,
          url:"/app/PM/getSQLDBData",
          success:function(data){
-        	 console.log("back Task data:"+JSON.stringify(data));
+        	// console.log("back Task data:"+JSON.stringify(data));
 
         	 for(var i=0;i<data.length;i++){
 
@@ -377,13 +401,12 @@ function Fun_showSQLFileTable(SQL,tableID){
 
         	 }
 
-
-
          },
          error:function(){}
      })
 
 }
+
 
 
 
@@ -408,20 +431,26 @@ function Fun_winDetailInit(dataSelect){
 	$('#topic').text(dataSelect.topic);
 	$('#detail').text(dataSelect.detail);
 	
-	$('#FQCRemark').val(dataSelect.FQCRemark);
 	
-	$('#FQCMaker').text(dataSelect.FQCMaker);
-	$('#FQCMakeDate').text(dataSelect.FQCMakeDate);
 	
-	$('#FQCAuditor').text(dataSelect.FQCAuditor);
-	$('#FQCAuditDate').text(dataSelect.FQCAuditDate);
 	
-	$('#FQCResultText').text(dataSelect.FQCResultText);
+	
+	$('#PBHRemark').val(dataSelect.PBHRemark);
+	
+
+	
+	$('#PBHMaker').text(dataSelect.PBHMaker);
+	$('#PBHMakeDate').text(dataSelect.PBHMakeDate);
+	
+	$('#PBHAuditor').text(dataSelect.PBHAuditor);
+	$('#PBHAuditDate').text(dataSelect.PBHAuditDate);
+	
+	$('#PBHResultText').text(dataSelect.PBHResultText);
 	
 	
 	var SQLAuditor={SQL:"SQLSRStaffs"};
-	var FQCAuditor="#FQCAuditor";
-	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,sessionName);
+	var PBHAuditor="#PBHAuditor";
+	Fun_getSQLSelectDBData(SQLAuditor,PBHAuditor,sessionName);
 
 
 	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
@@ -432,17 +461,25 @@ function Fun_winDetailInit(dataSelect){
 
 	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
-	if(dataSelect.FQCAuditResult==null){
+	
+	
+
+	
+
+	
+	
+	
+	if(dataSelect.PBHAuditResult==null){
 		
-		$('#FQCRemarkShow').hide();
-		$('#FQCRemark').show();
-		$('#DivFQCBTNS').show();
-		$("#FQCAuditor").attr("disabled",false);
+		$('#PBHRemarkShow').hide();
+		$('#PBHRemark').show();
+		$('#DivPBHBTNS').show();
+		$("#PBHAuditor").attr("disabled",false);
 	}else{
-		$('#FQCRemarkShow').show();
-		$('#FQCRemark').hide();
-		$('#DivFQCBTNS').hide();
-		$("#FQCAuditor").attr("disabled",true);
+		$('#PBHRemarkShow').show();
+		$('#PBHRemark').hide();
+		$('#DivPBHBTNS').hide();
+		$("#PBHAuditor").attr("disabled",true);
 	}
 
 
@@ -455,7 +492,7 @@ function Fun_winDetailInit(dataSelect){
 $(document).ready( function () {
 
 
-	 tableSQL={"SQL":"SQLTableBillsFQC"};
+	 tableSQL={"SQL":"SQLTableBillsPBH"};
 
 	 sessionName="<%-locals.session.yjUser.Name%>";
 
@@ -473,7 +510,7 @@ $(document).ready( function () {
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
 		        { data: 'WFStatusText'},
-		        { data: 'FQCResultText'}
+		        { data: 'PBHResultText'}
 			]
 	}
 
@@ -500,8 +537,8 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 });
 
 
-//按钮-FQC维护---------
-$('#BTNFQCDetail').click(function() {
+//按钮-发布维护---------
+$('#BTNPBHDetail').click(function() {
 
 	console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
@@ -521,39 +558,39 @@ $('#BTNFQCDetail').click(function() {
 
 
 
-//按钮-FQC保存---------
-$('#BTNFQCSave').click(function() {
+//按钮-PBH保存---------
+$('#BTNPBHSave').click(function() {
 
-		 var FQCData={
-					"DBTable":"ppm_bills_FQC",
+		 var PBHData={
+					"DBTable":"ppm_bills_PBH",
 					"DBID":$('#DBID').val(),
-					"fqcBPID":$('#BPID').text(),
+					"PBHBPID":$('#BPID').text(),
 					"CTRName":$('#CTRName').text(),
-					"FQCRemark":$('#FQCRemark').val(),
-				    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
-					"FQCMaker":sessionName,
-					"FQCMakeDate":Ndate,
-					"FQCAuditor":$('#FQCAuditor option:selected').text()
+					"PBHRemark":$('#PBHRemark').val(),
+				    "PBHResult":$('input:radio[name="PBHResult"]:checked').val(),
+					"PBHMaker":sessionName,
+					"PBHMakeDate":Ndate,
+					"PBHAuditor":$('#PBHAuditor option:selected').text()
 			}
 
-	saveDBData(FQCData,"FQC单");
+	saveDBData(PBHData,"PBH单");
 
 });
 
 
 
-//按钮-FQC审核---------
-$('#BTNFQCAudit').click(function() {
+//按钮-PBH审核---------
+$('#BTNPBHAudit').click(function() {
 
-		 var FQCData={
-					"DBTable":"ppm_bills_FQC",
+		 var PBHData={
+					"DBTable":"ppm_bills_PBH",
 					"DBID":$('#DBID').val(),
-					"FQCAuditor":sessionName,
-					"FQCAuditDate":Ndate,
-					"FQCAuditResult":1
+					"PBHAuditor":sessionName,
+					"PBHAuditDate":Ndate,
+					"PBHAuditResult":1
 			}
 
-	updDBData(FQCData,"FQC单审核状态");
+	updDBData(PBHData,"PBH单审核状态");
 
 });
 
@@ -586,7 +623,45 @@ $('input:radio[name="auditType"]').click(function(){
 
 });
 
+//按钮-邮件预览
+$('#BTNModelEmail').click(function() {
+	
+	var CTRName= $("#CTRName").text();
+	
+	SQLEMails={"SQL":"SQLGetEMails","filter":"FTYName = '"+CTRName+"'"};
+	 $.ajax({
+         method:'get',
+         data:SQLEMails,
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+        	 console.log("back email data:"+JSON.stringify(data));
+        	 
+        	 $("#emailADRS").val(data[0].email);
+        	 $("#contact").text(data[0].contact);
+        	 
 
+
+
+         },
+         error:function(){}
+     })
+	
+
+	     
+
+
+   
+});
+
+
+//按钮-邮件自定义
+$('#BTNSendEmailDiv').click(function() {
+	
+	
+	$('#mailhref').attr("href","mailto:908178054@qq.com");
+	$('#mailhref').click();
+   
+});
 
 
 //按钮-表单关闭按钮,添加刷新数据功能

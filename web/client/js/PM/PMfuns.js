@@ -123,7 +123,26 @@ function delDBData(IDData) {
     });
 }
 
-
+//AJAX保存数据至数据库数据函数-----------
+function saveDBData(DBData,showText) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/saveDBData',
+        data: DBData,
+        success: function(data) {
+  //         alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+               alert(showText+"数据保存成功!");
+              window.location.reload();
+           }
+       },
+       error:function(err){
+    	   alert(showText+"数据保存失败!");
+    	   window.location.reload();
+       }
+    });
+}
 
 //AJAX获取select数据函数
 function getSelectDBData(selectPara,selectorID,InitValue) {
