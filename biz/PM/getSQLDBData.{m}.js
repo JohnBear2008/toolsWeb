@@ -73,9 +73,10 @@ module.exports = function(sender) {
 		var SQLExecute=SQLGetEMails;
 		break;
 		
-		SQLGetEMails
-		
-		
+	case "SQLGetPLDNum":
+		var SQLExecute=SQLGetPLDNum;
+		break;
+
 
 	default:
 		var SQLExecute=SQL;

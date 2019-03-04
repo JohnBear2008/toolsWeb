@@ -59,7 +59,7 @@ SQLTableBillsTaskIPQC="SELECT A.*,CASE A.taskType WHEN 'T1' THEN 'DSP任务' WHE
     " FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordAuditResult=1) A";
 
 SQLTableBillsFQC="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
-    " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' END  AS  WFStatusText," +
+    " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' END  AS  WFStatusText," +
     "tbd.*,CASE tbd.FQCResult*tbd.FQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '出货后修正' WHEN 3 THEN '立即修正'  ELSE '未确认' END AS FQCResultText FROM " +
     "(SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba " +
     "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 AND tbb.FQCRequest=1 ) tbc LEFT JOIN `ppm_bills_fqc` tbd " +
@@ -76,3 +76,5 @@ SQLTableBillsPBH="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CAS
 SQLTableTestContents="SELECT * FROM `ppm_testcontents`";
 
 SQLGetEMails="SELECT email,contact,contacts FROM `ppm_customers`";
+
+SQLGetPLDNum="SELECT COUNT(1) AS GPLDNum FROM `ppm_bills_plan` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW())";

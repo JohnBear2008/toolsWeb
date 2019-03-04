@@ -83,6 +83,79 @@
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
                      
+                     <label  class="col-sm-1 control-label" for="name">地区:</label>  
+                     <div class="col-sm-3">
+               	    <label class="radio-inline">
+               	        <input type="radio" name="PLDArea" id="PLDAreaOption1" value="D" checked> 大港
+               	    </label>
+               	    <label class="radio-inline">
+               	        <input type="radio" name="PLDArea" id="PLDAreaOption2"  value="H"> 虎门
+               	    </label>
+               	    <label class="radio-inline">
+              	        <input type="radio" name="PLDArea" id="PLDAreaOption3"  value="T"> 台湾
+              	    </label>
+               	    </div>
+                     
+                     
+                     
+                     
+                     <label  class="col-sm-1 control-label" for="name">来源:</label>    
+                     <div class="col-sm-4 ">
+                    
+                     
+                     <label class="radio-inline">
+            	        <input type="radio" name="orderFrom" id="orderFromOption1" value="M" checked> 邮件
+            	    </label>
+            	    <label class="radio-inline">
+            	        <input type="radio" name="orderFrom" id="orderFromOption2"  value="T"> 电话
+            	    </label>
+            	    <label class="radio-inline">
+           	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="F"> 传真
+           	        </label>
+           	        <label class="radio-inline">
+        	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="W"> 微信
+        	        </label>
+        	        <label class="radio-inline">
+        	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="P"> 工具
+        	        </label>
+        	        
+                     
+                     
+                     </div>  
+                     
+                     </div> 
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     
+                     <label  class="col-sm-1 control-label" for="name">需求方:</label>    
+                     <div class="col-sm-6 ">
+                    
+                     
+                     <label class="radio-inline">
+            	        <input type="radio" name="orderFromDep" id="orderFromDepOption1" value="A" checked> 客户订单
+            	    </label>
+            	    <label class="radio-inline">
+            	        <input type="radio" name="orderFromDep" id="orderFromDepOption2"  value="B"> 其他部门需求
+            	    </label>
+            	    <label class="radio-inline">
+           	        <input type="radio" name="orderFromDep" id="orderFromDepOption3"  value="C"> 软体部内部
+           	        </label>
+           	        <label class="radio-inline">
+        	        <input type="radio" name="orderFromDep" id="orderFromDepOption3"  value="D"> 公司预算或经营会议
+        	        </label>
+        	        
+                     </div>  
+                     
+                     
+
+                     </div>
+                     
+                     
+                   
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">   
+                     
                      <label  class="col-sm-1 control-label" for="name">客户:</label>    
                      <div class="col-sm-3 ">
                      <select  id="CTRName" class="selectpicker" data-live-search="true" > 
@@ -90,21 +163,6 @@
                      </div>
                      
                      
-                     <label  class="col-sm-1 control-label" for="name">来源:</label>    
-                     <div class="col-sm-3 ">
-                     <select  id="orderFrom" class="selectpicker" data-live-search="true"> 
-                     <option>邮件</option>
-                     <option>电话</option>
-                     <option>传真</option>
-                     <option>微信</option>
-                     <option>其他</option>
-                     </select>
-                     </div>  
-
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">   
                      
                      <label  class="col-sm-1 control-label" for="name">机型:</label>    
                      <div class="col-sm-3 ">
@@ -113,18 +171,22 @@
                      </div>  
                      
                      
-                     <label  class="col-sm-1 control-label" for="name">系统:</label>    
-                     <div class="col-sm-3 ">
-                     <select  id="model" class="selectpicker" data-live-search="true"> 
-                     </select>
-                     </div>  
+                    
                     
                      </div>
                      
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
+                     
+                     <label  class="col-sm-1 control-label" for="name">系统:</label>    
+                     <div class="col-sm-3 ">
+                     <select  id="model" class="selectpicker" data-live-search="true"> 
+                     </select>
+                     </div>  
+                     
+                     
                        <label class="col-sm-1 control-label">原系统版本:</label>
-                       <div class="col-sm-3 ">
+                       <div class="col-sm-2 ">
                          <input id="OGNSystemVersion" class="form-control"  type="text" value="">
                        </div>
                        
@@ -177,7 +239,7 @@
                      </div>
                      </div>
                      
- <!-------------------------------------------------------------------------->
+                     <!-------------------------------------------------------------------------->
                      
                      <div class="form-group" id="DivFileBTNS">
                      <label  class="col-sm-1 control-label" for="name">上传</label>  
@@ -396,18 +458,42 @@
 
 
 
+
 //函数:计划单号生成规则
 
-function Fun_billIDCreate(para){
-	var BillID=new Date(Ndate).Format("yyyyMMdd")+para+Math.floor(Math.random()*1000);
-	return BillID;
-}
+function Fun_BPIDCreate(){
+	
 
+	 $.ajax({
+         method:'get',
+         data:{"SQL":"SQLGetPLDNum"},
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+        	 
+        	 if(data[0].GPLDNum<10){
+        		 var Num="0"+(data[0].GPLDNum+1);
+        	 }else{
+        		 var Num=data[0].GPLDNum+1;
+        	 }
+        	 
+        	 console.log("back Task data:"+JSON.stringify(data));
+        	 var BPID="P"+new Date(Ndate).Format("yyyyMMdd")+Num+"_"+$('input:radio[name="PLDArea"]:checked').val()+$('input:radio[name="orderFrom"]:checked').val()+"_"+$('input:radio[name="orderFromDep"]:checked').val();
+        	 $("#BPID").val(BPID);
+
+         },
+         error:function(){}
+     })
+	
+	
+
+
+}
 
 //函数:新增详情页自动填写内容------------------------
 function Fun_winAddInit(){
+	Fun_BPIDCreate();
 
-	$('#BPID').val(Fun_billIDCreate("DG")); 
+
 	
 	var SQLCTRName={SQL:"SQLSRCustomers"};
 	var CTRName="#CTRName";
@@ -481,11 +567,13 @@ function Fun_winDetailInit(dataSelect){
 	
 	$('#DBID').val(dataSelect.DBID); 
 
-	
-
-	
 	$('#BPID').val(dataSelect.BPID); 
 	$('#version').text(dataSelect.version); 
+	
+	
+	$("[name='PLDArea'][value='"+dataSelect.PLDArea+"']").prop("checked", true);
+	$("[name='orderFrom'][value='"+dataSelect.orderFrom+"']").prop("checked", true);
+	$("[name='orderFromDep'][value='"+dataSelect.orderFromDep+"']").prop("checked", true);
 	
 	var SQLCTRName={SQL:"SQLSRCustomers"};
 	var CTRName="#CTRName";
@@ -543,20 +631,8 @@ function Fun_winDetailInit(dataSelect){
 //  $('#auditDate').val(Ndate);
   
   
-  $("#BTNFormAdd").hide();
-  
-  switch(dataSelect.urgency){
-  case 1:
-	  $("#urgencyOption1").attr("checked",true);
-	  break;
-  case 2:
-	  $("#urgencyOption2").attr("checked",true);
-	  break;
-  case 3:
-	  $("#urgencyOption3").attr("checked",true);
-	  break;  
-  }
-  
+
+ $("[name='urgency'][value='"+dataSelect.urgency+"']").prop("checked", true);
 
   
   $("#auditOpinionDiv").hide();
@@ -669,6 +745,23 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 
 });
 	
+//绑定radio切换改变 计划单号事件
+
+$('input[type=radio][name=PLDArea]').change(function() {
+	Fun_BPIDCreate();
+
+});
+
+$('input[type=radio][name=orderFrom]').change(function() {
+	Fun_BPIDCreate();
+
+});
+
+$('input[type=radio][name=orderFromDep]').change(function() {
+	Fun_BPIDCreate();
+
+});
+
 
 //按钮-新增计划单---------
 $('#BTNAdd').click(function() {
@@ -836,33 +929,7 @@ $('#BTNAudit').click(function() {
 
 $('#BTNFormAdd').click(function(){
 	
-//	//记录附件信息------------------	
-//	var billID=$('#BPID').val();
-//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-//	var fileName=$('#fileName').html();
-	
-//	var fileData={
-//			"DBTable":"ppm_files_upload",
-//			"billName":"ppm_bills_plan",
-//			"billID":billID,
-//			"billVersion":$('#version').text(),
-//			"fileKey":fileKey,
-//			"fileName":fileName
-//	}
-//	
-//	if(fileKey!=undefined){
-//		Fun_addFileInfo(fileData);
-//	}
-	
-	
-	
-//	var radioValue = $('input:radio[name="auditType"]:checked').val();
-//	
-//	if(radioValue==1){
-//		var WFStatus=10;
-//	}else{
-//		var WFStatus=1;
-//	}
+
 	
 	if($('#filePath').attr('href')!=undefined){
 		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
@@ -880,7 +947,9 @@ $('#BTNFormAdd').click(function(){
 			"topic":$('#topic').val(),
 			"detail":$('#detail').val(),
 			"PGEMaker":$('#PGEMaker option:selected').text(),
-			"orderFrom":$('#orderFrom option:selected').text(),
+			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
 			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
 			"model":Fun_getSelectText($('#model option:selected').text()),
 			"OGNSystemVersion":$('#OGNSystemVersion').val(),
@@ -918,55 +987,7 @@ $('#BTNFormAdd').click(function(){
 $('#BTNFormModify').click(function() {
 	
 	
-//	//记录附件信息------------------	
-//	var fileDBID=$('#fileDBID').val();
-//	var billID=$('#BPID').val();
-//
-//	if($('#filePath').attr('href')!=undefined){
-//		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-//		var fileName=$('#fileName').html();
-//		
-//	}else{
-//		var fileKey="";
-//		var fileName="";
-//	}
-//	
-//
-//	var fileData={
-//			"DBTable":"ppm_files_upload",
-//			"DBID":fileDBID,
-//			"billID":billID,
-//			"fileKey":fileKey,
-//			"fileName":fileName
-//	}
-//	
-//	console.log("fileData:"+JSON.stringify(fileData));
-//	
-//
-//	if(fileKey!=undefined){
-//		
-//		console.log("fileKey:"+fileKey);
-//		console.log("fileDBID:"+fileDBID);
-//		if(fileDBID==""){
-//			console.log("fileDBID:null");			
-//			var fileAddData={
-//					"DBTable":"ppm_files_upload",
-//					"billName":"ppm_bills_plan",
-//					"billID":billID,
-//					"billVersion":$('#version').text(),
-//					"fileKey":fileKey,
-//					"fileName":fileName
-//			}
-//			
-//			console.log("fileAddData:"+fileAddData);
-//			Fun_addFileInfo(fileAddData);
-//			
-//		}else{
-//			console.log("fileDBID:not null,"+fileDBID);
-//			updDBData(fileData,"附件");
-//		}
-//	}
-//	
+
 	
 	if($('#filePath').attr('href')!=undefined){
 	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
@@ -984,7 +1005,9 @@ $('#BTNFormModify').click(function() {
 			"topic":$('#topic').val(),
 			"detail":$('#detail').val(),
 			"PGEMaker":$('#PGEMaker option:selected').text(),
-			"orderFrom":$('#orderFrom option:selected').text(),
+			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
 			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
 			"model":Fun_getSelectText($('#model option:selected').text()),
 			"OGNSystemVersion":$('#OGNSystemVersion').val(),
@@ -1006,14 +1029,7 @@ $('#BTNFormModify').click(function() {
 
 	updDBData(billData,"表单");
 	
-//	if(billData.auditor!=""&&billData.auditDate==""){
-//
-//		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-//		
-//		Fun_addDBDataDD(billData,DDMsg);
-//	}else{
-//		addDBData(billData);
-//	}
+
 	
     
 	
@@ -1053,7 +1069,9 @@ $('#BTNFormUpdate').click(function() {
         			"topic":$('#topic').val(),
         			"detail":$('#detail').val(),
         			"PGEMaker":$('#PGEMaker option:selected').text(),
-        			"orderFrom":$('#orderFrom option:selected').text(),
+        			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+        			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+        			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
         			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
         			"model":Fun_getSelectText($('#model option:selected').text()),
         			"OGNSystemVersion":$('#OGNSystemVersion').val(),
@@ -1079,22 +1097,7 @@ $('#BTNFormUpdate').click(function() {
         		alert("该计划单没有指定审核人,请检查!");
         	}
         	
-//            //记录附件信息------------------	
-//        	var billID=$('#BPID').val();
-//        	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-//        	var fileName=$('#fileName').html();
-//        	var fileData={
-//        			"DBTable":"ppm_files_upload",
-//        			"billName":"ppm_bills_plan",
-//        			"billID":billID,
-//        			"billVersion":newVersion,
-//        			"fileKey":fileKey,
-//        			"fileName":fileName
-//        	}
-//        	
-//        	if(fileKey!=undefined){
-//        		Fun_addFileInfo(fileData);
-//        	}
+
 
         	
         }
