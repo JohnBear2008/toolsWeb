@@ -78,3 +78,5 @@ SQLTableTestContents="SELECT * FROM `ppm_testcontents`";
 SQLGetEMails="SELECT email,contact,contacts FROM `ppm_customers`";
 
 SQLGetPLDNum="SELECT COUNT(1) AS GPLDNum FROM `ppm_bills_plan` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW())";
+
+SQLGetTaskNum="SELECT COUNT(1) AS GTaskNum FROM `ppm_bills_task` WHERE TO_DAYS(taskMakeDate) = TO_DAYS(NOW())";

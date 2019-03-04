@@ -404,6 +404,9 @@
                  	    <label class="radio-inline">
                  	        <input type="radio" name="taskType" id="radio3" value="L"> LIB
                  	    </label>
+                 	    <label class="radio-inline">
+                	        <input type="radio" name="taskType" id="radio4" value="O"> OS
+                	    </label>
 
 
 
@@ -663,13 +666,37 @@
 <script>
 
 
-//函数:计划单号生成规则
 
-function Fun_billIDCreate(para){
-	var BillID=new Date(Ndate).Format("yyyyMMdd")+para+Math.floor(Math.random()*1000);
-	return BillID;
+
+//函数:任务单号生成规则
+
+function Fun_BTIDCreate(){
+	
+
+	 $.ajax({
+         method:'get',
+         data:{"SQL":"SQLGetTaskNum"},
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+        	 
+        	 if(data[0].GTaskNum<10){
+        		 var Num="0"+(data[0].GTaskNum+1);
+        	 }else{
+        		 var Num=data[0].GTaskNum+1;
+        	 }
+        	 
+        	 console.log("back Task data:"+JSON.stringify(data));
+        	 var BTID="T"+new Date(Ndate).Format("yyyyMMdd")+Num+"_"+$('input:radio[name="taskSortType"]:checked').val()+$('input:radio[name="taskSortType"]:checked').val();
+        	 $("#BTID").val(BTID);
+
+         },
+         error:function(){}
+     })
+	
+	
+
+
 }
-
 
 
 //函数:详情按钮详情页自动填写内容1:所有情况必定加载------------------------
