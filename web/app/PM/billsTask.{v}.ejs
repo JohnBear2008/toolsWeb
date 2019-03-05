@@ -153,55 +153,79 @@
                     
                     <!-------------------------------------------------------------------------->
                     <div class="form-group">
-                    <label class="col-sm-1 control-label">类型:</label>   
-                	 <div class="col-sm-10">
+
+                    <label class="col-sm-1 control-label">单据类别:</label>
+                	 <div class="col-sm-8">
                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskType" id="radio1" value="T1"> DSP任务单
+                	        <input type="radio" name="taskSortType" id="radio1" value="D" checked> DSP任务单
                 	    </label>
                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskType" id="radio2" value="T2"> HMI任务单
+                	        <input type="radio" name="taskSortType" id="radio2" value="M"> HMI任务单
                 	    </label>
                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskType" id="radio3" value="T3"> 内核任务单
+                	        <input type="radio" name="taskSortType" id="radio3" value="P"> PLC任务单
                 	    </label>
+                	    <label class="radio-inline">
+               	        <input type="radio" name="taskSortType" id="radio4" value="C"> codesys任务单
+               	    </label>
+
                 	 </div>
-                	 </div>
-                	 <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                    
-                     
-                     <label class="col-sm-1 control-label">修改属性:</label>   
-                 	 <div class="col-sm-8">
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE1"> 画面
-                 	    </label>
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE2"> 结构
-                 	    </label>
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE3"> 参数
-                 	    </label>
-                 	        
-                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE4">通信
-                	    </label>   
-                	        <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE5">逻辑
+
+                    </div>
+
+                    <!-------------------------------------------------------------------------->
+
+                    <!-------------------------------------------------------------------------->
+                    <div class="form-group">
+
+                    <label class="col-sm-1 control-label">类型:</label>
+                	 <div class="col-sm-8">
+                	    <label class="radio-inline">
+                	        <input type="radio" name="taskType" id="radio1" value="A" checked> APP
                 	    </label>
-                	        <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE6"> kernel
-                 	    </label>
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE7"> LIB
-                 	    </label>
-                 	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE8"> OS
-                 	    </label>
-                 	 </div>
-                 	 
-                 	 
-                     </div>
-                     <!-------------------------------------------------------------------------->
+                	    <label class="radio-inline">
+                	        <input type="radio" name="taskType" id="radio2" value="K"> Kernel
+                	    </label>
+                	    <label class="radio-inline">
+                	        <input type="radio" name="taskType" id="radio3" value="L"> LIB
+                	    </label>
+                	    <label class="radio-inline">
+               	        <input type="radio" name="taskType" id="radio4" value="O"> OS
+               	    </label>
+
+
+
+                	 </div>
+
+                    </div>
+
+                    <!-------------------------------------------------------------------------->
+                    <div class="form-group">
+
+                    <label class="col-sm-1 control-label">修改属性:</label>
+                	 <div class="col-sm-8">
+                	    <label class="checkbox-inline">
+                	        <input type="checkbox" name="modfiyABE"  value="ABE1"> 画面
+                	    </label>
+                	    <label class="checkbox-inline">
+                	        <input type="checkbox" name="modfiyABE"  value="ABE2"> 结构
+                	    </label>
+                	    <label class="checkbox-inline">
+                	        <input type="checkbox" name="modfiyABE"  value="ABE3"> 参数
+                	    </label>
+
+                	    <label class="checkbox-inline">
+               	        <input type="checkbox" name="modfiyABE"  value="ABE4">通信
+               	    </label>
+               	        <label class="checkbox-inline">
+               	        <input type="checkbox" name="modfiyABE"  value="ABE5">逻辑
+               	    </label>
+               	        
+                	 </div>
+
+
+                    </div>
+                    <!-------------------------------------------------------------------------->
                      
                      <div class="form-group">
                      
@@ -522,6 +546,7 @@
                 <th>任务单号</th>
                 <th>版本号</th>
                 <th>客户名称</th>
+                <th>任务类别</th>
                 <th>任务类型</th>
                 <th>任务负责人</th>
                 <th>完成期限</th>
@@ -555,8 +580,12 @@ function Fun_taskAuditInit(dataSelect){
 	$('#DBID').text(dataSelect.DBID); 
 	$('#taskBPID').text(dataSelect.taskBPID); 
 	
-	$("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true); 
-	$('input:radio[name="taskType"]').attr("disabled",true);
+	 $("input:radio[name=taskSortType][value="+dataSelect.taskSortType+"]").prop("checked",true);
+     $('input:radio[name="taskSortType"]').attr("disabled",true);
+     
+
+     $("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true);
+     $('input:radio[name="taskType"]').attr("disabled",true);
 	
 	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
     setCheckBoxValue("modfiyABE",dataSelect.modfiyABE);
@@ -600,8 +629,12 @@ function Fun_taskRecordInit(dataSelect){
 	$('#DBID').text(dataSelect.DBID); 
 	$('#taskBPID').text(dataSelect.taskBPID); 
 	
-	$("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true); 
-	$('input:radio[name="taskType"]').attr("disabled",true);
+	 $("input:radio[name=taskSortType][value="+dataSelect.taskSortType+"]").prop("checked",true);
+     $('input:radio[name="taskSortType"]').attr("disabled",true);
+     
+
+     $("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true);
+     $('input:radio[name="taskType"]').attr("disabled",true);
 	
 	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
     setCheckBoxValue("modfiyABE",dataSelect.modfiyABE);
@@ -718,6 +751,7 @@ $(document).ready( function () {
 		        { data: 'BTID' },
 		        { data: 'BTVersion'},
 		        { data: 'taskCTRName'},
+		        { data: 'taskSortTypeText'},
 		        { data: 'taskTypeText'},
 		        { data: 'taskStaff'},
 		        { data: 'taskLimitDate'},
@@ -914,18 +948,82 @@ $('#BTNTaskRecordAudit').click(function() {
 		}else{
 			var msg = confirm("审核后无法再次进行任务登记,如任务记录有误,请修改后再审核,是否立即审核通过?");
 			if(msg==true){	
+				
+				var FQCRequest= $('input:radio[name="FQCRequest"]:checked').val();
+				
+				
+				
+//
+//					 var recordAuditData={
+//								"DBTable":"ppm_bills_task",
+//								"DBID":$('#DBID').text(),
+//								"recordAuditor":sessionName,
+//								"recordAuditDate":Ndate,
+//								"recordAuditResult":1,
+//								"BTStatus":4
+//					 }
+//						
+//						console.log("recordAuditData:"+JSON.stringify(recordAuditData));
+//						updDBData(recordAuditData,"任务单记录审核状态");
+						
+						
+					if(FQCRequest==1){
+						var PLDUpdData={
+								"DBTable":"ppm_bills_plan",
+								"BillIDName":"BPID",
+								"BillID":$('#taskBPID').text(),
+								"FQCRequest":1,
+								"WFStatus":25
+						}
+						
 
-					 var recordAuditData={
+					}else{
+						var PLDUpdData={
+								"DBTable":"ppm_bills_plan",
+								"BillIDName":"BPID",
+								"BillID":$('#taskBPID').text(),
+								"WFStatus":25
+						}
+
+					}
+					
+					 var taskUpdData={
 								"DBTable":"ppm_bills_task",
 								"DBID":$('#DBID').text(),
 								"recordAuditor":sessionName,
 								"recordAuditDate":Ndate,
 								"recordAuditResult":1,
 								"BTStatus":4
-					 }
+					}
 						
-						console.log("recordAuditData:"+JSON.stringify(recordAuditData));
-						updDBData(recordAuditData,"任务单记录审核状态");
+					
+					 
+					 var ajax1=$.ajax({
+					        method: 'post',
+					        url: '/app/PM/updBillStatus',
+					        data: PLDUpdData,
+					        success: function(data, textStatus) {
+					        },
+					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					        });
+					 
+					var ajax2=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updDBData',
+				        data: taskUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+				
+
+					$.when(ajax1,ajax2).done(function(){
+						alert("任务登记审核成,可开始IPQC检测!");
+						window.location.reload();
+						
+					});
+//						
+				
 						
 						
 						

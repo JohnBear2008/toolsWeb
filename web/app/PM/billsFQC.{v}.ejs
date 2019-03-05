@@ -69,7 +69,7 @@
                     <!-------------------------------------------------------------------------->
                      <div class="form-group">
                        <label class="col-sm-1 control-label">计划单号:</label>
-                       <div class="col-sm-1">
+                       <div class="col-sm-2">
                          <span id="BPID" class="help-block"></span>
                        </div>
 
@@ -432,7 +432,7 @@ function Fun_winDetailInit(dataSelect){
 
 	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
-	if(dataSelect.FQCAuditResult==null){
+	if(dataSelect.FQCAuditResult!=1){
 		
 		$('#FQCRemarkShow').hide();
 		$('#FQCRemark').show();
@@ -468,7 +468,7 @@ $(document).ready( function () {
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
-		        { data: 'CTRName'},
+		        { data: 'PLDCTRName'},
 		        { data: 'limitDate'},
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
@@ -544,7 +544,53 @@ $('#BTNFQCSave').click(function() {
 
 //按钮-FQC审核---------
 $('#BTNFQCAudit').click(function() {
+	
+	
+	var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
+	alert(FQCResult);
+	
 
+
+		 
+		 switch(FQCResult){
+		 case "1":
+			 var PLDUpdData={
+					"DBTable":"ppm_bills_plan",
+					"BillIDName":"BPID",
+					"BillID":$('#BPID').text(),
+					"FQCPass":1,
+					"WFStatus":40//FQC 通过
+			}
+			 var msg="该计划单已通过FQC检测,等待最终发布!";
+
+			 break;
+		 case "2":
+			 var PLDUpdData={
+					"DBTable":"ppm_bills_plan",
+					"BillIDName":"BPID",
+					"BillID":$('#BPID').text(),
+					"FQCPass":1,
+					"WFStatus":40//FQC 通过
+			}
+			 var msg="该计划单FQC检测存在问题,请发布后继续跟踪解决!";
+
+			 break;	 
+			 
+		 case "3":
+			 var PLDUpdData={
+					"DBTable":"ppm_bills_plan",
+					"BillIDName":"BPID",
+					"BillID":$('#BPID').text(),
+					"WFStatus":35//FQC 驳回
+			}
+			 var msg="该计划单未通过FQC检测,请更新后再次进行FQC检测!";
+
+			 break;	 
+		
+		 
+		 }
+		 
+		 
 		 var FQCData={
 					"DBTable":"ppm_bills_FQC",
 					"DBID":$('#DBID').val(),
@@ -552,8 +598,38 @@ $('#BTNFQCAudit').click(function() {
 					"FQCAuditDate":Ndate,
 					"FQCAuditResult":1
 			}
+		 
+		 
+		 console.log("PLDUpdData:"+JSON.stringify(PLDUpdData));
+		 
+			 var ajax1=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updBillStatus',
+			        data: PLDUpdData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+//			 
+			var ajax2=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updDBData',
+		        data: FQCData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
 
-	updDBData(FQCData,"FQC单审核状态");
+			$.when(ajax1,ajax2).done(function(){
+				alert(msg);
+				window.location.reload();
+				
+			});
+		 
+		 
+		 
+		 
+		 
 
 });
 
