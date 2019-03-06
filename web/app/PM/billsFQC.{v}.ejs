@@ -286,6 +286,8 @@
                    </div>
                    </div>
                    <!--panel------------------------------------------------------------------------>
+                   
+                   <button id="BTNUpdVer" class="btn btn-danger" data-toggle="modal" >更新版本</button>
 
 
 
@@ -432,17 +434,20 @@ function Fun_winDetailInit(dataSelect){
 
 	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
-	if(dataSelect.FQCAuditResult!=1){
+	if(dataSelect.FQCAuditResult==0){
 		
 		$('#FQCRemarkShow').hide();
 		$('#FQCRemark').show();
 		$('#DivFQCBTNS').show();
 		$("#FQCAuditor").attr("disabled",false);
+		$('#BTNUpdVer').hide();
+		
 	}else{
 		$('#FQCRemarkShow').show();
 		$('#FQCRemark').hide();
 		$('#DivFQCBTNS').hide();
 		$("#FQCAuditor").attr("disabled",true);
+		$('#BTNUpdVer').show();
 	}
 
 

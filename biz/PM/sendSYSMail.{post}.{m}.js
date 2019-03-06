@@ -66,7 +66,7 @@ module.exports = function(sender) {
 	        to: emailADRS, // list of receivers
 	        subject:emailTitle, // Subject line
 //	        text: 'Hello nodemailer', // plain text body
-	        html:'<div style="white-space:pre">'+emailContent+'<div>',
+	        html:'<div style="white-space:pre">'+emailContent+'</div>',
 	        attachments:attachmentfiles
 	    };
 

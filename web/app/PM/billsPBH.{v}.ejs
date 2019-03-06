@@ -343,6 +343,8 @@
                    </div>
                    </div>
                    <!--panel------------------------------------------------------------------------>
+                   
+                   <button id="BTNUpdVer" class="btn btn-danger" data-toggle="modal" >更新版本</button>
 
 
 
@@ -568,14 +570,18 @@ function Fun_winDetailInit(dataSelect){
 
 	
 
-	if(dataSelect.PBHAuditResult!=1){
+	if(dataSelect.PBHAuditResult==0){
 		$('#DivToolBTNS').show();
 		$('#DivPBHBTNS').show();
 		$("#PBHAuditor").attr("disabled",false);
+		$('#BTNUpdVer').hide();
+		
 	}else{
 		$('#DivToolBTNS').hide();
 		$('#DivPBHBTNS').hide();
 		$("#PBHAuditor").attr("disabled",true);
+		$('#BTNUpdVer').show();
+		
 	}
 
 }
@@ -878,12 +884,48 @@ $('#BTNSendEmailDiv').click(function() {
     });
 	
 	
-	$('#mailhref').attr("href","mailto:908178054@qq.com");
+	$('#mailhref').attr("href","mailto:"+$('#emailADRS').val()+"?subject="+$('#emailTitle').val()+"&cc="+$('#emailCopyADRS').val()+"&body="+$('#emailContent').val());
 	$('#mailhref').click();
 	
 	}
    
 });
+
+//按钮-更新版本
+
+$('#BTNUpdVer').click(function() {
+	
+	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
+	if(msg==true){	
+		
+		var newVersion=parseInt($('#PBHVersion').text())+1;
+	
+	
+	 var PBHData={
+			  
+				"DBTable":"ppm_bills_PBH",
+				"PBHVersion":newVersion,
+				"PBHBPID":$('#BPID').text(),
+				"PBHCTRName":$('#PBHCTRName').text(),
+				"emailADRS":$('#emailADRS').val(),
+				"emailCopyADRS":$('#emailCopyADRS').val(),
+				"emailTitle":$('#emailTitle').val(),
+				"emailFiles":JSON.stringify(emailFilesValue),
+				"emailContent":$('#emailContent').val(),
+				"PBHRemark":$('#PBHRemark').val(),
+				"PBHMaker":sessionName,
+				"PBHMakeDate":Ndate,
+				"PBHAuditor":$('#PBHAuditor option:selected').text()
+		}
+	
+	 addDBData(PBHData);
+	 
+	}
+	
+});
+
+
+
 
 
 //按钮-表单关闭按钮,添加刷新数据功能
