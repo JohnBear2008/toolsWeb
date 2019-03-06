@@ -80,7 +80,7 @@
 
                        <label  class="col-sm-1 control-label" for="name">客户:</label>
                        <div class="col-sm-1 ">
-                       <span id="CTRName" class="help-block"></span>
+                       <span id="PBHCTRName" class="help-block"></span>
                        </div>
 
 
@@ -212,7 +212,7 @@
                    <div class="form-group">
                    <label class="col-sm-1 control-label">抄送:</label>
                    <div class="col-sm-10">
-                     <input id="BPID" class="form-control"  type="text" value="">
+                     <input id="emailCopyADRS" class="form-control"  type="text" value="">
                    </div>
                    </div>
                    <!-------------------------------------------------------------------------->
@@ -226,21 +226,17 @@
                    <div class="form-group">
                    <label class="col-sm-1 control-label">附件:</label>
                    <div class="col-sm-10">
-                   <span id="PBHRemarkShow" class="help-block"></span>
+                   <span id="emailFiles"></span>
+                   
                    </div>
                    </div>
+
                    <!-------------------------------------------------------------------------->
                    <div class="form-group">
                    <label class="col-sm-1 control-label">邮件内容:</label>
                    <div class="col-sm-10">
-                   <div id="DIVEmailContent">
-                   Dear <span id="contact" ></span>:</br>
-                   您好，程序已修改完成，请查收，谢谢！
-                   
-                   
-                   </div>
-                   
-                  
+                   <textarea id="emailContent" class="form-control" rows="6"></textarea>
+
                    </div>
                    </div>
                    <!-------------------------------------------------------------------------->
@@ -248,7 +244,7 @@
                    <div class="form-group">
                    <label class="col-sm-1 control-label">备注:</label>
                    <div class="col-sm-10">
-                   <span id="PBHRemarkShow" class="help-block"></span>
+
                    <input id="PBHRemark" class="form-control"  type="text" value="">
                    </div>
                    </div>
@@ -269,6 +265,11 @@
                 <div class="col-sm-2">
                 <span id="PBHMakeDate" class="help-block"></span>
             	 </div>
+            	 
+            	 <label class="col-sm-1 control-label">发布版本号:</label>
+                 <div class="col-sm-1">
+                 <span id="PBHVersion" class="help-block"></span>
+                 </div>
 
 
                 </div>
@@ -294,6 +295,18 @@
                     </div>
 
                     </div>
+                    <!-------------------------------------------------------------------------->
+
+
+
+               	    <div class="form-group" id="DivToolBTNS">
+                    <label class="col-sm-1 control-label">工具:</label>
+                    <div class="col-sm-10">
+                    <button id="BTNGetInfo" class="btn btn-success" data-toggle="modal" >填入系统信息</button>
+                    <button id="BTNResetInfo" class="btn btn-warning" data-toggle="modal" >清空信息</button>
+                   
+                    </div>
+                    </div>
 
                     <!-------------------------------------------------------------------------->
 
@@ -304,12 +317,22 @@
                     <div class="col-sm-10">
                     <button id="BTNPBHSave" class="btn btn-success" data-toggle="modal" >保存发布信息</button>
                     <button id="BTNPBHAudit" class="btn btn-warning" data-toggle="modal" >审核发布信息</button>
-                    <button id="BTNModelEmail" class="btn btn-warning" data-toggle="modal" >生成模版邮件</button>
-                    <button id="BTNSendEmail" class="btn btn-warning" data-toggle="modal" >发送邮件</button>
-                    <a id="mailhref"><button id="BTNSendEmailDiv" class="btn btn-warning" data-toggle="modal" >发送自定义邮件</button></a>
+                   
                     </div>
+                    </div>
+                    
+                    <!-------------------------------------------------------------------------->
 
+
+
+               	    <div class="form-group" id="DivPBHBTNS">
+                    <label class="col-sm-1 control-label">邮件:</label>
+                    <div class="col-sm-10">
+                    <button id="BTNModelEmail" class="btn btn-default" data-toggle="modal" >系统邮件</button>
+                    <a id="mailhref"><button id="BTNSendEmailDiv" class="btn btn-default" data-toggle="modal" >自定义邮件</button></a>
                     </div>
+                    </div>
+                    <!-------------------------------------------------------------------------->
 
 
 
@@ -354,7 +377,7 @@
                 <th>任务数量</th>
                 <th>任务完结数量</th>
                 <th>流程状态</th>
-                <th>PBH结果</th>
+                <th>邮件发布结果</th>
             </tr>
         </thead>
     </table>
@@ -362,12 +385,70 @@
 
 
     <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="winEmail" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
+    <div id="winEmail" class="easyui-window" title="表单详情" closed="true" style="width:80%;height:800px;">
 
     <div class="divcontent">
 
 	<h3>邮件预览</h3>
 	<hr>
+	
+	<div class="form-horizontal" id="DivEmailModel">
+	 <!-------------------------------------------------------------------------->
+     <div class="form-group">
+     <label class="col-sm-1 control-label">收件人:</label>
+     <div class="col-sm-10">
+     <span id="emailADRSModel" class="help-block"></span>
+
+     </div>
+     </div>
+     <!-------------------------------------------------------------------------->
+     <div class="form-group">
+     <label class="col-sm-1 control-label">抄送:</label>
+     <div class="col-sm-10">
+     <span id="emailCopyADRSModel" class="help-block"></span>
+
+     </div>
+     </div>
+     <!-------------------------------------------------------------------------->
+     <div class="form-group">
+     <label class="col-sm-1 control-label">主题:</label>
+     <div class="col-sm-10">
+     <span id="emailTitleModel" class="help-block"></span>
+
+     </div>
+     </div>
+     <!-------------------------------------------------------------------------->
+     <div class="form-group">
+     <label class="col-sm-1 control-label">附件:</label>
+     <div class="col-sm-10">
+     <span id="emailFilesModel" class="help-block"></span>
+     
+     </div>
+     </div>
+
+     <!-------------------------------------------------------------------------->
+     <div class="form-group">
+     <label class="col-sm-1 control-label">邮件内容:</label>
+     <div class="col-sm-10">
+     <div id="emailContentModel" class="help-block" style="white-space:pre;"></div>
+
+
+     </div>
+     </div>
+     <!-------------------------------------------------------------------------->
+     
+     <div class="form-group" >
+     <label class="col-sm-1 control-label"></label>
+     <div class="col-sm-10">
+     <button id="BTNModelEmailSend" class="btn btn-default" data-toggle="modal" >发送邮件</button>
+
+     </div>
+     </div>
+     <!-------------------------------------------------------------------------->
+     
+     <div >
+	
+	
 
 
 
@@ -403,8 +484,8 @@ function Fun_showSQLFileTable(SQL,tableID){
 
         		 var tr="<tr>" +
         		 		"<td>"+data[i].BTID+"</td><td>"+data[i].BTVersion+"</td><td>"+data[i].taskTypeText+"</td>" +
-        		 		"<td>"+data[i].taskStaff+"</td><td>"+data[i].taskDBE+"</td><td>"+data[i].modifyContent+"</td>" +
-        		 		"<td><a  href='/system.files.download/upload_"+data[i].taskFileKey+"' download="+data[i].taskFileName+">"+data[i].taskFileName+"</a></td>"
+        		 		"<td>"+data[i].taskStaff+"</td><td>"+data[i].taskDBE+"</td><td id='modifyContent"+i+"'>"+data[i].modifyContent+"</td>" +
+        		 		"<td id='TDfile"+i+"'><a id='hrefA"+i+"'  href='/system.files.download/upload_"+data[i].taskFileKey+"' download="+data[i].taskFileName+"><span id='fileName"+i+"'>"+data[i].taskFileName+"</span></a></td>"
         		 		"</tr>";
 
         		 $(tableID+" tbody").append(tr);
@@ -425,41 +506,58 @@ function Fun_showSQLFileTable(SQL,tableID){
 //函数:详情按钮详情页自动填写内容------------------------
 function Fun_winDetailInit(dataSelect){
 	
-	 console.log("dataSelect:"+JSON.stringify(dataSelect));
-
+	console.log("dataSelect:"+JSON.stringify(dataSelect));
 
 	$('#DBID').val(dataSelect.DBID);
 	$('#BPID').text(dataSelect.BPID);
 	$('#version').text(dataSelect.version);
-	$('#CTRName').text(dataSelect.PLDCTRName);
+	$('#PBHCTRName').text(dataSelect.PLDCTRName);
 	$('#MHEName').text(dataSelect.MHEName);
 	$('#model').text(dataSelect.model);
 	$('#PGEMaker').text(dataSelect.PGEMaker);
-	
 	$('#FQCRequestText').text(dataSelect.FQCRequestText);
 	$('#FQCPassText').text(dataSelect.FQCPassText);
-	
-	
-
 	$('#applyDate').text(dataSelect.applyDate);
 	$('#limitDate').text(dataSelect.limitDate);
 	$('#topic').text(dataSelect.topic);
 	$('#detail').text(dataSelect.detail);
 	
+	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
+	var tableID="#billsTaskTable";
+	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
 	
+	$('#emailADRS').val(dataSelect.emailADRS);
+	$('#emailCopyADRS').val(dataSelect.emailCopyADRS);
+
+	$('#emailTitle').val(dataSelect.emailTitle);
 	
-	
-	$('#PBHRemark').val(dataSelect.PBHRemark);
-	
+    var emailFiles=JSON.parse(dataSelect.emailFiles);
+    
+    var emailFilesHtml=$('#emailFiles').html();
+    
+   console.log("emailFiles:"+emailFiles);
+   
+   if(emailFiles!=null){
+	   for(var i=0;i<emailFiles.length;i++){
+	    	 $("#emailFiles").html(emailFilesHtml+"<a href='/system.files.download/upload_"+emailFiles[i].fileKey+"' download='"+emailFiles[i].fileName+"'>"+emailFiles[i].fileName+"</a>");
+	    	 
+	    	 emailFilesHtml=$("#emailFiles").html()+" ; ";
+
+	    }
+   }
+    
+   emailFilesValue=emailFiles;
 
 	
-	$('#PBHMaker').text(dataSelect.PBHMaker);
-	$('#PBHMakeDate').text(dataSelect.PBHMakeDate);
+	$('#emailContent').val(dataSelect.emailContent);
+	$('#PBHRemark').val(dataSelect.PBHRemark);
 	
+	$('#PBHMaker').text(dataSelect.PBHMaker);
+	$('#PBHMakeDate').text(dataSelect.PBHMakeDate);	
+	$('#PBHVersion').text(dataSelect.PBHVersion);	
 	$('#PBHAuditor').text(dataSelect.PBHAuditor);
 	$('#PBHAuditDate').text(dataSelect.PBHAuditDate);
-	
 	$('#PBHResultText').text(dataSelect.PBHResultText);
 	
 	
@@ -468,38 +566,17 @@ function Fun_winDetailInit(dataSelect){
 	Fun_getSQLSelectDBData(SQLAuditor,PBHAuditor,sessionName);
 
 
-	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
-
-	var tableID="#billsTaskTable";
-
-
-
-	Fun_showSQLFileTable(tasksTableSQL,tableID);
-	
-	
 	
 
-	
-
-	
-	
-	
-	if(dataSelect.PBHAuditResult==null){
-		
-		$('#PBHRemarkShow').hide();
-		$('#PBHRemark').show();
+	if(dataSelect.PBHAuditResult!=1){
+		$('#DivToolBTNS').show();
 		$('#DivPBHBTNS').show();
 		$("#PBHAuditor").attr("disabled",false);
 	}else{
-		$('#PBHRemarkShow').show();
-		$('#PBHRemark').hide();
+		$('#DivToolBTNS').hide();
 		$('#DivPBHBTNS').hide();
 		$("#PBHAuditor").attr("disabled",true);
 	}
-
-
-
-
 
 }
 
@@ -520,7 +597,7 @@ $(document).ready( function () {
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
-		        { data: 'CTRName'},
+		        { data: 'PLDCTRName'},
 		        { data: 'limitDate'},
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
@@ -571,6 +648,84 @@ $('#BTNPBHDetail').click(function() {
 
 });
 
+//按钮-填入系统信息
+
+$('#BTNGetInfo').click(function() {
+	
+	$('#BTNResetInfo').click();
+var PBHCTRName= $("#PBHCTRName").text();
+$("#emailTitle").val("【弘讯PPM处理结果】"+ $("#topic").text());
+
+var fileNum=$("#billsTaskTable").find("tr").length-1;
+console.log("fileNum:"+fileNum);
+
+var emailFilesHtml=$("#emailFiles").html();
+emailFilesValue=[];
+console.log("emailFiles:"+emailFiles);
+	
+	SQLEMails={"SQL":"SQLGetEMails","filter":"FTYName = '"+PBHCTRName+"'"};
+	 $.ajax({
+         method:'get',
+         data:SQLEMails,
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+        	 console.log("back email data:"+JSON.stringify(data));
+        	 $("#emailADRS").val(data[0].email);
+        	 
+             emailContentFormat="Dear "+data[0].contact+":\n        您的需求已处理完成,需求单编号:"+$("#BPID").text()+";\n" +
+     		"修改内容如下:\n";
+             
+             for(var i=0;i<fileNum;i++){
+        		 if($("#fileName"+i).text()!="null"){
+//        			 console.log($("#fileName"+i).text()=="null");
+        			
+        			 $("#emailFiles").html(emailFilesHtml+$("#TDfile"+i).html());
+        			 emailFilesHtml=$("#emailFiles").html()+" ; ";
+        			 
+        			 emailContentFormat=emailContentFormat+"文件名称:"+$("#fileName"+i).text()+"\n"+"修改内容:"+$("#modifyContent"+i).html()+"\n";
+        			 
+        			 var j={
+        					 "fileName":$("#fileName"+i).text(),
+        					 "fileKey":$("#hrefA"+i).attr("href").substr(30)
+        			 }
+        			 emailFilesValue.push(j);
+        			 
+        		 }
+        	 
+        	 }
+
+
+             $("#emailContent").val(emailContentFormat);
+
+
+        	
+
+         },
+         error:function(){}
+     })
+	
+    
+	 
+	 
+	
+
+
+});
+
+
+//按钮-清空信息
+$('#BTNResetInfo').click(function() {
+	$("#emailADRS").val("");
+	$("#emailCopyADRS").val("");
+	$("#emailTitle").val("");
+	$("#emailFiles").text("");
+	$("#emailContent").val("");
+	$("#PBHRemark").val("");
+	
+
+
+});
+
 
 
 //按钮-PBH保存---------
@@ -580,9 +735,13 @@ $('#BTNPBHSave').click(function() {
 					"DBTable":"ppm_bills_PBH",
 					"DBID":$('#DBID').val(),
 					"PBHBPID":$('#BPID').text(),
-					"CTRName":$('#CTRName').text(),
+					"PBHCTRName":$('#PBHCTRName').text(),
+					"emailADRS":$('#emailADRS').val(),
+					"emailCopyADRS":$('#emailCopyADRS').val(),
+					"emailTitle":$('#emailTitle').val(),
+					"emailFiles":JSON.stringify(emailFilesValue),
+					"emailContent":$('#emailContent').val(),
 					"PBHRemark":$('#PBHRemark').val(),
-				    "PBHResult":$('input:radio[name="PBHResult"]:checked').val(),
 					"PBHMaker":sessionName,
 					"PBHMakeDate":Ndate,
 					"PBHAuditor":$('#PBHAuditor option:selected').text()
@@ -605,7 +764,8 @@ $('#BTNPBHAudit').click(function() {
 					"PBHAuditResult":1
 			}
 
-	updDBData(PBHData,"PBH单审核状态");
+	     updDBData(PBHData,"PBH单审核状态");
+		 
 
 });
 
@@ -641,25 +801,18 @@ $('input:radio[name="auditType"]').click(function(){
 //按钮-邮件预览
 $('#BTNModelEmail').click(function() {
 	
-	var CTRName= $("#CTRName").text();
+	$('#winEmail').window('open');
 	
-	SQLEMails={"SQL":"SQLGetEMails","filter":"FTYName = '"+CTRName+"'"};
-	 $.ajax({
-         method:'get',
-         data:SQLEMails,
-         url:"/app/PM/getSQLDBData",
-         success:function(data){
-        	 console.log("back email data:"+JSON.stringify(data));
-        	 
-        	 $("#emailADRS").val(data[0].email);
-        	 $("#contact").text(data[0].contact);
-        	 
+	$('#emailADRSModel').text($('#emailADRS').val());
+	$('#emailCopyADRSModel').text($('#emailCopyADRS').val());
+	$('#emailTitleModel').text($('#emailTitle').val());
+	$('#emailFilesModel').text($('#emailFiles').text());
+	
+	
+	
+	$('#emailContentModel').html($('#emailContent').val());
+	
 
-
-
-         },
-         error:function(){}
-     })
 	
 
 	     
@@ -668,13 +821,67 @@ $('#BTNModelEmail').click(function() {
    
 });
 
+//按钮-发送邮件
+
+$('#BTNModelEmailSend').click(function() {
+	
+	 var emailData={
+			    "pbhBPID":$('#BPID').text(),
+			    "emailResult":1,
+				"emailADRS":$('#emailADRS').val(),
+				"emailCopyADRS":$('#emailCopyADRS').val(),
+				"emailTitle":$('#emailTitle').val(),
+				"emailFiles":JSON.stringify(emailFilesValue),
+				"emailContent":$('#emailContent').val()		
+		}
+
+	$.ajax({
+        method: 'post',
+        url: '/app/PM/sendSYSMail',
+        data: emailData,
+        success: function(data, textStatus) {
+              alert("发送成功:"+JSON.stringify(textStatus));
+
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        	
+        	 alert("发送失败:"+JSON.stringify(textStatus));
+        }
+    });
+   
+});
+
 
 //按钮-邮件自定义
 $('#BTNSendEmailDiv').click(function() {
 	
+	var msg = confirm("点击自定义邮件后,讲跳转至邮件客户端,发布单默认邮件已发送,是否继续?");
+	if(msg==true){	
+	
+	
+	var emailData={
+		    "pbhBPID":$('#BPID').text(),
+		    "emailResult":2,
+			
+	}
+
+   $.ajax({
+    method: 'post',
+    url: '/app/PM/sendSYSMail',
+    data: emailData,
+    success: function(data, textStatus) {
+
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+    }
+    });
+	
 	
 	$('#mailhref').attr("href","mailto:908178054@qq.com");
 	$('#mailhref').click();
+	
+	}
    
 });
 
