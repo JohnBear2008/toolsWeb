@@ -238,6 +238,11 @@
                 <div class="col-sm-2">
                 <span id="FQCMakeDate" class="help-block"></span>
             	 </div>
+            	 
+            	 <label  class="col-sm-1 control-label" for="name">FQC版本号:</label>
+                 <div class="col-sm-1">
+                 <span id="FQCVersion" class="help-block"></span>
+                 </div>
 
 
                 </div>
@@ -414,6 +419,7 @@ function Fun_winDetailInit(dataSelect){
 	
 	$('#FQCMaker').text(dataSelect.FQCMaker);
 	$('#FQCMakeDate').text(dataSelect.FQCMakeDate);
+	$('#FQCVersion').text(dataSelect.FQCVersion);
 	
 	$('#FQCAuditor').text(dataSelect.FQCAuditor);
 	$('#FQCAuditDate').text(dataSelect.FQCAuditDate);
@@ -434,7 +440,7 @@ function Fun_winDetailInit(dataSelect){
 
 	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
-	if(dataSelect.FQCAuditResult==0){
+	if(dataSelect.FQCAuditResult==0||dataSelect.FQCAuditResult==null){
 		
 		$('#FQCRemarkShow').hide();
 		$('#FQCRemark').show();
@@ -566,6 +572,16 @@ $('#BTNFQCAudit').click(function() {
 					"FQCPass":1,
 					"WFStatus":40//FQC 通过
 			}
+			 
+			 var FQCData={
+						"DBTable":"ppm_bills_FQC",
+						"DBID":$('#DBID').val(),
+						"FQCAuditor":sessionName,
+						"FQCAuditDate":Ndate,
+						"FQCAuditResult":1,
+						"FQCStatus":1
+				}
+			 
 			 var msg="该计划单已通过FQC检测,等待最终发布!";
 
 			 break;
@@ -577,6 +593,16 @@ $('#BTNFQCAudit').click(function() {
 					"FQCPass":1,
 					"WFStatus":40//FQC 通过
 			}
+			 
+			 var FQCData={
+						"DBTable":"ppm_bills_FQC",
+						"DBID":$('#DBID').val(),
+						"FQCAuditor":sessionName,
+						"FQCAuditDate":Ndate,
+						"FQCAuditResult":1,
+						"FQCStatus":1
+				}
+			 
 			 var msg="该计划单FQC检测存在问题,请发布后继续跟踪解决!";
 
 			 break;	 
@@ -588,6 +614,16 @@ $('#BTNFQCAudit').click(function() {
 					"BillID":$('#BPID').text(),
 					"WFStatus":35//FQC 驳回
 			}
+			 
+			 var FQCData={
+						"DBTable":"ppm_bills_FQC",
+						"DBID":$('#DBID').val(),
+						"FQCAuditor":sessionName,
+						"FQCAuditDate":Ndate,
+						"FQCAuditResult":2,
+						"FQCStatus":2
+				}
+			 
 			 var msg="该计划单未通过FQC检测,请更新后再次进行FQC检测!";
 
 			 break;	 
@@ -601,7 +637,8 @@ $('#BTNFQCAudit').click(function() {
 					"DBID":$('#DBID').val(),
 					"FQCAuditor":sessionName,
 					"FQCAuditDate":Ndate,
-					"FQCAuditResult":1
+					"FQCAuditResult":1,
+					"FQCStatus":1
 			}
 		 
 		 
@@ -669,6 +706,39 @@ $('input:radio[name="auditType"]').click(function(){
 
 
 
+
+//按钮-更新版本
+$('#BTNUpdVer').click(function() {
+	
+	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
+	if(msg==true){	
+		
+		var newVersion=parseInt($('#FQCVersion').text())+1;
+	
+	
+	 var FQCData={
+				"DBTable":"ppm_bills_FQC",
+				"fqcBPID":$('#BPID').text(),
+				"FQCVersion":newVersion,
+				"CTRName":$('#CTRName').text(),
+				"FQCRemark":$('#FQCRemark').val(),
+			    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
+				"FQCMaker":sessionName,
+				"FQCMakeDate":Ndate,
+				"FQCAuditor":$('#FQCAuditor option:selected').text()
+		}
+
+        addDBData(FQCData);
+	 
+	 
+	}
+	
+
+	
+	
+	
+	
+});
 
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNFormClose').click(function() {

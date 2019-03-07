@@ -19,23 +19,27 @@ SQLSRSystems="select DBID,concat_ws('-',STMType,model) as selectTitle from ppm_s
 
 SQLSRStaffs="select DBID,staffName as selectTitle from ppm_staffs where status=1";
 
-SQLTableBillsTrack="SELECT A.*,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回' WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN" +
-    " '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END AS  WFStatusText,B.DBID AS fileDBID,B.fileKey,B.fileName FROM" +
-    " (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE" +
-    " C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0) A LEFT JOIN `ppm_files_upload` B ON A.BPID=B.billID AND" +
-    " A.version=B.billVersion AND B.billName='ppm_bills_plan'";
+SQLTableBillsTrack="SELECT * FROM  (SELECT tbb.*,CASE tbb.PLDStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS PLDStatusText, CASE tbb.FQCRequest WHEN 0 THEN '无' WHEN 1 THEN '有'  END AS FQCRequestText FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.BPTBPID,tbd.BPTVersion,CASE tbd.BPTStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID LEFT JOIN (SELECT tbh.fqcBPID,tbh.FQCVersion,CASE tbh.FQCStatus WHEN 0 THEN '已填单' WHEN 1 THEN '已通过' WHEN 2 THEN '出货后修正' WHEN 3 THEN '未通过' END AS FQCStatusText  FROM `ppm_bills_fqc` tbh,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbg WHERE tbh.fqcBPID=tbg.fqcBPID AND tbh.FQCVersion=tbg.maxFQCVersion) tbi ON tbi.fqcBPID=tbe.BPID  LEFT JOIN (SELECT tbk.pbhBPID,tbk.PBHVersion,CASE tbk.PBHStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS PBHStatusText,CASE tbk.emailResult WHEN 0 THEN '未发邮件' WHEN 1 THEN '已发系统邮件' WHEN 2 THEN '已发自定义邮件' END AS emailResultText  FROM `ppm_bills_pbh` tbk,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbj WHERE tbk.pbhBPID=tbj.pbhBPID AND tbk.PBHVersion=tbj.maxPBHVersion) tbl ON tbe.BPID=tbl.pbhBPID";
+
 
 SQLTableBillsPLD="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 ) A ";
 //SQLTableBillsPLD="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText,B.DBID AS fileDBID,B.fileKey,B.fileName FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 ) A LEFT JOIN `ppm_files_upload` B ON A.BPID=B.billID AND A.version=B.billVersion AND B.billName='ppm_bills_plan'";
 //SQLTableBillsPLD="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText FROM `ppm_bills_plan` A, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) B WHERE A.BPID=B.billBPID AND A.version=B.billVersion";
 
-SQLTableBillsBPT="SELECT G.*,A.*,CASE A.auditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '无方案' END " +
-    "AS BPTAuditResultText FROM (SELECT * FROM (SELECT E.BPID AS PLDBPID,E.version AS PLDVersion,E.CTRName AS PLDCTRName,E.PGEMaker " +
-    "AS PLDPGEMaker,E.MHEName AS PLDMHEName,E.model AS PLDModel,E.limitDate AS PLDLimitDate,E.OGNSystemVersion AS PLDOGNSystemVersion " +
-    "FROM `ppm_bills_plan` E WHERE auditResult=1 AND WFStatus<>0 ) F,(SELECT BPID,MAX(version) AS maxVersion FROM `ppm_bills_plan` GROUP BY BPID) D " +
-    "WHERE F.PLDBPID=D.BPID AND F.PLDVersion=D.maxVersion) G LEFT JOIN (SELECT C.*,C.version AS BPTVersion FROM `ppm_bills_blueprint` C," +
-    "(SELECT BPTID AS maxBPTID,MAX(version) AS maxVer FROM `ppm_bills_blueprint` GROUP BY BPTID)B WHERE C.version=B.maxVer AND C.BPTID=B.maxBPTID) A " +
-    "ON G.PLDBPID= A.BPTID";
+SQLTableBillsBPT="SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.model AS PLDModel,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID";
+
+
+
+
+
+
+//SQLTableBillsBPT="SELECT G.*,A.*,CASE A.auditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '无方案' END " +
+//    "AS BPTAuditResultText FROM (SELECT * FROM (SELECT E.BPID AS PLDBPID,E.version AS PLDVersion,E.CTRName AS PLDCTRName,E.PGEMaker " +
+//    "AS PLDPGEMaker,E.MHEName AS PLDMHEName,E.model AS PLDModel,E.limitDate AS PLDLimitDate,E.OGNSystemVersion AS PLDOGNSystemVersion " +
+//    "FROM `ppm_bills_plan` E WHERE auditResult=1 AND WFStatus<>0 ) F,(SELECT BPID,MAX(version) AS maxVersion FROM `ppm_bills_plan` GROUP BY BPID) D " +
+//    "WHERE F.PLDBPID=D.BPID AND F.PLDVersion=D.maxVersion) G LEFT JOIN (SELECT C.*,C.version AS BPTVersion FROM `ppm_bills_blueprint` C," +
+//    "(SELECT BPTID AS maxBPTID,MAX(version) AS maxVer FROM `ppm_bills_blueprint` GROUP BY BPTID)B WHERE C.version=B.maxVer AND C.BPTID=B.maxBPTID) A " +
+//    "ON G.PLDBPID= A.BPTID";
 //SQLTableBillsBPT="SELECT A.*,CASE A.auditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '无方案' END AS BPTAuditResultText,B.DBID AS PLDDBID,B.BPID,B.version AS PLDVersion,B.CTRName ,B.PGEMaker,B.limitDate,B.MHEName AS PLDMHEName,B.model AS PLDModel,B.OGNSystemVersion FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND auditResult=1) B LEFT JOIN ppm_bills_blueprint A ON A.BPID=B.BPID";
 
 //SQLTableBillsTask="SELECT *,CASE taskType WHEN 'T1' THEN 'DSP任务' WHEN 'T2' THEN 'HMI任务' WHEN 'T3' THEN '内核任务' ELSE '未定义' END AS taskTypeText,CASE BTAuditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '新增' END AS BTAuditResultText FROM ppm_bills_task"
@@ -63,7 +67,7 @@ SQLTableBillsFQC="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CAS
     " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText," +
     "tbd.*,CASE tbd.FQCResult*tbd.FQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '出货后修正' WHEN 3 THEN '立即修正'  ELSE '未确认' END AS FQCResultText FROM " +
     "(SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba " +
-    "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 AND tbb.FQCRequest=1 ) tbc LEFT JOIN `ppm_bills_fqc` tbd " +
+    "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd " +
     "ON tbc.BPID=tbd.fqcBPID";
 
 SQLTableBillsPBH="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +

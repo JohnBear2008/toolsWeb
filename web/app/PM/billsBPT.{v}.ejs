@@ -179,9 +179,9 @@
                        <input id="BPTID" class="form-control"  type="text" value="">
                      </div>
 
-                     <label class="col-sm-2 control-label">方案单版本号: <span id="version"></span></label>
+                     <label class="col-sm-2 control-label">方案单版本号: <span id="BPTVersion"></span></label>
 
-                     <label class="col-sm-2 control-label">方案单状态: <span id="BPTAuditResultText"></span></label>
+                     <label class="col-sm-2 control-label">方案单状态: <span id="BPTStatusText"></span></label>
 
                      </div>
 
@@ -593,7 +593,7 @@
 
                     <label class="col-sm-1 control-label"></label>
                     <button id="BTNBPTSave" type="button" class="btn btn-primary">保存方案</button>
-                    <button id="BTNBPTUpdate" type="button" class="btn btn-warning">更新版本</button>
+                    <button id="BTNBPTUpdateVer" type="button" class="btn btn-warning">更新版本</button>
                     <button id="BTNBPTAuditYes" type="button" class="btn btn-success">审核通过</button>
                     <button id="BTNBPTAuditNo" type="button" class="btn btn-danger">审核驳回</button>
 
@@ -644,12 +644,11 @@
             <tr>
                 <th>数据库ID</th>
                 <th>计划单号</th>
-                <th>计划单版本号</th>
+                <th>计划版本号</th>
                 <th>客户简称</th>
                 <th>计划单完成期限</th>
                 <th>方案人</th>
-                <th>方案单号</th>
-                <th>方案单版本号</th>
+                <th>方案版本号</th>
                 <th>方案单状态</th>
 
             </tr>
@@ -710,13 +709,13 @@ function Fun_BPTDetailInitPart1(dataSelect){
 	$('#taskLimitDate').val(dataSelect.limitDate);
 
 	if(dataSelect.BPTVersion==null){
-		$('#version').text(0);
+		$('#BPTVersion').text(0);
 	}else{
-		$('#version').text(dataSelect.BPTVersion);
+		$('#BPTVersion').text(dataSelect.BPTVersion);
 	}
 
 
-	$('#BPTAuditResultText').text(dataSelect.BPTAuditResultText);
+	$('#BPTStatusText').text(dataSelect.BPTStatusText);
 //	//设定初始化的select值,如果方案单有数据加载方案单数据,如没有加载计划单数据
 //	if(dataSelect.MHEName==""){
 //		var showMHEName=dataSelect.PLDMHEName;
@@ -880,7 +879,7 @@ function Fun_BPTDetailInit(dataSelect){
 		 $('#BTNTaskSave').show();
 
 		 $("#BTNBPTSave").show();
-		 $("#BTNBPTUpdate").hide();
+		 $("#BTNBPTUpdateVer").hide();
 		 $("#BTNBPTAuditYes").hide();
 		 $("#BTNBPTAuditNo").hide();
 
@@ -893,7 +892,7 @@ function Fun_BPTDetailInit(dataSelect){
 		 $('#BTNTaskSave').show();
 
 		 $("#BTNBPTSave").show();
-		 $("#BTNBPTUpdate").hide();
+		 $("#BTNBPTUpdateVer").hide();
 
 		 $("#BTNBPTAuditYes").hide();
 		 $("#BTNBPTAuditNo").hide();
@@ -913,7 +912,7 @@ function Fun_BPTDetailInit(dataSelect){
 	  $('#BTNTaskSave').hide();
 
 	  $("#BTNBPTSave").hide();
-	  $("#BTNBPTUpdate").show();
+	  $("#BTNBPTUpdateVer").show();
 	  $("#BTNBPTAuditYes").hide();
 	  $("#BTNBPTAuditNo").hide();
 
@@ -958,11 +957,6 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 
 
 		 $(tableInfo.tableID+' tbody').on('click', 'tr', function() {
-
-
-
-
-
 
 		     if ($(this).hasClass('selected')) {
 		         $(this).removeClass('selected');
@@ -1110,9 +1104,8 @@ $(document).ready( function () {
 		        { data: 'PLDCTRName'},
 		        { data: 'PLDLimitDate'},
 		        { data: 'PLDPGEMaker'},
-		        { data: 'BPTID'},
 		        { data: 'BPTVersion'},
-		        { data: 'BPTAuditResultText'}
+		        { data: 'BPTStatusText'}
 
 			]
 	}
@@ -1432,7 +1425,7 @@ $('#BTNBPTSave').click(function(){
 
 	var BPTBPID=$('#BPTBPID').val();
 	var BPTID=$('#BPTID').val();
-	var version=$('#version').text();
+	var BPTVersion=$('#BPTVersion').text();
 	var CTRName=$('#CTRName').val();
 	var PGEMaker=$('#PGEMaker').val();
 	var limitDate=$('#limitDate').val();
@@ -1457,104 +1450,47 @@ $('#BTNBPTSave').click(function(){
 	}
 
 
-    var BPTAuditResultText=$('#BPTAuditResultText').text();
+    var BPTStatusText=$('#BPTStatusText').text();
+    
+    
+	var DBID=$('#DBID').val();
+    
+        	var BPTData={
+    			"DBTable":"ppm_bills_blueprint",
+    			"DBID":DBID,
+    			"BPTBPID":BPTBPID,
+    			"BPTID":BPTID,
+    			"BPTVersion":BPTVersion,
+    			"CTRName":CTRName,
+    			"PGEMaker":PGEMaker,
+    			"limitDate":limitDate,
+    			"MHEName":MHEName,
+    			"model":model,
+    			"OGNSystemVersion":OGNSystemVersion,
+    			"modifyType":modifyType,
+    			"modifyReason":modifyReason,
+    			"BPTDescribe":BPTDescribe,
+    			"maker":sessionName,
+    			"makeDate":Ndate,
+    			"auditResult":0,
+    			"auditor":auditor,
+    			"fileKey":fileKey,
+    			"fileName":fileName
+    			}
+    
+        	
+//        	alert("BPTData:"+JSON.stringify(BPTData));
+    
+        	saveDBData(BPTData,"方案单");
+        	
 
-    switch(BPTAuditResultText){
-    case '无方案':
-    	var billData={
-			"DBTable":"ppm_bills_blueprint",
-			"BPTBPID":BPTBPID,
-			"BPTID":BPTID,
-			"version":version,
-			"CTRName":CTRName,
-			"PGEMaker":PGEMaker,
-			"limitDate":limitDate,
-			"MHEName":MHEName,
-			"model":model,
-			"OGNSystemVersion":OGNSystemVersion,
-			"modifyType":modifyType,
-			"modifyReason":modifyReason,
-			"BPTDescribe":BPTDescribe,
-			"maker":sessionName,
-			"makeDate":Ndate,
-			"auditResult":0,
-			"auditor":auditor,
-			"fileKey":fileKey,
-			"fileName":fileName
-			}
-
-    	console.log("无方案 billData:"+JSON.stringify(billData));
-
-    	if(auditor!=null&&auditor!=""){
-    		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
-    		Fun_addDBDataDD(billData,DDMsg,"方案");
-//    		Fun_addPGEFile();
-
-    	}else{
-
-    		console.log("billData:"+JSON.stringify(billData));
-        	addDBData(billData);
-//        	Fun_addPGEFile();
-    	}
-
-    	break;
-
-    case '未审核':
-    	var DBID=$('#DBID').val();
-
-    	var billData={
-			"DBTable":"ppm_bills_blueprint",
-			"DBID":DBID,
-			"BPTBPID":BPTBPID,
-			"BPTID":BPTID,
-			"version":version,
-			"CTRName":CTRName,
-			"PGEMaker":PGEMaker,
-			"limitDate":limitDate,
-			"MHEName":MHEName,
-			"model":model,
-			"OGNSystemVersion":OGNSystemVersion,
-			"modifyType":modifyType,
-			"modifyReason":modifyReason,
-			"BPTDescribe":BPTDescribe,
-			"maker":sessionName,
-			"makeDate":Ndate,
-			"auditResult":0,
-			"auditor":auditor,
-			"fileKey":fileKey,
-			"fileName":fileName
-			}
-
-    	console.log("未审核 billData:"+JSON.stringify(billData));
-
-//    	if(fileDBID==""){
-//    		Fun_addPGEFile();
-//    	}else{
-//    		Fun_updPGEFile();
-//    	}
-
-    	if(auditor!=null&&auditor!=""){
-    		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
-    		Fun_updDBDataDD(billData,DDMsg,'方案');
-    	}else{
-    		console.log("billData:"+JSON.stringify(billData));
-        	updDBData(billData,"方案");
-
-    	}
-
-    	break;
-
-    }
-
-
- // window.location.reload();
 
 });
 
 
 //按钮-方案更新
 
-$('#BTNBPTUpdate').click(function(){
+$('#BTNBPTUpdateVer').click(function(){
 
 
 	var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
@@ -1564,7 +1500,7 @@ $('#BTNBPTUpdate').click(function(){
 
         	var BPTBPID=$('#BPTBPID').val();
         	var BPTID=$('#BPTID').val();
-        	var newVersion=parseInt($('#version').text())+1;
+        	var newVersion=parseInt($('#BPTVersion').text())+1;
         	var CTRName=$('#CTRName').val();
         	var PGEMaker=$('#PGEMaker').val();
         	var limitDate=$('#limitDate').val();
@@ -1591,7 +1527,7 @@ $('#BTNBPTUpdate').click(function(){
         			"DBTable":"ppm_bills_blueprint",
         			"BPTBPID":BPTBPID,
         			"BPTID":BPTID,
-        			"version":newVersion,
+        			"BPTVersion":newVersion,
         			"CTRName":CTRName,
         			"PGEMaker":PGEMaker,
         			"limitDate":limitDate,
@@ -1664,7 +1600,8 @@ $('#BTNBPTAuditYes').click(function() {
 					"auditor":sessionName,
 					"auditDate":Ndate,
 					"auditResult":1,
-					"BPTAuditOpinion":$('#BPTAuditOpinion').val()
+					"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+					"BPTStatus":1
 			}
 
 
@@ -1750,15 +1687,16 @@ $('#BTNBPTAuditNo').click(function() {
 					"auditor":sessionName,
 					"auditDate":Ndate,
 					"auditResult":2,
-					"BPTAuditOpinion":$('#BPTAuditOpinion').val()
+					"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+					"BPTStatus":2
 			}
 
-			var taskUpdData={
-					"DBTable":"ppm_bills_task",
-					"BillIDName":"taskBPID",
-					"DBID":$('#PLDDBID').val(),
-					"BTAcceptResult":19
-			}
+//			var taskUpdData={
+//					"DBTable":"ppm_bills_task",
+//					"BillIDName":"taskBPID",
+//					"DBID":$('#PLDDBID').val(),
+//					"BTAcceptResult":19
+//			}
 
 
 			var ajax1=$.ajax({
@@ -1786,7 +1724,6 @@ $('#BTNBPTAuditNo').click(function() {
 			window.location.reload();
 
 		});
-
 
 
 		}

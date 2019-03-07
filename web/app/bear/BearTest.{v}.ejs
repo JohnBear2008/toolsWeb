@@ -22,37 +22,44 @@
 
 
 <script>
-function getCookie(name)
-{
-    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
-    return (arr=document.cookie.match(reg))?unescape(arr[2]):null;
+function callback(data){
+	alert(JSON.stringify(data));
 }
+
+
+function ajaxFun(callback){
+	 $.ajax({
+        method:'get',
+        data:{"SQL":"SQLTableTestContents"},
+        url:"/app/PM/getSQLDBData",
+        success:function(data){
+        	callback(data);
+        },
+        error:function(){}
+    })
+	
+}
+
+	
+	
+    
+    
+	
+	
+
+
 
 
 $(function(){
 	
+	var a=ajaxFun(callback);
 	
-//	  var cookiejson=$.parseJSON(getCookie("account").substring(2));//去掉cookie前部J: 在转换为JSON
+	alert("a11111111111:"+a);
+	
+//	alert(JSON.stringify(ajaxFun()));
 //	
-	console.log( document.cookie);
+//	alert("aa:"+JSON.stringify(aa));
 
-
-    $('#SBtn').click(function() {
-    	alert($('#SName').val());
-    	        
-    });
-    
-    
-    function returntest1(a){
-    	return a;
-    }
-    
-    function returntest2(a){
-    	returntest1(a);
-    }
-    
-    var tt=returntest2("1");
-    alert("tt:"+tt);
     
 
 }); 

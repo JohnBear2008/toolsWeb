@@ -570,7 +570,7 @@ function Fun_winDetailInit(dataSelect){
 
 	
 
-	if(dataSelect.PBHAuditResult==0){
+	if(dataSelect.PBHAuditResult==0||dataSelect.PBHAuditResult==null){
 		$('#DivToolBTNS').show();
 		$('#DivPBHBTNS').show();
 		$("#PBHAuditor").attr("disabled",false);
@@ -838,7 +838,9 @@ $('#BTNModelEmailSend').click(function() {
 				"emailCopyADRS":$('#emailCopyADRS').val(),
 				"emailTitle":$('#emailTitle').val(),
 				"emailFiles":JSON.stringify(emailFilesValue),
-				"emailContent":$('#emailContent').val()		
+				"emailContent":$('#emailContent').val(),
+				"PBHStatus":1
+
 		}
 
 	$.ajax({
@@ -868,6 +870,7 @@ $('#BTNSendEmailDiv').click(function() {
 	var emailData={
 		    "pbhBPID":$('#BPID').text(),
 		    "emailResult":2,
+		    "PBHStatus":2
 			
 	}
 
