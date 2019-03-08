@@ -928,3 +928,66 @@ function setCheckBoxValue(CBName,CBVals){
 	}
 
 }
+
+//函数:生成跟踪表格函数
+
+/*
+ * tableID="#tableTrackPLD"
+
+ * SQLParam={"tableName":"ppm_bills_plan","titles":["BPID","CTRName"],"filter":"BPID='P12132131'"};
+ * 
+ * */
+
+
+function Fun_fillTrackTable(tableID,SQLParam){
+	
+	 $.ajax({
+         method:'get',
+         data:SQLParam,
+         url:"/app/PM/getTableTitles",
+         success:function(data){
+       	  
+       	  if(data.length!=0){
+       		  var trth="<tr>"
+       		  for(var i=0;i<data.length;i++){
+       			trth=trth+"<th>"+data[i].titleName+"</th>";
+       		  }
+       		trth=trth+"</tr>";
+       	  }
+
+       	  $(tableID+" thead").append(trth);   
+         },
+         error:function(){}
+     });
+     
+     $.ajax({
+         method:'get',
+         data:SQLParam,
+         url:"/app/PM/getTableDatas",
+         success:function(data){
+
+       	  
+       	  if(data.length!=0){
+
+       		  for(var i=0;i<data.length;i++){
+       			  
+       			 var trtd="<tr>";
+
+       		  
+       		  for(var j=0;j<SQLParam.titles.length;j++){
+
+       			trtd=trtd+"<td>"+data[i][SQLParam.titles[j]]+"</td>";
+       			  
+       		  }
+       			  trtd=trtd+"</tr>";
+       			 $(tableID+" tbody").append(trtd);   
+       		  }
+
+       	  }
+
+ 
+         },
+         error:function(){}
+     });
+
+}

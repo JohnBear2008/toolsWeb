@@ -58,68 +58,79 @@
                         <h3 class="panel-title">计划单信息</h3>
                     </div>
                     <div class="panel-body" >
-                    
-                    <table class="table table-bordered">
-                    <tr>
-                      <td id="TBillPLD-BPID"></td>
-                      <td id="TBillPLD-version"></td>
-                      <td id="TBillPLD-CTRName"></td>
-                      <td id="TBillPLD-orderFrom"></td>
-                    </tr>
-                    <tr>
-                      <td id="TBillPLD-MHEName"></td>
-                      <td id="TBillPLD-model"></td>
-                      <td id="TBillPLD-OGNSystemVersion"></td>
-                      <td id="TBillPLD-urgency"></td>
-                    </tr>
-                    <tr>
-                    <td id="TBillPLD-applyDate"></td>
-                    <td id="TBillPLD-limitDate"></td>
-                    <td id="TBillPLD-PGEMaker"></td>
-                    <td id="TBillPLD-fileName"></td>
-                    </tr>
-                    
-                    
-                    <tr>
-                    <td id="TBillPLD-topic" colspan="2"></td>
-                    <td id="TBillPLD-detail" colspan="2"></td>
 
-                    </tr>
+                    <table id="tableTrackPLD" class="table table-bordered">
+                    <thead></thead>
                     
-                    <tr>
-                    <td id="TBillPLD-maker"></td>
-                    <td id="TBillPLD-makeDate"></td>
-                    <td id="TBillPLD-auditor"></td>
-                    <td id="TBillPLD-auditDate"></td>
-                    </tr>
-                    
+                    <tbody></tbody>
                     </table>
-                    
-                    
+
                     </div>
                     <!--------------panel--------------------->
                     <!--------------panel--------------------->
                     <div class="panel-heading">
                         <h3 class="panel-title">方案单信息</h3>
                     </div>
+                    <div class="panel-body">
+                    
+                    <table id="tableTrackBPT" class="table table-bordered">
+                    <thead></thead>
+                    <tbody></tbody>
+                    </table>
+                    
+                    
+                  
+                    </div>
+                    <!--------------panel--------------------->
+                    <!--------------panel--------------------->
+                    <div class="panel-heading">
+                        <h3 class="panel-title">任务单信息</h3>
+                    </div>
+                    
+                    <div class="panel-body">
+                    <table id="tableTrackTask" class="table table-bordered">
+                    <thead></thead>
+                    <tbody></tbody>
+                    </table>
+                    
+                  
+                    </div>
+                    <!--------------panel--------------------->
+                    <!--------------panel--------------------->
+                    <div class="panel-heading">
+                        <h3 class="panel-title">FQC信息</h3>
+                    </div>
                     
                     <div class="panel-body">
                     
-                    <table class="table table-bordered">
-                    
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td colspan="3">&nbsp;</td>
-                      <td>&nbsp;</td>
-                      <td colspan="3">&nbsp;</td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td colspan="7">&nbsp;</td>
-                    </tr>
+                    <table id="tableTrackFQC" class="table table-bordered">
+                    <thead></thead>
+                    <tbody></tbody>
                     </table>
+                    
+                  
                     </div>
                     <!--------------panel--------------------->
+                    <!--------------panel--------------------->
+                    <div class="panel-heading">
+                        <h3 class="panel-title">发布单信息</h3>
+                    </div>
+                    
+                    <div class="panel-body">
+                    <table id="tableTrackPBH" class="table table-bordered">
+                    <thead></thead>
+                    <tbody></tbody>
+                    </table>
+                  
+                    </div>
+                    <!--------------panel--------------------->
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     </div>
                     
                     
@@ -165,59 +176,14 @@
             </tr>
         </thead>
     </table>
-    
 
-
-    
     
 </div>
 
 
 <script>
 
-//函数:加载计划单数据
-function Fun_getBillPLDData(DBID){
-	
-	var SQLPara={"SQL":"SQLTableBillsPLD","DBID":DBID}
-	
-	 $.ajax({
-	        method: 'get',
-	        url: '/app/PM/getSQLDBData',
-	        data: SQLPara,
-	        success: function(data) {
-	            console.log("成功数据:" + JSON.stringify(data));
-	        	$('#TBillPLD-BPID').html("计划单号:"+data[0].BPID); 
-	        	$('#TBillPLD-version').html("版本号:"+data[0].version); 
-	        	$('#TBillPLD-CTRName').html("客户名称:"+data[0].CTRName); 
-	        	$('#TBillPLD-orderFrom').html("需求来源:"+data[0].orderFrom); 
-	        	$('#TBillPLD-MHEName').html("机型:"+data[0].MHEName); 
-	        	$('#TBillPLD-model').html("系统:"+data[0].model); 
-	        	$('#TBillPLD-OGNSystemVersion').html("原系统版本:"+data[0].OGNSystemVersion);
-	        	$('#TBillPLD-urgency').html("紧急度:"+data[0].urgency);
-	        	$('#TBillPLD-applyDate').html("申请日期:"+data[0].applyDate);
-	        	$('#TBillPLD-limitDate').html("完成期限:"+data[0].limitDate);
-	        	$('#TBillPLD-fileName').html("附件:"+data[0].fileName);
-	        	$('#TBillPLD-PGEMaker').html("方案负责人:"+data[0].PGEMaker);
-	        	$('#TBillPLD-maker').html("制单人:"+data[0].maker);
-	        	$('#TBillPLD-makeDate').html("制单日期:"+data[0].makeDate);
-	        	$('#TBillPLD-auditor').html("审核人:"+data[0].auditor);
-	        	$('#TBillPLD-auditDate').html("审核日期:"+data[0].auditDate);
-	        	$('#TBillPLD-topic').html("修改主题:"+data[0].topic);
-	        	$('#TBillPLD-detail').html("修改要求:"+data[0].detail);
 
-	        	
-	        	
-	        	
-	        	
-	        },
-	        error: function(err) {
-	        	alert("失败数据:"+JSON.stringify(err));   
-	        }
-	    });
-}
-
-
-	
 	
 
 
@@ -226,8 +192,129 @@ function Fun_getBillPLDData(DBID){
 
 //函数:详情按钮详情页自动填写内容------------------------
 function Fun_winDetailInit(dataSelect){
-//	$('#TBillPLD-BPID').html("计划单号:"+dataSelect.BPID); 
-	Fun_getBillPLDData(dataSelect.DBID);
+
+	
+	var SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"detail",
+				"PGEMaker",
+				"OGNSystemVersion",
+				"MHEName",
+				"fileName",
+				"model",
+				"applyDate",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+			"filter":"BPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+	
+	var SQLParamBPT={
+			"tableName":"ppm_bills_blueprint",
+			"titles":[
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"BPTDescribe",
+				"PGEMaker",
+				"auditor",
+				"auditDate",
+				"fileName",
+				"model",
+				"BPTAuditOpinion",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+			"filter":"BPTID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackBPT",SQLParamBPT);
+	
+	//数据量不能过多,否则会报错
+	var SQLParamTask={
+			"tableName":"ppm_bills_task",
+			"titles":[
+				"BTID",
+				"BTVersion",
+//				"taskCTRName",
+				"taskStaff",
+				"taskDBE",
+				"taskLimitDate",
+//				"taskRemark",
+				"taskFileName",
+//				"taskMaker",
+				"taskMakeDate",
+				"BTAcceptDate",
+				"modifyContent",
+				"functionsDBE",
+				"recordRemark",
+				"recordDate",
+//				"recordAuditor",
+				"recordAuditDate",
+//				"IPQCContent",
+//				"IPQCTestResult",
+//				"IPQCMaker",
+				"IPQCMakeDate",
+				"BTStatus"
+				],
+			"filter":"taskBPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackTask",SQLParamTask);
+	
+	
+	var SQLParamFQC={
+			"tableName":"ppm_bills_fqc",
+			"titles":[
+				"FQCVersion",
+				"FQCRecord",
+				"FQCRemark",
+				"FQCMaker",
+				"FQCMakeDate",
+				"FQCAuditor",
+				"FQCAuditResult",
+				"FQCAuditDate",
+				"FQCStatus"
+				],
+			"filter":"fqcBPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackFQC",SQLParamFQC);
+	
+	
+	var SQLParamPBH={
+			"tableName":"ppm_bills_pbh",
+			"titles":[
+				"PBHVersion",
+				"PBHRemark",
+				"PBHMaker",
+				"PBHMakeDate",
+				"PBHAuditor",
+				"PBHAuditDate",
+
+				"emailADRS",
+				"PBHStatus"
+				],
+			"filter":"pbhBPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackPBH",SQLParamPBH);
+	
+	
 
 
 }

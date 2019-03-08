@@ -52,15 +52,15 @@ SQLTableBillsTask="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN
 SQLTableBillsTaskRecord="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'M' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
     "CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' END AS BTAcceptResultText,CASE A.recordAuditResult WHEN 0 " +
     "THEN '待审核' WHEN 1 THEN '审核通过' ELSE '未记录' END AS recordAuditResultText,CASE A.IPQCAuditResult WHEN 0 THEN 'IPQC未审核' WHEN 1 THEN" +
-    " 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '出货后修正' WHEN 3 THEN '立即修正'" +
+    " 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '测试未通过' " +
     " ELSE '未完结' END AS IPQCResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` " +
     "GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.BTAcceptResult IS NOT NULL ) A";
 
 SQLTableBillsTaskIPQC="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'M' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
     "CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' END AS BTAcceptResultText,CASE A.recordAuditResult WHEN 0 THEN" +
     " '记录待审核' WHEN 1 THEN '记录审核通过' WHEN 2 THEN '记录审核驳回' ELSE '未记录' END AS recordAuditResultText,CASE A.IPQCAuditResult WHEN 0 THEN" +
-    " 'IPQC未审核' WHEN 1 THEN 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '出货后修正'" +
-    " WHEN 3 THEN '立即修正' ELSE '未完结' END AS IPQCResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion" +
+    " 'IPQC未审核' WHEN 1 THEN 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '测试未通过'" +
+    "  ELSE '未完结' END AS IPQCResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion" +
     " FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordAuditResult=1) A";
 
 SQLTableBillsFQC="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
