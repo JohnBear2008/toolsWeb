@@ -42,7 +42,7 @@
         <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >审核</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
-            <div class="modal-dialog" style="width:75%">
+            <div class="modal-dialog" style="width:65%">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -61,11 +61,15 @@
 
                     
 
-                    <div class="form-horizontal" >  
+                    <div class="form-horizontal" id="DivPLD" >  
+                    
+                    
+                    <div  style="z-index:999;position:absolute;right:50px" >
+                    <img id="DivAuditImage" src="">
+                    </div>
                     
                     <input id="DBID" type="text" value="" style="display:none;">
-           
-                    
+
                     <input id="auditResult" type="text" value="" style="display:none;">
                     
                     
@@ -601,26 +605,30 @@ function Fun_winDetailInit(dataSelect){
     var Para={"billName":"ppm_bills_plan","billID":dataSelect.BPID,"billVersion":dataSelect.version}
 	Fun_getBillFile(Para,"#divFilesUploaded",true);
     
-  
-  $('.form_date').datetimepicker({
-      language:  'zh-CN',
-      weekStart: 1,
-      todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		minView: 2,
-		forceParse: 0
-  });
-
   $('#divFilesUploaded').html("");
   
-  if(dataSelect.fileKey!=null){
+//  if(dataSelect.fileKey!=null){
+//	  
+//	  console.log("不为空"+dataSelect.fileKey);
+//	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
+//	  $('#divFilesUploaded').html(downloadurl);
+//  }
+//  
+  
+  
+  
+  
+  if(dataSelect.files!=null){
 	  
-	  console.log("不为空"+dataSelect.fileKey);
-	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
+	  var files=JSON.parse(dataSelect.files);
+	  if(files!=null){
+	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span id='fileName'>"+files.fileName+"</span></a>";
+	  }else{
+		  downloadurl="";
+	  }
 	  $('#divFilesUploaded').html(downloadurl);
   }
+  
   
   
   $('#applyDate').val(dataSelect.applyDate); 
@@ -649,9 +657,32 @@ function Fun_winDetailInit(dataSelect){
   //已经审核 或者登陆人为审核人则显示
   
 
+
+  
+  
+  
+  
+  
+  
+  
   //如果是已审核单据 则不显示更新和审核按钮
-  if(dataSelect.auditResult==null){
+  if(dataSelect.auditResult==null||dataSelect.auditResult==0){
 	  
+	  
+	  
+	  $('.form_date').datetimepicker({
+	      language:  'zh-CN',
+	      weekStart: 1,
+	      todayBtn:  1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0
+	  });
+	  
+
+	  $("#DivAuditImage").attr('src',"");
 	  
 	  $("#DivFileBTNS").show();
 	  
@@ -669,7 +700,19 @@ function Fun_winDetailInit(dataSelect){
 
   }else{ 
 	  
+	  
+	  
+	  if(dataSelect.auditResult==1){
+		  $("#DivAuditImage").attr('src',"/images/auditYes.png");
+	  }else{ 
+		  $("#DivAuditImage").attr('src',"/images/auditNo.png");
+		  }
+	  
+	  
 	  $("#auditOpinionDiv").show();
+	  
+	  $('input').attr("disabled",true);
+	  $('select').attr("disabled",true);
 
 	    var SQLAuditor={SQL:"SQLSRStaffs"};
 	    var auditor="#auditor";
@@ -943,6 +986,7 @@ $('#BTNFormAdd').click(function(){
 		var fileName="";
 	}
 	
+	files={"fileName":fileName,"fileKey":fileKey};
 	var billData={
 			"DBTable":"ppm_bills_plan",
 			"BPID":$('#BPID').val(),
@@ -967,6 +1011,7 @@ $('#BTNFormAdd').click(function(){
 			"version": $('#version').text(),
 			"fileKey":fileKey,
 			"fileName":fileName,
+			"files":JSON.stringify(files),
 			"WFStatus":1
 	}
 	
@@ -999,6 +1044,8 @@ $('#BTNFormModify').click(function() {
 	var fileKey="";
 	var fileName="";
 	}
+	
+	files={"fileName":fileName,"fileKey":fileKey};
 
 	var billData={
 			"DBTable":"ppm_bills_plan",
@@ -1024,6 +1071,7 @@ $('#BTNFormModify').click(function() {
 			"version": $('#version').text(),
 			"fileKey":fileKey,
 			"fileName":fileName,
+			"files":JSON.stringify(files),
 			"WFStatus":1
 	}
 	
@@ -1064,7 +1112,6 @@ $('#BTNFormUpdate').click(function() {
         	
         	var newVersion=parseInt($('#version').text())+1;
         	
-        	
         	if($('#filePath').attr('href')!=undefined){
         		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
         		var fileName=$('#fileName').html();
@@ -1072,7 +1119,10 @@ $('#BTNFormUpdate').click(function() {
         		var fileKey="";
         		var fileName="";
         		}
-  
+        		
+        		files={"fileName":fileName,"fileKey":fileKey};
+        	
+
         	var billData={
         			"DBTable":"ppm_bills_plan",
         			"BPID":$('#BPID').val(),
@@ -1089,24 +1139,23 @@ $('#BTNFormUpdate').click(function() {
         			"applyDate":$('#applyDate').val(),
         			"limitDate":$('#limitDate').val(),
         			"urgency":$('input:radio[name="urgency"]:checked').val(),
-        			"maker":$('#maker').val(),
-        			"auditor":$('#auditor option:selected').text(),
-        			"makeDate":$('#makeDate').val(),
-        			"auditDate":$('#auditDate').val(),
-        			"fileKey":fileKey,
-        			"fileName":fileName,
+        			"maker":sessionName,
+        			"makeDate":Ndate,
         			"version": newVersion,
+        			"files":JSON.stringify(files),
         			"WFStatus":1
         	}
         	
-        	if(billData.auditor!=""){
-
-        		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-        		
-        		Fun_addDBDataDD(billData,DDMsg,"新版本计划单");
-        	}else{
-        		alert("该计划单没有指定审核人,请检查!");
-        	}
+        	addDBData(billData);
+        	
+//        	if(billData.auditor!=""){
+//
+//        		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
+//        		
+//        		Fun_addDBDataDD(billData,DDMsg,"新版本计划单");
+//        	}else{
+//        		alert("该计划单没有指定审核人,请检查!");
+//        	}
         	
 
 

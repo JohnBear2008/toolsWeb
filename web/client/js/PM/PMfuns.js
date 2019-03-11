@@ -940,6 +940,10 @@ function setCheckBoxValue(CBName,CBVals){
 
 
 function Fun_fillTrackTable(tableID,SQLParam){
+
+	
+	 $(tableID +" thead").html("");
+	 $(tableID +" tbody").html("");
 	
 	 $.ajax({
          method:'get',
@@ -966,18 +970,33 @@ function Fun_fillTrackTable(tableID,SQLParam){
          url:"/app/PM/getTableDatas",
          success:function(data){
 
-       	  
        	  if(data.length!=0){
 
        		  for(var i=0;i<data.length;i++){
        			  
        			 var trtd="<tr>";
 
-       		  
        		  for(var j=0;j<SQLParam.titles.length;j++){
 
-       			trtd=trtd+"<td>"+data[i][SQLParam.titles[j]]+"</td>";
+//      			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
        			  
+       			  if(SQLParam.titles[j]=="files"){
+       				  
+       				  
+       				  var files=JSON.parse(data[i][SQLParam.titles[j]]);
+       				  
+       				 console.log("files:"+files);
+       				 
+       				 if(files!=null){
+       					trtd=trtd+"<td>"+"<a  href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span>"+files.fileName+"</span></a>"+"</td>";
+       				 }else{
+       					trtd=trtd+"<td></td>";
+       				 }
+
+       			  }else{
+       				trtd=trtd+"<td>"+data[i][SQLParam.titles[j]]+"</td>";
+       			  }
+
        		  }
        			  trtd=trtd+"</tr>";
        			 $(tableID+" tbody").append(trtd);   
@@ -991,3 +1010,8 @@ function Fun_fillTrackTable(tableID,SQLParam){
      });
 
 }
+
+
+
+
+

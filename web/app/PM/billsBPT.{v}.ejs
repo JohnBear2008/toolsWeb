@@ -136,6 +136,10 @@
 
 
                     <input id="auditResult" type="text" value="" style="display:none;">
+                    
+                    <div  style="z-index:999;position:absolute;right:50px" >
+                    <img id="DivAuditImage" src="">
+                    </div>
 
 
 
@@ -802,10 +806,21 @@ function Fun_BPTDetailInitPart2(dataSelect){
 
 	 $('#divFilesUploaded').html("");
 
-	  if(dataSelect.fileKey!=null){
-
-		  console.log("不为空"+dataSelect.fileKey);
-		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
+//	  if(dataSelect.fileKey!=null){
+//
+//		  console.log("不为空"+dataSelect.fileKey);
+//		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
+//		  $('#divFilesUploaded').html(downloadurl);
+//	  }
+	  
+	 if(dataSelect.files!=null){
+		  
+		  var files=JSON.parse(dataSelect.files);
+		  if(files!=null){
+		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span id='fileName'>"+files.fileName+"</span></a>";
+		  }else{
+			  downloadurl="";
+		  }
 		  $('#divFilesUploaded').html(downloadurl);
 	  }
 
@@ -834,6 +849,8 @@ function Fun_BPTDetailInit(dataSelect){
 	console.log("Fun_BPTDetailInit auditor:"+auditor);
 
 	if(auditResult==null){
+		
+		
 		var SQLMHEName={SQL:"SQLSRMachines"};
 		var MHEName="#MHEName";
 		Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.PLDMHEName);
@@ -868,7 +885,7 @@ function Fun_BPTDetailInit(dataSelect){
 
 	switch(auditResult){
 	case null:
-
+		 $("#DivAuditImage").attr('src',"");
 
 
 		 $("#modifyTypeOption1").prop("checked",true);
@@ -885,6 +902,7 @@ function Fun_BPTDetailInit(dataSelect){
 
 		 break;
 	case 0:
+		 $("#DivAuditImage").attr('src',"");
 		Fun_BPTDetailInitPart2(dataSelect);
 
 		 $("#DivFileBTNS").show();
@@ -896,12 +914,14 @@ function Fun_BPTDetailInit(dataSelect){
 
 		 $("#BTNBPTAuditYes").hide();
 		 $("#BTNBPTAuditNo").hide();
-
-
-
-
 		break;
-	default:
+	case 1:
+		
+		
+		$("#DivAuditImage").attr('src',"/images/auditYes.png");
+		$('input').attr("disabled",true);
+		$('select').attr("disabled",true);
+		  
 		Fun_BPTDetailInitPart2(dataSelect);
 
 	  $('#auditDate').val(dataSelect.auditDate);
@@ -915,6 +935,30 @@ function Fun_BPTDetailInit(dataSelect){
 	  $("#BTNBPTUpdateVer").show();
 	  $("#BTNBPTAuditYes").hide();
 	  $("#BTNBPTAuditNo").hide();
+	  
+	    break;
+	
+	case 2:
+		
+		$("#DivAuditImage").attr('src',"/images/auditNo.png");
+		$('input').attr("disabled",true);
+		$('select').attr("disabled",true);
+		
+		Fun_BPTDetailInitPart2(dataSelect);
+
+	  $('#auditDate').val(dataSelect.auditDate);
+	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
+
+	  $("#DivFileBTNS").hide();
+	  $("#DivTaskBTNS").hide();
+	  $('#BTNTaskSave').hide();
+
+	  $("#BTNBPTSave").hide();
+	  $("#BTNBPTUpdateVer").show();
+	  $("#BTNBPTAuditYes").hide();
+	  $("#BTNBPTAuditNo").hide();
+	  
+	    break;
 
 
 
@@ -1448,6 +1492,8 @@ $('#BTNBPTSave').click(function(){
 		var fileKey="";
 		var fileName="";
 	}
+    
+    files={"fileName":fileName,"fileKey":fileKey};
 
 
     var BPTStatusText=$('#BPTStatusText').text();
@@ -1474,6 +1520,7 @@ $('#BTNBPTSave').click(function(){
     			"makeDate":Ndate,
     			"auditResult":0,
     			"auditor":auditor,
+    			"files":JSON.stringify(files),
     			"fileKey":fileKey,
     			"fileName":fileName
     			}
@@ -1511,8 +1558,8 @@ $('#BTNBPTUpdateVer').click(function(){
             var modifyType=$('input:radio[name="modifyType"]:checked').val();
             var	modifyReason=getCheckBoxValue("modifyReason");
             var BPTDescribe=$('#BPTDescribe').val();
-            var auditor=Fun_getSelectText($('#auditor option:selected').text());
-            console.log("auditor:"+auditor);
+//            var auditor=Fun_getSelectText($('#auditor option:selected').text());
+//            console.log("auditor:"+auditor);
 
             if($('#filePath').attr('href')!=undefined){
         		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
@@ -1521,6 +1568,8 @@ $('#BTNBPTUpdateVer').click(function(){
         		var fileKey="";
         		var fileName="";
         	}
+            
+            files={"fileName":fileName,"fileKey":fileKey};
 
 
             var billData={
@@ -1540,23 +1589,25 @@ $('#BTNBPTUpdateVer').click(function(){
         			"maker":sessionName,
         			"makeDate":Ndate,
         			"auditResult":0,
-        			"auditor":auditor,
+
+        			"files":JSON.stringify(files),
         			"fileKey":fileKey,
         			"fileName":fileName
         			}
 
             	console.log("无方案 billData:"+JSON.stringify(billData));
+        	    addDBData(billData);
 
-            	if(auditor!=null&&auditor!=""){
-            		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
-            		Fun_addDBDataDD(billData,DDMsg,"新版本方案单");
-
-            	}else{
-
-            		console.log("billData:"+JSON.stringify(billData));
-                	addDBData(billData);
-
-            	}
+//            	if(auditor!=null&&auditor!=""){
+//            		var DDMsg={"Msg":billData.auditor+"您已被指定为,方案单号:"+billData.BPTID+"的审核人,请注意审核!"};
+//            		Fun_addDBDataDD(billData,DDMsg,"新版本方案单");
+//
+//            	}else{
+//
+//            		console.log("billData:"+JSON.stringify(billData));
+//                
+//
+//            	}
 
         	}
         }
