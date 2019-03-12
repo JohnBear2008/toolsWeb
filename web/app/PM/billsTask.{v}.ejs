@@ -41,7 +41,7 @@
         <!-- <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button> -->
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
-            <div class="modal-dialog" style="width:98%">
+            <div class="modal-dialog" style="width:70%">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -49,86 +49,56 @@
                     </div>
                     <div class="modal-body">
                     
-                    <!--------------跟踪面板----------------->
+                    <!---折叠------------------------>
                     
-                    <div class="panel panel-info" style="width:24%;float:left;">
-                    
-                    <!--------------panel--------------------->
-                    <div class="panel-heading">
-                        <h3 class="panel-title">计划单信息</h3>
-                    </div>
-                    <div class="panel-body" >
-                    
-                    <table class="table table-bordered">
-                    <tr>
-                      <td id="TBillPLD-BPID"></td>
-                      <td id="TBillPLD-version"></td>
-                      <td id="TBillPLD-CTRName"></td>
-                      <td id="TBillPLD-orderFrom"></td>
-                    </tr>
-                    <tr>
-                      <td id="TBillPLD-MHEName"></td>
-                      <td id="TBillPLD-model"></td>
-                      <td id="TBillPLD-OGNSystemVersion"></td>
-                      <td id="TBillPLD-urgency"></td>
-                    </tr>
-                    <tr>
-                    <td id="TBillPLD-applyDate"></td>
-                    <td id="TBillPLD-limitDate"></td>
-                    <td id="TBillPLD-PGEMaker"></td>
-                    <td id="TBillPLD-fileName"></td>
-                    </tr>
+                    <div class="panel-group" id="accordion">
+                	
+                	<div class="panel panel-default">
+                		<div class="panel-heading">
+                			<h4 class="panel-title">
+                				<a data-toggle="collapse" data-parent="#accordion" 
+                				   href="#collapseTrack">
+                					流程跟踪面板:点击展开,再次点击收起
+                				</a>
+                			</h4>
+                		</div>
+                		<div id="collapseTrack" class="panel-collapse collapse">
+                			<div class="panel-body">
+                			
+                			 <!--------------panel--------------------->
+                             
+                             <h3 class="panel-title">计划单信息</h3>
+                             </br>
 
-                    <tr>
-                    <td id="TBillPLD-topic" colspan="2"></td>
-                    <td id="TBillPLD-detail" colspan="2"></td>
+                             <table id="tableTrackPLD" class="table table-bordered">
+                             <thead></thead>
+                             
+                             <tbody></tbody>
+                             </table>
+                             
+                             <h3 class="panel-title">方案单信息</h3>
+                             </br>
+                             
+                             <table id="tableTrackBPT" class="table table-bordered">
+                             <thead></thead>
+                             <tbody></tbody>
+                             </table>
 
-                    </tr>
+                             
+                             <!--------------panel--------------------->
+                			</div>
+                		</div>
+                	</div>
+                	
+                </div>
                     
-                    <tr>
-                    <td id="TBillPLD-maker"></td>
-                    <td id="TBillPLD-makeDate"></td>
-                    <td id="TBillPLD-auditor"></td>
-                    <td id="TBillPLD-auditDate"></td>
-                    </tr>
+                <!---折叠------------------------>
                     
-                    </table>
-                    
-                    
-                    </div>
-                    <!--------------panel--------------------->
-                    <!--------------panel--------------------->
-                    <div class="panel-heading">
-                        <h3 class="panel-title">方案单信息</h3>
-                    </div>
-                    
-                    <div class="panel-body">
-                    
-                    <table class="table table-bordered">
-                    
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td colspan="3">&nbsp;</td>
-                      <td>&nbsp;</td>
-                      <td colspan="3">&nbsp;</td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td colspan="7">&nbsp;</td>
-                    </tr>
-                    </table>
-                    </div>
-                    <!--------------panel--------------------->
-                    </div>
-                    
-                    
-                    
-                    
-                    <!--------------跟踪面板----------------->
+                   
                     
                     <!--------------方案单面板----------------->
 
-                    <div class="panel panel-info" style="width:75%;float:right;">
+                    <div class="panel panel-info" >
                 	
                     <div class="panel-heading">
                         <h3 class="panel-title">任务单</h3>
@@ -160,7 +130,7 @@
                 	        <input type="radio" name="taskSortType" id="radio1" value="D" checked> DSP任务单
                 	    </label>
                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskSortType" id="radio2" value="M"> HMI任务单
+                	        <input type="radio" name="taskSortType" id="radio2" value="H"> HMI任务单
                 	    </label>
                 	    <label class="radio-inline">
                 	        <input type="radio" name="taskSortType" id="radio3" value="P"> PLC任务单
@@ -575,6 +545,56 @@
 //函数:审核按钮详情页自动填写内容------------------------
 function Fun_taskAuditInit(dataSelect){
 	
+	var SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"detail",
+				"PGEMaker",
+				"OGNSystemVersion",
+				"MHEName",
+				"files",
+				"model",
+				"applyDate",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+			"filter":"BPID='"+dataSelect.taskBPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+	
+	var SQLParamBPT={
+			"tableName":"ppm_bills_blueprint",
+			"titles":[
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"BPTDescribe",
+				"PGEMaker",
+				"auditor",
+				"auditDate",
+				"files",
+				"model",
+				"BPTAuditOpinion",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+			"filter":"BPTID='"+dataSelect.taskBPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackBPT",SQLParamBPT);
+	
+	
+	
+	
 	$('#DBID').text(dataSelect.DBID); 
 	$('#taskBPID').text(dataSelect.taskBPID); 
 	
@@ -678,6 +698,10 @@ function Fun_taskRecordInit(dataSelect){
 	
 	
 	if(dataSelect.recordAuditResult==1){
+		
+		$('input').attr("disabled",true);
+		$('select').attr("disabled",true);
+		$('textarea').attr("disabled",true);
 
 		$('#recordAuditor').text(dataSelect.recordAuditor);
 		$('#recordAuditDate').text(dataSelect.recordAuditDate);
@@ -715,12 +739,24 @@ function Fun_taskRecordInit(dataSelect){
 	
 	 $('#divFilesUploaded').html("");
 	  
-	  if(dataSelect.taskFileKey!=null){
+//	  if(dataSelect.taskFileKey!=null){
+//		  
+//		  console.log("不为空"+dataSelect.taskFileKey);
+//		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.taskFileKey+" download="+dataSelect.taskFileName+">"+"<span id='fileName'>"+dataSelect.taskFileName+"</span></a>";
+//		  $('#divFilesUploaded').html(downloadurl);
+//	  }
+//	  
+      if(dataSelect.taskFiles!=null){
 		  
-		  console.log("不为空"+dataSelect.taskFileKey);
-		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.taskFileKey+" download="+dataSelect.taskFileName+">"+"<span id='fileName'>"+dataSelect.taskFileName+"</span></a>";
+		  var taskFiles=JSON.parse(dataSelect.taskFiles);
+		  if(taskFiles!=null){
+		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+taskFiles.fileKey+" download="+taskFiles.fileName+">"+"<span id='fileName'>"+taskFiles.fileName+"</span></a>";
+		  }else{
+			  downloadurl="";
+		  }
 		  $('#divFilesUploaded').html(downloadurl);
 	  }
+	  
 	  
 	  $('#DivRecordPanel').show();  
 	  
@@ -891,7 +927,10 @@ $('#BTNTaskRecordSave').click(function() {
 					}else{
 					var fileKey="";
 					var fileName="";
+
 				}
+			
+			 var taskFiles={"fileName":fileName,"fileKey":fileKey};
 			 
 			 if(fileName==""){
 				 alert("程序附件必须上传!");
@@ -907,6 +946,7 @@ $('#BTNTaskRecordSave').click(function() {
 							"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
 							"taskFileName":fileName,
 							"taskFileKey":fileKey,
+							"taskFiles":JSON.stringify(taskFiles),
 							"recordDate":Ndate,
 							"recordAuditResult":0,
 							"BTStatus":3

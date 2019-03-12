@@ -43,20 +43,20 @@ SQLTableBillsBPT="SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.
 //SQLTableBillsBPT="SELECT A.*,CASE A.auditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '无方案' END AS BPTAuditResultText,B.DBID AS PLDDBID,B.BPID,B.version AS PLDVersion,B.CTRName ,B.PGEMaker,B.limitDate,B.MHEName AS PLDMHEName,B.model AS PLDModel,B.OGNSystemVersion FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND auditResult=1) B LEFT JOIN ppm_bills_blueprint A ON A.BPID=B.BPID";
 
 //SQLTableBillsTask="SELECT *,CASE taskType WHEN 'T1' THEN 'DSP任务' WHEN 'T2' THEN 'HMI任务' WHEN 'T3' THEN '内核任务' ELSE '未定义' END AS taskTypeText,CASE BTAuditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '新增' END AS BTAuditResultText FROM ppm_bills_task"
-SQLTableBillsTask="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'M' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
+SQLTableBillsTask="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'H' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
     "CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE " +
     "A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' ELSE '新增' END AS BTAcceptResultText,CASE A.recordAuditResult " +
     "WHEN 0 THEN '待审核' WHEN 1 THEN '审核通过' ELSE '未记录' END AS recordAuditResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb," +
     "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A";
 
-SQLTableBillsTaskRecord="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'M' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
+SQLTableBillsTaskRecord="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'H' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
     "CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' END AS BTAcceptResultText,CASE A.recordAuditResult WHEN 0 " +
     "THEN '待审核' WHEN 1 THEN '审核通过' ELSE '未记录' END AS recordAuditResultText,CASE A.IPQCAuditResult WHEN 0 THEN 'IPQC未审核' WHEN 1 THEN" +
     " 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '测试未通过' " +
     " ELSE '未完结' END AS IPQCResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` " +
     "GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.BTAcceptResult IS NOT NULL ) A";
 
-SQLTableBillsTaskIPQC="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'M' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
+SQLTableBillsTaskIPQC="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'H' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
     "CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' END AS BTAcceptResultText,CASE A.recordAuditResult WHEN 0 THEN" +
     " '记录待审核' WHEN 1 THEN '记录审核通过' WHEN 2 THEN '记录审核驳回' ELSE '未记录' END AS recordAuditResultText,CASE A.IPQCAuditResult WHEN 0 THEN" +
     " 'IPQC未审核' WHEN 1 THEN 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '测试未通过'" +

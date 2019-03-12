@@ -980,7 +980,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
 
 //      			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
        			  
-       			  if(SQLParam.titles[j]=="files"){
+       			  if(SQLParam.titles[j]=="files"||SQLParam.titles[j]=="taskFiles"){
        				  
        				  
        				  var files=JSON.parse(data[i][SQLParam.titles[j]]);
@@ -1012,6 +1012,54 @@ function Fun_fillTrackTable(tableID,SQLParam){
 }
 
 
+//函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
 
+
+function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
+	
+	//alert(JSON.stringify(DataPara));
+	 $(tableID+" tbody").html("");
+	
+	 $.ajax({
+         method:'get',
+         data:SQL,
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+        	 console.log("back data:"+JSON.stringify(data));
+        	 for(var i=0;i<data.length;i++){
+        		 var tr="<tr>" +
+        		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
+        		        "<td>"+data[i].modelType+"</td>" +
+        		 		"<td>"+data[i].content+"</td>" +
+        		 		"<td><input type='radio' name='testResultRadio"+i+"'  value='1' checked>正确 <input type='radio' name='testResultRadio"+i+"' value='2'> 不正确</td>"+
+        		 		"<td><input id='testRemark"+i+"' type='text' value='' style='width:100%'></td>"+
+        		 		"</tr>";
+        		 
+        		 $(tableID+" tbody").append(tr);
+        		 
+        	 }
+        	 
+        	 if(TestResult!=null){
+        		 
+        		 for(var i=0;i<TestResult.length;i++){
+//          		  alert(TestResult[i].testResult);
+          		  $("input:radio[name='testResultRadio"+i+"'][value="+TestResult[i].testResult+"]").prop("checked",true); 
+          		  $("#testRemark"+i).val(TestResult[i].testRemark);
+                }
+        		 
+        		 if(auditCheck==1||auditCheck==2){
+        			 $('input').attr("disabled",true);
+        		 }
+        		 
+
+        		 
+        		 
+        	 }
+
+         },
+         error:function(){}
+     })
+
+}
 
 

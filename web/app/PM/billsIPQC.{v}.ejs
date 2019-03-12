@@ -41,94 +41,19 @@
         <!--      <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button> -->
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
-            <div class="modal-dialog" style="width:98%">
+            <div class="modal-dialog" style="width:70%">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="BillTaskLabel">任务单详情</h4>
                     </div>
                     <div class="modal-body">
-                    
-                    <!--------------跟踪面板----------------->
-                    
-                    <div class="panel panel-info" style="width:24%;float:left;">
-                    
-                    <!--------------panel--------------------->
-                    <div class="panel-heading">
-                        <h3 class="panel-title">计划单信息</h3>
-                    </div>
-                    <div class="panel-body" >
-                    
-                    <table class="table table-bordered">
-                    <tr>
-                      <td id="TBillPLD-BPID"></td>
-                      <td id="TBillPLD-version"></td>
-                      <td id="TBillPLD-CTRName"></td>
-                      <td id="TBillPLD-orderFrom"></td>
-                    </tr>
-                    <tr>
-                      <td id="TBillPLD-MHEName"></td>
-                      <td id="TBillPLD-model"></td>
-                      <td id="TBillPLD-OGNSystemVersion"></td>
-                      <td id="TBillPLD-urgency"></td>
-                    </tr>
-                    <tr>
-                    <td id="TBillPLD-applyDate"></td>
-                    <td id="TBillPLD-limitDate"></td>
-                    <td id="TBillPLD-PGEMaker"></td>
-                    <td id="TBillPLD-fileName"></td>
-                    </tr>
 
-                    <tr>
-                    <td id="TBillPLD-topic" colspan="2"></td>
-                    <td id="TBillPLD-detail" colspan="2"></td>
-
-                    </tr>
-                    
-                    <tr>
-                    <td id="TBillPLD-maker"></td>
-                    <td id="TBillPLD-makeDate"></td>
-                    <td id="TBillPLD-auditor"></td>
-                    <td id="TBillPLD-auditDate"></td>
-                    </tr>
-                    
-                    </table>
-                    
-                    
-                    </div>
-                    <!--------------panel--------------------->
-                    <!--------------panel--------------------->
-                    <div class="panel-heading">
-                        <h3 class="panel-title">方案单信息</h3>
-                    </div>
-                    
-                    <div class="panel-body">
-                    
-                    <table class="table table-bordered">
-                    
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td colspan="3">&nbsp;</td>
-                      <td>&nbsp;</td>
-                      <td colspan="3">&nbsp;</td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td colspan="7">&nbsp;</td>
-                    </tr>
-                    </table>
-                    </div>
-                    <!--------------panel--------------------->
-                    </div>
-                    
-                    
-                    
-                    
                     <!--------------跟踪面板----------------->
                     
                     <!--------------方案单面板----------------->
 
-                    <div class="panel panel-info" style="width:75%;float:right;">
+                    <div class="panel panel-info">
                 	
                     <div class="panel-heading">
                         <h3 class="panel-title">任务单</h3>
@@ -161,7 +86,7 @@
                 	        <input type="radio" name="taskSortType" id="radio1" value="D" checked> DSP任务单
                 	    </label>
                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskSortType" id="radio2" value="M"> HMI任务单
+                	        <input type="radio" name="taskSortType" id="radio2" value="H"> HMI任务单
                 	    </label>
                 	    <label class="radio-inline">
                 	        <input type="radio" name="taskSortType" id="radio3" value="P"> PLC任务单
@@ -424,9 +349,10 @@
                     <table id="TableTestContents" class="table table-bordered" style="width:100%;" >
                     <thead>
                         <tr>
+                            <th width="70px">模块</th>
                             <th>测试内容</th>
-                            <th>测试结果</th>
-                            <th>备注</th>
+                            <th width="120px">测试结果</th>
+                            <th width="200px">备注</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -589,50 +515,7 @@
 <script>
 
 
-//函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
 
-
-function Fun_showSQLTestContentsTable(SQL,tableID,IPQCTestResult){
-	
-	//alert(JSON.stringify(DataPara));
-	
-	 $.ajax({
-         method:'get',
-         data:SQL,
-         url:"/app/PM/getSQLDBData",
-         success:function(data){
-        	 console.log("back data:"+JSON.stringify(data));
-        	 for(var i=0;i<data.length;i++){
-        		 var tr="<tr>" +
-        		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
-        		 		"<td>"+data[i].content+"</td>" +
-        		 		"<td><input type='radio' name='testResultRadio"+i+"'  value='1'>正确 <input type='radio' name='testResultRadio"+i+"' value='2'> 不正确</td>"+
-        		 		"<td><input id='testRemark"+i+"' type='text' value='' style='width:100%'></td>"+
-        		 		"</tr>";
-        		 
-        		 $(tableID+" tbody").append(tr);
-        		 
-        	 }
-        	 
-        	 if(IPQCTestResult!=null){
-        		 
-        		 for(var i=0;i<IPQCTestResult.length;i++){
-//          		  alert(IPQCTestResult[i].testResult);
-          		  $("input:radio[name='testResultRadio"+i+"'][value="+IPQCTestResult[i].testResult+"]").prop("checked",true); 
-          		  $("#testRemark"+i).val(IPQCTestResult[i].testRemark);
-                }
-        		 
-        	 }
-        	 
-        	 
-        	 
-        	 
-        	 
-         },
-         error:function(){}
-     })
-
-}
 
 
 
@@ -674,25 +557,28 @@ function Fun_IPQCRecordInit(dataSelect){
 	
 	
 	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = '"+dataSelect.taskSortType+"'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = '"+dataSelect.taskSortType+"' AND billType='IPQC'"};
 
 	  var tableID="#TableTestContents";
-	  
-	  
-	  
+
 	  
 	  console.log("IPQCTestResult:"+dataSelect.IPQCTestResult);
 	  
 	  var IPQCTestResult=JSON.parse(dataSelect.IPQCTestResult);
-	  
 
-	  
-	  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,IPQCTestResult);
+	  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,IPQCTestResult,dataSelect.IPQCAuditResult);
 	
 
 	
 	
-	if(dataSelect.recordAuditResult==1){
+	if(dataSelect.IPQCAuditResult==1){
+		
+		$('input').attr("disabled",true);
+		$('select').attr("disabled",true);
+		$('textarea').attr("disabled",true);
+
+		
+
 		
 		
 // 		  if(IPQCTestResult!=null){

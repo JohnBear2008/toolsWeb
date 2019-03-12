@@ -43,7 +43,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="BillPLDLabel">计划单面板</h4>
+                        <h4 class="modal-title" id="BillPLDLabel">FQC面板</h4>
                     </div>
                     <div class="modal-body">
 
@@ -147,10 +147,6 @@
                      </div>
                      </div>
 
-
-
-
-
                      <!-------------------------------------------------------------------------->
 
                      </div>
@@ -190,6 +186,32 @@
 
 
                    <div class="form-horizontal" >
+                   <!-------------------------------------------------------------------------->
+                   
+                   <div class="form-group"> 
+                   <label class="col-sm-1 control-label">测试内容:</label>
+                   <div class="col-sm-10">
+                   
+                   <table id="TableTestContents" class="table table-bordered" style="width:100%;" >
+                   <thead>
+                       <tr>
+                       <th width="70px">模块</th>
+                       <th>测试内容</th>
+                       <th width="120px">测试结果</th>
+                       <th width="200px">备注</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                   </tbody>
+                   </table>
+
+
+                   
+                   
+                   
+                   </div>
+                   </div>
+                   
                    <!-------------------------------------------------------------------------->
 
                    <div class="form-group">
@@ -393,7 +415,6 @@ function Fun_showSQLFileTable(SQL,tableID){
 
 
 
-
 //函数:详情按钮详情页自动填写内容------------------------
 function Fun_winDetailInit(dataSelect){
 	
@@ -438,6 +459,27 @@ function Fun_winDetailInit(dataSelect){
 
 	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC'"};
+
+	  var tableID="#TableTestContents";
+
+	  
+	  console.log("FQCTestResult:"+dataSelect.FQCTestResult);
+	  
+	  var FQCTestResult=JSON.parse(dataSelect.FQCTestResult);
+
+	  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,FQCTestResult,dataSelect.FQCAuditResult);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	if(dataSelect.FQCAuditResult==0||dataSelect.FQCAuditResult==null){
 		
 		$('#FQCRemarkShow').hide();
@@ -447,6 +489,12 @@ function Fun_winDetailInit(dataSelect){
 		$('#BTNUpdVer').hide();
 		
 	}else{
+		
+		$('input').attr("disabled",true);
+		$('select').attr("disabled",true);
+		$('textarea').attr("disabled",true);
+		
+		
 		$('#FQCRemarkShow').show();
 		$('#FQCRemark').hide();
 		$('#DivFQCBTNS').hide();
@@ -532,12 +580,39 @@ $('#BTNFQCDetail').click(function() {
 
 //按钮-FQC保存---------
 $('#BTNFQCSave').click(function() {
+	
+	
+	
+	var FQCTestResult=[];
+	
+	var testNum=$("#TableTestContents").find("tr").length-1;
+	
+	var radioCheck=true;
+//	
+//	alert($("#TableTestContents").find("tr").length );
+	
+	for(var i=0;i<testNum;i++){
+		var testResult={
+				"testContentDBID":$("#testContentDBID"+i).text(),
+				"testResult":$('input:radio[name="testResultRadio'+i+'"]:checked').val(),
+				"testRemark":$("#testRemark"+i).val()
+				
+		}
+		radioCheck=radioCheck&&$('input:radio[name="testResultRadio'+i+'"]:checked').val();
+		
+		FQCTestResult.push(testResult);
+	}
+	
+	
+	if(radioCheck!=undefined){
+//		alert(JSON.stringify(FQCTestResult));
 
 		 var FQCData={
 					"DBTable":"ppm_bills_FQC",
 					"DBID":$('#DBID').val(),
 					"fqcBPID":$('#BPID').text(),
 					"CTRName":$('#CTRName').text(),
+					"FQCTestResult":JSON.stringify(FQCTestResult),
 					"FQCRemark":$('#FQCRemark').val(),
 				    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
 					"FQCMaker":sessionName,
@@ -546,6 +621,11 @@ $('#BTNFQCSave').click(function() {
 			}
 
 	saveDBData(FQCData,"FQC单");
+		 
+		 
+	}else{
+		alert("存在未测试内容,请检查!");
+	}
 
 });
 
