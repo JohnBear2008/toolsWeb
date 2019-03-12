@@ -9,6 +9,8 @@ module.exports = function(sender) {
    console.log("get:"+JSON.stringify(sender.req.query));
    var tableName=sender.req.query.tableName;  
    var titles = sender.req.query.titles;
+   var BID = sender.req.query.BID;
+   var VER = sender.req.query.VER;
    var filter=sender.req.query.filter;
    
    
@@ -21,11 +23,20 @@ module.exports = function(sender) {
 		titlesContent=titlesContent.substring(0,titlesContent.length-1);
    }
    
-   
+   if(BID!=undefined&&VER!=undefined){
+	   
+	   
+	   var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" ta ,(SELECT "+BID+" AS BID,MAX("+VER+") AS maxVer FROM "+tableName+" GROUP BY "+BID+" ) tb WHERE ta."+BID+"=tb.BID AND ta."+VER+"=tb.maxVer AND "+filter;
+	   
+	   
+	   
+   }else{
+	   var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" WHERE "+filter;
+   }
     
-    var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" WHERE "+filter;
+  
     
-//    console.log("SQLGetDatas:"+SQLGetDatas);
+    console.log("SQLGetDatas:"+SQLGetDatas);
 
     
     yjDBService.exec({

@@ -83,6 +83,15 @@
                              <thead></thead>
                              <tbody></tbody>
                              </table>
+                             
+                             <h3 class="panel-title">任务单信息</h3>
+                             </br>
+                             
+                             <table id="tableTrackTask" class="table table-bordered">
+                             <thead></thead>
+                             <tbody></tbody>
+                             </table>
+                             
 
                              
                              <!--------------panel--------------------->
@@ -540,10 +549,9 @@
 //	return BillID;
 //}
 
+//函数:加载 系统内最新单据数据
 
-
-//函数:审核按钮详情页自动填写内容------------------------
-function Fun_taskAuditInit(dataSelect){
+function Fun_getTaskTrackData(dataSelect){
 	
 	var SQLParamPLD={
 			"tableName":"ppm_bills_plan",
@@ -563,6 +571,8 @@ function Fun_taskAuditInit(dataSelect){
 				"maker",
 				"makeDate"
 				],
+			"BID":"BPID",
+			"VER":"version",
 			"filter":"BPID='"+dataSelect.taskBPID+"'"
 			};
 	
@@ -586,11 +596,53 @@ function Fun_taskAuditInit(dataSelect){
 				"maker",
 				"makeDate"
 				],
+				"BID":"BPTID",
+				"VER":"BPTVersion",
 			"filter":"BPTID='"+dataSelect.taskBPID+"'"
 			};
 	
 	
 	Fun_fillTrackTable("#tableTrackBPT",SQLParamBPT);
+	
+	
+	var SQLParamTask={
+			"tableName":"ppm_bills_task",
+			"titles":[
+				"BTID",
+				"BTVersion",
+				"taskStaff",
+				"taskDBE",
+				"taskLimitDate",
+				"taskMakeDate",
+				"BTAcceptDate",
+				"modifyContent",
+				"functionsDBE",
+				"recordRemark",
+				"recordDate",
+				"recordAuditDate",
+				"IPQCMakeDate",
+				"BTStatus",
+				"taskFiles"
+				],
+				"BID":"BTID",
+				"VER":"BTVersion",
+			"filter":"taskBPID='"+dataSelect.taskBPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#tableTrackTask",SQLParamTask);
+	
+	
+	
+}
+
+
+
+
+//函数:审核按钮详情页自动填写内容------------------------
+function Fun_taskAuditInit(dataSelect){
+	
+	Fun_getTaskTrackData(dataSelect);
 	
 	
 	
@@ -644,6 +696,10 @@ function Fun_taskAuditInit(dataSelect){
 //函数:记录按钮详情页自动填写内容------------------------
 function Fun_taskRecordInit(dataSelect){
 	
+	
+	Fun_getTaskTrackData(dataSelect);
+	
+
 	$('#DBID').text(dataSelect.DBID); 
 	$('#taskBPID').text(dataSelect.taskBPID); 
 	

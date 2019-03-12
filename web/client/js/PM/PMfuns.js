@@ -934,8 +934,8 @@ function setCheckBoxValue(CBName,CBVals){
 /*
  * tableID="#tableTrackPLD"
 
- * SQLParam={"tableName":"ppm_bills_plan","titles":["BPID","CTRName"],"filter":"BPID='P12132131'"};
- * 
+ * SQLParam={"tableName":"ppm_bills_plan","titles":["BPID","CTRName"],"BID":"BPID","VER":"version","filter":"BPID='P12132131'"};
+ * BID:为分组单号,VER:为版本标识
  * */
 
 
