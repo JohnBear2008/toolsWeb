@@ -48,7 +48,8 @@
                         <h4 class="modal-title" id="BillTaskLabel">任务单详情</h4>
                     </div>
                     <div class="modal-body">
-
+                    
+                    
                     <!--------------跟踪面板----------------->
                     
                     <!--------------方案单面板----------------->
@@ -389,7 +390,30 @@
 
                 	 </div>
                 	 </div>
-                	 
+                	 <!-------------------------------------------------------------------------->
+                     <div class="form-group" id="DivIPQCAuditInfo">  
+                     
+                     
+                     
+                     
+                     
+
+          
+                     <label for="recordAuditDate" class="col-sm-1 control-label">IPQC制单日期:</label>                     
+                     <div class="col-sm-2">
+                     <span id="IPQCMakeDate" class="help-block"></span>  	
+                 	 </div>
+                 	 
+                 	<label class="col-sm-2 control-label">IPQC状态:</label>
+                    <div class="col-sm-1">
+                    <span id="IPQCAuditResultText" class="help-block"></span>
+                    </div>
+                 	 
+                 
+
+                     </div>
+                         
+                     <!-------------------------------------------------------------------------->
                 	 
                 	 <!-------------------------------------------------------------------------->
                      <div class="form-group" id="DivIPQCAuditInfo">  
@@ -405,10 +429,7 @@
                      <span id="IPQCAuditDate" class="help-block"></span>  	
                  	 </div>
                  	 
-                 	 <label class="col-sm-2 control-label">IPQC状态:</label>
-                     <div class="col-sm-1">
-                     <span id="IPQCAuditResultText" class="help-block"></span>
-                     </div>
+                 	 
 
                      </div>
                          
@@ -550,6 +571,10 @@ function Fun_IPQCRecordInit(dataSelect){
 	$('#taskDBE').text(dataSelect.taskDBE);
 	$('#BTAuditOpinionShow').text(dataSelect.BTAuditOpinion);
 	
+	
+//	  $('#IPQCMaker').text(dataSelect.IPQCMaker);
+	  $('#IPQCMakeDate').text(dataSelect.IPQCMakeDate);
+	
 	$('#BTAuditOpinionShow').show();
 	$('#BTAuditOpinion').hide();
 	
@@ -667,7 +692,7 @@ $(document).ready( function () {
 	
 	 tableSQL={"SQL":"SQLTableBillsTaskIPQC"};
 	
-	 sessionName="<%-locals.session.yjUser.Name%>";
+	sessionName="<%-locals.session.yjUser.Name%>";
 	
 	console.log("sessionName:"+sessionName);
 	
@@ -792,87 +817,62 @@ $('#BTNTaskIPQCSave').click(function() {
 //按钮-任务记录审核按钮
 $('#BTNTaskIPQCAudit').click(function() {
 	
-	var msg = confirm("审核后无法对IPQC记录进行修改,是否立即审核?");
-	if(msg==true){	
+	var IPQCMakeDate=$('#IPQCMakeDate').text();
+	
+	
+	if(IPQCMakeDate=="null"){
+		alert("请先保存IPQC单,再审核");
 		
-		         var IPQCResult=$('input:radio[name="IPQCResult"]:checked').val();
-		         
-		         var taskRepeat=$('#taskRepeat').text();
-		         
+	}else{
+		
+		var msg = confirm("审核后无法对IPQC记录进行修改,是否立即审核?");
+		if(msg==true){	
+			
+			
+			         
+			
+			         var IPQCResult=$('input:radio[name="IPQCResult"]:checked').val();
+			         
+			         var taskRepeat=$('#taskRepeat').text();
+			         
 
-		         
-		         var resultMsg1="通过IPQC测试,该任务单完结!";
-		         var resultMsg2="未通过IPQC测试,需出货后修正,请后续更新任务单版本继续修改!";
-		         var resultMsg3="未通过IPQC测试,需立即修正,请立即更新任务单版本重新开始该任务!";
-		         
-		         //如果为重复订单 则不更新计划单信息
-		         if(taskRepeat!=1&&IPQCResult==1){
+			         
+			         var resultMsg1="通过IPQC测试,该任务单完结!";
+			         var resultMsg2="未通过IPQC测试,需出货后修正,请后续更新任务单版本继续修改!";
+			         var resultMsg3="未通过IPQC测试,需立即修正,请立即更新任务单版本重新开始该任务!";
+			         
+			         //如果为重复订单 则不更新计划单信息
+			         if(taskRepeat!=1&&IPQCResult==1){
 
-		        	 var PLDUpdData={
-								"DBTable":"ppm_bills_plan",
-								"BillIDName":"BPID",
-								"BillID":$('#taskBPID').text(),
-								"TaskNumDone":1,
-								"WFStatus":30
-						}
-						
-
-					 var taskUpdData={
-								"DBTable":"ppm_bills_task",
-								"DBID":$('#DBID').text(),
-								"IPQCAuditResult":1,
-								"IPQCAuditor":sessionName,
-								"IPQCAuditDate":Ndate,
-								"BTStatus":7
-					}
-					
-					 
-					 var ajax1=$.ajax({
-					        method: 'post',
-					        url: '/app/PM/updBillStatus',
-					        data: PLDUpdData,
-					        success: function(data, textStatus) {
-					        },
-					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-					        });
-					 
-					var ajax2=$.ajax({
-				        method: 'post',
-				        url: '/app/PM/updDBData',
-				        data: taskUpdData,
-				        success: function(data, textStatus) {
-				        },
-				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-				        });
-				
-
-					$.when(ajax1,ajax2).done(function(){
-						
-						if(IPQCResult==1){
-//							 alert("IPQCResult3:"+IPQCResult);
-							alert(resultMsg1);
+			        	 var PLDUpdData={
+									"DBTable":"ppm_bills_plan",
+									"BillIDName":"BPID",
+									"BillID":$('#taskBPID').text(),
+									"TaskNumDone":1,
+									"WFStatus":30
+							}
 							
-						}else{
-							alert(resultMsg2);
+
+						 var taskUpdData={
+									"DBTable":"ppm_bills_task",
+									"DBID":$('#DBID').text(),
+									"IPQCAuditResult":1,
+									"IPQCAuditor":sessionName,
+									"IPQCAuditDate":Ndate,
+									"BTStatus":7
 						}
-
-						window.location.reload();
 						
-					});
-
-		         }else{
-
-		        	 
-		        	 var taskUpdData={
-								"DBTable":"ppm_bills_task",
-								"DBID":$('#DBID').text(),
-								"IPQCAuditResult":1,
-								"IPQCAuditor":sessionName,
-								"IPQCAuditDate":Ndate,
-								"BTStatus":8
-					}
-		        	 
-		        	 var ajax1=$.ajax({
+						 
+						 var ajax1=$.ajax({
+						        method: 'post',
+						        url: '/app/PM/updBillStatus',
+						        data: PLDUpdData,
+						        success: function(data, textStatus) {
+						        },
+						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+						        });
+						 
+						var ajax2=$.ajax({
 					        method: 'post',
 					        url: '/app/PM/updDBData',
 					        data: taskUpdData,
@@ -880,16 +880,57 @@ $('#BTNTaskIPQCAudit').click(function() {
 					        },
 					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 					        });
-		        	 
-		        	 $.when(ajax1).done(function(){
-		        		    alert(resultMsg3);
+					
+
+						$.when(ajax1,ajax2).done(function(){
+							
+							if(IPQCResult==1){
+//								 alert("IPQCResult3:"+IPQCResult);
+								alert(resultMsg1);
+								
+							}else{
+								alert(resultMsg2);
+							}
+
 							window.location.reload();
 							
-					 });
+						});
 
-		         }
+			         }else{
 
+			        	 
+			        	 var taskUpdData={
+									"DBTable":"ppm_bills_task",
+									"DBID":$('#DBID').text(),
+									"IPQCAuditResult":1,
+									"IPQCAuditor":sessionName,
+									"IPQCAuditDate":Ndate,
+									"BTStatus":8
+						}
+			        	 
+			        	 var ajax1=$.ajax({
+						        method: 'post',
+						        url: '/app/PM/updDBData',
+						        data: taskUpdData,
+						        success: function(data, textStatus) {
+						        },
+						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+						        });
+			        	 
+			        	 $.when(ajax1).done(function(){
+			        		    alert(resultMsg3);
+								window.location.reload();
+								
+						 });
+
+			         }
+
+		}
+		
 	}
+	
+	
+	
 
 });
 
