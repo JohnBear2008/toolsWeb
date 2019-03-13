@@ -24,11 +24,9 @@ module.exports = function(sender) {
    }
    
    if(BID!=undefined&&VER!=undefined){
-	   
-	   
+
 	   var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" ta ,(SELECT "+BID+" AS BID,MAX("+VER+") AS maxVer FROM "+tableName+" GROUP BY "+BID+" ) tb WHERE ta."+BID+"=tb.BID AND ta."+VER+"=tb.maxVer AND "+filter;
-	   
-	   
+
 	   
    }else{
 	   var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" WHERE "+filter;

@@ -23,8 +23,19 @@ SQLTableBillsTrack="SELECT * FROM  (SELECT tbb.*,CASE tbb.PLDStatus WHEN 0 THEN 
 
 
 SQLTableBillsPLD="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 ) A ";
+
+SQLTableBillsPLD_T="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText FROM (SELECT C.* FROM `ppm_bills_plan_t` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 ) A ";
 //SQLTableBillsPLD="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText,B.DBID AS fileDBID,B.fileKey,B.fileName FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 ) A LEFT JOIN `ppm_files_upload` B ON A.BPID=B.billID AND A.version=B.billVersion AND B.billName='ppm_bills_plan'";
 //SQLTableBillsPLD="SELECT A.*,CASE auditResult WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '未审核' END AS  auditText FROM `ppm_bills_plan` A, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) B WHERE A.BPID=B.billBPID AND A.version=B.billVersion";
+
+SQLTableBillsTaskFrom="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'H' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
+"CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' END AS BTAcceptResultText,CASE A.recordAuditResult WHEN 0 " +
+"THEN '待审核' WHEN 1 THEN '审核通过' ELSE '未记录' END AS recordAuditResultText,CASE A.IPQCAuditResult WHEN 0 THEN 'IPQC未审核' WHEN 1 THEN" +
+" 'IPQC已审核' ELSE '未记录' END AS IPQCAuditResultText,CASE A.IPQCResult*A.IPQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '测试未通过' " +
+" ELSE '未完结' END AS IPQCResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` " +
+"GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.BTAcceptResult IS NOT NULL ) A WHERE A.taskType<>'A' AND A.BTAcceptResult=1 AND A.T_BPID IS NULL";
+
+
 
 SQLTableBillsBPT="SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.model AS PLDModel,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID";
 
@@ -48,6 +59,9 @@ SQLTableBillsTask="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN
     "A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' ELSE '新增' END AS BTAcceptResultText,CASE A.recordAuditResult " +
     "WHEN 0 THEN '待审核' WHEN 1 THEN '审核通过' ELSE '未记录' END AS recordAuditResultText FROM (SELECT tbb.* FROM `ppm_bills_task` tbb," +
     "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A";
+
+
+
 
 SQLTableBillsTaskRecord="SELECT A.*,CASE A.taskSortType WHEN 'D' THEN 'DSP任务' WHEN 'H' THEN 'HMI任务' WHEN 'P' THEN 'PLC任务' WHEN 'C' THEN 'codesys任务' END AS taskSortTypeText," +
     "CASE A.taskType WHEN 'A' THEN 'APP' WHEN 'K' THEN 'KERNEL' WHEN 'L' THEN 'LIB' WHEN 'O' THEN 'OS' END AS taskTypeText,CASE A.BTAcceptResult WHEN 0 THEN '未确认' WHEN 1 THEN '已确认' WHEN 2 THEN '已拒绝' END AS BTAcceptResultText,CASE A.recordAuditResult WHEN 0 " +
@@ -83,5 +97,8 @@ SQLTableTestContents="SELECT * FROM `ppm_testcontents`";
 SQLGetEMails="SELECT email,contact,contacts FROM `ppm_customers`";
 
 SQLGetPLDNum="SELECT COUNT(1) AS GPLDNum FROM `ppm_bills_plan` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW())";
+
+
+SQLgetBindPLDdata="SELECT A.* FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion ) A";
 
 

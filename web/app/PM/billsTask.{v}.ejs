@@ -396,6 +396,17 @@
                 	 
                 	 
                 	 </div>
+                	 
+                	 
+                	 <!-------------------------------------------------------------------------->
+                	 <div class="form-group">  
+
+                     <label for="recordDate" class="col-sm-1 control-label">记录日期:</label>                     
+                     <div class="col-sm-2">
+                     <span id="recordDate" class="help-block"></span>  	
+                 	 </div>
+                 	</div>
+                	
                     <!-------------------------------------------------------------------------->
                     <div class="form-group" id="DivRecordAuditInfo">  
                     
@@ -411,10 +422,7 @@
                     <span id="recordAuditDate" class="help-block"></span>  	
                 	 </div>
                 	 
-                	 <label class="col-sm-2 control-label">记录审核状态:</label>
-                    <div class="col-sm-1">
-                    <span id="recordAuditResultText" class="help-block"></span>
-                    </div>
+
                     </div>
                     
                     
@@ -560,16 +568,12 @@ function Fun_getTaskTrackData(dataSelect){
 				"version",
 				"CTRName",
 				"topic",
-				"detail",
 				"PGEMaker",
-				"OGNSystemVersion",
 				"MHEName",
-				"files",
 				"model",
-				"applyDate",
 				"limitDate",
-				"maker",
-				"makeDate"
+				"files"
+
 				],
 			"BID":"BPID",
 			"VER":"version",
@@ -589,12 +593,9 @@ function Fun_getTaskTrackData(dataSelect){
 				"PGEMaker",
 				"auditor",
 				"auditDate",
-				"files",
 				"model",
-				"BPTAuditOpinion",
 				"limitDate",
-				"maker",
-				"makeDate"
+				"files"
 				],
 				"BID":"BPTID",
 				"VER":"BPTVersion",
@@ -613,15 +614,10 @@ function Fun_getTaskTrackData(dataSelect){
 				"taskStaff",
 				"taskDBE",
 				"taskLimitDate",
-				"taskMakeDate",
-				"BTAcceptDate",
 				"modifyContent",
 				"functionsDBE",
 				"recordRemark",
-				"recordDate",
-				"recordAuditDate",
-				"IPQCMakeDate",
-				"BTStatus",
+				"IPQCResult",
 				"taskFiles"
 				],
 				"BID":"BTID",
@@ -685,10 +681,6 @@ function Fun_taskAuditInit(dataSelect){
 	
 	$('#DivRecordPanel').hide();
 
-	
-	
-	
-	
 
 }
 
@@ -742,7 +734,7 @@ function Fun_taskRecordInit(dataSelect){
 		Fun_getSQLSelectDBData(SQLIPQCMaker,IPQCMaker,dataSelect.IPQCMaker);
 	}
 	
-	
+	$('#recordDate').text(dataSelect.recordDate);
 	
 	
 	
@@ -761,7 +753,7 @@ function Fun_taskRecordInit(dataSelect){
 
 		$('#recordAuditor').text(dataSelect.recordAuditor);
 		$('#recordAuditDate').text(dataSelect.recordAuditDate);
-		$('#recordAuditResultText').text(dataSelect.recordAuditResultText);
+
 		
 		
 		$('#DivRecordAuditInfo').show();
@@ -1029,100 +1021,107 @@ $('#BTNTaskRecordSave').click(function() {
 $('#BTNTaskRecordAudit').click(function() {
 	
 	
-	if($('#filePath').attr('href')!=undefined){
-		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-		var fileName=$('#fileName').html();
-		}else{
-		var fileKey="";
-		var fileName="";
-	}
+	var recordDate=$('#recordDate').text();
 	
-	if(fileName==""){
-		alert("未检测到程序附件,请确认任务单是否完成!");
-		}else{
-			var msg = confirm("审核后无法再次进行任务登记,如任务记录有误,请修改后再审核,是否立即审核通过?");
-			if(msg==true){	
-				
-				var FQCRequest= $('input:radio[name="FQCRequest"]:checked').val();
-				
-				
-				
-//
-//					 var recordAuditData={
-//								"DBTable":"ppm_bills_task",
-//								"DBID":$('#DBID').text(),
-//								"recordAuditor":sessionName,
-//								"recordAuditDate":Ndate,
-//								"recordAuditResult":1,
-//								"BTStatus":4
-//					 }
-//						
-//						console.log("recordAuditData:"+JSON.stringify(recordAuditData));
-//						updDBData(recordAuditData,"任务单记录审核状态");
-						
-						
-					if(FQCRequest==1){
-						var PLDUpdData={
-								"DBTable":"ppm_bills_plan",
-								"BillIDName":"BPID",
-								"BillID":$('#taskBPID').text(),
-								"FQCRequest":1,
-								"WFStatus":25
+	if(recordDate=="null"){
+		alert("请先保存记录再审核!");
+	}else{
+
+		if($('#filePath').attr('href')!=undefined){
+			var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+			var fileName=$('#fileName').html();
+			}else{
+			var fileKey="";
+			var fileName="";
+		}
+		
+		if(fileName==""){
+			alert("未检测到程序附件,请确认任务单是否完成!");
+			}else{
+				var msg = confirm("审核后无法再次进行任务登记,如任务记录有误,请修改后再审核,是否立即审核通过?");
+				if(msg==true){	
+					
+					var FQCRequest= $('input:radio[name="FQCRequest"]:checked').val();
+					
+					
+					
+	//
+//						 var recordAuditData={
+//									"DBTable":"ppm_bills_task",
+//									"DBID":$('#DBID').text(),
+//									"recordAuditor":sessionName,
+//									"recordAuditDate":Ndate,
+//									"recordAuditResult":1,
+//									"BTStatus":4
+//						 }
+//							
+//							console.log("recordAuditData:"+JSON.stringify(recordAuditData));
+//							updDBData(recordAuditData,"任务单记录审核状态");
+							
+							
+						if(FQCRequest==1){
+							var PLDUpdData={
+									"DBTable":"ppm_bills_plan",
+									"BillIDName":"BPID",
+									"BillID":$('#taskBPID').text(),
+									"FQCRequest":1,
+									"WFStatus":25
+							}
+							
+
+						}else{
+							var PLDUpdData={
+									"DBTable":"ppm_bills_plan",
+									"BillIDName":"BPID",
+									"BillID":$('#taskBPID').text(),
+									"WFStatus":25
+							}
+
 						}
 						
-
-					}else{
-						var PLDUpdData={
-								"DBTable":"ppm_bills_plan",
-								"BillIDName":"BPID",
-								"BillID":$('#taskBPID').text(),
-								"WFStatus":25
+						 var taskUpdData={
+									"DBTable":"ppm_bills_task",
+									"DBID":$('#DBID').text(),
+									"recordAuditor":sessionName,
+									"recordAuditDate":Ndate,
+									"recordAuditResult":1,
+									"BTStatus":4
 						}
-
-					}
-					
-					 var taskUpdData={
-								"DBTable":"ppm_bills_task",
-								"DBID":$('#DBID').text(),
-								"recordAuditor":sessionName,
-								"recordAuditDate":Ndate,
-								"recordAuditResult":1,
-								"BTStatus":4
-					}
+							
 						
-					
-					 
-					 var ajax1=$.ajax({
+						 
+						 var ajax1=$.ajax({
+						        method: 'post',
+						        url: '/app/PM/updBillStatus',
+						        data: PLDUpdData,
+						        success: function(data, textStatus) {
+						        },
+						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+						        });
+						 
+						var ajax2=$.ajax({
 					        method: 'post',
-					        url: '/app/PM/updBillStatus',
-					        data: PLDUpdData,
+					        url: '/app/PM/updDBData',
+					        data: taskUpdData,
 					        success: function(data, textStatus) {
 					        },
 					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 					        });
-					 
-					var ajax2=$.ajax({
-				        method: 'post',
-				        url: '/app/PM/updDBData',
-				        data: taskUpdData,
-				        success: function(data, textStatus) {
-				        },
-				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-				        });
-				
+					
 
-					$.when(ajax1,ajax2).done(function(){
-						alert("任务登记审核成,可开始IPQC检测!");
-						window.location.reload();
-						
-					});
-//						
-				
-						
-						
-						
+						$.when(ajax1,ajax2).done(function(){
+							alert("任务登记审核成,可开始IPQC检测!");
+							window.location.reload();
+							
+						});
+	
+				}
 			}
-		}
+		
+		
+		
+	}
+	
 	
 	
 	

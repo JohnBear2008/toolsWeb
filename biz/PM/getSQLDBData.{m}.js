@@ -47,6 +47,14 @@ module.exports = function(sender) {
 	case "SQLTableBillsPLD":
 		var SQLExecute=SQLTableBillsPLD;
 		break;	
+	case "SQLTableBillsPLD_T":
+		var SQLExecute=SQLTableBillsPLD_T;
+		break;
+	case "SQLTableBillsTaskFrom":
+		var SQLExecute=SQLTableBillsTaskFrom;
+		break;	
+		
+		
 	case "SQLTableBillsBPT":
 		var SQLExecute=SQLTableBillsBPT;
 		break;
@@ -79,6 +87,11 @@ module.exports = function(sender) {
 	case "SQLGetTaskNum":
 		var SQLExecute=SQLGetTaskNum;
 		break;
+	case "SQLgetBindPLDdata":
+		var SQLExecute=SQLgetBindPLDdata;
+		break;
+		
+		
 
 	default:
 		var SQLExecute=SQL;
