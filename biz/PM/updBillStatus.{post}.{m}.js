@@ -26,6 +26,10 @@ module.exports = function(sender) {
         case "TaskNumDone":
         	updateContent=updateContent+"TaskNumDone=TaskNumDone+1,";
         	break;	
+        case "recordNum":
+        	updateContent=updateContent+"recordNum=recordNum+1,";
+        	break;
+        	
         default:
         	if(obj[key]==""){
     			updateContent=updateContent+key+"="+null+",";

@@ -58,12 +58,27 @@ module.exports = function(sender) {
 	case "SQLTableBillsBPT":
 		var SQLExecute=SQLTableBillsBPT;
 		break;
+	case "SQLTableBillsBPT_T":
+		var SQLExecute=SQLTableBillsBPT_T;
+		break;
+		
 	case "SQLTableBillsTask":
 		var SQLExecute=SQLTableBillsTask;
 		break;
+	case "SQLTableBillsTask_T":
+		var SQLExecute=SQLTableBillsTask_T;
+		break;
+
+		
 	case "SQLTableBillsTaskRecord":
 		var SQLExecute=SQLTableBillsTaskRecord;
 		break;
+	
+	case "SQLTableBillsTaskRecord_T":
+		var SQLExecute=SQLTableBillsTaskRecord_T;
+		break;
+		
+		
 	case "SQLTableBillsTaskIPQC":
 		var SQLExecute=SQLTableBillsTaskIPQC;
 		break;
@@ -90,6 +105,10 @@ module.exports = function(sender) {
 	case "SQLgetBindPLDdata":
 		var SQLExecute=SQLgetBindPLDdata;
 		break;
+	case "SQLTaskRecords":
+		var SQLExecute=SQLTaskRecords;
+		break;
+
 		
 		
 

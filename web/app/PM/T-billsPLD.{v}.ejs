@@ -1080,18 +1080,24 @@ $('#BTNDelete').click(function() {
     		alert("已审核单据禁止删除!");
     	}else{
     		
-    		
-    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-            if (msg1 === true) {
-                var msg2 = confirm("确认删除此行数据？");
-                if (msg2 === true) {
-                	
-                //	alert(dataSelect.DBID);
-                    var IDData = {"DBTable":"ppm_bills_plan_t","DBID":dataSelect.DBID};
- //                   alert("IDData:"+JSON.stringify(IDData));
-                    delDBData(IDData);
+    		if(dataSelect.BTIDfrom==null){
+
+        		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+                if (msg1 === true) {
+                    var msg2 = confirm("确认删除此行数据？");
+                    if (msg2 === true) {
+                    	
+                    //	alert(dataSelect.DBID);
+                        var IDData = {"DBTable":"ppm_bills_plan_t","DBID":dataSelect.DBID};
+     //                   alert("IDData:"+JSON.stringify(IDData));
+                        delDBData(IDData);
+                    }
                 }
-            }
+    		}else{
+    			alert("该内核计划单已绑定流程任务单,不允许删除!")
+    		}
+    		
+    		
     		
     		
     	}

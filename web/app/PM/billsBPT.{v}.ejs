@@ -356,16 +356,19 @@
                      <label class="col-sm-2 control-label">单据类别:</label>
                  	 <div class="col-sm-10">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskSortType" id="radio1" value="D" checked> DSP任务单
+                 	        <input type="radio" name="taskSortType" id="radio1" value="D" checked> <span>DSP任务单</span>
                  	    </label>
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskSortType" id="radio2" value="H"> HMI任务单
+                 	        <input type="radio" name="taskSortType" id="radio2" value="H"> <span>HMI任务单</span>
                  	    </label>
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskSortType" id="radio3" value="P"> PLC任务单
+                	        <input type="radio" name="taskSortType" id="radio3" value="M"> <span>轴卡任务单</span>
+                	    </label>
+                 	    <label class="radio-inline">
+                 	        <input type="radio" name="taskSortType" id="radio4" value="P"> <span>PLC任务单</span>
                  	    </label>
                  	    <label class="radio-inline">
-                	        <input type="radio" name="taskSortType" id="radio4" value="C"> codesys任务单
+                	        <input type="radio" name="taskSortType" id="radio5" value="C"> <span>codesys任务单</span>
                 	    </label>
 
                  	 </div>
@@ -379,18 +382,33 @@
 
                      <label class="col-sm-2 control-label">类型:</label>
                  	 <div class="col-sm-10">
+                 	 
+                 	 <span id="taskTypeA">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio1" value="A" checked> APP
+                 	        <input type="radio" name="taskType" id="radio1" value="A" checked> <span>APP</span>
                  	    </label>
+                 	 </span> 
+                 	 
+                 	 <span id="taskTypeK">      
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio2" value="K"> Kernel
+                 	        <input type="radio" name="taskType" id="radio2" value="K"> <span>Kernel</span>
                  	    </label>
+                 	 </span>       
+                 	 <span id="taskTypeL">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio3" value="L"> LIB
+                 	        <input type="radio" name="taskType" id="radio3" value="L"> <span>LIB</span>
                  	    </label>
+                 	 </span>    
+                 	 <span id="taskTypeO">
                  	    <label class="radio-inline">
-                	        <input type="radio" name="taskType" id="radio4" value="O"> OS
+                	        <input type="radio" name="taskType" id="radio4" value="O"> <span>OS</span>
                 	    </label>
+                	 </span>   
+                	 <span id="taskTypeB">
+                	    <label class="radio-inline">
+                	        <input type="radio" name="taskType" id="radio5" value="B"> <span>Boot</span>
+                	    </label>    
+                	 </span>  
 
 
 
@@ -437,7 +455,7 @@
 
                      <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
 
-                     <label class="col-sm-2 control-label">任务单审核状态: <span id="BTAcceptResultText"></span></label>
+                     <label class="col-sm-2 control-label">任务单确认状态: <span id="BTAcceptResultText"></span></label>
 
 
                      </div>
@@ -648,8 +666,17 @@ function Fun_BTIDCreate(){
 	
 	 var BPTBPID=$('#BPTBPID').val();
 	 var tableTask = $('#billsTaskTable').DataTable();
-	 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
-	 var BTID="T"+BPTBPID.substring(1,11)+"_"+$('input:radio[name="taskSortType"]:checked').val()+$('input:radio[name="taskType"]:checked').val()+"_"+(TaskNum+1);
+	 var TaskNum = (tableTask.page.info()).recordsTotal+1;//总任务数
+	 
+	 if(TaskNum.length=1){
+		 TaskNumT="0"+TaskNum;
+	 }else{
+		 TaskNumT=TaskNum;
+	 }
+	 
+	 
+	 
+	 var BTID="T"+BPTBPID.substring(1,11)+"_"+$('input:radio[name="taskSortType"]:checked').val()+$('input:radio[name="taskType"]:checked').val()+"_"+TaskNumT;
 	 $("#BTID").val(BTID);
 
 }
@@ -1179,6 +1206,48 @@ $('#billsBPTTable tbody').on('click', 'tr', function() {
 //绑定radio切换改变任务单号事件
 
 $('input[type=radio][name=taskSortType]').change(function() {
+	
+	var taskSortType=$('input:radio[name="taskSortType"]:checked').val();
+	
+	$("#taskTypeA").show();
+	$("#taskTypeK").show();
+	$("#taskTypeL").show();
+	$("#taskTypeO").show();
+	$("#taskTypeB").show();
+	
+	switch(taskSortType){
+	case "D":
+		$("input:radio[name=taskType][value='A']").prop("checked",true);
+		$("#taskTypeL").hide();
+		$("#taskTypeO").hide();
+		$("#taskTypeB").hide();
+		break;
+	case "H":
+		$("input:radio[name=taskType][value='A']").prop("checked",true);
+		$("#taskTypeL").hide();
+		$("#taskTypeB").hide();
+		break;
+	case "M":
+		$("input:radio[name=taskType][value='A']").prop("checked",true);
+		$("#taskTypeK").hide();
+		$("#taskTypeL").hide();
+		$("#taskTypeO").hide();
+		break;
+	case "P":
+		$("input:radio[name=taskType][value='A']").prop("checked",true);
+		$("#taskTypeK").hide();
+		$("#taskTypeB").hide();
+		break;
+	case "C":
+		$("input:radio[name=taskType][value='A']").prop("checked",true);
+		$("#taskTypeK").hide();
+		$("#taskTypeB").hide();
+		break;
+		
+		
+	}
+	
+	
 	Fun_BTIDCreate();
 
 });
@@ -1187,6 +1256,8 @@ $('input[type=radio][name=taskType]').change(function() {
 	Fun_BTIDCreate();
 
 });
+
+
 
 
 //定义左侧跟踪栏按钮效果,设定可添加html
@@ -1303,8 +1374,16 @@ $('#BTNBPTAudit').click(function() {
 //按钮-任务新增
 
 $('#BTNTaskAdd').click(function(){
+	
+	
 
 	$('#billTaskPanel').show();
+	
+	
+	$("#taskTypeL").hide();
+	$("#taskTypeO").hide();
+	$("#taskTypeB").hide();
+
 	
 	Fun_BTIDCreate();
 
@@ -1382,7 +1461,9 @@ $('#BTNTaskSave').click(function(){
 		"BTVersion":0,
 		"taskBPID":taskBPID,
 		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
 		"taskType":$('input:radio[name="taskType"]:checked').val(),
+		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
 		"taskCTRName":$('#CTRName').val(),
 		"taskStaff":$('#taskStaff option:selected').text(),
 		"modfiyABE":modfiyABE,
@@ -1390,8 +1471,8 @@ $('#BTNTaskSave').click(function(){
 		"taskLimitDate":$('#taskLimitDate').val(),
 		"taskMaker":sessionName,
 		"taskMakeDate":Ndate,
-//		"BTAcceptResult":0,
-		"BTStatus":1
+		"BTStatus":1,
+		"BTStatusText":"新增"
         }
 
         console.log("billData:"+JSON.stringify(billData));
@@ -1410,7 +1491,9 @@ $('#BTNTaskSave').click(function(){
 		"BTVersion":0,
 		"taskBPID":taskBPID,
 		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
 		"taskType":$('input:radio[name="taskType"]:checked').val(),
+		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
 		"taskStaff":$('#taskStaff option:selected').text(),
 		"modfiyABE":modfiyABE,
 		"taskDBE":$('#taskDBE').val(),
@@ -1418,7 +1501,8 @@ $('#BTNTaskSave').click(function(){
 		"taskMaker":sessionName,
 		"taskMakeDate":Ndate,
 //		"BTAcceptResult":0,
-		"BTStatus":1
+		"BTStatus":1,
+		"BTStatusText":"新增"
         }
 
         console.log("billData:"+JSON.stringify(billData));
@@ -1428,7 +1512,7 @@ $('#BTNTaskSave').click(function(){
 
 	default:
 
-		var msg = confirm("风险操作！已审核任务单不允许修改,如保存将更新任务单版本!");
+		var msg = confirm("风险操作！已开始的任务单不允许修改,如保存将更新任务单版本,请与相关任务负责人先确认!");
         if (msg === true){
 
         	var tableTask = $('#billsTaskTable').DataTable();
@@ -1440,7 +1524,9 @@ $('#BTNTaskSave').click(function(){
             		"BTVersion":dataSelectTask.BTVersion+1,
             		"taskBPID":taskBPID,
             		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+            		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
             		"taskType":$('input:radio[name="taskType"]:checked').val(),
+            		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
             		"taskStaff":$('#taskStaff option:selected').text(),
             		"modfiyABE":modfiyABE,
             		"taskDBE":$('#taskDBE').val(),

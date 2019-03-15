@@ -147,7 +147,7 @@ function saveDBData(DBData,showText) {
 //AJAX获取select数据函数
 function getSelectDBData(selectPara,selectorID,InitValue) {
 	
-	console.log("InitValue:"+InitValue);
+//	console.log("InitValue:"+InitValue);
 	
 	$(selectorID).empty();//用select组件不用先清空
 	  
@@ -192,7 +192,7 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
 //函数 获取指定SQL数据加载至selector中
 function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 	
-	console.log("InitValue:"+InitValue);
+//	console.log("InitValue:"+InitValue);
 	
 	$(selectorID).empty();//用select组件不用先清空
 	  
@@ -281,7 +281,7 @@ function uploadFile() {
 	var filePath=$('#filePath').attr("href");
 	
 	var fileName=$('#fileName').html();
-	console.log("fileName:"+fileName);
+//	console.log("fileName:"+fileName);
 	
 	if(fileName!=undefined&&fileName!=""){
 		
@@ -517,10 +517,10 @@ function Fun_getFilterDBData(DataPara,DivID){
 	      success: function (data) {
 //	    	  alert("成功返回数据:"+JSON.stringify(data));
 	    	  
-	    	  console.log("成功返回数据:"+JSON.stringify(data[0]));
+//	    	  console.log("成功返回数据:"+JSON.stringify(data[0]));
 	    	  
 	    	  for(var key in DivID){
-	    		  console.log(key +":"+ DivID[key]);
+//	    		  console.log(key +":"+ DivID[key]);
 	    		  
 	    		  for(var dkey in data[0]){
 	    			  
@@ -575,7 +575,7 @@ function sendDingMsg(Msg) {
         url: '/app/PM/sendDingTalk',
         data: Msg,
         success: function(data, textStatus) {
-            console.log("成功数据:" + JSON.stringify(data));
+ //           console.log("成功数据:" + JSON.stringify(data));
            
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -830,12 +830,12 @@ function Fun_getBillFile(Para,DivID,feedBack){
           url:"/app/PM/getBillFileInfo",
           success:function(dataReturn){
         	  
-        	  console.log("dataReturn:"+JSON.stringify(dataReturn));
+  //      	  console.log("dataReturn:"+JSON.stringify(dataReturn));
         	  
         	  if(dataReturn.length!=0){
         		  
         		  if(dataReturn[0].fileKey!=null){
-            		  console.log("不为空"+dataReturn[0].fileKey);
+ //           		  console.log("不为空"+dataReturn[0].fileKey);
             		  
             		  if(feedBack==true){
             			  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span id='fileName'>"+dataReturn[0].fileName+"</span></a>";
@@ -902,7 +902,7 @@ function getCheckBoxValue(CBName){
 		checkBoxValue += $(this).val()+",";
 	})
 	checkBoxValue = checkBoxValue.substring(0,checkBoxValue.length-1);
-	console.log("checkBoxValue:"+checkBoxValue);
+//	console.log("checkBoxValue:"+checkBoxValue);
 	return checkBoxValue;
 }
 //函数 设定根据值设定checkbox选中状态
@@ -916,9 +916,9 @@ function setCheckBoxValue(CBName,CBVals){
 			$("input[name='"+CBName+"']").each(function(){
 				if($(this).val()==checkBoxArray[i]){
 					
-					console.log("thisval:"+$(this).val());
-					console.log("checkBoxArray:"+checkBoxArray[i]);
-					console.log("this:"+JSON.stringify(this));
+//					console.log("thisval:"+$(this).val());
+//					console.log("checkBoxArray:"+checkBoxArray[i]);
+//					console.log("this:"+JSON.stringify(this));
 					
 					$(this).prop('checked', true);
 				}
@@ -985,7 +985,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        				  
        				  var files=JSON.parse(data[i][SQLParam.titles[j]]);
        				  
-       				 console.log("files:"+files);
+//       				 console.log("files:"+files);
        				 
        				 if(files!=null){
        					trtd=trtd+"<td>"+"<a  href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span>"+files.fileName+"</span></a>"+"</td>";
@@ -1025,7 +1025,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
          data:SQL,
          url:"/app/PM/getSQLDBData",
          success:function(data){
-        	 console.log("back data:"+JSON.stringify(data));
+//        	 console.log("back data:"+JSON.stringify(data));
         	 for(var i=0;i<data.length;i++){
         		 var tr="<tr>" +
         		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
