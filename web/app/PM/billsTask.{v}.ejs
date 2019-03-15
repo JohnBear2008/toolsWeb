@@ -793,6 +793,9 @@ function Fun_taskRecordInit(dataSelect){
 		$('#DBID').text(dataSelect.DBID); 
 		$('#taskBPID').text(dataSelect.taskBPID); 
 		
+		$('#taskRepeat').text(dataSelect.taskRepeat); 
+		$('#taskRepeatText').text(dataSelect.taskRepeatText);
+		
 		 $("input:radio[name=taskSortType][value="+dataSelect.taskSortType+"]").prop("checked",true);
 	     $('input:radio[name="taskSortType"]').attr("disabled",true);
 	     
@@ -1057,7 +1060,7 @@ $(document).ready( function () {
 		        { data: 'taskLimitDate'},
 		        { data: 'BTAcceptResultText'},
 		        { data: 'recordNum'},
-		        { data: 'IPQCResultText'},
+		        { data: 'IPQCAuditResultText'},
 		        { data: 'BTStatusText'}
 			]
 	}
@@ -1108,23 +1111,94 @@ $('#BTNTaskAcceptYes').click(function() {
 	if(sessionName==$('#taskStaff').text()){
 		var msg = confirm("确认后即将开始任务单流程!");
 		if(msg==true){	
+			
+			
+			var FQCRequest=$('input:radio[name="FQCRequest"]:checked').val();
+			
+			if(FQCRequest==1){
+				
+				
+				
+				
+				var acceptData={
+						"DBTable":"ppm_bills_task",
+						"DBID":$('#DBID').text(),
+						"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
+						"BTAcceptor":sessionName,
+						"BTAcceptDate":Ndate,
+						"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
+						"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
+						"IPQCMaker":$('#IPQCMaker option:selected').text(),
+						"BTAcceptResult":1,
+						"BTAcceptResultText":"已确认",
+						"BTStatus":2,
+						"BTStatusText":"进行中"
+				}
+				
+				
+				var PLDUpdData={
+						"DBTable":"ppm_bills_plan",
+						"BillIDName":"BPID",
+						"BillID":$('#taskBPID').text(),
+						"FQCRequest":1,
+						"FQCRequestText":"有"
+				}
+				
 
-			var acceptData={
-					"DBTable":"ppm_bills_task",
-					"DBID":$('#DBID').text(),
-					"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
-					"BTAcceptor":sessionName,
-					"BTAcceptDate":Ndate,
-					"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
-					"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
-					"IPQCMaker":$('#IPQCMaker option:selected').text(),
-					"BTAcceptResult":1,
-					"BTAcceptResultText":"已确认",
-					"BTStatus":2,
-					"BTStatusText":"进行中"
+				 
+				var ajax1=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updDBData',
+			        data: acceptData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+				
+				 var ajax2=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: PLDUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+			
+
+				$.when(ajax1,ajax2).done(function(){
+						alert("任务单确认状态已更新,计划单FQC申请更新!");
+					window.location.reload();
+					
+				});
+				
+				//updDBData(acceptData,"任务单确认状态");
+				
+
+				
+			}else{
+				var acceptData={
+						"DBTable":"ppm_bills_task",
+						"DBID":$('#DBID').text(),
+						"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
+						"BTAcceptor":sessionName,
+						"BTAcceptDate":Ndate,
+						"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
+						"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
+						"IPQCMaker":$('#IPQCMaker option:selected').text(),
+						"BTAcceptResult":1,
+						"BTAcceptResultText":"已确认",
+						"BTStatus":2,
+						"BTStatusText":"进行中"
+				}
+				updDBData(acceptData,"任务单确认状态");
 			}
 
-			updDBData(acceptData,"任务单确认状态");
+			
+			
+			
+			
+			
+			
 		}
 	}else{
 		alert("非该方案单的负责人,不允许审核!");
