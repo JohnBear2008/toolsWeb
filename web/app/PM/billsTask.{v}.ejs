@@ -958,18 +958,36 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
                  $('#progressNumber').html("");
 			     $('#divFilesUploaded').html("");
 				  
+//				 if(dataSelectRecord.taskFiles!=null){
+//					  
+//					  var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
+//					  if(taskFiles!=null){
+//					  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+taskFiles.fileKey+" download="+taskFiles.fileName+">"+"<span id='fileName'>"+taskFiles.fileName+"</span></a>";
+//					  }else{
+//						  downloadurl="";
+//					  }
+//					  $('#divFilesUploaded').html(downloadurl);
+//				  }
+
 				 if(dataSelectRecord.taskFiles!=null){
 					  
-					  var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
+					 var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
 					  if(taskFiles!=null){
-					  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+taskFiles.fileKey+" download="+taskFiles.fileName+">"+"<span id='fileName'>"+taskFiles.fileName+"</span></a>";
+						  
+						  var fileLink="";
+							 if(taskFiles.length>0){
+								 for(var i=0;i<taskFiles.length;i++){
+
+									 
+									fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+taskFiles[i].fileKey+" download="+taskFiles[i].fileName+">"+"<span>"+taskFiles[i].fileName+"</span></a>"+" ; ";
+								 } 
+							 }
+					  var downloadurl=fileLink;
 					  }else{
 						  downloadurl="";
 					  }
 					  $('#divFilesUploaded').html(downloadurl);
 				  }
-
-			     
 			     
 			     
 			     $('#recordMaker').text(dataSelectRecord.recordMaker);
@@ -1176,7 +1194,7 @@ $('#BTNTaskRecordSave').click(function() {
 
 				}
 			
-			 var taskFiles={"fileName":fileName,"fileKey":fileKey};
+			 var taskFiles=[{"fileName":fileName,"fileKey":fileKey}];
 			 
 			 if(fileName==""){
 				 alert("程序附件必须上传!");
@@ -1369,7 +1387,9 @@ $('#BTNTaskRecordAudit').click(function() {
 
 							$.when(ajax1,ajax2).done(function(){
 								alert("任务登记审核完成,如不需要再添加新记录,可开始IPQC检测!");
-								window.location.reload();
+								
+								Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
+					          	$('#BTNTaskRecordAdd').click();
 								
 							});
 		

@@ -992,7 +992,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        					 var fileLink="";
        					 if(files.length>0){
        						 for(var k=0;k<files.length;k++){
-       							 console.log("files[i].fileName:"+files[i].fileName);
+       							 console.log("files[k].fileName:"+files[k].fileName);
        							 
        							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
 
