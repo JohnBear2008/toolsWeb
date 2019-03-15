@@ -978,17 +978,31 @@ function Fun_fillTrackTable(tableID,SQLParam){
 
        		  for(var j=0;j<SQLParam.titles.length;j++){
 
-//      			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
+    //  			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
        			  
        			  if(SQLParam.titles[j]=="files"||SQLParam.titles[j]=="taskFiles"){
        				  
        				  
        				  var files=JSON.parse(data[i][SQLParam.titles[j]]);
        				  
-//       				 console.log("files:"+files);
+       				 console.log("files:"+files);
        				 
        				 if(files!=null){
-       					trtd=trtd+"<td>"+"<a  href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span>"+files.fileName+"</span></a>"+"</td>";
+       					 
+       					 var fileLink="";
+       					 if(files.length>0){
+       						 for(var k=0;k<files.length;k++){
+       							 console.log("files[i].fileName:"+files[i].fileName);
+       							 
+       							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
+
+       						 }
+       						 
+       						fileLink=fileLink.substr(0, fileLink.length-3); 
+
+       					 }
+       					 
+       					trtd=trtd+"<td>"+fileLink+"</td>";
        				 }else{
        					trtd=trtd+"<td></td>";
        				 }

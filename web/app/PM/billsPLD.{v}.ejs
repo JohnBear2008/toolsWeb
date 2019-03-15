@@ -622,7 +622,16 @@ function Fun_winDetailInit(dataSelect){
 	  
 	  var files=JSON.parse(dataSelect.files);
 	  if(files!=null){
-	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span id='fileName'>"+files.fileName+"</span></a>";
+		  
+		  var fileLink="";
+			 if(files.length>0){
+				 for(var i=0;i<files.length;i++){
+					 console.log("files[i].fileName:"+files[i].fileName);
+					 
+					fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+				 } 
+			 }
+	  var downloadurl=fileLink;
 	  }else{
 		  downloadurl="";
 	  }
@@ -987,7 +996,7 @@ $('#BTNFormAdd').click(function(){
 		var fileName="";
 	}
 	
-	files={"fileName":fileName,"fileKey":fileKey};
+	files=[{"fileName":fileName,"fileKey":fileKey}];
 	var billData={
 			"DBTable":"ppm_bills_plan",
 			"BPID":$('#BPID').val(),
