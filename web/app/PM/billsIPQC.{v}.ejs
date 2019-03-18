@@ -828,6 +828,9 @@ $('#BTNTaskIPQCAudit').click(function() {
 			        	 var trNum=$("#tableRecords tbody").find("tr").length;
 			        	 
 			        	 var taskFiles=[];
+			        	 var modifyContent="";
+			        	 var functionsDBE="";
+			        	 
 			        	 for(var i=0;i<trNum;i++){
 			        		 
 //			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(30));
@@ -838,7 +841,13 @@ $('#BTNTaskIPQCAudit').click(function() {
 			        		 }
 			        		 taskFiles.push(tdfile);
 			        		 
+			        		 modifyContent=modifyContent+$("#tableRecords tbody tr:eq("+i+") td:last").text()+":"+"\n"+$("#tableRecords tbody tr:eq("+i+") td:first").text()+"\n";
+			        		 functionsDBE=functionsDBE+$("#tableRecords tbody tr:eq("+i+") td:last").text()+":"+"\n"+$("#tableRecords tbody tr:eq("+i+") td:eq(1)").text()+"\n";
+			        		 
 			        	 }
+			        	 
+			        	 
+			        	 
 			        		   
 
 //			        	 console.log("taskFiles:"+JSON.stringify(taskFiles));
@@ -862,6 +871,8 @@ $('#BTNTaskIPQCAudit').click(function() {
 									"IPQCAuditDate":Ndate,
 									"BTStatus":3,
 									"BTStatusText":"任务完成",
+									"modifyContent":modifyContent,
+									"functionsDBE":functionsDBE,
 									"taskFiles":JSON.stringify(taskFiles)
 			        	 
 						}

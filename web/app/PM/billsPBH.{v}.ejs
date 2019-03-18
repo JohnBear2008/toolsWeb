@@ -172,15 +172,6 @@
                    <div style="margin:10px;">
                 	 <table id="billsTaskTable" class="table table-bordered" style="width:100%;" >
                    <thead>
-                       <tr>
-                           <th>任务单号</th>
-                           <th>任务版本号</th>
-                           <th>任务类型</th>
-                           <th>任务负责人</th>
-                           <th>任务要求</th>
-                           <th>修改内容</th>
-                           <th>程序附件</th>
-                       </tr>
                    </thead>
                    <tbody>
                    </tbody>
@@ -221,14 +212,40 @@
                    </div>
                    </div>
                    <!-------------------------------------------------------------------------->
-                   <div class="form-group">
-                   <label class="col-sm-1 control-label">附件:</label>
-                   <div class="col-sm-10">
-                   <span id="emailFiles"></span>
                    
-                   </div>
+                   <div class="form-group" id="DivFileBTNS">
+                   <label  class="col-sm-1 control-label" for="name">上传</label>  
+                   
+                   <div class="col-sm-8">
+                   <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
+                   <a class="btn btn-info" onclick="$('#fileToUpload').click()">选择文件</a>
+                   
+                   
+               	<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >
+               	<input type="button" class="btn btn-warning" onclick="deleteFile()" value="清空附件" >
+
                    </div>
 
+               	</div>
+               	
+               	<!-------------------------------------------------------------------------->
+               	 <div class="form-group">
+               	<label  class="col-sm-1 control-label" for="name">附件:</label>
+               	
+               	<div class="col-sm-8">
+
+               	
+               	<div id="div_previewImages"></div>
+                  <div id="progressNumber"></div> 
+                
+                  <div id="divFilesUploaded"></div>
+                  
+               	</div>
+               	
+               	
+               	</div>
+               	
+               	<!-------------------------------------------------------------------------->
                    <!-------------------------------------------------------------------------->
                    <div class="form-group">
                    <label class="col-sm-1 control-label">邮件内容:</label>
@@ -468,35 +485,35 @@
 <script>
 //函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
 
-
-function Fun_showSQLFileTable(SQL,tableID){
-
-	//alert(JSON.stringify(DataPara));
-
-	 $.ajax({
-         method:'get',
-         data:SQL,
-         url:"/app/PM/getSQLDBData",
-         success:function(data){
-        	// console.log("back Task data:"+JSON.stringify(data));
-
-        	 for(var i=0;i<data.length;i++){
-
-        		 var tr="<tr>" +
-        		 		"<td>"+data[i].BTID+"</td><td>"+data[i].BTVersion+"</td><td>"+data[i].taskTypeText+"</td>" +
-        		 		"<td>"+data[i].taskStaff+"</td><td>"+data[i].taskDBE+"</td><td id='modifyContent"+i+"'>"+data[i].modifyContent+"</td>" +
-        		 		"<td id='TDfile"+i+"'><a id='hrefA"+i+"'  href='/system.files.download/upload_"+data[i].taskFileKey+"' download="+data[i].taskFileName+"><span id='fileName"+i+"'>"+data[i].taskFileName+"</span></a></td>"
-        		 		"</tr>";
-
-        		 $(tableID+" tbody").append(tr);
-
-        	 }
-
-         },
-         error:function(){}
-     })
-
-}
+//
+//function Fun_showSQLFileTable(SQL,tableID){
+//
+//	//alert(JSON.stringify(DataPara));
+//
+//	 $.ajax({
+//         method:'get',
+//         data:SQL,
+//         url:"/app/PM/getSQLDBData",
+//         success:function(data){
+//        	// console.log("back Task data:"+JSON.stringify(data));
+//
+//        	 for(var i=0;i<data.length;i++){
+//
+//        		 var tr="<tr>" +
+//        		 		"<td>"+data[i].BTID+"</td><td>"+data[i].BTVersion+"</td><td>"+data[i].taskTypeText+"</td>" +
+//        		 		"<td>"+data[i].taskStaff+"</td><td>"+data[i].taskDBE+"</td><td id='modifyContent"+i+"'>"+data[i].modifyContent+"</td>" +
+//        		 		"<td id='TDfile"+i+"'><a id='hrefA"+i+"'  href='/system.files.download/upload_"+data[i].taskFileKey+"' download="+data[i].taskFileName+"><span id='fileName"+i+"'>"+data[i].taskFileName+"</span></a></td>"
+//        		 		"</tr>";
+//
+//        		 $(tableID+" tbody").append(tr);
+//
+//        	 }
+//
+//         },
+//         error:function(){}
+//     })
+//
+//}
 
 
 
@@ -522,9 +539,28 @@ function Fun_winDetailInit(dataSelect){
 	$('#topic').text(dataSelect.topic);
 	$('#detail').text(dataSelect.detail);
 	
-	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
-	var tableID="#billsTaskTable";
-	Fun_showSQLFileTable(tasksTableSQL,tableID);
+//	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
+//	var tableID="#billsTaskTable";
+//	Fun_showSQLFileTable(tasksTableSQL,tableID);
+	
+	//加载任务表内容, 
+	var SQLParamTask={
+			"tableName":"ppm_bills_task",
+			"titles":[
+				"BTID",
+				"BTVersion",
+				"taskStaff",
+				"taskDBE",
+				"taskLimitDate",
+				"modifyContent",
+				"functionsDBE",
+				"taskFiles"
+				],
+			"filter":"taskBPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTable("#billsTaskTable",SQLParamTask);
 	
 	
 	$('#emailADRS').val(dataSelect.emailADRS);
@@ -532,22 +568,44 @@ function Fun_winDetailInit(dataSelect){
 
 	$('#emailTitle').val(dataSelect.emailTitle);
 	
-    var emailFiles=JSON.parse(dataSelect.emailFiles);
-    
-    var emailFilesHtml=$('#emailFiles').html();
-    
-   console.log("emailFiles:"+emailFiles);
+//    var emailFiles=JSON.parse(dataSelect.emailFiles);
+//    
+//    var emailFilesHtml=$('#emailFiles').html();
+//    
+//   console.log("emailFiles:"+emailFiles);
    
-   if(emailFiles!=null){
-	   for(var i=0;i<emailFiles.length;i++){
-	    	 $("#emailFiles").html(emailFilesHtml+"<a href='/system.files.download/upload_"+emailFiles[i].fileKey+"' download='"+emailFiles[i].fileName+"'>"+emailFiles[i].fileName+"</a>");
-	    	 
-	    	 emailFilesHtml=$("#emailFiles").html()+" ; ";
-
-	    }
-   }
-    
-   emailFilesValue=emailFiles;
+//   if(emailFiles!=null){
+//	   for(var i=0;i<emailFiles.length;i++){
+//	    	 $("#emailFiles").html(emailFilesHtml+"<a href='/system.files.download/upload_"+emailFiles[i].fileKey+"' download='"+emailFiles[i].fileName+"'>"+emailFiles[i].fileName+"</a>");
+//	    	 
+//	    	 emailFilesHtml=$("#emailFiles").html()+" ; ";
+//
+//	    }
+//   }
+//    
+//   emailFilesValue=emailFiles;
+   
+   if(dataSelect.files!=null){
+		  
+		  var files=JSON.parse(dataSelect.files);
+		  if(files!=null){
+			  
+			  var fileLink="";
+				 if(files.length>0){
+					 for(var i=0;i<files.length;i++){
+						 console.log("files[i].fileName:"+files[i].fileName);
+						 
+						fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+					 } 
+					 
+					 fileLink=fileLink.substr(0, fileLink.length-3); 
+				 }
+		  var downloadurl=fileLink;
+		  }else{
+			  downloadurl="";
+		  }
+		  $('#divFilesUploaded').html(downloadurl);
+	  }
 
 	
 	$('#emailContent').val(dataSelect.emailContent);
@@ -569,6 +627,7 @@ function Fun_winDetailInit(dataSelect){
 	
 
 	if(dataSelect.PBHAuditResult==0||dataSelect.PBHAuditResult==null){
+		$("#DivFileBTNS").show();
 		$('#DivToolBTNS').show();
 		$('#DivPBHBTNS').show();
 		$("#PBHAuditor").attr("disabled",false);
@@ -580,7 +639,7 @@ function Fun_winDetailInit(dataSelect){
 		$('select').attr("disabled",true);
 		$('textarea').attr("disabled",true);
 		
-		
+		$("#DivFileBTNS").hide();
 		$('#DivToolBTNS').hide();
 		$('#DivPBHBTNS').hide();
 		$("#PBHAuditor").attr("disabled",true);
@@ -666,12 +725,12 @@ $('#BTNGetInfo').click(function() {
 var PBHCTRName= $("#PBHCTRName").text();
 $("#emailTitle").val("【弘讯PPM处理结果】"+ $("#topic").text());
 
-var fileNum=$("#billsTaskTable").find("tr").length-1;
+var fileNum=$("#billsTaskTable tbody").find("tr").length;
 console.log("fileNum:"+fileNum);
 
-var emailFilesHtml=$("#emailFiles").html();
-emailFilesValue=[];
-console.log("emailFiles:"+emailFiles);
+var filesHtml=$("#divFilesUploaded").html();
+//emailFilesValue=[];
+//console.log("emailFiles:"+emailFiles);
 	
 	SQLEMails={"SQL":"SQLGetEMails","filter":"FTYName = '"+PBHCTRName+"'"};
 	 $.ajax({
@@ -682,30 +741,64 @@ console.log("emailFiles:"+emailFiles);
         	 console.log("back email data:"+JSON.stringify(data));
         	 $("#emailADRS").val(data[0].email);
         	 
-             emailContentFormat="Dear "+data[0].contact+":\n        您的需求已处理完成,需求单编号:"+$("#BPID").text()+";\n" +
-     		"修改内容如下:\n";
+             emailContentFormat="Dear "+data[0].contact+":\n        您的需求已处理完成,需求单编号:"+$("#BPID").text()+";\n";
+             
+             var filesHtml="";
+             
+             var emailModifyContent="";
+             
+             var emailFunctionsDBE="";
              
              for(var i=0;i<fileNum;i++){
-        		 if($("#fileName"+i).text()!="null"){
-//        			 console.log($("#fileName"+i).text()=="null");
-        			
-        			 $("#emailFiles").html(emailFilesHtml+$("#TDfile"+i).html());
-        			 emailFilesHtml=$("#emailFiles").html()+" ; ";
-        			 
-        			 emailContentFormat=emailContentFormat+"文件名称:"+$("#fileName"+i).text()+"\n"+"修改内容:"+$("#modifyContent"+i).html()+"\n";
-        			 
-        			 var j={
-        					 "fileName":$("#fileName"+i).text(),
-        					 "fileKey":$("#hrefA"+i).attr("href").substr(30)
-        			 }
-        			 emailFilesValue.push(j);
-        			 
-        		 }
+            	 
+            	 var tdFiles=$("#billsTaskTable tbody tr:eq("+i+") td:last").html();
+
+            	 console.log("filesHtml:"+JSON.stringify(filesHtml));
+            	 
+            	 if(tdFiles!=""){
+            		 
+            		 filesHtml=filesHtml+tdFiles+" ; ";
+            		 
+            		 emailModifyContent=emailModifyContent+$("#billsTaskTable tbody tr:eq("+i+") td:eq(5)").html()+"\n";
+            		 
+            		 emailFunctionsDBE=emailFunctionsDBE+$("#billsTaskTable tbody tr:eq("+i+") td:eq(6)").html()+"\n";
+            		 
+            	 }
+            	 
+            	 
+
+            	 
+//        		 if($("#fileName"+i).text()!=""){
+//        			 
+//        			 
+//        			 
+////        			 console.log($("#fileName"+i).text()=="null");
+//        			
+//        			 $("#files").html(filesHtml+$("#TDfile"+i).html());
+//        			 filesHtml=$("#files").html()+" ; ";
+//        			 
+//        			 emailContentFormat=emailContentFormat+"文件名称:"+$("#fileName"+i).text()+"\n"+"修改内容:"+$("#modifyContent"+i).html()+"\n";
+//        			 
+//        			 var j={
+//        					 "fileName":$("#fileName"+i).text(),
+//        					 "fileKey":$("#hrefA"+i).attr("href").substr(30)
+//        			 }
+//        			 filesValue.push(j);
+//        			 
+//        		 }
         	 
         	 }
+             
+             
+             
+             
+             if(filesHtml!=""){
+            	 filesHtml=filesHtml.substr(0, filesHtml.length-3);
+            	 $("#divFilesUploaded").html(filesHtml);
+             }
 
 
-             $("#emailContent").val(emailContentFormat);
+             $("#emailContent").val(emailContentFormat+"修改内容:\n"+emailModifyContent+"功能说明:\n"+emailFunctionsDBE);
 
 
         	
@@ -728,7 +821,7 @@ $('#BTNResetInfo').click(function() {
 	$("#emailADRS").val("");
 	$("#emailCopyADRS").val("");
 	$("#emailTitle").val("");
-	$("#emailFiles").text("");
+	$("#files").text("");
 	$("#emailContent").val("");
 	$("#PBHRemark").val("");
 	
@@ -740,6 +833,23 @@ $('#BTNResetInfo').click(function() {
 
 //按钮-PBH保存---------
 $('#BTNPBHSave').click(function() {
+	
+	
+	
+	
+   var files=[];
+	
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
+		
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 
 		 var PBHData={
 					"DBTable":"ppm_bills_PBH",
@@ -749,7 +859,8 @@ $('#BTNPBHSave').click(function() {
 					"emailADRS":$('#emailADRS').val(),
 					"emailCopyADRS":$('#emailCopyADRS').val(),
 					"emailTitle":$('#emailTitle').val(),
-					"emailFiles":JSON.stringify(emailFilesValue),
+//					"files":JSON.stringify(filesValue),
+					"files":JSON.stringify(files),
 					"emailContent":$('#emailContent').val(),
 					"PBHRemark":$('#PBHRemark').val(),
 					"PBHMaker":sessionName,
@@ -816,7 +927,7 @@ $('#BTNModelEmail').click(function() {
 	$('#emailADRSModel').text($('#emailADRS').val());
 	$('#emailCopyADRSModel').text($('#emailCopyADRS').val());
 	$('#emailTitleModel').text($('#emailTitle').val());
-	$('#emailFilesModel').text($('#emailFiles').text());
+	$('#emailFilesModel').text($('#divFilesUploaded').text());
 	
 	
 	
@@ -835,13 +946,28 @@ $('#BTNModelEmail').click(function() {
 
 $('#BTNModelEmailSend').click(function() {
 	
+	
+    var files=[];
+	
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
+		
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
+	
 	 var emailData={
 			    "pbhBPID":$('#BPID').text(),
 			    "emailResult":1,
 				"emailADRS":$('#emailADRS').val(),
 				"emailCopyADRS":$('#emailCopyADRS').val(),
 				"emailTitle":$('#emailTitle').val(),
-				"emailFiles":JSON.stringify(emailFilesValue),
+				"emailFiles":JSON.stringify(files),
 				"emailContent":$('#emailContent').val(),
 				"PBHStatus":1
 

@@ -391,26 +391,62 @@ function uploadCanceled(evt) {
 
 function deleteFile() {
 	
-	var filePath=$('#filePath').attr("href");
+//	var filePath=$('#filePath').attr("href");
 //	alert(filePath);
 	
-	if(filePath!=undefined){
-		var fileKey=$('#filePath').attr("href").substring(23);
-//		alert(fileKey);
-		var xhr = new XMLHttpRequest();
-		xhr.open("delete", "/system.files/"+ fileKey);
-		xhr.send();
+	var files=[];
+	
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
 		
-		alert("删除附件成功");
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
+	
+	if(files.length>0){
+		
+		var xhr = new XMLHttpRequest();
+		
+		for(var i=0;i<files.length;i++){
+			var fileKey=files[i].fileKey;
+			var filePath="upload_"+fileKey;
+			xhr.open("delete", "/system.files/"+ filePath);
+			xhr.send();
+		}
 		
 		document.getElementById('div_previewImages').innerHTML="";
 		document.getElementById('progressNumber').innerHTML="";
 		document.getElementById('divFilesUploaded').innerHTML="";
-//		document.getElementById('fileName').innerHTML="";
+		alert("清空附件成功!");
 		
 	}else{
 		alert("无附件,无需清空!");
 	}
+	
+	
+	
+//	if(filePath!=undefined){
+//		var fileKey=$('#filePath').attr("href").substring(23);
+////		alert(fileKey);
+//		var xhr = new XMLHttpRequest();
+//		xhr.open("delete", "/system.files/"+ fileKey);
+//		xhr.send();
+//		
+//		alert("删除附件成功");
+//		
+//		document.getElementById('div_previewImages').innerHTML="";
+//		document.getElementById('progressNumber').innerHTML="";
+//		document.getElementById('divFilesUploaded').innerHTML="";
+////		document.getElementById('fileName').innerHTML="";
+//		
+//	}else{
+//		alert("无附件,无需清空!");
+//	}
 
 	
 //	if(fileKey){
@@ -995,11 +1031,8 @@ function Fun_fillTrackTable(tableID,SQLParam){
        							 console.log("files[k].fileName:"+files[k].fileName);
        							 
        							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
-
        						 }
-       						 
        						fileLink=fileLink.substr(0, fileLink.length-3); 
-
        					 }
        					 
        					trtd=trtd+"<td>"+fileLink+"</td>";

@@ -448,6 +448,9 @@
 
                      <label class="col-sm-2 control-label">任务单号:</label>
                      <div class="col-sm-3">
+                     
+                       <input id="taskDBID" class="form-control"  type="hidden" value="">
+                       
                        <input id="taskBPID" class="form-control"  type="hidden" value="">
 
                        <input id="BTID" class="form-control"  type="text" value="">
@@ -455,7 +458,7 @@
 
                      <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
 
-                     <label class="col-sm-2 control-label">任务单确认状态: <span id="BTAcceptResultText"></span></label>
+                     <label class="col-sm-2 control-label">任务单确认状态: <span id="BTStatusText"></span></label>
 
 
                      </div>
@@ -834,14 +837,9 @@ function Fun_BPTDetailInitPart2(dataSelect){
 
 	 $('#divFilesUploaded').html("");
 
-//	  if(dataSelect.fileKey!=null){
-//
-//		  console.log("不为空"+dataSelect.fileKey);
-//		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
-//		  $('#divFilesUploaded').html(downloadurl);
-//	  }
+
 	  
-	 if(dataSelect.files!=null){
+	  if(dataSelect.files!=null){
 		  
 		  var files=JSON.parse(dataSelect.files);
 		  if(files!=null){
@@ -853,6 +851,8 @@ function Fun_BPTDetailInitPart2(dataSelect){
 						 
 						fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
 					 } 
+					 
+					 fileLink=fileLink.substr(0, fileLink.length-3); 
 				 }
 		  var downloadurl=fileLink;
 		  }else{
@@ -1066,6 +1066,9 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
 
 			     setCheckBoxValue("modfiyABE",dataSelectTask.modfiyABE);
+			     
+			     
+			     $("#taskDBID").val(dataSelectTask.DBID);
 
 
 			     $("#BTID").val(dataSelectTask.BTID);
@@ -1079,7 +1082,7 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 
 				 $("#BTVersion").text(dataSelectTask.BTVersion);
 
-				 $("#BTAcceptResultText").text(dataSelectTask.BTAcceptResultText);
+				 $("#BTStatusText").text(dataSelectTask.BTStatusText);
 
 				 $("#taskDBE").val(dataSelectTask.taskDBE);
 
@@ -1125,6 +1128,30 @@ function Fun_updTask(DBData) {
  //                alert("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
                 alert("更新任务单数据成功!");
+
+                Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+
+                $('#BTNTaskAdd').click();
+           	    $('#billTaskPanel').hide();
+
+            } else {
+                alert("未有任务单数据更新!");
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+    });
+}
+
+///函数-更新任务单,并刷新任务单列表
+function Fun_saveTask(DBData) {
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/saveDBData',
+        data: DBData,
+        success: function(data, textStatus) {
+            //     alert("成功数据:"+JSON.stringify(data));
+            if (data.affectedRows != 0) {
+                alert("保存任务单数据成功!");
 
                 Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
 
@@ -1405,7 +1432,7 @@ $('#BTNTaskAdd').click(function(){
 	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
 
 	$('#BTVersion').text(0);
-	$('#BTAcceptResultText').text('新增');
+	$('#BTStatusText').text('新增');
 
 	var SQLTaskStaff={SQL:"SQLSRStaffs"};
 	var taskStaff="#taskStaff";
@@ -1455,104 +1482,205 @@ $('#BTNTaskDel').click(function() {
 //按钮-任务保存
 
 $('#BTNTaskSave').click(function(){
+	
+	var tableTask = $('#billsTaskTable').DataTable();
+    var dataSelectTask = tableTask.row('.selected').data();
+    
+    console.log("dataSelectTask:"+JSON.stringify(dataSelectTask));
+    
+    var taskDBID= $('#taskDBID').val();
 
-	var taskType = $('input:radio[name="taskType"]:checked').val();
 	var taskBPID=$('#taskBPID').val();
+	
 	var modfiyABE=getCheckBoxValue('modfiyABE');
 
-	var BTAcceptResultText=$('#BTAcceptResultText').text();
+//	var BTAcceptResultText=$('#BTAcceptResultText').text();
+	
+	
+	if(dataSelectTask==undefined){
+		var taskData={
+				"DBTable":"ppm_bills_task",
+				"DBID":taskDBID,
+				"BTID":$('#BTID').val(),
+				"BTVersion":0,
+				"taskBPID":taskBPID,
+				"taskCTRName":$('#CTRName').val(),
+				"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+				"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+				"taskType":$('input:radio[name="taskType"]:checked').val(),
+				"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+				"taskStaff":$('#taskStaff option:selected').text(),
+				"modfiyABE":modfiyABE,
+				"taskDBE":$('#taskDBE').val(),
+				"taskLimitDate":$('#taskLimitDate').val(),
+				"taskMaker":sessionName,
+				"taskMakeDate":Ndate,
+				"BTStatus":1,
+				"BTStatusText":"新增"
+		        }
+		
+		 Fun_saveTask(taskData);
+		
+	}else{
+		if(dataSelectTask.BTStatus==1){
+			
+			var taskData={
+					"DBTable":"ppm_bills_task",
+					"DBID":taskDBID,
+					"BTID":$('#BTID').val(),
+					"BTVersion":0,
+					"taskBPID":taskBPID,
+					"taskCTRName":$('#CTRName').val(),
+					"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+					"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+					"taskType":$('input:radio[name="taskType"]:checked').val(),
+					"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+					"taskStaff":$('#taskStaff option:selected').text(),
+					"modfiyABE":modfiyABE,
+					"taskDBE":$('#taskDBE').val(),
+					"taskLimitDate":$('#taskLimitDate').val(),
+					"taskMaker":sessionName,
+					"taskMakeDate":Ndate,
+					"BTStatus":1,
+					"BTStatusText":"新增"
+			        }
+			
+			 Fun_saveTask(taskData);
+		}else{
+			if(confirm("风险操作:该任务单已非新增状态,保存将更新任务单版本,是否继续?")){
+				var taskData={
+						"DBTable":"ppm_bills_task",
+						"DBID":taskDBID,
+						"BTID":$('#BTID').val(),
+						"BTVersion":dataSelectTask.BTVersion+1,
+						"taskBPID":taskBPID,
+						"taskCTRName":$('#CTRName').val(),
+						"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+						"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+						"taskType":$('input:radio[name="taskType"]:checked').val(),
+						"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+						"taskStaff":$('#taskStaff option:selected').text(),
+						"modfiyABE":modfiyABE,
+						"taskDBE":$('#taskDBE').val(),
+						"taskLimitDate":$('#taskLimitDate').val(),
+						"taskMaker":sessionName,
+						"taskMakeDate":Ndate,
+						"BTStatus":1,
+						"BTStatusText":"新增"
+				        }
+				
+				 Fun_saveTask(taskData);
 
-	switch(BTAcceptResultText){
-	case '新增':
-		var billData={
-		"DBTable":"ppm_bills_task",
-		"BTID":$('#BTID').val(),
-		"BTVersion":0,
-		"taskBPID":taskBPID,
-		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
-		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
-		"taskType":$('input:radio[name="taskType"]:checked').val(),
-		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
-		"taskCTRName":$('#CTRName').val(),
-		"taskStaff":$('#taskStaff option:selected').text(),
-		"modfiyABE":modfiyABE,
-		"taskDBE":$('#taskDBE').val(),
-		"taskLimitDate":$('#taskLimitDate').val(),
-		"taskMaker":sessionName,
-		"taskMakeDate":Ndate,
-		"BTStatus":1,
-		"BTStatusText":"新增"
-        }
+			}
+		}
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
-        console.log("billData:"+JSON.stringify(billData));
-        Fun_addTask(billData);
-
-	break;
-	case '未确认':
-
-		var tableTask = $('#billsTaskTable').DataTable();
-	    var dataSelectTask = tableTask.row('.selected').data();
-
-		var billData={
-		"DBTable":"ppm_bills_task",
-		"DBID":dataSelectTask.DBID,
-		"BTID":$('#BTID').val(),
-		"BTVersion":0,
-		"taskBPID":taskBPID,
-		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
-		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
-		"taskType":$('input:radio[name="taskType"]:checked').val(),
-		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
-		"taskStaff":$('#taskStaff option:selected').text(),
-		"modfiyABE":modfiyABE,
-		"taskDBE":$('#taskDBE').val(),
-		"taskLimitDate":$('#taskLimitDate').val(),
-		"taskMaker":sessionName,
-		"taskMakeDate":Ndate,
+//	switch(BTAcceptResultText){
+//	case '新增':
+//		var billData={
+//		"DBTable":"ppm_bills_task",
+//		"BTID":$('#BTID').val(),
+//		"BTVersion":0,
+//		"taskBPID":taskBPID,
+//		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+//		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+//		"taskType":$('input:radio[name="taskType"]:checked').val(),
+//		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+//		"taskCTRName":$('#CTRName').val(),
+//		"taskStaff":$('#taskStaff option:selected').text(),
+//		"modfiyABE":modfiyABE,
+//		"taskDBE":$('#taskDBE').val(),
+//		"taskLimitDate":$('#taskLimitDate').val(),
+//		"taskMaker":sessionName,
+//		"taskMakeDate":Ndate,
 //		"BTAcceptResult":0,
-		"BTStatus":1,
-		"BTStatusText":"新增"
-        }
-
-        console.log("billData:"+JSON.stringify(billData));
-		Fun_updTask(billData);
-
-	break;
-
-	default:
-
-		var msg = confirm("风险操作！已开始的任务单不允许修改,如保存将更新任务单版本,请与相关任务负责人先确认!");
-        if (msg === true){
-
-        	var tableTask = $('#billsTaskTable').DataTable();
-            var dataSelectTask = tableTask.row('.selected').data();
-
-            var billData={
-            		"DBTable":"ppm_bills_task",
-            		"BTID":dataSelectTask.BTID,
-            		"BTVersion":dataSelectTask.BTVersion+1,
-            		"taskBPID":taskBPID,
-            		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
-            		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
-            		"taskType":$('input:radio[name="taskType"]:checked').val(),
-            		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
-            		"taskStaff":$('#taskStaff option:selected').text(),
-            		"modfiyABE":modfiyABE,
-            		"taskDBE":$('#taskDBE').val(),
-            		"taskLimitDate":$('#taskLimitDate').val(),
-            		"taskMaker":sessionName,
-            		"taskMakeDate":Ndate,
-//            		"BTAcceptResult":0,
-            		"BTStatus":1
-                    }
-
-                    console.log("billData:"+JSON.stringify(billData));
-                    Fun_addTask(billData);
-
-        }
-
-
-    }
+//		"BTAcceptResultText":"未确认",
+//		"BTStatus":1,
+//		"BTStatusText":"新增"
+//        }
+//
+//        console.log("billData:"+JSON.stringify(billData));
+//        Fun_addTask(billData);
+//
+//	break;
+//	case '未确认':
+//
+//		var tableTask = $('#billsTaskTable').DataTable();
+//	    var dataSelectTask = tableTask.row('.selected').data();
+//
+//		var billData={
+//		"DBTable":"ppm_bills_task",
+//		"DBID":dataSelectTask.DBID,
+//		"BTID":$('#BTID').val(),
+//		"BTVersion":0,
+//		"taskBPID":taskBPID,
+//		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+//		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+//		"taskType":$('input:radio[name="taskType"]:checked').val(),
+//		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+//		"taskStaff":$('#taskStaff option:selected').text(),
+//		"modfiyABE":modfiyABE,
+//		"taskDBE":$('#taskDBE').val(),
+//		"taskLimitDate":$('#taskLimitDate').val(),
+//		"taskMaker":sessionName,
+//		"taskMakeDate":Ndate,
+//		"BTStatus":1,
+//		"BTStatusText":"新增"
+//        }
+//
+//        console.log("billData:"+JSON.stringify(billData));
+//		Fun_updTask(billData);
+//
+//	break;
+//
+//	default:
+//
+//		var msg = confirm("风险操作！已开始的任务单不允许修改,如保存将更新任务单版本,请与相关任务负责人先确认!");
+//        if (msg === true){
+//
+//        	var tableTask = $('#billsTaskTable').DataTable();
+//            var dataSelectTask = tableTask.row('.selected').data();
+//            
+//            console.log("dataSelectTask:"+JSON.stringify(dataSelectTask));
+//
+//            var billData={
+//            		"DBTable":"ppm_bills_task",
+//            		"BTID":dataSelectTask.BTID,
+//            		"BTVersion":dataSelectTask.BTVersion+1,
+//            		"taskBPID":taskBPID,
+//            		"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+//            		"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+//            		"taskType":$('input:radio[name="taskType"]:checked').val(),
+//            		"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+//            		"taskStaff":$('#taskStaff option:selected').text(),
+//            		"modfiyABE":modfiyABE,
+//            		"taskDBE":$('#taskDBE').val(),
+//            		"taskLimitDate":$('#taskLimitDate').val(),
+//            		"taskMaker":sessionName,
+//            		"taskMakeDate":Ndate,
+////            		"BTAcceptResult":0,
+//            		"BTStatus":1
+//                    }
+//
+//                    console.log("billData:"+JSON.stringify(billData));
+//                    Fun_addTask(billData);
+//
+//        }
+//
+//
+//    }
 
 
 
@@ -1583,15 +1711,19 @@ $('#BTNBPTSave').click(function(){
     var auditor=Fun_getSelectText($('#auditor option:selected').text());
     console.log("auditor:"+auditor);
 
-    if($('#filePath').attr('href')!=undefined){
-		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-		var fileName=$('#fileName').html();
-		}else{
-		var fileKey="";
-		var fileName="";
-	}
-    
-    files=[{"fileName":fileName,"fileKey":fileKey}];
+    var files=[];
+	
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
+		
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 
 
     var BPTStatusText=$('#BPTStatusText').text();
@@ -1618,9 +1750,8 @@ $('#BTNBPTSave').click(function(){
     			"makeDate":Ndate,
     			"auditResult":0,
     			"auditor":auditor,
-    			"files":JSON.stringify(files),
-    			"fileKey":fileKey,
-    			"fileName":fileName
+    			"files":JSON.stringify(files)
+
     			}
     
         	
@@ -1659,15 +1790,19 @@ $('#BTNBPTUpdateVer').click(function(){
 //            var auditor=Fun_getSelectText($('#auditor option:selected').text());
 //            console.log("auditor:"+auditor);
 
-            if($('#filePath').attr('href')!=undefined){
-        		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-        		var fileName=$('#fileName').html();
-        		}else{
-        		var fileKey="";
-        		var fileName="";
-        	}
-            
-            files={"fileName":fileName,"fileKey":fileKey};
+            var files=[];
+        	
+        	$('#divFilesUploaded a').each(function(){
+        		var fileKey=$(this).attr('href').substring(30);
+        		var fileName=$(this).attr('download');
+        		
+        		var fileInfo={
+        				"fileName":fileName,
+        				"fileKey":fileKey
+        		}
+        		
+        		files.push(fileInfo);
+        	});
 
 
             var billData={
@@ -1689,8 +1824,7 @@ $('#BTNBPTUpdateVer').click(function(){
         			"auditResult":0,
 
         			"files":JSON.stringify(files),
-        			"fileKey":fileKey,
-        			"fileName":fileName
+
         			}
 
             	console.log("无方案 billData:"+JSON.stringify(billData));

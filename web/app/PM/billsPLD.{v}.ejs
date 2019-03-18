@@ -630,6 +630,8 @@ function Fun_winDetailInit(dataSelect){
 					 
 					fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
 				 } 
+				 
+				 fileLink=fileLink.substr(0, fileLink.length-3); 
 			 }
 	  var downloadurl=fileLink;
 	  }else{
@@ -986,17 +988,20 @@ $('#BTNAudit').click(function() {
 $('#BTNFormAdd').click(function(){
 	
 
+    var files=[];
 	
-	if($('#filePath').attr('href')!=undefined){
-		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-		var fileName=$('#fileName').html();
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
 		
-	}else{
-		var fileKey="";
-		var fileName="";
-	}
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 	
-	files=[{"fileName":fileName,"fileKey":fileKey}];
 	var billData={
 			"DBTable":"ppm_bills_plan",
 			"BPID":$('#BPID').val(),
@@ -1019,8 +1024,6 @@ $('#BTNFormAdd').click(function(){
 			"auditDate":$('#auditDate').val(),
 			"auditResult":$('#auditResult').val(),
 			"version": $('#version').text(),
-			"fileKey":fileKey,
-			"fileName":fileName,
 			"files":JSON.stringify(files),
 			"WFStatus":1
 	}
@@ -1043,19 +1046,33 @@ $('#BTNFormAdd').click(function(){
 //按钮-表格修改计划单
 
 $('#BTNFormModify').click(function() {
+
+//	if($('#filePath').attr('href')!=undefined){
+//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//	var fileName=$('#fileName').html();
+//	}else{
+//	var fileKey="";
+//	var fileName="";
+//	}
+//	
 	
+	var files=[];
+	
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
+		
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 	
 
 	
-	if($('#filePath').attr('href')!=undefined){
-	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-	var fileName=$('#fileName').html();
-	}else{
-	var fileKey="";
-	var fileName="";
-	}
-	
-	files={"fileName":fileName,"fileKey":fileKey};
+	console.log("files:"+JSON.stringify(files));
 
 	var billData={
 			"DBTable":"ppm_bills_plan",
@@ -1079,8 +1096,6 @@ $('#BTNFormModify').click(function() {
 			"makeDate":$('#makeDate').val(),
 			"auditDate":$('#auditDate').val(),
 			"version": $('#version').text(),
-			"fileKey":fileKey,
-			"fileName":fileName,
 			"files":JSON.stringify(files),
 			"WFStatus":1
 	}
@@ -1122,15 +1137,19 @@ $('#BTNFormUpdate').click(function() {
         	
         	var newVersion=parseInt($('#version').text())+1;
         	
-        	if($('#filePath').attr('href')!=undefined){
-        		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-        		var fileName=$('#fileName').html();
-        		}else{
-        		var fileKey="";
-        		var fileName="";
+        	var files=[];
+        	
+        	$('#divFilesUploaded a').each(function(){
+        		var fileKey=$(this).attr('href').substring(30);
+        		var fileName=$(this).attr('download');
+        		
+        		var fileInfo={
+        				"fileName":fileName,
+        				"fileKey":fileKey
         		}
         		
-        		files={"fileName":fileName,"fileKey":fileKey};
+        		files.push(fileInfo);
+        	});
         	
 
         	var billData={

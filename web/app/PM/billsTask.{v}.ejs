@@ -422,9 +422,9 @@
                 	 
                 	 
 
-                     <label for="recordDate" class="col-sm-1 control-label">记录日期:</label>                     
+                     <label for="recordMakeDate" class="col-sm-1 control-label">记录日期:</label>                     
                      <div class="col-sm-5">
-                     <span id="recordDate" class="help-block"></span>  	
+                     <span id="recordMakeDate" class="help-block"></span>  	
                  	 </div>
                  	</div>
                 	
@@ -860,14 +860,7 @@ function Fun_taskRecordInit(dataSelect){
 		
 		Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
 		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		
 		$('#DIVRecordContent').hide();
 		
@@ -945,7 +938,7 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 
 		          var dataSelectRecord = tableRecords.row('.selected').data();
 
-			 //    console.log("dataSelectRecord:"+JSON.stringify(dataSelectRecord));
+			     console.log("dataSelectRecord11111:"+JSON.stringify(dataSelectRecord));
 			     
 			     $('#DIVRecordContent').show();
 			     
@@ -985,6 +978,9 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 									fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+taskFiles[i].fileKey+" download="+taskFiles[i].fileName+">"+"<span>"+taskFiles[i].fileName+"</span></a>"+" ; ";
 								 } 
 							 }
+							 fileLink=fileLink.substr(0, fileLink.length-3); 
+							 
+							 
 					  var downloadurl=fileLink;
 					  }else{
 						  downloadurl="";
@@ -1259,18 +1255,33 @@ $('#BTNTaskRecordSave').click(function() {
 		if(sessionName==$('#taskStaff').text()){
 			
 			
-			 if($('#filePath').attr('href')!=undefined){
-					var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-					var fileName=$('#fileName').html();
-					}else{
-					var fileKey="";
-					var fileName="";
-
-				}
-			
-			 var taskFiles=[{"fileName":fileName,"fileKey":fileKey}];
+//			 if($('#filePath').attr('href')!=undefined){
+//					var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
+//					var fileName=$('#fileName').html();
+//					}else{
+//					var fileKey="";
+//					var fileName="";
+//
+//				}
+//			
+//			 var taskFiles=[{"fileName":fileName,"fileKey":fileKey}];
 			 
-			 if(fileName==""){
+			 
+			 var taskFiles=[];
+				
+				$('#divFilesUploaded a').each(function(){
+					var fileKey=$(this).attr('href').substring(30);
+					var fileName=$(this).attr('download');
+					
+					var fileInfo={
+							"fileName":fileName,
+							"fileKey":fileKey
+					}
+					
+					taskFiles.push(fileInfo);
+				});
+			 
+			 if(taskFiles.length==0){
 				 alert("程序附件必须上传!");
 			 }else{
 				 
