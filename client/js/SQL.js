@@ -61,8 +61,6 @@ SQLTableBillsTask_T="SELECT A.* FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb,"
 "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A";
 
 
-
-
 SQLTableBillsTaskRecord="SELECT A.* FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` " +
     "GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.BTAcceptResult IS NOT NULL ) A";
 

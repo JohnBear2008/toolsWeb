@@ -1067,14 +1067,16 @@ $('#BTNFormAdd').click(function(){
 	
 //	alert("billData:"+JSON.stringify(billData));
 	
-	if(billData.auditor!=""){
-
-		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-		
-		Fun_addDBDataDD(billData,DDMsg,"计划单");
-	}else{
-		alert("该计划单没有指定审核人,请检查!");
-	}
+//	if(billData.auditor!=""){
+//
+//		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
+//		
+//		Fun_addDBDataDD(billData,DDMsg,"计划单");
+//	}else{
+//		alert("该计划单没有指定审核人,请检查!");
+//	}
+	
+	addDBData(billData);
 	
 
 });
