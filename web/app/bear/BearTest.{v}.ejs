@@ -16,6 +16,37 @@
     </tr>
   </table>
   
+  
+  <table id="tableTest" border="1">
+  <tr>
+  <td>1
+  </td>
+  <td>1
+  </td>
+  <td>1
+  </td>
+  </tr>
+  
+  <tr>
+  <td>1
+  </td>
+  <td>2
+  </td>
+  <td>2
+  </td>
+  </tr>
+  
+  <tr>
+  <td>1
+  </td>
+  <td>2
+  </td>
+  <td>3
+  </td>
+  </tr>
+  
+  </table>
+  
 
 
 </div>
@@ -41,7 +72,54 @@ function ajaxFun(callback){
 }
 
 	
-	
+//函数 相同单元格内容合并
+function MergeTableCell(tableId, startRow, endRow, col) {
+    var tb = document.getElementById(tableId);
+    
+    console.log("tb:"+tb);
+//	 var tb = $(tableId);
+    //设置为0时,检索所有行
+    if (endRow == 0) {
+        endRow = tb.rows.length - 1;
+    }
+    //指定数据行索引大于表格行数
+    if (endRow >= tb.rows.length) {
+        return;
+    }
+    //检测指定的列索引是否超出表格列数
+    if (col >= tb.rows[0].cells.length) {
+        return;
+    }
+    //循环需要判断的数据行
+    for (var i = startRow; i < endRow; i++) {
+        //如果当前行与下一行数据值相同，则进行前面列的判断
+        if (tb.rows[startRow].cells[col].innerHTML == tb.rows[i + 1].cells[col].innerHTML) {
+            var Same = true;
+            //循环跟前面的所有的同级数据行进行判断
+            for (var j = col; j > 0; j--) {
+                if (tb.rows[startRow].cells[j - 1].innerHTML != tb.rows[i + 1].cells[j - 1].innerHTML) {
+                    Same = false;
+                    break;
+                }
+            }
+            //如果前面的同级数据行的值均相同，则进行单元格的合并
+            if (true == Same) {
+                //如果相同则删除下一行的第0列单元格  
+                tb.rows[i + 1].cells[col].style.display = 'none';
+                //更新rowSpan属性  
+                tb.rows[startRow].cells[col].rowSpan = (tb.rows[startRow].cells[col].rowSpan | 0) + 1;
+            }
+            else {
+                //增加起始行  
+                startRow = i + 1;
+            }
+        }
+        else {
+            //增加起始行  
+            startRow = i + 1;
+        }
+    }
+}
     
     
 	
@@ -52,12 +130,14 @@ function ajaxFun(callback){
 
 $(function(){
 	
-	var a=ajaxFun(callback);
 	
-	alert("a11111111111:"+a);
-	
-//	alert(JSON.stringify(ajaxFun()));
+	MergeTableCell("tableTest",0,0,0)
+//	var a=ajaxFun(callback);
 //	
+//	alert("a11111111111:"+a);
+//	
+////	alert(JSON.stringify(ajaxFun()));
+////	
 //	alert("aa:"+JSON.stringify(aa));
 
     

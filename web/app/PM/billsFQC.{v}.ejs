@@ -667,7 +667,8 @@ $('#BTNFQCAudit').click(function() {
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
-						"FQCStatus":1
+						"FQCStatus":1,
+						"FQCStatusText":"已通过"
 				}
 			 
 			 var msg="该计划单已通过FQC检测,等待最终发布!";
@@ -688,7 +689,8 @@ $('#BTNFQCAudit').click(function() {
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
-						"FQCStatus":1
+						"FQCStatus":2,
+						"FQCStatusText":"出货后修正"
 				}
 			 
 			 var msg="该计划单FQC检测存在问题,请发布后继续跟踪解决!";
@@ -709,7 +711,8 @@ $('#BTNFQCAudit').click(function() {
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":2,
-						"FQCStatus":2
+						"FQCStatus":3,
+						"FQCStatusText":"立即修正"
 				}
 			 
 			 var msg="该计划单未通过FQC检测,请更新后再次进行FQC检测!";
@@ -720,14 +723,14 @@ $('#BTNFQCAudit').click(function() {
 		 }
 		 
 		 
-		 var FQCData={
-					"DBTable":"ppm_bills_FQC",
-					"DBID":$('#DBID').val(),
-					"FQCAuditor":sessionName,
-					"FQCAuditDate":Ndate,
-					"FQCAuditResult":1,
-					"FQCStatus":1
-			}
+//		 var FQCData={
+//					"DBTable":"ppm_bills_FQC",
+//					"DBID":$('#DBID').val(),
+//					"FQCAuditor":sessionName,
+//					"FQCAuditDate":Ndate,
+//					"FQCAuditResult":1,
+//					"FQCStatus":1
+//			}
 		 
 		 
 		 console.log("PLDUpdData:"+JSON.stringify(PLDUpdData));
@@ -756,11 +759,6 @@ $('#BTNFQCAudit').click(function() {
 				
 			});
 		 
-		 
-		 
-		 
-		 
-
 });
 
 
