@@ -1078,7 +1078,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
         		        "<td>"+data[i].modelType+"</td>" +
         		 		"<td>"+data[i].content+"</td>" +
-        		 		"<td><input type='radio' name='testResultRadio"+i+"'  value='1' checked>正确 <input type='radio' name='testResultRadio"+i+"' value='2'> 不正确</td>"+
+        		 		"<td><input type='radio' name='testResultRadio"+i+"'  value='1' checked><span>正确</span> <input type='radio' name='testResultRadio"+i+"' value='2'> <span>不正确</span></td>"+
         		 		"<td><input id='testRemark"+i+"' type='text' value='' style='width:100%'></td>"+
         		 		"</tr>";
         		 
@@ -1100,10 +1100,15 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         		 
         	 }
         	 
-//        	 var domID=$(tableID)[0];
-//    		 MergeTableCell(domID,0,0,0);
+             console.log("tableID:"+tableID.substr(1));
+
+
+   		 
+//   		 $(tableID+" tbody").rowspan(0);
+//   		 $(tableID).rowspan(1);
+//   		 $(tableID).rowspan(2);
         	 
-//        	 $(tableID+" tbody").rowspan(0);
+
 
          },
          error:function(){}
@@ -1111,83 +1116,34 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 
 }
 
-////函数 相同单元格内容合并
-//function MergeTableCell(tableId, startRow, endRow, col) {
-//	
-//
-//	
-////    var tb = document.getElementById(tableId);
-////	 var tb = $(tableId);
-//    //设置为0时,检索所有行
-//	
-//	tb=tableId;
-//	
-//	console.log("tb:"+tb);
-//	
-//	
-//    if (endRow == 0) {
-//        endRow = tb.rows.length - 1;
-//        
-//        console.log("endRow:"+endRow);
-//    }
-//    //指定数据行索引大于表格行数
-//    if (endRow >= tb.rows.length) {
-//        return;
-//    }
-//    //检测指定的列索引是否超出表格列数
-//    if (col >= tb.rows[0].cells.length) {
-//        return;
-//    }
-//    //循环需要判断的数据行
-//    for (var i = startRow; i < endRow; i++) {
-//        //如果当前行与下一行数据值相同，则进行前面列的判断
-//        if (tb.rows[startRow].cells[col].innerHTML == tb.rows[i + 1].cells[col].innerHTML) {
-//            var Same = true;
-//            //循环跟前面的所有的同级数据行进行判断
-//            for (var j = col; j > 0; j--) {
-//                if (tb.rows[startRow].cells[j - 1].innerHTML != tb.rows[i + 1].cells[j - 1].innerHTML) {
-//                    Same = false;
-//                    break;
-//                }
-//            }
-//            //如果前面的同级数据行的值均相同，则进行单元格的合并
-//            if (true == Same) {
-//                //如果相同则删除下一行的第0列单元格  
-//                tb.rows[i + 1].cells[col].style.display = 'none';
-//                //更新rowSpan属性  
-//                tb.rows[startRow].cells[col].rowSpan = (tb.rows[startRow].cells[col].rowSpan | 0) + 1;
-//            }
-//            else {
-//                //增加起始行  
-//                startRow = i + 1;
-//            }
-//        }
-//        else {
-//            //增加起始行  
-//            startRow = i + 1;
-//        }
-//    }
-//}
-//
-//// 相同列合并插件//封装的一个JQuery小插件
-// jQuery.fn.rowspan = function(colIdx) { 
-//	        return this.each(function(){
-//	           var that;
-//	           $('tr', this).each(function(row) {
-//	              $('td:eq('+colIdx+')', this).filter(':visible').each(function(col) {
-//	                 if (that!=null && $(this).html() == $(that).html()) {
-//	                    rowspan = $(that).attr("rowSpan");
-//	                    if (rowspan == undefined) {
-//	                       $(that).attr("rowSpan",1);
-//	                       rowspan = $(that).attr("rowSpan"); }
-//	                    rowspan = Number(rowspan)+1;
-//	                    $(that).attr("rowSpan",rowspan);
-//	                    $(that).css("vertical-align","middle");
-//	                    $(this).hide();
-//	                 } else {
-//	                    that = this;
-//	                 }
-//	              });
-//	           });
-//	        });
-//}
+
+// 相同列合并插件//封装的一个JQuery小插件
+ jQuery.fn.rowspan = function(colIdx) { 
+	        return this.each(function(){
+	           var that;
+	           $('tr', this).each(function(row) {
+	              $('td:eq('+colIdx+')', this).filter(':visible').each(function(col) {
+	                 if (that!=null && $(this).html() == $(that).html()) {
+	                    rowspan = $(that).attr("rowSpan");
+	                    if (rowspan == undefined) {
+	                       $(that).attr("rowSpan",1);
+	                       rowspan = $(that).attr("rowSpan"); }
+	                    rowspan = Number(rowspan)+1;
+	                    $(that).attr("rowSpan",rowspan);
+	                    $(that).css("vertical-align","middle");
+	                    $(this).hide();
+	                 } else {
+	                    that = this;
+	                 }
+	              });
+	           });
+	        });
+}
+
+
+//获取浏览器url传入参数
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+    }

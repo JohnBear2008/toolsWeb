@@ -27,7 +27,7 @@
 
 <!------begin view-------------------------->
 <div class="divcontent">
-    <h1>工作流程-IPQC单</h1>
+    <h1>内核任务流程-IPQC单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -217,16 +217,7 @@
                      <!-------------------------------------------------------------------------->
                      <div class="form-group"> 
 
-                     <label class="col-sm-1 control-label">FQC申请:</label>   
-                 	 <div class="col-sm-3">
-                 	    <label class="radio-inline">
-                 	        <input type="radio" name="FQCRequest" id="radio1" value="1"> <span>有</span>
-                 	    </label>
-                 	    <label class="radio-inline">
-                 	        <input type="radio" name="FQCRequest" id="radio2" value="2" checked> <span>无</span>
-                 	    </label>
-                 	    
-                 	 </div>
+                   
                  	 
                  	 
                  	<label class="col-sm-1 control-label">返工任务:</label>
@@ -523,16 +514,14 @@ function Fun_IPQCRecordInit(dataSelect){
 	
 	$('#BTAcceptOpinion').text(dataSelect.BTAcceptOpinion);
 
-	$("input:radio[name=FQCRequest][value="+dataSelect.FQCRequest+"]").prop("checked",true); 
-    $('input:radio[name="FQCRequest"]').attr("disabled",true);
-	
+
 	  $('#IPQCMaker').text(dataSelect.IPQCMaker);
 	  
 	  
 	  
 	  
 	  var SQLParamRecords={
-				"tableName":"ppm_bills_taskrecord",
+				"tableName":"ppm_bills_taskrecord_t",
 				"titles":[
 					"modifyContent",
 					"functionsDBE",
@@ -636,12 +625,7 @@ function Fun_IPQCRecordInit(dataSelect){
 	  
 	  
 	  
-	  
-	  
-	  
-	  
-	  $("input:radio[name=FQCRequest][value="+dataSelect.FQCRequest+"]").prop("checked",true); 
-	  $('input:radio[name="FQCRequest"]').attr("disabled",true);
+
 	  $('#IPQCMaker').text(dataSelect.IPQCMaker);
 	  
 	  
@@ -669,7 +653,7 @@ function Fun_IPQCRecordInit(dataSelect){
 $(document).ready( function () {
 	
 	
-	 tableSQL={"SQL":"SQLTableBillsTaskIPQC"};
+	 tableSQL={"SQL":"SQLTableBillsTaskIPQC_T"};
 	
 	sessionName="<%-locals.session.yjUser.Name%>";
 	
@@ -766,7 +750,7 @@ $('#BTNTaskIPQCSave').click(function() {
 			
 			
 			var recordData={
-					"DBTable":"ppm_bills_task",
+					"DBTable":"ppm_bills_task_t",
 					"DBID":$('#DBID').text(),
 					"IPQCTestResult":JSON.stringify(IPQCTestResult),
 					"IPQCContent":$('#IPQCContent').val(),
@@ -853,7 +837,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 
 
 			        	 var PLDUpdData={
-									"DBTable":"ppm_bills_plan",
+									"DBTable":"ppm_bills_plan_t",
 									"BillIDName":"BPID",
 									"BillID":$('#taskBPID').text(),
 									"TaskNumDone":1,
@@ -862,7 +846,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 							
 
 						 var taskUpdData={
-									"DBTable":"ppm_bills_task",
+									"DBTable":"ppm_bills_task_t",
 									"DBID":$('#DBID').text(),
 									"IPQCAuditResult":1,
 									"IPQCAuditResultText":"测试通过",
@@ -905,7 +889,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 			         }else{
 			        	 
 			        		 var taskUpdData={
-										"DBTable":"ppm_bills_task",
+										"DBTable":"ppm_bills_task_t",
 										"DBID":$('#DBID').text(),
 										"IPQCAuditResult":2,
 										"IPQCAuditResultText":"测试未通过",

@@ -38,7 +38,7 @@
         <!-- 按钮触发模态框 -->
         <button id="BTNTaskAccept" class="btn btn-primary" data-toggle="modal" >任务确认</button>
         <button id="BTNTaskRecord" class="btn btn-info" data-toggle="modal" >任务登记</button>
-        <!-- <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button> -->
+        <button id="BTNTaskUpdVer" class="btn btn-danger" data-toggle="modal" >更新版本</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:70%">
@@ -1213,7 +1213,6 @@ $('#BTNTaskAcceptNo').click(function() {
 		var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
 		if(msg==true){	
 
-			
 			var acceptData={
 					"DBTable":"ppm_bills_task",
 					"DBID":$('#DBID').text(),
@@ -1231,8 +1230,6 @@ $('#BTNTaskAcceptNo').click(function() {
 	}else{
 		alert("非该方案单的负责人,不允许审核!");
 	}
-
-
 });
 
 //按钮-记录任务单---------
@@ -1244,9 +1241,11 @@ $('#BTNTaskRecord').click(function() {
 	    } else {
 	    	console.log("dataSelect:"+JSON.stringify(dataSelect));
 	    	
-	    		
-		    	Fun_taskRecordInit(dataSelect);
-
+	    	if(dataSelect.taskType=="A"){
+	    		Fun_taskRecordInit(dataSelect);
+	    	}else{
+	    		alert("该任务非普通任务,请走内核任务流程!");
+	    	}
 	    }
 
 });
@@ -1310,11 +1309,6 @@ $('#BTNTaskRecordSave').click(function() {
 		}else{
 			alert("非该方案单的负责人,不允许填单!");
 		}
-		
-
-	
-	
-
 
 });
 
@@ -1343,51 +1337,69 @@ $('#BTNTaskRecordSave').click(function() {
 
 //
 //
-////按钮-更新版本---------
-//$('#BTNTaskUpdVer').click(function() {
-//	
-//	var msg1 = confirm("风险操作！更新任务版本后,系统内任务单将被新版本替代!");
-//    if (msg1 === true) {
-//        var msg2 = confirm("再次确认？");
-//        if (msg2 === true) {
-//        	
-//        	var newBTVersion=parseInt($('#BTVersion').text())+1;
-//        	
-//        	var IPQCResultText=$('#IPQCResultText').text();
-//        	
-//        	if(IPQCResultText=="测试通过"){
-//        		var taskRepeat=1;
-//        	}else{
-//        		var taskRepeat=0;
-//        	}
-//        	
-//	
-//        	
-//        	var taskData={
-//					"DBTable":"ppm_bills_task",
-//					"BTID":$('#BTID').text(),
-//					"BTVersion":newBTVersion,
-//					"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
-//					"taskType":$('input:radio[name="taskType"]:checked').val(),
-//					"taskRepeat":taskRepeat,
-//					"taskCTRName":$('#taskCTRName').text(),
-//					"taskStaff":$('#taskStaff').text(),
-//					"taskBPID":$('#taskBPID').text(),
-//					"modfiyABE":getCheckBoxValue('modfiyABE'),
-//					"taskDBE":$('#taskDBE').val(),
-//					"taskLimitDate":$('#taskLimitDate').text(),
-//					"BTAcceptResult":0,
-//					"BTStatus":1
-//					}
-//        	
-//        	addDBData(taskData);
-//
-//          
-//        }
-//    }
-//
-//    	
-//});
+//按钮-更新版本---------
+$('#BTNTaskUpdVer').click(function() {
+	
+	
+  console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
+  // table.row('.selected').remove().draw( false );
+  var dataSelect = table.row('.selected').data();
+  if (dataSelect == undefined) {
+      alert("请先选中需要更新版本的任务单!");
+  } else {
+	  
+		var msg1 = confirm("风险操作！更新任务版本后,系统内任务单将被新版本替代!");
+    if (msg1 === true) {
+        var msg2 = confirm("再次确认？");
+        if (msg2 === true) {
+        	
+        	var newBTVersion=parseInt(dataSelect.BTVersion)+1;
+        	
+        	var IPQCResultText=$('#IPQCResultText').text();
+        	
+        	if(dataSelect.BTStatusText=="任务完成"){
+        		var taskRepeat=1;
+        	}else{
+        		var taskRepeat=0;
+        	}
+
+        	var taskData={
+					"DBTable":"ppm_bills_task",
+					"BTID":dataSelect.BTID,
+					"BTVersion":newBTVersion,
+					"taskSortType":dataSelect.taskSortType,
+					"taskSortTypeText":dataSelect.taskSortTypeText,
+					"taskType":dataSelect.taskType,
+					"taskTypeText":dataSelect.taskTypeText,
+					"taskRepeat":taskRepeat,
+					"taskCTRName":dataSelect.taskCTRName,
+					"taskStaff":dataSelect.taskStaff,
+					"taskBPID":dataSelect.taskBPID,
+					"modfiyABE":dataSelect.modfiyABE,
+					"taskDBE":dataSelect.taskDBE,
+					"taskLimitDate":dataSelect.taskLimitDate,
+					"BTAcceptResult":0,
+					"BTStatus":1,
+					"BTStatusText":"新增"
+					}
+        	addDBData(taskData);
+        }
+    }
+  	
+  	
+  
+  	
+
+  }
+	
+	
+	
+	
+	
+
+
+    	
+});
 
 
 

@@ -21,7 +21,6 @@
 
 
 
-
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 
@@ -435,13 +434,8 @@
     
 
     
-    <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
-    
-    <div class="divcontent">
+  
 
-	<h1>新单录入</h1>
-	<hr>
 
 	
 	
@@ -451,8 +445,7 @@
         
         
         
-    </div>
-    <!-- 点击更新、添加按钮后弹出的窗口 -->
+
     
     
 </div>
@@ -761,13 +754,22 @@ function Fun_winDetailInit(dataSelect){
 $(document).ready( function () {
 	
 	
-	const tableSQL={"SQL":"SQLTableBillsPLD"};
+//	console.log("undone:"+getQueryString("undone"));
 	
 	var sessionName="<%-locals.session.yjUser.Name%>";
 	
+	var undone=getQueryString("undone");
+	
+	if(undone=="true"){
+		
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult<>1  "};
+	}else{
+		var tableSQL={"SQL":"SQLTableBillsPLD"};
+	}
+
+
 	console.log("sessionName:"+sessionName);
-	
-	
+
 	const tableInfo={
 			"tableID":"#billsPLDTable",
 			"columnsData":[

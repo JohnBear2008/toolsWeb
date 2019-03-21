@@ -458,7 +458,7 @@
 
                      <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
 
-                     <label class="col-sm-2 control-label">任务单确认状态: <span id="BTStatusText"></span></label>
+                     <label class="col-sm-2 control-label">任务状态: <span id="BTStatusText"></span></label>
 
 
                      </div>
@@ -1061,6 +1061,13 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 
 			     $("input:radio[name=taskType][value="+dataSelectTask.taskType+"]").prop("checked",true);
 			     $('input:radio[name="taskType"]').attr("disabled",true);
+			     
+			     
+			        $("#taskTypeA").show();
+			        $("#taskTypeK").show();
+				 	$("#taskTypeL").show();
+					$("#taskTypeO").show();
+					$("#taskTypeB").show();
 
 
 			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
@@ -1421,6 +1428,11 @@ $('#BTNTaskAdd').click(function(){
 	$("#taskTypeB").hide();
 
 	$("#taskDBID").val("");
+	
+	var tableTask = $('#billsTaskTable').DataTable();
+	tableTask.$('tr.selected').removeClass('selected');
+	
+	
 	Fun_BTIDCreate();
 
 //	$('input:radio[name="taskType"]').prop("checked",false);

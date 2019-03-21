@@ -556,8 +556,11 @@ function Fun_winDetailInit(dataSelect){
 				"functionsDBE",
 				"taskFiles"
 				],
-			"filter":"taskBPID='"+dataSelect.BPID+"'"
+			"filter":"taskBPID='"+dataSelect.BPID+"'",
+			"BID":"BTID",
+			"VER":"BTVersion"
 			};
+	
 	
 	
 	Fun_fillTrackTable("#billsTaskTable",SQLParamTask);
@@ -753,7 +756,7 @@ var filesHtml=$("#divFilesUploaded").html();
             	 
             	 var tdFiles=$("#billsTaskTable tbody tr:eq("+i+") td:last").html();
 
-            	 console.log("filesHtml:"+JSON.stringify(filesHtml));
+            	
             	 
             	 if(tdFiles!=""){
             		 
@@ -789,13 +792,34 @@ var filesHtml=$("#divFilesUploaded").html();
         	 
         	 }
              
+             console.log("filesHtml:"+JSON.stringify(filesHtml));
              
+             
+            
+            	 
+            	 
              
              
              if(filesHtml!=""){
             	 filesHtml=filesHtml.substr(0, filesHtml.length-3);
             	 $("#divFilesUploaded").html(filesHtml);
              }
+             
+             var ibtn="<button  class='btn btn-default btn-xs'>×</button>";
+             $("#divFilesUploaded").find("a").after(ibtn);
+             
+             
+             
+             $("#divFilesUploaded :button").on('click',function() {
+            	 
+            	 $(this).prev("a").remove();
+            	 $(this).prev("span").remove();
+
+            	 
+            	 $(this).remove();
+            	 
+         
+             })
 
 
              $("#emailContent").val(emailContentFormat+"修改内容:\n"+emailModifyContent+"功能说明:\n"+emailFunctionsDBE);

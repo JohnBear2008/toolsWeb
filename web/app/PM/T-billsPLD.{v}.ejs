@@ -27,7 +27,7 @@
 
 
 <div class="divcontent">
-    <h1>特别任务流程-T计划单</h1>
+    <h1>内核任务流程-T计划单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -78,7 +78,7 @@
                      
                      <label class="col-sm-1 control-label">来源任务单号:</label>
                      <div class="col-sm-3">
-                       <input id="BTIDfrom" class="form-control"  type="text" value="">
+                       <input id="BTIDfrom" class="form-control"  type="text" value="" disabled="true">
                      </div>
                      
                      
@@ -497,7 +497,7 @@ function Fun_BPIDCreate(){
         	 }
         	 
         	 console.log("back Task data:"+JSON.stringify(data));
-        	 var BPID="P"+new Date(Ndate).Format("yyyyMMdd")+Num+"_"+$('input:radio[name="PLDArea"]:checked').val()+$('input:radio[name="orderFrom"]:checked').val()+"_"+$('input:radio[name="orderFromDep"]:checked').val();
+        	 var BPID="TP"+new Date(Ndate).Format("yyyyMMdd")+Num+"_"+$('input:radio[name="PLDArea"]:checked').val()+$('input:radio[name="orderFrom"]:checked').val()+"_"+$('input:radio[name="orderFromDep"]:checked').val();
         	 $("#BPID").val(BPID);
 
          },
@@ -635,7 +635,18 @@ function Fun_winDetailInit(dataSelect){
 	  
 	  var files=JSON.parse(dataSelect.files);
 	  if(files!=null){
-	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span id='fileName'>"+files.fileName+"</span></a>";
+		  
+		  var fileLink="";
+			 if(files.length>0){
+				 for(var i=0;i<files.length;i++){
+					 console.log("files[i].fileName:"+files[i].fileName);
+					 
+					fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+				 } 
+				 
+				 fileLink=fileLink.substr(0, fileLink.length-3); 
+			 }
+	  var downloadurl=fileLink;
 	  }else{
 		  downloadurl="";
 	  }
@@ -758,10 +769,20 @@ function Fun_winDetailInit(dataSelect){
 $(document).ready( function () {
 	
 	
-	const tableSQL={"SQL":"SQLTableBillsPLD_T"};
+//	console.log("undone:"+getQueryString("undone"));
 	
 	var sessionName="<%-locals.session.yjUser.Name%>";
 	
+	var undone=getQueryString("undone");
+	
+	if(undone=="true"){
+		
+		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult<>1  "};
+	}else{
+		var tableSQL={"SQL":"SQLTableBillsPLD_T"};
+	}
+
+
 	console.log("sessionName:"+sessionName);
 	
 	
@@ -995,11 +1016,37 @@ $('#BTNTaskBindAdd').click(function() {
         	  $('#divFilesUploaded').html("");
 
         	  
+//        	  if(data[0].files!=null){
+//        		  
+//        		  var files=JSON.parse(data[0].files);
+//        		  
+//        		  var fileLink="";
+//        		  
+//        		  if(files!=null){
+//        		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span id='fileName'>"+files.fileName+"</span></a>";
+//        		  }else{
+//        			  downloadurl="";
+//        		  }
+//        		  $('#divFilesUploaded').html(downloadurl);
+//        	  }
+        	  
+        	  
         	  if(data[0].files!=null){
         		  
         		  var files=JSON.parse(data[0].files);
         		  if(files!=null){
-        		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+files.fileKey+" download="+files.fileName+">"+"<span id='fileName'>"+files.fileName+"</span></a>";
+        			  
+        			  var fileLink="";
+        				 if(files.length>0){
+        					 for(var i=0;i<files.length;i++){
+        						 console.log("files[i].fileName:"+files[i].fileName);
+        						 
+        						fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+        					 } 
+        					 
+        					 fileLink=fileLink.substr(0, fileLink.length-3); 
+        				 }
+        		  var downloadurl=fileLink;
         		  }else{
         			  downloadurl="";
         		  }
@@ -1146,17 +1193,19 @@ $('#BTNAudit').click(function() {
 $('#BTNFormAdd').click(function(){
 	
 
+    var files=[];
 	
-	if($('#filePath').attr('href')!=undefined){
-		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-		var fileName=$('#fileName').html();
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(30);
+		var fileName=$(this).attr('download');
 		
-	}else{
-		var fileKey="";
-		var fileName="";
-	}
-	
-	files={"fileName":fileName,"fileKey":fileKey};
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 	
 
 	var PLDData={
@@ -1342,15 +1391,19 @@ $('#BTNFormUpdate').click(function() {
         	
         	var newVersion=parseInt($('#version').text())+1;
         	
-        	if($('#filePath').attr('href')!=undefined){
-        		var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-        		var fileName=$('#fileName').html();
-        		}else{
-        		var fileKey="";
-        		var fileName="";
+        	var files=[];
+        	
+        	$('#divFilesUploaded a').each(function(){
+        		var fileKey=$(this).attr('href').substring(30);
+        		var fileName=$(this).attr('download');
+        		
+        		var fileInfo={
+        				"fileName":fileName,
+        				"fileKey":fileKey
         		}
         		
-        		files={"fileName":fileName,"fileKey":fileKey};
+        		files.push(fileInfo);
+        	});
         	
 
         	var billData={
