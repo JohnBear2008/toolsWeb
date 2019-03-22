@@ -7,7 +7,7 @@
 //定义系统常用的SQL语句,用全局变量
 SQLDBMHESystems="select *, case status  when 1 then '正常' when 2 then '作废'  end as statustext from `ppm_systems`";
 
-SQLDBCustomers="select *, case status  when 1 then '正常' when 2 then '作废'  end as statustext from `ppm_customers`";
+SQLDBCustomers="select * from `ppm_customers`";
 
 SQLDBMachines="select *, case status  when 1 then '正常' when 2 then '作废'  end as statustext from `ppm_machines`";
 
@@ -80,6 +80,14 @@ SQLTableBillsFQC="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CAS
     "(SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba " +
     "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd " +
     "ON tbc.BPID=tbd.fqcBPID";
+
+SQLTableBillsFQC_T="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
+" WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText," +
+"tbd.*,CASE tbd.FQCResult*tbd.FQCAuditResult WHEN 1 THEN '测试通过' WHEN 2 THEN '出货后修正' WHEN 3 THEN '立即修正'  ELSE '未确认' END AS FQCResultText FROM " +
+"(SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba " +
+"WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc_t` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc_t` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd " +
+"ON tbc.BPID=tbd.fqcBPID";
+
 
 SQLTableBillsPBH="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
 " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText,CASE FQCRequest WHEN 1 THEN '有' ELSE '无' END AS FQCRequestText,CASE FQCPass WHEN 1 THEN '通过' ELSE '未通过' END AS FQCPassText," +

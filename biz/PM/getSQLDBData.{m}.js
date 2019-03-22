@@ -93,7 +93,10 @@ module.exports = function(sender) {
 	case "SQLTableBillsFQC":
 		var SQLExecute=SQLTableBillsFQC;
 		break;
-	
+	case "SQLTableBillsFQC_T":
+		var SQLExecute=SQLTableBillsFQC_T;
+		break;
+
 	case "SQLTableBillsPBH":
 		var SQLExecute=SQLTableBillsPBH;
 		break;
@@ -120,7 +123,6 @@ module.exports = function(sender) {
 	case "SQLTaskRecords_T":
 		var SQLExecute=SQLTaskRecords_T;
 		break;
-		
 
 	default:
 		var SQLExecute=SQL;

@@ -38,6 +38,7 @@
             <th>联系人</th>
             <th>手机</th>
             <th>邮箱</th>
+            <th>FQC要求</th>
             <th>状态</th>
             </tr>
         </thead>
@@ -56,6 +57,12 @@
             <p>备用联系信息: </br><textarea id="contacts" rows="3" cols="30" ></textarea></p>
             <p>关联主厂名称 : <input id="linkFTYName" size="30" type="text" class="required"></p>
             <p>备注: </br><textarea id="remark" rows="3" cols="30" ></textarea></p>
+            <p>FQC要求: 
+                <select id="FQCRequest">
+                <option value="0">无</option>
+                <option value="1">有</option>
+                </select>
+            </p>
             <p>数据状态 : 
                 <select id="status">
                 <option value="1">正常</option>
@@ -103,7 +110,8 @@ $(document).ready( function () {
 		        { data: 'contact'},
 		        { data: 'phone'},
 		        { data: 'email'},
-		        { data: 'statustext'}
+		        { data: 'FQCRequestText'},
+		        { data: 'statusText'}
 		    ]
 	}
 
@@ -155,6 +163,7 @@ $('#Upd').click(function() {
         $('#contacts').val(dataSelect.contacts);
         $('#linkFTYName').val(dataSelect.linkFTYName);
         $('#remark').val(dataSelect.remark);
+        $('#FQCRequest').val(dataSelect.FQCRequest);
         $('#status').val(dataSelect.status);
         
     }
@@ -199,7 +208,21 @@ $('#AddDoButton').click(function() {
 	var contacts=$("#contacts").val();
 	var linkFTYName=$("#linkFTYName").val();
 	var remark=$("#remark").val();
+	var FQCRequest=$("#FQCRequest").val();
+	if(FQCRequest=="0"){
+		var FQCRequestText="无";
+	}else{
+		var FQCRequestText="有";
+	}
+	
+	
 	var status=$("#status").val();
+	
+	if(status=="1"){
+		var statusText="正常";
+	}else{
+		var statusText="失效";
+	}
 	
 	var DBData={
 			"DBTable":DBTable,
@@ -212,7 +235,10 @@ $('#AddDoButton').click(function() {
 			"contacts":contacts,
 			"linkFTYName":linkFTYName,
 			"remark":remark,
-			"status":status
+			"FQCRequest":FQCRequest,
+			"FQCRequestText":FQCRequestText,
+			"status":status,
+			"statusText":statusText
 	}
 	
 	
@@ -239,7 +265,22 @@ $('#UpdDoButton').click(function() {
 	var contacts=$("#contacts").val();
 	var linkFTYName=$("#linkFTYName").val();
 	var remark=$("#remark").val();
+	
+	var FQCRequest=$("#FQCRequest").val();
+	if(FQCRequest=="0"){
+		var FQCRequestText="无";
+	}else{
+		var FQCRequestText="有";
+	}
+	
+	
 	var status=$("#status").val();
+	
+	if(status=="1"){
+		var statusText="正常";
+	}else{
+		var statusText="失效";
+	}
 
 	var updInput={
 			"DBTable":DBTable,
@@ -253,7 +294,10 @@ $('#UpdDoButton').click(function() {
 			"contacts":contacts,
 			"linkFTYName":linkFTYName,
 			"remark":remark,
-			"status":status
+			"FQCRequest":FQCRequest,
+			"FQCRequestText":FQCRequestText,
+			"status":status,
+			"statusText":statusText
 	}
 	
 	 updDBData(updInput);

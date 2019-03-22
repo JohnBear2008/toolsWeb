@@ -1790,81 +1790,90 @@ $('#BTNBPTAuditYes').click(function() {
 
 
 			 var tableTask = $('#billsTaskTable').DataTable();
+			 
+			 
+			 
+		
 			 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
 //			 alert("TaskNum:"+TaskNum);
 
+				 let allTaskCheck=0;
+				 
+				 for(let i=0;i<TaskNum;i++){
+					 var trData=tableTask.row(i).data().BTAcceptResult;
+					 allTaskCheck=allTaskCheck+trData;
+				 }
+				 
+				 console.log(allTaskCheck);
 
-			 var PLDUpdData={
-						"DBTable":"ppm_bills_plan_t",
-						"BillIDName":"BPID",
-						"BillID":$('#BPTBPID').val(),
-						"TaskNum":TaskNum,
-						"WFStatus":20
+			 if(allTaskCheck==0){
+				 var PLDUpdData={
+							"DBTable":"ppm_bills_plan",
+							"BillIDName":"BPID",
+							"BillID":$('#BPTBPID').val(),
+							"TaskNum":TaskNum,
+							"WFStatus":20
+					}
+
+		//		 updDBDataS(PLDUpdData);
+
+				var BPTAuditData={
+						"DBTable":"ppm_bills_blueprint",
+						"DBID":$('#DBID').val(),
+						"auditor":sessionName,
+						"auditDate":Ndate,
+						"auditResult":1,
+						"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+						"BPTStatus":1
 				}
 
-	//		 updDBDataS(PLDUpdData);
 
-			var BPTAuditData={
-					"DBTable":"ppm_bills_blueprint_t",
-					"DBID":$('#DBID').val(),
-					"auditor":sessionName,
-					"auditDate":Ndate,
-					"auditResult":1,
-					"auditResultText":"审核通过",
-        			"BPTStatusText":"审核通过",
-					"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
-					"BPTStatus":1
-			}
+				 var taskUpdData={
+							"DBTable":"ppm_bills_task",
+							"BillIDName":"taskBPID",
+							"BillID":$('#BPTBPID').val(),
+							"BTAcceptResult":0
+				}
 
 
-			 var taskUpdData={
-						"DBTable":"ppm_bills_task_t",
-						"BillIDName":"taskBPID",
-						"BillID":$('#BPTBPID').val(),
-						"BTAcceptResult":0,
-						"BTAcceptResultText":"待确认"
-			}
+				 var ajax1=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: PLDUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
 
-
-			 var ajax1=$.ajax({
+				var ajax2=$.ajax({
 			        method: 'post',
-			        url: '/app/PM/updBillStatus',
-			        data: PLDUpdData,
+			        url: '/app/PM/updDBData',
+			        data: BPTAuditData,
 			        success: function(data, textStatus) {
 			        },
 			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 			        });
 
-			var ajax2=$.ajax({
-		        method: 'post',
-		        url: '/app/PM/updDBData',
-		        data: BPTAuditData,
-		        success: function(data, textStatus) {
-		        },
-		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-		        });
-
-			var ajax3=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updBillStatus',
-			        data: taskUpdData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
+				var ajax3=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: taskUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
 
 
-	//		updDBData(BPTAuditData,"方案审核状态");
+				$.when(ajax1,ajax2,ajax3).done(function(){
+					alert("方案已审核通过!");
+					window.location.reload();
 
-
-			$.when(ajax1,ajax2,ajax3).done(function(){
-				alert("方案已审核通过!");
-				window.location.reload();
-
-			});
-
-
-
+				});
+				
+			 }else{
+				 alert("不符合审核标准,存在正在进行的任务单,请更新全部任务单版本后再审核!");
+				 
+			 }
 
 //	window.location.reload();
 		}

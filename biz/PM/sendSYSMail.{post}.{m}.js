@@ -14,11 +14,6 @@ module.exports = function(sender) {
 	     
 	     if(emailResult=="1"){
 	    	 
-	    	 
-	    	 
-
-		     
-		     
 		     
 		     
 		     var emailADRS=sender.req.query.emailADRS;
@@ -64,6 +59,7 @@ module.exports = function(sender) {
 	    let mailOptions = {
 	        from: 'xiongql@tmdg.com', // sender address
 	        to: emailADRS, // list of receivers
+	        cc:emailCopyADRS,
 	        subject:emailTitle, // Subject line
 //	        text: 'Hello nodemailer', // plain text body
 	        html:'<div style="white-space:pre">'+emailContent+'</div>',

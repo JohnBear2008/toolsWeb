@@ -1147,3 +1147,13 @@ function getQueryString(name) {
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]); return null;
     }
+
+
+//识别字段中的所有电子邮件,以";"分开
+
+function getEmails($){
+	 var _=/[^<@]+@[^>]+/g;
+	 var s= $.match(_).toString();//先转换为字符串 不然会报 .replace is not a function错误
+	 s=s.replace(/\n/g,",");
+     return s;
+}
