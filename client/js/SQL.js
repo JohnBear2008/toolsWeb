@@ -96,6 +96,13 @@ SQLTableBillsPBH="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CAS
 "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
 "ON tbc.BPID=tbd.pbhBPID";
 
+SQLTableBillsPBH_T="SELECT tbc.*,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
+" WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText,CASE FQCRequest WHEN 1 THEN '有' ELSE '无' END AS FQCRequestText,CASE FQCPass WHEN 1 THEN '通过' ELSE '未通过' END AS FQCPassText," +
+"tbd.*,CASE tbd.emailResult WHEN 1 THEN '已发系统邮件' WHEN 2 THEN '已发自定义邮件' ELSE '未发邮件' END AS PBHResultText FROM " +
+"(SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba " +
+"WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.WFStatus <> 0 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh_t` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
+"ON tbc.BPID=tbd.pbhBPID";
+
 
 SQLTableTestContents="SELECT * FROM `ppm_testcontents`";
 

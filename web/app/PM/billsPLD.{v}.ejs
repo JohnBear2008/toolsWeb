@@ -188,6 +188,11 @@
                          <input id="OGNSystemVersion" class="form-control"  type="text" value="">
                        </div>
                        
+                       <label class="col-sm-1 control-label">bugID:</label>
+                       <div class="col-sm-2 ">
+                         <input id="bugID" class="form-control"  type="text" value="">
+                       </div>
+                       
                      </div>
                      
                      <!-------------------------------------------------------------------------->
@@ -586,6 +591,7 @@ function Fun_winDetailInit(dataSelect){
 	
 
 	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
+	$('#bugID').val(dataSelect.bugID);
     $('#topic').val(dataSelect.topic); 
     $('#detail').val(dataSelect.detail); 
     
@@ -1049,6 +1055,8 @@ $('#BTNFormAdd').click(function(){
 			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
 			"model":Fun_getSelectText($('#model option:selected').text()),
 			"OGNSystemVersion":$('#OGNSystemVersion').val(),
+			"bugID":$('#bugID').val(),
+			
 			"applyDate":$('#applyDate').val(),
 			"limitDate":$('#limitDate').val(),
 			"urgency":$('input:radio[name="urgency"]:checked').val(),
@@ -1124,6 +1132,7 @@ $('#BTNFormModify').click(function() {
 			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
 			"model":Fun_getSelectText($('#model option:selected').text()),
 			"OGNSystemVersion":$('#OGNSystemVersion').val(),
+			"bugID":$('#bugID').val(),
 			"applyDate":$('#applyDate').val(),
 			"limitDate":$('#limitDate').val(),
 			"urgency":$('input:radio[name="urgency"]:checked').val(),
@@ -1147,9 +1156,6 @@ $('#BTNFormModify').click(function() {
 		Fun_updDBDataDD(billData,DDMsg,"计划单");
 	}
 
-
-
-
 });
 
 //按钮-表单更新版本按钮
@@ -1162,8 +1168,6 @@ $('#BTNFormUpdate').click(function() {
     if (msg1 === true) {
         var msg2 = confirm("确认更新版本？");
         if (msg2 === true) {
-        	
-        	
         	
         	
         	var newVersion=parseInt($('#version').text())+1;
@@ -1196,6 +1200,7 @@ $('#BTNFormUpdate').click(function() {
         			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
         			"model":Fun_getSelectText($('#model option:selected').text()),
         			"OGNSystemVersion":$('#OGNSystemVersion').val(),
+        			"bugID":$('#bugID').val(),
         			"applyDate":$('#applyDate').val(),
         			"limitDate":$('#limitDate').val(),
         			"urgency":$('input:radio[name="urgency"]:checked').val(),

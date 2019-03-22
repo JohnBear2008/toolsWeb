@@ -100,6 +100,12 @@ module.exports = function(sender) {
 	case "SQLTableBillsPBH":
 		var SQLExecute=SQLTableBillsPBH;
 		break;
+		
+	case "SQLTableBillsPBH_T":
+		var SQLExecute=SQLTableBillsPBH_T;
+		break;
+		
+		
 	case "SQLTableTestContents":
 		var SQLExecute=SQLTableTestContents;
 		break;
