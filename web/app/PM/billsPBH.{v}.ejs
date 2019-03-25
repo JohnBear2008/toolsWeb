@@ -641,11 +641,17 @@ function Fun_winDetailInit(dataSelect){
 $(document).ready( function () {
 
 
-	 tableSQL={"SQL":"SQLTableBillsPBH"};
+
 
 	 sessionName="<%-locals.session.yjUser.Name%>";
 
-	console.log("sessionName:"+sessionName);
+	 var undone=getQueryString("undone");
+		
+		if(undone=="true"){
+			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( emailResult IS NULL OR emailResult =0)"};
+		}else{
+			var tableSQL={"SQL":"SQLTableBillsPBH"};
+		}
 
 
 	 tableInfo={
@@ -746,10 +752,10 @@ var filesHtml=$("#divFilesUploaded").html();
              for(var i=0;i<fileNum;i++){
             	 
             	 var tdFiles=$("#billsTaskTable tbody tr:eq("+i+") td:last").html();
-
-            	
             	 
-            	 if(tdFiles!=""){
+            	 var tdTaskType=$("#billsTaskTable tbody tr:eq("+i+") td:eq(3)").html();
+
+            	 if(tdFiles!=""&&tdTaskType=="APP"){
             		 
             		 filesHtml=filesHtml+tdFiles+" ; ";
             		 

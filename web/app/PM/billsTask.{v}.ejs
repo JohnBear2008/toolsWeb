@@ -636,7 +636,7 @@ function Fun_getTaskTrackData(dataSelect){
 				"BTID",
 				"BTVersion",
 //				"taskSortTypeText",
-//				"taskTypeText",
+				"taskTypeText",
 				"taskStaff",
 				"taskDBE",
 				"taskLimitDate",
@@ -1038,11 +1038,23 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 $(document).ready( function () {
 	
 	
-	const tableSQL={"SQL":"SQLTableBillsTaskRecord"};
+	
 	
     sessionName="<%-locals.session.yjUser.Name%>";
 	
 	console.log("sessionName:"+sessionName);
+	
+    var undone=getQueryString("undone");
+	
+	if(undone=="true"){
+		
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3"};
+	}else{
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord"};
+	}
+	
+	
+
 	
 	
 	const tableInfo={

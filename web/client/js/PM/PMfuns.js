@@ -1149,7 +1149,7 @@ function getQueryString(name) {
     }
 
 
-//识别字段中的所有电子邮件,以";"分开
+//识别字段中的所有电子邮件,以","分开
 
 function getEmails($){
 	 var _=/[\w\.\+-]+@[\w\.\+-]+/g;

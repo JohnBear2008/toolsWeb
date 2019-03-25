@@ -525,13 +525,18 @@ function Fun_winDetailInit(dataSelect){
 //页面加载函数---------------
 $(document).ready( function () {
 
-
-	 tableSQL={"SQL":"SQLTableBillsFQC"};
-
 	 sessionName="<%-locals.session.yjUser.Name%>";
 
-	console.log("sessionName:"+sessionName);
+		var undone=getQueryString("undone");
+		
+		if(undone=="true"){
+			
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)"};
+		}else{
+			var tableSQL={"SQL":"SQLTableBillsFQC"};
+		}
 
+	console.log("sessionName:"+sessionName);
 
 	 tableInfo={
 			"tableID":"#billsPLDTable",

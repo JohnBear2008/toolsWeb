@@ -653,12 +653,18 @@ function Fun_IPQCRecordInit(dataSelect){
 $(document).ready( function () {
 	
 	
-	 tableSQL={"SQL":"SQLTableBillsTaskIPQC_T"};
+
 	
 	sessionName="<%-locals.session.yjUser.Name%>";
 	
-	console.log("sessionName:"+sessionName);
+    var undone=getQueryString("undone");
 	
+    if(undone=="true"){
+		
+		var tableSQL={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3"};
+	}else{
+		var tableSQL={"SQL":"SQLTableBillsTaskIPQC_T"};
+	}
 	
 	 tableInfo={
 			"tableID":"#billsTaskTable",

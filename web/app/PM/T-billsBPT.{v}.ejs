@@ -1218,10 +1218,17 @@ function Fun_delTask(IDData) {
 $(document).ready( function () {
 
 
-    tableSQL={"SQL":"SQLTableBillsBPT_T"};
 
     sessionName="<%-locals.session.yjUser.Name%>";
 
+   var undone=getQueryString("undone");
+	
+	if(undone=="true"){
+		var tableSQL={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND (BPTStatus IS NULL OR BPTStatus <>1)  "};
+	}else{
+		var tableSQL={"SQL":"SQLTableBillsBPT_T"};
+	}
+    
 //	console.log("sessionName:"+sessionName);
 
 
