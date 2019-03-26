@@ -55,7 +55,26 @@
         <form style="padding:10px 50px;">
             <p>工号 : <input id="staffID" size="30" type="text" class="required"></p>
             <p>姓名 : <input id="staffName" size="30" type="text" class="required"></p>
-            <p>性别 : <input id="staffSex" size="30" type="text" class="required"></p>
+            
+            <p>性别 :
+            	<select id="staffSex">
+                <option value="男">男</option>
+                <option value="女">女</option>
+                </select>
+            </p>
+            
+            <p>FQC要求: 
+                <select id="FQCRequest">
+                <option value="0">无</option>
+                <option value="1">有</option>
+                </select>
+            </p>
+            <p>数据状态 : 
+                <select id="status">
+                <option value="1">正常</option>
+                <option value="2">作废</option>
+                </select>
+            </p>
 
           
             <div style="padding:5px;text-align:center;">
@@ -70,12 +89,7 @@
 
 <script>
 
-////定义显示人员信息数据参数结构-------------
-//function factDataPara(tableID,DBTable,staffSex) {
-//    this.tableID = tableID;
-//    this.DBTable = DBTable;
-//    this.staffSex = staffSex;
-//}
+
 //检查输入信息-------------------
 function checkinput(Data) {
     if (Data.staffID=="") {
@@ -90,12 +104,14 @@ function checkinput(Data) {
 
 //定义添加发送数据结构---------------------
 
-function addDataInfo(DBTable,staffID,staffName,staffSex,staffUser){
+function addDataInfo(DBTable,staffID,staffName,staffSex,staffUser,FQCRequest,FQCRequestText){
 	this.DBTable=DBTable;
 	this.staffID=staffID;
 	this.staffName=staffName;
 	this.staffSex=staffSex;
 	this.staffUser=staffUser;
+	this.FQCRequest=FQCRequest;
+	this.FQCRequestText=FQCRequestText;
 }
 
 
@@ -159,6 +175,8 @@ $('#Upd').click(function() {
         $('#staffID').val(dataSelect.staffID);
         $('#staffName').val(dataSelect.staffName);
         $('#staffSex').val(dataSelect.staffSex);
+        $('#FQCRequest').val(dataSelect.FQCRequest);
+        $('#status').val(dataSelect.status);
         $('#staffUser').val(dataSelect.staffUser);
         
     }
@@ -197,13 +215,17 @@ $('#AddDoButton').click(function() {
 	var staffName=$("#staffName").val();
 	var staffSex=$("#staffSex").val();
 	var staffUser=$("#staffUser").val();
+	var FQCRequest=$("#FQCRequest").val();
 	
-	var DBData=new addDataInfo(DBTable,staffID,staffName,staffSex,staffUser);
+	if(FQCRequest==1){
+		var FQCRequestText="有";
+	}else{
+		var FQCRequestText="无";
+	}
 	
-	
-	addDBData(DBData);
-	
+	var DBData=new addDataInfo(DBTable,staffID,staffName,staffSex,staffUser,FQCRequest,FQCRequestText);
 
+	addDBData(DBData);
 
 });
 
@@ -214,21 +236,41 @@ $('#AddDoButton').click(function() {
 $('#UpdDoButton').click(function() {
 	
  //   var UID = table.row('.selected').data().UID;
-	
 //	var staffID=$('#staffID').val();
 //    var staffName=$('#staffName').val();
 //    var staffSex=$('#staffSex').val();
+	
+	var FQCRequest=$("#FQCRequest").val();
+	
+	if(FQCRequest==1){
+		var FQCRequestText="有";
+	}else{
+		var FQCRequestText="无";
+	}
+	
+	var status=$("#status").val();
+	
+	if(status==1){
+		var statusText="正常";
+	}else{
+		var statusText="作废";
+	}
+	
 	
 	var updInput={
 			staffID:$('#staffID').val(),
 			staffName:$('#staffName').val(),
 			staffSex:$('#staffSex').val(),
-			staffUser:$('#staffUser').val()	
+			staffUser:$('#staffUser').val(),
+			FQCRequest:FQCRequest,
+			FQCRequestText:FQCRequestText,
+			status:status,
+			statusText:statusText
 	}
 
    
     var updJSON={
-			'DBTable':"PPPM_staffs",
+			'DBTable':"PPM_staffs",
 			'DBID':table.row('.selected').data().DBID
     	};
 	var changed=0;
@@ -247,9 +289,9 @@ $('#UpdDoButton').click(function() {
     
     if(changed!=0){
     	if (checkinput(updJSON)) {
-    		 var msg = confirm("共调整"+changed+"处信息,请确认！");
+    		 var msg = confirm("即将更新信息,请确认！");
     		 if(msg==true){
-    			 updDBData(updJSON);
+    			 updDBData(updJSON,"人员信息");
     		 }
     		 
     	}

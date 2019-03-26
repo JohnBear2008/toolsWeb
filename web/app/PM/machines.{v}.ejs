@@ -35,6 +35,7 @@
             <th>DBID</th>
             <th>机器种类</th>
             <th>机器名称</th>
+            <th>FQC申请</th>
             <th>状态</th>
             </tr>
         </thead>
@@ -62,6 +63,12 @@
             <p>型号 : <input id="MHEName" size="30" type="text" class="required"></p>
             <p>备注 : <textarea id="remark" rows="3" cols="30" ></textarea></p>
             
+            <p>FQC要求: 
+                <select id="FQCRequest">
+                <option value="0">无</option>
+                <option value="1">有</option>
+                </select>
+            </p>
             <p>数据状态 : 
                 <select id="status">
                 <option value="1">正常</option>
@@ -106,7 +113,8 @@ $(document).ready( function () {
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'MHEType'},
 		        { data: 'MHEName'},
-		        { data: 'statustext'}
+		        { data: 'FQCRequestText'},
+		        { data: 'statusText'}
 		    ]
 	}
 
@@ -152,6 +160,7 @@ $('#Upd').click(function() {
         $('#MHEType').val(dataSelect.MHEType);
         $('#MHEName').val(dataSelect.MHEName);
         $('#remark').val(dataSelect.remark);
+        $('#FQCRequest').val(dataSelect.FQCRequest);
         $('#status').val(dataSelect.status);
         
     }
@@ -190,15 +199,34 @@ $('#AddDoButton').click(function() {
 	var MHEType=$("#MHEType").val();
 	var MHEName=$("#MHEName").val();
 	var remark=$("#remark").val();
-	var status=$("#status").val();
+
+	
+	 var FQCRequest=$("#FQCRequest").val();
+		
+		if(FQCRequest==1){
+			var FQCRequestText="有";
+		}else{
+			var FQCRequestText="无";
+		}
+		
+		var status=$("#status").val();
+		
+		if(status==1){
+			var statusText="正常";
+		}else{
+			var statusText="作废";
+		}
 	
 	var DBData={
 			"DBTable":DBTable,
-
 			"MHEType":MHEType,
 			"MHEName":MHEName,
 			"remark":remark,
-			"status":status
+			"FQCRequest":FQCRequest,
+			"FQCRequestText":FQCRequestText,
+			"status":status,
+			"statusText":statusText
+
 	}
 	
 	
@@ -219,7 +247,22 @@ $('#UpdDoButton').click(function() {
 	var MHEType=$("#MHEType").val();
 	var MHEName=$("#MHEName").val();
 	var remark=$("#remark").val();
+	
+    var FQCRequest=$("#FQCRequest").val();
+	
+	if(FQCRequest==1){
+		var FQCRequestText="有";
+	}else{
+		var FQCRequestText="无";
+	}
+	
 	var status=$("#status").val();
+	
+	if(status==1){
+		var statusText="正常";
+	}else{
+		var statusText="作废";
+	}
 
 	var updInput={
 			"DBTable":DBTable,
@@ -227,10 +270,13 @@ $('#UpdDoButton').click(function() {
 			"MHEType":MHEType,
 			"MHEName":MHEName,
 			"remark":remark,
-			"status":status		
+			FQCRequest:FQCRequest,
+			FQCRequestText:FQCRequestText,
+			status:status,
+			statusText:statusText
 	}
 	
-	 updDBData(updInput);
+	 updDBData(updInput,"机种信息");
 
    
 //    var updJSON={

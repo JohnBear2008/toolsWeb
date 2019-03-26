@@ -81,6 +81,15 @@
                        <input id="BTIDfrom" class="form-control"  type="text" value="" disabled="true">
                      </div>
                      
+                     <label class="col-sm-1 control-label">来源计划单号:</label>
+                     <div class="col-sm-3">
+                       <input id="BPIDfrom" class="form-control"  type="text" value="" disabled="true">
+                     </div>
+                     
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
                      
                        <label class="col-sm-1 control-label">计划单号:</label>
                        <div class="col-sm-3">
@@ -583,6 +592,7 @@ function Fun_winDetailInit(dataSelect){
 	$('#DBID').val(dataSelect.DBID); 
 	
 	$('#BTIDfrom').val(dataSelect.BTIDfrom); 
+	$('#BPIDfrom').val(dataSelect.BPIDfrom); 
 
 	$('#BPID').val(dataSelect.BPID); 
 	$('#version').text(dataSelect.version); 
@@ -777,7 +787,7 @@ $(document).ready( function () {
 	
 	if(undone=="true"){
 		
-		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult<>1  "};
+		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  "};
 	}else{
 		var tableSQL={"SQL":"SQLTableBillsPLD_T"};
 	}
@@ -974,6 +984,7 @@ $('#BTNTaskBindAdd').click(function() {
     console.log("dataSelectTask:"+dataSelectTask.taskBPID);
     
     $('#BTIDfrom').val(dataSelectTask.BTID); 
+    $('#BPIDfrom').val(dataSelectTask.taskBPID); 
     
     $.ajax({
       method: 'get',
@@ -1127,7 +1138,7 @@ $('#BTNDelete').click(function() {
     		alert("已审核单据禁止删除!");
     	}else{
     		
-    		if(dataSelect.BTIDfrom==null){
+    		if(dataSelect.BTIDfrom==null&&dataSelect.BPIDfrom==null){
 
         		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
                 if (msg1 === true) {
@@ -1211,6 +1222,7 @@ $('#BTNFormAdd').click(function(){
 	var PLDData={
 			"DBTable":"ppm_bills_plan_t",
 			"BTIDfrom":$('#BTIDfrom').val(),
+			"BPIDfrom":$('#BPIDfrom').val(),
 			"BPID":$('#BPID').val(),
 			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 			"topic":$('#topic').val(),
@@ -1331,6 +1343,7 @@ $('#BTNFormModify').click(function() {
 			"DBTable":"ppm_bills_plan_t",
 			"DBID":$('#DBID').val(),
 			"BTIDfrom":$('#BTIDfrom').val(),
+			"BPIDfrom":$('#BPIDfrom').val(),
 			"BPID":$('#BPID').val(),
 			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 			"topic":$('#topic').val(),
@@ -1409,6 +1422,7 @@ $('#BTNFormUpdate').click(function() {
         	var billData={
         			"DBTable":"ppm_bills_plan_t",
         			"BTIDfrom":$('#BTIDfrom').val(),
+        			"BPIDfrom":$('#BPIDfrom').val(),
         			"BPID":$('#BPID').val(),
         			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
         			"topic":$('#topic').val(),

@@ -131,7 +131,10 @@
 
                        <label class="col-sm-1 control-label">客户名称:</label>
                        <div class="col-sm-3">
-                         <input id="CTRName" class="form-control"  type="text" value="">
+                        <!-- <input id="CTRName" class="form-control"  type="text" value="">-->
+                         
+                         <select  id="CTRName" class="selectpicker" data-live-search="true">
+                         </select>
                        </div>
 
                      </div>
@@ -725,8 +728,12 @@ function Fun_BPTDetailInitPart1(dataSelect){
 
 	$('#BPTBPID').val(dataSelect.BPID);
 	$("#BPTBPID").attr("disabled",true);
+	
+	var SQLCTRName={SQL:"SQLSRCustomers"};
+	var CTRName="#CTRName";
+	Fun_getSQLSelectDBData(SQLCTRName,CTRName,dataSelect.PLDCTRName);
 
-	$('#CTRName').val(dataSelect.PLDCTRName);
+//	$('#CTRName').val(dataSelect.PLDCTRName);
 	$("#CTRName").attr("disabled",true);
 
 	$('#BPTID').val(dataSelect.BPID);
@@ -1492,7 +1499,6 @@ $('#BTNTaskDel').click(function() {
 
             }
 
-
     	}
 
     }
@@ -1525,7 +1531,7 @@ $('#BTNTaskSave').click(function(){
 				"BTID":$('#BTID').val(),
 				"BTVersion":0,
 				"taskBPID":taskBPID,
-				"taskCTRName":$('#CTRName').val(),
+				"taskCTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 				"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
 				"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
 				"taskType":$('input:radio[name="taskType"]:checked').val(),
@@ -1551,7 +1557,7 @@ $('#BTNTaskSave').click(function(){
 					"BTID":$('#BTID').val(),
 					"BTVersion":0,
 					"taskBPID":taskBPID,
-					"taskCTRName":$('#CTRName').val(),
+					"taskCTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 					"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
 					"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
 					"taskType":$('input:radio[name="taskType"]:checked').val(),
@@ -1575,7 +1581,7 @@ $('#BTNTaskSave').click(function(){
 						"BTID":$('#BTID').val(),
 						"BTVersion":dataSelectTask.BTVersion+1,
 						"taskBPID":taskBPID,
-						"taskCTRName":$('#CTRName').val(),
+						"taskCTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 						"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
 						"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
 						"taskType":$('input:radio[name="taskType"]:checked').val(),
@@ -1714,51 +1720,9 @@ $('#BTNTaskSave').click(function(){
 
 $('#BTNBPTSave').click(function(){
 	
-// 根据系统信息自动识别FQC申请功能	
+
 	
-//	var CTRNameDBID=$('#CTRName option:selected').val();
-//	var MHENameDBID=$('#MHEName option:selected').val();
-//	var modelDBID=$('#model option:selected').val();
-//
-//	console.log(CTRNameDBID+";"+MHENameDBID+";"+modelDBID);
-//
-////添加FQCRequest 判断功能更
-//	var SQLGetFQCRequest="SELECT GREATEST(ta.FQCRequest,tb.FQCRequest,tc.FQCRequest) AS FQCRequestResult FROM " +
-//			"(SELECT FQCRequest FROM `ppm_customers` WHERE DBID="+CTRNameDBID+") ta," +
-//			"(SELECT FQCRequest FROM `ppm_machines` WHERE DBID="+MHENameDBID+") tb," +
-//			"(SELECT FQCRequest FROM `ppm_systems` WHERE DBID="+modelDBID+") tc"
-//
-//	
-//  $.ajax({
-//  method: 'get',
-//  url: '/app/PM/getSQLDBData',
-//  data: {"SQL":SQLGetFQCRequest},
-//  success: function(data) {
-//      alert("成功数据:" + JSON.stringify(data));
-//
-//      
-// },
-// error:function(err){
-// 	alert("失败数据:"+JSON.stringify(err));
-// }
-//});
-//	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 
 	var BPTBPID=$('#BPTBPID').val();
 	var BPTID=$('#BPTID').val();
@@ -1844,7 +1808,7 @@ $('#BTNBPTUpdateVer').click(function(){
         	var BPTBPID=$('#BPTBPID').val();
         	var BPTID=$('#BPTID').val();
         	var newVersion=parseInt($('#BPTVersion').text())+1;
-        	var CTRName=$('#CTRName').val();
+        	var CTRName=Fun_getSelectText($('#CTRName option:selected').text());
         	var PGEMaker=$('#PGEMaker').val();
         	var limitDate=$('#limitDate').val();
             var	MHEName=Fun_getSelectText($('#MHEName option:selected').text());
@@ -1924,13 +1888,11 @@ $('#BTNBPTAuditYes').click(function() {
 	if(sessionName==$('#auditor option:selected').text()){
 		var msg = confirm("审核后无法修改单据,是否立即审核通过?");
 		if(msg==true){
-
-
+			
+			
+			
+		//原审核功能-----------------
 			 var tableTask = $('#billsTaskTable').DataTable();
-			 
-			 
-			 
-		
 			 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
 //			 alert("TaskNum:"+TaskNum);
 
@@ -1944,77 +1906,161 @@ $('#BTNBPTAuditYes').click(function() {
 				 console.log(allTaskCheck);
 
 			 if(allTaskCheck==0){
-				 var PLDUpdData={
-							"DBTable":"ppm_bills_plan",
-							"BillIDName":"BPID",
-							"BillID":$('#BPTBPID').val(),
-							"TaskNum":TaskNum,
-							"WFStatus":20
+				 
+				 
+				//-FQC 判断------------------
+					
+					// 根据系统信息自动识别FQC申请功能	
+					
+					var CTRNameDBID=$('#CTRName option:selected').val();
+					var MHENameDBID=$('#MHEName option:selected').val();
+					var modelDBID=$('#model option:selected').val();
+
+					console.log(CTRNameDBID+";"+MHENameDBID+";"+modelDBID);
+					
+					
+//					 var tableTask = $('#billsTaskTable').DataTable();
+//					 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
+//					 alert("TaskNum:"+TaskNum);
+
+						 let taskStaffs="";
+						 
+						 for(let i=0;i<TaskNum;i++){
+							 var trStaff=tableTask.row(i).data().taskStaff;
+							 taskStaffs=taskStaffs+"'"+trStaff+"'"+",";
+						 }
+						 
+						 taskStaffs=taskStaffs.substring(0,taskStaffs.length-1);
+						 
+						 taskStaffs="("+taskStaffs+")";
+						 
+						 console.log(taskStaffs);
+					
+
+				//添加FQCRequest 判断功能更
+					var SQLGetFQCRequest="SELECT GREATEST(ta.FQCRequest,tb.FQCRequest,tc.FQCRequest,td.maxFQCRequest) AS FQCRequestResult FROM " +
+							"(SELECT FQCRequest FROM `ppm_customers` WHERE DBID="+CTRNameDBID+") ta," +
+							"(SELECT FQCRequest FROM `ppm_machines` WHERE DBID="+MHENameDBID+") tb," +
+							"(SELECT FQCRequest FROM `ppm_systems` WHERE DBID="+modelDBID+") tc," +
+							"(SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_staffs` WHERE staffName IN "+taskStaffs+") td";
+
+					
+				  $.ajax({
+				  method: 'get',
+				  url: '/app/PM/getSQLDBData',
+				  data: {"SQL":SQLGetFQCRequest},
+				  success: function(data) {
+//				      alert("成功数据:" + JSON.stringify(data));
+				      
+				      if(data[0].FQCRequestResult==1){
+				    	  var FQCRequest=1;
+				    	  var FQCRequestText="有";
+				      }else{
+				    	  var FQCRequest=0;
+				    	  var FQCRequestText="无";
+				      }
+				      
+				      var PLDUpdData={
+								"DBTable":"ppm_bills_plan",
+								"BillIDName":"BPID",
+								"BillID":$('#BPTBPID').val(),
+								"FQCRequest":FQCRequest,
+								"FQCRequestText":FQCRequestText,
+								"TaskNum":TaskNum,
+								"WFStatus":20
+						}
+				      
+				      var ajax1=$.ajax({
+					        method: 'post',
+					        url: '/app/PM/updBillStatus',
+					        data: PLDUpdData,
+					        success: function(data, textStatus) {
+					        },
+					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					        });
+				      
+				      //-----------------
+				      
+				      var PLDUpdData={
+								"DBTable":"ppm_bills_plan",
+								"BillIDName":"BPID",
+								"BillID":$('#BPTBPID').val(),
+								"TaskNum":TaskNum,
+								"WFStatus":20
+						}
+
+			//		 updDBDataS(PLDUpdData);
+
+					var BPTAuditData={
+							"DBTable":"ppm_bills_blueprint",
+							"DBID":$('#DBID').val(),
+							"auditor":sessionName,
+							"auditDate":Ndate,
+							"auditResult":1,
+							"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+							"BPTStatus":1
+					}
+				      
+				      var ajax2=$.ajax({
+					        method: 'post',
+					        url: '/app/PM/updDBData',
+					        data: BPTAuditData,
+					        success: function(data, textStatus) {
+					        },
+					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					        });
+
+
+					 var taskUpdData={
+								"DBTable":"ppm_bills_task",
+								"BillIDName":"taskBPID",
+								"BillID":$('#BPTBPID').val(),
+								"BTAcceptResult":0
 					}
 
-		//		 updDBDataS(PLDUpdData);
-
-				var BPTAuditData={
-						"DBTable":"ppm_bills_blueprint",
-						"DBID":$('#DBID').val(),
-						"auditor":sessionName,
-						"auditDate":Ndate,
-						"auditResult":1,
-						"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
-						"BPTStatus":1
-				}
+					var ajax3=$.ajax({
+					        method: 'post',
+					        url: '/app/PM/updBillStatus',
+					        data: taskUpdData,
+					        success: function(data, textStatus) {
+					        },
+					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					        });
 
 
-				 var taskUpdData={
-							"DBTable":"ppm_bills_task",
-							"BillIDName":"taskBPID",
-							"BillID":$('#BPTBPID').val(),
-							"BTAcceptResult":0
-				}
+			//		updDBData(BPTAuditData,"方案审核状态");
 
 
-				 var ajax1=$.ajax({
-				        method: 'post',
-				        url: '/app/PM/updBillStatus',
-				        data: PLDUpdData,
-				        success: function(data, textStatus) {
-				        },
-				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-				        });
+					$.when(ajax1,ajax2,ajax3).done(function(){
+						alert("方案已审核通过!");
+						window.location.reload();
 
-				var ajax2=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updDBData',
-			        data: BPTAuditData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
-
-				var ajax3=$.ajax({
-				        method: 'post',
-				        url: '/app/PM/updBillStatus',
-				        data: taskUpdData,
-				        success: function(data, textStatus) {
-				        },
-				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-				        });
+					});
 
 
-		//		updDBData(BPTAuditData,"方案审核状态");
-
-
-				$.when(ajax1,ajax2,ajax3).done(function(){
-					alert("方案已审核通过!");
-					window.location.reload();
-
-				});
+				 },
+				 error:function(err){
+				 	alert("失败数据:"+JSON.stringify(err));
+				 }
+				 });
+			
+					
+					
+					//FQC判断-----------------
+				 
+	
 				
 			 }else{
 				 alert("不符合审核标准,存在正在进行的任务单,请更新全部任务单版本后再审核!");
 				 
 			 }
 			 
+			 
+			//原审核功能-----------------
+			
+			
+
+
 
 
 

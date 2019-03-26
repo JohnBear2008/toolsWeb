@@ -69,6 +69,12 @@
                       <div class="col-sm-2">
                         <span id="BTIDfrom" class="help-block"></span>
                       </div>
+                      
+                      <label class="col-sm-1 control-label">来源计划单号:</label>
+                      <div class="col-sm-2">
+                        <span id="BPIDfrom" class="help-block"></span>
+                      </div>
+                      
                     </div>
 
 
@@ -461,12 +467,7 @@
      
      <div >
 	
-	
-
-
-
-
-    </div>
+     </div>
 
 
 
@@ -519,12 +520,13 @@
 //函数:详情按钮详情页自动填写内容------------------------
 function Fun_winDetailInit(dataSelect){
 	
-	console.log("dataSelect:"+JSON.stringify(dataSelect));
+	console.log("dataSelect1111:"+JSON.stringify(dataSelect));
 
 	$('#DBID').val(dataSelect.DBID);
 	
 
 	$('#BTIDfrom').text(dataSelect.BTIDfrom);
+	$('#BPIDfrom').text(dataSelect.BPIDfrom);
 	$('#BPID').text(dataSelect.BPID);
 	$('#version').text(dataSelect.version);
 	$('#PBHCTRName').text(dataSelect.PLDCTRName);
@@ -911,6 +913,16 @@ $('#BTNPBHAudit').click(function() {
 					"PBHStatusText":"已发布"
 			}
 		 
+		 
+		 var ajax1=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updDBData',
+		        data: PBHData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+		 
 
 		 var taskFromData={
 				 "DBTable":"ppm_bills_task",
@@ -923,16 +935,6 @@ $('#BTNPBHAudit').click(function() {
 				 "taskFiles":JSON.stringify(files)
 		 }
 		 
-		 var ajax1=$.ajax({
-		        method: 'post',
-		        url: '/app/PM/updDBData',
-		        data: PBHData,
-		        success: function(data, textStatus) {
-		        },
-		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-		        });
-		 
-		 
 		 var ajax2=$.ajax({
 		        method: 'post',
 		        url: '/app/PM/updBillStatus',
@@ -942,8 +944,23 @@ $('#BTNPBHAudit').click(function() {
 		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 		        });
 		 
-		
-	
+		 
+		 var PLDFromData={
+				 "DBTable":"ppm_bills_plan",
+				 "BillIDName":"BPID",
+				 "BillID":$("#BPIDfrom").text(),
+				 "TaskNumDone":1,
+				 "WFStatus":30
+		 }
+		 
+		 var ajax3=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updBillStatus',
+		        data: PLDFromData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
 
 		$.when(ajax1,ajax2).done(function(){
 				alert("发布单已审核,来源任务单已回填,该内核任务完结!");
@@ -1107,7 +1124,6 @@ $('#BTNUpdVer').click(function() {
 				"emailADRS":$('#emailADRS').val(),
 				"emailCopyADRS":$('#emailCopyADRS').val(),
 				"emailTitle":$('#emailTitle').val(),
-				"emailFiles":JSON.stringify(emailFilesValue),
 				"emailContent":$('#emailContent').val(),
 				"PBHRemark":$('#PBHRemark').val(),
 				"PBHMaker":sessionName,

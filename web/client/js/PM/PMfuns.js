@@ -59,8 +59,6 @@ function showDBData(DataPara,columnsData){
 
 }
 
-
-
 //AJAX新增数据库数据函数-----------
 function addDBData(DBData) {
 	
@@ -1153,7 +1151,10 @@ function getQueryString(name) {
 
 function getEmails($){
 	 var _=/[\w\.\+-]+@[\w\.\+-]+/g;
-	 var s= $.match(_).toString();//先转换为字符串 不然会报 .replace is not a function错误
-	 s=s.replace(/\n/g,",");
-     return s;
+	 if($!=null){
+		 var s= $.match(_).toString();//先转换为字符串 不然会报 .replace is not a function错误
+		 s=s.replace(/\n/g,",");
+	     return s;
+	 }
+	
 }
