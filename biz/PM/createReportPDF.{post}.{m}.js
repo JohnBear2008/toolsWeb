@@ -12,19 +12,20 @@ module.exports = function(sender) {
     var fs = require('fs');
     var pdf = require('html-pdf');
     var html = sender.req.query.htmlContent;
+    var BTID = sender.req.query.BTID;
 //    var options = { format: 'Letter' };
     var options = { format: 'html' };
   
-    var reportName="IPQC"+ (new Date()).Format('yyyyMMddHHmmSS');
+    var reportName=BTID+"_IPQC";
   
-    pdf.create(html, options).toFile('./PPMReports/'+reportName+'.pdf', function(err, res) {
+    pdf.create(html, options).toFile('./uploaded/'+reportName+'.pdf', function(err, res) {
 	  if (err) return console.log(err);
 	  console.log(res); // { filename: '/app/businesscard.pdf' }
-	  
 
 	  sender.success(res);
 	});
 
+    
 //yjDBService.exec({
 //    sql: SQLInsert,
 //    parameters: [],

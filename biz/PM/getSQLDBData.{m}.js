@@ -116,6 +116,10 @@ module.exports = function(sender) {
 	case "SQLGetPLDNum":
 		var SQLExecute=SQLGetPLDNum;
 		break;
+	case "SQLGetPLDNum_T":
+		var SQLExecute=SQLGetPLDNum_T;
+		break;
+
 	case "SQLGetTaskNum":
 		var SQLExecute=SQLGetTaskNum;
 		break;

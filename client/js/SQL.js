@@ -109,6 +109,8 @@ SQLGetEMails="SELECT email,contact,contacts FROM `ppm_customers`";
 
 SQLGetPLDNum="SELECT COUNT(1) AS GPLDNum FROM `ppm_bills_plan` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW())";
 
+SQLGetPLDNum_T="SELECT COUNT(1) AS GPLDNum FROM `ppm_bills_plan_t` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW())";
+
 
 SQLgetBindPLDdata="SELECT A.* FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion ) A";
 

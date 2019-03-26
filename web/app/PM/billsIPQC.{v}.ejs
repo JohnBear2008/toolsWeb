@@ -380,6 +380,14 @@
                  	 
 
                      </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                  	<label  class="col-sm-1 control-label" for="name">报告:</label>
+                  	<div class="col-sm-3">
+                     <div id="report"></div>
+                  	</div>
+                  	</div>
                          
                      <!-------------------------------------------------------------------------->
 
@@ -950,7 +958,7 @@ $('#BTNReportCreate').click(function() {
 	
 	var IPQCtr="";
 	
-	var tableLength=$("#TableTestContents tbody").find("tr").length;
+	var tableLength=$("#TableTestContents tbody").find("tr").length-1;
 	
 	for(var i=0;i<=tableLength;i++){
 		
@@ -1009,14 +1017,20 @@ $('#BTNReportCreate').click(function() {
   $.ajax({
         method: 'post',
         url: '/app/PM/createReportPDF',
-        data: {"htmlContent":htmlContent},
+        data: {"BTID":$("#BTID").text(),"htmlContent":htmlContent},
         success: function(data, textStatus) {
         	
-        	alert(JSON.stringify(data));
+        	console.log("filename:"+JSON.stringify(data));
+        	
+        	reportLink="<a href='/system.files.download/"+$("#BTID").text()+"_IPQC.pdf' download='"+$("#BTID").text()+"_IPQC.pdf'>"+$("#BTID").text()+"_IPQC.pdf</a>";
+        	
+        	$("#report").html(reportLink);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
         });
 });
+
+
 
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNFormClose').click(function() {

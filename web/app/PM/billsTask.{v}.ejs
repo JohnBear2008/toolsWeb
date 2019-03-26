@@ -1360,55 +1360,65 @@ $('#BTNTaskUpdVer').click(function() {
       alert("请先选中需要更新版本的任务单!");
   } else {
 	  
-		var msg1 = confirm("风险操作！更新任务版本后,系统内任务单将被新版本替代!");
-    if (msg1 === true) {
-        var msg2 = confirm("再次确认？");
-        if (msg2 === true) {
-        	
-        	var newBTVersion=parseInt(dataSelect.BTVersion)+1;
-        	
-        	var IPQCResultText=$('#IPQCResultText').text();
-        	
-        	if(dataSelect.BTStatusText=="任务完成"){
-        		var taskRepeat=1;
-        	}else{
-        		var taskRepeat=0;
-        	}
+	 console.log(dataSelect.T_BPID);
+	 
+	 if(dataSelect.T_BPID!=null){
+		 
+		 alert("该任务单内核流程已启动,不允许版本更新,变更信息请更新内核流程相关单据进行调整!");
+		 
+	 }else{
+		 
+			var msg1 = confirm("风险操作！更新任务版本后,系统内任务单将被新版本替代!");
+	    if (msg1 === true) {
+	        var msg2 = confirm("再次确认？");
+	        if (msg2 === true) {
+	        	
+	        	var newBTVersion=parseInt(dataSelect.BTVersion)+1;
+	        	
+	        	var IPQCResultText=$('#IPQCResultText').text();
+	        	
+	        	if(dataSelect.BTStatusText=="任务完成"){
+	        		var taskRepeat=1;
+	        	}else{
+	        		var taskRepeat=0;
+	        	}
+	
+	        	var taskData={
+						"DBTable":"ppm_bills_task",
+						"BTID":dataSelect.BTID,
+						"BTVersion":newBTVersion,
+						"taskSortType":dataSelect.taskSortType,
+						"taskSortTypeText":dataSelect.taskSortTypeText,
+						"taskType":dataSelect.taskType,
+						"taskTypeText":dataSelect.taskTypeText,
+						"taskRepeat":taskRepeat,
+						"taskCTRName":dataSelect.taskCTRName,
+						"taskStaff":dataSelect.taskStaff,
+						"taskBPID":dataSelect.taskBPID,
+						"modfiyABE":dataSelect.modfiyABE,
+						"taskDBE":dataSelect.taskDBE,
+						"taskLimitDate":dataSelect.taskLimitDate,
+						"BTAcceptResult":0,
+						"BTStatus":1,
+						"BTStatusText":"新增"
+						}
+	        	addDBData(taskData);
+	        }
+	    }
+		 
+		 
+		 
+		 
+		 
+	 }
+	  
 
-        	var taskData={
-					"DBTable":"ppm_bills_task",
-					"BTID":dataSelect.BTID,
-					"BTVersion":newBTVersion,
-					"taskSortType":dataSelect.taskSortType,
-					"taskSortTypeText":dataSelect.taskSortTypeText,
-					"taskType":dataSelect.taskType,
-					"taskTypeText":dataSelect.taskTypeText,
-					"taskRepeat":taskRepeat,
-					"taskCTRName":dataSelect.taskCTRName,
-					"taskStaff":dataSelect.taskStaff,
-					"taskBPID":dataSelect.taskBPID,
-					"modfiyABE":dataSelect.modfiyABE,
-					"taskDBE":dataSelect.taskDBE,
-					"taskLimitDate":dataSelect.taskLimitDate,
-					"BTAcceptResult":0,
-					"BTStatus":1,
-					"BTStatusText":"新增"
-					}
-        	addDBData(taskData);
-        }
-    }
   	
   	
   
   	
 
   }
-	
-	
-	
-	
-	
-
 
     	
 });

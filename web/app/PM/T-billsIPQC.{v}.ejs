@@ -993,7 +993,7 @@ $('#BTNReportCreate').click(function() {
   $.ajax({
         method: 'post',
         url: '/app/PM/createReportPDF',
-        data: {"htmlContent":htmlContent},
+        data: {"BTID":$("#BTID").text(),"htmlContent":htmlContent},
         success: function(data, textStatus) {
         	
         	alert(JSON.stringify(data));
