@@ -17,22 +17,17 @@ module.exports = function(sender) {
     sReserved3 = objSysArg.Reserved3.replace('\r', "");
     sReserved4 = objSysArg.Reserved4.replace('\r', "");
 
-    /*====================+
-    |   MachType          |
-    |=====================|
-    | ABCD| dsp | meaning |
-    |---------------------|
-    |  A  |  0  |    54   |
-    |---------------------|
-    |     |  1  |  5528   |
-    |     |  2  |  55M3   |
-    |     |  3  | 3354-PLC|
-    |---------------------|
-    |  B  |  0  |   270   |
-    |     |  1  |  3354   |
-    |---------------------|
-    | C、D |     预留       |
-    +=====================*/
+    let LCID = parseInt(sender.req.query.LCID); // 必须转化一下
+    let sqlSelectPart = "";
+    switch (LCID) {
+        case 1033:
+            sqlSelectPart = " SELECT DataID, Block, Type, EN, ENTips, Unit, Prec, Visb, Organize ";
+            break;
+        default:
+            sqlSelectPart = " SELECT DataID, Block, Type, CN, CNTips, Unit, Prec, Visb, Organize ";
+            break;
+    }
+
     aSQLPara = [
         /* 获取STD与info机型区分不一样的数据行 */
         sManufacturer, sCtrlType, sMachType, sReserved0, sReserved1, sReserved2, sReserved3, sReserved4,
@@ -47,20 +42,18 @@ module.exports = function(sender) {
 
     /* [execSQL 指定info的数据 union all 数据表内除去与“如上info临时表内DataID相同的数据”（包括info临时表自己）] */
     // SQL 耗时约 50ms
-    execSQL = `
-         SELECT DataID, Block, Type, CN, SubCN, Unit, Prec, Visb, Organize
-         FROM hmiprint_mold_tm54
-         WHERE DataID NOT IN (
-                SELECT DataID FROM hmiprint_mold_tm54
-                WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=?
-         )
-         AND Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=?
-         UNION ALL
-         SELECT DataID, Block, Type, CN, SubCN, Unit, Prec, Visb, Organize
-         FROM hmiprint_mold_tm54
-         WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=?
-
-         ORDER BY FIELD(Block, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?), DataID `; // FIELD顺序首要，DataID次要
+    execSQL =
+        sqlSelectPart +
+        " FROM hmiprint_mold_tm54 " +
+        " WHERE DataID NOT IN ( " +
+        "       SELECT DataID FROM hmiprint_mold_tm54 " +
+        "      WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=?) " +
+        " AND Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
+        " UNION ALL " +
+        sqlSelectPart +
+        " FROM hmiprint_mold_tm54 " +
+        " WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? " +
+        " ORDER BY FIELD(Block, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?), DataID "; // FIELD顺序首要，DataID次要
 
     yjDBService.exec({
         sql: execSQL,

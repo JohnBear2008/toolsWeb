@@ -42,7 +42,7 @@ module.exports = function(sender) {
    
 
     
-   console.log("SQLGetTitles:"+SQLGetTitles);
+//   console.log("SQLGetTitles:"+SQLGetTitles);
     // sqlGetIDInfo = "  ORDER BY INSTR(',443,419,431,440,420,414,509,',CONCAT(',',eventId,','))";
 //    
     yjDBService.exec({

@@ -1,4 +1,145 @@
-/*jshint esversion: 6 */
+<!--本地路径-->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<script type="text/javascript" src="/js/muc_jsExtend.js"></script>
+<script type="text/javascript" src="/js/HMIPrint/hmiprint-common.js"></script>
+
+<script type="text/javascript" src="/DataTables/media/js/jquery.dataTables.js"></script>
+
+<link rel="stylesheet" href="/DataTables/media/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/dataTableExtend.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/divContent.css">
+
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<!-- 初版文件路径就不符合规范，能不动尽量别动 -->
+<link href="/css/HMIPrint/bootstrap.min.css" rel="stylesheet">
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="/js/HMIPrint/bootstrap.min.js"></script>
+
+<div class="divContent">
+    <h1><%-locals.ml("Moni 解析")%></h1>
+    <hr />
+    <!-- 操作区（按钮等） -->
+    <div class="input-append">
+        <!-- 导出文件按键 -->
+        <input type="file" id="upFolder" style="display:none;" webkitdirectory />
+        <a class="btn btn-lg btn-info" onclick="$('#upFolder').click();"><%=locals.ml("导入文件")%></a>
+
+        <!--  汇出excel按键 -->
+        <a id="dlink" class="btn btn-lg btn-default"><%=locals.ml("汇出Excel")%></a>
+
+        <!-- 进度提示 -->
+        <label id="PMsg" style="font-weight: bold;font-size: 15px;color: red;margin-left: 20px"></label>
+
+    </div>
+    </br>
+
+    <!--数据呈现区-->
+    <div>
+        <table id="monidata" class="table table-bordered table-hover">
+            <!-- thead 存放警报标题， eg. 开模序号、循环计时 。。。 -->
+            <thead>
+                <tr id="dataThTr"></tr>
+            </thead>
+            <!-- tbody 存放对应的资料值， eg.  1， 17.69 。。。 -->
+            <tbody id="dataTbBody"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+/*jshint esversion:6*/
+/*===========================================================================+
+|   global                                                                   |
++===========================================================================*/
+var LCID = parseInt("<%-locals.LCID%>"); // 默认1033 中文
+var LANGUAGE = "CN"; // 默认中文
+switch (LCID) {
+    case 1033:
+        LANGUAGE = "EN";
+        break;
+    default:
+        break;
+}
+
+var g_CdbFile,
+    g_IniFile,
+    g_SysInfoFile, // 机型区分的file标识
+    g_nCdbSize, // 用于缓存cdb的大小
+    g_nCdbInfoRow, // 监测cdb，详细监测信息的条数
+    g_nCdbStart = 0, // 遍历cdb的start_inx
+    g_nCdbEnd = 0, // 遍历cdb的end_inx
+    g_aMoniCdb, // 最终会被splice清空
+    g_oMoni; // 用以构造moni数据
+
+/* 无用的信息列表 */
+var aUseLess = [
+    "C_MEMERY_PAD" // 内存对齐的内容
+];
+
+var moniDataTab; // dataTable实例
+
+/*===========================================================================+
+|   $(document).ready                                                        |
++===========================================================================*/
+$(function(e) {});
+
+/*===========================================================================+
+|   window.onload                                                            |
++===========================================================================*/
+$(window).load(function() {
+    var $pMsgID = $("#PMsg");
+
+    let mucDB = "MucDB",
+        store = "HMIPrint",
+        pageID = "moni",
+        sParseFlag = "MoniParseStat", // 假使当前页面解析过，则为true
+        obj = g_oMoni,
+        sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+
+    function callbackInxDB(data) {
+        if (data) {
+            fnShowPreMoniData(data);
+        }
+        $pMsgID.text("");
+    }
+
+    function fnTbDataExport(data) {
+        if (data) {
+            fnTableBuffExport(data.trBuff, data.tdBuff, "#dlink", pageID, '.xls');
+        }
+        $pMsgID.text("");
+    }
+
+
+    if (sPFlag == "true") {
+        $pMsgID.text('<%-locals.ml("呈现上次解析内容中")%>');
+        fnGetDataFrIndexedDB(mucDB, store, pageID, callbackInxDB);
+    }
+
+    /* 操作控件事件绑定 */
+    // 上传文件夹
+    $("#upFolder").change(function() {
+        fnTrvlEvent();
+    });
+
+    $("#dlink").click(() => {
+        /* 解析过才开放汇出excel功能 */
+        let sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+        if (!sPFlag) {
+            alert("请导入文件后再使用此功能！");
+            return false;
+        }
+    });
+
+    /* 汇出excel功能绑定上次解析的download内容 */
+    fnGetDataFrIndexedDB(mucDB, store, pageID, fnTbDataExport);
+});
+
+
+/*===========================================================================+
+|   object   prototype                                                       |
++===========================================================================*/
 /*Note：
  * 对象的属性，假使未按照匈牙利命名规则的，则表示此项属性从DB获取
  * 对象的所有属性可以在构造函数内找到，假使有缺漏，请补充并带上注释
@@ -50,22 +191,6 @@ function MoniInfoSubObj(nSerial, sDDKey, nSize, Prec, nDispPrec, fValue) {
     this.fValue = 0;
 }
 
-var g_CdbFile,
-    g_IniFile,
-    g_SysInfoFile, // 机型区分的file标识
-    g_nCdbSize, // 用于缓存cdb的大小
-    g_nCdbInfoRow, // 监测cdb，详细监测信息的条数
-    g_nCdbStart = 0, // 遍历cdb的start_inx
-    g_nCdbEnd = 0, // 遍历cdb的end_inx
-    g_aMoniCdb, // 最终会被splice清空
-    g_oMoni; // 用以构造moni数据
-
-/* 无用的信息列表 */
-var aUseLess = [
-    "C_MEMERY_PAD" // 内存对齐的内容
-];
-
-var moniDataTab; // dataTable实例
 /*===========================================================================+
 |   function      Main                                                       |
 +===========================================================================*/
@@ -134,7 +259,7 @@ function fnTrvlFolder() {
             return -1;
         }
 
-        fnGetSysInfo(g_oMoni, g_SysInfoFile)
+        fnGetSysInfo(g_oMoni, g_SysInfoFile) // hmiprint-common.js
             .then(() => {
                 return fnCreMoniCdbArray();
             })
@@ -340,34 +465,30 @@ function fnShowPreMoniData(objArg) {
 // 只传必要的数据（g_Obj因数据过大，必须特殊处理，不能直接当作ajax形参传入）
 function CNtranslator(objSysArg) {
     $("#PMsg").text("正在获取/解析数据文件，请稍后 . . .");
-    // console.time("timer");
     $.ajax({
         method: 'get',
-        url: "/app/HMIPrint/CNtranslator", // 发送请求的地址，注：此文件类型为.{m}.js
+        url: "/app/HMIPrint/Moni/CNtranslator", // 发送请求的地址，注：此文件类型为.{m}.js
         data: { objSysArg: objSysArg },
 
+        // data = [["InjectMaxSpeed, "射出速度", 0, 3], [InjectMaxSpeedB", "B组最大射速", 0, 3] ...]
         success: function(data) {
-            // console.log(data.rows);
-            // console.time("CNtranslator");
             var aDataInfo = g_oMoni.aDataInfo;
             var nRecSum = aDataInfo.length; // 监测记录的条数
-            // console.log(nRecSum);
             var nTitSum = aDataInfo[0].length; // 所有标题的数据结构与值完全一致，故判断任意一行即可得知
             var trBuff = "";
             var tdBuff = "";
 
             var tdPreStr = "<td>";
             // 从biz获取的data,row内的Inx代表的内容
-            var nArrInx = {
+            let nArrInx = {
                 DDKey: 0,
-                CN: 1,
+                MEAN: 1,
                 Visb: 2,
-                Prec: 3
+                Prec: 3,
             };
-
             // 当前HMI至多存储5000笔数据，生成的cdb文件里也只有5000笔，此处为预留
-            var nRecOffset = 0;
-            let tmp = 0;
+            let nRecOffset = 0,
+                tmp = 0;
             for (let nRecx = nRecOffset; nRecx < nRecSum; ++nRecx) {
                 tdBuff += "<tr>"; // 每一条完整的监测记录加个换行
                 for (let nTitx = 0; nTitx < nTitSum; ++nTitx) {
@@ -403,8 +524,8 @@ function CNtranslator(objSysArg) {
                             /* ========== 显示监测信息的标题文字内容，所有title从第一条记录即可获取完全 ========== */
                             if (nRecx === nRecOffset) {
                                 if (aDataInfo[nRecx][nTitx].Visb > 0) {
-                                    aDataInfo[nRecx][nTitx].CN = data.rows[nVisbInfoInx][nArrInx.CN];
-                                    trBuff += "<th>" + aDataInfo[nRecx][nTitx].CN + "</th>";
+                                    aDataInfo[nRecx][nTitx].mean = data.rows[nVisbInfoInx][nArrInx.MEAN];
+                                    trBuff += "<th>" + aDataInfo[nRecx][nTitx].mean + "</th>";
                                     ++tmp;
                                 }
 
@@ -441,10 +562,6 @@ function CNtranslator(objSysArg) {
                 aTbElem.push(oTbData);
             }
 
-            // console.log(tmp);
-            // console.log(Object.getOwnPropertyNames(aTbElem[0]).length);
-            // console.log(aTheadElem.length);
-            // console.log("-----");
             /* ========== 添加数据并绘制表格 ========== */
             // 绘制表头
             $("#monidata thead tr").html(trBuff);
@@ -502,7 +619,6 @@ function fnCszToHex(csz) {
 
 function fnBuf2HexCsz(aBuf, aHex) {
     let bufView = new Uint8Array(aBuf); // 8个Bit === 1Byte
-    // console.log(bufView);
     for (let i = 0, len = bufView.length; i < len; ++i) {
         aHex.push(fnByte2Str(bufView[i]));
     }
@@ -573,7 +689,7 @@ function fnDeepClone(obj) {
 |   function     return a  created obj                                       |
 +===========================================================================*/
 function createTable(tableID, data, columns) {
-    return $(tableID).DataTable({
+    let d = {
         /* ========== 数据显示 ========== */
         "aLengthMenu": [
             [15, 50, 200],
@@ -605,34 +721,19 @@ function createTable(tableID, data, columns) {
         "aaSorting": [
             [0, "asc"]
         ],
-
-        "oLanguage": {
-            "sProcessing": "正在加载数据中，请稍后 ...",
-            // "sProcessing": "<img src='/images/gif/loading4.gif'>", // mark，显示效果需通过css来处理
-            "sLengthMenu": "显示 _MENU_ 项结果",
-            "sZeroRecords": "没有匹配结果",
-            "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-            "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-            "sInfoPostFix": "",
-            "sSearch": "搜索:",
-            "sUrl": "",
-            "sEmptyTable": "表中数据为空",
-            "sLoadingRecords": "载入中...",
-            "sInfoThousands": ",",
-            "oPaginate": {
-                "sFirst": "首页",
-                "sPrevious": "上页",
-                "sNext": "下页",
-                "sLast": "末页"
-            },
-            "oAria": {
-                "sSortAscending": ": 以升序排列此列",
-                "sSortDescending": ": 以降序排列此列"
-            }
-        }
-
         /* ========== 数据处理相关 ==========  */
         /* ========== 新方法 ========== */
-    });
+    };
+
+    switch (LANGUAGE) {
+        case "CN":
+            d.oLanguage = dataTable_CN;
+            break;
+        default:
+            break;
+    }
+
+    return $(tableID).DataTable(d);
 }
+
+</script>

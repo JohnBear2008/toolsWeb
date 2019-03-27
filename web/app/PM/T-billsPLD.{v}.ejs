@@ -517,7 +517,20 @@ function Fun_BPIDCreate(){
 
 //函数:新增详情页自动填写内容------------------------
 function Fun_winAddInit(){
-	Fun_BPIDCreate();
+	  Fun_BPIDCreate();
+	  //恢复初始状态
+	  $('input').attr("disabled",false);
+	  $('select').attr("disabled",false);
+	  $('textarea').attr("disabled",false);
+	  $("#DivAuditImage").attr('src',"");
+	  
+	  
+	  $('#BTIDfrom').val(""); 
+	  $("#BTIDfrom").attr("disabled",true);
+	  
+	  $('#BPIDfrom').val(""); 
+	  $("#BPIDfrom").attr("disabled",true);
+	  
 
 	var SQLCTRName={SQL:"SQLSRCustomers"};
 	var CTRName="#CTRName";

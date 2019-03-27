@@ -1,13 +1,16 @@
 var yjBizService = global.yjRequire("yujiang.Foil").yjBizService;
 var yjPusher = yjRequire("yujiang.Foil").yjPusher;
-var path=require("path");
+var path = require("path");
+
 module.exports = function(sender) {
     yjBizService.post({
-        params : ["HMIPrint","moniAdd"],
-        query : sender.req.body,
-        success : function(data){
+        params: ["HMIPrint", "MoldTM55DBAdd"],
+        query: sender.req.body,
+
+        success: function(data) {
             sender.success(data);
         },
-        error : sender.error
+
+        error: sender.error
     });
-}
+};

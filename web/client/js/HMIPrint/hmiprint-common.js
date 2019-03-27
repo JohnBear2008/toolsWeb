@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
+
 var dataTable_CN = {
     "sProcessing": "数据加载中 ...",
-    // "sProcessing": "<img src='/images/gif/loading4.gif'>", // mark，显示效果需通过css来处理
     "sLengthMenu": "显示 _MENU_ 项结果",
     "sZeroRecords": "没有匹配结果",
     "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
@@ -10,7 +10,7 @@ var dataTable_CN = {
     "sInfoPostFix": "",
     "sSearch": "搜索： ",
     "sUrl": "",
-    "sEmptyTable": "- 来自服务器的反馈：空的数据表 -",
+    "sEmptyTable": "- 空的数据表 -",
     "sLoadingRecords": "数据加载中 ...",
     "sInfoThousands": ",",
     "oPaginate": {
@@ -18,6 +18,31 @@ var dataTable_CN = {
         "sPrevious": "<",
         "sNext": ">",
         "sLast": "尾页"
+    },
+    "oAria": {
+        "sSortAscending": ": 以升序排列此列",
+        "sSortDescending": ": 以降序排列此列"
+    }
+};
+
+var dataTable_TW = {
+    "sProcessing": "數據加載中 ...",
+    "sLengthMenu": "顯示 _MENU_ 項結果",
+    "sZeroRecords": "沒有匹配結果",
+    "sInfo": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+    "sInfoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+    "sInfoFiltered": "(由 _MAX_ 項結果過濾)",
+    "sInfoPostFix": "",
+    "sSearch": "搜索： ",
+    "sUrl": "",
+    "sEmptyTable": "- 空的數據表 -",
+    "sLoadingRecords": "數據加載中 ...",
+    "sInfoThousands": ",",
+    "oPaginate": {
+        "sFirst": "首頁",
+        "sPrevious": "<",
+        "sNext": ">",
+        "sLast": "尾頁"
     },
     "oAria": {
         "sSortAscending": ": 以升序排列此列",
@@ -35,6 +60,7 @@ var dataTable_CN = {
 /*===========================================================================+
 |   function      {v}.ejs                                                    |
 +===========================================================================*/
+
 /**
  * @Author    Muc
  * @DateTime  2018-11-08

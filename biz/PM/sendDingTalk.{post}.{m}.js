@@ -3,7 +3,7 @@ module.exports = function(sender) {
 //	    var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
 //	    var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 	    
-	     console.log("get:"+JSON.stringify(sender.req.query));
+//	     console.log("get:"+JSON.stringify(sender.req.query));
 	     
 //	     var mailData=sender.req.query;
 	     
@@ -27,7 +27,7 @@ module.exports = function(sender) {
 	              	}
 	     		};
 	     		const requestData = JSON.stringify(queryParams);
-	     		console.log(requestData);
+//	     		console.log(requestData);
 	     		const token = "df02ad004120b570b6a0980e5b30470a8ecbfde2a4282e5cf93b5b68e120f889";
 	     		const url = 'oapi.dingtalk.com';
 	     		const req = https.request({
@@ -42,7 +42,7 @@ module.exports = function(sender) {
 	     		});
 	     		req.write(requestData);
 	     		req.on('error',function(err){
-	     			console.error(err);
+//	     			console.error(err);
 	     		});
 	     		req.end();
 	     		

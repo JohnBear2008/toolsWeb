@@ -2,7 +2,7 @@ module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     
- console.log("get:"+JSON.stringify(sender.req.query));
+// console.log("get:"+JSON.stringify(sender.req.query));
     
 ////   console.log("PM2333 test");
 //       
@@ -50,7 +50,7 @@ module.exports = function(sender) {
 
 ////var SQLInsert="insert into PM_customer (cust_FID,cust_Name) values(110,110)";
     
-	console.log("SQLUpdate:"+SQLUpdate);
+//	console.log("SQLUpdate:"+SQLUpdate);
 //
     yjDBService.exec({
         sql: SQLUpdate,

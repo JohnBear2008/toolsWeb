@@ -1,3 +1,4 @@
+/*jshint esversion:6*/
 var yjBizService = global.yjRequire("yujiang.Foil").yjBizService;
 var yjPusher = yjRequire("yujiang.Foil").yjPusher;
 
@@ -7,7 +8,7 @@ module.exports = function(sender) {
 
     sender.req.query.LCID = LCID;
     yjBizService.get({
-        params: ["HMIPrint", "getMoldIDInfoFr54DB"], // Chenly 2018-10-15 关联：biz下的文件夹 与 文件.{m}.ejs
+        params: ["HMIPrint", "CNtranslator"], // Chenly 2018-10-15 关联：biz下的文件夹 与 文件.{m}.ejs
         query: sender.req.query,
         success: function(data) {
             sender.success(data); // Chenly 2018-10-15 如上biz文件内容执行成功则返回数据

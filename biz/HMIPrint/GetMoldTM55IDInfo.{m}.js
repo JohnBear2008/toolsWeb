@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
@@ -16,22 +17,17 @@ module.exports = function(sender) {
     sReserved3 = objSysArg.Reserved3.replace('\r', "");
     sReserved4 = objSysArg.Reserved4.replace('\r', "");
 
-    /*====================+
-    |   MachType          |
-    |=====================|
-    | ABCD| dsp | meaning |
-    |---------------------|
-    |  A  |  0  |    54   |
-    |---------------------|
-    |     |  1  |  5528   |
-    |     |  2  |  55M3   |
-    |     |  3  | 3354-PLC|
-    |---------------------|
-    |  B  |  0  |   270   |
-    |     |  1  |  3354   |
-    |---------------------|
-    | C、D |     预留       |
-    +=====================*/
+    let LCID = parseInt(sender.req.query.LCID); // 必须转化一下
+    let sqlSelectPart = "";
+
+    switch (LCID) {
+        case 1033:
+            sqlSelectPart = " SELECT DataID, EN, ENTips, Unit, Prec, Visb, Organize ";
+            break;
+        default:
+            sqlSelectPart = " SELECT DataID, CN, CNTips, Unit, Prec, Visb, Organize ";
+            break;
+    }
 
     aSQLPara = [
         sManufacturer, sCtrlType, sMachType, sReserved0, sReserved1, sReserved2, sReserved3, sReserved4,
@@ -43,8 +39,8 @@ module.exports = function(sender) {
     /* [execSQL 指定info的数据 union all 数据表内除去与“如上info临时表内DataID相同的数据”（包括info临时表自己）] */
     execSQL =
         /* ===== 获取STD中，info机型缺省的"DataID列数据"对应的数据行内容 ===== */
-        " SELECT DataID, CN, SubCN, Unit, Prec, Visb, Organize " +
-	" FROM hmiprint_mold_tm55 " +
+        sqlSelectPart +
+        " FROM hmiprint_mold_tm55 " +
         //这里限定info机型缺省的"DataID列数据"对应的数据行内容
         " WHERE DataID NOT IN ( " +
         "           SELECT DataID FROM hmiprint_mold_tm55 " +
@@ -55,8 +51,8 @@ module.exports = function(sender) {
         /* ===== 联合两个结果 ===== */
         " UNION ALL " +
         /* ===== 获取info机型的数据行 =====*/
-        " SELECT DataID, CN, SubCN, Unit, Prec, Visb, Organize " +
-	" FROM hmiprint_mold_tm55 " +
+        sqlSelectPart +
+        " FROM hmiprint_mold_tm55 " +
         " WHERE Manufacturer=? AND CtrlType=? AND MachType=? AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? ";
 
     yjDBService.exec({

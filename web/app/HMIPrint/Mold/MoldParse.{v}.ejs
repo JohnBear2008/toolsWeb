@@ -1,39 +1,228 @@
-/*jshint esversion: 6 */
+<!--本地路径-->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 其他的标准/第三方库-->
+<link rel="stylesheet" type="text/css" href="/bootstrap/v3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/DataTables/v1.10.15/css/dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="/layui/v2.4.5/css/layui.css">
+
+<script src="/bootstrap/v3.3.7/js/bootstrap.min.js"></script>
+<script src="/DataTables/v1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="/DataTables/v1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+<!--自己写的-->
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-master.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/mold-nav-tabs.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/hmiprint-upFolderDiv.css">
+<link rel="stylesheet" type="text/css" href="/css/HMIPrint/dataTableExtend.css">
+
+<script type="text/javascript" src="/js/muc_jsExtend.js"></script>
+<script type="text/javascript" src="/js/HMIPrint/hmiprint-common.js"></script>
+
+<div class="content">
+    <!-- 标题区 -->
+    <div class="content-title">
+        <h1><%-locals.ml("Mold 解析")%></h1>
+        <hr />
+    </div>
+
+    <!-- 操作区（按钮等） -->
+    <div class="content-operate">
+        <!-- 导出文件 按键  # TMD这个地方没办法语义化标签，只能加个 anchor-->
+        <input type="file" id="upFolder" style="display:none;" webkitdirectory />
+        <a class="btn btn-lg btn-info" onclick="$('#upFolder').click();"><%-locals.ml("导入文件")%></a>
+
+        <!--  汇出excel按键 -->
+        <a id="dlink" class="btn btn-lg btn-default"><%-locals.ml("汇出Excel")%></a>
+
+        <!-- 进度提示 -->
+        <label id="PMsg" style="font-weight: bold;font-size: 15px;color: red;margin-left: 20px"></label>
+    </div>
+    </br>
+
+    <!-- moldhdr呈现区 -->
+    <div class="mold-hdr" id="moldhdr">
+    </div>
+
+    <!-- DataTable呈现区 mark的元素勿删，DOM参考用-->
+    <div class="tab" role="tabpanel">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist" id="DataUl">
+            <!--
+            <li role="presentation" class="active"><a href="#Section1" role="tab" data-toggle="tab">模具</a></li>
+            <li role="presentation"><a href="#Section2" role="tab" data-toggle="tab">射出</a></li>
+        -->
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content" id="tab_content">
+            <!--
+            <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+                <p>1</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="Section2">
+                <p>2</p>
+            </div>
+        -->
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+/*jshint esversion:6*/
 /*===========================================================================+
-|    Author   : Muc
-|----------------------------------------------------------------------------+
-|    Describe : 模具解析界面关联的js
-|    Warning
-|       * TM HMI only
-|       * 为了维护方便，54和55系统共用此js文件
-|----------------------------------------------------------------------------+
-|    Question & Answer
-|       * Q1: 新增资料tab分组要动到哪些内容？
-|            - 变量 : 对应view文件里的  g_mTabs 、 g_aTabOrder
-|            - 外挂文件 : molddbform.js（里面的option）
-|       * Q2: 写的代码太屎了？
-|             - 请协助改进并通知，共同学习，共同进步 :)
-|       * Q3: 为什么有些if语句内不加关系符判断 ? if (1 === True) {...}
-|             - 在确保绝对正确的前提下，这样写为了简化代码
-|----------------------------------------------------------------------------+
-|    Obj      : 对象的所有属性可以在构造函数内找到，若有缺漏，请帮忙补充并带上注释
-|----------------------------------------------------------------------------+
-|    Promise  :
-|       * 一般变量
-|            - 匈牙利命名规则 （能通过SQL获取的数据或者与该数据对象属性同名的统一大驼峰命名）
-|            - 明确数据类型的变量必须初始化
-|            - 声明类型时必须用let
-|       * 全局变量
-|           - 使用前必须在 fnInitVariate 内手动清空，以防ajax异步处理或者遇到未知错误导致数据残留
-|       * DOM元素变量
-|           - 小写加下划线
-|       * 等号关系运算符
-|           - 明确数据类型，必须用 ===
-|       * 数据表
-|           - 将所有NULL变为 ''
-|----------------------------------------------------------------------------+
-|    Coding   : utf-8
+|   load                                                                     |
 +===========================================================================*/
+// $(window).load(function() {});
+/*===========================================================================+
+|   ready                                                                    |
++===========================================================================*/
+$(function(e) {
+    switch (LANGUAGE) {
+        case "EN": // 英文
+            // 设置tab标签页翻译
+            tabTransMaps = new Map([
+                ["Mold", "Mold"],
+                ["Inject", "Inject"],
+                ["InjectB", "InjectB"],
+                ["Rotary", "Rotary"],
+                ["Chrg", "Chrg"],
+                ["ChrgB", "ChrgB"],
+                ["Eject", "Eject"],
+                ["EjectB", "EjectB"],
+                ["AirBlast", "AirBlast"],
+                ["Core", "Core"],
+                ["Nozzl", "Nozzl"],
+                ["NozzlB", "NozzlB"],
+                ["Temper", "Temper"],
+                ["Other", "Other"],
+            ]);
+            break;
+        default:
+            // 设置tab标签页翻译
+            tabTransMaps = new Map([
+                ["Mold", "模座"],
+                ["Inject", "射出"],
+                ["InjectB", "射出B"],
+                ["Rotary", "转台"],
+                ["Chrg", "储料"],
+                ["ChrgB", "储料B"],
+                ["Eject", "托模"],
+                ["EjectB", "托模B"],
+                ["AirBlast", "吹气"],
+                ["Core", "中子"],
+                ["Nozzl", "座台"],
+                ["NozzlB", "座台B"],
+                ["Temper", "温度"],
+                ["Other", "其他"],
+            ]);
+            break;
+    }
+
+    let $pMsgID = $("#PMsg");
+
+    let mucDB = "MucDB",
+        store = "HMIPrint",
+        pageID = "mold",
+        sParseFlag = "moldParseStat", // 假使当前页面解析过，则为true
+        obj = g_oMold,
+        sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+
+    /* === 自动呈现最后一次解析的内容 === */
+    if (sPFlag == "true") {
+        $pMsgID.text('<%-locals.ml("呈现上次解析内容中")%>');
+        fnGetObjFrInxDB(mucDB, store, pageID, callbackInxDB); // common.js
+    }
+
+    /* === 操作控件事件绑定 === */
+    // 上传文件夹名字变化后
+    $("#upFolder").change(function() {
+        fnTrvlEvent('upFolder');
+    });
+
+    $("#dlink").click(() => {
+        /* 解析过才开放汇出excel功能 */
+        let sPFlag = sessionStorage.getItem(sParseFlag); // sPFlag：实际解析状态
+        if (!sPFlag) {
+            alert("请导入文件后再使用此功能！");
+            return false;
+        }
+    });
+
+    function callbackInxDB(objArg) {
+        if (objArg) {
+            /* 呈现上次的数据快照 */
+            fnShowSnap(objArg);
+
+            /* --- export xls event bind --- */
+            let aTableID = [], // 各个DataTable的ID
+                aWkSheet = [], // 各个DataTable的Tab标签页中文翻译，用于构建汇出excel的sheet名
+                sWbName = objArg.sFolderName;
+            tabTransMaps.forEach((v, k) => {
+                k = "dt" + k;
+                if ($("#" + k).length > 0) {
+                    // 当对应的table存在时，再处理
+                    aTableID.push(k);
+                    aWkSheet.push(v);
+                }
+            });
+
+            fnExpBtnBind("dlink", aTableID, aWkSheet, sWbName, "Excel"); // common.js
+        }
+        $pMsgID.text("");
+    }
+
+});
+
+/*===========================================================================+
+|   g_variate                                                                |
++===========================================================================*/
+var LCID = parseInt("<%-locals.LCID%>"); // 默认2052 中文
+var LANGUAGE = "CN"; // 默认中文
+switch (LCID) {
+    case 1033:
+        LANGUAGE = "EN";
+        break;
+    default:
+        break;
+}
+
+/* cdb & ini & info */
+var g_CdbFile, // default ： LIT-Endian
+    g_IniFile, // 记录了一些配置信息，例如模具头的长度等，用于解析cdb
+    g_SysInfoFile,
+
+    // g_nCdbSize = 0, // mark，暂时用不到
+
+    g_oMold, // moldObj原型创建的实例对象
+
+    g_cszHexMoldCdb = [], // cdbData => cszHex
+    g_aIDInfoTmp = []; // 临时缓存HMI资料的信息
+
+/* element */
+var g_aDataTable = [], // 存放DataTable实例，主要用于GC
+    g_aTableSheet = [];
+
+// tab标签页的顺序随着arr_Inx的增加依次减小
+// 若有新增直接在这里按序加即可
+const g_aTabOrder = ["Mold",
+    "Inject",
+    "InjectB",
+    // "Gate",
+    "Rotary",
+    "Chrg",
+    "ChrgB",
+    "Eject",
+    "EjectB",
+    "AirBlast",
+    "Core",
+    "Nozzl",
+    "NozzlB",
+    "Temper",
+    "Other"
+];
+
+/* 用来翻译水平标签页上的文字，表示资料分组，例：吹气，模具、储料 */
+var tabTransMaps;
+
 // bytes占位
 const BYTES = {
     // DataID
@@ -124,25 +313,6 @@ const aUseLess = [
     "DataID", // 与原obj重复的DataID
     "C_MEMERY_PAD" // 内存对齐的内容
 ];
-
-/*===========================================================================+
-|   g_variate                                                                |
-+===========================================================================*/
-/* cdb & ini & info */
-var g_CdbFile, // default ： LIT-Endian
-    g_IniFile, // 记录了一些配置信息，例如模具头的长度等，用于解析cdb
-    g_SysInfoFile,
-
-    // g_nCdbSize = 0, // mark，暂时用不到
-
-    g_oMold, // moldObj原型创建的实例对象
-
-    g_cszHexMoldCdb = [], // cdbData => cszHex
-    g_aIDInfoTmp = []; // 临时缓存HMI资料的信息
-
-/* element */
-var g_aDataTable = [], // 存放DataTable实例，主要用于GC
-    g_aTableSheet = [];
 
 /*===========================================================================+
 |   Object                                                                   |
@@ -245,15 +415,12 @@ function TM3354DataInfoObj(DataID, Type, nLen, nStat, dynVal) {
  * @Author    Muc
  * @DateTime  2018-12-12
  */
-function TM270DataInfoObj(CN, dynVal, Unit, SubCN, Visb /* , DataID ,Type, Organize*/ ) {
-    this.CN = CN;
+function TM270DataInfoObj(mean, meanTips, dynVal, Unit, Visb) {
+    this.mean = mean;
+    this.meanTips = meanTips;
     this.dynVal = dynVal;
     this.Unit = Unit;
-    this.SubCN = SubCN;
     this.Visb = Visb;
-    // this.DataID = DataID;
-    // this.Type = Type;
-    // this.Organize = Organize;
 }
 /*===========================================================================+
 |   MainFunc                                                                 |
@@ -308,9 +475,7 @@ function fnTrvlEvent() {
                 .then((resolve) => {
                     return fnSetObjInfoAndShow(g_oMold, g_cszHexMoldCdb);
                 })
-                .then((resolve) => {
-                    return fnEnd();
-                })
+                .then((resolve) => {})
                 .catch((err) => {
                     alert("感谢使用HMIPrint工具！我们在解析您的文件夹时遇到了一个未知问题！烦请拍照或截图并及时联系开发者 -- #1 Muc", err);
                 });
@@ -418,6 +583,45 @@ function fnCdb2Arr(cdbArg, cszHexArg) {
 }
 
 /**
+ * @Describle [TM54 按照模具对象分组排列HMI的资料信息]
+ * @Author    Muc
+ * @DateTime  2018-12-04
+ * @param     {[object]}    objArg[ajax获取的数据]
+ * @param     {[object]}    dataArg [ajax获取的数据]
+ * @param     {[arrary]}    aCdb [用于继续解析TM54先前构造的cdb数组]
+ */
+function fnSet54ObjIDInfo(objArg, dataArg, aCdb) {
+    for (let i = 0, n = dataArg.length; i < n; ++i) {
+        // let Visb = dataArg[i].Visb;
+        let mean = dataArg[i].CN || dataArg[i].EN || dataArg[i].TW || "undefined",
+            dynVal = 0,
+            Unit = dataArg[i].Unit,
+            meanTips = dataArg[i].CNTips || dataArg[i].ENTips || dataArg[i].TWTips || "",
+            // DataID = dataArg[i].DataID,
+            Type = dataArg[i].Type,
+            Organize = dataArg[i].Organize,
+            Visb = dataArg[i].Visb,
+            nSizeLen = mIDLen.get(Type),
+            Prec = dataArg[i].Prec;
+
+        dynVal = fnSplcCszHex(objArg, nSizeLen, aCdb, ENDIAN.LIT);
+        if (Prec > 0) {
+            dynVal /= Math.pow(10, Prec);
+            dynVal = dynVal.toFixed(Prec); // 保留精度对应的小数位，针对原工具的优化
+        } else if (Prec < 0) { // 精度<0的数据，不做精度处理，节省开销，
+            dynVal *= (-Prec); // 精度为负N则表示值需要扩大10*N倍，针对原工具的补充
+        }
+
+        /* 动态生成分组信息 */
+        if (!objArg.oIDInfo.hasOwnProperty(Organize)) {
+            objArg.oIDInfo[Organize] = [];
+        }
+        objArg.oIDInfo[Organize].push(new TM270DataInfoObj(mean, meanTips, dynVal, Unit, Visb));
+    }
+
+}
+
+/**
  * @Describle [TM55 按照模具对象分组排列HMI的资料信息]
  * @Author    Muc
  * @DateTime  2018-12-04
@@ -442,18 +646,23 @@ function fnSet55ObjIDInfo(objArg, dataArg) {
                     g_aIDInfoTmp[j].dynVal *= (-prec); // 精度为负N则表示值需要扩大10*N倍，针对原工具的补充
                 }
 
+                let mean = dataArg[i].CN || dataArg[i].EN || dataArg[i].TW || "undefined",
+                    meanTips = dataArg[i].CNTips || dataArg[i].ENTips || dataArg[i].TWTips || "";
+
+                dataArg[i].mean = mean;
+                dataArg[i].meanTips = meanTips;
                 /* --- k 代表资料信息的key，eg. DataID、Unit、CN、Prec、Visb、etc --- */
                 for (let k in dataArg[i]) {
                     let v = dataArg[i][k]; // key对应的值，eg： DataID.val === 1024
-
                     // 临时缓存有效/不重复的数据，是对所有资料进行归组的依据
                     if (k !== "DataID") {
                         /* 为g_oMoni对象创建分组的类型，eg v === Inject === 射出分组 */
                         if (k === "Organize" && aOrgTmp.indexOf(v) === -1) {
                             aOrgTmp.push(v);
                             pIDInfo[v] = [];
-                        } else
+                        } else {
                             g_aIDInfoTmp[j][k] = v;
+                        }
                     }
 
                 }
@@ -470,45 +679,7 @@ function fnSet55ObjIDInfo(objArg, dataArg) {
             }
         }
     }
-}
-
-/**
- * @Describle [TM54 按照模具对象分组排列HMI的资料信息]
- * @Author    Muc
- * @DateTime  2018-12-04
- * @param     {[object]}    objArg[ajax获取的数据]
- * @param     {[object]}    dataArg [ajax获取的数据]
- * @param     {[arrary]}    aCdb [用于继续解析TM54先前构造的cdb数组]
- */
-function fnSet54ObjIDInfo(objArg, dataArg, aCdb) {
-    for (let i = 0, n = dataArg.length; i < n; ++i) {
-        // let Visb = dataArg[i].Visb;
-        let CN = dataArg[i].CN,
-            dynVal = 0,
-            Unit = dataArg[i].Unit,
-            SubCN = dataArg[i].SubCN,
-            // DataID = dataArg[i].DataID,
-            Type = dataArg[i].Type,
-            Organize = dataArg[i].Organize,
-            Visb = dataArg[i].Visb,
-            nSizeLen = mIDLen.get(Type),
-            Prec = dataArg[i].Prec;
-
-        dynVal = fnSplcCszHex(objArg, nSizeLen, aCdb, ENDIAN.LIT);
-        if (Prec > 0) {
-            dynVal /= Math.pow(10, Prec);
-            dynVal = dynVal.toFixed(Prec); // 保留精度对应的小数位，针对原工具的优化
-        } else if (Prec < 0) { // 精度<0的数据，不做精度处理，节省开销，
-            dynVal *= (-Prec); // 精度为负N则表示值需要扩大10*N倍，针对原工具的补充
-        }
-
-        /* 动态生成分组信息 */
-        if (!objArg.oIDInfo.hasOwnProperty(Organize)) {
-            objArg.oIDInfo[Organize] = [];
-        }
-        objArg.oIDInfo[Organize].push(new TM270DataInfoObj(CN, dynVal, Unit, SubCN, Visb /*,  DataID , Type, Organize*/ ));
-    }
-
+    console.log(objArg);
 }
 
 /*===========================================================================+
@@ -629,9 +800,9 @@ function getDBAndShow(objSysArg, sVers) { // TODO 改数据库选择条件
     let sURL = "";
 
     if (sVers === "55") { // TODO 改数据库选择条件
-        sURL = "/app/HMIPrint/getMoldIDInfoFrDB";
+        sURL = "/app/HMIPrint/Mold/GetMoldTM55IDInfo";
     } else
-        sURL = "/app/HMIPrint/getMoldIDInfoFr54DB";
+        sURL = "/app/HMIPrint/Mold/GetMoldTM54IDInfo";
 
     $.ajax({
         method: "get",
@@ -650,7 +821,8 @@ function getDBAndShow(objSysArg, sVers) { // TODO 改数据库选择条件
             let aTableID = [], // 各个DataTable的ID
                 aWkSheet = [], // 各个DataTable的Tab标签页中文翻译
                 sWbName = g_oMold.sFolderName;
-            g_mTabs.forEach((v, k) => {
+
+            tabTransMaps.forEach((v, k) => {
                 k = "dt" + k;
                 if ($("#" + k).length > 0) {
                     // 当对应的table存在时，再处理
@@ -663,7 +835,7 @@ function getDBAndShow(objSysArg, sVers) { // TODO 改数据库选择条件
             fnSaveObj2InxDB(g_oMold, "HMIPrint");
         },
         error: function() {
-            alert('远程服务器开小差啦，请重新刷新一下页面再试试! #moldParse.js');
+            alert('Error!');
         },
         complete: function() {
             /* 清空提示字串内容 */
@@ -706,12 +878,12 @@ function fnShowMoldHdr(objArg, idArg) {
     sMoldHdr =
         `<blockquote class="layui-elem-quote layui-text">
     <p>
-    模具名称 : {0}{1};
-    材料 :    {2}{3};
-    颜色 :    {4}{5};
-    每模产量 : {6}{7};
-    保存时间 : {8}{9};
-    主机系统 : {10}
+    <%-locals.ml("模具名称")%> : {0}{1};
+    <%-locals.ml("材料")%> :    {2}{3};
+    <%-locals.ml("颜色")%> :    {4}{5};
+    <%-locals.ml("每模产量")%> : {6}{7};
+    <%-locals.ml("保存时间")%> : {8}{9};
+    <%-locals.ml("主机系统")%> : {10}
     </p>
     </blockquote>`
         .format(
@@ -743,10 +915,10 @@ function fnShowTabs(objArg, ulArg, contArg) {
         el_dts = "",
         // 用作createTable函数的实参
         aTheadElem = [
-            { data: 'CN', title: "名称" },
-            { data: 'dynVal', title: "数值" },
-            { data: 'Unit', title: "单位" },
-            { data: 'SubCN', title: "补充说明" },
+            { data: 'mean', title: '<%-locals.ml("资料")%>' },
+            { data: 'dynVal', title: '<%-locals.ml("数值")%>' },
+            { data: 'Unit', title: '<%-locals.ml("单位")%>' },
+            { data: 'meanTips', title: '<%-locals.ml("补充说明")%>' }, // mark temp
             // { data: 'DataID', title: "资料地址" }, // mark，不需要
             // { data: 'Type', title: "数据类型" },
         ];
@@ -763,7 +935,9 @@ function fnShowTabs(objArg, ulArg, contArg) {
                 nEachOrgLen = aCurOrgData.length, // 每个资料分组内的资料个数
                 aVisbOrgData = [], //
                 oThead = { "data": Organize },
-                sTabName = g_mTabs.get(Organize);
+
+                sTabName = tabTransMaps.get(Organize);
+
             /* 此分组有对应的映射值（中文翻译），且此分组至少存在一笔可见资料时，才做显示 */
             if (sTabName && nEachOrgLen) {
                 for (let i = 0; i < nEachOrgLen; ++i) {
@@ -787,12 +961,17 @@ function fnShowTabs(objArg, ulArg, contArg) {
                     let elTmp = "",
                         elTmp2 = "";
                     /* 创建各标签页内的table元素及样式 */
-                    if (sTabName === "模座") { // 模具为默认 class = "active"表示当前显示的数据
+                    if (Organize === "Mold") { // 模具为默认 class = "active"表示当前显示的数据
+                        // elTmp = `<li role="presentation" class="active"><a href="#{0}" role="tab" data-toggle="tab">
+                        //         <img class="icon-device-type" src="/images/HMIPrint/print.png"></a></li>`.format(Organize);
                         elTmp = '<li role="presentation" class="active"><a href="#{0}" role="tab" data-toggle="tab">{1}</a></li>'.format(Organize, sTabName);
-                        elTmp2 = '<div role="tabpanel" class="tab-pane fade in active" id="{0}"><table id={1} class="{2}" {3}><td>test</td></table></div>'.format(Organize, "dt" + Organize, sTbClass, sTbSubJoin);
+                        elTmp2 = `<div role="tabpanel" class="tab-pane fade in active" id="{0}">
+                                <table id={1} class="{2}" {3}><td></td></table></div>`.format(Organize, "dt" + Organize, sTbClass, sTbSubJoin);
                     } else {
-                        elTmp = '<li role="presentation"><a href="#{0}" role="tab" data-toggle="tab">{1}</a></li>'.format(Organize, sTabName);
-                        elTmp2 = '<div role="tabpanel" class="tab-pane fade" id="{0}"><table id={1} class="{2}" {3}><td>test</td></table></div>'.format(Organize, "dt" + Organize, sTbClass, sTbSubJoin);
+                        elTmp = `<li role="presentation"><a href="#{0}"
+                                role="tab" data-toggle="tab">{1}</a></li>`.format(Organize, sTabName);
+                        elTmp2 = `<div role="tabpanel" class="tab-pane fade" id="{0}">
+                                <table id={1} class="{2}" {3}><td></td></table></div>`.format(Organize, "dt" + Organize, sTbClass, sTbSubJoin);
                     }
 
                     // 请按序append，写在外面的话代码效率高但是难读懂
@@ -956,11 +1135,12 @@ function fnByte2HexStr(byteArg) {
 +===========================================================================*/
 function createTable(tableID, data, columns) {
     tableID = "#" + tableID;
-    return $(tableID).DataTable({
+
+    let d = {
         /* ========== 数据相关 ========== */
         "aLengthMenu": [
             [-1, 200, 50],
-            ["所有", 200, 50]
+            ["ALL", 200, 50]
         ],
         /* 使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性 */
         /* data = [
@@ -993,11 +1173,20 @@ function createTable(tableID, data, columns) {
         //     [4, "asc"]
         // ],
         "ordering": false, // 禁用排序 # 开什么干什么？？禁用掉
-        "oLanguage": dataTable_CN, // sb玩意写本地url路径无效，这个变量定义在common.js里
-
         /* === 数据处理相关 ===  */
 
         /* === 新方法 === */
+    };
 
-    });
+    switch (LANGUAGE) {
+        case "CN":
+            d.oLanguage = dataTable_CN;
+            break;
+        default:
+            break;
+    }
+
+    return $(tableID).DataTable(d);
 }
+
+</script>

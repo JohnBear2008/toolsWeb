@@ -2,7 +2,6 @@ var g_CdbFile; // Chenly 2018-10-11 记录了警报的数据值
 var g_IniFIle; // Chenly 2018-10-11 记录了警报的解析含义
 var g_StrIDFile; // Chenly 2018-10-11 记录了具体的警报字串的StrID;
 
-
 var g_sErrFolder = "err";
 
 var g_nCdbSize;
@@ -324,40 +323,35 @@ function fnClearData() {
 
 // Chenly 2018-10-08 呈现数据和当前文件名
 function fnShowAlarmData() {
-	
-	 var DDKey = [];
 
-	    // Chenly 2018-10-15 show前先清空，防止重复读取造成显示异常
-	    $("#alarmData tbody").empty();
+    var DDKey = [];
 
-//	    for (var i = 0; i < g_oAlarmData.aInfo[0].length; i++) {
-//	        if (g_oAlarmData.aInfo[0][i].bVisible == 1) {
-//	            DDKey.push(g_oAlarmData.aInfo[0][i].sName);
-//	        }
-//	    }
+    // Chenly 2018-10-15 show前先清空，防止重复读取造成显示异常
+    $("#alarmData tbody").empty();
 
-//	    CNtranslator(DDKey);
+    //      for (var i = 0; i < g_oAlarmData.aInfo[0].length; i++) {
+    //          if (g_oAlarmData.aInfo[0][i].bVisible == 1) {
+    //              DDKey.push(g_oAlarmData.aInfo[0][i].sName);
+    //          }
+    //      }
 
-	    for (var nRow = 0; nRow < g_oAlarmData.aInfo.length; nRow++) {
-	        var tdData = "";
-	        for (var nInx = 0; nInx < g_oAlarmData.aInfo[nRow].length; nInx++) {
-	            if (g_oAlarmData.aInfo[nRow][nInx].bVisible == 1) {
-	                tdData += "<td>" + g_oAlarmData.aInfo[nRow][nInx].Value + "</td>";
-	            }
-	        }
-	        $("#alarmData tbody").append("<tr>" + tdData + "</tr>");
+    //      CNtranslator(DDKey);
 
-	    }
-	
-	
-	
-	
-	
-	
-	
-//-----陈立毅原代码-----------------------------------
-	
-	
+    for (var nRow = 0; nRow < g_oAlarmData.aInfo.length; nRow++) {
+        var tdData = "";
+        for (var nInx = 0; nInx < g_oAlarmData.aInfo[nRow].length; nInx++) {
+            if (g_oAlarmData.aInfo[nRow][nInx].bVisible == 1) {
+                tdData += "<td>" + g_oAlarmData.aInfo[nRow][nInx].Value + "</td>";
+            }
+        }
+        $("#alarmData tbody").append("<tr>" + tdData + "</tr>");
+
+    }
+
+
+    //-----陈立毅原代码-----------------------------------
+
+
     console.info(g_oAlarmData);
     var $alarmTitleTab = $("#alarmTitleTab");
     var $alarmDataTab = $("#alarmDataTab");

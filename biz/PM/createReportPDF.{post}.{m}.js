@@ -6,7 +6,7 @@ module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     
-    console.log("get:"+JSON.stringify(sender.req.query));
+//    console.log("get:"+JSON.stringify(sender.req.query));
     
     
     var fs = require('fs');
@@ -20,7 +20,7 @@ module.exports = function(sender) {
   
     pdf.create(html, options).toFile('./uploaded/'+reportName+'.pdf', function(err, res) {
 	  if (err) return console.log(err);
-	  console.log(res); // { filename: '/app/businesscard.pdf' }
+//	  console.log(res); // { filename: '/app/businesscard.pdf' }
 
 	  sender.success(res);
 	});

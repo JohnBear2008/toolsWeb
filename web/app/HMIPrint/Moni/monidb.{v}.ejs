@@ -41,7 +41,7 @@
                 <th>保留4</th>
                 <th>内容</th>
                 <th>中文</th>
-                <th>繁体</th>
+                <!-- <th>繁体</th> -->
                 <th>英文</th>
                 <th>精度</th>
                 <th>可见</th>
@@ -59,7 +59,6 @@
             <p>保留2: <input id="Reserved2Input" size="30" type="text" class="required"></p>
             <p>保留3: <input id="Reserved3Input" size="30" type="text" class="required"></p>
             <p>保留4: <input id="Reserved4Input" size="30" type="text" class="required"></p>
-            <!-- <p>内容: <input id="DDKeyInput" size="30" type="text"></p> -->
             <p>内容 : <input type="text" id="DDKeyInput" list="aDDKey" name="DDKey" size="30" class="required" /></p>
             <!--  临时方案：改用datalist，但是存在overflow的现况 -->
             <datalist id="aDDKey" class="required">
@@ -130,8 +129,8 @@
                 <option value="wSource" label="来源"></option>
             </datalist>
             <p>中文 : <input id="CNInput" size="30" type="text" class="required"></p>
-            <p>繁体 : <input id="TWInput" size="30" type="text" disabled=""></p>
-            <p>英文 : <input id="ENInput" size="30" type="text" disabled=""></p>
+            <!-- <p>繁体 : <input id="TWInput" size="30" type="text" class="required"></p> -->
+            <p>英文 : <input id="ENInput" size="30" type="text" class="required"></p>
             <p>精度 : <input id="PrecInput" size="30" type="text" class="required"></p>
             <p>可见 : <input id="VisbInput" size="30" type="text" class="required"></p>
             <div style="padding:5px;text-align:center;">
@@ -146,7 +145,7 @@
 /*jshint esversion: 6 */
 // 构建moni数据结构
 // warning:形参的顺序必须和oInput 对象完全一致
-function moniData(UID, Manufacturer, CtrlType, MachType, Reserved0, Reserved1, Reserved2, Reserved3, Reserved4, DDKey, CN, TW, EN, Prec, Visb) {
+function moniData(UID, Manufacturer, CtrlType, MachType, Reserved0, Reserved1, Reserved2, Reserved3, Reserved4, DDKey, CN, /*TW,*/ EN, Prec, Visb) {
     this.UID = UID;
     this.Manufacturer = Manufacturer;
     this.CtrlType = CtrlType;
@@ -158,7 +157,7 @@ function moniData(UID, Manufacturer, CtrlType, MachType, Reserved0, Reserved1, R
     this.Reserved4 = Reserved4;
     this.DDKey = DDKey;
     this.CN = CN;
-    this.TW = TW;
+    // this.TW = TW;
     this.EN = EN;
     this.Prec = Prec;
     this.Visb = Visb;
@@ -190,6 +189,9 @@ function checkinput(Data) {
     } else if (Data.CN == "") {
         alert("中文不能为空,请检查!");
         return false;
+    } else if (Data.EN == "") {
+        alert("英文不能为空,请检查!");
+        return false;
     } else if (Data.Visb == "") {
         alert("可见性不能为空,请检查!");
         return false;
@@ -203,7 +205,7 @@ function checkinput(Data) {
 function ajaxAdd(moniData) {
     $.ajax({
         method: 'post',
-        url: '/app/HMIPrint/moniAdd',
+        url: '/app/HMIPrint/Moni/moniAdd',
         data: moniData,
         success: function(data, textStatus) {
             // alert("成功数据:" + JSON.stringify(data));
@@ -221,7 +223,7 @@ function ajaxAdd(moniData) {
 function ajaxUpd(moniData) {
     $.ajax({
         method: 'post',
-        url: '/app/HMIPrint/moniUpd',
+        url: '/app/HMIPrint/Moni/moniUpd',
         data: moniData,
         success: function(data, textStatus) {
             //      alert("成功数据:"+JSON.stringify(data));
@@ -239,7 +241,7 @@ function ajaxUpd(moniData) {
 function ajaxDel(UID) {
     $.ajax({
         method: 'post',
-        url: '/app/HMIPrint/moniDel',
+        url: '/app/HMIPrint/Moni/moniDel',
         data: UID,
         success: function(data, textStatus) {
             //  alert("成功数据:"+JSON.stringify(data));
@@ -263,7 +265,7 @@ $(document).ready(function() {
         "PrecInput",
         "DDKeyInput",
         "CNInput",
-        "TWInput",
+        // "TWInput",
         "ENInput",
         "VisbInput"
     ];
@@ -281,7 +283,7 @@ $(document).ready(function() {
             "Reserved4Input": "0",
             "DDKeyInput": "",
             "CNInput": "",
-            "TWInput": "",
+            // "TWInput": "",
             "ENInput": "",
             "PrecInput": 0,
             "VisbInput": 1
@@ -291,7 +293,7 @@ $(document).ready(function() {
     $('#moniDBTable').DataTable({
         aLengthMenu: [15, 30],
         ajax: {
-            url: '/app/HMIPrint/getMoniInfo',
+            url: '/app/HMIPrint/Moni/getMoniInfo',
             dataSrc: ''
         },
         columns: [
@@ -305,7 +307,7 @@ $(document).ready(function() {
             { data: 'Reserved4' },
             { data: 'DDKey' },
             { data: 'CN' },
-            { data: 'TW' },
+            // { data: 'TW' },
             { data: 'EN' },
             { data: 'Prec' },
             { data: 'Visb' }
@@ -348,7 +350,7 @@ $(document).ready(function() {
         }
     });
 
-    //为表单的必填文本框添加提示信息（选择form中的所有后代input元素）
+    // 为表单的必填文本框添加提示信息（选择form中的所有后代input元素）
     $("form :input.required").each(function() {
         //通过jquery api：$("HTML字符串") 创建jquery对象
         var $required = $("<strong class='high'> *</strong>");
@@ -421,7 +423,7 @@ $(document).ready(function() {
             $('#MachTypeInput').val(dataSelect.MachType);
             $('#DDKeyInput').val(dataSelect.DDKey);
             $('#CNInput').val(dataSelect.CN);
-            $('#TWInput').val(dataSelect.TW);
+            // $('#TWInput').val(dataSelect.TW);
             $('#ENInput').val(dataSelect.EN);
             $('#VisbInput').val(dataSelect.Visb);
             $('#Reserved0Input').val(dataSelect.Reserved0);

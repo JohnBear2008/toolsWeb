@@ -8,7 +8,6 @@ var mold54DBform = `
     <form class="layui-form layui-form-pane" action="" lay-filter="filter_moldDB">
         <!-- 一区 -->
         <div class="layui-form-item">
-            <!-- 一区一行 厂家、控制、机型、保留0 -->
             <div class="layui-inline">
                 <label class="layui-form-label">厂家</label>
                 <div class="layui-input-inline">
@@ -33,7 +32,6 @@ var mold54DBform = `
                     <input type="text" name="Reserved0" lay-verify="minstr_1|required" placeholder="例： 0" class="layui-input sysinfo">
                 </div>
             </div>
-            <!-- 一区二行 -->
             <div class="layui-inline">
                 <label class="layui-form-label">保留1</label>
                 <div class="layui-input-inline">
@@ -61,11 +59,16 @@ var mold54DBform = `
         </div>
         <!-- 二区 -->
         <div class="layui-form-item">
-            <!-- 二区一行 DataID、中文、补充说明、精度 -->
             <div class="layui-inline">
                 <label class="layui-form-label">DataID</label>
                 <div class="layui-input-inline">
                     <input type="text" id="DBform_DataID" name="DataID" lay-verify="intOnly|required" placeholder="例： 1024" class="layui-input sysinfo">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">精度</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Prec" lay-verify="maxstr_1|required" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -75,18 +78,11 @@ var mold54DBform = `
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">补充说明</label>
+                <label class="layui-form-label">英文</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="SubCN" lay-verify="max_str60" placeholder="例： 0-不用 1-使用" class="layui-input">
+                    <input type="text" name="EN" lay-verify="max_str40|required" placeholder="例： Core C Seg1 In Opt" class="layui-input">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">精度</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="Prec" lay-verify="maxstr_1|required" class="layui-input">
-                </div>
-            </div>
-            <!-- 二区二行 单位、分组 -->
             <div class="layui-inline">
                 <label class="layui-form-label">单位</label>
                 <div class="layui-input-inline">
@@ -143,6 +139,18 @@ var mold54DBform = `
                 </div>
             </div>
             <div class="layui-inline">
+                <label class="layui-form-label">中文补充</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="CNTips" lay-verify="max_str60" placeholder="例： 0-不用 1-使用" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">英文补充</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ENTips" lay-verify="max_str60" placeholder="例： 0-use 1-un use" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
                 <label class="layui-form-label">Block</label>
                 <div class="layui-input-inline">
                     <select lay-verify="required" name="Block" lay-search="">
@@ -155,14 +163,6 @@ var mold54DBform = `
                         <option value="DB_MMICONFIG">DB_MMICONFIG</option>
                         <option value="DB_MOLDSET">DB_MOLDSET</option>
                         <option value="DB_MOLDSETB">DB_MOLDSETB</option>
-                        <!-- <option value="DB_MONI_DP">DB_MONI_DP</option> -->
-                        <!-- <option value="DB_MONI_DV">DB_MONI_DV</option> -->
-                        <!-- <option value="DB_MONI_LS">DB_MONI_LS</option> -->
-                        <!-- <option value="DB_MONI_LS_N">DB_MONI_LS_N</option> -->
-                        <!-- <option value="DB_MONIB_DP">DB_MONIB_DP</option> -->
-                        <!-- <option value="DB_MONIB_DV">DB_MONIB_DV</option> -->
-                        <!-- <option value="DB_MONIB_LS">DB_MONIB_LS</option> -->
-                        <!-- <option value="DB_MONIB_LS_N">DB_MONIB_LS_N</option> -->
                     </select>
                 </div>
             </div>
@@ -204,7 +204,6 @@ var moldDBform = `
     <form class="layui-form layui-form-pane" action="" lay-filter="filter_moldDB">
         <!-- 一区 -->
         <div class="layui-form-item">
-            <!-- 一区一行 厂家、控制、机型、保留0 -->
             <div class="layui-inline">
                 <label class="layui-form-label">厂家</label>
                 <div class="layui-input-inline">
@@ -229,7 +228,6 @@ var moldDBform = `
                     <input type="text" name="Reserved0" lay-verify="minstr_1|required" placeholder="例： 0" class="layui-input sysinfo">
                 </div>
             </div>
-            <!-- 一区二行 -->
             <div class="layui-inline">
                 <label class="layui-form-label">保留1</label>
                 <div class="layui-input-inline">
@@ -257,11 +255,16 @@ var moldDBform = `
         </div>
         <!-- 二区 -->
         <div class="layui-form-item">
-            <!-- 二区一行 DataID、中文、补充说明、精度 -->
             <div class="layui-inline">
                 <label class="layui-form-label">DataID</label>
                 <div class="layui-input-inline">
                     <input type="text" id="DBform_DataID" name="DataID" lay-verify="intOnly|required" placeholder="例： 1024" class="layui-input sysinfo">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">精度</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Prec" lay-verify="maxstr_1|required" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -271,18 +274,11 @@ var moldDBform = `
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">补充说明</label>
+                <label class="layui-form-label">英文</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="SubCN" lay-verify="max_str60" placeholder="例： 0-不用 1-使用" class="layui-input">
+                    <input type="text" name="EN" lay-verify="max_str40|required" placeholder="例： Core C Seg1 In Opt" class="layui-input">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">精度</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="Prec" lay-verify="maxstr_1|required" class="layui-input">
-                </div>
-            </div>
-            <!-- 二区二行 单位、分组 -->
             <div class="layui-inline">
                 <label class="layui-form-label">单位</label>
                 <div class="layui-input-inline">
@@ -336,6 +332,18 @@ var moldDBform = `
                         <!-- <option value="Alarm">Alarm - 警报限</option> -->
                         <option value="Other">Other - 其他</option>
                     </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">中文补充</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="CNTips" lay-verify="max_str60" placeholder="例： 0-不用 1-使用" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">英文补充</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ENTips" lay-verify="max_str60" placeholder="例： 0-use 1-un use" class="layui-input">
                 </div>
             </div>
         </div>

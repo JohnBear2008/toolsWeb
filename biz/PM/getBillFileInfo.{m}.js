@@ -6,7 +6,7 @@ module.exports = function(sender) {
 
 //    var aDataIDs = sender.req.query.t;
     
-   console.log("get11:"+JSON.stringify(sender.req.query));
+ //  console.log("get11:"+JSON.stringify(sender.req.query));
     
     var billName=sender.req.query.billName;  
     var billID=sender.req.query.billID;  
@@ -15,7 +15,7 @@ module.exports = function(sender) {
     var SQLExcute = "SELECT * FROM ppm_files_upload WHERE billName=? AND billID=? AND billVersion=? ";
 
     
-    console.log("SQLExcute:"+JSON.stringify(SQLExcute));
+//    console.log("SQLExcute:"+JSON.stringify(SQLExcute));
     yjDBService.exec({
         sql: SQLExcute,
         parameters: [billName,billID,billVersion],

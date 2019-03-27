@@ -5,7 +5,7 @@ module.exports = function(sender) {
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 
 
-    console.log("get:"+JSON.stringify(sender.req.query));
+//    console.log("get:"+JSON.stringify(sender.req.query));
 
     var SQL=sender.req.query.SQL;  
     var DBTable=sender.req.query.DBTable;  
@@ -157,7 +157,7 @@ module.exports = function(sender) {
     
     
     if(resultCheckSQL){
-    	console.log("接受到含有非法关键字的SQL:"+SQL);
+//    	console.log("接受到含有非法关键字的SQL:"+SQL);
     }else{
     	
     	 yjDBService.exec({

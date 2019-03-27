@@ -8,7 +8,7 @@ module.exports = function(sender) {
 
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
-    console.log("get:"+JSON.stringify(sender.req.query));
+ //   console.log("get:"+JSON.stringify(sender.req.query));
     
 //   console.log("PM2333 test");
     var obj=sender.req.query;
@@ -50,9 +50,9 @@ module.exports = function(sender) {
 		
 	var SQLInsert="insert into `"+DBTable+"` ("+tableTitle+") values "+"("+tableData+")";
 
-	console.log(SQLInsert)
+//	console.log(SQLInsert)
 
-		console.log("SQLInsert:"+SQLInsert);
+//		console.log("SQLInsert:"+SQLInsert);
 
 	yjDBService.exec({
 	    sql: SQLInsert,

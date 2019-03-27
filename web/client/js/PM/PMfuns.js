@@ -53,7 +53,7 @@ function showDBData(DataPara,columnsData){
 //        	}
 //    	} ],
 
-	    "language": languageCN
+	    language: languageCN
 	    
 	});
 
@@ -192,6 +192,8 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 	
 //	console.log("InitValue:"+InitValue);
 	
+
+	
 	$(selectorID).empty();//用select组件不用先清空
 	  
 	  $.ajax({
@@ -200,15 +202,13 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
           url:"/app/PM/getSQLDBData",
           success:function(data){
         	  
+        	  
+        	
         //	  alert("return1111:"+JSON.stringify(data));
-        	  
-        	  
-        		$(selectorID).selectpicker({
-        			noneSelectedText :"未选择"//默认显示内容
-        		});
+
         		
-        		if(InitValue==undefined||InitValue==""){
-        			
+        		
+        		if(InitValue==undefined||InitValue==""){	
 //        			console.log("InitValue11:"+InitValue);
            		
            		 for(i=0;i<data.length;i++){
@@ -225,10 +225,16 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
                      	  }
                      }
         		}
+        		
+        		
+        		$(selectorID).selectpicker({
+        			noneSelectedText :"未选择"//默认显示内容
+        		});
 
               $(selectorID).selectpicker('refresh');
-
               
+//              alert($(selectorID).find("option:selected").text() );
+
           },
           error:function(){}
       })
@@ -988,7 +994,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        	  if(data.length!=0){
        		  var trth="<tr>"
        		  for(var i=0;i<data.length;i++){
-       			trth=trth+"<th>"+data[i].titleName+"</th>";
+       			trth=trth+"<th style='min-width:85px'>"+data[i].titleName+"</th>";
        		  }
        		trth=trth+"</tr>";
        	  }

@@ -6,7 +6,7 @@ module.exports = function(sender) {
 
 //    var aDataIDs = sender.req.query.t;
     
-   console.log("get:"+JSON.stringify(sender.req.query));
+//   console.log("get:"+JSON.stringify(sender.req.query));
    var tableName=sender.req.query.tableName;  
    var titles = sender.req.query.titles;
    var BID = sender.req.query.BID;
@@ -34,7 +34,7 @@ module.exports = function(sender) {
     
   
     
-    console.log("SQLGetDatas:"+SQLGetDatas);
+//    console.log("SQLGetDatas:"+SQLGetDatas);
 
     
     yjDBService.exec({

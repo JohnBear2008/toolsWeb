@@ -4,13 +4,11 @@ var path = require("path");
 
 module.exports = function(sender) {
     yjBizService.post({
-        params: ["HMIPrint", "mold54DBDel"],
+        params: ["HMIPrint", "MoldTM54DBUpd"],
         query: sender.req.body,
-
         success: function(data) {
             sender.success(data);
         },
-
         error: sender.error
     });
 };

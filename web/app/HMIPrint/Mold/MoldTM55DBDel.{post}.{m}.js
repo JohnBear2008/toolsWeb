@@ -4,7 +4,7 @@ var path = require("path");
 
 module.exports = function(sender) {
     yjBizService.post({
-        params: ["HMIPrint", "moldDBDel"],
+        params: ["HMIPrint", "MoldTM55DBDel"],
         query: sender.req.body,
 
         success: function(data) {

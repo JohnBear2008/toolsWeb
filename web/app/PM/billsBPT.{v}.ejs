@@ -867,9 +867,15 @@ function Fun_BPTDetailInitPart2(dataSelect){
 		  }
 		  $('#divFilesUploaded').html(downloadurl);
 	  }
+	  
+	  
+	  
+	    var SQLTaskStaff={SQL:"SQLSRStaffs"};
+		var taskStaff="#taskStaff";
+		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
 
 
-	  Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+
 	  $('#maker').val(dataSelect.maker);
 	  $('#makeDate').val(dataSelect.makeDate);
 
@@ -1036,10 +1042,12 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 		    paging: false, // 禁止分页
 		    bFilter: false,    //去掉搜索框方法三：这种方法可以
 //	        bLengthChange: false,   //去掉每页显示多少条数据方法
-		    "language": languageCN
+		    language: languageCN
 		});
 
 		//判断是否选中数据-------
+		
+
 
 		 $(tableInfo.tableID+' tbody').unbind();//解除事件绑定,防止重复定义.
 
@@ -1068,8 +1076,8 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 
 			     $("input:radio[name=taskType][value="+dataSelectTask.taskType+"]").prop("checked",true);
 			     $('input:radio[name="taskType"]').attr("disabled",true);
-			     
-			     
+//			     
+//			     
 			        $("#taskTypeA").show();
 			        $("#taskTypeK").show();
 				 	$("#taskTypeL").show();
@@ -1080,10 +1088,8 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
 
 			     setCheckBoxValue("modfiyABE",dataSelectTask.modfiyABE);
-			     
-			     
+		     
 			     $("#taskDBID").val(dataSelectTask.DBID);
-
 
 			     $("#BTID").val(dataSelectTask.BTID);
 			     $("#BTID").attr("disabled","true");
@@ -1091,6 +1097,14 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 			    var SQLTaskStaff={SQL:"SQLSRStaffs"};
 				var taskStaff="#taskStaff";
 				Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff,dataSelectTask.taskStaff);
+				
+				
+
+//			     alert($("#taskStaff").text() );
+//			     
+//			     $("#taskStaff option[text='熊奇龙']").attr("selected", true);  
+
+
 				
 				 $('#taskLimitDate').val(dataSelectTask.taskLimitDate);
 
@@ -1462,9 +1476,7 @@ $('#BTNTaskAdd').click(function(){
 	$('#BTVersion').text(0);
 	$('#BTStatusText').text('新增');
 
-	var SQLTaskStaff={SQL:"SQLSRStaffs"};
-	var taskStaff="#taskStaff";
-	Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff);
+	
 
 	$('#taskLimitDate').val($('#limitDate').val());
 
@@ -1574,10 +1586,12 @@ $('#BTNTaskSave').click(function(){
 			
 			 Fun_saveTask(taskData);
 		}else{
+			
+			
+			
 			if(confirm("风险操作:该任务单已非新增状态,保存将更新任务单版本,是否继续?")){
 				var taskData={
 						"DBTable":"ppm_bills_task",
-						"DBID":taskDBID,
 						"BTID":$('#BTID').val(),
 						"BTVersion":dataSelectTask.BTVersion+1,
 						"taskBPID":taskBPID,

@@ -1,3 +1,4 @@
+/*jshint esversion:6*/
 module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
@@ -22,10 +23,23 @@ module.exports = function(sender) {
         sManufacturer, sCtrlType, sMachType, sReserved0, sReserved1, sReserved2, sReserved3, sReserved4
     ];
 
+    let LCID = parseInt(sender.req.query.LCID); // 必须转化一下
+    let sqlSelectPart = "";
+
+    switch (LCID) {
+        case 1033:
+            sqlSelectPart = " SELECT DDKey,EN,Visb,Prec ";
+            break;
+        default:
+            sqlSelectPart = " SELECT DDKey,CN,Visb,Prec ";
+            break;
+    }
+
     /* [execSQL 指定info的数据 union all 数据表内除去与“如上info临时表内DDkey相同的数据”（包括info临时表自己）] */
     execSQL =
+        sqlSelectPart + "FROM hmiprint_moni " +
         /* ===== 获取STD中，info机型缺省的"DDKey列数据"对应的数据行内容 ===== */
-        " SELECT DDKey,CN,Visb,Prec FROM hmiprint_moni " +
+        // " SELECT DDKey,CN,Visb,Prec FROM hmiprint_moni " +
         //这里限定info机型缺省的"DDKey列数据"对应的数据行内容
         "   WHERE DDKey NOT IN " +
         "       ( " +
@@ -37,7 +51,7 @@ module.exports = function(sender) {
         /* ===== 联合两个结果 ===== */
         " UNION ALL " +
         /* ===== 获取info机型的数据行 =====*/
-        " SELECT DDKey,CN,Visb,Prec FROM hmiprint_moni WHERE Manufacturer=? AND CtrlType=? AND MachType=? " +
+        sqlSelectPart + "FROM hmiprint_moni " + " WHERE Manufacturer=? AND CtrlType=? AND MachType=? " +
         "   AND Reserved0=? AND Reserved1=? AND Reserved2=? AND Reserved3=? AND Reserved4=? ";
 
     yjDBService.exec({
@@ -46,7 +60,6 @@ module.exports = function(sender) {
         rowsAsArray: true,
 
         success: function(result) {
-            // console.log("sender result:" + JSON.stringify(result));
             sender.success(result);
         },
         error: sender.error

@@ -489,6 +489,14 @@ function Fun_BPIDCreate(){
 //函数:新增详情页自动填写内容------------------------
 function Fun_winAddInit(){
 	Fun_BPIDCreate();
+	
+	
+	  $('input').attr("disabled",false);
+	  $('select').attr("disabled",false);
+	  $('textarea').attr("disabled",false);
+	  $("#DivAuditImage").attr('src',"");
+	  
+	  
 
 
 	
@@ -824,6 +832,7 @@ $('input[type=radio][name=orderFromDep]').change(function() {
 //按钮-新增计划单---------
 $('#BTNAdd').click(function() {
 	$('#BillPLD').modal('show');
+	
 	Fun_winAddInit();
  
 });

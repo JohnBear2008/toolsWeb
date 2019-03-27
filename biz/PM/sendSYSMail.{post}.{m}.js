@@ -3,7 +3,7 @@ module.exports = function(sender) {
 	 var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
 	    var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 	    
-	     console.log("get:"+JSON.stringify(sender.req.query));
+//	     console.log("get:"+JSON.stringify(sender.req.query));
 	     
 //	     var mailData=sender.req.query;
 	     var pbhBPID=sender.req.query.pbhBPID;
@@ -72,7 +72,7 @@ module.exports = function(sender) {
 	            return console.log(error);
 	            sender.error;
 	        }
-	        console.log('Message sent: %s', info.messageId);
+//	        console.log('Message sent: %s', info.messageId);
 	        
 	        
 	       
@@ -87,7 +87,7 @@ module.exports = function(sender) {
 	        
 	        sender.success("mailsend");
 	        // Preview only available when sending through an Ethereal account
-	        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+//	        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
 	        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 	        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...

@@ -27,7 +27,7 @@
 <div class="content">
     <!-- 标题区 -->
     <div class="content-title">
-        <h1>TM54 模具 数据表维护</h1>
+        <h1>TM55 维护</h1>
         <hr />
     </div>
 
@@ -52,13 +52,13 @@
                 <th>保留4</th>
                 <th>DataID</th>
                 <th>中文</th>
-                <th>补充说明</th>
+                <th>中文补充</th>
+                <th>英文</th>
+                <th>英文补充</th>
                 <th>单位</th>
                 <th>精度</th>
                 <th>可见</th>
                 <th>分组</th>
-                <th>Block</th>
-                <th>Type</th>
             </tr>
         </thead>
     </table>
@@ -70,7 +70,7 @@
 |   document.ready                                                           |
 +========================================================================== */
 $(function() {
-    // 这个鬼东西最好放在最前面
+    // 这个鬼东西最好放在最前面，详见官方文档
     layui.use(['form', 'layer', 'layedit'], function() { //如果只加载一个模块，可以不填数组。如：layui.use('form')
         let form = layui.form, // 获取form模块
             layer = layui.layer, //获取upload模块
@@ -117,7 +117,7 @@ $(function() {
                 [25, 50, 200],
             ],
             ajax: {
-                url: '/app/HMIPrint/getMold54DBMaint',
+                url: '/app/HMIPrint/Mold/getMoldDBMaint',
                 dataSrc: ''
             },
             columns: [
@@ -131,13 +131,13 @@ $(function() {
                 { data: 'Reserved4' },
                 { data: 'DataID' },
                 { data: 'CN' },
-                { data: 'SubCN' },
+                { data: 'CNTips' },
+                { data: 'EN' },
+                { data: 'ENTips' },
                 { data: 'Unit' },
                 { data: 'Prec' },
                 { data: 'Visb' },
-                { data: 'Organize' },
-                { data: 'Block' },
-                { data: 'Type' }
+                { data: 'Organize' }
             ],
 
             /* --- 显示相关 --- */
@@ -217,7 +217,6 @@ const STD_INFO = {
     "Reserved3": "0",
     "Reserved4": "0"
 };
-
 /*===========================================================================+
 |   Object function                                                          |
 +========================================================================== */
@@ -234,7 +233,7 @@ function fnDBAddform(form, layer, layedit) {
         // maxmin: true, // 最大/最小化
         shadeClose: true, //点击遮罩关闭层
         area: ['1350px', '450px'], // 坐标轴系 同 QT，以窗口有左上角为原点
-        content: mold54DBform, // form的DOM，sb框架无法引用html，故这里调用的是moldDBform.js内的字符串对象
+        content: moldDBform, // form的DOM，sb框架无法引用html，故这里调用的是moldDBform.js内的字符串对象
         scrollbar: false, // 可提高效率
         /* 关闭form后刷新页面，以获取最新的数据库信息 */
         end: function() {
@@ -252,7 +251,7 @@ function fnDBAddform(form, layer, layedit) {
 
     /* --- form验证规则 --- */
     // 要先创建一个编辑器
-    var editIndex = layedit.build('LAY_demo_editor');
+    let editIndex = layedit.build('LAY_demo_editor');
     form.verify({
         /* 支付串长度限制 */
         maxstr_1: function(val) {
@@ -337,7 +336,7 @@ function fnDBShowUpdForm(curDataRow, form, layer, layedit, bStd = false) {
         // maxmin: true, // 最大/最小化
         shadeClose: true, //点击遮罩关闭层
         area: ['1350px', '450px'], // 坐标轴系 同 QT，以窗口有左上角为原点
-        content: mold54DBform, // form的DOM，sb框架无法引用html，故这里调用的是moldDBform.js内的字符串对象
+        content: moldDBform, // form的DOM，sb框架无法引用html，故这里调用的是moldDBform.js内的字符串对象
         scrollbar: false, // 可提高效率
         /* 关闭form后刷新页面，以获取最新的数据库信息 */
     });
@@ -363,7 +362,7 @@ function fnDBShowUpdForm(curDataRow, form, layer, layedit, bStd = false) {
 
     /* --- form验证规则 --- */
     // 要先创建一个编辑器
-    var editIndex = layedit.build('LAY_demo_editor');
+    let editIndex = layedit.build('LAY_demo_editor');
     form.verify({
         /* 支付串长度限制 */
         maxstr_1: function(val) {
@@ -439,7 +438,7 @@ function fnUpdData(objArg, form, layer, layedit) {
     /* 当传入的objArg是标准STD_INFO对象的超集时，则做msg提示 */
     /* msg点下确认后弹出DBUpdform*/
     if (nObjKNum === nStdKNum) {
-        layer.msg("变更此标准数据行或影响所有HMI程式解析结果 请确认操作无误", {
+        layer.msg("变更此标准数据行或影响所有HMI程式解析结果 请确认操作无误！", {
             time: 0,
             btn: ['继续', '我点错了'],
             yes: function(index) {
@@ -503,7 +502,7 @@ function fnDelDBData(objArg, form, layer, layedit) {
 function ajaxDBAdd(ObjNoUID) {
     $.ajax({
         method: 'post',
-        url: '/app/HMIPrint/mold54DBAdd',
+        url: '/app/HMIPrint/Mold/MoldTM55DBAdd',
         data: ObjNoUID,
         success: function(data, textStatus) {
             if (data.affectedRows != 0) {
@@ -528,7 +527,7 @@ function ajaxDBAdd(ObjNoUID) {
 function ajaxDBUpd(ObjHaveUID) {
     $.ajax({
         method: 'post',
-        url: '/app/HMIPrint/mold54DBUpd',
+        url: '/app/HMIPrint/Mold/MoldTM55DBUpd',
         data: ObjHaveUID,
         success: function(data, textStatus) {
             if (data.changedRows != 0) {
@@ -555,7 +554,7 @@ function ajaxDBUpd(ObjHaveUID) {
 function ajaxDBDel(UID) {
     $.ajax({
         method: 'post',
-        url: '/app/HMIPrint/mold54DBDel',
+        url: '/app/HMIPrint/Mold/MoldTM55DBDel',
         data: UID,
         success: function(data, textStatus) {
             if (data.affectedRows != 0) {

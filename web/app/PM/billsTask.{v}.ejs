@@ -128,6 +128,32 @@
                     <div class="form-horizontal" > 
                     <span id="DBID" style="display:none"></span>
                     <span id="taskBPID" style="display:none"></span>
+                    <!-------------------------------------------------------------------------->
+                    
+                    <div class="form-group">
+                    
+                    <label class="col-sm-1 control-label">任务单号:</label>
+                    <div class="col-sm-2">
+                  
+                    <span id="BTID" class="help-block"></span>
+
+                    </div>
+                    
+                    <label class="col-sm-2 control-label">任务单版本号:</label>
+                    <div class="col-sm-1">
+                    <span id="BTVersion" class="help-block"></span>
+                    </div>
+                    
+                    <label class="col-sm-1 control-label">客户名称:</label>
+                    <div class="col-sm-1">
+                    <span id="taskCTRName" class="help-block"></span>
+                    </div>
+                    
+                   
+                    
+                    </div>
+                    
+                    <!-------------------------------------------------------------------------->
                     
                     
                     <!-------------------------------------------------------------------------->
@@ -202,53 +228,38 @@
 
 
                     </div>
-                    <!-------------------------------------------------------------------------->
-                     
-                     <div class="form-group">
-                     
-                     <label class="col-sm-1 control-label">任务单号:</label>
-                     <div class="col-sm-2">
-                   
-                     <span id="BTID" class="help-block"></span>
-
-                     </div>
-                     
-                     <label class="col-sm-2 control-label">任务单版本号:</label>
-                     <div class="col-sm-1">
-                     <span id="BTVersion" class="help-block"></span>
-                     </div>
-                     
-                     <label class="col-sm-1 control-label">客户名称:</label>
-                     <div class="col-sm-1">
-                     <span id="taskCTRName" class="help-block"></span>
-                     </div>
-                     
                     
-                     
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
                      <div class="form-group">  
                      
                      <label  class="col-sm-1 control-label" for="name">负责人:</label>    
-                     <div class="col-sm-1">
-                     
-                     <span id="taskStaff"  class="help-block"></span>
+                     <div class="col-sm-2">
+                   <!--  <span id="taskStaff"  class="help-block"></span>-->
+                     <select  id="taskStaff" class="selectpicker" data-live-search="true"> 
+                     </select>
                      </div>
                      
-                     <label class="col-sm-1 control-label"></label>
-                     <label for="limitDate" class="col-sm-2 control-label">任务完成期限:</label>                     
-                     <div class="col-sm-2">
-                     <span id="taskLimitDate" class="help-block"></span>  	
-                 	 </div>
+                     
+                     
 
+                     
+                     <label for="limitDate" class="col-sm-2 control-label">任务完成期限:</label>
+                     <div class="col-sm-3">
+                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="limitDate" data-link-format="yyyy-mm-dd" >
+                         <input id="taskLimitDate" class="form-control " size="16" type="text" value="" readonly>
+                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                     </div>
+                     <input type="hidden" id="taskLimitDate" value="" />
+                 	 </div>
+                     
                      </div>
                     
-                     
+                     <!-------------------------------------------------------------------------->
                      <div class="form-group"> 
                      <label class="col-sm-1 control-label">任务要求:</label>
                      <div class="col-sm-10">
-                     <span id="taskDBE" class="help-block"></span>
+                    <!-- <span id="taskDBE" class="help-block"></span>-->
+                     
+                     <textarea id="taskDBE" class="form-control" rows="2"></textarea>
                      </div>
                      
                      </div>
@@ -695,7 +706,6 @@ function Fun_delTaskRecord(IDData) {
                 Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
                 $('#BTNTaskRecordAdd').click();
 
-
             } else {
                 alert("删除任务单失败!");
             }
@@ -725,19 +735,24 @@ function Fun_taskAcceptInit(dataSelect){
 	
 	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
     setCheckBoxValue("modfiyABE",dataSelect.modfiyABE);
-    $('input:checkbox[name="modfiyABE"]').attr("disabled",true);
+//    $('input:checkbox[name="modfiyABE"]').attr("disabled",true);
 	
 	$('#BTID').text(dataSelect.BTID); 
 	$('#BTVersion').text(dataSelect.BTVersion); 
 	$('#taskCTRName').text(dataSelect.taskCTRName);
 	
-	$('#taskStaff').text(dataSelect.taskStaff);
-	$('#taskLimitDate').text(dataSelect.taskLimitDate);
+	
+	var SQLTaskStaff={SQL:"SQLSRStaffs"};
+	var taskStaff="#taskStaff";
+	Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff,dataSelect.taskStaff);
+	
+//	$('#taskStaff').text(dataSelect.taskStaff);
+	$('#taskLimitDate').val(dataSelect.taskLimitDate);
 	
 	
 	
 	
-	$('#taskDBE').text(dataSelect.taskDBE);
+	$('#taskDBE').val(dataSelect.taskDBE);
 	
 	$('#BTAcceptOpinion').val(dataSelect.BTAcceptOpinion);
 	
@@ -758,6 +773,19 @@ function Fun_taskAcceptInit(dataSelect){
 	if(dataSelect.BTAcceptResult==0||dataSelect.BTAcceptResult==null){
 		$('#DivTaskAcceptBTNS').show();
 		
+		$('.form_date').datetimepicker({
+		      language:  'zh-CN',
+		      weekStart: 1,
+		      todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0,
+				startDate:Ndate,//设置最小日期
+				endDate:dataSelect.limitDate//设置最大日期
+		  });
+		
 	}else{
 		
 		alert("该任务已确认或驳回,无法再次确认!");
@@ -770,6 +798,9 @@ function Fun_taskAcceptInit(dataSelect){
 	}
 	
 	$('#DivRecordPanel').hide();
+	
+	
+	
 	
 
 
@@ -787,10 +818,14 @@ function Fun_taskRecordInit(dataSelect){
 		alert("该任务未确认,无法登记处理记录,请先确认!");
 	}else{
 		
+		
+		$('#DivTaskInfo input').attr("disabled",true);
+		$('#DivTaskInfo select').attr("disabled",true);
+		$('#DivTaskInfo textarea').attr("disabled",true);
+		
 		$('#BillTask').modal('show');
 		
 		Fun_getTaskTrackData(dataSelect);
-		
 
 		$('#DBID').text(dataSelect.DBID); 
 		$('#taskBPID').text(dataSelect.taskBPID); 
@@ -799,32 +834,32 @@ function Fun_taskRecordInit(dataSelect){
 		$('#taskRepeatText').text(dataSelect.taskRepeatText);
 		
 		 $("input:radio[name=taskSortType][value="+dataSelect.taskSortType+"]").prop("checked",true);
-	     $('input:radio[name="taskSortType"]').attr("disabled",true);
+//	     $('input:radio[name="taskSortType"]').attr("disabled",true);
 	     
 
 	     $("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true);
-	     $('input:radio[name="taskType"]').attr("disabled",true);
+//	     $('input:radio[name="taskType"]').attr("disabled",true);
 		
 		$('input:checkbox[name="modfiyABE"]').prop("checked",false);
 	    setCheckBoxValue("modfiyABE",dataSelect.modfiyABE);
-	    $('input:checkbox[name="modfiyABE"]').attr("disabled",true);
+//	    $('input:checkbox[name="modfiyABE"]').attr("disabled",true);
 		
 		
 		$('#BTID').text(dataSelect.BTID); 
 		$('#BTVersion').text(dataSelect.BTVersion); 
 		$('#taskCTRName').text(dataSelect.taskCTRName);
 		
-		
+		var SQLTaskStaff={SQL:"SQLSRStaffs"};
+		var taskStaff="#taskStaff";
+		Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff,dataSelect.taskStaff);
 
-		$('#taskStaff').text(dataSelect.taskStaff);
-		$('#taskLimitDate').text(dataSelect.taskLimitDate);
+//		$('#taskStaff').text(dataSelect.taskStaff);
+		$('#taskLimitDate').val(dataSelect.taskLimitDate);
 		
 		
-		$('#taskDBE').text(dataSelect.taskDBE);
+		$('#taskDBE').val(dataSelect.taskDBE);
 		
 		$('#BTStatusText').text(dataSelect.BTStatusText);
-
-
 
 		$('#BTAcceptOpinion').hide();
 		
@@ -1090,8 +1125,13 @@ $('#billsTaskTable tbody').on('click', 'tr', function() {
     }
  
     var dataSelect = table.row('.selected').data();
-    
-    
+
+});
+
+//dbclick 测试判断是否选中数据-------
+
+$('#billsTaskTable tbody').on('dblclick', 'tr', function() {
+alert("11111dblclick!");
 
 });
 	
@@ -1118,7 +1158,7 @@ $('#BTNTaskAccept').click(function() {
 //按钮-任务审核通过按钮
 $('#BTNTaskAcceptYes').click(function() {
 	
-	if(sessionName==$('#taskStaff').text()){
+	if(sessionName==$('#taskStaff option:selected').text()){
 		var msg = confirm("确认后即将开始任务单流程!");
 		if(msg==true){	
 			
@@ -1133,6 +1173,9 @@ $('#BTNTaskAcceptYes').click(function() {
 				var acceptData={
 						"DBTable":"ppm_bills_task",
 						"DBID":$('#DBID').text(),
+						"taskStaff":$('#taskStaff option:selected').text(),
+						"taskDBE":$('#taskDBE').val(),
+						"taskLimitDate":$('#taskLimitDate').val(),
 						"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
 						"BTAcceptor":sessionName,
 						"BTAcceptDate":Ndate,
@@ -1194,6 +1237,7 @@ $('#BTNTaskAcceptYes').click(function() {
 						"BTAcceptDate":Ndate,
 						"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
 						"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
+						"taskStaff":$('#taskStaff option:selected').text(),
 						"IPQCMaker":$('#IPQCMaker option:selected').text(),
 						"BTAcceptResult":1,
 						"BTAcceptResultText":"已确认",
@@ -1221,7 +1265,7 @@ $('#BTNTaskAcceptYes').click(function() {
 //按钮-任务审核驳回按钮
 $('#BTNTaskAcceptNo').click(function() {
 	
-	if(sessionName==$('#taskStaff').text()){
+	if(sessionName==$('#taskStaff option:selected').text()){
 		var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
 		if(msg==true){	
 
@@ -1265,7 +1309,7 @@ $('#BTNTaskRecord').click(function() {
 //按钮-任务记录保存按钮
 $('#BTNTaskRecordSave').click(function() {
 
-		if(sessionName==$('#taskStaff').text()){
+		if(sessionName==$('#taskStaff option:selected').text()){
 			
 			
 //			 if($('#filePath').attr('href')!=undefined){
