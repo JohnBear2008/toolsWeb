@@ -452,11 +452,11 @@
                      <label class="col-sm-2 control-label">任务单号:</label>
                      <div class="col-sm-3">
                      
-                       <input id="taskDBID" class="form-control"  type="hidden" value="">
+                       <input id="taskDBID" class="form-control"  type="hidden" value="" >
                        
-                       <input id="taskBPID" class="form-control"  type="hidden" value="">
+                       <input id="taskBPID" class="form-control"  type="hidden" value="" >
 
-                       <input id="BTID" class="form-control"  type="text" value="">
+                       <input id="BTID" class="form-control"  type="text" value="" disabled="true">
                      </div>
 
                      <label class="col-sm-2 control-label">任务单版本号: <span id="BTVersion"></span></label>
@@ -1092,20 +1092,17 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 			     $("#taskDBID").val(dataSelectTask.DBID);
 
 			     $("#BTID").val(dataSelectTask.BTID);
-			     $("#BTID").attr("disabled","true");
+
 
 			    var SQLTaskStaff={SQL:"SQLSRStaffs"};
 				var taskStaff="#taskStaff";
 				Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff,dataSelectTask.taskStaff);
 				
 				
-
 //			     alert($("#taskStaff").text() );
-//			     
+
 //			     $("#taskStaff option[text='熊奇龙']").attr("selected", true);  
 
-
-				
 				 $('#taskLimitDate').val(dataSelectTask.taskLimitDate);
 
 				 $("#BTVersion").text(dataSelectTask.BTVersion);
@@ -1275,6 +1272,13 @@ $('#billsBPTTable tbody').on('click', 'tr', function() {
 
 });
 
+//dbclick 测试判断是否选中数据-------
+
+$('#billsBPTTable tbody').on('dblclick', 'tr', function() {
+	$('#BTNBPTInfo').click();
+
+});
+
 
 //绑定radio切换改变任务单号事件
 
@@ -1393,7 +1397,7 @@ $('#BTNBPTInfo').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请点击表格先选中需要维护方案的计划单!");
+        alert("操作提示:单击选中数据行后,再双击可快速打开表单!");
     } else {
 
     	$('#BillBPT').modal('show');

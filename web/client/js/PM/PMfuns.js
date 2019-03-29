@@ -74,7 +74,14 @@ function addDBData(DBData) {
            }
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+    	   
+    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+    		   alert("系统中已存在重复数据,请检查!");
+    	   }else{
+    		   alert("失败数据:"+JSON.stringify(err));
+    	   }
+    	   
+       	
        }
     });
 }
@@ -1099,7 +1106,8 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
                 }
         		 
         		 if(auditCheck==1||auditCheck==2){
-        			 $('input').attr("disabled",true);
+//        			 $('input').attr("disabled",true);
+        			 $(tableID+" :input").attr("disabled",true);
         		 }
         		 
         	 }

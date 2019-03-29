@@ -71,7 +71,7 @@
                      <div class="form-group">
                        <label class="col-sm-1 control-label">计划单号:</label>
                        <div class="col-sm-4">
-                         <input id="BPID" class="form-control"  type="text" value="">
+                         <input id="BPID" class="form-control"  type="text" value="" disabled="true">
                        </div>
                        
                        <label class="col-sm-1 control-label">版本号:   <span id="version"></span></label> 
@@ -496,7 +496,7 @@ function Fun_winAddInit(){
 	  $('textarea').attr("disabled",false);
 	  $("#DivAuditImage").attr('src',"");
 	  
-	  
+	  $("#BPID").attr("disabled",true);
 
 
 	
@@ -730,7 +730,7 @@ function Fun_winDetailInit(dataSelect){
 
 	    var SQLAuditor={SQL:"SQLSRStaffs"};
 	    var auditor="#auditor";
-	    $("#BPID").attr("disabled",true);
+	   
 //	    $("#auditTypeOption1").attr("checked",true);
 	    
 	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
@@ -810,6 +810,14 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 
 
 });
+
+//dbclick 测试判断是否选中数据-------
+
+$('#billsPLDTable tbody').on('dblclick', 'tr', function() {
+	$('#BTNInfo').click();
+
+});
+
 	
 //绑定radio切换改变 计划单号事件
 
@@ -910,7 +918,7 @@ $('#BTNInfo').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请先点击表格中的表单!");
+        alert("操作提示:单击选中数据行后,再双击可快速打开表单!!");
     } else {
 
     	$('#BillPLD').modal('show')
@@ -932,7 +940,7 @@ $('#BTNDelete').click(function() {
  //   alert(JSON.stringify(dataSelect));
     
     if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+        alert("当前未选择任何数据,请先单击选择需要删除的数据行!");
     } else {
     	
     	
@@ -968,7 +976,7 @@ $('#BTNAudit').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请先点击表格中的表单!");
+        alert("操作提示:单击选中数据行后,再双击可快速打开表单!!");
     } else {
     	
     	if(dataSelect.auditResult==null){

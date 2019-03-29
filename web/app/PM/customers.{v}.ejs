@@ -85,14 +85,14 @@
 
 
 function checkinput(Data) {
-    if (Data.belong=="") {
-        alert('属性不能为空，请检查!');
-        return false;
-    } else if (Data.MHEName=="") {
-        alert('型号不能为空，请检查!');
-        return false;
-    }
-    return true;
+	
+	if(Data.FTYID==""&&Data.FTYName==""){
+		alert("客户编号与客户名称不能均为空请检查!");
+		return false;
+	}else{
+		return true;
+	}
+   
 }
 
 
@@ -241,8 +241,10 @@ $('#AddDoButton').click(function() {
 			"statusText":statusText
 	}
 	
+	if(checkinput(DBData)){
+		addDBData(DBData);
+	}
 	
-	addDBData(DBData);
 	
 
 
@@ -300,7 +302,9 @@ $('#UpdDoButton').click(function() {
 			"statusText":statusText
 	}
 	
+	if(checkinput(updInput)){
 	 updDBData(updInput,"客户信息");
+	}
 
 
 });
