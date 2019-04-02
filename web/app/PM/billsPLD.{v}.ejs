@@ -22,8 +22,6 @@
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
-
-
 <div class="divcontent">
     <h1>工作流程-计划单</h1>
     <hr>
@@ -367,9 +365,9 @@
                      <!-------------------------------------------------------------------------->
                      
                      <div class="form-group" id="auditOpinionDiv">
-                     <label  class="col-sm-1 control-label" for="name">审核意见:</label>    
+                     <label  class="col-sm-1 control-label" for="name" disabled="true">审核意见:</label>    
                      <div class="col-sm-8">
-                     <textarea id="auditOpinion" class="form-control" rows="6"></textarea>
+                     <textarea id="auditOpinion" class="form-control" rows="3"></textarea>
                      </div>
                      </div>
                      
@@ -419,6 +417,7 @@
     <table id="billsPLDTable" class="table table-striped table-bordered"  >
         <thead>
             <tr>
+                <th>时间戳</th>
                 <th>数据库ID</th>
                 <th>计划单号</th>
                 <th>版本号</th>
@@ -524,7 +523,6 @@ function Fun_winAddInit(){
     
     $('#topic').val(""); 
     $('#detail').val(""); 
-    
     $('#version').text(0); 
     
   
@@ -538,6 +536,8 @@ function Fun_winAddInit(){
 		minView: 2,
 		forceParse: 0
   });
+  
+  $("#DivFileBTNS").show();
   
   $('#divFilesUploaded').html("");
   
@@ -655,9 +655,6 @@ function Fun_winDetailInit(dataSelect){
 
  $("[name='urgency'][value='"+dataSelect.urgency+"']").prop("checked", true);
 
-  
-  $("#auditOpinionDiv").hide();
-  
   $('#auditResult').val(dataSelect.auditResult);
   
   var SQLAuditor={SQL:"SQLSRStaffs"};
@@ -670,17 +667,15 @@ function Fun_winDetailInit(dataSelect){
   //已经审核 或者登陆人为审核人则显示
   
 
-
-  
-  
-  
-  
-  
-  
   
   //如果是已审核单据 则不显示更新和审核按钮
   if(dataSelect.auditResult==null||dataSelect.auditResult==0){
 	  
+	  $('input').attr("disabled",false);
+	  $('select').attr("disabled",false);
+	  $('textarea').attr("disabled",false);
+	  $("#DivAuditImage").attr('src',"");
+	  $("#BPID").attr("disabled",true);
 	  
 	  
 	  $('.form_date').datetimepicker({
@@ -699,16 +694,12 @@ function Fun_winDetailInit(dataSelect){
 	  
 	  $("#DivFileBTNS").show();
 	  
-	  $("#auditOpinionDiv").show();
+	  $("#auditOpinionDiv").hide();
 
 	  $("#BTNFormModify").show();
 	  $("#BTNFormUpdate").hide();
 	  $("#BTNFormAuditYes").hide();
 	  $("#BTNFormAuditNo").hide();
-	  
-
-		
-	 
 
 
   }else{ 
@@ -721,7 +712,7 @@ function Fun_winDetailInit(dataSelect){
 		  $("#DivAuditImage").attr('src',"/images/auditNo.png");
 		  }
 	  
-	  
+	  $('#auditOpinion').val(dataSelect.auditOpinion);
 	  $("#auditOpinionDiv").show();
 	  
 	  $('input').attr("disabled",true);
@@ -737,9 +728,6 @@ function Fun_winDetailInit(dataSelect){
 	    $("#auditor").attr("disabled",true);
 	    
 	    $('#auditDate').val(dataSelect.auditDate);
-	    
-	    $('#auditOpinion').val(dataSelect.auditOpinion);
-	    
 	    
 	    
 	    $("#DivFileBTNS").hide();
@@ -759,6 +747,7 @@ function Fun_winDetailInit(dataSelect){
 
 }
 
+
 //页面加载函数---------------
 $(document).ready( function () {
 	
@@ -771,9 +760,9 @@ $(document).ready( function () {
 	
 	if(undone=="true"){
 		
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  "};
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
 	}else{
-		var tableSQL={"SQL":"SQLTableBillsPLD"};
+		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
 	}
 
 
@@ -782,6 +771,7 @@ $(document).ready( function () {
 	const tableInfo={
 			"tableID":"#billsPLDTable",
 			"columnsData":[
+				{ data: 'saveTimeStamp' ,"visible": false},
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
@@ -791,8 +781,7 @@ $(document).ready( function () {
 		        { data: 'auditText'}
 			]
 	}
-	
-	
+
 	Fun_showSQLTable(tableSQL,tableInfo)
 
 	

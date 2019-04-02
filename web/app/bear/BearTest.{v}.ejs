@@ -75,43 +75,165 @@ function ajaxFun(callback){
 	
 }
 
-	
-//相同列合并插件//封装的一个JQuery小插件
- jQuery.fn.rowspan = function(colIdx) { 
-	        return this.each(function(){
-	           var that;
-	           $('tr', this).each(function(row) {
-	              $('td:eq('+colIdx+')', this).filter(':visible').each(function(col) {
-	                 if (that!=null && $(this).html() == $(that).html()) {
-	                    rowspan = $(that).attr("rowSpan");
-	                    if (rowspan == undefined) {
-	                       $(that).attr("rowSpan",1);
-	                       rowspan = $(that).attr("rowSpan"); }
-	                    rowspan = Number(rowspan)+1;
-	                    $(that).attr("rowSpan",rowspan);
-	                    $(that).css("vertical-align","middle");
-	                    $(this).hide();
-	                 } else {
-	                    that = this;
-	                 }
-	              });
-	           });
-	        });
-}
-    
-	
-	
 
+function MergeTableCell(tableId, startRow, endRow, col) {
+    var tb = document.getElementById(tableId);
+    //设置为0时,检索所有行
+    if (endRow == 0) {
+        endRow = tb.rows.length - 1;
+    }
+    //指定数据行索引大于表格行数
+    if (endRow >= tb.rows.length) {
+        return;
+    }
+    //检测指定的列索引是否超出表格列数
+    if (col >= tb.rows[0].cells.length) {
+        return;
+    }
+    //循环需要判断的数据行
+    for (var i = startRow; i < endRow; i++) {
+        //如果当前行与下一行数据值相同，则进行前面列的判断
+        if (tb.rows[startRow].cells[col].innerHTML == tb.rows[i + 1].cells[col].innerHTML) {
+            var Same = true;
+            //循环跟前面的所有的同级数据行进行判断
+            for (var j = col; j > 0; j--) {
+                if (tb.rows[startRow].cells[j - 1].innerHTML != tb.rows[i + 1].cells[j - 1].innerHTML) {
+                    Same = false;
+                    break;
+                }
+            }
+            //如果前面的同级数据行的值均相同，则进行单元格的合并
+            if (true == Same) {
+                //如果相同则删除下一行的第0列单元格  
+                tb.rows[i + 1].cells[col].style.display = 'none';
+                //更新rowSpan属性  
+                tb.rows[startRow].cells[col].rowSpan = (tb.rows[startRow].cells[col].rowSpan | 0) + 1;
+            }
+            else {
+                //增加起始行  
+                startRow = i + 1;
+            }
+        }
+        else {
+            //增加起始行  
+            startRow = i + 1;
+        }
+    }
+}
+	
+jQuery.fn.rowspan = function(colIdx) { //封装的一个JQuery小插件
+	console.log(this);
+    return this.each(function(){ 
+    	console.log(this)
+        var that;//用来保存含 有重复内容的列中的第一个td
+		console.log(that);//undefined
+		var r = 1;
+         $('tr').each(function() { //外层循环控制行
+            $('td:eq('+colIdx+')', this).each(function() { //内层循环控制列
+            	//第一次遇到if条件时 this为 #td01 显然 undefined == “333”  结果为 false  进入else语句，把闭包中声明的变量that设置为#td01，从此以后that的值恒为#td01
+            	//第二次遇到if条件时 this为 #td02 显然 $(“#td01”).html() == $(“#td02”).html() 结果为 true 进入if语句，把#td01的rowSpan设置为2，并隐藏#td02
+            	//第三次遇到if条件时 this为 #td03 显然 $(“#td01”).html() == $(“#td03”).html() 结果为 true 进入if语句，把#td01的rowSpan设置为3，并隐藏#td03
+            	// 过程：先执行1次else语句，再执行2次if语句
+               if ($(that).html() == $(this).html()) { 
+                  r++;//遍历#td02,#td03，当遇到1个内容相等的td，rowspan=2;当遇到第2个内容相等的td，rowspan=3;......
+                  $(that).attr("rowSpan",r);//r自增1 然后赋值给#td01的rowSpan属性
+                  console.log(that);//#td01
+                  $(this).hide(); //分别隐藏#td02,#td03
+                  console.log(this);//	#td02,#td03
+
+               } else {
+                  that = this;//#td01（#td02,#td03进不来）
+               }
+            });
+         });
+      });
+   }
+//基于Jquery写法
+//函数说明：合并指定表格（表格id为_w_table_id）指定列（列数为_w_table_colnum）的相同文本的相邻单元格
+//参数说明：_w_table_id 为需要进行合并单元格的表格的id。如在HTMl中指定表格 id="data" ，此参数应为 #data 
+//参数说明：_w_table_colnum 为需要合并单元格的所在列。为数字，从最左边第一列为1开始算起。
+function _w_table_rowspan(_w_table_id, _w_table_colnum) {
+    _w_table_firsttd = "";
+    _w_table_currenttd = "";
+    _w_table_SpanNum = 0;
+    _w_table_Obj = $(_w_table_id + " tr td:nth-child(" + _w_table_colnum + ")");
+    _w_table_Obj.each(function (i) {
+        if (i == 0) {
+            _w_table_firsttd = $(this);
+            _w_table_SpanNum = 1;
+        } else {
+            _w_table_currenttd = $(this);
+            if (_w_table_firsttd.text() == _w_table_currenttd.text()) {              //这边注意不是val（）属性，而是text（）属性
+                _w_table_SpanNum++;
+                _w_table_currenttd.hide(); //remove();
+                _w_table_firsttd.attr("rowSpan", _w_table_SpanNum);
+            } else {
+                _w_table_firsttd = $(this);
+                _w_table_SpanNum = 1;
+            }
+        }
+    });
+}
+
+
+//函数说明：合并指定表格（表格id为_w_table_id）指定行（行数为_w_table_rownum）的相同文本的相邻单元格
+//参数说明：_w_table_id 为需要进行合并单元格的表格id。如在HTMl中指定表格 id="data" ，此参数应为 #data 
+//参数说明：_w_table_rownum 为需要合并单元格的所在行。其参数形式请参考jQuery中nth-child的参数。
+//          如果为数字，则从最左边第一行为1开始算起。
+//          "even" 表示偶数行
+//          "odd" 表示奇数行
+//          "3n+1" 表示的行数为1、4、7、10.......
+//参数说明：_w_table_maxcolnum 为指定行中单元格对应的最大列数，列数大于这个数值的单元格将不进行比较合并。
+//          此参数可以为空，为空则指定行的所有单元格要进行比较合并。
+function _w_table_colspan(_w_table_id, _w_table_rownum, _w_table_maxcolnum) {
+    if (_w_table_maxcolnum == void 0) { _w_table_maxcolnum = 0; }
+    _w_table_firsttd = "";
+    _w_table_currenttd = "";
+    _w_table_SpanNum = 0;
+    $(_w_table_id + " tr:nth-child(" + _w_table_rownum + ")").each(function (i) {
+        _w_table_Obj = $(this).children();
+        _w_table_Obj.each(function (i) {
+            if (i == 0) {
+                _w_table_firsttd = $(this);
+                _w_table_SpanNum = 1;
+            } else if ((_w_table_maxcolnum > 0) && (i > _w_table_maxcolnum)) {
+                return "";
+            } else {
+                _w_table_currenttd = $(this);
+                if (_w_table_firsttd.text() == _w_table_currenttd.text()) {
+                    _w_table_SpanNum++;
+                    _w_table_currenttd.hide(); //remove();
+                    _w_table_firsttd.attr("colSpan", _w_table_SpanNum);
+                } else {
+                    _w_table_firsttd = $(this);
+                    _w_table_SpanNum = 1;
+                }
+            }
+        });
+    });
+}
 
 
 
 $(function(){
 	
+	tr="<tr><td>1</td><td>2</td><td>3</td></tr>";
 	
-	$("#tableTest").rowspan(0);
 	
-//	$("#tableTest").rowspan(1);
-	$("#tableTest").rowspan(2);
+	for(var i=0;i<10;i++){
+		 $("#tableTest tbody").append(tr);
+	}
+	
+	MergeTableCell("tableTest",1,0,1);
+
+	
+
+
+	
+
+//	
+////	$("#tableTest").rowspan(1);
+//	$("#tableTest").rowspan(2);
 	
 //	MergeTableCell("tableTest",0,0,2)
 //	var a=ajaxFun(callback);

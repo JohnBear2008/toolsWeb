@@ -368,9 +368,10 @@
     <br/>
 
     <!--数据呈现区-->
-    <table id="billsPLDTable" class="table table-striped table-bordered"  >
+    <table id="billsPBHTable" class="table table-striped table-bordered"  >
         <thead>
             <tr>
+                <th>时间戳</th>
                 <th>数据库ID</th>
                 <th>计划单号</th>
                 <th>计划版本号</th>
@@ -506,9 +507,10 @@
 
 
 //函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataSelect){
+function Fun_winDetailInit(dataChoose){
 	
-	console.log("dataSelect:"+JSON.stringify(dataSelect));
+
+	let dataSelect=NulltoEmpty(dataChoose);
 
 	$('#DBID').val(dataSelect.DBID);
 	$('#BPID').text(dataSelect.BPID);
@@ -648,15 +650,16 @@ $(document).ready( function () {
 	 var undone=getQueryString("undone");
 		
 		if(undone=="true"){
-			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( emailResult IS NULL OR emailResult =0)"};
+			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( emailResult IS NULL OR emailResult =0)","orderBy":" saveTimeStamp DESC"};
 		}else{
-			var tableSQL={"SQL":"SQLTableBillsPBH"};
+			var tableSQL={"SQL":"SQLTableBillsPBH","orderBy":" saveTimeStamp DESC"};
 		}
 
 
 	 tableInfo={
-			"tableID":"#billsPLDTable",
+			"tableID":"#billsPBHTable",
 			"columnsData":[
+				{ data: 'saveTimeStamp' ,"visible": false},
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
@@ -677,8 +680,8 @@ $(document).ready( function () {
 
 
 //判断是否选中数据-------
-var table = $('#billsPLDTable').DataTable();
-$('#billsPLDTable tbody').on('click', 'tr', function() {
+var table = $('#billsPBHTable').DataTable();
+$('#billsPBHTable tbody').on('click', 'tr', function() {
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     } else {
@@ -691,6 +694,12 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 
 });
 
+//dbclick 测试判断是否选中数据-------
+
+$('#billsPBHTable tbody').on('dblclick', 'tr', function() {
+	$('#BTNPBHDetail').click();
+
+});
 
 //按钮-发布维护---------
 $('#BTNPBHDetail').click(function() {

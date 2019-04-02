@@ -50,7 +50,7 @@ module.exports = function(sender) {
 
 ////var SQLInsert="insert into PM_customer (cust_FID,cust_Name) values(110,110)";
     
-//	console.log("SQLUpdate:"+SQLUpdate);
+	console.log("SQLUpdate:"+SQLUpdate);
 //
     yjDBService.exec({
         sql: SQLUpdate,

@@ -1,5 +1,9 @@
 require("../../client/js/Date.js");
 require("../../client/js/SQL.js");
+
+
+
+
 module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
@@ -11,6 +15,8 @@ module.exports = function(sender) {
     var DBTable=sender.req.query.DBTable;  
     var DBID=sender.req.query.DBID;  
     var filter=sender.req.query.filter; 
+    var orderBy=sender.req.query.orderBy; 
+    
     
 //    console.log("SQL:"+SQL);
 //    console.log("DBTable:"+DBTable);
@@ -147,7 +153,11 @@ module.exports = function(sender) {
     	SQLExecute=SQLExecute+" WHERE "+filter;
     }
     
-   // console.log("SQLExecute:"+SQLExecute);
+    if(orderBy!=""&&orderBy!=undefined){
+    	SQLExecute=SQLExecute+" ORDER BY "+orderBy;
+    }
+    
+    console.log("SQLExecute:"+SQLExecute);
     
     //增加关键字防护,防止使用非法关键字操作数据库
     var banWord1 = new RegExp("delete");
@@ -165,6 +175,10 @@ module.exports = function(sender) {
     	        parameters: [],
     	        rowsAsArray: false, // Chenly 2018-10-19 返回obj arr
     	        success: function(result) {
+    	        	
+//    	        	
+//    	        	result=NulltoEmpty(result);
+//    	        	console.log("result:"+JSON.stringify(result));
     	            sender.success(result);
     	        },
     	        error: sender.error

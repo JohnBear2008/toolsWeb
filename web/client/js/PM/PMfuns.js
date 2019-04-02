@@ -255,18 +255,25 @@ function fileSelected() {
 
 		var files = document.getElementById('fileToUpload').files;
 		
+		
 
 		var div = document.getElementById('div_previewImages');
 		
-		document.getElementById('div_previewImages').innerHTML="已选择文件!";
+		var selectedFileNames="";
+		
+		
 		
 		for ( var i = 0; i < files.length; i++) {
+			
+			console.log(files[i].name);
+			
+			selectedFileNames=selectedFileNames+files[i].name+";";
 			
 			//缩略图预览
 //			var img = document.createElement("img");
 //			div.appendChild(img);
 //			
-//			var reader = new FileReader();
+			var reader = new FileReader();
 //			(function(img) {
 //				reader.onload = function(evt) {
 //					img.width=50;//定义缩略图宽度
@@ -279,6 +286,8 @@ function fileSelected() {
 			/* else if (files.value) {
 				img.src = files.value; }*/
 		}
+		
+		document.getElementById('div_previewImages').innerHTML="已选择文件:"+selectedFileNames;
 
 	
 	
@@ -294,20 +303,20 @@ function uploadFile() {
 	var fileName=$('#fileName').html();
 //	console.log("fileName:"+fileName);
 	
-	if(fileName!=undefined&&fileName!=""){
-		
-		alert("附件已存在,上传新附件请先清空!");
-		
-	}else{
+//	if(fileName!=undefined&&fileName!=""){
+//		
+//		alert("附件已存在,上传新附件请先清空!");
+//		
+//	}else{
 	
 	var fd = new FormData();
 	var files = document.getElementById('fileToUpload').files;
 	
-	if(files.length>1){
-		alert("多文件上传请统一打包成唯一压缩包!");
-		document.getElementById('div_previewImages').innerHTML="";
-		
-	}else{
+//	if(files.length>1){
+//		alert("多文件上传请统一打包成唯一压缩包!");
+//		document.getElementById('div_previewImages').innerHTML="";
+//		
+//	}else{
         for ( var i = 0; i < files.length; i++) {
 			
 //			alert("files[i]:"+JSON.stringify(files[i]));
@@ -322,9 +331,9 @@ function uploadFile() {
 		xhr.open("POST", "/system.files.upload/");
 		xhr.send(fd);
 		
-	}
+//	}
 	
-	}
+//	}
 	
 }
 
@@ -378,7 +387,7 @@ function uploadComplete(evt) {
 				span.innerHTML = url;
 
 				div.appendChild(span);
-				div.appendChild(document.createElement("br"));
+//				div.appendChild(document.createElement("br"));
 //				var img = document.createElement("img");
 //				img.src = url;
 //				div.appendChild(img);
@@ -712,7 +721,9 @@ function Fun_showSQLTable(SQL,tableInfo){
 		        dataSrc: ''
 		    },
 		    columns: tableInfo.columnsData,
-		    aaSorting: [0, 'desc'],//默认排序
+		    
+//		    'ordering'  :false,//禁止排序,按数据库返回数据排序
+		    aaSorting: [0, 'desc'],//默认排序,按第一列时间戳排序
 		    lengthMenu:[10,30,50],
 		    "language": languageCN
 		});
@@ -997,11 +1008,13 @@ function Fun_fillTrackTable(tableID,SQLParam){
          data:SQLParam,
          url:"/app/PM/getTableTitles",
          success:function(data){
+        	 
+        	 let dataR= NulltoEmpty(data);
        	  
-       	  if(data.length!=0){
+       	  if(dataR.length!=0){
        		  var trth="<tr>"
-       		  for(var i=0;i<data.length;i++){
-       			trth=trth+"<th style='min-width:85px'>"+data[i].titleName+"</th>";
+       		  for(var i=0;i<dataR.length;i++){
+       			trth=trth+"<th style='min-width:85px'>"+dataR[i].titleName+"</th>";
        		  }
        		trth=trth+"</tr>";
        	  }
@@ -1016,10 +1029,12 @@ function Fun_fillTrackTable(tableID,SQLParam){
          data:SQLParam,
          url:"/app/PM/getTableDatas",
          success:function(data){
+        	 
+        	let dataR= NulltoEmpty(data);
 
-       	  if(data.length!=0){
+       	  if(dataR.length!=0){
 
-       		  for(var i=0;i<data.length;i++){
+       		  for(var i=0;i<dataR.length;i++){
        			  
        			 var trtd="<tr>";
 
@@ -1029,8 +1044,13 @@ function Fun_fillTrackTable(tableID,SQLParam){
        			  
        			  if(SQLParam.titles[j]=="files"||SQLParam.titles[j]=="taskFiles"){
        				  
+
        				  
-       				  var files=JSON.parse(data[i][SQLParam.titles[j]]);
+       				  if(dataR[i][SQLParam.titles[j]]!=""){
+       					var files=JSON.parse(dataR[i][SQLParam.titles[j]]);
+       					  
+       				  }
+       				  
        				  
        				 console.log("files:"+files);
        				 
@@ -1052,7 +1072,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        				 }
 
        			  }else{
-       				trtd=trtd+"<td>"+data[i][SQLParam.titles[j]]+"</td>";
+       				trtd=trtd+"<td>"+dataR[i][SQLParam.titles[j]]+"</td>";
        			  }
 
        		  }
@@ -1070,7 +1090,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
 }
 
 
-//函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
+//函数-根据自定义SQL获取数据加载内容
 
 
 function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
@@ -1097,6 +1117,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         		 
         	 }
         	 
+        	 console.log("TestResult:"+TestResult);
         	 if(TestResult!=null){
         		 
         		 for(var i=0;i<TestResult.length;i++){
@@ -1112,7 +1133,10 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         		 
         	 }
         	 
-             console.log("tableID:"+tableID.substr(1));
+        	 
+        	 
+        	 mergeTableCols(tableID);
+
 
 
    		 
@@ -1128,28 +1152,81 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 
 }
 
+//函数-根据自定义SQL获取数据加载内容
 
-// 相同列合并插件//封装的一个JQuery小插件
- jQuery.fn.rowspan = function(colIdx) { 
-	        return this.each(function(){
-	           var that;
-	           $('tr', this).each(function(row) {
-	              $('td:eq('+colIdx+')', this).filter(':visible').each(function(col) {
-	                 if (that!=null && $(this).html() == $(that).html()) {
-	                    rowspan = $(that).attr("rowSpan");
-	                    if (rowspan == undefined) {
-	                       $(that).attr("rowSpan",1);
-	                       rowspan = $(that).attr("rowSpan"); }
-	                    rowspan = Number(rowspan)+1;
-	                    $(that).attr("rowSpan",rowspan);
-	                    $(that).css("vertical-align","middle");
-	                    $(this).hide();
-	                 } else {
-	                    that = this;
-	                 }
-	              });
-	           });
-	        });
+
+function Fun_previewSQLTestContents(SQL,tableID){
+	
+	//alert(JSON.stringify(DataPara));
+	 $(tableID+" tbody").html("");
+	
+	 $.ajax({
+         method:'get',
+         data:SQL,
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+//        	 console.log("back data:"+JSON.stringify(data));
+        	 for(var i=0;i<data.length;i++){
+        		 var tr="<tr>" +
+        		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
+        		        "<td>"+data[i].modelType+"</td>" +
+        		 		"<td>"+data[i].content+"</td>" +
+        		 		"<td>"+data[i].billType+"</td>" +
+        		 		"<td>"+data[i].billVersion+"</td>" +
+        		 		"</tr>";
+        		 
+        		 $(tableID+" tbody").append(tr);
+        		 
+        	 }
+        	
+        	 
+        	 
+        	 
+        	 mergeTableCols(tableID);
+
+
+
+         },
+         error:function(){}
+     })
+
+}
+
+
+//合并表格相同列函数
+//
+function mergeTableCols(tableID){
+	
+	var tbodyLength=$(tableID+" tbody").find("tr").length;
+	console.log("tbodyLength:"+tbodyLength);
+
+	 let rowSpanNum=1;
+	 
+	for(let i=1;i<tbodyLength;i++){
+
+		 let trTitle=$(tableID+" tbody tr:eq("+i+") td:eq(1)").html();
+		 
+		 let trTitlePre=$(tableID+" tbody tr:eq("+(i-1)+") td:eq(1)").html();
+		 
+//		 let rowSpanNum=$(tableID+" tbody tr:eq("+(i-1)+") td:eq(1)").attr("rowSpan");
+		 
+		 if(trTitle==trTitlePre){
+//			 console.log("相同");
+			 
+			 $(tableID+" tbody tr:eq("+i+") td:eq(1)").hide();
+			 
+			 rowSpanNum=rowSpanNum+1;
+
+
+			 
+			 $(tableID+" tbody tr:eq("+(i-rowSpanNum+1)+") td:eq(1)").attr("rowSpan",rowSpanNum);
+			 
+		 }else{
+			 rowSpanNum=1;
+		 }
+	
+	}
+
 }
 
 
@@ -1171,4 +1248,35 @@ function getEmails($){
 	     return s;
 	 }
 	
+}
+
+//将获得的数据中null转换为空
+function NulltoEmpty(data) {
+	
+	console.log("1213123:"+typeof(data))
+	
+	if(data instanceof Array){
+		 if(data.length!=0){
+			 for(let i=0;i<data.length;i++)
+			 for(let j in data[i]){
+		    	  if(data[i][j]==null){
+		    		  data[i][j]="";
+		    	  }
+		      }
+		      return data;
+		 }else{
+			 return data;
+		 }
+	}else{
+		
+		 for(let k in data){
+	    	  if(data[k]==null){
+	    		  data[k]="";
+	    	  }
+	      }
+	      return data;
+	}
+	 
+	
+	     
 }

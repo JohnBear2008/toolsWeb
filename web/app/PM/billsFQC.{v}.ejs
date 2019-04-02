@@ -332,6 +332,7 @@
     <table id="billsPLDTable" class="table table-striped table-bordered"  >
         <thead>
             <tr>
+                <th>时间戳</th>
                 <th>数据库ID</th>
                 <th>计划单号</th>
                 <th>计划版本号</th>
@@ -407,9 +408,11 @@
 
 
 //函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataSelect){
+function Fun_winDetailInit(dataChoose){
 	
-	 console.log("dataSelect:"+JSON.stringify(dataSelect));
+
+	 
+	 let dataSelect=NulltoEmpty(dataChoose);
 
 
 	$('#DBID').val(dataSelect.DBID);
@@ -480,21 +483,19 @@ function Fun_winDetailInit(dataSelect){
 	  
 	  console.log("FQCTestResult:"+dataSelect.FQCTestResult);
 	  
-	  var FQCTestResult=JSON.parse(dataSelect.FQCTestResult);
+	  if(dataSelect.FQCTestResult==""){
+		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,null,null);
+	  }else{
+		  var FQCTestResult=JSON.parse(dataSelect.FQCTestResult);
 
-	  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,FQCTestResult,dataSelect.FQCAuditResult);
+		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,FQCTestResult,dataSelect.FQCAuditResult);
+	  }
+	  
+	  
+
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	if(dataSelect.FQCAuditResult==0||dataSelect.FQCAuditResult==null){
+	if(dataSelect.FQCAuditResult==0||dataSelect.FQCAuditResult==null||dataSelect.FQCAuditResult==""){
 		
 		$('#FQCRemarkShow').hide();
 		$('#FQCRemark').show();
@@ -531,9 +532,9 @@ $(document).ready( function () {
 		
 		if(undone=="true"){
 			
-			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)"};
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
 		}else{
-			var tableSQL={"SQL":"SQLTableBillsFQC"};
+			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
 		}
 
 	console.log("sessionName:"+sessionName);
@@ -541,6 +542,7 @@ $(document).ready( function () {
 	 tableInfo={
 			"tableID":"#billsPLDTable",
 			"columnsData":[
+				{ data: 'saveTimeStamp' ,"visible": false},
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
@@ -575,6 +577,12 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 
 });
 
+//dbclick 测试判断是否选中数据-------
+
+$('#billsPLDTable tbody').on('dblclick', 'tr', function() {
+	$('#BTNFQCDetail').click();
+
+});
 
 //按钮-FQC维护---------
 $('#BTNFQCDetail').click(function() {
