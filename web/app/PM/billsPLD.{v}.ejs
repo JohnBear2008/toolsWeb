@@ -380,6 +380,7 @@
                     
                     <div class="panel-footer">
                     <button id="BTNFormAdd" type="button" class="btn btn-primary">新增</button>
+                    <button id="BTNFormAuto" class="btn btn-primary" data-toggle="modal" >智能填单(开发中)</button>
                     <button id="BTNFormModify" type="button" class="btn btn-info">修改</button> 
                     <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
                     
@@ -755,6 +756,11 @@ $(document).ready( function () {
 //	console.log("undone:"+getQueryString("undone"));
 	
 	var sessionName="<%-locals.session.yjUser.Name%>";
+
+//权限测试
+//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
+//		alert("有权限");
+//	}
 	
 	var undone=getQueryString("undone");
 	
@@ -784,6 +790,8 @@ $(document).ready( function () {
 
 	Fun_showSQLTable(tableSQL,tableInfo)
 
+	
+//	tableChangeColWidth("billsPLDTable");
 	
 //判断是否选中数据-------
 var table = $('#billsPLDTable').DataTable();
@@ -985,25 +993,72 @@ $('#BTNAudit').click(function() {
     		alert("此计划单已审核,无需再审,可点击详情查看!");
     	}
 
-    	
-    	
-
     }
 });
+
+//按钮-表单自动填单
+$('#BTNFormAuto').click(function(){
+	
+	let CTRNameDBID=$('#CTRName option:selected').val();
+	
+	
+	if(CTRNameDBID==undefined){
+		alert("请选择客户,以便系统加载绑定数据!");
+	}else{
+		console.log("CTRNameDBID"+CTRNameDBID);
+		
+		let selectSQL={"SQL":"SQLGetDataBinds","filter":"baseDBID="+CTRNameDBID+" AND tableName='ppm_customers'"}
+		
+		 $.ajax({
+	         method:'get',
+	         data:selectSQL,
+	         url:"/app/PM/getSQLDBData",
+//	         async:false, 
+	         success:function(data){
+	        	 
+	        	 if(data.length==0){
+	        		 alert("系统未检测到绑定数据,请先维护绑定关系!");
+	        	 }else{
+	        		 console.log("bindData:"+JSON.stringify(data[0].bindsInfo));
+	            	 
+	            	 let bindsInfo=JSON.parse(data[0].bindsInfo);
+	            	 
+	            	 for(let i=0;i<bindsInfo.length;i++){
+	            		 console.log(bindsInfo[i].DataType);
+	            		 
+	            		 switch(bindsInfo[i].DataType){
+	            		 case "系统":
+	            			 $("#model").selectpicker('val',bindsInfo[i].DBID);
+	            			 break;
+	            		 case "机种":
+	            			 $("#MHEName").selectpicker('val',bindsInfo[i].DBID);
+	            			 break;
+	            		 case "人员":
+	            			 $("#PGEMaker").selectpicker('val',bindsInfo[i].DBID);
+	            			 break;
+	            		 
+	            		 }
+
+	            	 }
+	        	 }
+
+	         },
+	         error:function(){}
+	     })
+	     
+	     
+	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
+		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+	}
+
+
+})
+
 
 
 //按钮-表格新增计划单
 
 $('#BTNFormAdd').click(function(){
-	
-	
-	
-	
-
-	
-	
-	
-	
 	
 
     var files=[];

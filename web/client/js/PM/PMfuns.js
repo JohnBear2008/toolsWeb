@@ -42,6 +42,7 @@ function showDBData(DataPara,columnsData){
 	    },
 	    columns: columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
+//	    autoWidth:true,
 //	    serverSide: false,//分页，取数据等等的都放到服务端去. true为后台分页，每次点击分页时会请求后台数据，false为前台分页
 //   		dom: 'Bfrtip',
 //    	buttons: [ {
@@ -143,8 +144,11 @@ function saveDBData(DBData,showText) {
            }
        },
        error:function(err){
-    	   alert(showText+"数据保存失败!");
-    	   window.location.reload();
+    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+    		   alert("系统中已存在重复数据,请检查!");
+    	   }else{
+    		   alert("失败数据:"+JSON.stringify(err));
+    	   }
        }
     });
 }
@@ -247,6 +251,48 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
       })
 }
 
+
+//函数 普通格式获取指定SQL数据加载至selector中
+function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
+	
+//	console.log("InitValue:"+InitValue);
+	
+
+	
+	$(selectorID).empty();//用select组件不用先清空
+	  
+	  $.ajax({
+          method:'get',
+          data:selectSQL,
+          url:"/app/PM/getSQLDBData",
+          success:function(data){
+
+        		
+        		if(InitValue==undefined||InitValue==""){	
+//        			console.log("InitValue11:"+InitValue);
+           		
+           		 for(i=0;i<data.length;i++){
+                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
+                 	  }
+
+
+        		}else{
+        			
+        			 for(i=0;i<data.length;i++){
+                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
+                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue){
+                     		  
+                     		 $(selectorID).val(data[i].DBID);
+
+                     	  }
+                     }
+        		}
+
+
+          },
+          error:function(){}
+      })
+}
 
 
 //----文件上传功能代码----------------------------------------------
@@ -721,7 +767,7 @@ function Fun_showSQLTable(SQL,tableInfo){
 		        dataSrc: ''
 		    },
 		    columns: tableInfo.columnsData,
-		    
+//		    bAutoWidth: true,//自动宽度，默认的属性为true。
 //		    'ordering'  :false,//禁止排序,按数据库返回数据排序
 		    aaSorting: [0, 'desc'],//默认排序,按第一列时间戳排序
 		    lengthMenu:[10,30,50],
@@ -786,6 +832,14 @@ function Fun_getSelectText(obj){
     return obj;
 }
 
+//函数 截取selector选择内容-前
+function Fun_getSelectTextPre(obj){
+
+    var index=obj.lastIndexOf("\-");
+    obj=obj.substring(0,index);
+//  console.log(obj);
+    return obj;
+}
 
 ////函数-获取附件信息数据库
 //
@@ -1280,3 +1334,86 @@ function NulltoEmpty(data) {
 	
 	     
 }
+
+
+//函数 检查权限函数
+function checkAuthority(selectSQL,AuthorityID){
+	
+	let checkResult=false;
+	
+	 $.ajax({
+         method:'get',
+         data:selectSQL,
+         url:"/app/PM/getSQLDBData",
+         async:false, //必须同步
+         success:function(data){
+        	 
+        	 console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
+        	 
+        	 let authorityArray=JSON.parse(data[0]["roleAuthorities"]);
+        	 
+        	 if(authorityArray.length>0){
+        		 for(let i=0;i<authorityArray.length;i++){
+        			 console.log(authorityArray[i].val);
+        			 
+        			 if(AuthorityID==authorityArray[i].val){
+        				 checkResult=true;
+        				 break;//跳出循环提高效率
+
+        			 }
+        		 }
+        	 }
+         },
+         error:function(){}
+     })
+     
+     if(checkResult==false){
+    	 alert("监测到当前账号无该操作权限,请联系管理员授权!");
+     }
+
+     return checkResult;
+	
+}
+
+
+//函数使得表格列宽可拖动改变
+function tableChangeColWidth(tableID){
+	var tTD;
+        var table = document.getElementById(tableID);
+        console.log(table.rows[0].cells)
+        for (i = 0; i < table.rows[0].cells.length; i++) {
+            table.rows[0].cells[i].onmousedown = function() {
+                tTD = this;
+                if (event.offsetX > tTD.offsetWidth - 10) {
+                    tTD.mouseDown = true;
+                    tTD.oldX = event.x;
+                    tTD.oldWidth = tTD.offsetWidth;
+                }
+            };
+            table.rows[0].cells[i].onmouseup = function() {
+                if (tTD == undefined) tTD = this;
+                tTD.mouseDown = false;
+                tTD.style.cursor = 'default';
+            };
+            table.rows[0].cells[i].onmousemove = function() {
+                if (event.offsetX > this.offsetWidth - 10)
+                    this.style.cursor = 'col-resize';
+                else
+                    this.style.cursor = 'default';
+                if (tTD == undefined) tTD = this;
+                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                    tTD.style.cursor = 'default';
+                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                    tTD.style.width = tTD.width;
+                    tTD.style.cursor = 'col-resize';
+                    table = tTD;
+                    while (table.tagName != tableID) table = table.parentElement;
+                    for (j = 0; j < table.rows.length; j++) {
+                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                    }
+                }
+            };
+        }
+
+	}

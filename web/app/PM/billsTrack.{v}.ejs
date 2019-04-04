@@ -37,8 +37,10 @@
         
         <!-- 按钮触发模态框 -->
 
-        <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >查看详情</button>
-        <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >完结归档</button>
+        <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
+        
+        <button id="BTNFinish" class="btn btn-warning" data-toggle="modal" >完结</button>
+        <button id="BTNStop" class="btn btn-danger" data-toggle="modal" >终止</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:90%">
@@ -124,22 +126,9 @@
                   
                     </div>
                     <!--------------panel--------------------->
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    </div>
-                    
-                    
-                    
-                    
-                 
 
-                    
-                    
+                    </div>
+ 
                     </div>
                     <div class="modal-footer">
                         <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -148,8 +137,6 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
-        
-        
 
     </div>
     
@@ -303,8 +290,6 @@ function Fun_winDetailInit(dataSelect){
 	
 	
 	Fun_fillTrackTable("#tableTrackPBH",SQLParamPBH);
-	
-	
 
 
 }
@@ -358,10 +343,12 @@ $('#billsTrackTable tbody').on('click', 'tr', function() {
 });
 	
 
+//dbclick 测试判断是否选中数据-------
 
+$('#billsTrackTable tbody').on('dblclick', 'tr', function() {
+	$('#BTNInfo').click();
 
-
-
+});
 
 
 //详情按钮---------
@@ -389,33 +376,33 @@ $('#BTNDelete').click(function() {
     var dataSelect = table.row('.selected').data();
     
  //   alert(JSON.stringify(dataSelect));
-    
-    if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先点击需要删除的数据行!");
-    } else {
-    	
-    	
-    	if(dataSelect.auditDate!=null){
-    		alert("已审核单据禁止删除!");
-    	}else{
-    		
-    		
-    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-            if (msg1 === true) {
-                var msg2 = confirm("确认删除此行数据？");
-                if (msg2 === true) {
-                	
-                //	alert(dataSelect.DBID);
-                    var IDData = {"DBTable":"ppm_bills_plan","DBID":dataSelect.DBID};
- //                   alert("IDData:"+JSON.stringify(IDData));
-                    delDBData(IDData);
-                }
-            }
-    		
-    		
-    	}
-
-    }
+//    
+//    if (dataSelect == undefined) {
+//        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+//    } else {
+//    	
+//    	
+//    	if(dataSelect.auditDate!=null){
+//    		alert("已审核单据禁止删除!");
+//    	}else{
+//    		
+//    		
+//    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+//            if (msg1 === true) {
+//                var msg2 = confirm("确认删除此行数据？");
+//                if (msg2 === true) {
+//                	
+//                //	alert(dataSelect.DBID);
+//                    var IDData = {"DBTable":"ppm_bills_plan","DBID":dataSelect.DBID};
+// //                   alert("IDData:"+JSON.stringify(IDData));
+//                    delDBData(IDData);
+//                }
+//            }
+//    		
+//    		
+//    	}
+//
+//    }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
 });
 

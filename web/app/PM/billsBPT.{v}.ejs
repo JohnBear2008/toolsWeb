@@ -338,6 +338,8 @@
                      <button id="BTNTaskAdd" type="button" class="btn btn-primary">新增任务</button>
 
                  	 <button id="BTNTaskDel" type="button" class="btn btn-danger">删除任务</button>
+                 	 
+                 	<button id="BTNTaskAuto" type="button" class="btn btn-danger">智能分配任务(开发中)</button>
                  	 </div>
                  	 </div>
 
@@ -1518,6 +1520,99 @@ $('#BTNTaskAdd').click(function(){
 
 
 });
+//按钮-任务智能分配------
+$('#BTNTaskAuto').click(function() {
+	
+let CTRNameDBID=$('#CTRName option:selected').val();
+	
+	
+	if(CTRNameDBID==undefined){
+		alert("请选择客户,以便系统加载绑定数据!");
+	}else{
+
+		let selectSQL={"SQL":"SQLGetDataBinds","filter":"baseDBID="+CTRNameDBID+" AND tableName='ppm_customers'"}
+
+		let bindStaffs=[];
+		
+		 $.ajax({
+	         method:'get',
+	         data:selectSQL,
+	         url:"/app/PM/getSQLDBData",
+	         async:false, 
+	         success:function(data){
+	        	 
+	        	 if(data.length==0){
+	        		 alert("系统未检测到绑定数据,请先维护绑定关系!");
+	        	 }else{
+
+	            	 let bindsInfo=JSON.parse(data[0].bindsInfo);
+	            	 
+	            	 for(let i=0;i<bindsInfo.length;i++){
+	            		 console.log(bindsInfo[i].DataType);
+	            		 
+	            		 if(bindsInfo[i].DataType=="人员"){
+	            			 let bindStaff={
+	            					 staffName:bindsInfo[i].DataVal,
+	            					 staffSort:bindsInfo[i].DataSort
+	            			 }
+	            			 bindStaffs.push(bindStaff); 
+	            		 }
+
+	            	 }
+
+	        	 }
+
+	         },
+	         error:function(){}
+	     })
+	     
+//--------------------------------------------------------------	     
+	     
+	     Fun_BTIDCreate();
+		 
+		 if(bindStaffs.length==0){
+			 alert("系统检测到该客户为与任何人员绑定关系,使用智能排单前请先维护数据绑定关系!");
+		 }else{
+			 
+			 let BTID=$('#BTID').val();
+
+				let DBData={
+						taskBPID:$('#taskBPID').val(),
+						BTID:BTID,
+						CTRDBID:$('#CTRName').val(),
+						taskCTRName:Fun_getSelectText($('#CTRName option:selected').text()),
+						bindStaffs:JSON.stringify(bindStaffs),
+						taskMaker:sessionName,
+						taskMakeDate:Ndate,
+						taskLimitDate:$('#limitDate').val()	
+				}
+				
+				console.log($('#BTID').val());
+				
+				$.ajax({
+			        method: 'post',
+			        url: '/app/PM/autoAddTasks',
+			        data: DBData,
+			        success: function(data) {
+//			            alert("成功数据:" + JSON.stringify(data));
+			           if (data.affectedRows != 0) {
+			               alert("生成系统任务单成功,请点击任务单完善细节!");
+			          	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+			          	   $('#BTNTaskAdd').click();
+			          	   $('#billTaskPanel').hide();
+
+			           }
+			       },
+			       error:function(err){
+			       	alert("失败数据:"+JSON.stringify(err));
+			       }
+			    });
+			 
+		 }
+			
+	}
+
+})
 
 
 //按钮-任务删除---------

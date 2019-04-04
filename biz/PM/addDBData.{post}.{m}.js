@@ -1,5 +1,5 @@
 module.exports = function(sender) {
-	console.log("-23---")
+
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
     

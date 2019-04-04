@@ -45,6 +45,13 @@ module.exports = function(sender) {
 	case "SQLSRStaffs":
 		var SQLExecute=SQLSRStaffs;
 		break;
+	case "SQLSRWorkTypeStaffs":
+		var SQLExecute=SQLSRWorkTypeStaffs;
+		break;
+
+	case "SQLSRRoles":
+		var SQLExecute=SQLSRRoles;
+		break;
 		
 	case "SQLTableBillsTrack":
 		var SQLExecute=SQLTableBillsTrack;
@@ -139,6 +146,15 @@ module.exports = function(sender) {
 	case "SQLTaskRecords_T":
 		var SQLExecute=SQLTaskRecords_T;
 		break;
+	case "SQLGetAuthorities":
+		var SQLExecute=SQLGetAuthorities;
+		break;
+	case "SQLGetDataBinds":
+		var SQLExecute=SQLGetDataBinds;
+		break;
+		
+		
+		
 
 	default:
 		var SQLExecute=SQL;

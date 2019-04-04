@@ -11,6 +11,7 @@
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
 
 <!-- JS  -->
+
 <script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
 
@@ -45,6 +46,7 @@
                 <th>工号</th>
                 <th>姓名</th>
                 <th>性别</th>
+                <th>角色</th>
                 <th>FQC要求</th>
                 <th>状态</th>
             </tr>
@@ -62,6 +64,18 @@
                 <option value="女">女</option>
                 </select>
             </p>
+            
+            <!-------------------------------------------------------------------------->
+            
+            <p>角色:   
+            <select  id="staffRole" class="selectpicker" data-live-search="true"> 
+            </select>
+            </p>
+            
+            
+            
+            <!-------------------------------------------------------------------------->
+            <p>账号 : <input id="staffUser" size="30" type="text" class="required"></p>
             
             <p>FQC要求: 
                 <select id="FQCRequest">
@@ -102,17 +116,17 @@ function checkinput(Data) {
     return true;
 }
 
-//定义添加发送数据结构---------------------
-
-function addDataInfo(DBTable,staffID,staffName,staffSex,staffUser,FQCRequest,FQCRequestText){
-	this.DBTable=DBTable;
-	this.staffID=staffID;
-	this.staffName=staffName;
-	this.staffSex=staffSex;
-	this.staffUser=staffUser;
-	this.FQCRequest=FQCRequest;
-	this.FQCRequestText=FQCRequestText;
-}
+////定义添加发送数据结构---------------------
+//
+//function addDataInfo(DBTable,staffID,staffName,staffSex,staffUser,FQCRequest,FQCRequestText){
+//	this.DBTable=DBTable;
+//	this.staffID=staffID;
+//	this.staffName=staffName;
+//	this.staffSex=staffSex;
+//	this.staffUser=staffUser;
+//	this.FQCRequest=FQCRequest;
+//	this.FQCRequestText=FQCRequestText;
+//}
 
 
 //页面加载函数---------------
@@ -129,6 +143,7 @@ $(document).ready( function () {
         { data: 'staffID' },
         { data: 'staffName'},
         { data: 'staffSex'},
+        { data: 'staffRole'},
         { data: 'FQCRequestText'},
         { data: 'statusText'}
     ];
@@ -157,6 +172,8 @@ $('#Add').click(function() {
     $('#AddDoButton').show();
     $('#UpdDoButton').hide();
     
+    getSQLSelectDBData({SQL:"SQLSRRoles"},"#staffRole","");
+    
 });
 
 
@@ -175,6 +192,8 @@ $('#Upd').click(function() {
         $('#staffID').val(dataSelect.staffID);
         $('#staffName').val(dataSelect.staffName);
         $('#staffSex').val(dataSelect.staffSex);
+        getSQLSelectDBData({SQL:"SQLSRRoles"},"#staffRole",dataSelect.staffRole);
+        
         $('#FQCRequest').val(dataSelect.FQCRequest);
         $('#status').val(dataSelect.status);
         $('#staffUser').val(dataSelect.staffUser);
@@ -210,20 +229,21 @@ $('#Del').click(function() {
 
 //form框添加按钮----------
 $('#AddDoButton').click(function() {
-	var DBTable="PPM_staffs";
-	var staffID=$("#staffID").val();
-	var staffName=$("#staffName").val();
-	var staffSex=$("#staffSex").val();
-	var staffUser=$("#staffUser").val();
-	var FQCRequest=$("#FQCRequest").val();
 	
-	if(FQCRequest==1){
-		var FQCRequestText="有";
-	}else{
-		var FQCRequestText="无";
+	
+	var DBData={
+			DBTable:"PPM_staffs",
+			staffID:$("#staffID").val(),
+			staffName:$("#staffName").val(),
+			staffID:$("#staffID").val(),
+			staffSex:$('#staffSex option:selected').val(),
+			staffRole:$('#staffRole option:selected').text(),
+			staffUser:$("#staffUser").val(),
+			FQCRequest:$('#FQCRequest option:selected').val(),
+			FQCRequestText:$('#FQCRequest option:selected').text(),
+			status:$('#status option:selected').val(),
+			statusText:$('#status option:selected').text()
 	}
-	
-	var DBData=new addDataInfo(DBTable,staffID,staffName,staffSex,staffUser,FQCRequest,FQCRequestText);
 
 	addDBData(DBData);
 
@@ -235,69 +255,25 @@ $('#AddDoButton').click(function() {
 //form 更新按钮------------
 $('#UpdDoButton').click(function() {
 	
- //   var UID = table.row('.selected').data().UID;
-//	var staffID=$('#staffID').val();
-//    var staffName=$('#staffName').val();
-//    var staffSex=$('#staffSex').val();
-	
-	var FQCRequest=$("#FQCRequest").val();
-	
-	if(FQCRequest==1){
-		var FQCRequestText="有";
-	}else{
-		var FQCRequestText="无";
-	}
-	
-	var status=$("#status").val();
-	
-	if(status==1){
-		var statusText="正常";
-	}else{
-		var statusText="作废";
-	}
+ 
 	
 	
-	var updInput={
-			staffID:$('#staffID').val(),
-			staffName:$('#staffName').val(),
-			staffSex:$('#staffSex').val(),
-			staffUser:$('#staffUser').val(),
-			FQCRequest:FQCRequest,
-			FQCRequestText:FQCRequestText,
-			status:status,
-			statusText:statusText
-	}
-
-   
-    var updJSON={
-			'DBTable':"PPM_staffs",
-			'DBID':table.row('.selected').data().DBID
-    	};
-	var changed=0;
-
-    for (var key in updInput) {   	
-//   	alert(key);
-    	if(updInput[key]!=table.row('.selected').data()[key]){    		
-//    		alert("updInput:"+updInput[key]);
-//    		alert("selected:"+table.row('.selected').data()[key]);    		
-    		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
-    		changed=changed+1;
-    	}
-    }
-
-//   alert("updJSON:"+JSON.stringify(updJSON));
-    
-    if(changed!=0){
-    	if (checkinput(updJSON)) {
-    		 var msg = confirm("即将更新信息,请确认！");
-    		 if(msg==true){
-    			 updDBData(updJSON,"人员信息");
-    		 }
-    		 
-    	}
-    }else{
-    	alert("未有任何信息修改!");
-    }
+	  var updJSON={
+				DBTable:"PPM_staffs",
+				DBID:table.row('.selected').data().DBID,
+				staffID:$("#staffID").val(),
+				staffName:$("#staffName").val(),
+				staffID:$("#staffID").val(),
+				staffSex:$('#staffSex option:selected').val(),
+				staffRole:$('#staffRole option:selected').text(),
+				staffUser:$("#staffUser").val(),
+				FQCRequest:$('#FQCRequest option:selected').val(),
+				FQCRequestText:$('#FQCRequest option:selected').text(),
+				status:$('#status option:selected').val(),
+				statusText:$('#status option:selected').text()
+	    	};
+		
+	    updDBData(updJSON,"人员信息");
     
 });
 
