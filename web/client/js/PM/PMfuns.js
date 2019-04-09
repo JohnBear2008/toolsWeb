@@ -1094,7 +1094,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
 
        		  for(var j=0;j<SQLParam.titles.length;j++){
 
-      			  console.log("1111111SQLParam.titles[j]:"+SQLParam.titles[j]);
+//      			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
        			  
        			  if(SQLParam.titles[j]=="files"||SQLParam.titles[j]=="taskFiles"){
        				  
@@ -1143,6 +1143,277 @@ function Fun_fillTrackTable(tableID,SQLParam){
          error:function(){}
      });
 
+}
+
+//函数:生成跟踪表格函数带查看DBID
+
+/*
+ * tableID="#tableTrackPLD"
+
+ * SQLParam={"tableName":"ppm_bills_plan","titles":["BPID","CTRName"],"BID":"BPID","VER":"version","filter":"BPID='P12132131'"};
+ * BID:为分组单号,VER:为版本标识
+ * */
+
+
+function Fun_fillTrackTableWithDBID(tableID,SQLParam){
+
+	
+	 $(tableID +" thead").html("");
+	 $(tableID +" tbody").html("");
+	 
+	 
+	
+	 $.ajax({
+         method:'get',
+         data:SQLParam,
+         url:"/app/PM/getTableTitles",
+         success:function(data){
+        	 
+        	 let dataR= NulltoEmpty(data);
+       	  
+       	  if(dataR.length!=0){
+       		  var trth="<tr>"
+       		  for(var i=0;i<dataR.length;i++){
+       			trth=trth+"<th style='min-width:85px'>"+dataR[i].titleName+"</th>";
+       		  }
+       		trth=trth+"<th>查看</th></tr>";
+       	  }
+
+       	  $(tableID+" thead").append(trth);   
+         },
+         error:function(){}
+     });
+     
+     $.ajax({
+         method:'get',
+         data:SQLParam,
+         url:"/app/PM/getTableDatas",
+         success:function(data){
+        	 
+        	let dataR= NulltoEmpty(data);
+
+       	  if(dataR.length!=0){
+
+       		  for(var i=0;i<dataR.length;i++){
+       			  
+       			 var trtd="<tr>";
+
+       		  for(var j=0;j<SQLParam.titles.length;j++){
+
+//      			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
+       			  
+       			  if(SQLParam.titles[j]=="files"||SQLParam.titles[j]=="taskFiles"){
+       				  
+
+       				  
+       				  if(dataR[i][SQLParam.titles[j]]!=""){
+       					var files=JSON.parse(dataR[i][SQLParam.titles[j]]);
+       					
+       					console.log("files:"+files);
+       					  
+       				  }
+
+       				 
+       				 if(files!=null){
+       					 
+       					 var fileLink="";
+       					 if(files.length>0){
+       						 for(var k=0;k<files.length;k++){
+       							 console.log("files[k].fileName:"+files[k].fileName);
+       							 
+       							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
+       						 }
+       						fileLink=fileLink.substr(0, fileLink.length-3); 
+       					 }
+       					 
+       					trtd=trtd+"<td>"+fileLink+"</td>";
+       				 }else{
+       					trtd=trtd+"<td></td>";
+       				 }
+
+       			  }else{
+       				  if(SQLParam.titles[j]=="DBID"){
+       					trtd=trtd+"<td style='display:none'>"+dataR[i][SQLParam.titles[j]]+"</td>";
+       				  }else{
+       					trtd=trtd+"<td>"+dataR[i][SQLParam.titles[j]]+"</td>";
+       				  }
+       				  
+       				
+       			  }
+
+       		  }
+       		  
+       		  console.log("1111:"+dataR[i].DBID);
+       			  trtd=trtd+"<td><a href='javascript:getDBIDInfo(\""+SQLParam.tableName+"\","+dataR[i].DBID+")'>查看</a></td></tr>";
+       			 $(tableID+" tbody").append(trtd);   
+       			 
+       			files=null;
+       		  }
+
+       	  }
+
+ 
+         },
+         error:function(){}
+     });
+
+}
+
+//根据获得的DBID 详情加载
+function showDBIDInfo(tableID,SQLParam){
+	
+	$(tableID).html("");
+	 
+	for(let i=0;i<SQLParam.titles.length+1;i++){
+		$(tableID).append("<tr></tr>");   
+	}
+	
+	
+	$.ajax({
+         method:'get',
+         data:SQLParam,
+         url:"/app/PM/getTableTitles",
+         async:false,
+         success:function(data){
+        	 
+        	 let dataR= NulltoEmpty(data);
+        	 
+        //	 alert(JSON.stringify(dataR));
+        	 
+        	 $(tableID+" tr:eq(0)").append("<th>DBID</th>");   
+       	  
+       	  if(dataR.length!=0){
+       		  let trth=""
+       		  for(var i=0;i<dataR.length;i++){
+       			trth="<th style='width:85px'>"+dataR[i].titleName+"</th>";
+       		    $(tableID+" tr:eq("+(i+1)+")").append(trth);   
+       		  }
+       	  }
+
+         },
+         error:function(){}
+     });
+     
+     $.ajax({
+         method:'get',
+         data:SQLParam,
+         url:"/app/PM/getTableDatas",
+         success:function(data){
+        	 
+        	 let dataR= NulltoEmpty(data);
+ //      	 alert(JSON.stringify(dataR));
+
+       	  if(dataR.length!=0){  
+       		  let trtd="";
+       		  var TestResultJSON="";
+       		  var tasksTableSQL="";
+       		  
+
+       		  for(let j=0;j<SQLParam.titles.length;j++){
+       			  
+       			  switch(SQLParam.titles[j]){
+       			  case "files":
+       			  case "taskFiles":
+       				  
+       				if(dataR[0][SQLParam.titles[j]]!=""){
+       					var files=JSON.parse(dataR[0][SQLParam.titles[j]]);
+       					
+       					console.log("files:"+files);
+       					  
+       				  }
+       				 if(files!=null){
+       					 var fileLink="";
+       					 if(files.length>0){
+       						 for(var k=0;k<files.length;k++){
+       							 console.log("files[k].fileName:"+files[k].fileName);
+       							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
+       						 }
+       						fileLink=fileLink.substr(0, fileLink.length-3); 
+       					 }
+       					trtd="<td>"+fileLink+"</td>";
+       				 }else{
+       					trtd="<td></td>";
+       				 }
+       			
+       				  break;
+       				  
+       			 case "IPQCTestResult":
+          			  trtd="<td><table id='TableTestContents' class='table table-bordered'>" +
+          			  		"<thead>" +
+          			  		"<tr>" +
+          			  		"<th width='70px'>模块</th>" +
+          			  		"<th>测试内容</th>" +
+          			  		"<th width='80px'>测试结果</th>" +
+          			  		"<th width='200px'>备注</th>" +
+          			  		"</tr>" +
+          			  		"</thead><tbody></tbody></table></td>";
+          			  
+          			  TestResultJSON=dataR[0][SQLParam.titles[j]];
+          			  tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='IPQC'"};
+          				  
+          			  break;
+       				  
+       			  case "FQCTestResult":
+       				trtd="<td><table id='TableTestContents' class='table table-bordered'>" +
+  			  		"<thead>" +
+  			  		"<tr>" +
+  			  		"<th width='70px'>模块</th>" +
+  			  		"<th>测试内容</th>" +
+  			  		"<th width='80px'>测试结果</th>" +
+  			  		"<th width='200px'>备注</th>" +
+  			  		"</tr>" +
+  			  		"</thead><tbody></tbody></table></td>";
+       			  TestResultJSON=dataR[0][SQLParam.titles[j]];
+       			  tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC'"};
+       				  
+       				  break;
+       				  
+       				  
+       			  case "DBID":
+       				trtd="<td>"+dataR[0]["DBID"]+"</td>";
+       				  break;
+       				  
+       			  default:
+       				  trtd="<td>"+dataR[0][SQLParam.titles[j]]+"</td>";
+       				  break;
+ 
+       			  
+       			  }
+
+       			  
+
+       			$(tableID+" tr:eq("+j+")").append(trtd);   
+       			
+       			
+
+       		  }
+       		  
+       		  
+       		//加载测试内容
+     			
+       		  
+
+       		 if(TestResultJSON==""){
+       			Fun_showSQLTestContentsTableLite(tasksTableSQL,"#TableTestContents",null);
+  			  }else{
+  				  
+  				let TestResult=JSON.parse(TestResultJSON);
+
+  				Fun_showSQLTestContentsTableLite(tasksTableSQL,"#TableTestContents",TestResult);
+  			  }
+       		  
+
+       		 files=null;
+
+       	  }
+
+         },
+         error:function(){}
+     });
+     
+
+
+	 
 }
 
 
@@ -1207,6 +1478,85 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
      })
 
 }
+
+//函数-根据自定义SQL获取数据加载内容
+
+
+function Fun_showSQLTestContentsTableLite(SQL,tableID,TestResult){
+	
+	//alert(JSON.stringify(DataPara));
+	 $(tableID+" tbody").html("");
+	
+	 $.ajax({
+         method:'get',
+         data:SQL,
+         url:"/app/PM/getSQLDBData",
+         success:function(data){
+        	 console.log("back data:"+JSON.stringify(data));
+        	
+        	 
+        	 console.log("TestResult11111:"+TestResult);
+        	 if(TestResult!=null){
+        		 
+        		 for(let i=0;i<TestResult.length;i++){
+//          		  alert(TestResult[i].testResult);
+        			 
+        			 for(let j=0;j<data.length;j++){
+        				 
+        				 if(TestResult[i].testContentDBID==data[j].DBID){
+        					 
+        					 var tr="<tr>" +
+             		        "<td style='display:none' id='testContentDBID"+j+"'>"+data[j].DBID+"</td>" +
+             		        "<td>"+data[j].modelType+"</td>" +
+             		 		"<td>"+data[j].content+"</td>" +
+             		 		"<td><span id='spanTestResult"+j+"'></span></td>"+
+             		 		"<td><span id='spanTestRemark"+j+"'></span></td>"+
+             		 		"</tr>";
+             		 
+             		        $(tableID+" tbody").append(tr);
+             		        
+             		       if(TestResult[i].testResult==1){
+              				 $("#spanTestResult"+j).text("正确");
+              			 }else{
+              				 $("#spanTestResult"+j).text("不正确");
+              			 }
+                		 
+                		     $("#spanTestRemark"+j).text(TestResult[i].testRemark);
+            				 
+            			 }
+                		 
+                		 
+                		
+                		 
+                	 }
+        			 
+        			
+        			 
+        			 
+        			 
+                } 
+        		 
+        	 }
+        	 
+        	 
+        	 
+        	 mergeTableCols(tableID);
+
+
+
+   		 
+//   		 $(tableID+" tbody").rowspan(0);
+//   		 $(tableID).rowspan(1);
+//   		 $(tableID).rowspan(2);
+        	 
+
+
+         },
+         error:function(){}
+     })
+
+}
+
 
 //函数-根据自定义SQL获取数据加载内容
 
@@ -1298,12 +1648,11 @@ function getQueryString(name) {
 
 function getEmails($){
 	 var _=/[\w\.\+-]+@[\w\.\+-]+/g;
-	 if($!=null){
+	 if($!=null&&$!=""){
 		 var s= $.match(_).toString();//先转换为字符串 不然会报 .replace is not a function错误
 		 s=s.replace(/\n/g,",");
 	     return s;
 	 }
-	
 }
 
 //将获得的数据中null转换为空

@@ -163,6 +163,15 @@
             </tr>
         </thead>
     </table>
+    
+    <!-- 点击详情后弹出的窗口 -->
+    <div id="winDetail" class="easyui-window" title="表单详情" closed="true" style="width:80%;height:800px;">
+    
+    <table id="tableDetail" class="table table-bordered">
+
+    </table>
+    
+    </div>
 
     
 </div>
@@ -170,16 +179,35 @@
 
 <script>
 
+//函数--在表格末尾加速查看按钮,扩展查看详情
 
 
 
-//函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataSelect){
-
+//根据获得的DBID 详情加载
+function getDBIDInfo(tableName,DBID){
 	
-	var SQLParamPLD={
+	console.log("11111;"+tableName);
+	console.log("22222;"+DBID);
+	
+//	$.ajax({
+//        method:'get',
+//        data:selectPara,
+//        url:"/app/PM/getSelectDBData",
+//        success:function(data){
+// 
+//        },
+//        error:function(){}
+//    })
+
+	$('#winDetail').window('open');
+	
+	switch(tableName){
+	case 'ppm_bills_plan':
+		
+		let SQLParamPLD={
 			"tableName":"ppm_bills_plan",
 			"titles":[
+				"DBID",
 				"BPID",
 				"version",
 				"CTRName",
@@ -195,15 +223,17 @@ function Fun_winDetailInit(dataSelect){
 				"maker",
 				"makeDate"
 				],
-			"filter":"BPID='"+dataSelect.BPID+"'"
+			"filter":"DBID='"+DBID+"'"
 			};
-	
-	
-	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
-	
-	var SQLParamBPT={
+		
+		showDBIDInfo("#tableDetail",SQLParamPLD);
+		
+		break;
+	case 'ppm_bills_blueprint':
+		let SQLParamBPT={
 			"tableName":"ppm_bills_blueprint",
 			"titles":[
+				"DBID",
 				"BPTID",
 				"BPTVersion",
 				"CTRName",
@@ -218,31 +248,147 @@ function Fun_winDetailInit(dataSelect){
 				"maker",
 				"makeDate"
 				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		showDBIDInfo("#tableDetail",SQLParamBPT);
+		
+		break;
+	case 'ppm_bills_task':
+		let SQLParamTask={
+			"tableName":"ppm_bills_task",
+			"titles":[
+				"DBID",
+				"BTID",
+				"BTVersion",
+				"taskCTRName",
+				"taskStaff",
+				"taskDBE",
+				"taskLimitDate",
+				"taskRemark",
+				"taskMaker",
+				"taskMakeDate",
+				"BTAcceptDate",
+				"modifyContent",
+				"functionsDBE",
+				"IPQCAuditResultText",
+				"IPQCMaker",
+				"IPQCMakeDate",
+				"BTStatusText",
+				"taskFiles",
+				"IPQCTestResult"
+				
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamTask);
+		
+		break;
+	case 'ppm_bills_fqc':
+		let SQLParamFQC={
+			"tableName":"ppm_bills_fqc",
+			"titles":[
+				"DBID",
+				"FQCVersion",
+				"FQCRecord",
+				"FQCRemark",
+				"FQCMaker",
+				"FQCMakeDate",
+				"FQCAuditor",
+				"FQCAuditDate",
+				"FQCStatusText",
+				"FQCTestResult"
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		showDBIDInfo("#tableDetail",SQLParamFQC);
+		
+		break;
+	case 'ppm_bills_pbh':
+		let SQLParamPBH={
+			"tableName":"ppm_bills_pbh",
+			"titles":[
+				"DBID",
+				"PBHVersion",
+				"PBHRemark",
+				"PBHMaker",
+				"PBHMakeDate",
+				"PBHAuditor",
+				"PBHAuditDate",
+				"emailADRS"
+
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamPBH);
+		
+		break;
+	
+	}
+	 	 
+	 
+}
+
+
+
+
+
+//函数:详情按钮详情页自动填写内容------------------------
+function Fun_winDetailInit(dataSelect){
+
+	
+	var SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"DBID",
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"PGEMaker",
+				"MHEName",
+				"files",
+				"model",
+				"applyDate",
+				"limitDate"
+				],
+			"filter":"BPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
+	
+	var SQLParamBPT={
+			"tableName":"ppm_bills_blueprint",
+			"titles":[
+				"DBID",
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"PGEMaker",
+				"auditDate",
+				"files",
+				"model",
+				"limitDate",
+				"makeDate"
+				],
 			"filter":"BPTID='"+dataSelect.BPID+"'"
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackBPT",SQLParamBPT);
+	Fun_fillTrackTableWithDBID("#tableTrackBPT",SQLParamBPT);
 	
 	//数据量不能过多,否则会报错
 	var SQLParamTask={
 			"tableName":"ppm_bills_task",
 			"titles":[
+				"DBID",
 				"BTID",
 				"BTVersion",
-//				"taskCTRName",
 				"taskStaff",
-				"taskDBE",
 				"taskLimitDate",
-//				"taskRemark",
-				
-//				"taskMaker",
-//				"taskMakeDate",
 				"BTAcceptDate",
-				"modifyContent",
-//				"functionsDBE",
-//				"IPQCAuditResultText",
-//				"IPQCMaker",
 				"IPQCMakeDate",
 				"BTStatusText",
 				"taskFiles"
@@ -251,15 +397,14 @@ function Fun_winDetailInit(dataSelect){
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackTask",SQLParamTask);
+	Fun_fillTrackTableWithDBID("#tableTrackTask",SQLParamTask);
 	
 	
 	var SQLParamFQC={
 			"tableName":"ppm_bills_fqc",
 			"titles":[
+				"DBID",
 				"FQCVersion",
-				"FQCRecord",
-				"FQCRemark",
 				"FQCMaker",
 				"FQCMakeDate",
 				"FQCAuditor",
@@ -270,14 +415,14 @@ function Fun_winDetailInit(dataSelect){
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackFQC",SQLParamFQC);
+	Fun_fillTrackTableWithDBID("#tableTrackFQC",SQLParamFQC);
 	
 	
 	var SQLParamPBH={
 			"tableName":"ppm_bills_pbh",
 			"titles":[
+				"DBID",
 				"PBHVersion",
-				"PBHRemark",
 				"PBHMaker",
 				"PBHMakeDate",
 				"PBHAuditor",
@@ -289,7 +434,7 @@ function Fun_winDetailInit(dataSelect){
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackPBH",SQLParamPBH);
+	Fun_fillTrackTableWithDBID("#tableTrackPBH",SQLParamPBH);
 
 
 }
@@ -367,8 +512,6 @@ $('#BTNInfo').click(function() {
 
     }
 });
-
-
 
 
 //删除按钮----------
