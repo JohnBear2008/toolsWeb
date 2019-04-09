@@ -1,0 +1,28 @@
+/*jshint esversion: 6 */
+module.exports = function(sender) {
+    var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
+    var yjDB = global.yjRequire("yujiang.Foil").yjDB;
+
+    let execSQL = "",
+        aSQLPara = [],
+        session = sender.req.query;
+
+    aSQLPara = [session.usr_account, session.hmi_host,
+        session.hmi_usr, session.hmi_pwd
+    ];
+
+    execSQL = `
+        DELETE FROM autotest_session
+        WHERE usr_account=? AND hmi_host=? AND hmi_usr=? AND hmi_pwd=?`;
+
+    yjDBService.exec({
+        sql: execSQL,
+        parameters: aSQLPara,
+        rowsAsArray: false, // Chenly 2018-10-19 返回obj arr
+
+        success: function(result) {
+            sender.success(result);
+        },
+        error: sender.error,
+    });
+};

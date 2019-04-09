@@ -1,0 +1,804 @@
+<!--本地路径-->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 其他的标准/第三方库-->
+<link rel="stylesheet" type="text/css" href="/layui/v2.4.5/css/layui.css">
+<script type="text/javascript" src="/layui/v2.4.5/layui.js"></script>
+<script type="text/javascript" src="/echarts/echarts.min.js"></script>
+
+<!--自己写的-->
+<link rel="stylesheet" type="text/css" href="/css/AutoTest/autotest-master.css">
+<link rel="stylesheet" type="text/css" href="/css/AutoTest/autotest-font.css">
+<script type="text/javascript" src="/js/muc_jsExtend.js"></script>
+<script type="text/javascript" src="/js/AutoTest/autotest-common.js"></script>
+
+<!-- js画面 -->
+<script type="text/javascript" src="/js/AutoTest/js_view/sessionForm.js"></script>
+
+<div class="content">
+    <!-- 标题区 -->
+    <blockquote class="layui-elem-quote layui-text">
+        <h2>&nbsp;执行</h2>
+    </blockquote>
+    <!-- 操作区 1 HMI session list -->
+    <div class="layui-container-fluid">
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-12">
+                <table id="session-table" lay-filter="session-table"></table>
+            </div>
+        </div>
+    </div>
+
+    <!-- cpu、mem使用率图表 -->
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <div id="cpuCharts" style="height: 500px"></div>
+        </div>
+        <div class="layui-col-md6">
+            <div id="memCharts" style="height: 500px"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 操作区 2 session oper -->
+<script type="text/html" id="sessionHeadBar">
+    <button class="layui-btn layui-btn-normal layui-btn-md" lay-event="add">新增</button>
+</script>
+
+<script type="text/html" id="editColbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="modify">修改</button>
+        <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</button>
+    </div>
+</script>
+
+<script type="text/html" id="autoOperColbar">
+    <input type="checkbox" name="page_check" title="翻页" lay-filter="page_check">
+    <input type="checkbox" name="keyValue_check" title="key值" lay-filter="keyValue_check">
+</script>
+
+<script type="text/html" id="testColbar">
+    <input type="checkbox" name="frame_check" title="画面验证" lay-filter="frame_check">
+    <input type="checkbox" name="hardware_check" title="硬件状态" lay-filter="hardware_check">
+</script>
+
+<script type="text/html" id="execTestColbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="execAutoTest">自动测试</button>
+        <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="stopAutoTest">终止</a>
+    </div>
+</script>
+
+<script type="text/javascript">
+/*jshint esversion:6*/
+/*===========================================================================+
+|   ready                                                                    |
++===========================================================================*/
+$(function(e) {
+    // 禁用刷新和右键，防止使用者手贱，刷新了页面导致测试中断或测试结果丢失
+    // document.oncontextmenu = function() { return false; };
+    // document.onkeydown = function(event) {
+    //     var e = event || window.event || arguments.callee.caller.arguments[0];
+    //     if (e && e.keyCode == 116) {
+    //         return false;
+    //     }
+    // };
+    layui.use(['form', 'layer', 'layedit', 'table'], function() {
+        /* --- hmi session list 渲染 --- */
+        session_tab = layui.table;
+        form = layui.form;
+        layer = layui.layer;
+        layedit = layui.layedit;
+
+        flashSessionList('session-table'); // 显示hmi session list
+        initTopCMDCharts([{ id: 'cpuCharts', text: "cpu使用率(%)" }, { id: 'memCharts', text: "mem使用率(%)" }]);
+    });
+
+
+});
+
+/* layui图标序号 */
+const WARN_ICON = 0,
+    YES_ICON = 1,
+    NO_ICON = 2,
+    QUERY_ICON = 3,
+    LOCK_ICON = 4,
+    FAIL_ICON = 5,
+    SUCCESS_ICON = 6,
+    LOAD_ICON = 16;
+
+// ajax 错误信息textStatus映射表
+const ERR_MAP = {
+    'timeout': "连接超时，请检查网络硬件连通是否顺畅",
+    'error': "请确认执行的session信息是否正确、 网络硬件连通是否顺畅！",
+};
+
+/*===========================================================================+
+|   全局对象                                                                  |
++===========================================================================*/
+// layui 对象
+var form,
+    layer,
+    layedit,
+    session_tab;
+
+// jq DOM元素
+var $all_btn;
+var $all_checkbox;
+var msg_run;
+
+// 自动测试对象
+var moniLoop, // 循环周期监听对象
+    logger, // 日志对象
+    monitor;
+
+// 其他
+var usr_account = "<%-locals.session.yjUser.AID%>"; // 当前用户名
+
+var timer_id = null;
+/*===========================================================================+
+|   object 对象原型                                                           |
++===========================================================================*/
+// logger对象原型，用来记录测试过程中产生的异常信息
+function LoggerObj() {
+    /*
+        当前hmi程式版本 eg. 7HT_G11_18BS
+        可从value_version文件处获得
+        value0  =7HTG11
+        value1  =18BS
+     */
+    this.hmi_info = "";
+    this.start_time = new Date().format("yy-MM-dd hh:mm:ss"); // 测试开始时间
+}
+
+/*===========================================================================+
+|   Class 对象原型                                                             |
++===========================================================================*/
+/**
+ * @Describle [基类，hmi session内容]
+ * @Detail
+ * @Author    Muc
+ * @DateTime  2019-01-18
+ */
+class HMIInfo {
+    constructor(session) {
+        this.session = session;
+    }
+}
+
+/**
+ * @Describle [执行自动测试工作类]
+ * @Author    Muc
+ * @DateTime  2019-01-18
+ */
+class AutoTestObj extends HMIInfo {
+    constructor(session) {
+        super(session); // 调用父类的constructor(session)
+    }
+
+}
+
+/**
+ * @Describle [监听HMI类]
+ * @Author    Muc
+ * @DateTime  2019-01-18
+ */
+class Monitor extends HMIInfo {
+    constructor(session) {
+        super(session); // 调用父类的constructor(session)
+
+        this.aTimes = [];
+
+        this.oCpu = {
+            aUseRates: [],
+        };
+        this.oMem = {
+            aUseRates: [],
+        };
+    }
+
+    // 可操作元素 => 不可操作
+    forbidOperate() {
+        // 所有button变为不可编辑
+        // $all_btn.addClass("layui-btn-disabled");
+        $all_btn.prop("disabled", true);
+        $all_checkbox.prop("disabled", true);
+
+        form.render();
+    }
+
+    // 可操作元素 => 可操作
+    recoverOperate() {
+        // 所有button变为不可编辑
+        // $all_btn.removeClass("layui-btn-disabled");
+        $all_btn.prop("disabled", false);
+        $all_checkbox.prop("disabled", false);
+
+        form.render();
+    }
+
+    // 监听HMI
+    listenHMI() {
+        let _this = this;
+        $.ajax({
+            timeout: 5000, // 超时 5s
+            async: false, // 强制第一时间进行进程监测，但是控制台会有“用户体验差”的警告，看着难受
+            cache: false,
+            method: "get",
+            url: "/app/AutoTest/listenHMI",
+            data: { session: _this.session },
+            /* data = { cpu : { use_rate:27 }, // Muc 2019-03-29 通过mobaXterm，HMI在不进行任何操作的前提下，cpu平均在18%左右
+                        mem : { use_rate:18 },
+                        mmi : { 'isAlive': true }
+                        time: "19-03-29 08:03:10" } */
+            success: function(data, textStatus) {
+                /*  如果mmi进程挂掉了？ -> 重启mmi -> 日志记录本次操作 */
+                if (!data.mmi.isAlive) {
+                    alert(data.time + '\n' + 'mmi挂掉了，按下此弹窗的按钮后，将重启mmi');
+                    _this.restartMMI();
+                } else {
+                    _this.aTimes.push(data.time);
+
+                    // 刷新cpu使用率图表数据
+                    _this.oCpu.aUseRates.push(data.cpu.use_rate);
+                    updateTopCMDCharts("cpuCharts", "cpu使用率(%)", _this.aTimes, _this.oCpu.aUseRates);
+
+                    // 刷新mem使用率图表数据
+                    _this.oMem.aUseRates.push(data.mem.use_rate);
+                    updateTopCMDCharts("memCharts", "mem使用率(%)", _this.aTimes, _this.oMem.aUseRates);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                let ping_err = false;
+                cleanLoop(moniLoop, ping_err);
+
+                let msg = ERR_MAP[textStatus.toLowerCase()];
+                /* 连接超时，则给予提示并刷新页面 */
+                layer.confirm("执行报错： " + msg, {
+                    btn: ['我知道了'] // 按钮
+                }, function() {
+                    window.location.reload(); // 刷新页面，init
+                });
+            },
+            complete: function() {
+
+            }
+        });
+    }
+
+    // 重启MMI进程
+    restartMMI() {
+        let _this = this;
+        $.ajax({
+            async: false, // 在mmi进程挂掉后，必须同步重启mmi进程
+            cache: false,
+            method: "get",
+            url: "/app/AutoTest/restartMMI",
+            data: { session: _this.session },
+            success: function(data, textStatus) {},
+            error: function(XMLHttpRequest, textStatus, errorThrown) {},
+        });
+    }
+}
+
+/*===========================================================================+
+|   自动测试 func                                                             |
++===========================================================================*/
+/**
+ * @Describle [执行自动测试*]
+ * @Author    Muc
+ * @DateTime  2019-02-15
+ */
+function execAutoTest(obj, page_check, frame_check, hardware_check) {
+    /* STEP 1 - 创建各种对象 */
+    logger = new LoggerObj();
+    monitor = new Monitor(obj);
+
+    /* STEP 2 - 所有按钮变为不可编辑，并给出提示信息  */
+    $all_btn = $("button");
+    $all_checkbox = $("input[type=checkbox]");
+    monitor.forbidOperate();
+
+    msg_run = layer.msg("测试工作进行中 ... ", {
+        icon: LOAD_ICON,
+        time: false,
+    });
+
+    // /* STEP 3 - 监听mmi进程情况 */
+    // callback用于回调退出循环， 或者使用 clearInterval(moniLoop);
+    moniLoop = setInterval((callback) => {
+        monitor.listenHMI();
+    }, 5000); // ajax频率暂定 5秒/次
+
+    // startMoniLoop(monitor); // ！！ 第二种ajax轮询方式
+}
+
+/**
+ * @Describle [终止自动测试工作]
+ * @Author    Muc
+ * @DateTime  2019-02-22
+ */
+function stopAutoTest() {
+    cleanLoop(moniLoop);
+    showLogger(logger);
+}
+
+// ！！ 第二种ajax轮询方式
+/*function getData() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            monitor.listenHMI();
+            resolve({});
+        }, 1000);
+    });
+}
+
+// 轮询
+async function startMoniLoop() {
+    const { data } = await getData(); // 模拟请求  data = getData.data
+    timer_id = setTimeout(startMoniLoop, 1000);
+}
+
+// 暂停轮询
+function stopMoniLoop() {
+    clearTimeout(timer_id);
+}*/
+
+/*===========================================================================+
+|   msg func                                                                 |
++===========================================================================*/
+/**
+ * @Describle [中断监听循环]
+ * @Author    Muc
+ * @DateTime  2019-02-15
+ */
+function cleanLoop(loop, error = false) {
+    clearInterval(loop);
+    // 所有的元素变为可编辑
+    monitor.recoverOperate();
+
+    if (!error) {
+        createLogger(logger);
+    }
+
+    // 清除 “自动测试中”的msg
+    layer.close(msg_run);
+}
+
+/*===========================================================================+
+|   log func                                                                 |
++===========================================================================*/
+/**
+ * @Describle [按log对象内容，创建日志实例，并记录至db内]
+ * @Author    Muc
+ * @DateTime  2019-02-15
+ */
+function createLogger(log) {}
+
+/**
+ * @Describle [呈现log内容]
+ * @Author    Muc
+ * @DateTime  2019-02-15
+ */
+function showLogger(log) {
+    let cur_time = new Date().format("yy-MM-dd hh:mm:ss");
+
+}
+
+/*===========================================================================+
+|   render func                                                              |
++===========================================================================*/
+/**
+ * @Describle [ 从数据表中获取当前用户的 HMI session list ]
+ * @Author    Muc
+ * @DateTime  2019-01-21
+ */
+function flashSessionList(tableID) {
+    $.ajax({
+        method: "get",
+        url: "/app/AutoTest/getSessionList",
+        data: { usr_account },
+        success: function(data, textStatus) {
+            session_tab.render({
+                elem: "#" + tableID,
+                data: data,
+                cols: [
+                    [
+                        { field: 'hmi_host', title: 'host', align: 'center', unresize: true },
+                        { field: 'hmi_usr', title: '账户', align: 'center', unresize: true },
+                        { field: 'hmi_pwd', title: '密码', align: 'center', unresize: true },
+                        { align: 'center', title: '编辑', toolbar: '#editColbar', width: 130, unresize: true },
+                        { align: 'center', title: '工具自动', toolbar: '#autoOperColbar', width: 200, unresize: true },
+                        { align: 'center', title: '测试报告', toolbar: '#testColbar', width: 250, unresize: true },
+                        { align: 'center', title: '执行', toolbar: '#execTestColbar', unresize: true }
+                    ]
+                ],
+                // 表格大小
+                cellMinWidth: 130, // 常规单元格的最小宽度，防止显示不全
+                // 数据操作
+                toolbar: '#sessionHeadBar',
+                defaultToolbar: [], // 隐藏表格 右上角的筛选、打印、导出
+            });
+            session_tab.on('toolbar(session-table)', function(obj) { // 表格头部工具按钮栏，括号里指的是目标table的id
+                let checkStatus = session_tab.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'add':
+                        addSession(tableID);
+                        break;
+                    default:
+                        break;
+                }
+            });
+            session_tab.on('tool(session-table)', function(obj) { // 表格内的按钮
+                let cur_row_obj = obj.data,
+                    cur_tr_dom = obj.tr;
+
+                // 获取当前行号rowx -> 获取rowx复选框的选中状态
+                let rowx = cur_tr_dom.attr('data-index'), // 当前行号 === 当前元素的data-index
+                    page_el = "[data-index={0}] [name=page_check]".format(rowx), // 翻页
+                    keyvalue_el = "[data-index={0}] [name=keyValue_check]".format(rowx), // key值
+                    frame_el = "[data-index={0}] [name=frame_check]".format(rowx), // 画面验证
+                    hardware_el = "[data-index={0}] [name=hardware_check]".format(rowx); // 硬件状态
+                let page_check = $(page_el).prop("checked"),
+                    keyvalue_check = $(keyvalue_el).prop("checked"),
+                    frame_check = $(frame_el).prop("checked"),
+                    hardware_check = $(hardware_el).prop("checked");
+
+                switch (obj.event) {
+                    case 'modify':
+                        updSession(cur_row_obj, tableID);
+                        break;
+                    case 'del':
+                        obj.del(); // 更新缓存
+                        delSession(cur_row_obj);
+                        break;
+                    case 'hmiFormTest':
+                        hmiFormTest(cur_row_obj);
+                        break;
+                    case 'hmiPropTest':
+                        hmiPropTest(cur_row_obj);
+                        break;
+                    case 'execAutoTest':
+                        // 必须选择一个测试项
+                        if ((page_check || keyvalue_check || frame_check || hardware_check))
+                            execAutoTest(cur_row_obj, page_check, keyvalue_check, frame_check, hardware_check);
+                        else
+                            layer.msg("请勾选左侧复选框后，再进行操作", { icon: FAIL_ICON });
+                        break;
+                    case 'stopAutoTest':
+                        stopAutoTest();
+                        break;
+                    default:
+                        break;
+                }
+            });
+            // 复选框 画面验证 勾选后
+            //   1、 翻页 和 key值 的状态同步
+            //   2、 与硬件状态互斥
+            form.on('checkbox(frame_check)', function(data) {
+                if (data.elem.checked) {
+                    // PART 1 获取当前行号rowx
+                    let root_el = $(data.elem).parents('[data-index]'),
+                        rowx = root_el.attr('data-index');
+                    // PART 2 获取翻页和key值 复选框jq对象
+                    let page_el = $("tr[data-index={0}] [name=page_check]".format(rowx)),
+                        keyvalue_el = $("[data-index={0}] [name=keyValue_check]".format(rowx)),
+                        hardware_el = $("[data-index={0}] [name=hardware_check]".format(rowx));
+                    // PART 3 翻页 同步
+                    if (!page_el.prop("checked")) {
+                        page_el.prop("checked", true);
+                    }
+                    // PART 4 key值 同步
+                    if (!keyvalue_el.prop("checked")) {
+                        keyvalue_el.prop("checked", true);
+                    }
+                    // PART 5 硬件状态 互斥
+                    if (hardware_el.prop("checked")) {
+                        hardware_el.prop("checked", false);
+                    }
+
+                    form.render();
+                }
+            });
+            // 复选框：硬件状态 与 画面验证互斥
+            form.on('checkbox(hardware_check)', function(data) {
+                if (data.elem.checked) {
+                    // PART 1 获取当前行号rowx
+                    let root_el = $(data.elem).parents('[data-index]'),
+                        rowx = root_el.attr('data-index');
+                    // PART 2 翻页 复选框jq对象
+                    let frame_el = $("[data-index={0}] [name=frame_check]".format(rowx));
+                    // PART 3 画面验证 互斥
+                    if (frame_el.prop("checked")) {
+                        frame_el.prop("checked", false);
+                        form.render();
+                    }
+                }
+            });
+            // 复选框：工具自动-key值 勾选后，翻页 一并勾选
+            form.on('checkbox(keyValue_check)', function(data) {
+                if (data.elem.checked) {
+                    let root_el = $(data.elem).parents('[data-index]'),
+                        rowx = root_el.attr('data-index');
+
+                    let page_el = $("tr[data-index={0}] [name=page_check]".format(rowx));
+                    if (!page_el.prop("checked")) {
+                        page_el.prop("checked", true);
+                        form.render();
+                    }
+                }
+            });
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        },
+    });
+
+}
+
+/**
+ * @Describle [ 初始化top命令的数据图表 ]
+ * @Author    Muc
+ * @DateTime  2019-03-28
+ * @param     {[array]}    aInfo = [{ id: 'cpuCharts', text: "cpu使用率(%)" }, ...]
+ */
+function initTopCMDCharts(aInfo) {
+    for (let inx = 0; inx < aInfo.length; ++inx) {
+        const oInfo = aInfo[inx];
+
+        const id = oInfo.id,
+            text = oInfo.text;
+
+        updateTopCMDCharts(id, text);
+    }
+}
+
+/**
+ * @Describle [ 刷新top命令的数据图表 ]
+ * @Author    Muc
+ * @DateTime  2019-03-28
+ * @param     {[type]}    elID      [ 元素ID ]
+ * @param     {[type]}    titleText [ 图表标题内容 ]
+ * @param     {Array}     xAxisS    [ x轴 刻度 ]
+ * @param     {Array}     yAxisVal  [ y轴 坐标值 ]
+ */
+function updateTopCMDCharts(elID, titleText, xAxisS = [0, 0, 0], yAxisVal = [0, 0, 0]) {
+    let dom = document.getElementById(elID),
+        myChart = echarts.init(dom),
+        option = null;
+
+    // X轴 刻度
+    const xAxisScale = xAxisS;
+
+    // y轴 坐标值
+    const yAxisValue = yAxisVal;
+
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            position: function(pt) {
+                return [pt[0], '40%']; // 提示文字显示在中上部位
+            }
+        },
+        title: {
+            left: 'center',
+            text: titleText,
+        },
+        // 右上角小按钮
+        // toolbox: {
+        //     feature: {
+        //         restore: {}, // 按钮还原
+        //         saveAsImage: {} // 下载按钮
+        //     }
+        // },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxisScale,
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+            boundaryGap: false,
+        },
+        // 数据窗口缩放 和 平移 接口
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100,
+        }, {
+            type: 'slider',
+            start: 0,
+            end: 100,
+            realtime: false, // 拖动时不需要实时显示
+            // Muc 2019-03-29 显示不全，故换行
+            labelFormatter: function(value) {
+                let v = xAxisScale[value].toString();
+                return v.split(' ').join("\n"); // Muc 2019-03-29 为了性能
+                // return v.split(/\s+/).join("\n");
+            }
+        }],
+        series: [{
+            name: '数值',
+            type: 'line',
+            smooth: true,
+            sampling: 'average',
+            itemStyle: {
+                color: 'rgb(255, 70, 131)'
+            },
+            areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgb(255, 158, 68)'
+                }, {
+                    offset: 1,
+                    color: 'rgb(255, 70, 131)'
+                }])
+            },
+            data: yAxisValue,
+            markPoint: {
+                data: [
+                    { type: 'max', name: '最大值' },
+                    { type: 'min', name: '最小值' }
+                ]
+            },
+            markLine: {
+                data: [
+                    { type: 'average', name: '平均值' }
+                ]
+            }
+        }]
+    };
+
+    // 呈现数据
+    if (option && typeof option === "object") {
+        myChart.setOption(option, notMerge = true, lazyUpdate = true);
+    }
+}
+/*===========================================================================+
+|   session-list oper                                                        |
++===========================================================================*/
+/**
+ * @Describle [新增session]
+ * @Author    Muc
+ * @DateTime  2019-01-21
+ * @param     {[type]}    session [description]
+ * @return    {[type]}            [description]
+ */
+function addSession(tableID) {
+    layer.open({
+        type: 1,
+        title: ['新增session', 'font-size:18px; font-weight:bold;'],
+        // maxmin: true, // 最大/最小化
+        shadeClose: true, // 点击遮罩层，关闭当前画面
+        content: sessionForm, // form的DOM，sb框架无法引用html，故这里调用的是moldDBform.js内的字符串对象
+        area: '680px',
+        scrollbar: false, // 可提高效率
+        skin: 'layui-layer-rim', //加上边框
+
+        end: function() {
+            // 执行效率还行, 想追求极致性能的话，可改用datatable
+            // 或者用自带的reload方法
+            flashSessionList(tableID);
+        }
+    });
+
+    form.val('filter_sessionForm', {
+        "hmi_host": undefined,
+        "hmi_usr": 'root',
+        "hmi_pwd": ''
+    });
+
+    form.on('submit(form_submit)', function(data) {
+        let formData = data.field;
+        formData.usr_account = usr_account;
+
+        $.ajax({
+            method: "post",
+            url: "/app/AutoTest/addSession",
+            data: formData,
+            success: function(data, textStatus) {
+                if (data.affectedRows != 0) {
+                    layer.msg("添加成功！", {
+                        icon: SUCCESS_ICON,
+                    });
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg("该数据的标识信息已存在，请以更新的方式更新此数据！", { icon: FAIL_ICON });
+            },
+        });
+
+        return false; // 提交后不自动关闭form
+    });
+
+}
+
+/*===========================================================================+
+|   ajax func                                                                |
++===========================================================================*/
+/**
+ * @Describle [更新session]
+ * @Author    Muc
+ * @DateTime  2019-01-21
+ * @param     {[type]}    session [description]
+ * @return    {[type]}            [description]
+ */
+function updSession(obj, tableID) {
+    layer.open({
+        type: 1,
+        skin: 'layui-layer-rim', //加上边框
+        title: ['修改', 'font-size:18px; font-weight:bold;'],
+        // maxmin: true, // 最大/最小化
+        shadeClose: true, //点击遮罩关闭层
+        content: sessionForm, // form的DOM，sb框架无法引用html，故这里调用的是moldDBform.js内的字符串对象
+        area: '680px',
+        scrollbar: false, // 可提高效率
+    });
+
+    form.val('filter_sessionForm', {
+        "hmi_host": obj.hmi_host,
+        "hmi_usr": obj.hmi_usr,
+        "hmi_pwd": obj.hmi_pwd,
+    });
+
+    form.on('submit(form_submit)', function(data) {
+        let formData = data.field;
+        formData.usr_account = usr_account;
+        formData.uid = obj.uid;
+
+        $.ajax({
+            method: "post",
+            url: "/app/AutoTest/updSession",
+            data: formData,
+            success: function(data, textStatus) {
+                if (data.affectedRows != 0) {
+                    layer.msg("修改成功！", {
+                        icon: SUCCESS_ICON,
+                        time: 1000,
+                        end: function() {
+                            flashSessionList(tableID);
+                        }
+                    });
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg("该数据的标识信息已存在，请以更新的方式更新此数据！", { icon: FAIL_ICON });
+            },
+        });
+
+        return false; // 提交后不自动关闭form
+    });
+
+}
+
+/**
+ * @Describle [删除session]
+ * @Author    Muc
+ * @DateTime  2019-01-21
+ * @param     {[type]}    session [description]
+ * @return    {[type]}            [description]
+ */
+function delSession(session) {
+    session.usr_account = usr_account;
+
+    $.ajax({
+        method: "post",
+        url: "/app/AutoTest/delSession",
+        data: session,
+        success: function(data, textStatus) {
+            if (data.affectedRows != 0) {
+                layer.msg("删除成功！", {
+                    icon: SUCCESS_ICON,
+                    time: 1000,
+                });
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            layer.msg("我们出现了未知错误,请联系开发者" + errorThrown, { icon: FAIL_ICON });
+        },
+    });
+}
+
+</script>

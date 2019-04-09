@@ -1094,7 +1094,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
 
        		  for(var j=0;j<SQLParam.titles.length;j++){
 
-    //  			  console.log("SQLParam.titles[j]:"+SQLParam.titles[j]);
+      			  console.log("1111111SQLParam.titles[j]:"+SQLParam.titles[j]);
        			  
        			  if(SQLParam.titles[j]=="files"||SQLParam.titles[j]=="taskFiles"){
        				  
@@ -1102,11 +1102,11 @@ function Fun_fillTrackTable(tableID,SQLParam){
        				  
        				  if(dataR[i][SQLParam.titles[j]]!=""){
        					var files=JSON.parse(dataR[i][SQLParam.titles[j]]);
+       					
+       					console.log("files:"+files);
        					  
        				  }
-       				  
-       				  
-       				 console.log("files:"+files);
+
        				 
        				 if(files!=null){
        					 
@@ -1132,6 +1132,8 @@ function Fun_fillTrackTable(tableID,SQLParam){
        		  }
        			  trtd=trtd+"</tr>";
        			 $(tableID+" tbody").append(trtd);   
+       			 
+       			files=null;
        		  }
 
        	  }

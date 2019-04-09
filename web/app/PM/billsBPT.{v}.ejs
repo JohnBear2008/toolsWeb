@@ -546,9 +546,9 @@
                   	<label class="col-sm-1 control-label">审核方式:</label>
                   	<div class="col-sm-6">
 
-                  	    <label class="radio-inline">
+                  	<!--    <label class="radio-inline">
           	            <input type="radio" name="auditType" id="auditTypeOption1"  value="1"> 暂不审核
-          	            </label>
+          	            </label>-->
 
                   	    <label class="radio-inline">
                   	        <input type="radio" name="auditType" id="auditTypeOption2" value="2"> 自我审核
@@ -929,13 +929,11 @@ function Fun_BPTDetailInit(dataSelect){
 
 
 	if(auditor==null){
-		 $("#auditTypeOption1").prop("checked",true);
+		 $("#auditTypeOption2").prop("checked",true);
+		 $('input:radio[name="auditType"]').click();
 	}else{
 		$("#auditTypeOption3").prop("checked",true);
 	}
-
-
-
 
 	switch(auditResult){
 	case null:
@@ -974,7 +972,7 @@ function Fun_BPTDetailInit(dataSelect){
 		 $("#BPTBPID").attr("disabled",true);
 		 $("#BTID").attr("disabled",true);
 		 
-		Fun_BPTDetailInitPart2(dataSelect);
+		 Fun_BPTDetailInitPart2(dataSelect);
 
 		 $("#DivFileBTNS").show();
 		 $("#DivTaskBTNS").show();
