@@ -2,14 +2,11 @@ require("../../client/js/Date.js");
 require("../../client/js/SQL.js");
 
 
-
-
 module.exports = function(sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 
-
-//    console.log("get:"+JSON.stringify(sender.req.query));
+    console.log("get:"+JSON.stringify(sender.req.query));
 
     var SQL=sender.req.query.SQL;  
     var DBTable=sender.req.query.DBTable;  
@@ -34,8 +31,8 @@ module.exports = function(sender) {
 		var SQLExecute=SQLDBMachines;
 		break;
 	case "SQLSRCustomers":
-			var SQLExecute=SQLSRCustomers;
-			break;
+		var SQLExecute=SQLSRCustomers;
+		break;
 	case "SQLSRMachines":
 		var SQLExecute=SQLSRMachines;
 		break;
@@ -117,8 +114,7 @@ module.exports = function(sender) {
 	case "SQLTableBillsPBH_T":
 		var SQLExecute=SQLTableBillsPBH_T;
 		break;
-		
-		
+
 	case "SQLTableTestContents":
 		var SQLExecute=SQLTableTestContents;
 		break;

@@ -1103,7 +1103,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        				  if(dataR[i][SQLParam.titles[j]]!=""){
        					var files=JSON.parse(dataR[i][SQLParam.titles[j]]);
        					
-       					console.log("files:"+files);
+//       					console.log("files:"+files);
        					  
        				  }
 
@@ -1113,7 +1113,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        					 var fileLink="";
        					 if(files.length>0){
        						 for(var k=0;k<files.length;k++){
-       							 console.log("files[k].fileName:"+files[k].fileName);
+//       							 console.log("files[k].fileName:"+files[k].fileName);
        							 
        							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
        						 }
@@ -1160,8 +1160,7 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
 	
 	 $(tableID +" thead").html("");
 	 $(tableID +" tbody").html("");
-	 
-	 
+
 	
 	 $.ajax({
          method:'get',
@@ -1209,7 +1208,7 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
        				  if(dataR[i][SQLParam.titles[j]]!=""){
        					var files=JSON.parse(dataR[i][SQLParam.titles[j]]);
        					
-       					console.log("files:"+files);
+//       					console.log("files:"+files);
        					  
        				  }
 
@@ -1219,7 +1218,7 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
        					 var fileLink="";
        					 if(files.length>0){
        						 for(var k=0;k<files.length;k++){
-       							 console.log("files[k].fileName:"+files[k].fileName);
+//       							 console.log("files[k].fileName:"+files[k].fileName);
        							 
        							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
        						 }
@@ -1243,7 +1242,7 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
 
        		  }
        		  
-       		  console.log("1111:"+dataR[i].DBID);
+//       		  console.log("1111:"+dataR[i].DBID);
        			  trtd=trtd+"<td><a href='javascript:getDBIDInfo(\""+SQLParam.tableName+"\","+dataR[i].DBID+")'>查看</a></td></tr>";
        			 $(tableID+" tbody").append(trtd);   
        			 
@@ -1318,14 +1317,14 @@ function showDBIDInfo(tableID,SQLParam){
        				if(dataR[0][SQLParam.titles[j]]!=""){
        					var files=JSON.parse(dataR[0][SQLParam.titles[j]]);
        					
-       					console.log("files:"+files);
+//       					console.log("files:"+files);
        					  
        				  }
        				 if(files!=null){
        					 var fileLink="";
        					 if(files.length>0){
        						 for(var k=0;k<files.length;k++){
-       							 console.log("files[k].fileName:"+files[k].fileName);
+//       							 console.log("files[k].fileName:"+files[k].fileName);
        							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
        						 }
        						fileLink=fileLink.substr(0, fileLink.length-3); 
@@ -1391,16 +1390,22 @@ function showDBIDInfo(tableID,SQLParam){
        		  
        		//加载测试内容
      			
+//       		  console.log("TestResultJSON:"+TestResultJSON);
        		  
+       		  if(tasksTableSQL!=""){
+       			  
+       			if(TestResultJSON==""){
+           			Fun_showSQLTestContentsTableLite(tasksTableSQL,"#TableTestContents",null);
+      			  }else{
+      				  
+      				let TestResult=JSON.parse(TestResultJSON);
 
-       		 if(TestResultJSON==""){
-       			Fun_showSQLTestContentsTableLite(tasksTableSQL,"#TableTestContents",null);
-  			  }else{
-  				  
-  				let TestResult=JSON.parse(TestResultJSON);
+      				Fun_showSQLTestContentsTableLite(tasksTableSQL,"#TableTestContents",TestResult);
+      			  }
+       			  
+       		  }
 
-  				Fun_showSQLTestContentsTableLite(tasksTableSQL,"#TableTestContents",TestResult);
-  			  }
+       		 
        		  
 
        		 files=null;
@@ -1444,7 +1449,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         		 
         	 }
         	 
-        	 console.log("TestResult:"+TestResult);
+//        	 console.log("TestResult:"+TestResult);
         	 if(TestResult!=null){
         		 
         		 for(var i=0;i<TestResult.length;i++){
@@ -1492,10 +1497,8 @@ function Fun_showSQLTestContentsTableLite(SQL,tableID,TestResult){
          data:SQL,
          url:"/app/PM/getSQLDBData",
          success:function(data){
-        	 console.log("back data:"+JSON.stringify(data));
-        	
-        	 
-        	 console.log("TestResult11111:"+TestResult);
+//        	 console.log("back data:"+JSON.stringify(data));
+//        	 console.log("TestResult11111:"+TestResult);
         	 if(TestResult!=null){
         		 
         		 for(let i=0;i<TestResult.length;i++){
@@ -1604,7 +1607,7 @@ function Fun_previewSQLTestContents(SQL,tableID){
 function mergeTableCols(tableID){
 	
 	var tbodyLength=$(tableID+" tbody").find("tr").length;
-	console.log("tbodyLength:"+tbodyLength);
+//	console.log("tbodyLength:"+tbodyLength);
 
 	 let rowSpanNum=1;
 	 
@@ -1658,7 +1661,7 @@ function getEmails($){
 //将获得的数据中null转换为空
 function NulltoEmpty(data) {
 	
-	console.log("1213123:"+typeof(data))
+//	console.log("1213123:"+typeof(data))
 	
 	if(data instanceof Array){
 		 if(data.length!=0){
@@ -1699,7 +1702,7 @@ function checkAuthority(selectSQL,AuthorityID){
          async:false, //必须同步
          success:function(data){
         	 
-        	 console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
+//        	 console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
         	 
         	 let authorityArray=JSON.parse(data[0]["roleAuthorities"]);
         	 
@@ -1731,7 +1734,7 @@ function checkAuthority(selectSQL,AuthorityID){
 function tableChangeColWidth(tableID){
 	var tTD;
         var table = document.getElementById(tableID);
-        console.log(table.rows[0].cells)
+//        console.log(table.rows[0].cells)
         for (i = 0; i < table.rows[0].cells.length; i++) {
             table.rows[0].cells[i].onmousedown = function() {
                 tTD = this;
