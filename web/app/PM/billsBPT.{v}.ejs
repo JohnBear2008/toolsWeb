@@ -1339,13 +1339,38 @@ function Fun_delTask(IDData) {
     });
 }
 
+//函数,检查输入项是否完整
 
+function checkBPTInput(){
+	
+	if($("#MHEName").val()==null){
+		alert("机型未选择,请检查!");
+		return false;
+	}else if($("#modelD").val()==null||$("#modelH").val()==null){
+		alert("系统未选择,请检查!");
+		return false;
+	}else if(getCheckBoxValue("modifyReason")==""){
+		alert("修改原因未选择,请检查!");
+		return false;
+	}else if($("#BPTDescribe").val()==""){
+		alert("方案说明未输入,请检查!");
+		return false;
+	}else if($("#auditor").val()==null){
+		alert("审核人未选则,请检查!");
+		return false;
+	}
+	
+	
+	return true;
+	
+}
 
 
 
 
 //页面加载函数---------------
 $(document).ready( function () {
+
 
 
 
@@ -1926,110 +1951,110 @@ $('#BTNTaskSave').click(function(){
 $('#BTNBPTSave').click(function(){
 	
 
-	
-
-
-	var BPTBPID=$('#BPTBPID').val();
-	var BPTID=$('#BPTID').val();
-	var BPTVersion=$('#BPTVersion').text();
-	var CTRName=Fun_getSelectText($('#CTRName option:selected').text());
-	var PGEMaker=$('#PGEMaker').val();
-	var limitDate=$('#limitDate').val();
-    var	MHEName=Fun_getSelectText($('#MHEName option:selected').text());
-
-    var OGNSystemVersion=$('#OGNSystemVersion').val();
-
-    var modifyType=$('input:radio[name="modifyType"]:checked').val();
-    var	modifyReason=getCheckBoxValue("modifyReason");
-    var BPTDescribe=$('#BPTDescribe').val();
-    var auditor=Fun_getSelectText($('#auditor option:selected').text());
-    console.log("auditor:"+auditor);
-    
-    
-    
-
-    var files=[];
-	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
-		var fileName=$(this).attr('download');
+	if(checkBPTInput()){
 		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
+
+		var BPTBPID=$('#BPTBPID').val();
+		var BPTID=$('#BPTID').val();
+		var BPTVersion=$('#BPTVersion').text();
+		var CTRName=Fun_getSelectText($('#CTRName option:selected').text());
+		var PGEMaker=$('#PGEMaker').val();
+		var limitDate=$('#limitDate').val();
+	    var	MHEName=Fun_getSelectText($('#MHEName option:selected').text());
+
+	    var OGNSystemVersion=$('#OGNSystemVersion').val();
+
+	    var modifyType=$('input:radio[name="modifyType"]:checked').val();
+	    var	modifyReason=getCheckBoxValue("modifyReason");
+	    var BPTDescribe=$('#BPTDescribe').val();
+	    var auditor=Fun_getSelectText($('#auditor option:selected').text());
+	    console.log("auditor:"+auditor);
+	    
+	    
+	    
+
+	    var files=[];
 		
-		files.push(fileInfo);
-	});
+		$('#divFilesUploaded a').each(function(){
+			var fileKey=$(this).attr('href').substring(30);
+			var fileName=$(this).attr('download');
+			
+			var fileInfo={
+					"fileName":fileName,
+					"fileKey":fileKey
+			}
+			
+			files.push(fileInfo);
+		});
 
 
-    var BPTStatusText=$('#BPTStatusText').text();
-    
-	var DBID=$('#DBID').val();
-    
-        	var BPTData={
-    			"DBTable":"ppm_bills_blueprint",
-    			"DBID":DBID,
-    			"BPTBPID":BPTBPID,
-    			"BPTID":BPTID,
-    			"BPTVersion":BPTVersion,
-    			"CTRName":CTRName,
-    			"PGEMaker":PGEMaker,
-    			"limitDate":limitDate,
-    			"MHEName":MHEName,
-    			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
-    			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
-    			"OGNSystemVersion":OGNSystemVersion,
-    			"modifyType":modifyType,
-    			"modifyReason":modifyReason,
-    			"BPTDescribe":BPTDescribe,
-    			"maker":sessionName,
-    			"makeDate":Ndate,
-    			"auditResult":0,
-    			"auditor":auditor,
-    			"files":JSON.stringify(files)
+	    var BPTStatusText=$('#BPTStatusText').text();
+	    
+		var DBID=$('#DBID').val();
+	    
+	        	var BPTData={
+	    			"DBTable":"ppm_bills_blueprint",
+	    			"DBID":DBID,
+	    			"BPTBPID":BPTBPID,
+	    			"BPTID":BPTID,
+	    			"BPTVersion":BPTVersion,
+	    			"CTRName":CTRName,
+	    			"PGEMaker":PGEMaker,
+	    			"limitDate":limitDate,
+	    			"MHEName":MHEName,
+	    			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
+	    			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
+	    			"OGNSystemVersion":OGNSystemVersion,
+	    			"modifyType":modifyType,
+	    			"modifyReason":modifyReason,
+	    			"BPTDescribe":BPTDescribe,
+	    			"maker":sessionName,
+	    			"makeDate":Ndate,
+	    			"auditResult":0,
+	    			"auditor":auditor,
+	    			"files":JSON.stringify(files)
 
-    			}
-    
-        	
-//        	alert("BPTData:"+JSON.stringify(BPTData));
-        	
-        	
-        	if(auditor==sessionName){
-            	
-            	
-            	 $.ajax({
-            	        method: 'post',
-            	        url: '/app/PM/saveDBData',
-            	        data: BPTData,
-            	        success: function(data) {
-            	  //         alert("成功数据:" + JSON.stringify(data));
-            	           if (data.affectedRows != 0) {
-            	               alert("方案单数据保存成功!");
+	    			}
+	    
+	        	
+//	        	alert("BPTData:"+JSON.stringify(BPTData));
+	        	
+	        	
+	        	if(auditor==sessionName){
+	            	
+	            	
+	            	 $.ajax({
+	            	        method: 'post',
+	            	        url: '/app/PM/saveDBData',
+	            	        data: BPTData,
+	            	        success: function(data) {
+	            	  //         alert("成功数据:" + JSON.stringify(data));
+	            	           if (data.affectedRows != 0) {
+	            	               alert("方案单数据保存成功!");
 
-            	               let msg=confirm("是否立刻自动审核通过并发布任务?");
-            	               
-            	               if(msg){
-            	            	   $('#BTNBPTAuditYes').click();
-            	               }
-            	           }
-            	       },
-            	       error:function(err){
-            	    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-            	    		   alert("系统中已存在重复数据,请检查!");
-            	    	   }else{
-            	    		   alert("失败数据:"+JSON.stringify(err));
-            	    	   }
-            	       }
-            	    });
-            	
+	            	               let msg=confirm("是否立刻自动审核通过并发布任务?");
+	            	               
+	            	               if(msg){
+	            	            	   $('#BTNBPTAuditYes').click();
+	            	               }
+	            	           }
+	            	       },
+	            	       error:function(err){
+	            	    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+	            	    		   alert("系统中已存在重复数据,请检查!");
+	            	    	   }else{
+	            	    		   alert("失败数据:"+JSON.stringify(err));
+	            	    	   }
+	            	       }
+	            	    });
+	            	
 
-            }else{
-            	saveDBData(BPTData,"方案单");
-            }
-    
-        	
-        	
+	            }else{
+	            	saveDBData(BPTData,"方案单");
+	            }
+		
+	}
+
 
 
 });

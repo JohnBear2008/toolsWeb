@@ -764,6 +764,7 @@ function checkPLDInput(){
 $(document).ready( function () {
 
 	
+	
 //	console.log("undone:"+getQueryString("undone"));
 	
 	var sessionName="<%-locals.session.yjUser.Name%>";
@@ -1085,59 +1086,62 @@ $('#BTNFormAuto').click(function(){
 
 $('#BTNFormSave').click(function(){
 	
-
-    var files=[];
-	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
-		var fileName=$(this).attr('download');
+	if(checkPLDInput()){
+		 var files=[];
+			
+			$('#divFilesUploaded a').each(function(){
+				var fileKey=$(this).attr('href').substring(30);
+				var fileName=$(this).attr('download');
+				
+				var fileInfo={
+						"fileName":fileName,
+						"fileKey":fileKey
+				}
+				
+				files.push(fileInfo);
+			});
+			
+			var billData={
+					"DBTable":"ppm_bills_plan",
+					"BPID":$('#BPID').val(),
+					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+					"topic":$('#topic').val(),
+					"detail":$('#detail').val(),
+					"PGEMaker":$('#PGEMaker option:selected').text(),
+					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+					"modelD":Fun_getSelectText($('#modelD option:selected').text()),
+					"modelH":Fun_getSelectText($('#modelH option:selected').text()),
+					"OGNSystemVersion":$('#OGNSystemVersion').val(),
+					"applyDate":$('#applyDate').val(),
+					"limitDate":$('#limitDate').val(),
+					"maker":sessionName,
+					"auditor":$('#auditor option:selected').text(),
+					"makeDate":Ndate,
+//					"auditDate":$('#auditDate').text(),
+//					"auditResult":$('#auditResult').val(),
+//					"version": $('#version').text(),
+					"files":JSON.stringify(files),
+					"WFStatus":1
+			}
+			
+//			alert("billData:"+JSON.stringify(billData));
+			
+//			if(billData.auditor!=""){
+		//
+//				var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
+//				
+//				Fun_addDBDataDD(billData,DDMsg,"计划单");
+//			}else{
+//				alert("该计划单没有指定审核人,请检查!");
+//			}
+			
+			addDBData(billData);
 		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
-		
-		files.push(fileInfo);
-	});
-	
-	var billData={
-			"DBTable":"ppm_bills_plan",
-			"BPID":$('#BPID').val(),
-			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-			"topic":$('#topic').val(),
-			"detail":$('#detail').val(),
-			"PGEMaker":$('#PGEMaker option:selected').text(),
-			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
-			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
-			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-			"applyDate":$('#applyDate').val(),
-			"limitDate":$('#limitDate').val(),
-			"maker":sessionName,
-			"auditor":$('#auditor option:selected').text(),
-			"makeDate":Ndate,
-//			"auditDate":$('#auditDate').text(),
-//			"auditResult":$('#auditResult').val(),
-//			"version": $('#version').text(),
-			"files":JSON.stringify(files),
-			"WFStatus":1
 	}
 	
-//	alert("billData:"+JSON.stringify(billData));
-	
-//	if(billData.auditor!=""){
-//
-//		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-//		
-//		Fun_addDBDataDD(billData,DDMsg,"计划单");
-//	}else{
-//		alert("该计划单没有指定审核人,请检查!");
-//	}
-	
-	addDBData(billData);
 
 });
 
@@ -1146,6 +1150,8 @@ $('#BTNFormSave').click(function(){
 //按钮-表格保存审核计划单
 
 $('#BTNFormSaveAudit').click(function(){
+	
+	if(checkPLDInput()){
 	
 	let msg=confirm("启用保存审核,计划单将审核通过,直接发布至方案单,是否继续?");
 	
@@ -1196,6 +1202,9 @@ $('#BTNFormSaveAudit').click(function(){
 			addDBData(billData);
 		
 	}
+	
+	}
+	
 
    
 
@@ -1206,15 +1215,8 @@ $('#BTNFormSaveAudit').click(function(){
 
 $('#BTNFormModify').click(function() {
 
-//	if($('#filePath').attr('href')!=undefined){
-//	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-//	var fileName=$('#fileName').html();
-//	}else{
-//	var fileKey="";
-//	var fileName="";
-//	}
-//	
-	
+
+	if(checkPLDInput()){
 	var files=[];
 	
 	$('#divFilesUploaded a').each(function(){
@@ -1258,17 +1260,13 @@ $('#BTNFormModify').click(function() {
 			"WFStatus":1
 	}
 
-	console.log("billData:"+JSON.stringify(billData));
+
 	
 	updDBData(billData,"计划单");
 	
-//	if(billData.auditor==""){
-//		updDBData(billData,"计划单");
-//	}else{
-//		
-//		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-//		Fun_updDBDataDD(billData,DDMsg,"计划单");
-//	}
+	}
+	
+
 
 });
 
