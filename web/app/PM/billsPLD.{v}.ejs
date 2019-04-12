@@ -153,18 +153,16 @@
                      <div class="form-group">   
                      
                      <label  class="col-sm-1 control-label" for="name">客户:</label>    
-                     <div class="col-sm-3 ">
+                     <div class="col-sm-6 ">
                      <select  id="CTRName" class="selectpicker" data-live-search="true" > 
                      </select>
+                     <button id="BTNFormAuto" class="btn btn-primary" data-toggle="modal" >智能填单(开发中)</button>
+                     
                      </div>
                      
                      
                      
-                     <label  class="col-sm-1 control-label" for="name">机型:</label>    
-                     <div class="col-sm-3 ">
-                     <select  id="MHEName" class="selectpicker" data-live-search="true"> 
-                     </select>
-                     </div>  
+                     
                      
                      
                     
@@ -174,24 +172,36 @@
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
                      
-                     <label  class="col-sm-1 control-label" for="name">系统:</label>    
+                     <label  class="col-sm-1 control-label" for="name">机型:</label>    
                      <div class="col-sm-3 ">
-                     <select  id="model" class="selectpicker" data-live-search="true"> 
+                     <select  id="MHEName" class="selectpicker" data-live-search="true"> 
                      </select>
                      </div>  
                      
-                     
-                       <label class="col-sm-1 control-label">原系统版本:</label>
-                       <div class="col-sm-2 ">
-                         <input id="OGNSystemVersion" class="form-control"  type="text" value="">
-                       </div>
-                       
-                       <label class="col-sm-1 control-label">bugID:</label>
-                       <div class="col-sm-2 ">
-                         <input id="bugID" class="form-control"  type="text" value="">
-                       </div>
-                       
+                     <label class="col-sm-2 control-label">原系统版本:</label>
+                     <div class="col-sm-2 ">
+                       <input id="OGNSystemVersion" class="form-control"  type="text" value="">
                      </div>
+
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
+                     <div class="form-group">
+                     
+                       <label  class="col-sm-1 control-label" for="name">系统:</label>    
+                       <div class="col-sm-3 ">
+                       <select  id="modelD" class="selectpicker" data-live-search="true"> 
+                       </select>
+                       </div>  
+                       
+                       <div class="col-sm-3 ">
+                       <select  id="modelH" class="selectpicker" data-live-search="true"> 
+                       </select>
+                       </div>  
+     
+                     </div>
+                     
+                     <!-------------------------------------------------------------------------->
                      
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
@@ -283,28 +293,7 @@
                     </div>
                     </div>
                     
-                    <!-------------------------------------------------------------------------->
-
-                 	<div id="urgencyDiv" class="form-group">
-                 	
-                 	<label class="col-sm-1 control-label">紧急度:</label>   
-                 	<div class="col-sm-8">
-                       
-                 	    <label class="radio-inline">
-                 	        <input type="radio" name="urgency" id="urgencyOption1" value="1"> 初级
-                 	    </label>
-                 	    <label class="radio-inline">
-                 	        <input type="radio" name="urgency" id="urgencyOption2"  value="2"> 中级
-                 	    </label>
-                 	    <label class="radio-inline">
-                	        <input type="radio" name="urgency" id="urgencyOption3"  value="3"> 高级
-                	    </label>
-                 	        
-                 	        
-                 	</div>
-                     
-                    </div>
-                    
+                  
                     
                     <!-------------------------------------------------------------------------->
 
@@ -333,12 +322,14 @@
                      
                      <label  class="col-sm-1 control-label" for="name">制单人:</label>    
                      <div class="col-sm-3 ">
-                     <input id="maker" class="form-control"  type="text" disabled="true" >
+             
+                     <span id="maker"  class="help-block"></span>
                      </div>
                      
                      <label  class="col-sm-1 control-label" for="name">制单日期:</label>    
                      <div class="col-sm-3 ">
-                     <input id="makeDate" class="form-control"  type="text" disabled="true" >
+
+                     <span id="makeDate"  class="help-block"></span>
                      </div>
                      
                      
@@ -356,7 +347,8 @@
                      
                      <label  class="col-sm-1 control-label" for="name">审核日期:</label>    
                      <div class="col-sm-3 ">
-                     <input id="auditDate" class="form-control"  type="text" disabled="true" >
+
+                     <span id="auditDate"  class="help-block"></span>
                      </div>
                      
                      
@@ -379,8 +371,9 @@
                     </div>
                     
                     <div class="panel-footer">
-                    <button id="BTNFormAdd" type="button" class="btn btn-primary">新增</button>
-                    <button id="BTNFormAuto" class="btn btn-primary" data-toggle="modal" >智能填单(开发中)</button>
+                    <button id="BTNFormSave" type="button" class="btn btn-primary">保存</button>
+                    <button id="BTNFormSaveAudit" type="button" class="btn btn-warning">保存并审核</button>
+                    
                     <button id="BTNFormModify" type="button" class="btn btn-info">修改</button> 
                     <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
                     
@@ -508,9 +501,10 @@ function Fun_winAddInit(){
 	var MHEName="#MHEName";
 	Fun_getSQLSelectDBData(SQLMHEName,MHEName);
 	
-	var SQLModel={SQL:"SQLSRSystems"};
-	var model="#model";
-	Fun_getSQLSelectDBData(SQLModel,model);
+
+	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#modelD");
+	
+	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#modelH");
 	
 	var SQLPGEMaker={SQL:"SQLSRStaffs"};
 	var PGEMaker="#PGEMaker";
@@ -543,21 +537,20 @@ function Fun_winAddInit(){
   $('#divFilesUploaded').html("");
   
   $("#auditTypeOption1").attr("checked",true);
-  $("#urgencyOption1").attr("checked",true);
+
   
   
   $('#applyDate').val(Ndate); 
   $('#limitDate').val(Fun_getEndDate(Ndate,3));
-  $('#maker').val("<%-locals.session.yjUser.Name%>");
-  $('#makeDate').val(Ndate);
 
-  $('#auditDate').val(Ndate);
   
   $('#auditOpinionDiv').hide();
   
   $("#auditTypeDiv").show();
   
-  $("#BTNFormAdd").show();
+  $("#BTNFormSave").show();
+  $("#BTNFormSaveAudit").show();
+  
   
   $("#BTNFormModify").hide();
   $("#BTNFormUpdate").hide();
@@ -569,7 +562,9 @@ function Fun_winAddInit(){
 }
 
 //函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataSelect){
+function Fun_winDetailInit(dataChoose){
+	
+	let dataSelect=NulltoEmpty(dataChoose);
 	
 	$('#DBID').val(dataSelect.DBID); 
 
@@ -589,9 +584,9 @@ function Fun_winDetailInit(dataSelect){
 	var MHEName="#MHEName";
 	Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.MHEName);
 	
-	var SQLModel={SQL:"SQLSRSystems"};
-	var model="#model";
-	Fun_getSQLSelectDBData(SQLModel,model,dataSelect.model);
+
+	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#modelD",dataSelect.modelD);
+	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#modelH",dataSelect.modelH);
 	
 	var SQLPGEMaker={SQL:"SQLSRStaffs"};
 	var PGEMaker="#PGEMaker";
@@ -600,7 +595,7 @@ function Fun_winDetailInit(dataSelect){
 	
 
 	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
-	$('#bugID').val(dataSelect.bugID);
+
     $('#topic').val(dataSelect.topic); 
     $('#detail').val(dataSelect.detail); 
     
@@ -647,14 +642,13 @@ function Fun_winDetailInit(dataSelect){
   
   $('#applyDate').val(dataSelect.applyDate); 
   $('#limitDate').val(dataSelect.limitDate);
-  $('#maker').val(dataSelect.maker);
-  $('#makeDate').val(dataSelect.makeDate);
-//  $('#auditor').val("<%-locals.session.yjUser.Name%>");
-//  $('#auditDate').val(Ndate);
+  $('#maker').text(dataSelect.maker);
+  $('#makeDate').text(dataSelect.makeDate);
+
   
   
 
- $("[name='urgency'][value='"+dataSelect.urgency+"']").prop("checked", true);
+
 
   $('#auditResult').val(dataSelect.auditResult);
   
@@ -663,7 +657,7 @@ function Fun_winDetailInit(dataSelect){
   Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
   
 
-  $('#auditDate').val(dataSelect.auditDate);
+  $('#auditDate').text(dataSelect.auditDate);
   
   //已经审核 或者登陆人为审核人则显示
   
@@ -728,7 +722,7 @@ function Fun_winDetailInit(dataSelect){
 	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
 	    $("#auditor").attr("disabled",true);
 	    
-	    $('#auditDate').val(dataSelect.auditDate);
+	    $('#auditDate').text(dataSelect.auditDate);
 	    
 	    
 	    $("#DivFileBTNS").hide();
@@ -739,19 +733,36 @@ function Fun_winDetailInit(dataSelect){
 	    $("#BTNFormUpdate").show();
 	    $("#BTNFormAuditYes").hide();
 	    $("#BTNFormAuditNo").hide();
-	
-	  
+
   }
   
+}
 
- 
 
+
+//函数,检查输入项是否完整
+
+function checkPLDInput(){
+	console.log("detail:"+$("#detail").val());
+	if($("#CTRName").val()==null){
+		alert("客户未输入,请检查!");
+		return false;
+	}else if($("#detail").val()==""){
+		alert("要求未输入,请检查!");
+		return false;
+	}else if($("#PGEMaker").val()==null){
+		alert("方案人未输入,请检查!");
+		return false;
+	}
+	
+	return true;
+	
 }
 
 
 //页面加载函数---------------
 $(document).ready( function () {
-	
+
 	
 //	console.log("undone:"+getQueryString("undone"));
 	
@@ -856,7 +867,7 @@ $('input:radio[name="auditType"]').click(function(){
 	 		var auditor="#auditor";
 	 		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
 	 	    $("#auditor").attr("disabled",true);
-	 	    $('#auditDate').val("");
+	 	    $('#auditDate').text("");
      	    $('#auditResult').val("");
 	 	    break;
 	 	case "2":
@@ -865,7 +876,7 @@ $('input:radio[name="auditType"]').click(function(){
 	 		var auditor="#auditor";
 	 		Fun_getSQLSelectDBData(SQLAuditor,auditor);
 	 	    $("#auditor").attr("disabled",false);
-	 	    $('#auditDate').val("");
+	 	    $('#auditDate').text("");
 	 	    $('#auditResult').val("");
 	 	    break;
 	 	}
@@ -886,16 +897,16 @@ $('#PGEMaker').change(function(){
  		var auditor="#auditor";
  		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
  	    $("#auditor").attr("disabled",true);
- 	   $('#auditDate').val("");
+ 	   $('#auditDate').text("");
 	    $('#auditResult').val("");
  	    break;
  	case "2":
- 	    $('#auditDate').val("");
+ 	    $('#auditDate').text("");
  	    var SQLAuditor={SQL:"SQLSRStaffs"};
  		var auditor="#auditor";
  		Fun_getSQLSelectDBData(SQLAuditor,auditor);
  	    $("#auditor").attr("disabled",false);
- 	   $('#auditDate').val("");
+ 	   $('#auditDate').text("");
 	    $('#auditResult').val("");
  	    break;
  	}
@@ -921,7 +932,8 @@ $('#BTNInfo').click(function() {
     	$('#BillPLD').modal('show')
     	Fun_winDetailInit(dataSelect);
     	
-    	$("#BTNFormAdd").hide();
+    	$("#BTNFormSave").hide();
+    	$("#BTNFormSaveAudit").hide();
     	
 
     }
@@ -977,16 +989,26 @@ $('#BTNAudit').click(function() {
     } else {
     	
     	if(dataSelect.auditResult==null){
+    		
+
     		$('#BillPLD').modal('show')
         	Fun_winDetailInit(dataSelect);
     		
+    		 $('input').attr("disabled",true);
+    		 $('select').attr("disabled",true);
+    		 $('textarea').attr("disabled",true);
+    		
     		$("#DivFileBTNS").hide();
     		
-    		$("#BTNFormAdd").hide();
+    		$("#BTNFormSave").hide();
+    		$("#BTNFormSaveAudit").hide();
+    		
     		$("#BTNFormModify").hide();
     		$("#BTNFormUpdate").hide();
     		
     		$("#auditOpinionDiv").show();
+    		
+    		$('#auditOpinion').attr("disabled",false);
         	
         	$("#BTNFormAuditYes").show();
      	    $("#BTNFormAuditNo").show();
@@ -1031,7 +1053,7 @@ $('#BTNFormAuto').click(function(){
 	            		 
 	            		 switch(bindsInfo[i].DataType){
 	            		 case "系统":
-	            			 $("#model").selectpicker('val',bindsInfo[i].DBID);
+	            			 $("#modelD").selectpicker('val',bindsInfo[i].DBID);
 	            			 break;
 	            		 case "机种":
 	            			 $("#MHEName").selectpicker('val',bindsInfo[i].DBID);
@@ -1061,7 +1083,7 @@ $('#BTNFormAuto').click(function(){
 
 //按钮-表格新增计划单
 
-$('#BTNFormAdd').click(function(){
+$('#BTNFormSave').click(function(){
 	
 
     var files=[];
@@ -1089,19 +1111,17 @@ $('#BTNFormAdd').click(function(){
 			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
 			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
 			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-			"model":Fun_getSelectText($('#model option:selected').text()),
+			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
+			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
 			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-			"bugID":$('#bugID').val(),
-			
 			"applyDate":$('#applyDate').val(),
 			"limitDate":$('#limitDate').val(),
-			"urgency":$('input:radio[name="urgency"]:checked').val(),
-			"maker":$('#maker').val(),
+			"maker":sessionName,
 			"auditor":$('#auditor option:selected').text(),
-			"makeDate":$('#makeDate').val(),
-			"auditDate":$('#auditDate').val(),
-			"auditResult":$('#auditResult').val(),
-			"version": $('#version').text(),
+			"makeDate":Ndate,
+//			"auditDate":$('#auditDate').text(),
+//			"auditResult":$('#auditResult').val(),
+//			"version": $('#version').text(),
 			"files":JSON.stringify(files),
 			"WFStatus":1
 	}
@@ -1118,7 +1138,66 @@ $('#BTNFormAdd').click(function(){
 //	}
 	
 	addDBData(billData);
+
+});
+
+
+
+//按钮-表格保存审核计划单
+
+$('#BTNFormSaveAudit').click(function(){
 	
+	let msg=confirm("启用保存审核,计划单将审核通过,直接发布至方案单,是否继续?");
+	
+	if(msg){
+		
+		 var files=[];
+			
+			$('#divFilesUploaded a').each(function(){
+				var fileKey=$(this).attr('href').substring(30);
+				var fileName=$(this).attr('download');
+				
+				var fileInfo={
+						"fileName":fileName,
+						"fileKey":fileKey
+				}
+				
+				files.push(fileInfo);
+			});
+			
+			var billData={
+					"DBTable":"ppm_bills_plan",
+					"BPID":$('#BPID').val(),
+					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+					"topic":$('#topic').val(),
+					"detail":$('#detail').val(),
+					"PGEMaker":$('#PGEMaker option:selected').text(),
+					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+					"modelD":Fun_getSelectText($('#modelD option:selected').text()),
+					"modelH":Fun_getSelectText($('#modelH option:selected').text()),
+					"OGNSystemVersion":$('#OGNSystemVersion').val(),
+					"applyDate":$('#applyDate').val(),
+					"limitDate":$('#limitDate').val(),
+					"maker":sessionName,
+					"makeDate":Ndate,
+					"version": $('#version').text(),
+					"files":JSON.stringify(files),
+					"auditor":sessionName,
+					"auditDate":Ndate,
+					"auditResult":1,
+					"PLDStatus":1,
+					"auditOpinion":$('#auditOpinion').val(),
+					"WFStatus":10
+			}
+			
+			addDBData(billData);
+		
+	}
+
+   
 
 });
 
@@ -1166,31 +1245,30 @@ $('#BTNFormModify').click(function() {
 			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
 			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
 			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-			"model":Fun_getSelectText($('#model option:selected').text()),
+			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
+			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
 			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-			"bugID":$('#bugID').val(),
 			"applyDate":$('#applyDate').val(),
 			"limitDate":$('#limitDate').val(),
-			"urgency":$('input:radio[name="urgency"]:checked').val(),
-			"maker":$('#maker').val(),
+			"maker":sessionName,
 			"auditor":$('#auditor option:selected').text(),
-			"makeDate":$('#makeDate').val(),
-			"auditDate":$('#auditDate').val(),
-			"version": $('#version').text(),
+			"makeDate":Ndate,
+//			"version": $('#version').text(),
 			"files":JSON.stringify(files),
 			"WFStatus":1
 	}
-	
-	
+
 	console.log("billData:"+JSON.stringify(billData));
 	
-	if(billData.auditor==""){
-		updDBData(billData,"计划单");
-	}else{
-		
-		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-		Fun_updDBDataDD(billData,DDMsg,"计划单");
-	}
+	updDBData(billData,"计划单");
+	
+//	if(billData.auditor==""){
+//		updDBData(billData,"计划单");
+//	}else{
+//		
+//		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
+//		Fun_updDBDataDD(billData,DDMsg,"计划单");
+//	}
 
 });
 
@@ -1204,8 +1282,7 @@ $('#BTNFormUpdate').click(function() {
     if (msg1 === true) {
         var msg2 = confirm("确认更新版本？");
         if (msg2 === true) {
-        	
-        	
+
         	var newVersion=parseInt($('#version').text())+1;
         	
         	var files=[];
@@ -1234,12 +1311,11 @@ $('#BTNFormUpdate').click(function() {
         			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
         			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
         			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-        			"model":Fun_getSelectText($('#model option:selected').text()),
+        			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
+        			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
         			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-        			"bugID":$('#bugID').val(),
         			"applyDate":$('#applyDate').val(),
         			"limitDate":$('#limitDate').val(),
-        			"urgency":$('input:radio[name="urgency"]:checked').val(),
         			"maker":sessionName,
         			"makeDate":Ndate,
         			"version": newVersion,
@@ -1283,7 +1359,6 @@ $('#BTNFormAuditYes').click(function() {
 					"PLDStatus":1,
 					"auditOpinion":$('#auditOpinion').val(),
 					"WFStatus":10
-
 			}
 
 			updDBData(auditData,"表单审核状态");
@@ -1323,7 +1398,6 @@ $('#BTNFormAuditNo').click(function() {
 	}
 	
 //	$('#BillPLD').modal('hide');
-
 
 });
 

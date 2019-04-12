@@ -327,6 +327,7 @@ function MoldObj() {
     this.nPerMoldCnt = 0;
     this.sMedia = ""; // 媒介，暂无实际大作用
     this.sVers = "";
+    this.struct = "";
     this.nDataIDNum = 0;
 
     /**
@@ -422,6 +423,7 @@ function TM270DataInfoObj(mean, meanTips, dynVal, Unit, Visb) {
     this.Unit = Unit;
     this.Visb = Visb;
 }
+
 /*===========================================================================+
 |   MainFunc                                                                 |
 +===========================================================================*/
@@ -437,7 +439,12 @@ function fnTrvlEvent() {
 
             // 获取当前文件的相对路径，基于安全策略，无法获取绝对路径
             g_oMold.RelativePath = upFolder[0].webkitRelativePath;
-
+            // 通过文件夹名字，判断是否为55系统
+            if (g_oMold.RelativePath.indexOf("_55") !== -1) {
+                g_oMold.sVers = "55";
+            } else {
+                g_oMold.sVers = "54";
+            }
             /* --- 遍历上传的文件夹内容，并分配文件标识 --- */
             for (let i = 0, len = upFolder.length; i < len; ++i) {
                 nFileSizes += Math.round(upFolder[i].size / 1024 / 1024); // 文件大小以MB为单位
@@ -590,7 +597,7 @@ function fnCdb2Arr(cdbArg, cszHexArg) {
  * @param     {[object]}    dataArg [ajax获取的数据]
  * @param     {[arrary]}    aCdb [用于继续解析TM54先前构造的cdb数组]
  */
-function fnSet54ObjIDInfo(objArg, dataArg, aCdb) {
+function fnSet54StructObjIDInfo(objArg, dataArg, aCdb) {
     for (let i = 0, n = dataArg.length; i < n; ++i) {
         // let Visb = dataArg[i].Visb;
         let mean = dataArg[i].CN || dataArg[i].EN || dataArg[i].TW || "undefined",
@@ -627,7 +634,7 @@ function fnSet54ObjIDInfo(objArg, dataArg, aCdb) {
  * @DateTime  2018-12-04
  * @param     {[json]}    dataArg [ajax获取的数据]
  */
-function fnSet55ObjIDInfo(objArg, dataArg) {
+function fnSet55StructObjIDInfo(objArg, dataArg) {
     let pIDInfo = objArg.oIDInfo,
         aOrgTmp = [], // 资料的组织，例：射出组织
         DataIDNum = objArg.nDataIDNum;
@@ -671,7 +678,7 @@ function fnSet55ObjIDInfo(objArg, dataArg) {
                 let sOrganize = g_aIDInfoTmp[j].Organize;
                 if (pIDInfo.hasOwnProperty(sOrganize)) {
                     let oIDInfo = g_aIDInfoTmp[j]; // 浅拷贝即可
-                    if (oIDInfo.Visb) { // 只需要可见的数据，不可见的数据不需要push进去 // Muc 2018-12-29 TODO
+                    if (oIDInfo.Visb) { // 只需要可见的数据，不可见的数据不需要push进去
                         pIDInfo[sOrganize].push(oIDInfo);
                     }
                 }
@@ -679,7 +686,6 @@ function fnSet55ObjIDInfo(objArg, dataArg) {
             }
         }
     }
-    console.log(objArg);
 }
 
 /*===========================================================================+
@@ -715,7 +721,7 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
     // 过程必须按照如下顺序来，同时将代码分开写便于代码理解与优化执行效率
     // DataID笔数过多且有规律，故所有DataID以for循环的方式赋值
     /* PART 0  Verify factory and dsp.system */
-    let DSP55 = 2; // dsp55的标识信息，固定为2
+    let struct55 = 2; // struct55的标识信息，固定为2
     /* --- PART 1  get moldName (Big-Endian) --- */
     objArg.sMoldName = fnSplcCszHex(objArg, "moldlength", cszHexArg, ENDIAN.BIG);
 
@@ -727,23 +733,23 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
         sDayOfWeek = parseInt(cszHexArg.splice(0, BYTES.DAY_OF_WEEK).reverse().join(""), 16).toString();
     objArg.sMoldTime = "{0}-{1}-{2}".format(sYears, sMonths, sDay);
     /* --- PART 3 get sMaterial (Big-Endian) --- */
-    objArg.sMaterial = fnSplcCszHex(objArg, "materiallength", cszHexArg, ENDIAN.BIG);
+    objArg.sMaterial = fnSplcCszHex(objArg, "materiallength", cszHexArg, ENDIAN.BIG) || "null";
     /* --- PART 4 get color (Big-Endian) --- */
-    objArg.sColor = fnSplcCszHex(objArg, "colorlength", cszHexArg, ENDIAN.BIG);
+    objArg.sColor = fnSplcCszHex(objArg, "colorlength", cszHexArg, ENDIAN.BIG) || "null";
     /* --- PART 5 get perMoldCnt --- */
-    objArg.nPerMoldCnt = fnSplcCszHex(objArg, "permoldcntLength", cszHexArg, ENDIAN.LIT);
+    objArg.nPerMoldCnt = fnSplcCszHex(objArg, "permoldcntLength", cszHexArg, ENDIAN.LIT) || "null";
     /* --- PART 6 get media (Big-Endian) --- */
     objArg.sMedia = fnSplcCszHex(objArg, "medialength", cszHexArg, ENDIAN.BIG);
     /* --- PART 7 get version --- */
     // 可通过这version的这4个Bytes来判断主机系统
     // 55系统：值固定为2
     // 54系统：代表开模段数和关模段数，所以不可能等于2
-    let sVersTmp = fnSliceCszHex(objArg, "verslength", cszHexArg, ENDIAN.LIT);
+    let struct = fnSliceCszHex(objArg, "verslength", cszHexArg, ENDIAN.LIT);
     /* --- 55dsp --- */
 
     // let t1 = time2stamp();
-    if (sVersTmp === DSP55) { // TODO　3354分54和55两种，两种的数据结构一致，需该判断条件
-        objArg.sVers = "55"; // TODO
+    if (struct === struct55) { // 3354分54和55两种，两种的数据结构一致，需该判断条件
+        objArg.struct = "55";
 
         fnSplcCszHex(objArg, "verslength", cszHexArg, ENDIAN.LIT); // splice 版本信息
         /* PART 8 get DataIDSum and push DataIDObj */
@@ -778,12 +784,12 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
     }
     /* --- 54dsp --- */
     else {
-        objArg.sVers = "54";
+        objArg.struct = "54";
     }
     // let t2 = time2stamp();
     // console.log("耗时：" + (t2 - t1) + " 毫秒");
 
-    getDBAndShow(objArg.aSysInfo, objArg.sVers); // TODO 传入的区分信息要改，目前是两种 “TM54系统”  “TM55系统”，两个数据库不一样
+    getDBAndShow(objArg.aSysInfo, objArg.sVers); // 目前是两种 “TM54系统”  “TM55系统”，两个数据库不一样
 
 }
 
@@ -795,11 +801,11 @@ function fnTrvlCdbArr(objArg, cszHexArg) {
  * @param     {[type]}    sVers     [不同dsp系统]
  * @return    {[type]}              [Null]
  */
-function getDBAndShow(objSysArg, sVers) { // TODO 改数据库选择条件
+function getDBAndShow(objSysArg, sVers) {
     $("#PMsg").text("正在获取/解析数据文件，请稍后 . . .");
     let sURL = "";
 
-    if (sVers === "55") { // TODO 改数据库选择条件
+    if (sVers === "55") {
         sURL = "/app/HMIPrint/Mold/GetMoldTM55IDInfo";
     } else
         sURL = "/app/HMIPrint/Mold/GetMoldTM54IDInfo";
@@ -853,10 +859,10 @@ function getDBAndShow(objSysArg, sVers) { // TODO 改数据库选择条件
  * @param     {[object]}    aCdb [仅TM54使用，即先前构造的aCdb数组内容]
  */
 function fnGetObjAndShow(obj, ajaxResult, aCdb = []) {
-    if (obj.sVers === "55") { // TODO 判断条件改为TM54-3354或55-3354
-        fnSet55ObjIDInfo(obj, ajaxResult); // 注:先前cdb文件的内容就解析完了，所以不需要再传入aCdb内容
-    } else { // TODO 判断条件改为 TM54-270
-        fnSet54ObjIDInfo(obj, ajaxResult, aCdb);
+    if (obj.struct === "55") {
+        fnSet55StructObjIDInfo(obj, ajaxResult); // 注:先前cdb文件的内容就解析完了，所以不需要再传入aCdb内容
+    } else {
+        fnSet54StructObjIDInfo(obj, ajaxResult, aCdb);
     }
 
     fnShowMoldHdr(obj, "#moldhdr");

@@ -15,7 +15,9 @@ module.exports = function(sender) {
         R4 = oRowData.Reserved4.replace('\r', ""),
         DataID = oRowData.DataID.replace('\r', ""),
         CN = oRowData.CN.replace('\r', ""),
-        SubCN = oRowData.SubCN.replace('\r', ""),
+        CNTips = oRowData.CNTips.replace('\r', ""),
+        EN = oRowData.EN.replace('\r', ""),
+        ENTips = oRowData.ENTips.replace('\r', ""),
         Unit = oRowData.Unit.replace('\r', ""),
         Prec = oRowData.Prec.replace('\r', ""),
         Visb = oRowData.Visb.replace('\r', ""),
@@ -28,7 +30,7 @@ module.exports = function(sender) {
 
     aSQLPara = [Manufacturer, CtrlType, MachType,
         R0, R1, R2, R3, R4,
-        DataID, CN, SubCN, Unit, Prec, Visb, Organize,
+        DataID, CN, CNTips, EN, ENTips, Unit, Prec, Visb, Organize,
         Block, Type,
         UID
     ];
@@ -37,7 +39,7 @@ module.exports = function(sender) {
         UPDATE hmiprint_mold_tm54
         SET Manufacturer=?, CtrlType=?, MachType=?,
             Reserved0=?, Reserved1=?, Reserved2=?, Reserved3=?, Reserved4=?,
-            DataID=?, CN=?, SubCN=?, Unit=?, Prec=?, Visb=?, Organize=?,
+            DataID=?, CN=?, CNTips=?, EN=?, ENTips=?, Unit=?, Prec=?, Visb=?, Organize=?,
             Block=?, Type=?
         WHERE UID=? `;
 

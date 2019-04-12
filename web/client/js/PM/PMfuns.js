@@ -1248,10 +1248,7 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
        			 
        			files=null;
        		  }
-
        	  }
-
- 
          },
          error:function(){}
      });
@@ -1375,21 +1372,15 @@ function showDBIDInfo(tableID,SQLParam){
        			  default:
        				  trtd="<td>"+dataR[0][SQLParam.titles[j]]+"</td>";
        				  break;
- 
-       			  
+
        			  }
 
-       			  
-
        			$(tableID+" tr:eq("+j+")").append(trtd);   
-       			
-       			
 
        		  }
        		  
        		  
        		//加载测试内容
-     			
 //       		  console.log("TestResultJSON:"+TestResultJSON);
        		  
        		  if(tasksTableSQL!=""){
@@ -1404,12 +1395,7 @@ function showDBIDInfo(tableID,SQLParam){
       			  }
        			  
        		  }
-
-       		 
-       		  
-
        		 files=null;
-
        	  }
 
          },
