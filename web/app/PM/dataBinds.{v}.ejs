@@ -367,8 +367,9 @@ $('#BTNUpdBinds').click(function() {
 	 $("#spanBaseName").text(dataSelect.baseName);
 	 
 	 $("#OrgDBType").selectpicker('val',dataSelect.tableName);
+	 $("#OrgDBType").attr("disabled",true);
 	 
-	 
+	 $("#BindDBType").selectpicker('val',"");
 	 
 	 switch(dataSelect.tableName)
 		{
@@ -405,6 +406,25 @@ $('#BTNUpdBinds').click(function() {
 		}
 	 
 	 let bindsInfo=JSON.parse(dataSelect.bindsInfo);
+	 
+	 $('#tableSingleDataBinds tbody').html("");
+	 
+	 if(bindsInfo.length!=0){
+		 for(let i=0;i<bindsInfo.length;i++){
+			 let tr="<tr>" +
+				"<td>"+$("#OrgDBType option:selected").text()+"</td>" +
+				"<td>"+dataSelect.baseName+"</td>" +
+				"<td>"+bindsInfo[i].DBID+"</td>" +
+				"<td>"+bindsInfo[i].DataType+"</td>" +
+				"<td>"+bindsInfo[i].DataVal+"</td>" +
+				"<td>"+bindsInfo[i].DataSort+"</td>" +
+				"<td><a onclick='delTr(this)'>删除</a></td>" +
+				"</tr>";
+		     $('#tableSingleDataBinds').append(tr);
+		 }
+		 
+		 
+	 }
 
 	 
 	 
@@ -459,11 +479,10 @@ $('#BTNSaveDataBinds').click(function() {
 			bindsInfo.push(bindInfo);
 			
 		}
-		
-		
+
 	    	let DataBinds={
 	    			DBTable:"ppm_dbbinds",
-	    			DBID:"",
+	    			DBID:$("#spanDBID").text(),
 	    			DBType:$("#OrgDBType option:selected").text(),
 	    			tableName:$("#OrgDBType option:selected").val(),
 	    			baseDBID:$("#OrgDBTypeSub option:selected").val(),
@@ -472,6 +491,8 @@ $('#BTNSaveDataBinds').click(function() {
 	    			status:1,
 	    			statusText:"正常"
 	    	}
+	    	
+	    	console.log("DataBinds:"+JSON.stringify(DataBinds));
 	    	
 	    	saveDBData(DataBinds,"绑定关系");
 		

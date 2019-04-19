@@ -316,6 +316,8 @@
                     </div>
                     
                     <!-------------------------------------------------------------------------->
+                    <div id="DivIPQCInfo">
+                    <!----begin--DivIPQCInfo-------------------------------------------------------------------->
                     
                     <div class="form-group"> 
                     <label class="col-sm-1 control-label">测试内容:</label>
@@ -339,11 +341,7 @@
                 	 </div>
                 	 </div>
                 	 <!-------------------------------------------------------------------------->
-                     <div class="form-group" id="DivIPQCAuditInfo">  
-                     
-                     
-                     
-                     
+                     <div class="form-group">  
                      
 
           
@@ -364,11 +362,13 @@
                      <!-------------------------------------------------------------------------->
                 	 
                 	 <!-------------------------------------------------------------------------->
-                     <div class="form-group" id="DivIPQCAuditInfo">  
+                     <div class="form-group" >  
                      
                      <label  class="col-sm-1 control-label" for="name">IPQC审核人:</label>    
                      <div class="col-sm-1">
-                     <span id="IPQCAuditor"  class="help-block"></span>
+
+                     <select  id="IPQCAuditor" class="selectpicker" data-live-search="true"> 
+                     </select>
                      </div>
                      
                      <label class="col-sm-1 control-label"></label>
@@ -392,16 +392,20 @@
                      <!-------------------------------------------------------------------------->
 
                 	 <div class="form-group" id="DivIPQCBTNS"> 
-                     <label class="col-sm-1 control-label">登记:</label>
+                     <label class="col-sm-1 control-label"></label>
                      <div class="col-sm-10">
                      <button id="BTNTaskIPQCSave" class="btn btn-success" data-toggle="modal" >保存IPQC记录</button>
                      <button id="BTNTaskIPQCAudit" class="btn btn-warning" data-toggle="modal" >审核IPQC记录</button>
+                     <button id="BTNReportCreate" class="btn btn-warning" data-toggle="modal" >生成IPQC报告(开发中)</button>
                      </div>
                      </div>
+                     
+                     </div>
+                     <!----end DivIPQCInfo------------->
                 	 
-                     <button id="BTNReportCreate" class="btn btn-warning" data-toggle="modal" >生成IPQC报告(开发中勿点)</button>
+                    
                 	 
-                    </div>
+                     </div>
                     
                     
                     
@@ -478,7 +482,6 @@
                 <th>任务类型</th>
                 <th>任务负责人</th>
                 <th>完成期限</th>
-                <th>任务记录数</th>
                 <th>IPQC结果</th>
                 <th>任务状态</th>
 
@@ -493,7 +496,18 @@
 <!--------end view-------------------->
 <script>
 
-
+//检查输入项
+function checkIPQCInput(){
+	
+	if($("#IPQCAuditor").val()==null){
+		alert("IPQC审核人未选择,请检查!");
+		return false;
+	}
+	
+	
+	return true;
+	
+}
 
 
 
@@ -540,7 +554,19 @@ function Fun_IPQCRecordInit(dataChoose){
 	
 	  $('#IPQCMaker').text(dataSelect.IPQCMaker);
 	  
-	  $('#IPQCAuditor').text(dataSelect.IPQCAuditor);
+//	  $('#IPQCAuditor').text(dataSelect.IPQCAuditor);
+	  
+//	  console.log("dataSelect.IPQCAuditor:"+dataSelect.IPQCAuditor);
+	  
+	  if(dataSelect.IPQCAuditor==""){
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#IPQCAuditor",sessionName);
+	  }else{
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#IPQCAuditor",dataSelect.IPQCAuditor);
+	  }
+	  
+	  
+	  
+	  
 	  $('#IPQCAuditDate').text(dataSelect.IPQCAuditDate);
 	  $('#IPQCAuditResultText').text(dataSelect.IPQCAuditResultText);
 	  
@@ -585,10 +611,14 @@ function Fun_IPQCRecordInit(dataChoose){
 		$('#recordAuditor').text(dataSelect.recordAuditor);
 		$('#recordAuditDate').text(dataSelect.recordAuditDate);
 		$('#recordAuditResultText').text(dataSelect.recordAuditResultText);
+		
+		
+		
+    
 	
 	if(dataSelect.IPQCAuditResult==1){
 		
-		$('#divIPQCPanel :input').attr("disabled",true);
+		$('#divIPQCPanel input').attr("disabled",true);
 //		$('#divIPQCPanel :select').attr("disabled",true);
 //		$('#divIPQCPanel :textarea').attr("disabled",true);
 
@@ -600,30 +630,33 @@ function Fun_IPQCRecordInit(dataChoose){
 // 	 		$("input:radio[name='testResultRadio"+i+"']").attr("disabled",true); 
 // 	        }
 // 		  }
+		
+		$('#DivIPQCInfo input').attr("disabled",true);
+		$('#DivIPQCInfo select').attr("disabled",true);
+		$('#DivIPQCInfo textarea').attr("disabled",true);
 
-	
+		$('#DivIPQCBTNS').hide();
 		
-		
-		$('#DivRecordAuditInfo').show();
 
 	}else{
 		
-		
-//		if(IPQCTestResult!=null){
-//		 for(var i=0;i<IPQCTestResult.length;i++){
-//// 		  alert(IPQCTestResult[i].testResult);
-//		$("input:radio[name='testResultRadio"+i+"']").attr("disabled",false); 
-//       }
-//		}
-		
-		
-		$('#DivRecordAuditInfo').hide();
+		$('#DivIPQCInfo input').attr("disabled",false);
+		$('#DivIPQCInfo select').attr("disabled",false);
+		$('#DivIPQCInfo textarea').attr("disabled",false);
 
+		$('#DivIPQCBTNS').show();
 		
+		if(sessionName==$("#IPQCMaker").text()){
+			
+			$('#IPQCAuditor').attr("disabled",false);
+	    }else{
+	    	$('#IPQCAuditor').attr("disabled",true);
+	    }
+
+
 	}
 	
-	
-	
+
 	
 	$('#modifyContent').text(dataSelect.modifyContent);
 	
@@ -675,12 +708,28 @@ $(document).ready( function () {
 	
 	var undone=getQueryString("undone");
 	
-    if(undone=="true"){
-		
-		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
-	}else{
+	switch(undone){
+    case "unRecord":
+    	var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult IS NULL","orderBy":" saveTimeStamp DESC"};
+    	break;
+	case "unAudit":
+		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCAuditDate IS NULL","orderBy":" saveTimeStamp DESC"};
+    	break;
+	case "unPass":
+		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2","orderBy":" saveTimeStamp DESC"};
+    	break;
+	default:
 		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","orderBy":" saveTimeStamp DESC"};
+		break;
+	
 	}
+	
+//    if(undone=="true"){
+//		
+//		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
+//	}else{
+//		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","orderBy":" saveTimeStamp DESC"};
+//	}
 	
 	 tableInfo={
 			"tableID":"#billsTaskTable",
@@ -694,7 +743,7 @@ $(document).ready( function () {
 		        { data: 'taskTypeText'},
 		        { data: 'taskStaff'},
 		        { data: 'taskLimitDate'},
-		        { data: 'recordNum'},
+//		        { data: 'recordText'},
 		        { data: 'IPQCAuditResultText'},
 		        { data: 'BTStatusText'}
 		        
@@ -756,69 +805,84 @@ $('#BTNTaskIPQCSave').click(function() {
 	
 	if(sessionName==$('#IPQCMaker').text()){
 		
-		var IPQCTestResult=[];
 		
-		var testNum=$("#TableTestContents").find("tr").length-1;
-		
-		var radioCheck=true;
-	//	
-//		alert($("#TableTestContents").find("tr").length );
-		
-		for(var i=0;i<testNum;i++){
-			var testResult={
-					"testContentDBID":$("#testContentDBID"+i).text(),
-					"testResult":$('input:radio[name="testResultRadio'+i+'"]:checked').val(),
-					"testRemark":$("#testRemark"+i).val()
-					
-			}
-			radioCheck=radioCheck&&$('input:radio[name="testResultRadio'+i+'"]:checked').val();
+		if(checkIPQCInput()){
+			var IPQCTestResult=[];
 			
-			IPQCTestResult.push(testResult);
+			var testNum=$("#TableTestContents").find("tr").length-1;
+			
+			var radioCheck=true;
+		//	
+//			alert($("#TableTestContents").find("tr").length );
+			
+			for(var i=0;i<testNum;i++){
+				var testResult={
+						"testContentDBID":$("#testContentDBID"+i).text(),
+						"testResult":$('input:radio[name="testResultRadio'+i+'"]:checked').val(),
+						"testRemark":$("#testRemark"+i).val()
+						
+				}
+				radioCheck=radioCheck&&$('input:radio[name="testResultRadio'+i+'"]:checked').val();
+				
+				IPQCTestResult.push(testResult);
+			}
+			
+			
+			if(radioCheck!=undefined){
+//				alert(JSON.stringify(IPQCTestResult));
+				
+				
+				var recordData={
+						"DBTable":"ppm_bills_task",
+						"DBID":$('#DBID').text(),
+						"IPQCTestResult":JSON.stringify(IPQCTestResult),
+						"IPQCContent":$('#IPQCContent').val(),
+						"IPQCResult":$('input:radio[name="IPQCResult"]:checked').val(),
+						"IPQCMaker":sessionName,
+						"IPQCMakeDate":Ndate,
+						"IPQCAuditResult":0,
+						"BTStatus":5
+				}
+				
+				console.log("recordData:"+JSON.stringify(recordData));
+				
+				
+				 $.ajax({
+				        method: 'post',
+				        url: '/app/PM/updDBData',
+				        data: recordData,
+				        success: function(data, textStatus) {
+				 //                alert("成功数据:"+JSON.stringify(data));
+				            if (data.changedRows != 0) {
+				                alert("IPQC记录更新数据成功!");
+				                $('#IPQCMakeDate').text(Ndate);
+				                
+				                if(sessionName==$("#IPQCAuditor option:selected").text()){
+				                	let msgNext=confirm("是否立即审核?");
+				                	
+				                	if(msgNext){
+				                		$('#BTNTaskIPQCAudit').click();
+				                	}
+				                }
+	
+				            } else {
+				                alert("IPQC记录未有数据更新!");
+
+				            }
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				    });
+
+				
+			}else{
+				alert("存在未测试内容,请检查!");
+			}
+			
+			
+			
 		}
 		
 		
-		if(radioCheck!=undefined){
-//			alert(JSON.stringify(IPQCTestResult));
-			
-			
-			var recordData={
-					"DBTable":"ppm_bills_task",
-					"DBID":$('#DBID').text(),
-					"IPQCTestResult":JSON.stringify(IPQCTestResult),
-					"IPQCContent":$('#IPQCContent').val(),
-					"IPQCResult":$('input:radio[name="IPQCResult"]:checked').val(),
-					"IPQCMaker":sessionName,
-					"IPQCMakeDate":Ndate,
-					"IPQCAuditResult":0,
-					"BTStatus":5
-			}
-			
-			console.log("recordData:"+JSON.stringify(recordData));
-			
-			
-			 $.ajax({
-			        method: 'post',
-			        url: '/app/PM/updDBData',
-			        data: recordData,
-			        success: function(data, textStatus) {
-			 //                alert("成功数据:"+JSON.stringify(data));
-			            if (data.changedRows != 0) {
-			                alert("IPQC记录更新数据成功!");
-			                
-			                $('#IPQCMakeDate').text(Ndate);
-
-			            } else {
-			                alert("IPQC记录未有数据更新!");
-
-			            }
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			    });
-
-			
-		}else{
-			alert("存在未测试内容,请检查!");
-		}
 
 
 	}else{
@@ -831,6 +895,8 @@ $('#BTNTaskIPQCSave').click(function() {
 
 //按钮-任务记录审核按钮
 $('#BTNTaskIPQCAudit').click(function() {
+	
+//	if(sessionName==){}
 	
 	var IPQCMakeDate=$('#IPQCMakeDate').text();
 
@@ -852,7 +918,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 			        	 
 			        	 
 //			        	 console.log( $("#tableRecords tbody").find("tr").length)
-//			
+
 //			        	 console.log($("#tableRecords tbody tr:eq(0) td:last").html());
 			        	 
 			        	 var trNum=$("#tableRecords tbody").find("tr").length;
@@ -1007,7 +1073,7 @@ $('#BTNReportCreate').click(function() {
 			"<th>测试人:</th>" +
 			"<th>"+$('#IPQCMaker').text()+"</th>" +
 			"<th>审核人:</th>" +
-			"<th colspan='2'>"+$('#IPQCAuditor').text()+"</th>" +
+			"<th colspan='2'>"+$('#IPQCAuditor option:selected').text()+"</th>" +
 			"<th>测试日期:</th>" +
 			"<th colspan='2'>"+$('#IPQCAuditDate').text()+"</th>" +
 			"</tr>" +

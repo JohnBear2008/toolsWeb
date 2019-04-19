@@ -513,6 +513,21 @@
 //}
 
 
+//检查输入项
+function checkPBHInput(){
+	
+	if($("#emailADRS").val()==""){
+		alert("收件人邮箱未填写,请检查!");
+		return false;
+	}else if($("#emailContent").val()==null){
+		alert("邮件内容未填写,请检查!");
+		return false;
+	}
+	
+
+	return true;
+	
+}
 
 
 
@@ -719,7 +734,6 @@ $('#BTNPBHDetail').click(function() {
     	$('#BillPLD').modal('show')
     	Fun_winDetailInit(dataSelect);
 
-
     }
 
 
@@ -767,8 +781,6 @@ var filesHtml=$("#divFilesUploaded").html();
             	 
             	 var tdFiles=$("#billsTaskTable tbody tr:eq("+i+") td:last").html();
 
-            	
-            	 
             	 if(tdFiles!=""){
             		 
             		 filesHtml=filesHtml+tdFiles+" ; ";

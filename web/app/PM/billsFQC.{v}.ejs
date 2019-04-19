@@ -432,7 +432,13 @@ function Fun_winDetailInit(dataChoose){
 	
 	$('#FQCMaker').text(dataSelect.FQCMaker);
 	$('#FQCMakeDate').text(dataSelect.FQCMakeDate);
-	$('#FQCVersion').text(dataSelect.FQCVersion);
+	
+	if(dataSelect.FQCVersion==""){
+		$('#FQCVersion').text(0);
+	}else{
+		$('#FQCVersion').text(dataSelect.FQCVersion);
+	}
+	
 	
 	$('#FQCAuditor').text(dataSelect.FQCAuditor);
 	$('#FQCAuditDate').text(dataSelect.FQCAuditDate);
@@ -527,12 +533,28 @@ $(document).ready( function () {
 
 		var undone=getQueryString("undone");
 		
-		if(undone=="true"){
-			
-			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
-		}else{
+		switch(undone){
+	    case "unRecord":
+	    	var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unAudit":
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unPass":
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		default:
 			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
+			break;
+		
 		}
+		
+//		if(undone=="true"){
+//			
+//			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
+//		}else{
+//			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
+//		}
 
 	console.log("sessionName:"+sessionName);
 
@@ -611,7 +633,7 @@ $('#BTNFQCSave').click(function() {
 	var testNum=$("#TableTestContents").find("tr").length-1;
 	
 	var radioCheck=true;
-//	
+
 //	alert($("#TableTestContents").find("tr").length );
 	
 	for(var i=0;i<testNum;i++){
@@ -642,8 +664,41 @@ $('#BTNFQCSave').click(function() {
 					"FQCMakeDate":Ndate,
 					"FQCAuditor":$('#FQCAuditor option:selected').text()
 			}
+		 
+		 
+		 $.ajax({
+		        method: 'post',
+		        url: '/app/PM/saveDBData',
+		        data: FQCData,
+		        success: function(data) {
+		  //         alert("成功数据:" + JSON.stringify(data));
+		           if (data.affectedRows != 0) {
+		        	   
+		        	   if(sessionName==$('#FQCAuditor option:selected').text()){
+		        		   
+		        		   
+		        		   let msgNext=confirm("FQC数据保存成功,是否立即审核?");
+		        		   if(msgNext){
+		        			   $('#BTNFQCAudit').click();
+		        		   }
+		        		   
+		        	   }else{
+		        		   alert("FQC数据保存成功!");
+		        	   }
 
-	saveDBData(FQCData,"FQC单");
+//		              window.location.reload();
+		           }
+		       },
+		       error:function(err){
+		    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+		    		   alert("系统中已存在重复数据,请检查!");
+		    	   }else{
+		    		   alert("失败数据:"+JSON.stringify(err));
+		    	   }
+		       }
+		    });
+
+//	saveDBData(FQCData,"FQC单");
 		 
 		 
 	}else{
@@ -658,11 +713,10 @@ $('#BTNFQCSave').click(function() {
 $('#BTNFQCAudit').click(function() {
 	
 	
-	var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
+	if(sessionName==$('#FQCAuditor option:selected').text()){
+		var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
 
 
-
-		 
 		 switch(FQCResult){
 		 case "1":
 			 var PLDUpdData={
@@ -675,12 +729,14 @@ $('#BTNFQCAudit').click(function() {
 			 
 			 var FQCData={
 						"DBTable":"ppm_bills_FQC",
-						"DBID":$('#DBID').val(),
+						"BillIDName":"fqcBPID",
+						"BillID":$('#BPID').text(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
 						"FQCStatus":1,
-						"FQCStatusText":"已通过"
+						"FQCStatusText":"已通过",
+						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
 			 
 			 var msg="该计划单已通过FQC检测,等待最终发布!";
@@ -697,12 +753,14 @@ $('#BTNFQCAudit').click(function() {
 			 
 			 var FQCData={
 						"DBTable":"ppm_bills_FQC",
-						"DBID":$('#DBID').val(),
+						"BillIDName":"fqcBPID",
+						"BillID":$('#BPID').text(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
 						"FQCStatus":2,
-						"FQCStatusText":"出货后修正"
+						"FQCStatusText":"出货后修正",
+						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
 			 
 			 var msg="该计划单FQC检测存在问题,请发布后继续跟踪解决!";
@@ -719,16 +777,18 @@ $('#BTNFQCAudit').click(function() {
 			 
 			 var FQCData={
 						"DBTable":"ppm_bills_FQC",
-						"DBID":$('#DBID').val(),
+						"BillIDName":"fqcBPID",
+						"BillID":$('#BPID').text(),
+//						"DBID":$('#DBID').val(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":2,
 						"FQCStatus":3,
-						"FQCStatusText":"立即修正"
+						"FQCStatusText":"立即修正",
+						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
 			 
 			 var msg="该计划单未通过FQC检测,请更新后再次进行FQC检测!";
-
 			 break;	 
 		
 		 
@@ -746,6 +806,7 @@ $('#BTNFQCAudit').click(function() {
 		 
 		 
 		 console.log("PLDUpdData:"+JSON.stringify(PLDUpdData));
+		 console.log("FQCData:"+JSON.stringify(FQCData));
 		 
 			 var ajax1=$.ajax({
 			        method: 'post',
@@ -755,10 +816,10 @@ $('#BTNFQCAudit').click(function() {
 			        },
 			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 			        });
-//			 
+			 
 			var ajax2=$.ajax({
 		        method: 'post',
-		        url: '/app/PM/updDBData',
+		        url: '/app/PM/updBillStatus',
 		        data: FQCData,
 		        success: function(data, textStatus) {
 		        },
@@ -770,6 +831,11 @@ $('#BTNFQCAudit').click(function() {
 				window.location.reload();
 				
 			});
+		
+	}else{
+		alert("您不是该FQC单的指定审核人,无法审核!");
+	}
+
 		 
 });
 
@@ -811,8 +877,7 @@ $('#BTNUpdVer').click(function() {
 	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 	if(msg==true){	
 		
-		var newVersion=parseInt($('#FQCVersion').text())+1;
-	
+	 var newVersion=parseInt($('#FQCVersion').text())+1;
 	
 	 var FQCData={
 				"DBTable":"ppm_bills_FQC",

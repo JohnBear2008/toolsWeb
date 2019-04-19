@@ -345,6 +345,8 @@
                    <!--panel------------------------------------------------------------------------>
                    
                    <button id="BTNUpdVer" class="btn btn-danger" data-toggle="modal" >更新版本</button>
+                   
+                   <button id="BTNEnd" class="btn btn-success" data-toggle="modal" >完结归档</button>
 
 
 
@@ -502,7 +504,18 @@
 //}
 
 
-
+//检查输入项
+function checkPBHInput(){
+	
+	if($("#emailADRS").val()==""){
+		alert("收件人邮箱未填写,请检查!");
+		return false;
+	}else if($("#emailContent").val()==null){
+		alert("邮件内容未填写,请检查!");
+		return false;
+	}
+	return true;
+}
 
 
 
@@ -648,12 +661,29 @@ $(document).ready( function () {
 	 sessionName="<%-locals.session.yjUser.Name%>";
 
 	 var undone=getQueryString("undone");
-		
-		if(undone=="true"){
-			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( emailResult IS NULL OR emailResult =0)","orderBy":" saveTimeStamp DESC"};
-		}else{
+	 
+	 
+	 switch(undone){
+	    case "unRecord":
+	    	var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus IS NULL","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unAudit":
+			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =0","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unSend":
+			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND  PBHStatus =1 AND emailResult=0","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		default:
 			var tableSQL={"SQL":"SQLTableBillsPBH","orderBy":" saveTimeStamp DESC"};
+			break;
+		
 		}
+		
+//		if(undone=="true"){
+//			var tableSQL={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( emailResult IS NULL OR emailResult =0)","orderBy":" saveTimeStamp DESC"};
+//		}else{
+//			var tableSQL={"SQL":"SQLTableBillsPBH","orderBy":" saveTimeStamp DESC"};
+//		}
 
 
 	 tableInfo={
@@ -785,9 +815,7 @@ var filesHtml=$("#divFilesUploaded").html();
             	 $("#divFilesUploaded").html(filesHtml);
              }
              
-             
-             
-             
+
              var ibtn="<button  class='btn btn-default btn-xs'>×</button>";
              $("#divFilesUploaded").find("a").after(ibtn);
 
@@ -826,40 +854,43 @@ $('#BTNResetInfo').click(function() {
 $('#BTNPBHSave').click(function() {
 	
 	
-	
-	
-   var files=[];
-	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
-		var fileName=$(this).attr('download');
+	if(checkPBHInput()){
 		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
+		var files=[];
 		
-		files.push(fileInfo);
-	});
-
-		 var PBHData={
-					"DBTable":"ppm_bills_PBH",
-					"DBID":$('#DBID').val(),
-					"PBHBPID":$('#BPID').text(),
-					"PBHCTRName":$('#PBHCTRName').text(),
-					"emailADRS":$('#emailADRS').val(),
-					"emailCopyADRS":$('#emailCopyADRS').val(),
-					"emailTitle":$('#emailTitle').val(),
-//					"files":JSON.stringify(filesValue),
-					"files":JSON.stringify(files),
-					"emailContent":$('#emailContent').val(),
-					"PBHRemark":$('#PBHRemark').val(),
-					"PBHMaker":sessionName,
-					"PBHMakeDate":Ndate,
-					"PBHAuditor":$('#PBHAuditor option:selected').text()
+		$('#divFilesUploaded a').each(function(){
+			var fileKey=$(this).attr('href').substring(30);
+			var fileName=$(this).attr('download');
+			
+			var fileInfo={
+					"fileName":fileName,
+					"fileKey":fileKey
 			}
+			
+			files.push(fileInfo);
+		});
 
-	saveDBData(PBHData,"PBH单");
+			 var PBHData={
+						"DBTable":"ppm_bills_PBH",
+						"DBID":$('#DBID').val(),
+						"PBHBPID":$('#BPID').text(),
+						"PBHCTRName":$('#PBHCTRName').text(),
+						"emailADRS":$('#emailADRS').val(),
+						"emailCopyADRS":$('#emailCopyADRS').val(),
+						"emailTitle":$('#emailTitle').val(),
+//						"files":JSON.stringify(filesValue),
+						"files":JSON.stringify(files),
+						"emailContent":$('#emailContent').val(),
+						"PBHRemark":$('#PBHRemark').val(),
+						"PBHMaker":sessionName,
+						"PBHMakeDate":Ndate,
+						"PBHAuditor":$('#PBHAuditor option:selected').text()
+				}
+
+		saveDBData(PBHData,"PBH单");
+		
+	}
+
 
 });
 
@@ -873,7 +904,9 @@ $('#BTNPBHAudit').click(function() {
 					"DBID":$('#DBID').val(),
 					"PBHAuditor":sessionName,
 					"PBHAuditDate":Ndate,
-					"PBHAuditResult":1
+					"PBHAuditResult":1,
+					"PBHStatus":1,
+					"PBHStatusText":"已审核"
 			}
 
 	     updDBData(PBHData,"PBH单审核状态");
@@ -919,18 +952,10 @@ $('#BTNModelEmail').click(function() {
 	$('#emailCopyADRSModel').text($('#emailCopyADRS').val());
 	$('#emailTitleModel').text($('#emailTitle').val());
 	$('#emailFilesModel').text($('#divFilesUploaded').text());
-	
-	
-	
+
 	$('#emailContentModel').html($('#emailContent').val());
 	
 
-	
-
-	     
-
-
-   
 });
 
 //按钮-发送邮件
@@ -959,8 +984,7 @@ $('#BTNModelEmailSend').click(function() {
 				"emailCopyADRS":$('#emailCopyADRS').val(),
 				"emailTitle":$('#emailTitle').val(),
 				"emailFiles":JSON.stringify(files),
-				"emailContent":$('#emailContent').val(),
-				"PBHStatus":1
+				"emailContent":$('#emailContent').val()
 
 		}
 
@@ -990,8 +1014,7 @@ $('#BTNSendEmailDiv').click(function() {
 	
 	var emailData={
 		    "pbhBPID":$('#BPID').text(),
-		    "emailResult":2,
-		    "PBHStatus":2
+		    "emailResult":2
 			
 	}
 
@@ -1064,7 +1087,53 @@ $('#BTNUpdVer').click(function() {
 });
 
 
+//按钮-完结归档
+$('#BTNEnd').click(function() {
+	
+	var msg1 = confirm("归档后,系统不再显示关于该计划的所有单据!是否继续?");
+    if (msg1 === true) {
+    	
+    	 var PLDUpdData={
+					"DBTable":"ppm_bills_plan",
+					"BillIDName":"BPID",
+					"BillID":$('#BPID').text(),
+					"WFStatus":100
+			}
+    	 
+    	 var taskUpdData={
+					"DBTable":"ppm_bills_task",
+					"BillIDName":"taskBPID",
+					"BillID":$('#BPID').text(),
+					"WFStatus":0
+			}
+    	 
+    	 var ajax1=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updBillStatus',
+		        data: PLDUpdData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+		 
+    	 var ajax2=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updBillStatus',
+		        data: taskUpdData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+	
+		$.when(ajax1,ajax2).done(function(){
+				alert("归档完成,该计划任务完结!");
+			window.location.reload();
+			
+		});
+    }
+	
 
+});
 
 
 //按钮-表单关闭按钮,添加刷新数据功能

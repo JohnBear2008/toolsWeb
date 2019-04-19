@@ -38,8 +38,6 @@
         <!-- 按钮触发模态框 -->
 
         <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
-        
-        <button id="BTNFinish" class="btn btn-warning" data-toggle="modal" >完结</button>
         <button id="BTNStop" class="btn btn-danger" data-toggle="modal" >终止</button>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
@@ -216,7 +214,8 @@ function getDBIDInfo(tableName,DBID){
 				"OGNSystemVersion",
 				"MHEName",
 				"files",
-				"model",
+				"modelD",
+				"modelH",
 				"applyDate",
 				"limitDate",
 				"maker",
@@ -241,7 +240,8 @@ function getDBIDInfo(tableName,DBID){
 				"auditor",
 				"auditDate",
 				"files",
-				"model",
+				"modelD",
+				"modelH",
 				"BPTAuditOpinion",
 				"limitDate",
 				"maker",
@@ -349,7 +349,8 @@ function Fun_winDetailInit(dataSelect){
 				"PGEMaker",
 				"MHEName",
 				"files",
-				"model",
+//				"modelD",
+//				"modelH",
 				"applyDate",
 				"limitDate"
 				],
@@ -369,7 +370,8 @@ function Fun_winDetailInit(dataSelect){
 				"PGEMaker",
 				"auditDate",
 				"files",
-				"model",
+//				"modelD",
+//				"modelH",
 				"limitDate",
 				"makeDate"
 				],
@@ -482,8 +484,6 @@ $('#billsTrackTable tbody').on('click', 'tr', function() {
     }
  
     var dataSelect = table.row('.selected').data();
-    
-    
 
 });
 	
@@ -515,37 +515,59 @@ $('#BTNInfo').click(function() {
 
 
 //删除按钮----------
-$('#BTNDelete').click(function() {
+$('#BTNStop').click(function() {
     var dataSelect = table.row('.selected').data();
     
  //   alert(JSON.stringify(dataSelect));
 //    
-//    if (dataSelect == undefined) {
-//        alert("当前未选择任何数据,请先点击需要删除的数据行!");
-//    } else {
-//    	
-//    	
-//    	if(dataSelect.auditDate!=null){
-//    		alert("已审核单据禁止删除!");
-//    	}else{
-//    		
-//    		
-//    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-//            if (msg1 === true) {
-//                var msg2 = confirm("确认删除此行数据？");
-//                if (msg2 === true) {
-//                	
-//                //	alert(dataSelect.DBID);
-//                    var IDData = {"DBTable":"ppm_bills_plan","DBID":dataSelect.DBID};
-// //                   alert("IDData:"+JSON.stringify(IDData));
-//                    delDBData(IDData);
-//                }
-//            }
-//    		
-//    		
-//    	}
-//
-//    }
+    if (dataSelect == undefined) {
+        alert("请先选择需要终止的计划!");
+    } else {
+    	var msg1 = confirm("风险操作:终止计划单后,系统不再显示关于该计划的所有单据!是否继续?");
+        if (msg1 === true) {
+        	
+        	 var PLDUpdData={
+						"DBTable":"ppm_bills_plan",
+						"BillIDName":"BPID",
+						"BillID":dataSelect.BPID,
+						"WFStatus":0
+				}
+        	 
+        	 var taskUpdData={
+						"DBTable":"ppm_bills_task",
+						"BillIDName":"taskBPID",
+						"BillID":dataSelect.BPID,
+						"WFStatus":0
+				}
+        	 
+        	 var ajax1=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updBillStatus',
+			        data: PLDUpdData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+			 
+        	 var ajax2=$.ajax({
+			        method: 'post',
+			        url: '/app/PM/updBillStatus',
+			        data: taskUpdData,
+			        success: function(data, textStatus) {
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+			        });
+		
+
+			$.when(ajax1,ajax2).done(function(){
+					alert("计划单已终止,相关任务单已终止!");
+				window.location.reload();
+				
+			});
+
+        }
+    	
+    }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
 });
 

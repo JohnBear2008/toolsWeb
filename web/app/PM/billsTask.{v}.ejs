@@ -668,7 +668,7 @@
                 <th>任务负责人</th>
                 <th>完成期限</th>
                 <th>确认结果</th>
-                <th>任务记录数</th>
+                <th>任务登记</th>
                 <th>IPQC结果</th>
                 <th>任务状态</th>
 
@@ -1049,6 +1049,7 @@ function Fun_taskRecordInit(dataChoose){
 
 		if(RecordNum==0){
 			$('#DIVRecordContent').show();
+			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
 		}else{
 			$('#DIVRecordContent').hide();
 		}
@@ -1074,6 +1075,8 @@ function Fun_taskRecordInit(dataChoose){
 		break;
 	
 	}
+	
+
 	
 	
 	
@@ -1210,6 +1213,24 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 //			     $('#recordAuditor').text(dataSelectRecord.recordAuditor);
 			     $('#recordAuditDate').text(dataSelectRecord.recordAuditDate);
 			     
+			     
+			     if(dataSelectRecord.recordAuditDate!=""){
+			    	 
+//			    	$('#DIVRecordContent input').attr("disabled",true);
+			    	$('#DIVRecordContent select').attr("disabled",true);
+			    	$('#DIVRecordContent textarea').attr("disabled",true);
+			    	 
+			    	 $("#DivUploadBTNS").hide();
+			    	 $("#BTNTaskRecordSave").hide();
+			     }else{
+			    	 
+			    	 $('#DIVRecordContent select').attr("disabled",false);
+				     $('#DIVRecordContent textarea').attr("disabled",false);
+			    	 
+			    	 $("#DivUploadBTNS").show();
+			    	 $("#BTNTaskRecordSave").show();
+			     }
+			     
 
 //			     //控制其他组件防止误操作.bear
 //			     
@@ -1246,7 +1267,66 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 		 
 }
 
+//检查输入项
+function checkTaskInput(){
+	
+	if($("#taskMHEName").val()==null){
+		alert("机型未选择,请检查!");
+		return false;
+	}else if($("#taskModel").val()==null){
+		alert("系统未选择,请检查!");
+		return false;
+	}else if(getCheckBoxValue("modfiyABE")==""){
+		alert("修改内容未选择,请检查!");
+		return false;
+	}else if($("#taskStaff").val()==null){
+		alert("任务负责人未选则,请检查!");
+		return false;
+	}else if($("#taskDBE").val()==""){
+		alert("任务说明未输入,请检查!");
+		return false;
+	}
+	
+	
+	return true;
+	
+}
 
+
+//检查确认输入项
+
+function checkAcceptInput(){
+	if($("#IPQCMaker").val()==null){
+		alert("IPQC填单人未选择,请检查!");
+		return false;
+	}
+	return true;
+}
+
+//检查输入项
+function checkRecordInput(){
+	
+	if($("#taskMHEName").val()==null){
+		alert("机型未选择,请检查!");
+		return false;
+	}else if($("#taskModel").val()==null){
+		alert("系统未选择,请检查!");
+		return false;
+	}else if(getCheckBoxValue("modfiyABE")==""){
+		alert("修改内容未选择,请检查!");
+		return false;
+	}else if($("#taskStaff").val()==null){
+		alert("任务负责人未选则,请检查!");
+		return false;
+	}else if($("#taskDBE").val()==""){
+		alert("任务说明未输入,请检查!");
+		return false;
+	}
+	
+	
+	return true;
+	
+}
 
 //页面加载函数---------------
 $(document).ready( function () {
@@ -1259,13 +1339,33 @@ $(document).ready( function () {
 	console.log("sessionName:"+sessionName);
 	
     var undone=getQueryString("undone");
-	
-	if(undone=="true"){
+    
+    switch(undone){
+    case "unAccept":
+    	var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0","orderBy":" saveTimeStamp DESC"};
+    	break;
+	case "unAudit":
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =2","orderBy":" saveTimeStamp DESC"};
+		break;
+	case "unRecord":
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 ","orderBy":" saveTimeStamp DESC"};
+		break;
+	case "unPass":
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 ","orderBy":" saveTimeStamp DESC"};
+		break;
 		
-		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
-	}else{
+	default:
 		var tableSQL={"SQL":"SQLTableBillsTaskRecord","orderBy":" saveTimeStamp DESC"};
+		break;
+	
 	}
+	
+//	if(undone=="true"){
+//		
+//		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
+//	}else{
+//		var tableSQL={"SQL":"SQLTableBillsTaskRecord","orderBy":" saveTimeStamp DESC"};
+//	}
 	
 	
 
@@ -1284,7 +1384,7 @@ $(document).ready( function () {
 		        { data: 'taskStaff'},
 		        { data: 'taskLimitDate'},
 		        { data: 'BTAcceptResultText'},
-		        { data: 'recordNum'},
+		        { data: 'recordText'},
 		        { data: 'IPQCAuditResultText'},
 		        { data: 'BTStatusText'}
 			]
@@ -1320,33 +1420,41 @@ $('#billsTaskTable tbody').on('dblclick', 'tr', function() {
 //按钮-任务保存
 
 $('#BTNTaskSave').click(function(){
+	
 
 	    if(sessionName==$('#taskMaker').text()){
-	    	var taskData={
-					"DBTable":"ppm_bills_task",
-					"DBID":$('#DBID').text(),
-//					"BTID":$('#BTID').text(),
-//					"BTVersion":0,
-//					"taskBPID":taskBPID,
-//					"taskCTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-//					"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
-//					"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
-//					"taskType":$('input:radio[name="taskType"]:checked').val(),
-//					"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
-					"taskMHEName":Fun_getSelectText($('#taskMHEName option:selected').text()),
-					"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
-					"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
-					"taskBugID":$('#taskBugID').val(),
-					"taskStaff":$('#taskStaff option:selected').text(),
-					"modfiyABE":getCheckBoxValue('modfiyABE'),
-					"taskDBE":$('#taskDBE').val(),
-					"taskLimitDate":$('#taskLimitDate').val(),
-					"taskMaker":sessionName,
-					"taskMakeDate":Ndate
-			        }
+	    	
+	    	if(checkTaskInput()){
+	    		
+	    		var taskData={
+						"DBTable":"ppm_bills_task",
+						"DBID":$('#DBID').text(),
+//						"BTID":$('#BTID').text(),
+//						"BTVersion":0,
+//						"taskBPID":taskBPID,
+//						"taskCTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+//						"taskSortType":$('input:radio[name="taskSortType"]:checked').val(),
+//						"taskSortTypeText":$('input:radio[name="taskSortType"]:checked').next("span").text(),
+//						"taskType":$('input:radio[name="taskType"]:checked').val(),
+//						"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
+						"taskMHEName":Fun_getSelectText($('#taskMHEName option:selected').text()),
+						"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
+						"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
+						"taskBugID":$('#taskBugID').val(),
+						"taskStaff":$('#taskStaff option:selected').text(),
+						"modfiyABE":getCheckBoxValue('modfiyABE'),
+						"taskDBE":$('#taskDBE').val(),
+						"taskLimitDate":$('#taskLimitDate').val(),
+						"taskMaker":sessionName,
+						"taskMakeDate":Ndate
+				        }
+		    	
+		    	
+		    	updDBData(taskData,"任务单数据");
+	    		
+	    	}
 	    	
 	    	
-	    	updDBData(taskData,"任务单数据");
 	    	
 	    }else{
 	    	alert("非发布人不允许修改!");
@@ -1362,132 +1470,141 @@ $('#BTNTaskSave').click(function(){
 $('#BTNTaskAcceptYes').click(function() {
 	
 	if(sessionName==$('#taskStaff option:selected').text()){
-		var msg = confirm("确认后即将开始任务单流程!");
-		if(msg==true){	
-			
-			
-			var FQCRequest=$('input:radio[name="FQCRequest"]:checked').val();
-			
-			if(FQCRequest==1){
+		
+		
+		if(checkAcceptInput()){
+			var msg = confirm("确认后即将开始任务单流程!");
+			if(msg==true){	
 				
 				
+				var FQCRequest=$('input:radio[name="FQCRequest"]:checked').val();
+				
+				if(FQCRequest==1){
+					
+					
 
-				var acceptData={
-						"DBTable":"ppm_bills_task",
-						"DBID":$('#DBID').text(),
-						"taskStaff":$('#taskStaff option:selected').text(),
-						"taskDBE":$('#taskDBE').val(),
-						"taskLimitDate":$('#taskLimitDate').val(),
-						"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
-						"BTAcceptor":sessionName,
-						"BTAcceptDate":Ndate,
-						"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
-						"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
-						"IPQCMaker":$('#IPQCMaker option:selected').text(),
-						"BTAcceptResult":1,
-						"BTAcceptResultText":"已确认",
-						"BTStatus":2,
-						"BTStatusText":"进行中"
-				}
-				
-				
-				var PLDUpdData={
-						"DBTable":"ppm_bills_plan",
-						"BillIDName":"BPID",
-						"BillID":$('#taskBPID').text(),
-						"FQCRequest":1,
-						"FQCRequestText":"有"
-				}
-				
+					var acceptData={
+							"DBTable":"ppm_bills_task",
+							"DBID":$('#DBID').text(),
+							"taskStaff":$('#taskStaff option:selected').text(),
+							"taskDBE":$('#taskDBE').val(),
+							"taskLimitDate":$('#taskLimitDate').val(),
+							"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
+							"BTAcceptor":sessionName,
+							"BTAcceptDate":Ndate,
+							"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
+							"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
+							"IPQCMaker":$('#IPQCMaker option:selected').text(),
+							"BTAcceptResult":1,
+							"BTAcceptResultText":"已确认",
+							"BTStatus":2,
+							"BTStatusText":"进行中"
+					}
+					
+					
+					var PLDUpdData={
+							"DBTable":"ppm_bills_plan",
+							"BillIDName":"BPID",
+							"BillID":$('#taskBPID').text(),
+							"FQCRequest":1,
+							"FQCRequestText":"有"
+					}
+					
 
-				 
-				var ajax1=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updDBData',
-			        data: acceptData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
-				
-				 var ajax2=$.ajax({
+					 
+					var ajax1=$.ajax({
 				        method: 'post',
-				        url: '/app/PM/updBillStatus',
-				        data: PLDUpdData,
+				        url: '/app/PM/updDBData',
+				        data: acceptData,
 				        success: function(data, textStatus) {
 				        },
 				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 				        });
-			
-
-				$.when(ajax1,ajax2).done(function(){
-						alert("任务单确认状态已更新,计划单FQC申请更新!");
-//					window.location.reload();
 					
-				});
-				
-				//updDBData(acceptData,"任务单确认状态");
+					 var ajax2=$.ajax({
+					        method: 'post',
+					        url: '/app/PM/updBillStatus',
+					        data: PLDUpdData,
+					        success: function(data, textStatus) {
+					        },
+					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+					        });
 				
 
-				
-			}else{
-				var acceptData={
-						"DBTable":"ppm_bills_task",
-						"DBID":$('#DBID').text(),
-						"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
-						"BTAcceptor":sessionName,
-						"BTAcceptDate":Ndate,
-						"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
-						"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
-						"taskStaff":$('#taskStaff option:selected').text(),
-						"IPQCMaker":$('#IPQCMaker option:selected').text(),
-						"BTAcceptResult":1,
-						"BTAcceptResultText":"已确认",
-						"BTStatus":2,
-						"BTStatusText":"进行中"
+					$.when(ajax1,ajax2).done(function(){
+							alert("任务单确认状态已更新,计划单FQC申请更新!");
+//						window.location.reload();
+						
+					});
+					
+					//updDBData(acceptData,"任务单确认状态");
+					
+
+					
+				}else{
+					var acceptData={
+							"DBTable":"ppm_bills_task",
+							"DBID":$('#DBID').text(),
+							"BTAcceptOpinion":$('#BTAcceptOpinion').val(),
+							"BTAcceptor":sessionName,
+							"BTAcceptDate":Ndate,
+							"FQCRequest":$('input:radio[name="FQCRequest"]:checked').val(),
+							"FQCRequestText":$('input:radio[name="FQCRequest"]:checked').next("span").text(),
+							"taskStaff":$('#taskStaff option:selected').text(),
+							"IPQCMaker":$('#IPQCMaker option:selected').text(),
+							"BTAcceptResult":1,
+							"BTAcceptResultText":"已确认",
+							"BTStatus":2,
+							"BTStatusText":"进行中"
+					}
+					
+					$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updDBData',
+				        data: acceptData,
+				        success: function(data, textStatus) {
+				        	alert("任务单确认状态已更新!");
+				        	
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+//					updDBData(acceptData,"任务单确认状态");
 				}
 				
-				$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updDBData',
-			        data: acceptData,
-			        success: function(data, textStatus) {
-			        	alert("任务单确认状态已更新!");
-			        	
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
-//				updDBData(acceptData,"任务单确认状态");
-			}
-			
-			let msgnext=confirm("是否立即登记任务?");
-			if(msgnext){
-				
-				$('#divTaskInfo input').attr("disabled",true);
-				$('#divTaskInfo select').attr("disabled",true);
-				$('#divTaskInfo textarea').attr("disabled",true);
-				
-				$("#BTNTaskSave").hide();
+				let msgnext=confirm("是否立即登记任务?");
+				if(msgnext){
+					
+					$('#divTaskInfo input').attr("disabled",true);
+					$('#divTaskInfo select').attr("disabled",true);
+					$('#divTaskInfo textarea').attr("disabled",true);
+					
+					$("#BTNTaskSave").hide();
 
-				$('#divTaskAccept input').attr("disabled",true);
-				$('#divTaskAccept select').attr("disabled",true);
-				$('#divTaskAccept textarea').attr("disabled",true);
-				
-				$('#DivTaskAcceptBTNS').hide();
-				
-				
-				$('#BTAcceptResultText').text("已确认");
-				$('#BTAcceptDate').text(Ndate);
-				
-				$('#DivRecordPanel').show();
-			}else{
-				window.location.reload();
-			}
+					$('#divTaskAccept input').attr("disabled",true);
+					$('#divTaskAccept select').attr("disabled",true);
+					$('#divTaskAccept textarea').attr("disabled",true);
+					
+					$('#DivTaskAcceptBTNS').hide();
+					
+					
+					$('#BTAcceptResultText').text("已确认");
+					$('#BTAcceptDate').text(Ndate);
+					
+					$('#DivRecordPanel').show();
+					Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
+					
+				}else{
+					window.location.reload();
+				}
 
+				
+			}
 			
 		}
+		
+		
 	}else{
-		alert("非该方案单的负责人,不允许审核!");
+		alert("您不是该任务单的负责人,无法确认任务!");
 	}
 
 
@@ -1516,7 +1633,7 @@ $('#BTNTaskAcceptNo').click(function() {
 			updDBData(acceptData,"任务单驳回状态");
 		}
 	}else{
-		alert("非该方案单的负责人,不允许审核!");
+		alert("您不是该任务单的负责人,无法驳回任务!");
 	}
 });
 
@@ -1580,21 +1697,33 @@ $('#BTNTaskRecordSave').click(function() {
 									"recordAuditDate":Ndate
 							}
 						 
-						 var ajax1=$.ajax({
-						        method: 'post',
-						        url: '/app/PM/updDBData',
-						        data: recordData,
-						        success: function(data, textStatus) {
-						        },
-						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-						        });
-						 
-
+//						 var ajax1=$.ajax({
+//						        method: 'post',
+//						        url: '/app/PM/updDBData',
+//						        data: recordData,
+//						        success: function(data, textStatus) {
+//						        },
+//						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+//						        });
 //						 Fun_saveTaskRecord(recordData);
 						 
+						 var ajax1=$.ajax({
+						        method: 'post',
+						        url: '/app/PM/saveDBData',
+						        data: recordData,
+						        success: function(data) {
+//						            alert("成功数据:" + JSON.stringify(data));
+						           if (data.affectedRows != 0) {
+
+						               $('#DIVRecordContent').hide();
+						           }
+						       },
+						       error:function(err){
+						       	alert("失败数据:"+JSON.stringify(err));
+						       }
+						    });
 						 
 
-						 
 						 var taskData={
 									"DBTable":"ppm_bills_task",
 									"BillIDName":"BTID",
@@ -1615,8 +1744,11 @@ $('#BTNTaskRecordSave').click(function() {
 							alert("任务登记审核完成,可开始IPQC检测!");
 							
 							Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
-//				          	$('#BTNTaskRecordAdd').click();
+							
+							
+//	1			          	$('#BTNTaskRecordAdd').click();
 							$('#DIVRecordContent').hide();
+							window.location.reload();
 							
 							
 						});
@@ -1670,7 +1802,7 @@ $('#BTNTaskRecordSave').click(function() {
 				 
 			 }
 		}else{
-			alert("非该方案单的负责人,不允许填单!");
+			alert("您不是该任务单的负责人,无法登记任务!");
 		}
 
 });
@@ -1838,56 +1970,63 @@ $('#BTNTaskRecordAudit').click(function() {
 				  alert("该记录已审核,无需再次审核!");
 			  }else{
 				  
-				  var msg = confirm("审核后无法再次进行任务登记,如任务记录有误,请修改后再审核,是否立即审核通过?");
-					if(msg==true){	
+				  if(sessionName==dataSelectRecord.recordAuditor){
+					  var msg = confirm("审核后无法再次进行任务登记,如任务记录有误,请修改后再审核,是否立即审核通过?");
+						if(msg==true){	
 
-							 var recordData={
-										"DBTable":"ppm_bills_taskrecord",
-										"DBID":$('#recordDBID').text(),
-										"recordAuditor":sessionName,
-										"recordAuditDate":Ndate
+								 var recordData={
+											"DBTable":"ppm_bills_taskrecord",
+											"DBID":$('#recordDBID').text(),
+											"recordAuditor":sessionName,
+											"recordAuditDate":Ndate
+									}
+
+								 
+								 var taskData={
+											"DBTable":"ppm_bills_task",
+											"BillIDName":"BTID",
+											"BillID":$('#BTID').text(),
+											"recordNum":1
 								}
-
-							 
-							 var taskData={
-										"DBTable":"ppm_bills_task",
-										"BillIDName":"BTID",
-										"BillID":$('#BTID').text(),
-										"recordNum":1
-							}
-							 
-							 
-							 
-							 var ajax1=$.ajax({
+								 
+								 
+								 
+								 var ajax1=$.ajax({
+								        method: 'post',
+								        url: '/app/PM/updDBData',
+								        data: recordData,
+								        success: function(data, textStatus) {
+								        },
+								        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+								        });
+								 
+								var ajax2=$.ajax({
 							        method: 'post',
-							        url: '/app/PM/updDBData',
-							        data: recordData,
+							        url: '/app/PM/updBillStatus',
+							        data: taskData,
 							        success: function(data, textStatus) {
 							        },
 							        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 							        });
-							 
-							var ajax2=$.ajax({
-						        method: 'post',
-						        url: '/app/PM/updBillStatus',
-						        data: taskData,
-						        success: function(data, textStatus) {
-						        },
-						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-						        });
-						
+							
 
-							$.when(ajax1,ajax2).done(function(){
-								alert("任务登记审核完成,可开始IPQC检测!");
-								
-								Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
-//					          	$('#BTNTaskRecordAdd').click();
-								$('#DIVRecordContent').hide();
-								
-								
-							});
-		
-					}
+								$.when(ajax1,ajax2).done(function(){
+									alert("任务登记审核完成,可开始IPQC检测!");
+									
+									Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
+//						          	$('#BTNTaskRecordAdd').click();
+									$('#DIVRecordContent').hide();
+									
+									
+								});
+						}else{
+							alert("您不是该记录的指定审核人,无法审核!");
+						}
+						
+						
+				  }
+				  
+				  
 				  
 			  }
 			  

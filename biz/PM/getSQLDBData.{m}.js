@@ -169,7 +169,7 @@ module.exports = function(sender) {
     	SQLExecute=SQLExecute+" ORDER BY "+orderBy;
     }
     
-    console.log("SQLExecute:"+SQLExecute);
+ //   console.log("SQLExecute:"+SQLExecute);
     
     //增加关键字防护,防止使用非法关键字操作数据库
     var banWord1 = new RegExp("delete");

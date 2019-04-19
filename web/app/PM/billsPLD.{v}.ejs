@@ -188,12 +188,13 @@
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
                      
-                       <label  class="col-sm-1 control-label" for="name">系统:</label>    
+                       <label  class="col-sm-1 control-label" for="name">系统DSP:</label>    
                        <div class="col-sm-3 ">
                        <select  id="modelD" class="selectpicker" data-live-search="true"> 
                        </select>
                        </div>  
                        
+                       <label  class="col-sm-1 control-label" for="name">系统HMI:</label>    
                        <div class="col-sm-3 ">
                        <select  id="modelH" class="selectpicker" data-live-search="true"> 
                        </select>
@@ -230,9 +231,7 @@
                  	
                  	 </div>
                  	
-                     
-                    
-                     
+
                      <!-------------------------------------------------------------------------->
 
                      <div class="form-group">
@@ -493,9 +492,9 @@ function Fun_winAddInit(){
 
 
 	
-	var SQLCTRName={SQL:"SQLSRCustomers"};
+//	var SQLCTRName={SQL:"SQLSRCustomers"};
 	var CTRName="#CTRName";
-	Fun_getSQLSelectDBData(SQLCTRName,CTRName);
+	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},CTRName);
     	
 	var SQLMHEName={SQL:"SQLSRMachines"};
 	var MHEName="#MHEName";
@@ -612,10 +611,7 @@ function Fun_winDetailInit(dataChoose){
 //	  $('#divFilesUploaded').html(downloadurl);
 //  }
 //  
-  
-  
-  
-  
+
   if(dataSelect.files!=null){
 	  
 	  var files=JSON.parse(dataSelect.files);
@@ -776,12 +772,26 @@ $(document).ready( function () {
 	
 	var undone=getQueryString("undone");
 	
-	if(undone=="true"){
-		
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
-	}else{
+	
+	switch(undone){
+	case "unAudit":
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
+		break;
+	case "auditNo":
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' )  AND PLDStatus =2  ","orderBy":" saveTimeStamp DESC"};
+		break;
+	default:
 		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
+		break;
+	
 	}
+	
+//	if(undone=="true"){
+//		
+//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
+//	}else{
+//		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
+//	}
 
 
 	console.log("sessionName:"+sessionName);
@@ -1316,6 +1326,7 @@ $('#BTNFormUpdate').click(function() {
         			"limitDate":$('#limitDate').val(),
         			"maker":sessionName,
         			"makeDate":Ndate,
+        			"auditor":$('#auditor option:selected').text(),
         			"version": newVersion,
         			"files":JSON.stringify(files),
         			"WFStatus":1
