@@ -198,8 +198,63 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
       })
 }
 
+
+
 //函数 获取指定SQL数据加载至selector中
 function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
+	
+//	console.log("InitValue:"+InitValue);
+	
+
+	
+	$(selectorID).empty();//用select组件不用先清空
+	  
+	  $.ajax({
+          method:'get',
+          data:selectSQL,
+          url:"/app/PM/getSQLDBData",
+          success:function(data){
+        	  
+        	  
+        	
+        //	  alert("return1111:"+JSON.stringify(data));
+        	  
+        	  $(selectorID).selectpicker({
+      			noneSelectedText :"未选择"//默认显示内容
+      		  });
+
+        		
+        		
+        		if(InitValue==undefined||InitValue==""){	
+//        			console.log("InitValue11:"+InitValue);
+           		
+           		 for(i=0;i<data.length;i++){
+                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
+                 	  }
+           		 $(selectorID).selectpicker('val','');
+
+        		}else{
+        			
+        			 for(i=0;i<data.length;i++){
+                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
+                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue){
+                     		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
+                     	  }
+                     }
+        		}
+
+              $(selectorID).selectpicker('refresh');
+
+//              alert($(selectorID).find("option:selected").text() );
+
+          },
+          error:function(){}
+      })
+}
+
+
+//函数 获取指定SQL数据加载至selector中
+function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
 	
 //	console.log("InitValue:"+InitValue);
 	
@@ -223,15 +278,15 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 //        			console.log("InitValue11:"+InitValue);
            		
            		 for(i=0;i<data.length;i++){
-                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
+                 	  $(selectorID).append($('<option value='+data[i].DBID+'>'+Fun_getValSelectText(data[i].selectTitle)+'</option>'));
                  	  }
            		 $(selectorID).selectpicker('val','');
 
         		}else{
         			
         			 for(i=0;i<data.length;i++){
-                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
-                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue){
+                     	  $(selectorID).append($('<option value='+data[i].DBID+'>'+Fun_getValSelectText(data[i].selectTitle)+'</option>'));
+                     	  if(Fun_getValSelectText(data[i].selectTitle)==InitValue){
                      		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
                      	  }
                      }
@@ -251,7 +306,6 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
       })
 }
 
-
 //函数 普通格式获取指定SQL数据加载至selector中
 function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 	
@@ -267,7 +321,6 @@ function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
           url:"/app/PM/getSQLDBData",
           success:function(data){
 
-        		
         		if(InitValue==undefined||InitValue==""){	
 //        			console.log("InitValue11:"+InitValue);
            		
@@ -288,7 +341,6 @@ function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
                      }
         		}
 
-
           },
           error:function(){}
       })
@@ -297,12 +349,8 @@ function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 
 //----文件上传功能代码----------------------------------------------
 function fileSelected() {
-	
 
 		var files = document.getElementById('fileToUpload').files;
-		
-		
-
 		var div = document.getElementById('div_previewImages');
 		
 		var selectedFileNames="";
@@ -335,7 +383,7 @@ function fileSelected() {
 		
 		document.getElementById('div_previewImages').innerHTML="已选择文件:"+selectedFileNames;
 
-	
+		uploadFile();
 	
 	
 	
@@ -828,6 +876,16 @@ function Fun_getSelectText(obj){
 
     var index=obj.lastIndexOf("\-");
     obj=obj.substring(index+1,obj.length);
+//  console.log(obj);
+    return obj;
+}
+
+//函数 截取值 selector选择内容  去除-/
+function Fun_getValSelectText(obj){
+//	var str2 = str.replace(/a/g, 'o');
+//	.replace(/-/g,"/")
+//    var index=obj.lastIndexOf("\-");
+    obj=obj.replace(/-\//g,"");
 //  console.log(obj);
     return obj;
 }

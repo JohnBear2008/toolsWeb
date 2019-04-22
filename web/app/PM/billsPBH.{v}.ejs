@@ -898,8 +898,12 @@ $('#BTNPBHSave').click(function() {
 
 //按钮-PBH审核---------
 $('#BTNPBHAudit').click(function() {
-
-		 var PBHData={
+	
+	
+     if($('#DBID').val()==""){
+    	 alert("请先保存发布单再审核!");
+     }else{
+    	 var PBHData={
 					"DBTable":"ppm_bills_PBH",
 					"DBID":$('#DBID').val(),
 					"PBHAuditor":sessionName,
@@ -910,6 +914,8 @@ $('#BTNPBHAudit').click(function() {
 			}
 
 	     updDBData(PBHData,"PBH单审核状态");
+     }
+		 
 		 
 
 });

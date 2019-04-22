@@ -288,10 +288,10 @@
 
                      <div class="col-sm-8">
                      <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
-                     <a class="btn btn-info" onclick="$('#fileToUpload').click()">选择文件</a>
+                     <a class="btn btn-info" onclick="$('#fileToUpload').click()">上传附件</a>
 
 
-                 	<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >
+                 	<!--<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >-->
                  	<input type="button" class="btn btn-warning" onclick="deleteFile()" value="清空附件" >
 
                      </div>
@@ -383,20 +383,18 @@
                      <label class="col-sm-2 control-label">单据类别:</label>
                  	 <div class="col-sm-10">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskSortType" id="radio1" value="D" checked> <span>DSP任务单</span>
+                 	        <input type="radio" name="taskSortType" id="taskSortTypeD" value="D" checked> <span>DSP任务单</span>
                  	    </label>
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskSortType" id="radio2" value="H"> <span>HMI任务单</span>
+                 	        <input type="radio" name="taskSortType" id="taskSortTypeH" value="H"> <span>HMI任务单</span>
                  	    </label>
                  	    <label class="radio-inline">
-                	        <input type="radio" name="taskSortType" id="radio3" value="M"> <span>轴卡任务单</span>
+                	        <input type="radio" name="taskSortType" id="taskSortTypeM" value="M"> <span>运动控制卡任务单</span>
                 	    </label>
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskSortType" id="radio4" value="P"> <span>PLC任务单</span>
+                 	        <input type="radio" name="taskSortType" id="taskSortTypeP" value="P"> <span>PLC任务单</span>
                  	    </label>
-                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskSortType" id="radio5" value="C"> <span>codesys任务单</span>
-                	    </label>
+
 
                  	 </div>
 
@@ -410,32 +408,37 @@
                      <label class="col-sm-2 control-label">类型:</label>
                  	 <div class="col-sm-10">
                  	 
-                 	 <span id="taskTypeA">
+                 	 <span id="taskTypeAspan">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio1" value="A" checked> <span>APP</span>
+                 	        <input type="radio" name="taskType" id="taskTypeA" value="A" checked> <span>APP</span>
                  	    </label>
                  	 </span> 
                  	 
-                 	 <span id="taskTypeK">      
+                 	 <span id="taskTypeKspan">      
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio2" value="K"> <span>Kernel</span>
+                 	        <input type="radio" name="taskType" id="taskTypeK" value="K"> <span>Kernel</span>
                  	    </label>
-                 	 </span>       
-                 	 <span id="taskTypeL">
+                 	 </span>        
+                 	 <span id="taskTypeOspan">
                  	    <label class="radio-inline">
-                 	        <input type="radio" name="taskType" id="radio3" value="L"> <span>LIB</span>
-                 	    </label>
-                 	 </span>    
-                 	 <span id="taskTypeO">
-                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskType" id="radio4" value="O"> <span>OS</span>
+                	        <input type="radio" name="taskType" id="taskTypeO" value="O"> <span>烧录档</span>
                 	    </label>
                 	 </span>   
-                	 <span id="taskTypeB">
+                	 <span id="taskTypeBspan">
                 	    <label class="radio-inline">
-                	        <input type="radio" name="taskType" id="radio5" value="B"> <span>Boot</span>
+                	        <input type="radio" name="taskType" id="taskTypeB" value="B"> <span>Boot</span>
                 	    </label>    
                 	 </span>  
+                	 <span id="taskTypeRspan">
+             	    <label class="radio-inline">
+             	        <input type="radio" name="taskType" id="taskTypeR" value="R"> <span>Runtime</span>
+             	    </label>    
+             	    </span>  
+             	   <span id="taskTypeLspan">
+            	    <label class="radio-inline">
+            	        <input type="radio" name="taskType" id="taskTypeL" value="L"> <span>LIB</span>
+            	    </label>
+            	   </span>    
 
 
 
@@ -780,13 +783,15 @@ function Fun_BTIDCreate(){
 
 
 
-
-
-//函数:详情按钮详情页自动填写内容1:所有情况必定加载------------------------
-
-function Fun_BPTDetailInitPart1(dataSelect){
+//函数:详情按钮详情页加载数据------------------------
+function Fun_BPTDetailInitVal(dataChoose){
+	
+	let dataSelect=NulltoEmpty(dataChoose);
 	
 
+	
+	//-加载跟踪信息----------------------
+	
 	var SQLParamPLD={
 			"tableName":"ppm_bills_plan",
 			"titles":[
@@ -807,92 +812,39 @@ function Fun_BPTDetailInitPart1(dataSelect){
 			"filter":"BPID='"+dataSelect.BPID+"'"
 			};
 	
-	
 	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
 	
+	//-加载跟踪信息----------------------
 
 
 	$('#PLDDBID').val(dataSelect.PLDDBID);
-
     $('#DBID').val(dataSelect.DBID);
-
 	$('#BPTBPID').val(dataSelect.BPID);
-//	$("#BPTBPID").attr("disabled",true);
-	
-
 	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#CTRName",dataSelect.PLDCTRName);
-//	$("#CTRName").attr("disabled",true);
-
-//	$('#CTRName').val(dataSelect.PLDCTRName);
-	
-
-	$('#BPTID').val(dataSelect.BPID);
-//	$("#BPTID").attr("disabled",true);
-
-//	var BPTID=Fun_billIDCreate('FA');
-//	$('#BPTID').val(BPTID); 
-
 	$('#PGEMaker').val(dataSelect.PLDPGEMaker);
-
 	$('#limitDate').val(dataSelect.PLDLimitDate);
+	$('#BPTID').val(dataSelect.BPID);
 
-
-	$('#taskLimitDate').val(dataSelect.limitDate);
-
-	if(dataSelect.BPTVersion==null){
+	if(dataSelect.BPTVersion==""){
 		$('#BPTVersion').text(0);
 	}else{
 		$('#BPTVersion').text(dataSelect.BPTVersion);
 	}
-
-
 	$('#BPTStatusText').text(dataSelect.BPTStatusText);
 	
-	 $('#DIVPLDInfo input').attr("disabled",true);
-	 $('#DIVPLDInfo select').attr("disabled",true);
-
-
-
-	$('#billTaskPanel').hide();
-
-	$('#taskBPID').val(dataSelect.BPID);
-
-	$('.form_date').datetimepicker({
-	      language:  'zh-CN',
-	      weekStart: 1,
-	      todayBtn:  1,
-			autoclose: 1,
-			todayHighlight: 1,
-			startView: 2,
-			minView: 2,
-			forceParse: 0,
-			startDate:Ndate,//设置最小日期
-			endDate:dataSelect.limitDate//设置最大日期
-	  });
-
-	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
-
-	tasksTableInfo={
-				"tableID":"#billsTaskTable",
-				"columnsData":[
-					{ data: 'DBID' ,"visible": false},
-			        { data: 'BTID' },
-			        { data: 'BTVersion'},
-			        { data: 'taskSortTypeText'},
-			        { data: 'taskTypeText'},
-			        { data: 'taskStaff'},
-			        { data: 'taskLimitDate'},
-			        { data: 'BTStatusText'}
-				]
-	     }
 	
-	Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-
-}
-
-//函数:详情按钮详情页自动填写内容2:方案单审核状态为0,1,2时加载------------------------
-
-function Fun_BPTDetailInitPart2(dataSelect){
+	if(dataSelect.auditResult==""){
+		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.PLDMHEName);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
+		$('#OGNSystemVersion').val(dataSelect.PLDOGNSystemVersion);
+	}else{
+		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.MHEName);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
+		$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
+	}
+	
 	switch(dataSelect.modifyType){
 	  case 1:
 		  $("#modifyTypeOption1").prop("checked",true);
@@ -903,27 +855,22 @@ function Fun_BPTDetailInitPart2(dataSelect){
 	  case 3:
 		  $("#modifyTypeOption3").prop("checked",true);
 		  break;
-    case 4:
+      case 4:
 	      $("#modifyTypeOption4").prop("checked",true);
 	      break;
 	  default:
 		  $("#modifyTypeOption1").prop("checked",true);
-    }
+     }
 
-	 if(dataSelect.modifyReason!=null){
+	 if(dataSelect.modifyReason!=""){
 		 setCheckBoxValue("modifyReason",dataSelect.modifyReason);
 	 }
 
 	 $('#BPTDescribe').val(dataSelect.BPTDescribe);
 
-//	 var Para={"billName":"ppm_bills_blueprint","billID":dataSelect.BPTID,"billVersion":dataSelect.version}
-//	 Fun_getBillFile(Para,"#divFilesUploaded",true);
-
 	 $('#divFilesUploaded').html("");
 
-
-	  
-	  if(dataSelect.files!=null){
+	  if(dataSelect.files!=""){
 		  
 		  var files=JSON.parse(dataSelect.files);
 		  if(files!=null){
@@ -931,11 +878,9 @@ function Fun_BPTDetailInitPart2(dataSelect){
 			  var fileLink="";
 				 if(files.length>0){
 					 for(var i=0;i<files.length;i++){
-						 console.log("files[i].fileName:"+files[i].fileName);
-						 
+						console.log("files[i].fileName:"+files[i].fileName); 
 						fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
 					 } 
-					 
 					 fileLink=fileLink.substr(0, fileLink.length-3); 
 				 }
 		  var downloadurl=fileLink;
@@ -943,184 +888,153 @@ function Fun_BPTDetailInitPart2(dataSelect){
 			  downloadurl="";
 		  }
 		  $('#divFilesUploaded').html(downloadurl);
-	  }
+	   }
+
+		tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
+
+		tasksTableInfo={
+					"tableID":"#billsTaskTable",
+					"columnsData":[
+						{ data: 'DBID' ,"visible": false},
+				        { data: 'BTID' },
+				        { data: 'BTVersion'},
+				        { data: 'taskSortTypeText'},
+				        { data: 'taskTypeText'},
+				        { data: 'taskStaff'},
+				        { data: 'taskLimitDate'},
+				        { data: 'BTStatusText'}
+					]
+		     }
+		
+		Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+		
+	  $('#taskBPID').val(dataSelect.BPID);
+	  $('#taskLimitDate').val(dataSelect.limitDate);
+	  
+	  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
+		
+	  Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",dataSelect.MHEName);
+		
+	  Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",dataSelect.modelD);
+
+
 	  
 	  
-	  
-
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
-
-
-
+	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
+		 
 	  $('#maker').text(dataSelect.maker);
 	  $('#makeDate').text(dataSelect.makeDate);
+	  
+	  if(dataSelect.auditor==""){
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
+	  }else{
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",dataSelect.auditor);
+	  }
 
-
-	  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",dataSelect.auditor);
-	  $("#auditor").attr("disabled",true);
+	  
+	  $('#auditDate').text(dataSelect.auditDate);
 
 
 }
 
 
-//函数:详情按钮详情页自动填写内容------------------------
-function Fun_BPTDetailInit(dataSelect){
+//初始化控制显示
+function Fun_BPTDetailInitShow(dataSelect){
 	
-	
-
-	Fun_BPTDetailInitPart1(dataSelect);
-	
-	
-
-	
-	var auditResult=dataSelect.auditResult;
-
-	var auditor=dataSelect.auditor;
-//	var auditor=Fun_getSelectText($('#auditor option:selected').text());
-	console.log("Fun_BPTDetailInit auditor:"+auditor);
-
-	if(auditResult==null){
-		
-
-		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.PLDMHEName);
-		
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
-
-		$('#OGNSystemVersion').val(dataSelect.PLDOGNSystemVersion);
-	}else{
-		
-		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.MHEName);
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#modelD",dataSelect.modelD);
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#modelH",dataSelect.modelH);
-
-		$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
-	}
-
-
-
-	if(auditor==null){
-		 $("#auditTypeOption2").prop("checked",true);
-		 $('input:radio[name="auditType"]').click();
-	}else{
-		$("#auditTypeOption3").prop("checked",true);
-	}
-
-	switch(auditResult){
+	console.log("dataSelect.auditResult"+dataSelect.auditResult);
+	switch(dataSelect.auditResult){
 	case null:
-		
-		 $("#DivAuditImage").attr('src',"");
-		 $('input').attr("disabled",false);
-		 $('select').attr("disabled",false);
-		 $('textarea').attr("disabled",false);
-		 
-		 
-		 $('#DIVPLDInfo input').attr("disabled",true);
-		 $('#DIVPLDInfo select').attr("disabled",true);
-
-
-
-		 $("#modifyTypeOption1").prop("checked",true);
-//		 $('#maker').text(sessionName);
-
-		 $("#DivFileBTNS").show();
-		 $("#DivTaskBTNS").show();
-		 $('#BTNTaskSave').show();
-		 
-		 $('#BPTAuditOpinion').val("");
-		 $('#DivBPTAudit').hide();
-
-		 $("#BTNBPTSave").show();
-		 $("#BTNBPTUpdateVer").hide();
-		 $("#BTNBPTAuditYes").hide();
-		 $("#BTNBPTAuditNo").hide();
-
-		 break;
+	case "":
 	case 0:
-		
+		console.log("show0");
 		 $("#DivAuditImage").attr('src',"");
-		 $('input').attr("disabled",false);
-		 $('select').attr("disabled",false);
-		 $('textarea').attr("disabled",false);
-		 
-		 $('#DIVPLDInfo input').attr("disabled",true);
-		 $('#DIVPLDInfo select').attr("disabled",true);
-
-		 
-		 Fun_BPTDetailInitPart2(dataSelect);
-
 		 $("#DivFileBTNS").show();
 		 $("#DivTaskBTNS").show();
+		 $('#billTaskPanel').hide();
 		 $('#BTNTaskSave').show();
-		 
-		 $('#BPTAuditOpinion').val("");
 		 $('#DivBPTAudit').hide();
-
 		 $("#BTNBPTSave").show();
 		 $("#BTNBPTUpdateVer").hide();
-
 		 $("#BTNBPTAuditYes").hide();
 		 $("#BTNBPTAuditNo").hide();
 		break;
 	case 1:
-		
-		
-		$("#DivAuditImage").attr('src',"/images/auditYes.png");
-		$('input').attr("disabled",true);
-		$('select').attr("disabled",true);
-		$('textarea').attr("disabled",true);
-		
-		
-		  
-		Fun_BPTDetailInitPart2(dataSelect);
-
-	  $('#auditDate').text(dataSelect.auditDate);
-	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
-	  $('#DivBPTAudit').show();
-
-	  $("#DivFileBTNS").hide();
-	  $("#DivTaskBTNS").hide();
-	  $('#BTNTaskSave').hide();
-
-	  $("#BTNBPTSave").hide();
-	  $("#BTNBPTUpdateVer").show();
-	  $("#BTNBPTAuditYes").hide();
-	  $("#BTNBPTAuditNo").hide();
-	  
-	    break;
-	
+		console.log("show1");
+		 $("#DivAuditImage").attr('src',"/images/auditYes.png");
+		 $("#DivFileBTNS").hide();
+		 $("#DivTaskBTNS").hide();
+		 $('#billTaskPanel').hide();
+		 $('#BTNTaskSave').hide();
+		 $('#DivBPTAudit').show();
+		 $("#BTNBPTSave").hide();
+		 $("#BTNBPTUpdateVer").show();
+		 $("#BTNBPTAuditYes").hide();
+		 $("#BTNBPTAuditNo").hide();
+		break;
 	case 2:
-		
-		$("#DivAuditImage").attr('src',"/images/auditNo.png");
-		$('input').attr("disabled",true);
-		$('select').attr("disabled",true);
-		$('textarea').attr("disabled",true);
-		
-		Fun_BPTDetailInitPart2(dataSelect);
-
-	  $('#auditDate').text(dataSelect.auditDate);
-	  
-	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
-	  $('#DivBPTAudit').show();
-	  
-	  $("#DivFileBTNS").hide();
-	  $("#DivTaskBTNS").hide();
-	  $('#BTNTaskSave').hide();
-
-	  $("#BTNBPTSave").hide();
-	  $("#BTNBPTUpdateVer").show();
-	  $("#BTNBPTAuditYes").hide();
-	  $("#BTNBPTAuditNo").hide();
-	  
-	    break;
-
-
+		console.log("show2");
+		 $("#DivAuditImage").attr('src',"/images/auditNo.png");
+		 $("#DivFileBTNS").hide();
+		 $("#DivTaskBTNS").hide();
+		 $('#billTaskPanel').hide();
+		 $('#BTNTaskSave').hide();
+		 $('#DivBPTAudit').show();
+		 $("#BTNBPTSave").hide();
+		 $("#BTNBPTUpdateVer").show();
+		 $("#BTNBPTAuditYes").hide();
+		 $("#BTNBPTAuditNo").hide();
+		break;
+	
 	}
 	
-	
-
-
 }
+
+//初始化控制可用
+
+function Fun_BPTDetailInitDisable(dataSelect){
+
+	 switch(dataSelect.auditResult){
+		case null:
+		case "":
+		case 0:
+			 $('input').attr("disabled",false);
+			 $('select').attr("disabled",false);
+			 $('textarea').attr("disabled",false);
+			 $('#DIVPLDInfo input').attr("disabled",true);
+			 $('#DIVPLDInfo select').attr("disabled",true);
+			 
+			 $('.form_date').datetimepicker({
+		      language:  'zh-CN',
+		      weekStart: 1,
+		      todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0,
+				startDate:Ndate,//设置最小日期
+				endDate:dataSelect.limitDate//设置最大日期
+		     });
+			break;
+		case 1:
+		case 2:
+			$('input').attr("disabled",true);
+			$('select').attr("disabled",true);
+			$('textarea').attr("disabled",true);
+			break;
+	 }		
+}
+
+//函数:详情按钮详情页自动填写内容------------------------
+function Fun_BPTDetailInit(dataSelect){
+	$('#BillBPT').modal('show');
+	Fun_BPTDetailInitVal(dataSelect);
+	Fun_BPTDetailInitShow(dataSelect);
+	Fun_BPTDetailInitDisable(dataSelect);
+//	$('#BTNTaskAdd').click();
+}
+
+
 
 //函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
 
@@ -1135,6 +1049,7 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 		    ajax: {
 		        url: '/app/PM/getSQLDBData',
 		        data:SQL,
+		        async:true, //必须同步
 		        dataSrc: ''
 		    },
 		    columns: tableInfo.columnsData,
@@ -1152,7 +1067,6 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 		 $(tableInfo.tableID+' tbody').unbind();//解除事件绑定,防止重复定义.
 
 		 var tableTask = $(tableInfo.tableID).DataTable();
-
 
 		 $(tableInfo.tableID+' tbody').on('click', 'tr', function() {
 
@@ -1178,11 +1092,12 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 			     $('input:radio[name="taskType"]').attr("disabled",true);
 //			     
 //			     
-			        $("#taskTypeA").show();
-			        $("#taskTypeK").show();
-				 	$("#taskTypeL").show();
-					$("#taskTypeO").show();
-					$("#taskTypeB").show();
+			        $("#taskTypeAspan").show();
+			        $("#taskTypeKspan").show();
+				 	$("#taskTypeLspan").show();
+					$("#taskTypeOspan").show();
+					$("#taskTypeBspan").show();
+					$("#taskTypeRspan").show();
 
 
 			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
@@ -1195,26 +1110,43 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 			     
 			    Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",dataSelectTask.taskMHEName);
 			    
-			    switch(dataSelectTask.taskSortType){
-			    case 'D':
-			    	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#taskModel",dataSelectTask.taskModel);
-			    	break;
-			    case 'H':
-			    	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#taskModel",dataSelectTask.taskModel);
-			    	break;
-			    case 'M':
-			    	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='轴卡' AND status=1"},"#taskModel",dataSelectTask.taskModel);
-			    	break;
-			    case 'P':
-			    	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='PLC' AND status=1"},"#taskModel",dataSelectTask.taskModel);
-			    	break;
-			    case 'C':
-			    	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='codesys' AND status=1"},"#taskModel",dataSelectTask.taskModel);
-			    	break;
-			    
-			    }
-			    
-			    
+
+
+				
+				switch(dataSelectTask.taskSortType+dataSelectTask.taskType){
+				case 'DA':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'DK':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='Kernel' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'HA':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='APP' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'HK':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='Kernel' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'HO':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='OS' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'MA':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND sort='APP' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'MB':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND sort='BOOT' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'PA':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='APP' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'PR':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='Runtime' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				case 'PL':
+					Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='LIB' AND status=1"},"#taskModel",dataSelectTask.taskModel);
+					break;
+				
+				}
+
 			    
 			    $('#taskOGNSystemVersion').val(dataSelectTask.taskOGNSystemVersion);
 			    
@@ -1224,7 +1156,6 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 				
 				
 //			     alert($("#taskStaff").text() );
-
 //			     $("#taskStaff option[text='熊奇龙']").attr("selected", true);  
 
 				 $('#taskLimitDate').val(dataSelectTask.taskLimitDate);
@@ -1232,6 +1163,8 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 				 $("#BTVersion").text(dataSelectTask.BTVersion);
 
 				 $("#BTStatusText").text(dataSelectTask.BTStatusText);
+				 
+				 $('#taskDBE').val(dataSelectTask.taskDBE);
 
 				 $("#taskMaker").text(dataSelectTask.taskMaker);
 				 
@@ -1394,8 +1327,6 @@ function checkTaskInput(){
 $(document).ready( function () {
 
 
-
-
     sessionName="<%-locals.session.yjUser.Name%>";
     
     
@@ -1475,98 +1406,90 @@ $('input[type=radio][name=taskSortType]').change(function() {
 	
 	var taskSortType=$('input:radio[name="taskSortType"]:checked').val();
 	
-	$("#taskTypeA").show();
-	$("#taskTypeK").show();
-	$("#taskTypeL").show();
-	$("#taskTypeO").show();
-	$("#taskTypeB").show();
+	$("#taskTypeAspan").show();
+	$("#taskTypeKspan").show();
+	$("#taskTypeOspan").show();
+	$("#taskTypeRspan").show();
+	$("#taskTypeBspan").show();
+	$("#taskTypeLspan").show();
 	
 	switch(taskSortType){
 	case "D":
 		$("input:radio[name=taskType][value='A']").prop("checked",true);
-		$("#taskTypeL").hide();
-		$("#taskTypeO").hide();
-		$("#taskTypeB").hide();
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#taskModel",Fun_getSelectText($('#modelD option:selected').text()));
+		$("#taskTypeLspan").hide();
+		$("#taskTypeOspan").hide();
+		$("#taskTypeBspan").hide();
+		$("#taskTypeRspan").hide();
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
 	case "H":
 		$("input:radio[name=taskType][value='A']").prop("checked",true);
-		$("#taskTypeL").hide();
-		$("#taskTypeB").hide();
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#taskModel",Fun_getSelectText($('#modelH option:selected').text()));
+		$("#taskTypeLspan").hide();
+		$("#taskTypeBspan").hide();
+		$("#taskTypeRspan").hide();
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='APP' AND status=1"},"#taskModel",$('#modelH option:selected').text());
 		break;
 	case "M":
 		$("input:radio[name=taskType][value='A']").prop("checked",true);
-		$("#taskTypeK").hide();
-		$("#taskTypeL").hide();
-		$("#taskTypeO").hide();
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='轴卡' AND status=1"},"#taskModel");
+		$("#taskTypeKspan").hide();
+		$("#taskTypeLspan").hide();
+		$("#taskTypeOspan").hide();
+		$("#taskTypeRspan").hide();
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND sort='APP' AND status=1"},"#taskModel");
 		break;
 	case "P":
 		$("input:radio[name=taskType][value='A']").prop("checked",true);
-		$("#taskTypeK").hide();
-		$("#taskTypeB").hide();
+		$("#taskTypeKspan").hide();
+		$("#taskTypeOspan").hide();
+		$("#taskTypeBspan").hide();
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='APP' AND status=1"},"#taskModel");
 		break;
-	case "C":
-		$("input:radio[name=taskType][value='A']").prop("checked",true);
-		$("#taskTypeK").hide();
-		$("#taskTypeB").hide();
-		break;
-		
-		
+
 	}
-	
-	
+
 	Fun_BTIDCreate();
 
 });
 
 $('input[type=radio][name=taskType]').change(function() {
 	
-	var taskSortType=$('input:radio[name="taskSortType"]:checked').val();
-	var taskType=$('input:radio[name="taskType"]:checked').val();
+	let taskSortType=$('input:radio[name="taskSortType"]:checked').val();
+	let taskType=$('input:radio[name="taskType"]:checked').val();
 	
+
+	let typeVal=taskSortType+taskType;
+
 	
-	switch(taskType){
-	case 'A':
-		switch(taskSortType){
-		case 'D':
-			Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#taskModel",Fun_getSelectText($('#modelD option:selected').text()));
-			break;
-		case 'H':
-			Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='HMI' AND status=1"},"#taskModel",Fun_getSelectText($('#modelH option:selected').text()));
-			break;
-			
-		case 'M':
-			Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='轴卡' AND status=1"},"#taskModel");
-			break;
-		case 'P':
-			Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:" status=1"},"#taskModel");
-		    break;
-        case 'C':
-        	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:" status=1"},"#taskModel");
-		    break;
-		
-		
-		}
-		
-		
-		
+	switch(typeVal){
+	case 'DA':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
-	case 'K':
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='kernel' AND status=1"},"#taskModel");
+	case 'DK':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='Kernel' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
-		
-	case 'L':
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='LIB' AND status=1"},"#taskModel");
+	case 'HA':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
-	
-	case 'O':
-		Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='OS' AND status=1"},"#taskModel");
+	case 'HK':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='Kernel' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
-		
-	case 'B':
-		
+	case 'HO':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='OS' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		break;
+	case 'MA':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		break;
+	case 'MB':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND sort='BOOT' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		break;
+	case 'PA':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		break;
+	case 'PR':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='Runtime' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		break;
+	case 'PL':
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND sort='LIB' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
 	
 	}
@@ -1639,7 +1562,7 @@ $('#BTNBPTInfo').click(function() {
         alert("操作提示:单击选中数据行后,再双击可快速打开表单!");
     } else {
 
-    	$('#BillBPT').modal('show');
+    	
     	Fun_BPTDetailInit(dataSelect);
 
 
@@ -1661,19 +1584,14 @@ $('#BTNBPTAudit').click(function() {
     		alert("该计划单不存待审核的方案,请与方案人确认!");
     		break;
     	case 0:
-    		$('#BillBPT').modal('show');
+
         	Fun_BPTDetailInit(dataSelect);
-        	
-            $('input').attr("disabled",true);
-   		    $('select').attr("disabled",true);
-   		    $('textarea').attr("disabled",true);
    		  
    		    $('#BPTAuditOpinion').attr("disabled",false);
         	
         	 $("#DivFileBTNS").hide();
       	     $("#DivTaskBTNS").hide();
       	     
-      	     $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
      	     $('#DivBPTAudit').show();
 
         	 $('#BTNBPTSave').hide();
@@ -1695,47 +1613,61 @@ $('#BTNBPTAudit').click(function() {
 //按钮-任务新增
 
 $('#BTNTaskAdd').click(function(){
-	
-	
 
 	$('#billTaskPanel').show();
 	
+	$("#taskTypeAspan").show();
+	$("#taskTypeKspan").show();
+	$("#taskTypeLspan").hide();
+	$("#taskTypeOspan").hide();
+	$("#taskTypeRspan").hide();
+	$("#taskTypeBspan").hide();
 	
-	$("#taskTypeL").hide();
-	$("#taskTypeO").hide();
-	$("#taskTypeB").hide();
 
 	$("#taskDBID").val("");
 	
 	var tableTask = $('#billsTaskTable').DataTable();
 	tableTask.$('tr.selected').removeClass('selected');
 	
-	
-	Fun_BTIDCreate();
+	 
 
-//	$('input:radio[name="taskType"]').prop("checked",false);
+
 	
 	$('input:radio[name="taskSortType"]').attr("disabled",false);
-
+	
 	$('input:radio[name="taskType"]').attr("disabled",false);
 
 	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
+	
+	$("input:radio[name=taskSortType][value='D']").prop("checked",true);
+
+	$("input:radio[name=taskType][value='A']").prop("checked",true);
+	
+	
 
 	$('#BTVersion').text(0);
 	$('#BTStatusText').text('新增');
+	
+//	$("#taskStaff").selectpicker('val','');
+//	$("#taskMHEName").selectpicker('val','');
+//	$("#taskModel").selectpicker('val','');
 	
 
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
 	
 	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",Fun_getSelectText($('#MHEName option:selected').text()));
 	
-	Fun_getSQLSelectDBData({SQL:"SQLSRSystems",filter:"sort='DSP' AND status=1"},"#taskModel",Fun_getSelectText($('#modelD option:selected').text()));
-
+	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+	
 	$('#taskOGNSystemVersion').val($("#OGNSystemVersion").val());
 	
 	$('#taskLimitDate').val($('#limitDate').val());
 
 	$('#taskDBE').val("");
+	$('#taskMaker').text("");
+	$('#taskMakeDate').text("");
+	
+	Fun_BTIDCreate();
 
 
 });
@@ -1898,7 +1830,7 @@ $('#BTNTaskSave').click(function(){
 					"taskType":$('input:radio[name="taskType"]:checked').val(),
 					"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
 					"taskMHEName":Fun_getSelectText($('#taskMHEName option:selected').text()),
-					"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
+					"taskModel":$('#taskModel option:selected').text(),
 					"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 					"taskBugID":$('#taskBugID').val(),
 					"taskStaff":$('#taskStaff option:selected').text(),
@@ -1928,7 +1860,7 @@ $('#BTNTaskSave').click(function(){
 						"taskType":$('input:radio[name="taskType"]:checked').val(),
 						"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
 						"taskMHEName":Fun_getSelectText($('#taskMHEName option:selected').text()),
-						"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
+						"taskModel":$('#taskModel option:selected').text(),
 						"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 						"taskBugID":$('#taskBugID').val(),
 						"taskStaff":$('#taskStaff option:selected').text(),
@@ -1958,7 +1890,7 @@ $('#BTNTaskSave').click(function(){
 							"taskType":$('input:radio[name="taskType"]:checked').val(),
 							"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
 							"taskMHEName":Fun_getSelectText($('#taskMHEName option:selected').text()),
-							"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
+							"taskModel":$('#taskModel option:selected').text(),
 							"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 							"taskBugID":$('#taskBugID').val(),
 							"taskStaff":$('#taskStaff option:selected').text(),
@@ -2045,8 +1977,8 @@ $('#BTNBPTSave').click(function(){
 	    			"PGEMaker":PGEMaker,
 	    			"limitDate":limitDate,
 	    			"MHEName":MHEName,
-	    			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
-	    			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
+	    			"modelD":$('#modelD option:selected').text(),
+	    			"modelH":$('#modelH option:selected').text(),
 	    			"OGNSystemVersion":OGNSystemVersion,
 	    			"modifyType":modifyType,
 	    			"modifyReason":modifyReason,
@@ -2166,8 +2098,8 @@ $('#BTNBPTUpdateVer').click(function(){
 	        			"PGEMaker":PGEMaker,
 	        			"limitDate":limitDate,
 	        			"MHEName":MHEName,
-	        			"modelD":Fun_getSelectText($('#modelD option:selected').text()),
-	        			"modelH":Fun_getSelectText($('#modelH option:selected').text()),
+	        			"modelD":$('#modelD option:selected').text(),
+	        			"modelH":$('#modelH option:selected').text(),
 	        			"OGNSystemVersion":OGNSystemVersion,
 	        			"modifyType":modifyType,
 	        			"modifyReason":modifyReason,

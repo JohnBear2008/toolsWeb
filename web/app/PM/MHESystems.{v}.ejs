@@ -33,10 +33,11 @@
         <thead>
             <tr>
             <th>DBID</th>
-            <th>属性</th>
-            <th>分类</th>
-            <th>系统</th>
+            <th>主体</th>
+            <th>类型</th>
+            <th>系统/CPU</th>
             <th>型号</th>
+            <th>目录</th>
             <th>FQC要求</th>
             <th>状态</th>
             </tr>
@@ -47,35 +48,32 @@
         <form style="padding:10px 50px;">
            
             
-            <p>属性 : 
+            <p>主体 : 
                 <select id="belong">
-                <option value="APP">APP</option>
-                <option value="核心">核心</option>
-                </select>
-            </p>
-            
-            <p>分类 : 
-                <select id="sort">
                 <option value="DSP">DSP</option>
                 <option value="HMI">HMI</option>
-                <option value="轴卡">轴卡</option>
-                <option value="LIB">LIB</option>
-                <option value="OS">OS</option>
+                <option value="运动控制卡">运动控制卡</option>
+                <option value="PLC">PLC</option>
                 </select>
             </p>
             
-            <p>系统 : 
-                <select id="STMType">
-                <option value="52">52</option>
-                <option value="54">54</option>
-                <option value="55">55</option>
-                <option value="PLC">PLC</option>
-                <option value="boot">boot</option>
-                <option value="/">/</option>
+            <p>类型 : 
+                <select id="sort">
+                <option value="APP">APP</option>
+                <option value="Kernel">Kernel</option>
+                <option value="烧录档">烧录档</option>
+                <option value="BOOT">BOOT</option>
+                <option value="Runtime">Runtime</option>
+                <option value="LIB">LIB</option>
                 </select>
             </p>
+            
+            <p>系统/CPU : <input id="STMType" size="20" type="text" class="required"></p>
             
             <p>型号 : <input id="model" size="30" type="text" class="required"></p>
+            
+            <p>目录 : <input id="catalog" size="30" type="text" class="required"></p>
+            
             <p>备注 : <textarea id="remark" rows="3" cols="30" ></textarea></p>
             
             <p>FQC要求: 
@@ -130,6 +128,7 @@ $(document).ready( function () {
 		        { data: 'sort'},
 		        { data: 'STMType'},
 		        { data: 'model'},
+		        { data: 'catalog'},
 		        { data: 'FQCRequestText'},
 		        { data: 'statusText'}
 		    ]
@@ -218,6 +217,8 @@ $('#AddDoButton').click(function() {
 	var sort=$("#sort").val();
 	var STMType=$("#STMType").val();
 	var model=$("#model").val();
+	var catalog=$("#catalog").val();
+	
 	var remark=$("#remark").val();
 	 var FQCRequest=$("#FQCRequest").val();
 		
@@ -241,6 +242,7 @@ $('#AddDoButton').click(function() {
 			"sort":sort,
 			"STMType":STMType,
 			"model":model,
+			"catalog":catalog,
 			"remark":remark,
 			"FQCRequest":FQCRequest,
 			"FQCRequestText":FQCRequestText,
@@ -267,6 +269,7 @@ $('#UpdDoButton').click(function() {
 	var sort=$("#sort").val();
 	var STMType=$("#STMType").val();
 	var model=$("#model").val();
+	var catalog=$("#catalog").val();
 	var remark=$("#remark").val();
 	 var FQCRequest=$("#FQCRequest").val();
 		
@@ -291,6 +294,7 @@ $('#UpdDoButton').click(function() {
 			"sort":sort,
 			"STMType":STMType,
 			"model":model,
+			"catalog":catalog,
 			"remark":remark,
 			"FQCRequest":FQCRequest,
 			"FQCRequestText":FQCRequestText,

@@ -16,7 +16,7 @@ SQLSRCustomers="select DBID,concat_ws('-',FTYID,FTYName) as selectTitle from ppm
 SQLSRMachines="select DBID,concat_ws('-',MHEType,MHEName) as selectTitle from ppm_machines where status=1";
 	
 //SQLSRSystems="select DBID,concat_ws('-',STMType,model) as selectTitle from ppm_systems where status=1";
-SQLSRSystems="select DBID,concat_ws('-',sort,STMType,model,catalog) as selectTitle from ppm_systems";
+SQLSRSystems="select DBID,concat_ws('-',STMType,model) as selectTitle from ppm_systems";
 
 SQLSRStaffs="select DBID,staffName as selectTitle from ppm_staffs where status=1";
 
@@ -42,8 +42,6 @@ SQLTableBillsBPT="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version A
 
 //计划单更新版本未审核时其他流程单据加载
 //SQLTableBillsBPT="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion AND tbb.PLDStatus=1 ) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID) A";
-
-
 
 SQLTableBillsBPT_T="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.BTIDfrom AS PLDBTIDfrom,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.*  FROM `ppm_bills_blueprint_t` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint_t` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID) A";
 
