@@ -15,7 +15,8 @@
 </div>
 
 <div class="panel-body" align="left">
-
+<h4>提示:点击未完成数字可跳转至对应模块</h4>
+<hr>
 <div style="width:30%;float:left;margin-left:2%;">
 <h4>未完结的计划单</h4>
 
@@ -356,18 +357,34 @@ function getUndoneInfo(divID,panelSQL,dataCols){
 
       	  $(divID+"Num").text(data.length);
       	  
-      	  DivContent="";
-      	  
-      	  for(let i=0;i<data.length;i++){
-      		  
-      		  for(let j=0;j<dataCols.length;j++){
-      			 
-      			DivContent=DivContent+data[i][dataCols[j]]+" ";
-      		  }
-      		DivContent=DivContent+"<br \>";
-      	  }
+      	  if(data.length==0){
+      		 $(divID).hide();
+      	  }else{
+      		 $(divID).show();
+      		 
+      		DivContent="";
+        	  
+        	  for(let i=0;i<data.length;i++){
+        		  
+        		  for(let j=0;j<dataCols.length;j++){
+        			 
+        			DivContent=DivContent+data[i][dataCols[j]]+"|";
+        			
+        		  }
+        		  
+        		  if(data[i]['BPID']==null){
+        			  DivContent=" "+DivContent+"<a href='/app/PM/billsTrack?BPID="+data[i]['taskBPID']+"'>进度跟踪</a>" +" ";
+        		  }else{
+        			  DivContent=" "+DivContent+"<a href='/app/PM/billsTrack?BPID="+data[i]['BPID']+"'>进度跟踪</a>" +" ";
+        		  }
+                
 
-      	 $(divID+"Content").html(DivContent);
+        		  
+        		DivContent=DivContent+"<br \>";
+        	  }
+
+        	 $(divID+"Content").html(DivContent);
+      	  }
 
          },
          error:function(){}
@@ -417,25 +434,25 @@ $(function(){
 
 
 	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0"};
-	getUndoneInfo("#TaskunAccept",panelSQLTask,["BTID","taskCTRName"]);
+	getUndoneInfo("#TaskunAccept",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =2"};
-	getUndoneInfo("#TaskAcceptNo",panelSQLTask,["BTID","taskCTRName"]);
+	getUndoneInfo("#TaskAcceptNo",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
-	getUndoneInfo("#TaskunRecord",panelSQLTask,["BTID","taskCTRName"]);
+	getUndoneInfo("#TaskunRecord",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 "};
-	getUndoneInfo("#TaskunPass",panelSQLTask,["BTID","taskCTRName"]);
+	getUndoneInfo("#TaskunPass",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult IS NULL"};
-	getUndoneInfo("#IPQCunRecord",panelSQLIPQC,["BTID","taskCTRName"]);
+	getUndoneInfo("#IPQCunRecord",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCAuditDate IS NULL"};
-	getUndoneInfo("#IPQCunAudit",panelSQLIPQC,["BTID","taskCTRName"]);
+	getUndoneInfo("#IPQCunAudit",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 
 	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2"};
-	getUndoneInfo("#IPQCunPass",panelSQLIPQC,["BTID","taskCTRName"]);
+	getUndoneInfo("#IPQCunPass",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL"};
 	getUndoneInfo("#FQCunRecord",panelSQLFQC,["BPID","PLDCTRName"]);

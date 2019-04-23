@@ -38,6 +38,8 @@
 
         <button id="BTNBPTInfo" class="btn btn-info" data-toggle="modal" >方案维护</button>
         <button id="BTNBPTAudit" class="btn btn-warning" data-toggle="modal" >方案审核</button>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillBPT" tabindex="-1" role="dialog" aria-labelledby="BillBPTLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:70%">
@@ -66,7 +68,8 @@
                 			<div class="panel-body">
                 			
                 			 <!--------------panel--------------------->
-                             
+                			 <button id="BTNTrack" style="float: right">跳转到进度跟踪</button>
+                			 
                              <h3 class="panel-title">计划单信息</h3>
                              </br>
                             
@@ -1395,6 +1398,9 @@ $('#billsBPTTable tbody').on('click', 'tr', function() {
 //dbclick 测试判断是否选中数据-------
 
 $('#billsBPTTable tbody').on('dblclick', 'tr', function() {
+	
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
 	$('#BTNBPTInfo').click();
 
 });
@@ -2398,11 +2404,16 @@ $('#BTNBPTAuditNo').click(function() {
 });
 
 
-
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNBPTClose').click(function() {
 	 window.location.reload();
 });
+
+//按钮-流程跟踪
+$('#BTNTrack').click(function(){
+	window.location.href='/app/PM/billsTrack?BPID='+$('#BPTBPID').val();
+});
+
 
 });
 

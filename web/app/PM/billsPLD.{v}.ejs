@@ -36,6 +36,8 @@
         <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
         <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
         <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >审核</button>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:65%">
@@ -45,6 +47,54 @@
                         <h4 class="modal-title" id="BillPLDLabel">计划单面板</h4>
                     </div>
                     <div class="modal-body">
+                    
+                    <!---折叠------------------------>
+                    
+                    <div class="panel-group" id="accordion">
+                	
+                	<div class="panel panel-default">
+                		<div class="panel-heading">
+                			<h4 class="panel-title">
+                				<a data-toggle="collapse" data-parent="#accordion" 
+                				   href="#collapseTrack" >
+                					流程跟踪面板:点击可收起
+                				</a>
+                				
+                				
+                			</h4>
+                		</div>
+                		<div id="collapseTrack" class="panel-collapse collapse in" >
+                			<div class="panel-body">
+                			
+                			 
+                			 
+                			
+                			 <!--------------panel--------------------->
+                			 <button id="BTNTrack" style="float: right">跳转到进度跟踪</button>
+                			 
+                             <h3 class="panel-title">计划单信息</h3>
+                             </br>
+                            
+
+                             <table id="tableTrackPLD" class="table table-bordered">
+                             <thead></thead>
+                             
+                             <tbody></tbody>
+                             </table>
+
+                             
+                             <!--------------panel--------------------->
+                			</div>
+                		</div>
+                	</div>
+                	
+                </div>
+              
+                <!---折叠------------------------>
+                    
+                    
+                    
+                    
 
                     <div class="panel panel-info">
                 	
@@ -156,7 +206,7 @@
                      <div class="col-sm-6 ">
                      <select  id="CTRName" class="selectpicker" data-live-search="true" > 
                      </select>
-                     <button id="BTNFormAuto" class="btn btn-primary" data-toggle="modal" >智能填单(开发中)</button>
+                     <button id="BTNFormAuto" class="btn btn-primary" >智能填单(开发中)</button>
                      
                      </div>
                      
@@ -478,8 +528,76 @@ function Fun_BPIDCreate(){
 
 }
 
+//函数:加载老版本计划单信息
+function getPLDOld(BPID){
+	var SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"PGEMaker",
+				"MHEName",
+				"files",
+//				"modelD",
+//				"modelH",
+				"applyDate",
+				"limitDate"
+				],
+			"filter":"BPID='"+BPID+"'"
+			};
+
+	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+}
+
+
+
+//根据获得的DBID 详情加载
+function getDBIDInfo(tableName,DBID){
+
+
+	$('#winDetail').window('open');
+	
+	switch(tableName){
+	case 'ppm_bills_plan':
+		
+		let SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"DBID",
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"detail",
+				"PGEMaker",
+				"OGNSystemVersion",
+				"MHEName",
+				"files",
+				"modelD",
+				"modelH",
+				"applyDate",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+			"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamPLD);
+		
+		break;
+
+	}
+	 	 
+	 
+}
+
 //函数:新增详情页自动填写内容------------------------
 function Fun_winAddInit(){
+	
+	getPLDOld();
 	Fun_BPIDCreate();
 	
 	
@@ -562,6 +680,7 @@ function Fun_winAddInit(){
 
 //函数:详情按钮详情页自动填写内容------------------------
 function Fun_winDetailInit(dataChoose){
+	getPLDOld(dataChoose.BPID);
 	
 	let dataSelect=NulltoEmpty(dataChoose);
 	
@@ -832,6 +951,9 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 //dbclick 测试判断是否选中数据-------
 
 $('#billsPLDTable tbody').on('dblclick', 'tr', function() {
+	
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
 	$('#BTNInfo').click();
 
 });
@@ -1416,6 +1538,13 @@ $('#BTNFormClose').click(function() {
 	 window.location.reload();
 });
 	
+
+
+//按钮-流程跟踪
+$('#BTNTrack').click(function(){
+	window.location.href='/app/PM/billsTrack?BPID='+$('#BPID').val();
+});
+
 
 
 }); 

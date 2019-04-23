@@ -39,6 +39,8 @@
         <!--   <button id="BTNIPQCAudit" class="btn btn-primary" data-toggle="modal" >IPQC审核</button> -->
         <button id="BTNIPQCRecord" class="btn btn-info" data-toggle="modal" >IPQC登记</button>
         <!--      <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button> -->
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:70%">
@@ -727,6 +729,8 @@ $('#billsTaskTable tbody').on('click', 'tr', function() {
 //dbclick 测试判断是否选中数据-------
 
 $('#billsTaskTable tbody').on('dblclick', 'tr', function() {
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
 	$('#BTNIPQCRecord').click();
 
 });

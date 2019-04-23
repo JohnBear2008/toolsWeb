@@ -37,8 +37,10 @@
         
         <!-- 按钮触发模态框 -->
 
-        <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
-        <button id="BTNStop" class="btn btn-danger" data-toggle="modal" >终止</button>
+        <button id="BTNInfo" class="btn btn-info" >详情</button>
+        <button id="BTNStop" class="btn btn-danger">终止</button>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:90%">
@@ -444,12 +446,31 @@ function Fun_winDetailInit(dataSelect){
 //页面加载函数---------------
 $(document).ready( function () {
 	
-	
-	const tableSQL={"SQL":"SQLTableBillsTrack"};
-	
-	var sessionName="<%-locals.session.yjUser.Name%>";
-	
+    var sessionName="<%-locals.session.yjUser.Name%>";
 	console.log("sessionName:"+sessionName);
+	
+	
+    var trackBPID=getQueryString("BPID");
+	
+	
+//	switch(undone){
+//	case "unAudit":
+//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
+//		break;
+//	case "auditNo":
+//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' )  AND PLDStatus =2  ","orderBy":" saveTimeStamp DESC"};
+//		break;
+//	default:
+//		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
+//		break;
+//	
+//	}
+    
+    if(trackBPID!=null){
+    	var tableSQL={"SQL":"SQLTableBillsTrack","filter":"BPID ='"+trackBPID+"'"};
+    }else{
+    	var tableSQL={"SQL":"SQLTableBillsTrack"};
+    }
 	
 	
 	const tableInfo={
@@ -491,6 +512,8 @@ $('#billsTrackTable tbody').on('click', 'tr', function() {
 //dbclick 测试判断是否选中数据-------
 
 $('#billsTrackTable tbody').on('dblclick', 'tr', function() {
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
 	$('#BTNInfo').click();
 
 });

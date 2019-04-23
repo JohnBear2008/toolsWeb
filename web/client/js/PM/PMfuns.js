@@ -893,7 +893,8 @@ function Fun_getValSelectText(obj){
 //函数 截取selector选择内容-前
 function Fun_getSelectTextPre(obj){
 
-    var index=obj.lastIndexOf("\-");
+    var index=obj.indexOf("\-");
+//    var index=obj.lastIndexOf("\-");
     obj=obj.substring(0,index);
 //  console.log(obj);
     return obj;

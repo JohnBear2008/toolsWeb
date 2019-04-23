@@ -39,11 +39,15 @@ module.exports = function(sender) {
 	case "SQLSRSystems":
 		var SQLExecute=SQLSRSystems;
 		break;
+	case "SQLSRSystemsBind":
+		var SQLExecute=SQLSRSystemsBind;
+		break;
+		
 	case "SQLSRStaffs":
 		var SQLExecute=SQLSRStaffs;
 		break;
-	case "SQLSRWorkTypeStaffs":
-		var SQLExecute=SQLSRWorkTypeStaffs;
+	case "SQLSRStaffsBind":
+		var SQLExecute=SQLSRStaffsBind;
 		break;
 
 	case "SQLSRRoles":

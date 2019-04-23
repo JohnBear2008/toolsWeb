@@ -36,6 +36,8 @@
 
         <!-- 按钮触发模态框 -->
         <button id="BTNPBHDetail" class="btn btn-primary" data-toggle="modal" >发布维护</button>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
 
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
@@ -727,6 +729,8 @@ $('#billsPBHTable tbody').on('click', 'tr', function() {
 //dbclick 测试判断是否选中数据-------
 
 $('#billsPBHTable tbody').on('dblclick', 'tr', function() {
+	table.$('tr.selected').removeClass('selected');
+    $(this).addClass('selected');
 	$('#BTNPBHDetail').click();
 
 });
