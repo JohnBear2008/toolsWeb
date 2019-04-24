@@ -13,7 +13,7 @@ module.exports = function(sender) {
     var DBID=sender.req.query.DBID;  
     var filter=sender.req.query.filter; 
     var orderBy=sender.req.query.orderBy; 
-    
+    var limit=sender.req.query.limit; 
     
 //    console.log("SQL:"+SQL);
 //    console.log("DBTable:"+DBTable);
@@ -46,6 +46,10 @@ module.exports = function(sender) {
 	case "SQLSRStaffs":
 		var SQLExecute=SQLSRStaffs;
 		break;
+	case "SQLSRStaffsFilter":
+		var SQLExecute=SQLSRStaffsFilter;
+		break;
+
 	case "SQLSRStaffsBind":
 		var SQLExecute=SQLSRStaffsBind;
 		break;
@@ -152,6 +156,14 @@ module.exports = function(sender) {
 	case "SQLGetDataBinds":
 		var SQLExecute=SQLGetDataBinds;
 		break;
+	case "SQLGetCTRBinds":
+		var SQLExecute=SQLGetCTRBinds;
+		break;
+
+	case "SQLCTRBindsCount":
+		var SQLExecute=SQLCTRBindsCount;
+		break;
+		
 		
 		
 		
@@ -171,6 +183,10 @@ module.exports = function(sender) {
     
     if(orderBy!=""&&orderBy!=undefined){
     	SQLExecute=SQLExecute+" ORDER BY "+orderBy;
+    }
+    
+    if(limit!=""&&limit!=undefined){
+    	SQLExecute=SQLExecute+" LIMIT "+limit;
     }
     
  //   console.log("SQLExecute:"+SQLExecute);

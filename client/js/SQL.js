@@ -22,6 +22,8 @@ SQLSRSystemsBind="select DBID,concat_ws('-',belong,STMType,model,catalog) as sel
 
 SQLSRStaffs="select DBID,staffName as selectTitle from ppm_staffs where status=1";
 
+SQLSRStaffsFilter="select DBID,staffName as selectTitle from ppm_staffs";
+
 
 SQLSRStaffsBind="select DBID,concat_ws('-',groupLabel,staffName) as selectTitle from ppm_staffs where status=1";
 
@@ -134,3 +136,7 @@ SQLTaskRecords_T="SELECT * FROM `ppm_bills_taskrecord_t`";
 SQLGetAuthorities="SELECT roleAuthorities FROM `ppm_staffs` ta LEFT JOIN `ppm_roles` tb ON ta.staffRole=tb.roleName";
 
 SQLGetDataBinds="SELECT bindsInfo FROM `ppm_dbbinds`";
+
+SQLGetCTRBinds="SELECT * FROM `ppm_customerbinds` ";
+
+SQLCTRBindsCount="SELECT Count(1) AS CountNum,CTRName,CTRVal FROM `ppm_customerbinds` GROUP BY CTRVal ";

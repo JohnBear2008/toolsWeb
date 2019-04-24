@@ -44,15 +44,7 @@
             
             <label  class="control-label">基础数据:</label>
             
-            <select  id="OrgDBType" class="selectpicker" > 
-
-            <option value="ppm_customers">客户</option>
-            <option value="ppm_systems">系统</option>
-            <option value="ppm_staffs">人员</option>
-            <option value="ppm_machines">机种</option>
-            </select>
-            
-            <select  id="OrgDBTypeSub" class="selectpicker" data-live-search="true" > 
+            <select  id="CTRName" class="selectpicker" data-live-search="true" > 
             </select>
             
 
@@ -62,45 +54,85 @@
             
             <div class="form-group">  
            
-            <label  class="control-label">绑定数据:</label>  
+            <label  class="control-label">绑定数据:</label> 
+            
+            
+            <table id="tableAddBind" class="table table-bordered"  >
+           
+            <tr>
+            <th width="200px">机种</th>
+            <td> 
+            <select  id="MHEName" class="selectpicker" data-live-search="true"> 
+            </select>
+            </td>
+            </tr>
+            <tr>
+            <th>DSP系统</th>
+            <td> 
+            <select  id="DModelName" class="selectpicker" data-live-search="true"> 
+            </select>
+            </td>
+            </tr>
+            <tr>
+            <th>HMI系统</th>
+            <td> 
+            <select  id="HModelName" class="selectpicker" data-live-search="true"> 
+            </select>
+            </td>
+            </tr>
+            <tr>
+            <th>DSP负责人</th>
+            <td> 
+            <select  id="DStaffName" class="selectpicker" data-live-search="true"> 
+            </select>
+            </td>
+            </tr>
+            <tr>
+            <th>HMI负责人</th>
+            <td> 
+            <select  id="HStaffName" class="selectpicker" data-live-search="true"> 
+            </select>
+            </td>
+            </tr>
+           
+            <tr>
+            <th>添加</th>
+            <td> 
+            <button id="BTNAddBindDo" class="btn btn-primary">添加绑定</button>
+            </td>
+            </tr>
+            
+           
+            </table>
+            
             
          
-            <select  id="BindDBType" class="selectpicker"> 
-
-            <option value="ppm_customers">客户</option>
-            <option value="ppm_systems">系统</option>
-            <option value="ppm_staffs">人员</option>
-            <option value="ppm_machines">机种</option>
-            </select>
-
-
-            <select  id="BindDBTypeSub" class="selectpicker" data-live-search="true"> 
-            </select>
-
-            <button id="BTNAddBindDo" class="btn btn-info">添加绑定</button>
+            
+           
    
             </div>
             <!-------------------------------------------------------------------------->
+
             
             <div class="form-group">  
             
-            <label  class="control-label">选中基础数据:</label> 
+            <hr>
+            <button id="BTNDelBindDo" class="btn btn-danger" >解除绑定</button>
+            </div>
             
-            <p>bindDBID:<span id="spanDBID"></span></p> 
-            <p>类型:<span id="spanDBType"></span> </p> 
-            <p>类型表名:<span id="spanTableName"></span> </p> 
-            <p>数据DBID:<span id="spanBaseDBID"></span></p> 
-            <p>数据值:<span id="spanBaseName"></span></p> 
-            <table id="tableSingleDataBinds" class="table table-bordered"  >
+            
+
+            <!-------------------------------------------------------------------------->
+            <table id="tableBinds" class="table table-bordered" width="100%" >
             <thead>
                 <tr>
-                    <th>基础数据类型</th>
-                    <th>基础数据值</th>
-                    <th>绑定DBID</th>
-                    <th>绑定数据类型</th>
-                    <th>绑定数据值</th>
-                    <th>绑定数据分组</th>
-                    <th>解除绑定</th>
+                    <th>DBID</th>
+                    <th>机种</th>
+                    <th>DSP系统</th>
+                    <th>HMI系统</th>
+                    <th>DSP负责人</th>
+                    <th>HMI负责人</th>
+                    <th>生效时间</th>
                 </tr>
             </thead> 
             <tbody>
@@ -109,13 +141,13 @@
             </table>
             
             
-            </div>
+          
             
             <!-------------------------------------------------------------------------->
             </div>
             <div class="modal-footer">
-                <button id="BTNSaveDataBinds" type="button" class="btn btn-success" >保存绑定关系</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+                <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 
             </div>
         </div><!-- /.modal-content -->
@@ -125,9 +157,8 @@
 
    <!-- 操作区（按钮等） -->
    <div class="lineitem">
-       <button id="BTNAddBinds" class="btn btn-primary">添加</button>
-       <button id="BTNUpdBinds" class="btn btn-info">更新</button>
-       <button id="BTNDelBinds" class="btn btn-danger">删除</button>
+       <button id="BTNBindsAdd" class="btn btn-primary">新增绑定关系</button>
+       <button id="BTNBindsDel" class="btn btn-danger">删除绑定关系</button>
    </div>
    <br/>
 
@@ -136,129 +167,189 @@
        <thead>
            <tr>
                <th>ID</th>
-               <th>源数据类型</th>
-               <th>源数据值</th>
-               <th>状态</th>
+               <th>客户名称</th>
+               <th>绑定关系数量</th>
            </tr>
        </thead>
    </table>
-   
-   
-   
 
 </div>
 
 <script>
 
+//
+////检查输入信息-------------------
+//function Fun_checkinput(Data) {
+//	
+////	alert(JSON.stringify(Data));
+//	
+//    if (Data.OrgDBType=="0") {
+//        alert('源数据类型未选择，请检查!');
+//        return false;
+//    } else if (Data.OrgDBTypeSub==null) {
+//        alert('源数据值未选择，请检查!');
+//        return false;
+//    }else if (Data.BindDBType=="0") {
+//        alert('绑定数据类型未选择，请检查!');
+//        return false;
+//    }else if (Data.BindDBTypeSub==null) {
+//        alert('绑定数据值未选择，请检查!');
+//        return false;
+//    }else if (Data.OrgDBType==Data.BindDBType) {
+//        alert('选择同类型数据不能绑定，请检查!');
+//        return false;
+//    }
+//    return true;
+//}  
+//
+////函数 检查绑定DBID是否已经添加
+//
+//function checkBindDBID(DBID){
+//	let tableTrNum=$("#tableSingleDataBinds").find("tr").length-1;
+//
+//		for(let i=0;i<tableTrNum;i++){
+//		 let tableDBID=$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(2)").html();
+//
+//		 if(DBID==tableDBID){
+//			 alert("该绑定数据已存在,无需重复添加!");
+//			 return false;
+//		  }
+//		 }
+//
+//	return true;
+//
+//}
+//
+//
+///**删除一行*/
+//function delTr(trID){
+//    $(trID).parent().parent().remove();
+//}
 
-//定义绑定发送数据结构---------------------
-
-function Fun_bindDataInfo(DBTable,OrgDBType,OrgDBTypeName,OrgDBTypeSub,OrgDBTypeSubName,BindDBType,BindDBTypeName,BindDBTypeSub,BindDBTypeSubName){
-	this.DBTable=DBTable;
-	this.OrgDBType=OrgDBType;
-	this.OrgDBTypeName=OrgDBTypeName;
-	this.OrgDBTypeSub=OrgDBTypeSub;
-	this.OrgDBTypeSubName=OrgDBTypeSubName;
-	this.BindDBType=BindDBType;
-	this.BindDBTypeName=BindDBTypeName;
-	this.BindDBTypeSub=BindDBTypeSub;
-	this.BindDBTypeSubName=BindDBTypeSubName;
-} 
 
 
-//检查输入信息-------------------
-function Fun_checkinput(Data) {
+//函数加载绑定关系
+function tableBindsShow(FilterDBID){
+	//表加载数据------------------
+	console.log("FilterDBID:"+FilterDBID);
 	
-//	alert(JSON.stringify(Data));
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'MHEName' },
+        { data: 'DModelName' },
+        { data: 'HModelName' },
+        { data: 'DStaffName' },
+        { data: 'HStaffName' },
+        { data: 'saveTimeStamp' }
+    ];
 	
-    if (Data.OrgDBType=="0") {
-        alert('源数据类型未选择，请检查!');
-        return false;
-    } else if (Data.OrgDBTypeSub==null) {
-        alert('源数据值未选择，请检查!');
-        return false;
-    }else if (Data.BindDBType=="0") {
-        alert('绑定数据类型未选择，请检查!');
-        return false;
-    }else if (Data.BindDBTypeSub==null) {
-        alert('绑定数据值未选择，请检查!');
-        return false;
-    }else if (Data.OrgDBType==Data.BindDBType) {
-        alert('选择同类型数据不能绑定，请检查!');
-        return false;
-    }
-    return true;
-}  
+	if(FilterDBID!=undefined){
+		
+		let DataPara={
+				"tableID":"#tableBinds",
+				"DBTable":"ppm_customerbinds",
+				"Filter":[{"CTRVal":FilterDBID,"CType":"="}]
+		}
+		showFilterDBData(DataPara,columnsData);
+		
+		let tablePanel = $('#tableBinds').DataTable();
 
-//函数 检查绑定DBID是否已经添加
+		$('#tableBinds tbody').on('click', 'tr', function() {
 
-function checkBindDBID(DBID){
-	let tableTrNum=$("#tableSingleDataBinds").find("tr").length-1;
 
-		for(let i=0;i<tableTrNum;i++){
-		 let tableDBID=$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(2)").html();
+		    if ($(this).hasClass('selected')) {
+		        $(this).removeClass('selected');
+		    } else {
+		    	tablePanel.$('tr.selected').removeClass('selected');
+		        $(this).addClass('selected');
+		    }
+		    let dataSelectPanel = tablePanel.row('.selected').data();
+		    
 
-		 if(DBID==tableDBID){
-			 alert("该绑定数据已存在,无需重复添加!");
-			 return false;
-		  }
-		 }
-
-	return true;
-
+		});
+	}
+	
 }
-
-
-/**删除一行*/
-function delTr(trID){
-    $(trID).parent().parent().remove();
-}
-
-
 
 $(document).ready( function () {
+	
+	//表加载数据------------------
+	var DataPara={
+			tableID:"#tableDataBinds",
+			SQLPara:{SQL:"SQLCTRBindsCount"},
+			columnsData:[
+				{ data: 'CTRVal' ,"visible": false},
+		        { data: 'CTRName' },
+		        { data: 'CountNum'}
+
+		    ]
+	}
+		
+	showSQLDataTable(DataPara);
+
+
+////判断是否选中数据-------
+var table = $('#tableDataBinds').DataTable();
+$('#tableDataBinds tbody').on('click', 'tr', function() {
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+
+});
+
+
+//dbclick 测试判断是否选中数据-------
+
+$('#tableDataBinds tbody').on('dblclick', 'tr', function() {
+	
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
+     $('#BTNBindsAdd').click();
+     let dataSelect = table.row('.selected').data();
+     
+     console.log("dataSelect:"+JSON.stringify(dataSelect));
+     
+     $("#CTRName").selectpicker('val',dataSelect.CTRVal);
+
+});
+
+
+//初始化select数据	
+Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#CTRName");
+Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName");
+Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP'"},"#DModelName");
+Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI'"},"#HModelName");
+Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"groupLabel='DSP' AND status=1"},"#DStaffName");
+Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"groupLabel='HMI' AND status=1"},"#HStaffName");
+
+//解除绑定按钮----------
+$('#BTNBindsDel').click(function() {
+    var dataSelect = table.row('.selected').data();
+
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+        var msg1 = confirm("风险操作！确认删除该客户的所有绑定关系？");
+        if (msg1 === true) {
+            var msg2 = confirm("再次确认!");
+            if (msg2 === true) {
+                delDBData({"DBTable":"ppm_customerbinds","CTRVal":dataSelect.CTRVal});
+            }
+        }
+    }
+    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+});
 	
 
 
 //定义原数据变更实际-----------------------------	
-	$("#OrgDBType").change(function(){
+$("#CTRName").change(function(){
+	
+	tableBindsShow($("#CTRName option:selected").val());
 
-		var DBtype=$("#OrgDBType").val();
-
-		switch(DBtype)
-		{
-		    case "ppm_customers":
-		    	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#OrgDBTypeSub");
-		    	
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_customers']").attr("disabled", true);
-		        break;
-		    case "ppm_staffs":
-
-		    	Fun_getSQLSelectDBData({SQL:"SQLSRStaffsBind"},"#OrgDBTypeSub");
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_staffs']").attr("disabled", true);
-		        break;
-		    case "ppm_machines":
-
-		    	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#OrgDBTypeSub");
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_machines']").attr("disabled", true);
-		        break;
-		        
-		    case "ppm_systems":
-
-		    	Fun_getFullSQLSelectDBData({SQL:"SQLSRSystemsBind"},"#OrgDBTypeSub");
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_systems']").attr("disabled", true);
-		        break;
-		        
-		    default:
-
-		    	break;
-		      
-		}
-		
 		$("#spanDBType").text($("#OrgDBType option:selected").text());
 		$("#spanTableName").text($("#OrgDBType option:selected").val());
 		$("#spanBaseDBID").text("");
@@ -313,8 +404,7 @@ $("#OrgDBTypeSub").change(function(){
 		
 		
 		if($("#OrgDBType option:selected").val()!=undefined&&$("#OrgDBTypeSub option:selected").val()!=undefined){
-			
-			
+
 				 $("#OrgDBType").attr("disabled",true);
 				 $("#OrgDBTypeSub").attr("disabled",true);
 		}
@@ -324,247 +414,105 @@ $("#OrgDBTypeSub").change(function(){
 
 //按钮-添加绑定触发按钮
 
-$('#BTNAddBinds').click(function() {
+$('#BTNBindsAdd').click(function() {
     $('#winModal').modal('show');
-    
-    
-    $("#OrgDBType").selectpicker('val',"");
-    $("#OrgDBTypeSub").selectpicker('val',"");
-    $("#BindDBType").selectpicker('val',"");
-    $("#BindDBTypeSub").selectpicker('val',"");
-    
-    
-     $("#spanDBID").text("");
-	 $("#spanDBType").text("");
-	 $("#spanTableName").text("");
-	 $("#spanBaseDBID").text("");
-	 $("#spanBaseName").text("");
-	 
-	 $("#OrgDBType").attr("disabled",false);
-	 $("#OrgDBTypeSub").attr("disabled",false);
 
 });
 	
-//按钮-更新绑定触发按钮
-
-$('#BTNUpdBinds').click(function() {
-	
-	var table = $('#tableDataBinds').DataTable();
-	var dataSelect = table.row('.selected').data();
-	
-	console.log("dataSelect:"+JSON.stringify(dataSelect));
-	
-	 $('#winModal').modal('show');
-	 
-	 
-	 $("#spanDBID").text(dataSelect.DBID);
-	 $("#spanDBType").text(dataSelect.DBType);
-	 $("#spanBaseDBID").text(dataSelect.baseDBID);
-	 $("#spanBaseName").text(dataSelect.baseName);
-	 
-	 $("#OrgDBType").selectpicker('val',dataSelect.tableName);
-	 $("#OrgDBType").attr("disabled",true);
-	 
-	 $("#BindDBType").selectpicker('val',"");
-	 
-	 switch(dataSelect.tableName)
-		{
-		    case "ppm_customers":
-		    	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#OrgDBTypeSub",dataSelect.baseName);
-		    	
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_customers']").attr("disabled", true);
-		        break;
-		    case "ppm_staffs":
-
-		    	Fun_getSQLSelectDBData({SQL:"SQLSRStaffsBind"},"#OrgDBTypeSub",dataSelect.baseName);
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_staffs']").attr("disabled", true);
-		        break;
-		    case "ppm_machines":
-
-		    	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#OrgDBTypeSub",dataSelect.baseName);
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_machines']").attr("disabled", true);
-		        break;
-		        
-		    case "ppm_systems":
-
-		    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystemsBind"},"#OrgDBTypeSub",dataSelect.baseName);
-		    	$("#BindDBType option").attr("disabled", false);
-		    	$("#BindDBType option[value='ppm_systems']").attr("disabled", true);
-		        break;
-		        
-		    default:
-		    	
-		    	break;
-		      
-		}
-	 
-	 let bindsInfo=JSON.parse(dataSelect.bindsInfo);
-	 
-	 $('#tableSingleDataBinds tbody').html("");
-	 
-	 if(bindsInfo.length!=0){
-		 for(let i=0;i<bindsInfo.length;i++){
-			 let tr="<tr>" +
-				"<td>"+$("#OrgDBType option:selected").text()+"</td>" +
-				"<td>"+dataSelect.baseName+"</td>" +
-				"<td>"+bindsInfo[i].DBID+"</td>" +
-				"<td>"+bindsInfo[i].DataType+"</td>" +
-				"<td>"+bindsInfo[i].DataVal+"</td>" +
-				"<td>"+bindsInfo[i].DataSort+"</td>" +
-				"<td><a onclick='delTr(this)'>删除</a></td>" +
-				"</tr>";
-		     $('#tableSingleDataBinds').append(tr);
-		 }
-		 
-		 
-	 }
-
-	 
-	 
-
-});
 
 
 //按钮-添加绑定关系按钮
 
 $('#BTNAddBindDo').click(function() {
 	
-	if($("#BindDBTypeSub option:selected").val()==undefined||$("#BindDBTypeSub option:selected").val()==undefined){
-		alert("未选择基础数据或绑定数据,不允许添加绑定,请检查!");
-	}else{
-		
-		if(checkBindDBID($("#BindDBTypeSub option:selected").val())){
-			let tr="<tr>" +
-			"<td>"+$("#OrgDBType option:selected").text()+"</td>" +
-			"<td>"+Fun_getSelectText($("#OrgDBTypeSub option:selected").text())+"</td>" +
-			"<td>"+$("#BindDBTypeSub option:selected").val()+"</td>" +
-			"<td>"+$("#BindDBType option:selected").text()+"</td>" +
-			"<td>"+Fun_getSelectText($("#BindDBTypeSub option:selected").text())+"</td>" +
-			"<td>"+Fun_getSelectTextPre($("#BindDBTypeSub option:selected").text())+"</td>" +
-			"<td><a onclick='delTr(this)'>删除</a></td>" +
-			"</tr>";
-	     $('#tableSingleDataBinds').append(tr);
-		}
-	}
-}); 
-		
-	
-    
-//添加按钮-----
-$('#BTNSaveDataBinds').click(function() {
-	
-	let tableTrNum=$("#tableSingleDataBinds").find("tr").length-1;
-	
-	if(tableTrNum==0){
-		alert("未添加任何绑定关系,请检查!");
-	}else{
-		let bindsInfo=[];
-		
-		for(let i=0;i<tableTrNum;i++){
-			let bindInfo={
-					DBID:$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(2)").html(),
-					DataType:$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(3)").html(),
-					DataVal:$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(4)").html(),
-					DataSort:$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(5)").html()
-			}
-			bindsInfo.push(bindInfo);
-			
-		}
-
-	    	let DataBinds={
-	    			DBTable:"ppm_dbbinds",
-	    			DBID:$("#spanDBID").text(),
-	    			DBType:$("#OrgDBType option:selected").text(),
-	    			tableName:$("#OrgDBType option:selected").val(),
-	    			baseDBID:$("#OrgDBTypeSub option:selected").val(),
-	    			baseName:Fun_getSelectText($("#OrgDBTypeSub option:selected").text()),
-	    			bindsInfo:JSON.stringify(bindsInfo),
-	    			status:1,
-	    			statusText:"正常"
-	    	}
-	    	
-	    	console.log("DataBinds:"+JSON.stringify(DataBinds));
-	    	
-	    	saveDBData(DataBinds,"绑定关系");
-		
+	let DataBind={
+			DBTable:"ppm_customerbinds",
+			CTRName:$("#CTRName option:selected").text(),
+			CTRVal:$("#CTRName option:selected").val(),
+			MHEName:$("#MHEName option:selected").text(),
+			MHEVal:$("#MHEName option:selected").val(),
+			DModelName:$("#DModelName option:selected").text(),
+			DModelVal:$("#DModelName option:selected").val(),
+			HModelName:$("#HModelName option:selected").text(),
+			HModelVal:$("#HModelName option:selected").val(),
+			DStaffName:$("#DStaffName option:selected").text(),
+			DStaffVal:$("#DStaffName option:selected").val(),
+			HStaffName:$("#HStaffName option:selected").text(),
+			HStaffVal:$("#HStaffName option:selected").val()
 	}
 	
+	console.log("DataBind:"+JSON.stringify(DataBind));
 	
-    	
-});
-    
-    
-    
-    
-    //获取绑定数据按钮-----
-    $('#getBindInfoBtn').click(function() {
 
-    	var ChoDBType=$('#ChoDBType').val();
-    	var ChoDBTypeSub=$('#ChoDBTypeSub').val();
-    	
-    	var ChoData={"OrgDBType":ChoDBType,"OrgDBTypeSub":ChoDBTypeSub};
- 	
-    	F_getBindDBData(ChoData);
-    	
+	$.ajax({
+        method: 'post',
+        url: '/app/PM/addDBData',
+        data: DataBind,
+        success: function(data) {
+  //         alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+               alert("新增绑定成功!");
+//             window.location.reload();
+           	   tableBindsShow($("#CTRName option:selected").val());
+           }
+       },
+       error:function(err){
+    	   
+    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+    		   alert("系统中已存在重复数据,请检查!");
+    	   }else{
+    		   alert("失败数据:"+JSON.stringify(err));
+    	   }
+
+       }
     });
-    
-    
-    
-	//表加载数据------------------
-	var DataPara={
-			"tableID":"#tableDataBinds",
-			"DBTable":"ppm_dbbinds"			
-	}
-		
 	
-	var columnsData=[
-		{ data: 'DBID' ,"visible": false},
-        { data: 'DBType' },
-        { data: 'baseName'},
-        { data: 'statusText'}
 
-    ];
+}); 
 
-// alert(JSON.stringify(DataPara));
-	showDBData(DataPara,columnsData);
-	
-////判断是否选中数据-------
-var table = $('#tableDataBinds').DataTable();
-$('#tableDataBinds tbody').on('click', 'tr', function() {
-    if ($(this).hasClass('selected')) {
-        $(this).removeClass('selected');
-    } else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
-    }
-    
-    
-});
 
 //解除绑定按钮----------
-$('#BTNDelBinds').click(function() {
-    var dataSelect = table.row('.selected').data();
+$('#BTNDelBindDo').click(function() {
+	let tablePanel = $('#tableBinds').DataTable();
+	let dataSelectPanel = tablePanel.row('.selected').data();
 
-    if (dataSelect == undefined) {
+    if (dataSelectPanel == undefined) {
         alert("当前未选择任何数据,请先点击需要删除的数据行!");
     } else {
-        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+        var msg1 = confirm("风险操作！确认删除该客户的所有绑定关系？");
         if (msg1 === true) {
-            var msg2 = confirm("确认删除此行数据？");
-            if (msg2 === true) {
-            	
-            //	alert(dataSelect.DBID);
-                var IDData = {"DBTable":"ppm_dbbinds","DBID":dataSelect.DBID};
-             //   alert("IDData:"+JSON.stringify(IDData));
-                delDBData(IDData);
-            }
+        	
+//                delDBData({"DBTable":"ppm_customerbinds","DBID":dataSelectPanel.DBID});
+                
+                $.ajax({
+                    method: 'post',
+                    url: '/app/PM/delDBData',
+                    data: {"DBTable":"ppm_customerbinds","DBID":dataSelectPanel.DBID},
+                    success: function(data, textStatus) {
+
+                        if (data.affectedRows != 0) {
+                            alert("解除此条绑定成功!");
+                            tableBindsShow($("#CTRName option:selected").val());
+                            
+                        } else {
+                            alert("解除此条绑定失败!");
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {}
+                });
+
         }
     }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
 });
+
+    
+    
+//按钮-表单关闭按钮,添加刷新数据功能
+$('#BTNFormClose').click(function() {
+    	 window.location.reload();
+});
+
     
 
 

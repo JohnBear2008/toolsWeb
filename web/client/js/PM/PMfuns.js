@@ -60,6 +60,102 @@ function showDBData(DataPara,columnsData){
 
 }
 
+//定义订单表格加载数据函数----------
+
+function showOrdersDBData(DataPara,columnsData){
+	
+//alert(JSON.stringify(DataPara));
+	
+	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	
+	var dataTable=$(DataPara.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getOrdersDBInfo',
+	        data:DataPara,
+	        dataSrc: ''
+	    },
+	    columns: columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[10,20,50,100],
+
+
+	    "language": languageCN
+	});
+	
+	
+//	var TableData=dataTable.$("input").serialize();
+//	
+//	alert("TableData:"+JSON.stringify(TableData));
+
+}
+
+
+
+//定义待过滤调节表格加载函数
+
+function showFilterDBData(DataPara,columnsData){
+	
+//alert(JSON.stringify(DataPara));
+	
+//	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	$(DataPara.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getFilterDBInfo',
+	        data:DataPara,
+	        dataSrc: ''
+	    },
+	    columns: columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[5,10,20],
+
+
+	    "language": languageCN
+	});
+
+}
+
+//定义SQL  datatable表格
+
+/*DataPara={
+ * tableID:"#tableA",
+ * SQLPara:{SQL:"SQLName",filter:"A=B"},
+ * columnsData:[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'CTRName' },
+        { data: 'CTRVal'}
+
+    ]
+ * }
+ * 
+ * 
+ * */
+
+function showSQLDataTable(DataPara){
+
+	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+
+	
+	$(DataPara.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getSQLDBData',
+	        data:DataPara.SQLPara,
+	        dataSrc: ''
+	    },
+	    columns: DataPara.columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[5,10,20],
+	    "language": languageCN
+	});
+	
+	
+
+}
+
+
 //AJAX新增数据库数据函数-----------
 function addDBData(DBData) {
 	
@@ -592,62 +688,7 @@ function deleteFile() {
 }
 //---------------------------------------
 
-//定义订单表格加载数据函数----------
 
-function showOrdersDBData(DataPara,columnsData){
-	
-//alert(JSON.stringify(DataPara));
-	
-	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
-	
-	
-	var dataTable=$(DataPara.tableID).DataTable({
-	    ajax: {
-	        url: '/app/PM/getOrdersDBInfo',
-	        data:DataPara,
-	        dataSrc: ''
-	    },
-	    columns: columnsData,
-	    aaSorting: [0, 'desc'],//默认排序
-	    lengthMenu:[10,20,50,100],
-
-
-	    "language": languageCN
-	});
-	
-	
-//	var TableData=dataTable.$("input").serialize();
-//	
-//	alert("TableData:"+JSON.stringify(TableData));
-
-}
-
-
-
-//定义待过滤调节表格加载函数
-
-function showFilterDBData(DataPara,columnsData){
-	
-//alert(JSON.stringify(DataPara));
-	
-	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
-	
-	
-	$(DataPara.tableID).DataTable({
-	    ajax: {
-	        url: '/app/PM/getFilterDBInfo',
-	        data:DataPara,
-	        dataSrc: ''
-	    },
-	    columns: columnsData,
-	    aaSorting: [0, 'desc'],//默认排序
-	    lengthMenu:[5,10,20],
-
-
-	    "language": languageCN
-	});
-
-}
 
 //函数 获取数据库信息 带过滤器
 
