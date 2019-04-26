@@ -155,6 +155,52 @@ function showSQLDataTable(DataPara){
 
 }
 
+//函数:datatable 数据重新加载函数
+/*
+ * let Params={
+			tableID:"#billsTrackTable",
+			SQLParam:{SQL:"SQLTableBillsDBCenter",filter:"CTRName='海天'"},
+			columnsData:[
+				{ data: 'DBID' ,"visible": false},
+		        { data: 'BPID' },
+		        { data: 'version'},
+		        { data: 'CTRName'},
+		        { data: 'makeDate'},
+		        { data: 'WFEndDate'},
+		        { data: 'taskNum'},
+		        { data: 'taskNumDone'},
+		        { data: 'WFEndText'}
+
+			]
+	}
+ * 
+ * 
+ * 
+ * 
+ * */
+
+function datatableReload(Params){	
+	
+	let table = $(Params.tableID).DataTable();
+	
+	table.destroy();
+
+	$(Params.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getSQLDBData',
+	        data:Params.SQLParam,
+	        dataSrc: ''
+	    },
+	    columns: Params.columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[5,10,20],
+	    "language": languageCN
+	});
+	
+
+
+}
+
 
 //AJAX新增数据库数据函数-----------
 function addDBData(DBData) {

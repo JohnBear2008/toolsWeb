@@ -12,6 +12,7 @@ module.exports = function(sender) {
    var BID = sender.req.query.BID;
    var VER = sender.req.query.VER;
    var filter=sender.req.query.filter;
+   var orderBy=sender.req.query.orderBy;
    
    
    if(titles.length!=0){
@@ -26,12 +27,16 @@ module.exports = function(sender) {
    if(BID!=undefined&&VER!=undefined){
 
 	   var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" ta ,(SELECT "+BID+" AS BID,MAX("+VER+") AS maxVer FROM "+tableName+" GROUP BY "+BID+" ) tb WHERE ta."+BID+"=tb.BID AND ta."+VER+"=tb.maxVer AND "+filter;
-
 	   
    }else{
 	   var SQLGetDatas = "SELECT "+titlesContent+" FROM "+tableName+" WHERE "+filter;
    }
     
+//   console.log(orderBy);
+   if(orderBy!=undefined){
+	   SQLGetDatas=SQLGetDatas+" ORDER BY "+orderBy;
+	   
+   }
   
     
 //    console.log("SQLGetDatas:"+SQLGetDatas);

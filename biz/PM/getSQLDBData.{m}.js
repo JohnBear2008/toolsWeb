@@ -163,10 +163,11 @@ module.exports = function(sender) {
 	case "SQLCTRBindsCount":
 		var SQLExecute=SQLCTRBindsCount;
 		break;
+	case "SQLTableBillsDBCenter":
+		var SQLExecute=SQLTableBillsDBCenter;
+		break;
 		
-		
-		
-		
+
 
 	default:
 		var SQLExecute=SQL;

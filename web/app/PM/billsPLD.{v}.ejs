@@ -206,7 +206,7 @@
                      <div class="col-sm-6 ">
                      <select  id="CTRName" class="selectpicker" data-live-search="true" > 
                      </select>
-                     <button id="BTNFormAuto" class="btn btn-primary" >智能填单(开发中)</button>
+                     <button id="BTNFormAuto" class="btn btn-primary" >智能填单</button>
                      
                      </div>
                      
@@ -608,8 +608,6 @@ function Fun_winAddInit(){
 	  
 	  $("#BPID").attr("disabled",true);
 
-
-	
 //	var SQLCTRName={SQL:"SQLSRCustomers"};
 	var CTRName="#CTRName";
 	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},CTRName);
@@ -618,7 +616,6 @@ function Fun_winAddInit(){
 	var MHEName="#MHEName";
 	Fun_getSQLSelectDBData(SQLMHEName,MHEName);
 	
-
 	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD");
 	
 	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH");
@@ -805,9 +802,13 @@ function Fun_winDetailInit(dataChoose){
 	  $("#DivFileBTNS").show();
 	  
 	  $("#auditOpinionDiv").hide();
+	  
+	  
+	  $("#BTNFormAuto").show();
 
 	  $("#BTNFormModify").show();
 	  $("#BTNFormUpdate").hide();
+	  
 	  $("#BTNFormAuditYes").hide();
 	  $("#BTNFormAuditNo").hide();
 
@@ -838,7 +839,7 @@ function Fun_winDetailInit(dataChoose){
 	    
 	    $('#auditDate').text(dataSelect.auditDate);
 	    
-	    
+	    $("#BTNFormAuto").hide();
 	    $("#DivFileBTNS").hide();
 	    
 	    $("#BTNFormModify").hide();
@@ -1535,14 +1536,12 @@ $('#BTNFormAuditNo').click(function() {
 $('#BTNFormClose').click(function() {
 	 window.location.reload();
 });
-	
 
 
 //按钮-流程跟踪
 $('#BTNTrack').click(function(){
 	window.location.href='/app/PM/billsTrack?BPID='+$('#BPID').val();
 });
-
 
 
 }); 
