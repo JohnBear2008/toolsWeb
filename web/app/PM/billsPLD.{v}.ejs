@@ -1406,70 +1406,69 @@ $('#BTNFormModify').click(function() {
 
 $('#BTNFormUpdate').click(function() {
 	
-	var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
-    if (msg1 === true) {
-        var msg2 = confirm("确认更新版本？");
-        if (msg2 === true) {
+//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD05")){//------检查权限
 
-        	var newVersion=parseInt($('#version').text())+1;
-        	
-        	var files=[];
-        	
-        	$('#divFilesUploaded a').each(function(){
-        		var fileKey=$(this).attr('href').substring(30);
-        		var fileName=$(this).attr('download');
-        		
-        		var fileInfo={
-        				"fileName":fileName,
-        				"fileKey":fileKey
-        		}
-        		
-        		files.push(fileInfo);
-        	});
-        	
+		
+		var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
+	    if (msg1 === true) {
+	        var msg2 = confirm("确认更新版本？");
+	        if (msg2 === true) {
 
-        	var billData={
-        			"DBTable":"ppm_bills_plan",
-        			"BPID":$('#BPID').val(),
-        			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-        			"topic":$('#topic').val(),
-        			"detail":$('#detail').val(),
-        			"PGEMaker":$('#PGEMaker option:selected').text(),
-        			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-        			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-        			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-        			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-        			"modelD":$('#modelD option:selected').text(),
-        			"modelH":$('#modelH option:selected').text(),
-        			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-        			"applyDate":$('#applyDate').val(),
-        			"limitDate":$('#limitDate').val(),
-        			"maker":sessionName,
-        			"makeDate":Ndate,
-        			"auditor":$('#auditor option:selected').text(),
-        			"version": newVersion,
-        			"files":JSON.stringify(files),
-        			"WFStatus":1
-        	}
-        	
-        	addDBData(billData);
-        	
-//        	if(billData.auditor!=""){
-//
-//        		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-//        		
-//        		Fun_addDBDataDD(billData,DDMsg,"新版本计划单");
-//        	}else{
-//        		alert("该计划单没有指定审核人,请检查!");
-//        	}
-        	
+	        	var newVersion=parseInt($('#version').text())+1;
+	        	
+	        	var files=[];
+	        	
+	        	$('#divFilesUploaded a').each(function(){
+	        		var fileKey=$(this).attr('href').substring(30);
+	        		var fileName=$(this).attr('download');
+	        		
+	        		var fileInfo={
+	        				"fileName":fileName,
+	        				"fileKey":fileKey
+	        		}
+	        		
+	        		files.push(fileInfo);
+	        	});
+	        	
 
+	        	var billData={
+	        			"DBTable":"ppm_bills_plan",
+	        			"BPID":$('#BPID').val(),
+	        			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+	        			"topic":$('#topic').val(),
+	        			"detail":$('#detail').val(),
+	        			"PGEMaker":$('#PGEMaker option:selected').text(),
+	        			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+	        			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+	        			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+	        			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+	        			"modelD":$('#modelD option:selected').text(),
+	        			"modelH":$('#modelH option:selected').text(),
+	        			"OGNSystemVersion":$('#OGNSystemVersion').val(),
+	        			"applyDate":$('#applyDate').val(),
+	        			"limitDate":$('#limitDate').val(),
+	        			"maker":sessionName,
+	        			"makeDate":Ndate,
+	        			"auditor":$('#auditor option:selected').text(),
+	        			"version": newVersion,
+	        			"files":JSON.stringify(files),
+	        			"WFStatus":1
+	        	}
+	        	
+	        	addDBData(billData);
 
-        	
-        }
-    }
-    
-//    $('#BillPLD').modal('hide');
+	        }
+	    }
+	    
+//	    $('#BillPLD').modal('hide');
+		
+		
+		
+
+	    
+//	}//------检查权限
+	
+	
 
 });
 

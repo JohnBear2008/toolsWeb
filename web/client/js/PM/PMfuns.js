@@ -1834,21 +1834,25 @@ function checkAuthority(selectSQL,AuthorityID){
          async:false, //必须同步
          success:function(data){
         	 
-//        	 console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
-        	 
-        	 let authorityArray=JSON.parse(data[0]["roleAuthorities"]);
-        	 
-        	 if(authorityArray.length>0){
-        		 for(let i=0;i<authorityArray.length;i++){
-        			 console.log(authorityArray[i].val);
-        			 
-        			 if(AuthorityID==authorityArray[i].val){
-        				 checkResult=true;
-        				 break;//跳出循环提高效率
+        	 console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
+        	 if(data[0]["roleAuthorities"]!=null){
+        		 let authorityArray=JSON.parse(data[0]["roleAuthorities"]);
+            	 
+            	 if(authorityArray.length>0){
+            		 for(let i=0;i<authorityArray.length;i++){
+            			 console.log(authorityArray[i].val);
+            			 
+            			 if(AuthorityID==authorityArray[i].val){
+            				 checkResult=true;
+            				 break;//跳出循环提高效率
 
-        			 }
-        		 }
+            			 }
+            		 }
+            	 }
+        		 
         	 }
+        	 
+        	 
          },
          error:function(){}
      })

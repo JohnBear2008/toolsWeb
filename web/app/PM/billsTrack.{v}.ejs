@@ -540,60 +540,68 @@ $('#BTNInfo').click(function() {
 
 //删除按钮----------
 $('#BTNStop').click(function() {
-    var dataSelect = table.row('.selected').data();
-    
- //   alert(JSON.stringify(dataSelect));
-//    
-    if (dataSelect == undefined) {
-        alert("请先选择需要终止的计划!");
-    } else {
-    	var msg1 = confirm("风险操作:终止计划单后,系统不再显示关于该计划的所有单据!是否继续?");
-        if (msg1 === true) {
-        	
-        	 var PLDUpdData={
-						"DBTable":"ppm_bills_plan",
-						"BillIDName":"BPID",
-						"BillID":dataSelect.BPID,
-						"WFStatus":0,
-						"WFEndDate":Ndate
-				}
-        	 
-        	 var taskUpdData={
-						"DBTable":"ppm_bills_task",
-						"BillIDName":"taskBPID",
-						"BillID":dataSelect.BPID,
-						"WFStatus":0
-				}
-        	 
-        	 var ajax1=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updBillStatus',
-			        data: PLDUpdData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
-			 
-        	 var ajax2=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/updBillStatus',
-			        data: taskUpdData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Track01")){
+		//-----
+
 		
+	    var dataSelect = table.row('.selected').data();
+	    
+	 //   alert(JSON.stringify(dataSelect));
+	//    
+	    if (dataSelect == undefined) {
+	        alert("请先选择需要终止的计划!");
+	    } else {
+	    	var msg1 = confirm("风险操作:终止计划单后,系统不再显示关于该计划的所有单据!是否继续?");
+	        if (msg1 === true) {
+	        	
+	        	 var PLDUpdData={
+							"DBTable":"ppm_bills_plan",
+							"BillIDName":"BPID",
+							"BillID":dataSelect.BPID,
+							"WFStatus":0,
+							"WFEndDate":Ndate
+					}
+	        	 
+	        	 var taskUpdData={
+							"DBTable":"ppm_bills_task",
+							"BillIDName":"taskBPID",
+							"BillID":dataSelect.BPID,
+							"WFStatus":0
+					}
+	        	 
+	        	 var ajax1=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: PLDUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+				 
+	        	 var ajax2=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: taskUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+			
 
-			$.when(ajax1,ajax2).done(function(){
-					alert("计划单已终止,相关任务单已终止!");
-				window.location.reload();
-				
-			});
+				$.when(ajax1,ajax2).done(function(){
+						alert("计划单已终止,相关任务单已终止!");
+					window.location.reload();
+					
+				});
 
-        }
-    	
-    }
-    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+	        }
+	    	
+	    }
+	    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+		//-----
+	}
+	
 });
 
 
