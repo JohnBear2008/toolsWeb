@@ -364,7 +364,7 @@
 
                  	 <button id="BTNTaskDel" type="button" class="btn btn-danger">删除任务</button>
                  	 
-                 	<button id="BTNTaskAuto" type="button" class="btn btn-danger">智能分配任务(开发中)</button>
+                 	<button id="BTNTaskAuto" type="button" class="btn btn-danger">智能分配任务</button>
                  	 </div>
                  	 </div>
 
@@ -1314,6 +1314,85 @@ function createSystemTasks(bindsInfo){
 }
 
 
+//函数-生成系统模版任务单
+function findMoreBindInfo(){
+	
+	let filter="CTRVal="+$('#CTRName option:selected').val();
+	let filterD="";
+	let filterH="";
+
+	if($('#modelD option:selected').val()!=undefined){
+		 filterD=filter+" AND DModelVal="+$('#modelD option:selected').val();
+	}
+	
+	if($('#modelH option:selected').val()!=undefined){
+		 filterH=filter+" AND HModelVal="+$('#modelH option:selected').val();
+	}
+	
+	
+	let selectSQLD={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filterD,"limit":1}
+	let selectSQLH={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filterH,"limit":1}
+	
+	let bindsInfo={
+			CTRName:$('#CTRName option:selected').text(),
+			CTRVal:$('#CTRName option:selected').val(),
+			MHEName:$('#MHEName option:selected').text(),
+			MHEVal:$('#MHEName option:selected').val(),
+			DModelName:$('#modelD option:selected').text(),
+			DModelVal:$('#modelD option:selected').val(),
+			DStaffName:"",
+			DStaffVal:"",
+			HModelName:$('#modelH option:selected').text(),
+			HModelVal:$('#modelH option:selected').val(),
+			HStaffName:"",
+			HStaffVal:""	
+	}
+	
+	let ajaxD=$.ajax({
+        method:'get',
+        data:selectSQLD,
+        url:"/app/PM/getSQLDBData",
+        async:false, 
+        success:function(dataD){
+       	 console.log("dataD:"+JSON.stringify(dataD));
+       	 if(dataD.length!=0){
+//       		bindsInfo.DModelName=dataD[0].DModelName;
+//       		bindsInfo.DModelVal=dataD[0].DModelVal;
+       		bindsInfo.DStaffName=dataD[0].DStaffName;
+       		bindsInfo.DStaffVal=dataD[0].DStaffVal;
+       	 }
+       	 
+        },
+        error:function(){}
+    })
+	
+	let ajaxH=$.ajax({
+        method:'get',
+        data:selectSQLH,
+        url:"/app/PM/getSQLDBData",
+        async:false, 
+        success:function(dataH){
+       	 
+       	 console.log("dataH:"+JSON.stringify(dataH));
+       	 if(dataH.length!=0){
+//        		bindsInfo.HModelName=dataD[0].HModelName;
+//        		bindsInfo.HModelVal=dataD[0].HModelVal;
+        		bindsInfo.HStaffName=dataD[0].HStaffName;
+        		bindsInfo.HStaffVal=dataD[0].HStaffVal;
+        	 }
+        },
+        error:function(){}
+    })
+    
+    $.when(ajaxD,ajaxH).done(function(){
+    	 createSystemTasks(bindsInfo);
+
+	});
+	
+
+}
+
+
 //函数,检查输入项是否完整
 
 function checkBPTInput(){
@@ -1350,14 +1429,13 @@ function checkTaskInput(){
 		alert("系统未选择,请检查!");
 		return false;
 	}else if(getCheckBoxValue("modfiyABE")==""){
-		alert("修改内容未选择,请检查!");
+		alert("修改属性未选择,请检查!");
 		return false;
 	}else if($("#taskStaff").val()==null){
 		alert("任务负责人未选则,请检查!");
 		return false;
 	}
-	
-	
+
 	return true;
 	
 }
@@ -1750,9 +1828,11 @@ if(CTRNameDBID==undefined){
 	         url:"/app/PM/getSQLDBData",
 	         async:false, 
 	         success:function(data){
-	        	 
 	        	 if(data.length==0){
-	        		 alert("系统未检测到绑定数据,请先维护绑定关系!");
+	        		 if(confirm("系统未检测精确绑定数据,是否启用模糊关系查找?")){
+	        			 findMoreBindInfo();
+	        		 }
+	        		 
 	        	 }else{
 	        		 let bindsInfo=data[0];
 	        		 alert("成功数据:" + JSON.stringify(data));
@@ -2042,7 +2122,6 @@ $('#BTNBPTSave').click(function(){
 	            }
 		
 	}
-
 
 
 });

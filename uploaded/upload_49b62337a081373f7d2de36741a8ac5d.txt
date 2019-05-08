@@ -1,0 +1,138 @@
+//函数 -加载任务记录表格
+
+function Fun_showRecordsLiteTable(SQL,tableInfo){
+
+	//alert(JSON.stringify(DataPara));
+
+		$(tableInfo.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+
+		$(tableInfo.tableID).DataTable({
+		    ajax: {
+		        url: '/app/PM/getSQLDBData',
+		        data:SQL,
+		        dataSrc: ''
+		    },
+		    columns: tableInfo.columnsData,
+		    aaSorting: [0, 'desc'],//默认排序
+		    paging: false, // 禁止分页
+		    bFilter: false,    //去掉搜索框方法三：这种方法可以
+//	        bLengthChange: false,   //去掉每页显示多少条数据方法
+		    "language": languageCN
+		});
+
+//		//判断是否选中数据-------
+//
+		 $(tableInfo.tableID+' tbody').unbind();//解除事件绑定,防止重复定义.
+
+		var tableRecords = $(tableInfo.tableID).DataTable();
+		 
+		 console.log("tableRecords:"+JSON.stringify(tableRecords));
+
+
+		 $(tableInfo.tableID+' tbody').on('click', 'tr', function() {
+
+		     if ($(this).hasClass('selected')) {
+		         $(this).removeClass('selected');
+		         
+		         $('#DIVRecordContent').hide();
+
+		     } else {
+		    	 tableRecords.$('tr.selected').removeClass('selected');
+		         $(this).addClass('selected');
+		         
+		         $('#DIVRecordContent').show();
+
+
+		          var dataSelectRecord = tableRecords.row('.selected').data();
+
+			     console.log("dataSelectRecord11111:"+JSON.stringify(dataSelectRecord));
+			     
+			     $('#DIVRecordContent').show();
+			     
+			     
+			     $('#recordDBID').text(dataSelectRecord.DBID);
+			     
+			     $('#modifyContent').val(dataSelectRecord.modifyContent);
+			     $('#functionsDBE').val(dataSelectRecord.functionsDBE);
+			     $('#recordRemark').val(dataSelectRecord.recordRemark);
+
+                 
+                 $('#div_previewImages').html("");
+                 $('#progressNumber').html("");
+			     $('#divFilesUploaded').html("");
+				  
+//				 if(dataSelectRecord.taskFiles!=null){
+//					  
+//					  var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
+//					  if(taskFiles!=null){
+//					  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+taskFiles.fileKey+" download="+taskFiles.fileName+">"+"<span id='fileName'>"+taskFiles.fileName+"</span></a>";
+//					  }else{
+//						  downloadurl="";
+//					  }
+//					  $('#divFilesUploaded').html(downloadurl);
+//				  }
+
+				 if(dataSelectRecord.taskFiles!=null){
+					  
+					 var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
+					  if(taskFiles!=null){
+						  
+						  var fileLink="";
+							 if(taskFiles.length>0){
+								 for(var i=0;i<taskFiles.length;i++){
+
+									 
+									fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+taskFiles[i].fileKey+" download="+taskFiles[i].fileName+">"+"<span>"+taskFiles[i].fileName+"</span></a>"+" ; ";
+								 } 
+							 }
+							 fileLink=fileLink.substr(0, fileLink.length-3); 
+							 
+							 
+					  var downloadurl=fileLink;
+					  }else{
+						  downloadurl="";
+					  }
+					  $('#divFilesUploaded').html(downloadurl);
+				  }
+			     
+			     
+			     $('#recordMaker').text(dataSelectRecord.recordMaker);
+			     $('#recordMakeDate').text(dataSelectRecord.recordMakeDate);
+			     $('#recordAuditor').text(dataSelectRecord.recordAuditor);
+			     $('#recordAuditDate').text(dataSelectRecord.recordAuditDate);
+			     
+
+//			     //控制其他组件防止误操作.bear
+//			     
+//			     $("input:radio[name=taskSortType][value="+dataSelectTask.taskSortType+"]").prop("checked",true);
+//			     $('input:radio[name="taskSortType"]').attr("disabled",true);
+//			     
+//
+//			     $("input:radio[name=taskType][value="+dataSelectTask.taskType+"]").prop("checked",true);
+//			     $('input:radio[name="taskType"]').attr("disabled",true);
+//
+//
+//			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
+//
+//			     setCheckBoxValue("modfiyABE",dataSelectTask.modfiyABE);
+//
+//
+//			     $("#BTID").val(dataSelectTask.BTID);
+//			     $("#BTID").attr("disabled","true");
+//
+//			    var SQLTaskStaff={SQL:"SQLSRStaffs"};
+//				var taskStaff="#taskStaff";
+//				Fun_getSQLSelectDBData(SQLTaskStaff,taskStaff,dataSelectTask.taskStaff);
+//				
+//				 $('#taskLimitDate').val(dataSelectTask.taskLimitDate);
+//
+//				 $("#BTVersion").text(dataSelectTask.BTVersion);
+//
+//				 $("#BTAcceptResultText").text(dataSelectTask.BTAcceptResultText);
+//
+//				 $("#taskDBE").val(dataSelectTask.taskDBE);
+		     }
+		 });
+		 
+		 
+}

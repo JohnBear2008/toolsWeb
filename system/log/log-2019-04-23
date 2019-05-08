@@ -1,0 +1,227 @@
+[2019-04-23T15:22:21.678] [ERROR] dateFileLog - { Error: ER_BAD_FIELD_ERROR: Unknown column 'P2019041104_DM_A' in 'where clause'
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0,
+  sql: 'SELECT * FROM  (SELECT tbb.*,CASE tbb.PLDStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'审核通过\' WHEN 2 THEN \'审核驳回\' END AS PLDStatusText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.BPTBPID,tbd.BPTVersion,CASE tbd.BPTStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'审核通过\' WHEN 2 THEN \'审核驳回\' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID LEFT JOIN (SELECT tbh.fqcBPID,tbh.FQCVersion,CASE tbh.FQCStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'已通过\' WHEN 2 THEN \'出货后修正\' WHEN 3 THEN \'未通过\' END AS FQCStatusText  FROM `ppm_bills_fqc` tbh,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbg WHERE tbh.fqcBPID=tbg.fqcBPID AND tbh.FQCVersion=tbg.maxFQCVersion) tbi ON tbi.fqcBPID=tbe.BPID  LEFT JOIN (SELECT tbk.pbhBPID,tbk.PBHVersion,CASE tbk.PBHStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'审核通过\' WHEN 2 THEN \'审核驳回\' END AS PBHStatusText,CASE tbk.emailResult WHEN 0 THEN \'未发邮件\' WHEN 1 THEN \'已发系统邮件\' WHEN 2 THEN \'已发自定义邮件\' END AS emailResultText  FROM `ppm_bills_pbh` tbk,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbj WHERE tbk.pbhBPID=tbj.pbhBPID AND tbk.PBHVersion=tbj.maxPBHVersion) tbl ON tbe.BPID=tbl.pbhBPID WHERE BPID =P2019041104_DM_A' }
+[2019-04-23T15:22:21.682] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'P2019041104_DM_A' in 'where clause'
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+[2019-04-23T15:24:38.991] [ERROR] dateFileLog - { Error: ER_BAD_FIELD_ERROR: Unknown column 'P2019041104_DM_A' in 'where clause'
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0,
+  sql: 'SELECT * FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.PLDStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'审核通过\' WHEN 2 THEN \'审核驳回\' END AS PLDStatusText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.BPTBPID,tbd.BPTVersion,CASE tbd.BPTStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'审核通过\' WHEN 2 THEN \'审核驳回\' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID LEFT JOIN (SELECT tbh.fqcBPID,tbh.FQCVersion,CASE tbh.FQCStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'已通过\' WHEN 2 THEN \'出货后修正\' WHEN 3 THEN \'未通过\' END AS FQCStatusText  FROM `ppm_bills_fqc` tbh,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbg WHERE tbh.fqcBPID=tbg.fqcBPID AND tbh.FQCVersion=tbg.maxFQCVersion) tbi ON tbi.fqcBPID=tbe.BPID  LEFT JOIN (SELECT tbk.pbhBPID,tbk.PBHVersion,CASE tbk.PBHStatus WHEN 0 THEN \'已填单\' WHEN 1 THEN \'审核通过\' WHEN 2 THEN \'审核驳回\' END AS PBHStatusText,CASE tbk.emailResult WHEN 0 THEN \'未发邮件\' WHEN 1 THEN \'已发系统邮件\' WHEN 2 THEN \'已发自定义邮件\' END AS emailResultText  FROM `ppm_bills_pbh` tbk,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbj WHERE tbk.pbhBPID=tbj.pbhBPID AND tbk.PBHVersion=tbj.maxPBHVersion) tbl ON tbe.BPID=tbl.pbhBPID) A WHERE BPID =P2019041104_DM_A' }
+[2019-04-23T15:24:38.996] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'P2019041104_DM_A' in 'where clause'
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+[2019-04-23T17:27:27.517] [ERROR] dateFileLog - Error: Can't set headers after they are sent.
+    at validateHeader (_http_outgoing.js:491:11)
+    at ServerResponse.setHeader (_http_outgoing.js:498:3)
+    at ServerResponse.header (D:\work\TOOLSWEB\node_modules\express\lib\response.js:718:10)
+    at ServerResponse.send (D:\work\TOOLSWEB\node_modules\express\lib\response.js:163:12)
+    at ServerResponse.json (D:\work\TOOLSWEB\node_modules\express\lib\response.js:249:15)
+    at ServerResponse.send (D:\work\TOOLSWEB\node_modules\express\lib\response.js:151:21)
+    at proc_success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:113:13)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:170:8)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+[2019-04-23T17:42:29.816] [ERROR] dateFileLog - { Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SQLBDMHESystems' at line 1
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0,
+  sql: 'SQLBDMHESystems' }
+[2019-04-23T17:42:29.818] [ERROR] dateFileLog - Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SQLBDMHESystems' at line 1
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+[2019-04-23T19:00:43.166] [ERROR] dateFileLog - { Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE groupLabel='HMI'' at line 1
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0,
+  sql: 'select DBID,staffName as selectTitle from ppm_staffs where status=1 WHERE groupLabel=\'HMI\'' }
+[2019-04-23T19:00:43.171] [ERROR] dateFileLog - Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE groupLabel='HMI'' at line 1
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+[2019-04-23T19:00:43.175] [ERROR] dateFileLog - { Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE groupLabel='DSP'' at line 1
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_PARSE_ERROR',
+  errno: 1064,
+  sqlState: '42000',
+  index: 0,
+  sql: 'select DBID,staffName as selectTitle from ppm_staffs where status=1 WHERE groupLabel=\'DSP\'' }
+[2019-04-23T19:00:43.177] [ERROR] dateFileLog - Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE groupLabel='DSP'' at line 1
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+[2019-04-23T19:27:41.747] [ERROR] dateFileLog - { Error: ER_NO_DEFAULT_FOR_FIELD: Field 'DStaffVal' doesn't have a default value
+    at Query.Sequence._packetToError (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at emitOne (events.js:116:13)
+    at Socket.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    --------------------
+    at Protocol._enqueue (D:\work\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (D:\work\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:96:13)
+    at Object.exports.handleResult (D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:150:12)
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (D:\work\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:301:14)
+    at Ping.runBound [as _callback] (domain.js:314:12)
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sqlState: 'HY000',
+  index: 0,
+  sql: 'insert into `ppm_customerbinds` (CTRName,CTRVal,MHEName,MHEVal,DSystemName,DSystemVal,HSystemName,HSystemVal,DStaffName,HStaffName) values (\'7HT-海天\',\'380\',\'卧式注塑机-多色机\',\'23\',\'APP-DSP52-A80\',\'101\',\'APP-3354-Q12-55\',\'109\',\'李斌\',\'梅迪凡\')' }
+[2019-04-23T19:27:41.755] [ERROR] dateFileLog - Error: ER_NO_DEFAULT_FOR_FIELD: Field 'DStaffVal' doesn't have a default value
+    at D:\work\TOOLSWEB\yujiang.Foil.Node\src\yjREST.engine.remote.superagent.js:43:34
+    at Request.callback (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:797:3)
+    at IncomingMessage.<anonymous> (D:\work\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)

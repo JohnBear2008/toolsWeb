@@ -147,7 +147,7 @@ function showSQLDataTable(DataPara){
 	    },
 	    columns: DataPara.columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
-	    lengthMenu:[5,10,20],
+	    lengthMenu:[10,20,50],
 	    "language": languageCN
 	});
 	

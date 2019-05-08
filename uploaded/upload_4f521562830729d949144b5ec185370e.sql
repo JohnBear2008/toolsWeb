@@ -1,0 +1,1 @@
+SELECT A.*,A.auditResult ,B.BPID,B.version AS PLDVersion,B.CTRName,B.PGEMaker,B.limitDate FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND auditResult=1) B LEFT JOIN ppm_bills_blueprint A ON A.BPID=B.BPID

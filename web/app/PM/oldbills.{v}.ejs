@@ -1,24 +1,23 @@
-<!--本地路径-->
-<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
-
-
 <!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
-
-
-
-
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+<link href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
+
 
 <!-- JS  -->
+
+<script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
 <script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
-
-
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
-
 
 
 
@@ -40,16 +39,14 @@
         <button id="allFilterBtn" type="button" class="btn btn-info">全部</button>
      </div>
      
-     <div class="btn-group">
-     <button  type="text" class="btn btn-default" disabled="disabled">报表工具:</button>
+     <button id="BTNBillInfo" type="button" class="btn btn-info">查看详情</button>
+     
 
-     <button id="monthReportBtn" type="button" class="btn btn-info">月报</button>
-     <button id="yearReportBtn" type="button" class="btn btn-info">年报</button>
-     <button id="divReportBtn" type="button" class="btn btn-success">生成报表</button>
-     </div>
      
     </div>
     <br/>
+    
+   
     
 
     <!--数据呈现区-->
@@ -69,7 +66,81 @@
         </thead>
     </table>
     
-    
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="BillView" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="BillPLDLabel">详细信息</h4>
+                </div>
+                <div class="modal-body">
+
+                
+                
+       
+                
+                <!--------------table--------------------->
+             
+
+                <table id="tableBillView" class="table table-bordered">
+                <tr>
+                <td width="10%">单据编号</td>
+                <td><span id="spanBill_ID"></td>
+                </tr>
+                <tr>
+                <td>客户编码</td>
+                <td><span id="spanCustomer_ID"></td>
+                </tr>
+                <tr>
+                <td>单据来源</td>
+                <td><span id="spanBill_From"></td>
+                </tr>
+                <tr>
+                <td>申请日期</td>
+                <td><span id="spanBill_Apply_Date"></td>
+                </tr>
+                <tr>
+                <td>完成期限</td>
+                <td><span id="spanBill_Limit_Date"></td>
+                </tr>
+                <tr>
+                <td>主题</td>
+                <td><span id="spanBill_Topic"></td>
+                </tr>
+                <tr>
+                <td>描述</td>
+                <td><span id="spanBill_Describe"></td>
+                </tr>
+                <tr>
+                <td>检查</td>
+                <td><span id="spanBill_ManageChk"></td>
+                </tr>
+                <tr>
+                <td>检查人</td>
+                <td><span id="spanBill_ChkName"></td>
+                </tr>
+               
+                
+
+                </table>
+
+                
+                <!--------------table--------------------->
+              
+              </div>
+
+                
+                
+                
+
+     
+                <div class="modal-footer">
+                    <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
 
     
 
@@ -79,7 +150,7 @@
 
 <div class="form-group">   
 订单号 :
-    <select  id="from_Selector1" class="selectpicker" data-live-search="true"> 
+    <select  id="from_Selector1"> 
            
            <option value="LIKE">包含</option>
            <option value="NOT LIKE">不包含</option>
@@ -92,7 +163,7 @@
 
 <div class="form-group">   
 客户ID :
-    <select  id="from_Selector2" class="selectpicker" data-live-search="true"> 
+    <select  id="from_Selector2" > 
            <option value="LIKE">包含</option>
            <option value="NOT LIKE">不包含</option>
            <option value="=">等于</option>
@@ -151,31 +222,37 @@
 
 <script>
 
-////定义显示客户信息数据参数结构-------------
-//function factDataPara(tableID,DBTable,Bill_Topic) {
-//    this.tableID = tableID;
-//    this.DBTable = DBTable;
-//    this.Bill_Topic = Bill_Topic;
-//}
-//检查输入信息-------------------
-function checkinput(Data) {
-    if (Data.Bill_ID=="") {
-        alert('厂商码不能为空，请检查!');
-        return false;
-    } else if (Data.Customer_ID=="") {
-        alert('厂商名称不能为空，请检查!');
-        return false;
-    }
-    return true;
-}
 
-//定义添加发送数据结构---------------------
 
-function addDataInfo(DBTable,Bill_ID,Customer_ID,Bill_Topic){
-	this.DBTable=DBTable;
-	this.Bill_ID=Bill_ID;
-	this.Customer_ID=Customer_ID;
-	this.Bill_Topic=Bill_Topic;
+//函数:获取老订单数据
+
+function getOldBill(BillID){
+	
+	 $.ajax({
+        method:'get',
+        data:{SQL:"SQLGetOldBillInfo",filter:"Bill_ID = '"+BillID+"'"},
+        url:"/app/PM/getSQLDBData",
+        success:function(data){
+        	console.log("data:"+JSON.stringify(data));
+        	
+        	$("#spanBill_ID").text(data[0].Bill_ID);
+        	$("#spanCustomer_ID").text(data[0].Customer_ID);
+        	$("#spanBill_From").text(data[0].Bill_From);
+        	$("#spanBill_Apply_Date").text(data[0].Bill_Apply_Date);
+        	$("#spanBill_Limit_Date").text(data[0].Bill_Limit_Date);
+        	$("#spanBill_Topic").text(data[0].Bill_Topic);
+        	$("#spanBill_Describe").text(data[0].Bill_Describe);
+        	$("#spanBill_ManageChk").text(data[0].Bill_ManageChk);
+        	$("#spanBill_ChkName").text(data[0].Bill_ChkName);
+
+        	
+        	
+        	
+
+        },
+        error:function(){}
+    })
+
 }
 
 
@@ -196,60 +273,81 @@ $(document).ready( function () {
 
 
 
+//
+////添加按钮-----
+//$('#Add').click(function() {
+//    $('#win').window('open');
+//    $('#AddDoButton').show();
+//    $('#UpdDoButton').hide();
+//    
+//});
+//
+//
+////更新按钮---------
+//$('#Upd').click(function() {
+// //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
+//    // table.row('.selected').remove().draw( false );
+//    var dataSelect = table.row('.selected').data();
+//    if (dataSelect == undefined) {
+//        alert("当前未选择任何数据,请先点击需要更新的数据行!");
+//    } else {
+//        $('#win').window('open');
+//        $('#AddDoButton').hide();
+//        $('#UpdDoButton').show();
+//        
+//        $('#Bill_ID').val(dataSelect.Bill_ID);
+//        $('#Customer_ID').val(dataSelect.Customer_ID);
+//        $('#Bill_Topic').val(dataSelect.Bill_Topic);
+//        
+//    }
+//});
+//
+//
+////删除按钮----------
+//$('#Del').click(function() {
+//    var dataSelect = table.row('.selected').data();
+//    
+////    alert(JSON.stringify(dataSelect));
+//    
+//    if (dataSelect == undefined) {
+//        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+//    } else {
+//        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+//        if (msg1 === true) {
+//            var msg2 = confirm("确认删除此行数据？");
+//            if (msg2 === true) {
+//            	
+//            //	alert(dataSelect.DBID);
+//                var IDData = {"DBTable":"PM_orders","DBID":dataSelect.DBID};
+//             //   alert("IDData:"+JSON.stringify(IDData));
+//                delDBData(IDData);
+//            }
+//        }
+//    }
+//    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+//});
 
-//添加按钮-----
-$('#Add').click(function() {
-    $('#win').window('open');
-    $('#AddDoButton').show();
-    $('#UpdDoButton').hide();
-    
+	
+//按钮:查看详情--
+$('#BTNBillInfo').click(function() {
+	   
+	    
+	    var table=$('#orders_DB').DataTable();
+	    // table.row('.selected').remove().draw( false );
+	    var dataSelect = table.row('.selected').data();
+	    
+	    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
+	    if (dataSelect == undefined) {
+	        alert("请先点击表格中的表单!");
+	    } else {
+	    	$('#BillView').modal('show');
+	    	
+	    	getOldBill(dataSelect.Bill_ID);
+	    	
+
+	    	
+	    }
 });
-
-
-//更新按钮---------
-$('#Upd').click(function() {
- //   alert("seclet: "+JSON.stringify(table.row('.selected').data()));
-    // table.row('.selected').remove().draw( false );
-    var dataSelect = table.row('.selected').data();
-    if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先点击需要更新的数据行!");
-    } else {
-        $('#win').window('open');
-        $('#AddDoButton').hide();
-        $('#UpdDoButton').show();
-        
-        $('#Bill_ID').val(dataSelect.Bill_ID);
-        $('#Customer_ID').val(dataSelect.Customer_ID);
-        $('#Bill_Topic').val(dataSelect.Bill_Topic);
-        
-    }
-});
-
-
-//删除按钮----------
-$('#Del').click(function() {
-    var dataSelect = table.row('.selected').data();
-    
-//    alert(JSON.stringify(dataSelect));
-    
-    if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先点击需要删除的数据行!");
-    } else {
-        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-        if (msg1 === true) {
-            var msg2 = confirm("确认删除此行数据？");
-            if (msg2 === true) {
-            	
-            //	alert(dataSelect.DBID);
-                var IDData = {"DBTable":"PM_orders","DBID":dataSelect.DBID};
-             //   alert("IDData:"+JSON.stringify(IDData));
-                delDBData(IDData);
-            }
-        }
-    }
-    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
-});
-
 
 
 //过滤功能组 显示默认按钮-----
@@ -396,14 +494,22 @@ function defineTableSelect(){
 //		    alert("dataSelect:"+JSON.stringify(dataSelect));
 		    
 //		    alert("length:"+ordersTable.row());
-		    
-		    
+
 
 		});
 		
-	}
-	
+		//dbclick 测试判断是否选中数据-------
 
+		$('#orders_DB tbody').on('dblclick', 'tr', function(){
+			ordersTable.$('tr.selected').removeClass('selected');
+		     $(this).addClass('selected');
+			$('#BTNBillInfo').click();
+
+		});
+		
+		
+}
+	
 
 
 //报表功能键按钮-----

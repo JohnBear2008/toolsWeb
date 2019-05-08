@@ -85,43 +85,43 @@ const https = require("https");
 		});
 		
 		
-		var j3 = schedule.scheduleJob({hour: 13, minute: 42, dayOfWeek: 4}, function(){
-			  console.log('Time for tea!');
-			  
-			  var mobiles = [17051095060,15058034628]
-				var queryParams = {
-				    "msgtype": "text",
-		     		"text": {
-		         		"content": 'test..........'
-		     		},
-		     		"at": {
-		         		"atMobiles": mobiles, 
-		         		"isAtAll": true
-		         	}
-		     		
-		     		
-				};
-				var requestData = JSON.stringify(queryParams);
-				console.log(requestData);
-				var token = "df02ad004120b570b6a0980e5b30470a8ecbfde2a4282e5cf93b5b68e120f889";
-				var url = 'oapi.dingtalk.com';
-				var req = https.request({
-				    hostname: url,
-				    port: 443,
-				    path: '/robot/send?access_token=' + token,
-				    method: "POST",
-				    json: true,
-				    headers: {
-				        'Content-Type' : "application/json; charset=utf-8"
-				    }
-				});
-				req.write(requestData);
-				req.on('error',function(err){
-					console.error(err);
-				});
-				req.end();
-
-			});
+//		var j3 = schedule.scheduleJob({hour: 13, minute: 42, dayOfWeek: 4}, function(){
+//			  console.log('Time for tea!');
+//			  
+//			  var mobiles = [17051095060,15058034628]
+//				var queryParams = {
+//				    "msgtype": "text",
+//		     		"text": {
+//		         		"content": 'test..........'
+//		     		},
+//		     		"at": {
+//		         		"atMobiles": mobiles, 
+//		         		"isAtAll": true
+//		         	}
+//		     		
+//		     		
+//				};
+//				var requestData = JSON.stringify(queryParams);
+//				console.log(requestData);
+//				var token = "df02ad004120b570b6a0980e5b30470a8ecbfde2a4282e5cf93b5b68e120f889";
+//				var url = 'oapi.dingtalk.com';
+//				var req = https.request({
+//				    hostname: url,
+//				    port: 443,
+//				    path: '/robot/send?access_token=' + token,
+//				    method: "POST",
+//				    json: true,
+//				    headers: {
+//				        'Content-Type' : "application/json; charset=utf-8"
+//				    }
+//				});
+//				req.write(requestData);
+//				req.on('error',function(err){
+//					console.error(err);
+//				});
+//				req.end();
+//
+//			});
 
 
 

@@ -141,3 +141,5 @@ SQLGetDataBinds="SELECT bindsInfo FROM `ppm_dbbinds`";
 SQLGetCTRBinds="SELECT * FROM `ppm_customerbinds` ";
 
 SQLCTRBindsCount="SELECT Count(1) AS CountNum,CTRName,CTRVal FROM `ppm_customerbinds` GROUP BY CTRVal ";
+
+SQLGetOldBillInfo="SELECT * FROM `pm_orders`";
