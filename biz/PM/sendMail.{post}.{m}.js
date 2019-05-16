@@ -1,7 +1,7 @@
 module.exports = function(sender) {
 	
 	 var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
-	    var yjDB = global.yjRequire("yujiang.Foil").yjDB;
+	 var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 	    
 //	     console.log("get:"+JSON.stringify(sender.req.query));
 	     

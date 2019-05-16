@@ -35,7 +35,7 @@
         <!-- 按钮触发模态框 -->
         
         <div class="btn-group">
-        <button  type="text" class="btn btn-default" disabled="disabled">过滤条件</button>
+        <button  type="text" class="btn btn-default" disabled="disabled">过滤</button>
         <button id="BTNFitlerWeek" type="button" class="btn btn-info">本周</button> 
         <button id="BTNFitlerMonth" type="button" class="btn btn-info">本月</button>
         <button id="BTNFitlerYear" type="button" class="btn btn-info">本年</button>
@@ -44,8 +44,8 @@
         </div>
         
         <div class="btn-group">
-        <button  type="text" class="btn btn-default" disabled="disabled">报表工具</button>
-        <button id="BTNReport1" class="btn btn-info" >完成率</button>
+        <button  type="text" class="btn btn-default" disabled="disabled">报表</button>
+        <button id="BTNReport1" class="btn btn-info" >延误率</button>
         <button id="BTNReport2" class="btn btn-info">不良率</button>
         </div>
         
@@ -54,6 +54,9 @@
         <button id="BTNInfo" class="btn btn-success" >查看详情</button>
         <button id="BTNReTrack" class="btn btn-danger">恢复计划</button>
         </div>
+        
+       
+        
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
@@ -168,6 +171,7 @@
                 <th>最大版本号</th>
                 <th>客户简称</th>
                 <th>开始时间</th>
+                <th>完成期限</th>
                 <th>结束时间</th>
                 <th>分配任务数量</th>
                 <th>完成任务数量</th>
@@ -183,6 +187,45 @@
 
     </table>
     
+    </div>
+    
+    <!-- 点击报告详情后弹出的窗口 -->
+    <div id="reportDetail" class="easyui-window" title="report" closed="true" style="width:600px;height:500px;">
+    
+    
+    <form style="padding:10px 50px;">
+
+ 
+    
+    <div class="form-group">   
+    时间段 :<span id="spanDateRange">
+    </div>
+    
+    <div class="form-group">   
+    总单数 :<span id="spanTotalBillNum">
+    </div>
+    <div class="form-group">   
+    延误单数 :<span id="spanDelayBillNum">
+    </div>
+    
+    <div class="form-group">   
+    延误率 :<span id="spanDelayRate">
+    </div>
+    
+    <div class="form-group"> 
+    <table>
+    </table>
+    </div>
+
+    <div style="padding:5px;text-align:center;">
+         <a id="BTNSendReport"　href="#" class="easyui-linkbutton" icon="icon-ok">发送Email</a>
+    </div>
+    </form>
+    
+    </div>
+    
+   
+   
     </div>
     
     
@@ -212,12 +255,19 @@
                <option value="=">等于</option>
                <option value="<>">不等于</option>
         </select>
-        <input id="filterCustomer_ID" size="30" type="text" class="required">
+        <input id="filterCTRName" size="30" type="text" class="required">
     </div>
 
     <div class="form-group">   
-    订单日期范围:<input id="filterBDate1" size="30" type="date" class="required">-
+    开始时间:<input id="filterBDate1" size="30" type="date" class="required">-
              <input id="filterEDate1" size="30" type="date" class="required">
+
+
+    </div>
+    
+    <div class="form-group">   
+    结束时间:<input id="filterBDate2" size="30" type="date" class="required">-
+             <input id="filterEDate2" size="30" type="date" class="required">
 
 
     </div>
@@ -516,6 +566,7 @@ function createParams(filter){
 		        { data: 'version'},
 		        { data: 'CTRName'},
 		        { data: 'makeDate'},
+		        { data: 'limitDate'},
 		        { data: 'WFEndDate'},
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
@@ -528,107 +579,138 @@ function createParams(filter){
 
 }
 
+/**
+ * 获得本周的开始日期和结束日期
+ */
+function getWeekStartDateAndEndDateRange() {
+  let oneDayLong = 24*60*60*1000 ;
+  let now = new Date();
+  let mondayTime = now.getTime() - (now.getDay()-1)*oneDayLong;
+  let sundayTime = now.getTime() + (7-now.getDay())*oneDayLong;
+  let monday = new Date(mondayTime);
+  let sunday = new Date(sundayTime);
+  let weekRange = [monday, sunday];
 
+  return weekRange;
+}
+
+
+function getMonthStartDateAndDateRange() {
+  let oneDayLong = 24*60*60*1000;
+  let now = new Date();
+  let year = now.getFullYear();
+
+  let monthStartDate = new Date(year, now.getMonth(), 1);//当前月1号
+  let nextMonthStartDate = new Date(year, now.getMonth()+1, 1);//下个月1号
+  let days = (nextMonthStartDate.getTime() -         
+  monthStartDate.getTime())/oneDayLong;//计算当前月份的天数
+  let monthEndDate = new Date(year, now.getMonth(), days);
+  let monthRange = [monthStartDate,monthEndDate];
+
+  return monthRange;
+}
+
+function getYearStartDateAndDateRange() {
+	  let oneDayLong = 24*60*60*1000;
+	  let now = new Date();
+	  let year = now.getFullYear();
+	  let yearStartDate = new Date(year,0,1);//当前月1号
+	  let yearEndDate = new Date(year,11, 31);
+	  let yearRange = [yearStartDate,yearEndDate];
+
+	  return yearRange;
+	}
+
+//函数重新绑定事件
+
+function tableClickBind(){
+	
+	$('#billsTrackTable tbody').unbind();
+	//判断是否选中数据-------
+	var table = $('#billsTrackTable').DataTable();
+	$('#billsTrackTable tbody').on('click', 'tr', function() {
+	    if ($(this).hasClass('selected')) {
+	        $(this).removeClass('selected');
+	    } else {
+	        table.$('tr.selected').removeClass('selected');
+	        $(this).addClass('selected');
+	    }
+	 
+	    var dataSelect = table.row('.selected').data();
+
+	});
+		
+
+	//dbclick 测试判断是否选中数据-------
+
+	$('#billsTrackTable tbody').on('dblclick', 'tr', function() {
+		 table.$('tr.selected').removeClass('selected');
+	     $(this).addClass('selected');
+		$('#BTNInfo').click();
+
+	});
+}
 
 
 //页面加载函数---------------
 $(document).ready( function () {
 	
     var sessionName="<%-locals.session.yjUser.Name%>";
-	console.log("sessionName:"+sessionName);
+
 	
 	
-    var trackBPID=getQueryString("BPID");
-	
-	
-//	switch(undone){
-//	case "unAudit":
-//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
-//		break;
-//	case "auditNo":
-//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' )  AND PLDStatus =2  ","orderBy":" saveTimeStamp DESC"};
-//		break;
-//	default:
-//		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
-//		break;
+//    var trackBPID=getQueryString("BPID");
+//    if(trackBPID!=null){
+//    	var tableSQL={"SQL":"SQLTableBillsDBCenter","filter":"BPID ='"+trackBPID+"'"};
+//    }else{
+//    	var tableSQL={"SQL":"SQLTableBillsDBCenter"};
+//    }
 //	
+////    <th>数据库ID</th>
+////    <th>计划单号</th>
+////    <th>最大版本号</th>
+////    <th>客户简称</th>
+////    <th>开始时间</th>
+////    <th>结束时间</th>
+////    <th>分配任务数量</th>
+////    <th>完成任务数量</th>
+////    <th>归档类型</th>
+//	
+//	const tableInfo={
+//			"tableID":"#billsTrackTable",
+//			"columnsData":[
+//				{ data: 'DBID' ,"visible": false},
+//		        { data: 'BPID' },
+//		        { data: 'version'},
+//		        { data: 'CTRName'},
+//		        { data: 'makeDate'},
+//		        { data: 'limitDate'},
+//		        { data: 'WFEndDate'},
+//		        { data: 'taskNum'},
+//		        { data: 'taskNumDone'},
+//		        { data: 'WFEndText'}
+//
+//			]
 //	}
-    
-    if(trackBPID!=null){
-    	var tableSQL={"SQL":"SQLTableBillsDBCenter","filter":"BPID ='"+trackBPID+"'"};
-    }else{
-    	var tableSQL={"SQL":"SQLTableBillsDBCenter"};
-    }
-	
-//    <th>数据库ID</th>
-//    <th>计划单号</th>
-//    <th>最大版本号</th>
-//    <th>客户简称</th>
-//    <th>开始时间</th>
-//    <th>结束时间</th>
-//    <th>分配任务数量</th>
-//    <th>完成任务数量</th>
-//    <th>归档类型</th>
-	
-	const tableInfo={
-			"tableID":"#billsTrackTable",
-			"columnsData":[
-				{ data: 'DBID' ,"visible": false},
-		        { data: 'BPID' },
-		        { data: 'version'},
-		        { data: 'CTRName'},
-		        { data: 'makeDate'},
-		        { data: 'WFEndDate'},
-		        { data: 'taskNum'},
-		        { data: 'taskNumDone'},
-		        { data: 'WFEndText'}
+//	
+//	
+//	Fun_showSQLTable(tableSQL,tableInfo)
 
-			]
-	}
-	
-	
-	Fun_showSQLTable(tableSQL,tableInfo)
 
-	
-//判断是否选中数据-------
-var table = $('#billsTrackTable').DataTable();
-$('#billsTrackTable tbody').on('click', 'tr', function() {
-    if ($(this).hasClass('selected')) {
-        $(this).removeClass('selected');
-    } else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
-    }
- 
-    var dataSelect = table.row('.selected').data();
-
-});
-	
-
-//dbclick 测试判断是否选中数据-------
-
-$('#billsTrackTable tbody').on('dblclick', 'tr', function() {
-	 table.$('tr.selected').removeClass('selected');
-     $(this).addClass('selected');
-	$('#BTNInfo').click();
-
-});
 
 
 //详情按钮---------
 $('#BTNInfo').click(function() {
-    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
+//    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
+	var table = $('#billsTrackTable').DataTable();
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
         alert("请先点击表格中的表单!");
     } else {
-    	
-    	
+
     	$('#BillPLD').modal('show')
     	Fun_winDetailInit(dataSelect);
-    	
-
     }
 });
 
@@ -696,21 +778,42 @@ $('#BTNReTrack').click(function() {
 //按钮:过滤本周
 $('#BTNFitlerWeek').click(function(){	
 	datatableReload(createParams("YEARWEEK(date_format(WFEndDate,'%Y-%m-%d')) = YEARWEEK(now())"));
+	
+	tableClickBind();
+	
+	let DateRange=getWeekStartDateAndEndDateRange();	
+	$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd")+"至"+DateRange[1].format("yyyy/MM/dd"));
+	
+	
 })
+
+//页面加载后默认按周过滤
+$('#BTNFitlerWeek').click();
 
 //按钮:过滤本周
 $('#BTNFitlerMonth').click(function(){	
 	datatableReload(createParams("DATE_FORMAT( WFEndDate, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )"));
+	tableClickBind();
+	let DateRange=getMonthStartDateAndDateRange();	
+	$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd")+"至"+DateRange[1].format("yyyy/MM/dd"));
 })
 
 //按钮:过滤本周
 $('#BTNFitlerYear').click(function(){	
 	datatableReload(createParams("YEAR(WFEndDate)=YEAR(NOW())"));
+	tableClickBind();
+	let DateRange=getYearStartDateAndDateRange();	
+	$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd")+"至"+DateRange[1].format("yyyy/MM/dd"));
+	
+	
 })
 
 //按钮:过滤全部
 $('#BTNFitlerAll').click(function(){	
 	datatableReload(createParams());
+	tableClickBind();
+	$("#spanDateRange").text("ALL");
+	
 })
 
 //过滤功能组 自定义按钮-----
@@ -721,8 +824,69 @@ $('#BTNFitlerDiv').click(function() {
 
 //过滤功能组 自定义过滤确认按钮-----
 $('#FilterComfirmBtn').click(function() {
-
 	
+	let filter="";
+	if($("#filterBill_ID").val()!=""){
+		switch($("#from_Selector1").val()){
+		case 'LIKE':
+		case 'NOT LIKE':
+			filter=filter+"AND BPID "+$("#from_Selector1").val()+" '%"+$("#filterBill_ID").val()+"%'"
+			break;
+		case '=':
+		case '<>':
+			filter=filter+"AND BPID "+$("#from_Selector1").val()+" '"+$("#filterBill_ID").val()+"'"
+			break;
+		}
+	}
+	
+	if($("#filterCTRName").val()!=""){
+		switch($("#from_Selector1").val()){
+		case 'LIKE':
+		case 'NOT LIKE':
+			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '%"+$("#filterCTRName").val()+"%'"
+			break;
+		case '=':
+		case '<>':
+			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '"+$("#filterCTRName").val()+"'"
+			break;
+		}
+	}
+	
+	if($("#filterCTRName").val()!=""){
+		switch($("#from_Selector1").val()){
+		case 'LIKE':
+		case 'NOT LIKE':
+			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '%"+$("#filterCTRName").val()+"%'";
+			break;
+		case '=':
+		case '<>':
+			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '"+$("#filterCTRName").val()+"'";
+			break;
+		}
+	}
+	
+	if($("#filterBDate1").val()!=""){
+		filter=filter+"AND applyDate >='"+$("#filterBDate1").val()+"'";
+	}
+	
+	if($("#filterEDate1").val()!=""){
+		filter=filter+"AND applyDate <='"+$("#filterEDate1").val()+"'";
+	}
+	
+	if($("#filterBDate2").val()!=""){
+		filter=filter+"AND WFEndDate >='"+$("#filterBDate2").val()+"'";
+	}
+	
+	if($("#filterEDate2").val()!=""){
+		filter=filter+"AND WFEndDate <='"+$("#filterEDate2").val()+"'";
+	}
+
+
+	filter=filter.substring(3);
+	
+
+	datatableReload(createParams(filter));
+	tableClickBind();
 	
 });
 
@@ -732,6 +896,60 @@ $('#FilterCancelBtn').click(function() {
 	 $('#DivFilter').window('close');
 	
 });
+
+
+//报表 按钮 报表1----
+$('#BTNReport1').click(function() {
+	 $('#reportDetail').window('open');
+	 
+	 var table = $('#billsTrackTable').DataTable();
+	 
+	 var totalNum=(table.page.info()).recordsTotal;
+	 
+	 let delayNum=0;
+	
+	 
+	 for(let i=0;i<totalNum;i++){
+		 let rowData=table.row(i).data();
+		 if(rowData.limitDate<rowData.WFEndDate){
+			 delayNum=delayNum+1;
+		 }
+	 }
+	 
+
+	 $('#spanTotalBillNum').text(totalNum);
+	 $('#spanDelayBillNum').text(delayNum);
+	 
+	 $('#spanDelayRate').text((delayNum/totalNum*100).toFixed(2)+"%");
+
+	 
+	 
+	 
+	 
+	 
+});
+
+////报表 按钮 报表2----
+//$('#BTNReport2').click(function() {
+//	 $('#reportDetail').window('open');
+//});
+//	
+//发送email 按钮------------
+
+$('#sendMailBtn').click(function() {
+	alert("发送模板邮件!");
+	
+//	var Maildata={"dataRows":dataRows,"fnum":fnum,"frate":frate}
+//	
+//	  ajaxMail(Maildata);
+	  
+	  
+//	 $('#ReprotWin').window('close');
+	
+});
+
+
+
 
 	
 }); 

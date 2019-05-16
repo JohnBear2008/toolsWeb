@@ -37,6 +37,7 @@ var config = {
     port: 2019,
     biz_Connection: {
         engine: "remote.superagent",
+//        engine: "remote.restify",
         connection: {
             url: "http://127.0.0.1:2019/biz"
             // url: "http://192.168.0.9:2019/" // 这个是我们公司服务器的地址
@@ -46,10 +47,10 @@ var config = {
     db_Connection: g_dbConenctions,
     product: {
         name: "ToolsWeb",
-        namePic: "/images/logo.jpg",
+        namePic: "/images/blank.png",
         projectName: 'ToolsWeb',
         description: "",
-        logo: "/images/logo.jpg",
+        logo: "/images/blank.png",
         favIcon: path.join(__dirname, '/client/images/Foil.ico'),
         version: "1.0.0",
         releaseLogDir: path.join(__dirname, "./web/system/release/data"),
@@ -79,6 +80,7 @@ var config = {
         loginTypes: ["userID"],
         //        loginTypes: ["mobilePhone"],
         notNeedLogin_urls: []
+//        notNeedLogin_urls: ["/app/PM/linkPage"]
     },
     theme: {
         layout: {
@@ -86,16 +88,9 @@ var config = {
         },
         style: {
             easyui: ["default", "black", "bootstrap", "gray", "metro"][3],
-            foil: ["bright", "modern"][0]
-        },
-	    lefttree:{
-	    	border_right:'none',
-	    	textcolor: 'rgb(0,0,0)',
-	    	laststage: '#fff',
-	    	laststageunderline:'1px solid #313131',
-	    	getselectedlinebg:'#f1f1f1',
-	    	getselectedlinetext:'#000',
-		}	
+            foil: ["bright", "modern"][0],
+			project:["wathet-blue","wathet-gray","incanus","blue-white"][3],
+        },	
   },
   project: {
          status:{//测试中的样式 分别为 文本 颜色 位置 

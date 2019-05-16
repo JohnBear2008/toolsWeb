@@ -12,9 +12,9 @@ function DDRobotMsgSender(divMsg){
 	
 		var requestData = JSON.stringify(divMsg);
 		console.log(requestData);
-//		var token = "df02ad004120b570b6a0980e5b30470a8ecbfde2a4282e5cf93b5b68e120f889";
+		var token = "df02ad004120b570b6a0980e5b30470a8ecbfde2a4282e5cf93b5b68e120f889";
 		
-		var token = "43e278d8d451875e8be1b5eec0ce66b5d8d51dcb527013cc3e6c2630b612cc30";
+//		var token = "43e278d8d451875e8be1b5eec0ce66b5d8d51dcb527013cc3e6c2630b612cc30";软体部
 		
 		var url = 'oapi.dingtalk.com';
 		var req = https.request({
@@ -102,7 +102,7 @@ function DDRobotMsgSender(divMsg){
 
 
 //报餐通知任务---------
-var j1 = schedule.scheduleJob({hour: 09, minute: 00, dayOfWeek:[1,2,3,4,5]}, function(){
+var j1 = schedule.scheduleJob({hour: 09, minute: 51, dayOfWeek:[1,2,3,4,5]}, function(){
 
 var SQLExcute = "SELECT BPID,CTRName,PGEMaker,limitDate FROM  (SELECT tbb.*  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe ";
 
@@ -122,23 +122,36 @@ yjDBService.exec({
 	}
 	console.log(DDtext);
 	
-	let actionCard={
-			"actionCard": 
-			{
-				"title": "[PPM提醒]", 
-				"text": DDtext, 
-				"hideAvatar": "0", 
-				"btnOrientation": "0", 
-				"btns": [
-					{
-						"title": "登陆PPM系统", 
-						"actionURL": "http://172.16.3.48:2019/app/PM/linkPage"
-							}
-					]
-	        }, 
-	        "msgtype": "actionCard"
-		}
-	DDRobotMsgSender(actionCard);
+//	let actionCard={
+//			"actionCard": 
+//			{
+//				"title": "[PPM提醒]", 
+//				"text": DDtext, 
+//				"hideAvatar": "0", 
+//				"btnOrientation": "0", 
+//				"btns": [
+//					{
+//						"title": "登陆PPM系统", 
+//						"actionURL": "http://172.16.3.48:2019/app/PM/linkPage"
+//							}
+//					]
+//	        }, 
+//	        "msgtype": "actionCard"
+//		}
+	
+	var markdown={
+    "msgtype": "markdown",
+    "markdown": {
+        "title":"[PPM消息]未完成订单",
+        "text": DDtext
+    },
+   "at": {
+       "atMobiles": ["17051095060"], 
+       "isAtAll": false
+     }
+   }
+
+   DDRobotMsgSender(markdown);
 	
 //	let ppmUrl = {
 //		"msgtype": "link", 
