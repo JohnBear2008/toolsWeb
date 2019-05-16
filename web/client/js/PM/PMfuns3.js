@@ -677,7 +677,7 @@ function deleteFile() {
 	var files=[];
 	
 	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(23);
+		var fileKey=$(this).attr('href').substring(30);
 		var fileName=$(this).attr('download');
 		
 		var fileInfo={
@@ -694,7 +694,7 @@ function deleteFile() {
 		
 		for(var i=0;i<files.length;i++){
 			var fileKey=files[i].fileKey;
-			var filePath=fileKey;
+			var filePath="upload_"+fileKey;
 			xhr.open("delete", "/system.files/"+ filePath);
 			xhr.send();
 		}
@@ -1120,10 +1120,10 @@ function Fun_getBillFile(Para,DivID,feedBack){
  //           		  console.log("不为空"+dataReturn[0].fileKey);
             		  
             		  if(feedBack==true){
-            			  var downloadurl="<a id='filePath' href="+'/system.files.download/'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span id='fileName'>"+dataReturn[0].fileName+"</span></a>";
+            			  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span id='fileName'>"+dataReturn[0].fileName+"</span></a>";
             			  $("#fileDBID").html(dataReturn[0].DBID);
             		  }else{
-            			  var downloadurl="<a href="+'/system.files.download/'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span>"+dataReturn[0].fileName+"</span></a>";
+            			  var downloadurl="<a href="+'/system.files.download/upload_'+dataReturn[0].fileKey+" download="+dataReturn[0].fileName+">"+"<span>"+dataReturn[0].fileName+"</span></a>";
             		  }
             		
             		  $(DivID).html(downloadurl);
@@ -1285,7 +1285,7 @@ function Fun_fillTrackTable(tableID,SQLParam){
        						 for(var k=0;k<files.length;k++){
 //       							 console.log("files[k].fileName:"+files[k].fileName);
        							 
-       							fileLink=fileLink+"<a  href="+'/system.files.download/'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
+       							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
        						 }
        						fileLink=fileLink.substr(0, fileLink.length-3); 
        					 }
@@ -1390,7 +1390,7 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
        						 for(var k=0;k<files.length;k++){
 //       							 console.log("files[k].fileName:"+files[k].fileName);
        							 
-       							fileLink=fileLink+"<a  href="+'/system.files.download/'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
+       							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
        						 }
        						fileLink=fileLink.substr(0, fileLink.length-3); 
        					 }
@@ -1492,7 +1492,7 @@ function showDBIDInfo(tableID,SQLParam){
        					 if(files.length>0){
        						 for(var k=0;k<files.length;k++){
 //       							 console.log("files[k].fileName:"+files[k].fileName);
-       							fileLink=fileLink+"<a  href="+'/system.files.download/'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
+       							fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[k].fileKey+" download="+files[k].fileName+">"+"<span>"+files[k].fileName+"</span></a>"+" ; ";
        						 }
        						fileLink=fileLink.substr(0, fileLink.length-3); 
        					 }

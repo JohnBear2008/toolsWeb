@@ -720,13 +720,7 @@ function Fun_winDetailInit(dataChoose){
     
   $('#divFilesUploaded').html("");
   
-//  if(dataSelect.fileKey!=null){
-//	  
-//	  console.log("不为空"+dataSelect.fileKey);
-//	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
-//	  $('#divFilesUploaded').html(downloadurl);
-//  }
-//  
+
 
   if(dataSelect.files!=null){
 	  
@@ -738,7 +732,7 @@ function Fun_winDetailInit(dataChoose){
 				 for(var i=0;i<files.length;i++){
 					 console.log("files[i].fileName:"+files[i].fileName);
 					 
-					fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+					fileLink=fileLink+"<a  href="+'/system.files.download/'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
 				 } 
 				 
 				 fileLink=fileLink.substr(0, fileLink.length-3); 
@@ -1237,7 +1231,7 @@ $('#BTNFormSave').click(function(){
 		 var files=[];
 			
 			$('#divFilesUploaded a').each(function(){
-				var fileKey=$(this).attr('href').substring(30);
+				var fileKey=$(this).attr('href').substring(23);
 				var fileName=$(this).attr('download');
 				
 				var fileInfo={
@@ -1307,7 +1301,7 @@ $('#BTNFormSaveAudit').click(function(){
 		 var files=[];
 			
 			$('#divFilesUploaded a').each(function(){
-				var fileKey=$(this).attr('href').substring(30);
+				var fileKey=$(this).attr('href').substring(23);
 				var fileName=$(this).attr('download');
 				
 				var fileInfo={
@@ -1367,7 +1361,7 @@ $('#BTNFormModify').click(function() {
 	var files=[];
 	
 	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
+		var fileKey=$(this).attr('href').substring(23);
 		var fileName=$(this).attr('download');
 		
 		var fileInfo={
@@ -1436,7 +1430,7 @@ $('#BTNFormUpdate').click(function() {
 	        	var files=[];
 	        	
 	        	$('#divFilesUploaded a').each(function(){
-	        		var fileKey=$(this).attr('href').substring(30);
+	        		var fileKey=$(this).attr('href').substring(23);
 	        		var fileName=$(this).attr('download');
 	        		
 	        		var fileInfo={

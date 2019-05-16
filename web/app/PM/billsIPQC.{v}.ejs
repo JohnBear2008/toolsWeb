@@ -623,7 +623,7 @@ function Fun_IPQCRecordInit(dataChoose){
 	  if(dataSelect.taskFileKey!=null){
 		  
 		  console.log("不为空"+dataSelect.taskFileKey);
-		  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.taskFileKey+" download="+dataSelect.taskFileName+">"+"<span id='fileName'>"+dataSelect.taskFileName+"</span></a>";
+		  var downloadurl="<a id='filePath' href="+'/system.files.download/'+dataSelect.taskFileKey+" download="+dataSelect.taskFileName+">"+"<span id='fileName'>"+dataSelect.taskFileName+"</span></a>";
 		  $('#divFilesUploaded').html(downloadurl);
 	  }
 
@@ -885,11 +885,11 @@ $('#BTNTaskIPQCAudit').click(function() {
 			        	 
 			        	 for(var i=0;i<trNum;i++){
 			        		 
-//			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(30));
+//			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23));
 //			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'));
 			        		 var tdfile={
 			        				 "fileName":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'),
-			        				 "fileKey":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(30)
+			        				 "fileKey":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23);
 			        		 }
 			        		 taskFiles.push(tdfile);
 			        		 

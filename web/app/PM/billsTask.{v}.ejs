@@ -1126,16 +1126,7 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
                  $('#progressNumber').html("");
 			     $('#divFilesUploaded').html("");
 				  
-//				 if(dataSelectRecord.taskFiles!=null){
-//					  
-//					  var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
-//					  if(taskFiles!=null){
-//					  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+taskFiles.fileKey+" download="+taskFiles.fileName+">"+"<span id='fileName'>"+taskFiles.fileName+"</span></a>";
-//					  }else{
-//						  downloadurl="";
-//					  }
-//					  $('#divFilesUploaded').html(downloadurl);
-//				  }
+
 
 				 if(dataSelectRecord.taskFiles!=null){
 					  
@@ -1147,7 +1138,7 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 								 for(var i=0;i<taskFiles.length;i++){
 
 									 
-									fileLink=fileLink+"<a  href="+'/system.files.download/upload_'+taskFiles[i].fileKey+" download="+taskFiles[i].fileName+">"+"<span>"+taskFiles[i].fileName+"</span></a>"+" ; ";
+									fileLink=fileLink+"<a  href="+'/system.files.download/'+taskFiles[i].fileKey+" download="+taskFiles[i].fileName+">"+"<span>"+taskFiles[i].fileName+"</span></a>"+" ; ";
 								 } 
 							 }
 							 fileLink=fileLink.substr(0, fileLink.length-3); 
@@ -1619,7 +1610,7 @@ $('#BTNTaskRecordSave').click(function() {
 			 var taskFiles=[];
 				
 				$('#divFilesUploaded a').each(function(){
-					var fileKey=$(this).attr('href').substring(30);
+					var fileKey=$(this).attr('href').substring(23);
 					var fileName=$(this).attr('download');
 					
 					var fileInfo={
