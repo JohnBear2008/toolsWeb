@@ -570,7 +570,7 @@ function Fun_IPQCRecordInit(dataChoose){
 		
     
 	
-	if(dataSelect.IPQCAuditResult==1){
+	if(dataSelect.IPQCAuditResult==1||dataSelect.IPQCAuditResult==2){
 		
 		$('#divIPQCPanel input').attr("disabled",true);
 //		$('#divIPQCPanel :select').attr("disabled",true);
@@ -889,7 +889,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 //			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'));
 			        		 var tdfile={
 			        				 "fileName":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'),
-			        				 "fileKey":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23);
+			        				 "fileKey":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23)
 			        		 }
 			        		 taskFiles.push(tdfile);
 			        		 

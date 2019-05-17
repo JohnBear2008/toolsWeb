@@ -40,6 +40,13 @@
         <button id="BTNTaskRecord" class="btn btn-info" data-toggle="modal" >任务登记</button>
         <button id="BTNTaskUpdVer" class="btn btn-danger" data-toggle="modal" >更新版本</button>
         
+        
+        <div class="btn-group">
+        <button  type="text" class="btn btn-default" disabled="disabled">查看</button>
+        <button id="BTNFilterSimple" class="btn btn-primary" >过滤模式</button>
+        <button id="BTNFilterAll" class="btn btn-info">全部模式</button>
+        </div>
+        
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
@@ -370,7 +377,7 @@
                      
                      <!-------------------------------------------------------------------------->
                      </div>
-                     <!-------divTaskAccept------------------------------------------------------------------->
+                     <!-------divTaskAccept------------------------------------------------------>
 
                     </div>
                     
@@ -1108,7 +1115,9 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 		         $('#DIVRecordContent').show();
 
 
-		          var dataSelectRecord = tableRecords.row('.selected').data();
+		          var dataSelectChoose = tableRecords.row('.selected').data();
+		          
+		          var dataSelectRecord=NulltoEmpty(dataSelectChoose);
 
 			     console.log("dataSelectRecord11111:"+JSON.stringify(dataSelectRecord));
 			     
@@ -1128,7 +1137,7 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 				  
 
 
-				 if(dataSelectRecord.taskFiles!=null){
+				 if(dataSelectRecord.taskFiles!=""){
 					  
 					 var taskFiles=JSON.parse(dataSelectRecord.taskFiles);
 					  if(taskFiles!=null){
@@ -1211,7 +1220,7 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 		     }
 		 });
 		 
-		 
+
 }
 
 //检查输入项
@@ -1243,7 +1252,14 @@ function checkTaskInput(){
 //检查确认输入项
 
 function checkAcceptInput(){
-	if($("#IPQCMaker").val()==null){
+	
+	if($("#taskStaff").val()==null){
+		alert("任务负责人未选择,请检查!");
+		return false;
+	}else if($("#taskOGNSystemVersion").val()==""){
+		alert("原系统版本必填,请检查!");
+		return false;
+	}else if($("#IPQCMaker").val()==null){
 		alert("IPQC填单人未选择,请检查!");
 		return false;
 	}
@@ -1253,20 +1269,11 @@ function checkAcceptInput(){
 //检查输入项
 function checkRecordInput(){
 	
-	if($("#taskMHEName").val()==null){
-		alert("机型未选择,请检查!");
+	if($("#modifyContent").val()==""){
+		alert("修改内容未填写,请检查!");
 		return false;
-	}else if($("#taskModel").val()==null){
-		alert("系统未选择,请检查!");
-		return false;
-	}else if(getCheckBoxValue("modfiyABE")==""){
-		alert("修改内容未选择,请检查!");
-		return false;
-	}else if($("#taskStaff").val()==null){
-		alert("任务负责人未选则,请检查!");
-		return false;
-	}else if($("#taskDBE").val()==""){
-		alert("任务说明未输入,请检查!");
+	}else if($("#functionsDBE").val()==""){
+		alert("功能说明未填写,请检查!");
 		return false;
 	}
 	
@@ -1300,9 +1307,13 @@ $(document).ready( function () {
 	case "unPass":
 		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 ","orderBy":" saveTimeStamp DESC"};
 		break;
-		
-	default:
+	case "all":
 		var tableSQL={"SQL":"SQLTableBillsTaskRecord","orderBy":" saveTimeStamp DESC"};
+	    break;
+	default:
+	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0","orderBy":" saveTimeStamp DESC"};
+    
+	
 		break;
 	
 	}
@@ -1363,6 +1374,22 @@ $('#billsTaskTable tbody').on('dblclick', 'tr', function() {
 	$('#BTNTaskRecord').click();
 
 });
+
+
+//过滤按钮组
+
+$('#BTNFilterSimple').click(function() {
+	
+	window.location.href='/app/PM/billsTask';
+ 
+});
+
+$('#BTNFilterAll').click(function() {
+	
+	window.location.href='/app/PM/billsTask?undone=all';
+ 
+});
+
 
 
 
@@ -1604,10 +1631,11 @@ $('#BTNTaskRecord').click(function() {
 $('#BTNTaskRecordSave').click(function() {
 
 		if(sessionName==$('#taskStaff option:selected').text()){
-
-			 
-			 
-			 var taskFiles=[];
+			
+			
+			if(checkRecordInput()){
+				//--------------------
+			    var taskFiles=[];
 				
 				$('#divFilesUploaded a').each(function(){
 					var fileKey=$(this).attr('href').substring(23);
@@ -1750,6 +1778,13 @@ $('#BTNTaskRecordSave').click(function() {
 				 
 				 
 			 }
+			 //--------------------
+				
+			}
+
+			 
+			 
+			 
 		}else{
 			alert("您不是该任务单的负责人,无法登记任务!");
 		}
@@ -1792,9 +1827,9 @@ $('#BTNTaskUpdVer').click(function() {
       alert("请先选中需要更新版本的任务单!");
   } else {
 	  
-	 console.log(dataSelect.T_BPID);
+	 console.log("dataSelect.T_BPID:"+dataSelect.T_BPID);
 	 
-	 if(dataSelect.T_BPID!=null){
+	 if(dataSelect.T_BPID!=null&&dataSelect.T_BPID!=""){
 		 
 		 alert("该任务单内核流程已启动,不允许版本更新,变更信息请更新内核流程相关单据进行调整!");
 		 

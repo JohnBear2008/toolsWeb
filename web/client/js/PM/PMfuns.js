@@ -525,9 +525,13 @@ function fileSelected() {
 		
 		for ( var i = 0; i < files.length; i++) {
 			
-			console.log(files[i].name);
+			console.log("filename:"+files[i].name);
 			
-			selectedFileNames=selectedFileNames+files[i].name+";";
+			let fileNameStr = files[i].name.replace(/\s*/g,"");//去除文件名中所有空格
+			
+			console.log("fileNameStr:"+fileNameStr);
+			
+			selectedFileNames=selectedFileNames+fileNameStr+";";
 			
 			//缩略图预览
 //			var img = document.createElement("img");
@@ -651,7 +655,9 @@ function uploadComplete(evt) {
 //				var img = document.createElement("img");
 //				img.src = url;
 //				div.appendChild(img);
-				var downloadurl="<a id='filePath' href="+url+" download="+file[i].fileRawName+">"+"<span id='fileName'>"+file[i].fileRawName+"</span></a>";
+				let fileRawNameStr=file[i].fileRawName.replace(/\s*/g,"");//去除文件名中所有空格
+				
+				var downloadurl="<a id='filePath' href="+url+" download="+fileRawNameStr+">"+"<span id='fileName'>"+fileRawNameStr+"</span></a>";
 				span.innerHTML =downloadurl;
 				div.appendChild(document.createElement("br"));
 			} else {
