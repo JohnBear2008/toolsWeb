@@ -79,8 +79,8 @@ var config = {
         login_url: "/app/account/showLogin",
         loginTypes: ["userID"],
         //        loginTypes: ["mobilePhone"],
-        notNeedLogin_urls: []
-//        notNeedLogin_urls: ["/app/PM/linkPage"]
+//        notNeedLogin_urls: []
+        notNeedLogin_urls: ["/app/PM/linkPage"]
     },
     theme: {
         layout: {

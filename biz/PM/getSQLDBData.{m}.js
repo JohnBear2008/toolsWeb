@@ -169,6 +169,9 @@ module.exports = function(sender) {
 	case "SQLGetOldBillInfo":
 		var SQLExecute=SQLGetOldBillInfo;
 		break;
+	case "SQLGetBindsInfo":
+		var SQLExecute=SQLGetBindsInfo;
+		break;
 		
 		
 		

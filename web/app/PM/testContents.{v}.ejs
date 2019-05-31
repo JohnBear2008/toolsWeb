@@ -88,7 +88,9 @@
 <!---------------->
 </div>
 
-<button id="FQC" class="btn btn-primary">FQC</button>
+<button id="FQC" class="btn btn-default">FQC</button>
+
+
 
     
     </div>
@@ -132,7 +134,19 @@
             </div>
             <div class="modal-body">
             
-            <h3>类型:<span id="SpanTypeText"></span></h3>
+            <h3>名称:<span id="spanTypeName"></span> </h3>
+            
+            
+            <p>
+            类别:<span id="spanTaskSortType"></span> 
+            类型:<span id="spanTaskType"></span> 
+            测试类型:<span id="spanBillType"></span> 
+            版本号:<span id="spanBillVersion"></span>
+            
+            </p>
+            
+            <p align="right"><button id="BTNUpdVer" class="btn btn-default">更新版本</button></p>
+            <div id="DIVContentTableShow">
 
             <table id="TableTestContents" class="table table-bordered" style="width:100%;" >
             <thead>
@@ -146,10 +160,34 @@
             <tbody>
             </tbody>
             </table>
+            
+            </div>
+            
+            <div id="DIVContentTableModify">
+
+            <table id="TableTestContentsModify" class="table table-bordered" style="width:100%;" >
+            <thead>
+                <tr>
+                    <th width="150px">模块</th>
+                    <th>测试内容</th>
+                    <th width="120px">测试类型</th>
+                    <th width="200px">版本号</th>
+                    <th width="60px">删除</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            </table>
+            
+            </div>
 
             
             </div>
+            
+            
+            
             <div class="modal-footer">
+            
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 
             </div>
@@ -223,7 +261,10 @@ $('#tableTestContents tbody').on('click', 'tr', function() {
 $('#liDA').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("DSP-APP");	
+	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+
+	$('#spanTypeName').text("DSP-APP");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'D' AND taskType = 'A' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -233,7 +274,9 @@ $('#liDA').click(function() {
 $('#liDK').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("DSP-Kernel");	
+	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("DSP-Kernel");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'D' AND taskType = 'K' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -243,7 +286,8 @@ $('#liDK').click(function() {
 $('#liHA').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("HMI-APP");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("HMI-APP");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'A' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -253,7 +297,8 @@ $('#liHA').click(function() {
 $('#liHK').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("HMI-Kernel");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("HMI-Kernel");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'K' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -263,7 +308,8 @@ $('#liHK').click(function() {
 $('#liHO').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("HMI-OS");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("HMI-OS");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'O' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -273,7 +319,8 @@ $('#liHO').click(function() {
 $('#liMA').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("轴卡-APP");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("轴卡-APP");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'M' AND taskType = 'A' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -283,7 +330,8 @@ $('#liMA').click(function() {
 $('#liMB').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("轴卡-BOOT");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("轴卡-BOOT");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'M' AND taskType = 'B' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -293,7 +341,8 @@ $('#liMB').click(function() {
 $('#liPA').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("PLC-APP");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("PLC-APP");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'A' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -303,7 +352,8 @@ $('#liPA').click(function() {
 $('#liPL').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("PLC-LIB");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("PLC-LIB");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'L' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -313,7 +363,8 @@ $('#liPL').click(function() {
 $('#liPO').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("PLC-OS");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("PLC-OS");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'O' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -323,7 +374,8 @@ $('#liPO').click(function() {
 $('#liCA').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("codesys-APP");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("codesys-APP");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'A' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -333,7 +385,8 @@ $('#liCA').click(function() {
 $('#liCL').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("codesys-LIB");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("codesys-LIB");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'L' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -344,7 +397,8 @@ $('#liCL').click(function() {
 $('#liCO').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("codesys-OS");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("codesys-OS");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'O' AND billType='IPQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -354,7 +408,8 @@ $('#liCO').click(function() {
 $('#FQC').click(function() {
 	
 	$('#DivTestContent').modal('show');
-	$('#SpanTypeText').text("FQC");	
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("FQC");	
 	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC'"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
@@ -518,6 +573,14 @@ $('#CancelButton').click(function() {
 });
 
 	
+
+//form框 取消按钮----------------
+$('#BTNUpdVer').click(function() {
+	console.log($('#spanTaskSortType').text()+$('#spanTaskType').text());
+	controlElementShowHide({hideElements:['DIVContentTableShow'],showElements:['DIVContentTableModify']});
+	fillTestContentsModifyTable({tableID:'TableTestContentsModify',data:getAjaxDataSync({"SQL":"SQLTableTestContents","filter":"taskSortType = '"+$('#spanTaskSortType').text()+"' AND taskType = '"+$('#spanTaskType').text()+"' AND billType='"+$('#spanBillType').text()+"' AND billVersion='"+$('#spanBillVersion').text()+"'"})});
+});
+
 	
 }); 
 

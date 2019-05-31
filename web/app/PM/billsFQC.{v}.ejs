@@ -37,6 +37,11 @@
         <!-- 按钮触发模态框 -->
         <button id="BTNFQCDetail" class="btn btn-primary" data-toggle="modal" >FQC维护</button>
         
+        <div class="btn-group" style="margin-left:20px">
+        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        </div>
+        
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
 
         <!-- 模态框（Modal） -->
@@ -430,7 +435,7 @@ function Fun_winDetailInit(dataChoose){
 	$('#topic').text(dataSelect.topic);
 	$('#detail').text(dataSelect.detail);
 	
-	$('#FQCRemark').val(dataSelect.FQCRemark);
+	$('#FQCRemark').val(dataSelect.FQCRemark.replace(/<br\/>/g,'\n'));
 	
 	$('#FQCMaker').text(dataSelect.FQCMaker);
 	$('#FQCMakeDate').text(dataSelect.FQCMakeDate);
@@ -545,9 +550,14 @@ $(document).ready( function () {
 		case "unPass":
 			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
 	    	break;
-		default:
+		case "all":
 			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
+			$("#BTNFilterAll").addClass("active");
 			break;
+		default:
+		    var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  (FQCAuditResult IS NULL OR FQCAuditResult=0) ","orderBy":" saveTimeStamp DESC"};
+		    $("#BTNFilterSimple").addClass("active");	
+		    break;
 		
 		}
 		
@@ -607,6 +617,16 @@ $('#billsPLDTable tbody').on('dblclick', 'tr', function() {
 
 });
 
+
+//过滤按钮组
+$('#BTNFilterSimple').click(function() {
+	window.location.href='/app/PM/billsFQC';
+});
+
+$('#BTNFilterAll').click(function() {
+	window.location.href='/app/PM/billsFQC?undone=all';
+});
+
 //按钮-FQC维护---------
 $('#BTNFQCDetail').click(function() {
 
@@ -662,7 +682,7 @@ $('#BTNFQCSave').click(function() {
 					"fqcBPID":$('#BPID').text(),
 					"CTRName":$('#CTRName').text(),
 					"FQCTestResult":JSON.stringify(FQCTestResult),
-					"FQCRemark":$('#FQCRemark').val(),
+					"FQCRemark":$('#FQCRemark').val().replace(/\n|\r\n/g,'<br/>'),
 				    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
 					"FQCMaker":sessionName,
 					"FQCMakeDate":Ndate,
@@ -882,20 +902,66 @@ $('#BTNUpdVer').click(function() {
 	if(msg==true){	
 		
 	 var newVersion=parseInt($('#FQCVersion').text())+1;
+	 
+	 
+	 let oldFQCData={
+				"DBTable":"ppm_bills_fqc",
+				"BillIDName":"fqcBPID",
+				"BillID":$('#BPID').text(),
+				"FQCStatus":0
+		}
+   
+    let ajax1=$.ajax({
+	        method: 'post',
+	        url: '/app/PM/updBillStatus',
+	        data: oldFQCData,
+	        success: function(data, textStatus) {
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+	        });
+	 
 	
-	 var FQCData={
+	 let newFQCData={
 				"DBTable":"ppm_bills_FQC",
 				"fqcBPID":$('#BPID').text(),
 				"FQCVersion":newVersion,
 				"CTRName":$('#CTRName').text(),
-				"FQCRemark":$('#FQCRemark').val(),
+				"FQCRemark":$('#FQCRemark').val().replace(/\n|\r\n/g,'<br/>'),
 			    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
 				"FQCMaker":sessionName,
 				"FQCMakeDate":Ndate,
 				"FQCAuditor":$('#FQCAuditor option:selected').text()
 		}
+	 
+	 let ajax2=$.ajax({
+         method: 'post',
+         url: '/app/PM/addDBData',
+         data: newFQCData,
+         success: function(data) {
 
-        addDBData(FQCData);
+        },
+        error:function(err){
+     	   
+     	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+     		   alert("系统中已存在重复数据,请检查!");
+     	   }else{
+     		   alert("失败数据:"+JSON.stringify(err));
+     	   }
+     	   
+        	
+        }
+     });
+	 
+	 $.when(ajax1,ajax2).done(function(){
+ 		
+			alert("更新版本成功!");
+			window.location.reload();
+
+		});
+	 
+	 
+
+//        addDBData(FQCData);
 	 
 	 
 	}

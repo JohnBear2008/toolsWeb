@@ -51,7 +51,37 @@ Date.prototype.format = function(fmt) {
    return fmt; 
 } 
 
+//前端数组去重复值
 
+Array.prototype.delRepeat = function () {
+
+       var temp = {}, len = this.length;
+
+       for (var i = 0; i < len; i++) {
+
+           var tmp = this[i];
+
+           if (!temp.hasOwnProperty(tmp)) {// hasOwnProperty用来判断一个对象是否有你给出名称的属性或对象
+
+               temp[this[i]] = "yes";
+
+           }
+
+       }
+
+       len = 0;
+
+       var tempArr = [];
+
+       for (var i in temp) {
+
+           tempArr[len++] = i;
+
+       }
+
+       return tempArr;
+
+   }
 
 //定义表格加载数据函数----------
 
@@ -131,6 +161,33 @@ function showFilterDBData(DataPara,columnsData){
 	        url: '/app/PM/getFilterDBInfo',
 	        data:DataPara,
 	        dataSrc: ''
+	    },
+	    columns: columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+	    lengthMenu:[5,10,20],
+
+
+	    "language": languageCN
+	});
+
+}
+
+//定义待过滤调节表格加载函数 同步
+
+function showFilterDBDataAsyncNo(DataPara,columnsData){
+	
+//alert(JSON.stringify(DataPara));
+	
+//	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
+	
+	$(DataPara.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getFilterDBInfo',
+	        data:DataPara,
+	        dataSrc: '',
+	        async:false
 	    },
 	    columns: columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
@@ -521,8 +578,6 @@ function fileSelected() {
 		
 		var selectedFileNames="";
 		
-		
-		
 		for ( var i = 0; i < files.length; i++) {
 			
 			console.log("filename:"+files[i].name);
@@ -554,11 +609,54 @@ function fileSelected() {
 		document.getElementById('div_previewImages').innerHTML="已选择文件:"+selectedFileNames;
 
 		uploadFile();
-	
-	
-	
 }
 
+
+//----文件上传功能代码----------------------------------------------
+function taskFileSelected() {
+	console.log("fileseleted111");
+
+		var files = document.getElementById('fileToUpload').files;
+		var div = document.getElementById('div_previewImages');
+		
+		var selectedFileNames="";
+		
+		for ( var i = 0; i < files.length; i++) {
+			
+			console.log("filename:"+files[i].name);
+			
+			let fileNameStr = files[i].name.replace(/\s*/g,"");//去除文件名中所有空格
+			
+			console.log("fileNameStr:"+fileNameStr);
+			
+			selectedFileNames=selectedFileNames+fileNameStr+";";
+			
+			//缩略图预览
+//			var img = document.createElement("img");
+//			div.appendChild(img);
+//			
+			var reader = new FileReader();
+//			(function(img) {
+//				reader.onload = function(evt) {
+//					img.width=50;//定义缩略图宽度
+//					img.src = evt.target.result;
+//				}
+//			})(img);
+			
+
+			reader.readAsDataURL(files[i]);
+			/* else if (files.value) {
+				img.src = files.value; }*/
+		}
+		
+		document.getElementById('div_previewImages').innerHTML="已选择文件:"+selectedFileNames;
+		
+		
+		taskUploadFile();
+		
+}
+
+//上传文件
 function uploadFile() {
 	
 
@@ -590,6 +688,48 @@ function uploadFile() {
 		var xhr = new XMLHttpRequest();
 		xhr.upload.addEventListener("progress", uploadProgress, false);
 		xhr.addEventListener("load", uploadComplete, false);
+		xhr.addEventListener("error", uploadFailed, false);
+		xhr.addEventListener("abort", uploadCanceled, false);
+		xhr.open("POST", "/system.files.upload/");
+		xhr.send(fd);
+		
+//	}
+	
+//	}
+	
+}
+//任务上传文件
+function taskUploadFile() {
+	
+
+	var filePath=$('#filePath').attr("href");
+	
+	var fileName=$('#fileName').html();
+//	console.log("fileName:"+fileName);
+	
+//	if(fileName!=undefined&&fileName!=""){
+//		
+//		alert("附件已存在,上传新附件请先清空!");
+//		
+//	}else{
+	
+	var fd = new FormData();
+	var files = document.getElementById('fileToUpload').files;
+	
+//	if(files.length>1){
+//		alert("多文件上传请统一打包成唯一压缩包!");
+//		document.getElementById('div_previewImages').innerHTML="";
+//		
+//	}else{
+        for ( var i = 0; i < files.length; i++) {
+			
+//			alert("files[i]:"+JSON.stringify(files[i]));
+			fd.append(i, files[i]);
+			
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.upload.addEventListener("progress", uploadProgress, false);
+		xhr.addEventListener("load", taskUploadComplete, false);
 		xhr.addEventListener("error", uploadFailed, false);
 		xhr.addEventListener("abort", uploadCanceled, false);
 		xhr.open("POST", "/system.files.upload/");
@@ -640,9 +780,7 @@ function uploadComplete(evt) {
 		for (var i=0;i<file.length;i++){
 			if (file[i].status == "success") {
 				
-//				alert("file[i]:"+JSON.stringify(file[i]));
-
-				
+//				alert("file[i]:"+JSON.stringify(file[i]));	
 				var span = document.createElement("span");
 				var url = "/system.files.download/" + file[i].key;
 //				var url = "/system.files.download/" + file[i].fileRawName;
@@ -665,6 +803,81 @@ function uploadComplete(evt) {
 			}
 		}
 	}
+}
+//任务文件上传完毕
+function taskUploadComplete(evt) {
+	if (evt.target.status != 200) {
+//		alert(evt.target.responseText);
+		return;
+	}
+	/* 服务器端返回响应时候触发event事件*/
+	//var img=document.getElementById('img_show');
+	var div = document.getElementById('divFilesUploaded');
+	g_uploaded = JSON.parse(evt.target.responseText);
+	var span = document.createElement("span");
+	div.appendChild(span);
+	
+	let BTType=$("#BTID").text().substring(12,13);//自动识别版本号功能,获取BTID做任务类型判断
+	
+	for ( var name in g_uploaded.files) {
+		var file=g_uploaded.files[name];
+		for (var i=0;i<file.length;i++){
+			if (file[i].status == "success") {
+				var span = document.createElement("span");
+				var url = "/system.files.download/" + file[i].key;
+				span.innerHTML = url;
+				div.appendChild(span);
+				let fileRawNameStr=file[i].fileRawName.replace(/\s*/g,"");//去除文件名中所有空格
+				var downloadurl="<a id='filePath' href="+url+" download="+fileRawNameStr+">"+"<span id='fileName'>"+fileRawNameStr+"</span></a>";
+				span.innerHTML =downloadurl;
+				div.appendChild(document.createElement("br"));
+				
+				//自动识别版本号功能
+				
+				let fileVersion=$("#fileVersion").val();
+				
+				switch(BTType){
+				case 'D':
+					
+//					console.log("BTType:"+BTType);
+					if(fileVersion==""){
+						$("#fileVersion").val(fileRawNameStr);
+					}else{
+						$("#fileVersion").val(fileVersion+" "+fileRawNameStr);
+					}
+					break;
+				case 'H':
+					if(fileRawNameStr.indexOf("_update")!=-1){
+						
+						if(fileVersion==""){
+							$("#fileVersion").val(fileRawNameStr.substring(0,fileRawNameStr.length-4));
+						}else{
+							$("#fileVersion").val(fileVersion+" "+fileRawNameStr.substring(0,fileRawNameStr.length-4));
+						}
+					}
+
+					break;
+				}
+
+
+				
+				
+			} else {
+				alert(file[i].errorMessage);
+			}
+		}
+	}
+	
+	//--增加版本号自动填写功能--------------
+	
+//	let BTID=$("#BTID").text();
+
+	
+	
+	
+	
+	
+	
 }
 
 function uploadFailed(evt) {
@@ -708,59 +921,82 @@ function deleteFile() {
 		document.getElementById('div_previewImages').innerHTML="";
 		document.getElementById('progressNumber').innerHTML="";
 		document.getElementById('divFilesUploaded').innerHTML="";
+		
+		// 清空input file文件原生js
+	    var fileInput = document.getElementById("fileToUpload");
+	     // for IE, Opera, Safari, Chrome
+	     if (fileInput.outerHTML) {
+	    	 fileInput.outerHTML = fileInput.outerHTML;
+	     } else { // FF(包括3.5)
+	    	 fileInput.value = "";
+	     }
+	     
 		alert("清空附件成功!");
+		
+		
 		
 	}else{
 		alert("无附件,无需清空!");
 	}
 	
-	
-	
-//	if(filePath!=undefined){
-//		var fileKey=$('#filePath').attr("href").substring(23);
-////		alert(fileKey);
-//		var xhr = new XMLHttpRequest();
-//		xhr.open("delete", "/system.files/"+ fileKey);
-//		xhr.send();
-//		
-//		alert("删除附件成功");
-//		
-//		document.getElementById('div_previewImages').innerHTML="";
-//		document.getElementById('progressNumber').innerHTML="";
-//		document.getElementById('divFilesUploaded').innerHTML="";
-////		document.getElementById('fileName').innerHTML="";
-//		
-//	}else{
-//		alert("无附件,无需清空!");
-//	}
 
-	
-//	if(fileKey){
-//		
-//	}
-//	
+}
 
-//	
+
+function taskDeleteFile() {
 	
+//	var filePath=$('#filePath').attr("href");
+//	alert(filePath);
 	
-// 原删除程序-----------
-////alert(JSON.stringify(g_uploaded.files));
-//	for ( var name in g_uploaded.files) {
-////		var xhr = new XMLHttpRequest();
-//		
-////		alert(JSON.stringify(g_uploaded.files[0][0].key));
-//
-//		xhr.open("delete", "/system.files/"
-//			+ g_uploaded.files[name][0].key);//修改成自己的接口
-//		xhr.send();
-//		
-//	}
-//	
-//	document.getElementById('div_previewImages').innerHTML="";
-//	document.getElementById('progressNumber').innerHTML="";
-//	document.getElementById('divFilesUploaded').innerHTML="";
+	var files=[];
 	
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(23);
+		var fileName=$(this).attr('download');
+		
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 	
+	if(files.length>0){
+		
+		var xhr = new XMLHttpRequest();
+		
+		for(var i=0;i<files.length;i++){
+			var fileKey=files[i].fileKey;
+			var filePath=fileKey;
+			xhr.open("delete", "/system.files/"+ filePath);
+			xhr.send();
+		}
+		
+		document.getElementById('div_previewImages').innerHTML="";
+		document.getElementById('progressNumber').innerHTML="";
+		document.getElementById('divFilesUploaded').innerHTML="";
+		
+		// 清空input file文件原生js
+	    var fileInput = document.getElementById("fileToUpload");
+	     // for IE, Opera, Safari, Chrome
+	     if (fileInput.outerHTML) {
+	    	 fileInput.outerHTML = fileInput.outerHTML;
+	     } else { // FF(包括3.5)
+	    	 fileInput.value = "";
+	     }
+	     
+	     $("#fileVersion").val("");
+	     
+		alert("清空附件成功!");
+		
+		
+		
+	}else{
+		alert("无附件,无需清空!");
+	}
+	
+
 }
 //---------------------------------------
 
@@ -835,20 +1071,25 @@ function ajaxMail(data) {
 
 
 //发送钉钉消息-----------
-function sendDingMsg(Msg) {
+function sendDingMsg(DDMsg) {
 	
-    $.ajax({
-        method: 'post',
-        url: '/app/PM/sendDingTalk',
-        data: Msg,
-        success: function(data, textStatus) {
- //           console.log("成功数据:" + JSON.stringify(data));
-           
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            
-        }
-    });
+	if(confirm("是否发送钉钉提醒消息?")){
+		
+		$.ajax({
+	        method: 'post',
+	        url: '/app/PM/sendDingTalk',
+	        data: DDMsg,
+	        success: function(data, textStatus) {
+	 //           console.log("成功数据:" + JSON.stringify(data));
+	           
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            
+	        }
+	    });
+		
+	}
+
 }
 
 //函数 获取绑定数据----------------------
@@ -1039,16 +1280,16 @@ function Fun_getSelectTextPre(obj){
 //}
 
 //函数-增加数据并发送钉钉消息
-function Fun_addDBDataDD(DBData,DDMsg,showText) {
+function Fun_addDBDataDD(DBData,DDMsg) {
 	
     $.ajax({
         method: 'post',
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//         alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert(showText+"新增成功!");
+               alert("新增成功!");
                if(DDMsg!=""){
             	   sendDingMsg(DDMsg);
                }
@@ -1431,10 +1672,166 @@ function Fun_fillTrackTableWithDBID(tableID,SQLParam){
 
 }
 
+//函数--在表格末尾加速查看按钮,扩展查看详情
+//根据获得的DBID 详情加载
+function getDBIDInfo(tableName,DBID){
+	
+
+	
+//	$.ajax({
+//        method:'get',
+//        data:selectPara,
+//        url:"/app/PM/getSelectDBData",
+//        success:function(data){
+// 
+//        },
+//        error:function(){}
+//    })
+
+	$('#winDetail').window('open');
+	
+	switch(tableName){
+	case 'ppm_bills_plan':
+		
+		let SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"DBID",
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"detail",
+				"PGEMaker",
+				"OGNSystemVersion",
+				"MHEName",
+				"files",
+				"modelD",
+				"modelH",
+				"applyDate",
+				"limitDate",
+				"maker",
+				"makeDate",
+				"auditOpinion"
+				],
+			"filter":"DBID='"+DBID+"'"
+			};
+		
+		console.log("SQLParamPLD:"+JSON.stringify(SQLParamPLD));
+		
+		showDBIDInfo("#tableDetail",SQLParamPLD);
+		
+		break;
+	case 'ppm_bills_blueprint':
+		let SQLParamBPT={
+			"tableName":"ppm_bills_blueprint",
+			"titles":[
+				"DBID",
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"BPTDescribe",
+				"PGEMaker",
+				"auditor",
+				"auditDate",
+				"files",
+				"modelD",
+				"modelH",
+				"BPTAuditOpinion",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		showDBIDInfo("#tableDetail",SQLParamBPT);
+		
+		break;
+	case 'ppm_bills_task':
+		let SQLParamTask={
+			"tableName":"ppm_bills_task",
+			"titles":[
+				"DBID",
+				"BTID",
+				"BTVersion",
+				"taskCTRName",
+				"taskStaff",
+				"taskDBE",
+				"taskLimitDate",
+				"taskRemark",
+				"taskMaker",
+				"taskMakeDate",
+				"BTAcceptDate",
+				"modifyContent",
+				"functionsDBE",
+				"IPQCAuditResultText",
+				"IPQCMaker",
+				"IPQCMakeDate",
+				"BTStatusText",
+				"taskFiles",
+				"IPQCTestResult"
+				
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamTask);
+		
+		break;
+	case 'ppm_bills_fqc':
+		let SQLParamFQC={
+			"tableName":"ppm_bills_fqc",
+			"titles":[
+				"DBID",
+				"FQCVersion",
+				"FQCRecord",
+				"FQCRemark",
+				"FQCMaker",
+				"FQCMakeDate",
+				"FQCAuditor",
+				"FQCAuditDate",
+				"FQCStatusText",
+				"FQCTestResult"
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		showDBIDInfo("#tableDetail",SQLParamFQC);
+		
+		break;
+	case 'ppm_bills_pbh':
+		let SQLParamPBH={
+			"tableName":"ppm_bills_pbh",
+			"titles":[
+				"DBID",
+				"PBHVersion",
+				"PBHRemark",
+				"PBHMaker",
+				"PBHMakeDate",
+				"PBHAuditor",
+				"PBHAuditDate",
+				"emailADRS",
+				"files"
+
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamPBH);
+		
+		break;
+	
+	}
+	 	 
+	 
+}
+
+
 //根据获得的DBID 详情加载
 function showDBIDInfo(tableID,SQLParam){
 	
 	$(tableID).html("");
+	
+	console.log("SQLParam:"+JSON.stringify(SQLParam));
 	 
 	for(let i=0;i<SQLParam.titles.length+1;i++){
 		$(tableID).append("<tr></tr>");   
@@ -1646,6 +2043,69 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 
 }
 
+
+
+
+
+//function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
+//	
+//	//alert(JSON.stringify(DataPara));
+//	 $(tableID+" tbody").html("");
+//	
+//	 $.ajax({
+//         method:'get',
+//         data:SQL,
+//         url:"/app/PM/getSQLDBData",
+//         success:function(data){
+////        	 console.log("back data:"+JSON.stringify(data));
+//        	 for(var i=0;i<data.length;i++){
+//        		 var tr="<tr>" +
+//        		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
+//        		        "<td>"+data[i].modelType+"</td>" +
+//        		 		"<td>"+data[i].content+"</td>" +
+//        		 		"<td><input type='radio' name='testResultRadio"+i+"'  value='1' checked><span>正确</span> <input type='radio' name='testResultRadio"+i+"' value='2'> <span>不正确</span></td>"+
+//        		 		"<td><input id='testRemark"+i+"' type='text' value='' style='width:100%'></td>"+
+//        		 		"</tr>";
+//        		 
+//        		 $(tableID+" tbody").append(tr);
+//        		 
+//        	 }
+//        	 
+////        	 console.log("TestResult:"+TestResult);
+//        	 if(TestResult!=null){
+//        		 
+//        		 for(var i=0;i<TestResult.length;i++){
+////          		  alert(TestResult[i].testResult);
+//          		  $("input:radio[name='testResultRadio"+i+"'][value="+TestResult[i].testResult+"]").prop("checked",true); 
+//          		  $("#testRemark"+i).val(TestResult[i].testRemark);
+//                }
+//        		 
+//        		 if(auditCheck==1||auditCheck==2){
+////        			 $('input').attr("disabled",true);
+//        			 $(tableID+" :input").attr("disabled",true);
+//        		 }
+//        		 
+//        	 }
+//        	 
+//        	 
+//        	 
+//        	 mergeTableCols(tableID);
+//
+//
+//
+//   		 
+////   		 $(tableID+" tbody").rowspan(0);
+////   		 $(tableID).rowspan(1);
+////   		 $(tableID).rowspan(2);
+//        	 
+//
+//
+//         },
+//         error:function(){}
+//     })
+//
+//}
+
 //函数-根据自定义SQL获取数据加载内容
 
 
@@ -1737,25 +2197,36 @@ function Fun_previewSQLTestContents(SQL,tableID){
          url:"/app/PM/getSQLDBData",
          success:function(data){
 //        	 console.log("back data:"+JSON.stringify(data));
-        	 for(var i=0;i<data.length;i++){
-        		 var tr="<tr>" +
-        		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
-        		        "<td>"+data[i].modelType+"</td>" +
-        		 		"<td>"+data[i].content+"</td>" +
-        		 		"<td>"+data[i].billType+"</td>" +
-        		 		"<td>"+data[i].billVersion+"</td>" +
-        		 		"</tr>";
+        	 
+        	 if(data.length>0){
         		 
-        		 $(tableID+" tbody").append(tr);
+        		 $('#spanTaskSortType').text(data[0].taskSortType);
+        		 $('#spanTaskType').text(data[0].taskType);
+        		 $('#spanBillVersion').text(data[0].billVersion);
+        		 $('#spanBillType').text(data[0].billType);
         		 
+        		 
+        		 
+        		 for(var i=0;i<data.length;i++){
+            		 var tr="<tr>" +
+            		        "<td style='display:none' id='testContentDBID"+i+"'>"+data[i].DBID+"</td>" +
+            		        "<td>"+data[i].modelType+"</td>" +
+            		 		"<td>"+data[i].content+"</td>" +
+            		 		"<td>"+data[i].billType+"</td>" +
+            		 		"<td>"+data[i].billVersion+"</td>" +
+            		 		"</tr>";
+            		 
+            		 $(tableID+" tbody").append(tr);
+            		 
+            	 }
+
+            	 mergeTableCols(tableID);
+        	 }else{
+        		 $('#spanTaskSortType').text("");
+        		 $('#spanTaskType').text("");
+        		 $('#spanBillVersion').text("");
+        		 $('#spanBillType').text("");
         	 }
-        	
-        	 
-        	 
-        	 
-        	 mergeTableCols(tableID);
-
-
 
          },
          error:function(){}
@@ -1937,3 +2408,178 @@ function tableChangeColWidth(tableID){
         }
 
 	}
+
+
+
+//--以下为标准程序格式函数测试---------------------------------------------------------
+
+//函数-根据自定义SQL 生成测试内容模版修改
+
+
+//函数-控制显示隐藏函数ips={hideElements:['element1'],showElements:['element1']}
+
+//funtest
+
+function funtest(){
+	console.log("funtest done!");
+}
+
+
+function controlElementShowHide(ips,ops){
+	
+	//①检查参数②执行程序
+	
+	if(ips.hasOwnProperty('hideElements')){
+		if(ips.hideElements.length!=0){
+			for(let i=0;i<ips.hideElements.length;i++){
+				$('#'+ips.hideElements[i]).hide();
+			}
+		}
+	}else{
+		console.log("controlElementShowHide 无隐藏元素!");
+	}
+
+	
+	if(ips.hasOwnProperty('showElements')){
+		if(ips.showElements.length!=0){
+			for(let j=0;j<ips.showElements.length;j++){
+				$('#'+ips.showElements[j]).show();
+			}
+		}
+	}else{
+		console.log("controlElementShowHide 无显示元素!");
+	}
+
+	console.log('controlElementShowHide执行成功! 返回参数:'+ops);
+	
+	return ops;
+}
+
+
+
+//函数 获取data ips={SQL:"SQLID"}
+function getAjaxDataSync(ips,ops,funs){
+	
+	if(ips.hasOwnProperty('SQL')){
+		 $.ajax({
+	         method:'get',
+	         data:ips,
+	         url:"/app/PM/getSQLDBData",
+	         async:false,
+	         success:function(data){
+	        	 
+//	        	 console.log("Ajax data:"+JSON.stringify(data));
+	        	 funs;
+	        	 
+	        	 ops=data;
+	        	 
+	        	
+	         },
+	         error:function(){}
+	     })
+	}
+	
+//	console.log("ops:"+JSON.stringify(ops));
+	return ops;
+}
+
+//创建测试内容可编辑表格ips={tableID:'tableID',data:data}
+
+function delTr(trID){
+    $(trID).parent().parent().remove();
+}
+
+function addTr(trID,tr){
+    $(trID).parent().parent().after(tr);
+}
+
+function fillTestContentsModifyTable(ips,ops,funs){
+	
+	$('#'+ips.tableID+" tbody").html("");
+
+
+	if(ips.data.length!=0){
+		for(let i=0;i<ips.data.length;i++){
+			
+//			let trAddModel="<tr>"+
+//	        "<td><input id='modelTypeInput"+i+"' type='text' value='"+ips.data[i].modelType+"' style='width:100%'></td>" +
+//	 		"<td><input id='contentInput"+i+"' type='text' value='"+ips.data[i].content+"' style='width:100%'></td>" +
+//	 		"<td>"+ips.data[i].billType+"</td>" +
+//	 		"<td>"+ips.data[i].billVersion+"</td>" +
+//	 		"<td><button onclick='delTr(this)'>删除</button></td>" +
+//	 		"</tr>"
+			
+			let trAddModel="<tr>" +
+					"<td>4</td>" +
+					"<td>4</td>" +
+					"<td>4</td>" +
+					"<td>4</td>" +
+					"<td><button onclick="+'delTr(this)'+">删除</button></td>" +
+					"</tr>";
+			
+			let tr="<tr>"+
+	        "<td><input type='text' value='"+ips.data[i].modelType+"' style='width:100%'></td>" +
+	 		"<td><input type='text' value='"+ips.data[i].content+"' style='width:100%'></td>" +
+	 		"<td>"+ips.data[i].billType+"</td>" +
+	 		"<td>"+ips.data[i].billVersion+"</td>" +
+	 		"<td><button onclick='addTr(this,\""+trAddModel+"\")'>插入</button><button onclick='delTr(this)'>删除</button></td>" +
+	 		"</tr>";
+			
+			$('#'+ips.tableID).append(tr);
+		}
+	}
+
+	
+	funs;
+	return ops;
+}
+
+
+//函数-添加附件信息数据库ips={tableName:'ppm_table',tableTitles:['1','2'],tableDatas:[[1,2],[2,2]]}
+
+function IOF_insertDBData(ips,ops,funs) {
+	
+    $.ajax({
+        method: 'post',
+        url: '/app/PM/IOF_insertDBData',
+        data: ips,
+        success: function(data) {
+//            alert("成功数据:" + JSON.stringify(data));
+           if (data.affectedRows != 0) {
+        	   
+        	   
+        	   alert("新增成功!");
+           }
+           
+           funs;
+           ops=data;
+           return ops;
+       },
+       error:function(err){
+       	alert("失败数据:"+JSON.stringify(err));
+       }
+    });
+}
+
+
+//发送钉钉消息-----------
+function IOF_sendDingMsg(ips,ops,funs) {
+	if(confirm('是否立即发送系统钉钉提醒消息?')){
+		$.ajax({
+	        method: 'post',
+	        url: '/app/PM/sendDingTalk',
+	        data: ips,
+	        success: function(data, textStatus) {
+	        	funs;
+	        	ops=data;
+	        	return ops;
+	 //           console.log("成功数据:" + JSON.stringify(data));
+	           
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            
+	        }
+	    });
+		
+	}
+}

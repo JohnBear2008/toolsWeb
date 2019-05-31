@@ -40,6 +40,11 @@
         <button id="BTNIPQCRecord" class="btn btn-info" data-toggle="modal" >IPQC登记</button>
         <!--      <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button> -->
         
+        <div class="btn-group" style="margin-left:20px">
+        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        </div>
+        
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel" aria-hidden="true">
@@ -274,7 +279,7 @@
                     <!----begin--DivIPQCInfo-------------------------------------------------------------------->
                     
                     <div class="form-group"> 
-                    <label class="col-sm-1 control-label">测试内容:</label>
+                    <label class="col-sm-1 control-label">备注:</label>
                     <div class="col-sm-10">
                     <span id="IPQCContentShow" class="help-block"></span>
                     <textarea id="IPQCContent" class="form-control" rows="2"></textarea>
@@ -404,10 +409,7 @@
                     
                     </div>
                     <div class="modal-footer">
-                      
-                        
-                       
-                     
+
                         <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 
                     </div>
@@ -565,10 +567,7 @@ function Fun_IPQCRecordInit(dataChoose){
 		$('#recordAuditor').text(dataSelect.recordAuditor);
 		$('#recordAuditDate').text(dataSelect.recordAuditDate);
 		$('#recordAuditResultText').text(dataSelect.recordAuditResultText);
-		
-		
-		
-    
+
 	
 	if(dataSelect.IPQCAuditResult==1||dataSelect.IPQCAuditResult==2){
 		
@@ -633,7 +632,7 @@ function Fun_IPQCRecordInit(dataChoose){
 	  
 	  if(dataSelect.IPQCResult!=""){
 		  $("input:radio[name=IPQCResult][value="+dataSelect.IPQCResult+"]").prop("checked",true);
-		  $('#IPQCContent').val(dataSelect.IPQCContent);
+		  $('#IPQCContent').val(dataSelect.IPQCContent.replace(/<br\/>/g,'\n'));
 	  }
 
 	
@@ -672,9 +671,14 @@ $(document).ready( function () {
 	case "unPass":
 		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2","orderBy":" saveTimeStamp DESC"};
     	break;
-	default:
+	case "all":
 		var tableSQL={"SQL":"SQLTableBillsTaskIPQC","orderBy":" saveTimeStamp DESC"};
+		$("#BTNFilterAll").addClass("active");
 		break;
+	default:		
+	    var tableSQL={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCAuditResult IS NULL","orderBy":" saveTimeStamp DESC"};
+	    $("#BTNFilterSimple").addClass("active");
+	    break;
 	
 	}
 	
@@ -735,7 +739,14 @@ $('#billsTaskTable tbody').on('dblclick', 'tr', function() {
 
 });
 	
-	
+//过滤按钮组
+$('#BTNFilterSimple').click(function() {
+	window.location.href='/app/PM/billsIPQC';
+});
+
+$('#BTNFilterAll').click(function() {
+	window.location.href='/app/PM/billsIPQC?undone=all';
+});
 
 
 //按钮-记录任务单---------
@@ -792,7 +803,7 @@ $('#BTNTaskIPQCSave').click(function() {
 						"DBTable":"ppm_bills_task",
 						"DBID":$('#DBID').text(),
 						"IPQCTestResult":JSON.stringify(IPQCTestResult),
-						"IPQCContent":$('#IPQCContent').val(),
+						"IPQCContent":$('#IPQCContent').val().replace(/\n|\r\n/g,'<br/>'),
 						"IPQCResult":$('input:radio[name="IPQCResult"]:checked').val(),
 						"IPQCMaker":sessionName,
 						"IPQCMakeDate":Ndate,

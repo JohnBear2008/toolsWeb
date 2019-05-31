@@ -119,7 +119,7 @@ SQLTableBillsPBH_T="SELECT A.* FROM (SELECT tbc.BPID,tbc.BTIDfrom,tbc.BPIDfrom,t
 "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.FQCRequest=tbb.FQCPass AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100  ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh_t` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
 "ON tbc.BPID=tbd.pbhBPID) A";
 
-SQLTableTestContents="SELECT * FROM `ppm_testcontents`";
+SQLTableTestContents="SELECT * FROM `ppm_testcontents` ";
 
 SQLGetEMails="SELECT email,contact,contacts FROM `ppm_customers`";
 
@@ -143,3 +143,5 @@ SQLGetCTRBinds="SELECT * FROM `ppm_customerbinds` ";
 SQLCTRBindsCount="SELECT Count(1) AS CountNum,CTRName,CTRVal FROM `ppm_customerbinds` GROUP BY CTRVal ";
 
 SQLGetOldBillInfo="SELECT * FROM `pm_orders`";
+
+SQLGetBindsInfo="SELECT * FROM `ppm_customerbinds`";

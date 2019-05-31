@@ -39,10 +39,9 @@
         <button id="BTNBPTInfo" class="btn btn-info" data-toggle="modal" >方案维护</button>
         <button id="BTNBPTAudit" class="btn btn-warning" data-toggle="modal" >方案审核</button>
         
-        <div class="btn-group">
-        <button  type="text" class="btn btn-default" disabled="disabled">查看</button>
-        <button id="BTNFilterSimple" class="btn btn-primary" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-info">全部模式</button>
+        <div class="btn-group" style="margin-left:20px">
+        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
         </div>
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
@@ -81,6 +80,15 @@
                             
 
                              <table id="tableTrackPLD" class="table table-bordered">
+                             <thead></thead>
+                             
+                             <tbody></tbody>
+                             </table>
+                             
+                             <h3 class="panel-title">方案单信息</h3>
+                             </br>
+                             
+                             <table id="tableTrackBPT" class="table table-bordered">
                              <thead></thead>
                              
                              <tbody></tbody>
@@ -614,30 +622,6 @@
                      </div>
                      <!-------------------------------------------------------------------------->
 
-
-
-                   	<div id="auditTypeDiv" class="form-group">
-
-                   	<label class="col-sm-1 control-label">审核方式:</label>
-                   	<div class="col-sm-6">
-
-                   	<!--    <label class="radio-inline">
-           	            <input type="radio" name="auditType" id="auditTypeOption1"  value="1"> 暂不审核
-           	            </label>-->
-
-                   	    <label class="radio-inline">
-                   	        <input type="radio" name="auditType" id="auditTypeOption2" value="2"> 自我审核
-                   	    </label>
-
-                   	    <label class="radio-inline">
-                  	        <input type="radio" name="auditType" id="auditTypeOption3"  value="3"> 指定审核人
-                  	    </label>
-
-
-                   	</div>
-
-                      </div>
-
                       <!-------------------------------------------------------------------------->
   
 
@@ -759,6 +743,16 @@
             </tr>
         </thead>
     </table>
+    
+    <!-- 点击详情后弹出的窗口 -->
+    <div id="winDetail" class="easyui-window" title="表单详情" closed="true" style="width:80%;height:90%;">
+    
+    <table id="tableDetail" class="table table-bordered">
+
+    </table>
+    
+    </div>
+    <!-- 点击详情后弹出的窗口 -->
 
 
 </div>
@@ -807,27 +801,70 @@ function Fun_BPTDetailInitVal(dataChoose){
 	
 	//-加载跟踪信息----------------------
 	
+//	var SQLParamPLD={
+//			"tableName":"ppm_bills_plan",
+//			"titles":[
+//				"BPID",
+//				"version",
+//				"CTRName",
+////				"topic",
+//				"detail",
+////				"MHEName",
+////				"modelD",
+////				"modelH",
+////				"OGNSystemVersion",
+//				"limitDate",
+//				"files"
+//				],
+//			"BID":"BPID",
+//			"VER":"version",
+//			"filter":"BPID='"+dataSelect.BPID+"'"
+//			};
+//	
+//	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+	
 	var SQLParamPLD={
 			"tableName":"ppm_bills_plan",
 			"titles":[
+				"DBID",
 				"BPID",
 				"version",
 				"CTRName",
 				"topic",
-				"detail",
+				"PGEMaker",
 				"MHEName",
-				"modelD",
-				"modelH",
-				"OGNSystemVersion",
-				"limitDate",
-				"files"
+				"files",
+//				"modelD",
+//				"modelH",
+				"applyDate",
+				"limitDate"
 				],
-			"BID":"BPID",
-			"VER":"version",
 			"filter":"BPID='"+dataSelect.BPID+"'"
 			};
 	
-	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+	
+	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
+	
+	var SQLParamBPT={
+			"tableName":"ppm_bills_blueprint",
+			"titles":[
+				"DBID",
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"PGEMaker",
+				"auditDate",
+				"files",
+//				"modelD",
+//				"modelH",
+				"limitDate",
+				"makeDate"
+				],
+			"filter":"BPTID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTableWithDBID("#tableTrackBPT",SQLParamBPT);
 	
 	//-加载跟踪信息----------------------
 
@@ -901,7 +938,7 @@ function Fun_BPTDetailInitVal(dataChoose){
 		 setCheckBoxValue("modifyReason",dataSelect.modifyReason);
 	 }
 
-	 $('#BPTDescribe').val(dataSelect.BPTDescribe);
+	 $('#BPTDescribe').val(dataSelect.BPTDescribe.replace(/<br\/>/g,'\n'));
 
 	 $('#divFilesUploaded').html("");
 
@@ -955,7 +992,7 @@ function Fun_BPTDetailInitVal(dataChoose){
 
 	  
 	  
-	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion);
+	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion.replace(/<br\/>/g,'\n'));
 		 
 	  $('#maker').text(dataSelect.maker);
 	  $('#makeDate').text(dataSelect.makeDate);
@@ -1199,7 +1236,7 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 
 				 $("#BTStatusText").text(dataSelectTask.BTStatusText);
 				 
-				 $('#taskDBE').val(dataSelectTask.taskDBE);
+				 $('#taskDBE').val(dataSelectTask.taskDBE.replace(/<br\/>/g,'\n'));
 
 				 $("#taskMaker").text(dataSelectTask.taskMaker);
 				 
@@ -1424,15 +1461,33 @@ function findMoreBindInfo(){
 
 }
 
+//函数:查找任务单负责人 Params={"SQL":"SQLGetBindsInfo","filter":"  ","orderBy":" saveTimeStamp DESC"}
+
+function getTaskBindStaff(Params){
+	$.ajax({
+        method:'get',
+        data:Params,
+        url:"/app/PM/getSQLDBData",
+        success:function(data){
+//        	alert("get Binds:"+JSON.stringify(data));
+        	
+        	if(data.length!=0){
+        		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff",data[0].StaffName);
+        	}
+        	
+        },
+        error:function(){}
+    })
+
+}
+
+
 
 //函数,检查输入项是否完整
 
 function checkBPTInput(){
 	
-	if($("#MHEName").val()==null){
-		alert("机型未选择,请检查!");
-		return false;
-	}else if(getCheckBoxValue("modifyReason")==""){
+	if(getCheckBoxValue("modifyReason")==""){
 		alert("修改原因未选择,请检查!");
 		return false;
 	}else if($("#BPTDescribe").val()==""){
@@ -1472,6 +1527,9 @@ function checkTaskInput(){
 	}else if($("#taskStaff").val()==null){
 		alert("任务负责人未选则,请检查!");
 		return false;
+	}else if($("#taskDBE").val()==""){
+		alert("任务要求未填写,请检查!");
+		return false;
 	}
 
 	return true;
@@ -1502,9 +1560,11 @@ $(document).ready( function () {
 		break;
 	case "all":
 		var tableSQL={"SQL":"SQLTableBillsBPT","orderBy":" saveTimeStamp DESC"};
+		$("#BTNFilterAll").addClass("active");
 	    	break;
 	default:	
 	    var tableSQL={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND (BPTStatus IS NULL OR auditResult<>1) ","orderBy":" saveTimeStamp DESC"};
+	    $("#BTNFilterSimple").addClass("active");
 		break;
 	
 	}
@@ -1514,10 +1574,7 @@ $(document).ready( function () {
 //	}else{
 //		var tableSQL={"SQL":"SQLTableBillsBPT","orderBy":" saveTimeStamp DESC"};
 //	}
-    
-
 //	console.log("sessionName:"+sessionName);
-
 
     tableInfo={
 			"tableID":"#billsBPTTable",
@@ -1692,41 +1749,41 @@ $("[data-toggle='popover']").popover({html : true });
 
 
 
-//radio 定义更换按键触发事件-----------
-$('input:radio[name="auditType"]').click(function(){
-	var radioValue = $('input:radio[name="auditType"]:checked').val();
-//	alert(radioValue);
-
-	switch(radioValue){
-	case "1":
-
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
-	    $("#auditor").attr("disabled",true);
-	    $('#auditDate').text("");
-	    $('#auditResult').val("");
-
-	    break;
-	case "2":
-
-
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
-	    $("#auditor").attr("disabled",true);
-	    $('#auditDate').text("");
-	    $('#auditResult').val(0);
-	    break;
-	case "3":
-
-	    $('#auditDate').text("");
-
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
-	    $("#auditor").attr("disabled",false);
-	    $('#auditResult').val(0);
-	    break;
-
-
-	}
-
-});
+////radio 定义更换按键触发事件-----------
+//$('input:radio[name="auditType"]').click(function(){
+//	var radioValue = $('input:radio[name="auditType"]:checked').val();
+////	alert(radioValue);
+//
+//	switch(radioValue){
+//	case "1":
+//
+//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
+//	    $("#auditor").attr("disabled",true);
+//	    $('#auditDate').text("");
+//	    $('#auditResult').val("");
+//
+//	    break;
+//	case "2":
+//
+//
+//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
+//	    $("#auditor").attr("disabled",true);
+//	    $('#auditDate').text("");
+//	    $('#auditResult').val(0);
+//	    break;
+//	case "3":
+//
+//	    $('#auditDate').text("");
+//
+//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
+//	    $("#auditor").attr("disabled",false);
+//	    $('#auditResult').val(0);
+//	    break;
+//
+//
+//	}
+//
+//});
 
 
 
@@ -1738,10 +1795,7 @@ $('#BTNBPTInfo').click(function() {
     if (dataSelect == undefined) {
         alert("操作提示:单击选中数据行后,再双击可快速打开表单!");
     } else {
-
-    	
     	Fun_BPTDetailInit(dataSelect);
-
 
     }
 });
@@ -1829,16 +1883,23 @@ $('#BTNTaskAdd').click(function(){
 //	$("#taskMHEName").selectpicker('val','');
 //	$("#taskModel").selectpicker('val','');
 	
-
-	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
 	
 	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",Fun_getSelectText($('#MHEName option:selected').text()));
 	
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+	if($('#modelD option:selected').text()!=""){
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#modelD option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+	}else{
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel");
+//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
+	}
 	
 	$('#taskOGNSystemVersion').val($("#OGNSystemVersion").val());
 	
 	$('#taskLimitDate').val($('#limitDate').val());
+	
+	
+	
 
 	$('#taskDBE').val("");
 	$('#taskMaker').text("");
@@ -1987,7 +2048,7 @@ $('#BTNTaskSave').click(function(){
 						"taskBugID":$('#taskBugID').val(),
 						"taskStaff":$('#taskStaff option:selected').text(),
 						"modfiyABE":modfiyABE,
-						"taskDBE":$('#taskDBE').val(),
+						"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 						"taskLimitDate":$('#taskLimitDate').val(),
 						"taskMaker":sessionName,
 						"taskMakeDate":Ndate,
@@ -2017,7 +2078,7 @@ $('#BTNTaskSave').click(function(){
 							"taskBugID":$('#taskBugID').val(),
 							"taskStaff":$('#taskStaff option:selected').text(),
 							"modfiyABE":modfiyABE,
-							"taskDBE":$('#taskDBE').val(),
+							"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 							"taskLimitDate":$('#taskLimitDate').val(),
 							"taskMaker":sessionName,
 							"taskMakeDate":Ndate,
@@ -2047,7 +2108,7 @@ $('#BTNTaskSave').click(function(){
 								"taskBugID":$('#taskBugID').val(),
 								"taskStaff":$('#taskStaff option:selected').text(),
 								"modfiyABE":modfiyABE,
-								"taskDBE":$('#taskDBE').val(),
+								"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 								"taskLimitDate":$('#taskLimitDate').val(),
 								"taskMaker":sessionName,
 								"taskMakeDate":Ndate,
@@ -2075,7 +2136,17 @@ $('#BTNTaskSave').click(function(){
 
 });
 
+//任务系统切换事件
 
+$("#taskModel").change(function() {
+	
+	if($("#taskMakeDate").text()==""){//自动抓取功能只在新增时生效
+		console.log($("#taskModel option:selected").text());
+		getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#taskModel option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+		
+	}
+
+})
 
 
 //按钮-方案保存
@@ -2087,7 +2158,6 @@ $('#BTNBPTSave').click(function(){
 	}else{
 		
 		if(checkBPTInput()){
-			
 
 			var BPTBPID=$('#BPTBPID').val();
 			var BPTID=$('#BPTID').val();
@@ -2101,12 +2171,9 @@ $('#BTNBPTSave').click(function(){
 
 		    var modifyType=$('input:radio[name="modifyType"]:checked').val();
 		    var	modifyReason=getCheckBoxValue("modifyReason");
-		    var BPTDescribe=$('#BPTDescribe').val();
+		    var BPTDescribe=$('#BPTDescribe').val().replace(/\n|\r\n/g,'<br/>');
 		    var auditor=Fun_getSelectText($('#auditor option:selected').text());
 		    console.log("auditor:"+auditor);
-		    
-		    
-		    
 
 		    var files=[];
 			
@@ -2191,10 +2258,6 @@ $('#BTNBPTSave').click(function(){
 		}
 		
 	}
-	
-
-	
-
 
 });
 
@@ -2234,7 +2297,7 @@ $('#BTNBPTUpdateVer').click(function(){
 
 	            var modifyType=$('input:radio[name="modifyType"]:checked').val();
 	            var	modifyReason=getCheckBoxValue("modifyReason");
-	            var BPTDescribe=$('#BPTDescribe').val();
+	            var BPTDescribe=$('#BPTDescribe').val().replace(/\n|\r\n/g,'<br/>');
 //	            var auditor=Fun_getSelectText($('#auditor option:selected').text());
 //	            console.log("auditor:"+auditor);
 
@@ -2253,47 +2316,101 @@ $('#BTNBPTUpdateVer').click(function(){
 	        	});
 
 
-	            var billData={
-	        			"DBTable":"ppm_bills_blueprint",
-	        			"BPTBPID":BPTBPID,
-	        			"BPTID":BPTID,
-	        			"BPTVersion":newVersion,
-	        			"CTRName":CTRName,
-	        			"PGEMaker":PGEMaker,
-	        			"limitDate":limitDate,
-	        			"MHEName":MHEName,
-	        			"modelD":$('#modelD option:selected').text(),
-	        			"modelH":$('#modelH option:selected').text(),
-	        			"OGNSystemVersion":OGNSystemVersion,
-	        			"modifyType":modifyType,
-	        			"modifyReason":modifyReason,
-	        			"BPTDescribe":BPTDescribe,
-	        			"maker":sessionName,
-	        			"makeDate":Ndate,
-	        			"auditResult":0,
-	        			"files":JSON.stringify(files)
-	        			}
+	            
 
-	            	console.log("无方案 billData:"+JSON.stringify(billData));
+//	            	console.log("无方案 billData:"+JSON.stringify(billData));
 			 
 
-		 if(allTaskCheck==0){
-			 addDBData(billData);
-		 }else{
-			 
-			var msg2=confirm("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
-			if(msg2){
-				addDBData(billData);
-			}else{
-				alert("方案单版本更新取消!");
-			}
-			 
+//		 if(allTaskCheck==0){
+//			 addDBData(billData);
+//		 }else{
+//			 
+//			var msg2=confirm("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
+//			if(msg2){
+//				addDBData(billData);
+//			}else{
+//				alert("方案单版本更新取消!");
+//			}
+//			 
+//		 }
+		 
+		 if(allTaskCheck!=0){
+		 alert("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
 		 }
+		 
+		 
+		 var oldBPTData={
+     			"DBTable":"ppm_bills_blueprint",
+     			"DBID":$('#DBID').val(),
+     			"BPTStatus":0
+     	 }
+     	
+     	 let ajax1=$.ajax({
+             method: 'post',
+             url: '/app/PM/updDBData',
+             data: oldBPTData,
+             success: function(data, textStatus) {
+
+             },
+             error: function(XMLHttpRequest, textStatus, errorThrown) {}
+         });
+		 
+		 var newBPTData={
+     			"DBTable":"ppm_bills_blueprint",
+     			"BPTBPID":BPTBPID,
+     			"BPTID":BPTID,
+     			"BPTVersion":newVersion,
+     			"CTRName":CTRName,
+     			"PGEMaker":PGEMaker,
+     			"limitDate":limitDate,
+     			"MHEName":MHEName,
+     			"modelD":$('#modelD option:selected').text(),
+     			"modelH":$('#modelH option:selected').text(),
+     			"OGNSystemVersion":OGNSystemVersion,
+     			"modifyType":modifyType,
+     			"modifyReason":modifyReason,
+     			"BPTDescribe":BPTDescribe,
+     			"maker":sessionName,
+     			"makeDate":Ndate,
+     			"auditResult":0,
+     			"files":JSON.stringify(files)
+     			}
+		 
+		 let ajax2=$.ajax({
+             method: 'post',
+             url: '/app/PM/addDBData',
+             data: newBPTData,
+             success: function(data) {
+
+            },
+            error:function(err){
+         	   
+         	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+         		   alert("系统中已存在重复数据,请检查!");
+         	   }else{
+         		   alert("失败数据:"+JSON.stringify(err));
+         	   }
+         	   
+            	
+            }
+         });
+		 
+		 $.when(ajax1,ajax2).done(function(){
+     		
+				alert("更新版本成功!");
+				window.location.reload();
+
+		});
+		 
+
+		 
+		 
+		 
+		 
 
      }
 
 });
-
 
 
 //按钮-表单审核通过按钮
@@ -2424,7 +2541,7 @@ $('#BTNBPTAuditYes').click(function() {
 								"auditor":sessionName,
 								"auditDate":Ndate,
 								"auditResult":1,
-								"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+								"BPTAuditOpinion":$('#BPTAuditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
 								"BPTStatus":1,
 								"filter":" BPTVersion ="+$('#BPTVersion').text()
 						}
@@ -2508,7 +2625,7 @@ $('#BTNBPTAuditYes').click(function() {
 							"auditor":sessionName,
 							"auditDate":Ndate,
 							"auditResult":1,
-							"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+							"BPTAuditOpinion":$('#BPTAuditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
 							"BPTStatus":1,
 							"filter":" BPTVersion ="+$('#BPTVersion').text()
 					}
@@ -2601,7 +2718,7 @@ $('#BTNBPTAuditNo').click(function() {
 					"auditor":sessionName,
 					"auditDate":Ndate,
 					"auditResult":2,
-					"BPTAuditOpinion":$('#BPTAuditOpinion').val(),
+					"BPTAuditOpinion":$('#BPTAuditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
 					"BPTStatus":2
 			}
 

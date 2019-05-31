@@ -30,7 +30,7 @@
 	<hr>
 	
 	<div class="modal fade" id="winModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:75%">
+    <div class="modal-dialog" style="width:90%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -49,6 +49,40 @@
             
 
             </div>
+            
+ <!-------------------------------------------------------------------------->
+
+            
+            <div class="form-group">  
+            
+            <hr>
+            <button id="BTNDelBindDo" class="btn btn-danger" >解除绑定</button>
+            </div>
+            
+            
+
+            <!-------------------------------------------------------------------------->
+            <table id="tableBinds" class="table table-bordered" width="100%" >
+            <thead>
+                <tr>
+                    <th>DBID</th>
+                    <th>机种</th>
+                    <th>系统</th>
+                    <th>负责人</th>
+                    <th>代理人1</th>
+                    <th>代理人2</th>
+                    <th>生效时间</th>
+                </tr>
+            </thead> 
+            <tbody>
+            </tbody>
+           
+            </table>
+            
+            
+          
+            
+            <!-------------------------------------------------------------------------->
 
             <!-------------------------------------------------------------------------->
             
@@ -67,31 +101,28 @@
             </td>
             </tr>
             <tr>
-            <th>DSP系统</th>
+            <th>系统</th>
             <td> 
-            <select  id="DModelName" class="selectpicker" data-live-search="true"> 
+            <select  id="ModelName" class="selectpicker" data-live-search="true"> 
             </select>
             </td>
             </tr>
             <tr>
-            <th>HMI系统</th>
+            <th>负责人</th>
             <td> 
-            <select  id="HModelName" class="selectpicker" data-live-search="true"> 
-            </select>
+            <select  id="StaffName" class="selectpicker" data-live-search="true"></select>
             </td>
             </tr>
             <tr>
-            <th>DSP负责人</th>
+            <th>代理人1</th>
             <td> 
-            <select  id="DStaffName" class="selectpicker" data-live-search="true"> 
-            </select>
+            <select  id="StaffNameD1" class="selectpicker" data-live-search="true"></select>
             </td>
             </tr>
             <tr>
-            <th>HMI负责人</th>
+            <th>代理人2</th>
             <td> 
-            <select  id="HStaffName" class="selectpicker" data-live-search="true"> 
-            </select>
+            <select  id="StaffNameD2" class="selectpicker" data-live-search="true"></select>
             </td>
             </tr>
            
@@ -111,39 +142,7 @@
            
    
             </div>
-            <!-------------------------------------------------------------------------->
-
-            
-            <div class="form-group">  
-            
-            <hr>
-            <button id="BTNDelBindDo" class="btn btn-danger" >解除绑定</button>
-            </div>
-            
-            
-
-            <!-------------------------------------------------------------------------->
-            <table id="tableBinds" class="table table-bordered" width="100%" >
-            <thead>
-                <tr>
-                    <th>DBID</th>
-                    <th>机种</th>
-                    <th>DSP系统</th>
-                    <th>HMI系统</th>
-                    <th>DSP负责人</th>
-                    <th>HMI负责人</th>
-                    <th>生效时间</th>
-                </tr>
-            </thead> 
-            <tbody>
-            </tbody>
            
-            </table>
-            
-            
-          
-            
-            <!-------------------------------------------------------------------------->
             </div>
             <div class="modal-footer">
 
@@ -236,10 +235,10 @@ function tableBindsShow(FilterDBID){
 	var columnsData=[
 		{ data: 'DBID' ,"visible": false},
         { data: 'MHEName' },
-        { data: 'DModelName' },
-        { data: 'HModelName' },
-        { data: 'DStaffName' },
-        { data: 'HStaffName' },
+        { data: 'ModelName' },
+        { data: 'StaffName' },
+        { data: 'StaffNameD1' },
+        { data: 'StaffNameD2' },
         { data: 'saveTimeStamp' }
     ];
 	
@@ -250,12 +249,14 @@ function tableBindsShow(FilterDBID){
 				"DBTable":"ppm_customerbinds",
 				"Filter":[{"CTRVal":FilterDBID,"CType":"="}]
 		}
-		showFilterDBData(DataPara,columnsData);
+		
+		showFilterDBDataAsyncNo(DataPara,columnsData);
 		
 		let tablePanel = $('#tableBinds').DataTable();
+		
+		$('#tableBinds tbody').unbind();
 
 		$('#tableBinds tbody').on('click', 'tr', function() {
-
 
 		    if ($(this).hasClass('selected')) {
 		        $(this).removeClass('selected');
@@ -320,10 +321,11 @@ $('#tableDataBinds tbody').on('dblclick', 'tr', function() {
 //初始化select数据	
 Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#CTRName");
 Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName");
-Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP'"},"#DModelName");
-Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI'"},"#HModelName");
-Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"groupLabel='DSP' AND status=1"},"#DStaffName");
-Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"groupLabel='HMI' AND status=1"},"#HStaffName");
+Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems"},"#ModelName");
+Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"status=1"},"#StaffName");
+Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"status=1"},"#StaffNameD1");
+Fun_getSQLSelectDBData({SQL:"SQLSRStaffsFilter",filter:"status=1"},"#StaffNameD2");
+
 
 //解除绑定按钮----------
 $('#BTNBindsDel').click(function() {
@@ -350,66 +352,66 @@ $("#CTRName").change(function(){
 	
 	tableBindsShow($("#CTRName option:selected").val());
 
-		$("#spanDBType").text($("#OrgDBType option:selected").text());
-		$("#spanTableName").text($("#OrgDBType option:selected").val());
-		$("#spanBaseDBID").text("");
-		$("#spanBaseName").text("");
+//		$("#spanDBType").text($("#OrgDBType option:selected").text());
+//		$("#spanTableName").text($("#OrgDBType option:selected").val());
+//		$("#spanBaseDBID").text("");
+//		$("#spanBaseName").text("");
 		
 })
 	
-//定义绑定数据变更事件---------------------------------	
-$("#BindDBType").change(function(){
-
-		var DBtype=$("#BindDBType").val();
-
-				switch(DBtype)
-				{
-				    case "ppm_customers":
-				    	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#BindDBTypeSub");
-				        break;
-				    case "ppm_staffs":
-
-				    	Fun_getSQLSelectDBData({SQL:"SQLSRStaffsBind"},"#BindDBTypeSub");
-				        break;
-				    case "ppm_machines":
-
-				    	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#BindDBTypeSub");
-				        break;
-				        
-				    case "ppm_systems":
-
-				    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystemsBind"},"#BindDBTypeSub");
-				        break;
-				        
-				    default:
-				    	
-				    	break;
-				      
-				}
-
-})
+////定义绑定数据变更事件---------------------------------	
+//$("#BindDBType").change(function(){
+//
+//		var DBtype=$("#BindDBType").val();
+//
+//				switch(DBtype)
+//				{
+//				    case "ppm_customers":
+//				    	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#BindDBTypeSub");
+//				        break;
+//				    case "ppm_staffs":
+//
+//				    	Fun_getSQLSelectDBData({SQL:"SQLSRStaffsBind"},"#BindDBTypeSub");
+//				        break;
+//				    case "ppm_machines":
+//
+//				    	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#BindDBTypeSub");
+//				        break;
+//				        
+//				    case "ppm_systems":
+//
+//				    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystemsBind"},"#BindDBTypeSub");
+//				        break;
+//				        
+//				    default:
+//				    	
+//				    	break;
+//				      
+//				}
+//
+//})
 	
 
 //	
-//定义基础数据选择数据变更事件---------------------------------	
-$("#OrgDBTypeSub").change(function(){
-	
-	console.log("OrgDBType:"+$("#OrgDBType option:selected").val());
-	console.log("OrgDBTypeSub:"+$("#OrgDBTypeSub option:selected").val());
-	
-
-    	$("#spanDBType").text($("#OrgDBType option:selected").text());
-    	$("#spanBaseDBID").text($("#OrgDBTypeSub option:selected").val());
-		$("#spanBaseName").text(Fun_getSelectText($("#OrgDBTypeSub option:selected").text()));
-		
-		
-		if($("#OrgDBType option:selected").val()!=undefined&&$("#OrgDBTypeSub option:selected").val()!=undefined){
-
-				 $("#OrgDBType").attr("disabled",true);
-				 $("#OrgDBTypeSub").attr("disabled",true);
-		}
-
-})	
+////定义基础数据选择数据变更事件---------------------------------	
+//$("#OrgDBTypeSub").change(function(){
+//	
+//	console.log("OrgDBType:"+$("#OrgDBType option:selected").val());
+//	console.log("OrgDBTypeSub:"+$("#OrgDBTypeSub option:selected").val());
+//	
+//
+//    	$("#spanDBType").text($("#OrgDBType option:selected").text());
+//    	$("#spanBaseDBID").text($("#OrgDBTypeSub option:selected").val());
+//		$("#spanBaseName").text(Fun_getSelectText($("#OrgDBTypeSub option:selected").text()));
+//		
+//		
+//		if($("#OrgDBType option:selected").val()!=undefined&&$("#OrgDBTypeSub option:selected").val()!=undefined){
+//
+//				 $("#OrgDBType").attr("disabled",true);
+//				 $("#OrgDBTypeSub").attr("disabled",true);
+//		}
+//
+//})	
 
 
 //按钮-添加绑定触发按钮
@@ -431,14 +433,14 @@ $('#BTNAddBindDo').click(function() {
 			CTRVal:$("#CTRName option:selected").val(),
 			MHEName:$("#MHEName option:selected").text(),
 			MHEVal:$("#MHEName option:selected").val(),
-			DModelName:$("#DModelName option:selected").text(),
-			DModelVal:$("#DModelName option:selected").val(),
-			HModelName:$("#HModelName option:selected").text(),
-			HModelVal:$("#HModelName option:selected").val(),
-			DStaffName:$("#DStaffName option:selected").text(),
-			DStaffVal:$("#DStaffName option:selected").val(),
-			HStaffName:$("#HStaffName option:selected").text(),
-			HStaffVal:$("#HStaffName option:selected").val()
+			ModelName:$("#ModelName option:selected").text(),
+			ModelVal:$("#ModelName option:selected").val(),
+			StaffName:$("#StaffName option:selected").text(),
+			StaffVal:$("#StaffName option:selected").val(),
+			StaffNameD1:$("#StaffNameD1 option:selected").text(),
+			StaffValD1:$("#StaffNameD1 option:selected").val(),
+			StaffNameD2:$("#StaffNameD2 option:selected").text(),
+			StaffValD2:$("#StaffNameD2 option:selected").val()
 	}
 	
 	console.log("DataBind:"+JSON.stringify(DataBind));
