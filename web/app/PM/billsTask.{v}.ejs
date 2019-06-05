@@ -173,20 +173,20 @@
                     <label class="col-sm-1 control-label">修改属性:</label>
                 	 <div class="col-sm-8">
                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE1"> 画面
+                	        <input type="checkbox" name="modifyABE"  value="ABE1"> 画面
                 	    </label>
                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE2"> 结构
+                	        <input type="checkbox" name="modifyABE"  value="ABE2"> 结构
                 	    </label>
                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE3"> 参数
+                	        <input type="checkbox" name="modifyABE"  value="ABE3"> 参数
                 	    </label>
 
                 	    <label class="checkbox-inline">
-               	        <input type="checkbox" name="modfiyABE"  value="ABE4">通信
+               	        <input type="checkbox" name="modifyABE"  value="ABE4">通信
                	    </label>
                	        <label class="checkbox-inline">
-               	        <input type="checkbox" name="modfiyABE"  value="ABE5">逻辑
+               	        <input type="checkbox" name="modifyABE"  value="ABE5">逻辑
                	    </label>
                	        
                 	 </div>
@@ -482,15 +482,13 @@
                     
                     </div>
                     
-                    
-                	 
                 	 
                 	 <!-------------------------------------------------------------------------->
                 	 <div class="form-group">  
                 	 
-                	  <label for="recordMaker" class="col-sm-1 control-label">记录人:</label>                     
-                      <div class="col-sm-5">
-                      <span id="recordMaker" class="help-block"></span>  	
+                	 <label for="recordMaker" class="col-sm-1 control-label">记录人:</label>                     
+                     <div class="col-sm-5">
+                     <span id="recordMaker" class="help-block"></span>  	
                   	 </div>
                 	 
                 	 
@@ -510,6 +508,7 @@
                     <select  id="recordAuditor" class="selectpicker" data-live-search="true"> 
                     </select>
                     
+                    <button id="BTNGetTaskAuditor" class="btn btn-success" data-toggle="modal" >系统确认</button>
 
                     </div>
                     
@@ -883,9 +882,9 @@ function Fun_taskRecordInit(dataChoose){
 //     $("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true);
 //     $('input:radio[name="taskType"]').attr("disabled",true);
 	
-	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
-    setCheckBoxValue("modfiyABE",dataSelect.modfiyABE);
-//    $('input:checkbox[name="modfiyABE"]').attr("disabled",true);
+	$('input:checkbox[name="modifyABE"]').prop("checked",false);
+    setCheckBoxValue("modifyABE",dataSelect.modifyABE);
+//    $('input:checkbox[name="modifyABE"]').attr("disabled",true);
 	
 
 	  Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",dataSelect.taskMHEName);
@@ -1198,7 +1197,7 @@ function checkTaskInput(){
 	}else if($("#taskModel").val()==null){
 		alert("系统未选择,请检查!");
 		return false;
-	}else if(getCheckBoxValue("modfiyABE")==""){
+	}else if(getCheckBoxValue("modifyABE")==""){
 		alert("修改内容未选择,请检查!");
 		return false;
 	}else if($("#taskStaff").val()==null){
@@ -1235,11 +1234,18 @@ function checkAcceptInput(){
 //检查输入项
 function checkRecordInput(){
 	
+	console.log("isInternship(sessionName):"+isInternship(sessionName));
+	
 	if($("#modifyContent").val()==""){
 		alert("修改内容未填写,请检查!");
 		return false;
 	}else if($("#functionsDBE").val()==""){
 		alert("功能说明未填写,请检查!");
+		return false;
+	}else if(isInternship(sessionName)&&$('#recordAuditor option:selected').text()==sessionName){
+		
+		
+		alert("您现在处于实习期,不允许自我审核,请重新选择审核人!");
 		return false;
 	}
 	
@@ -1247,6 +1253,82 @@ function checkRecordInput(){
 	return true;
 	
 }
+
+//获取系统审核人
+
+var getTaskAuditor=function(modifyABE,staff){
+	
+	let modifyABECheck=true;
+	
+	let arrCompare=['ABE1','ABE3'];
+	
+
+	      $("[name='modifyABE']:checked").each(function () {
+	    	  if(arrCompare.indexOf($(this).val())>-1){
+	    		  modifyABECheck=modifyABECheck&&true;
+	    	  }else{
+	    		  modifyABECheck=modifyABECheck&&false;
+	    	  }
+	      })
+
+	      console.log("modifyABECheck:"+modifyABECheck);
+	      
+	
+	
+	$.ajax({
+        method:'get',
+        data:{SQL:"SQLGetEntryDays",filter:"staffName='"+staff+"'"},
+        url:"/app/PM/getSQLDBData",
+//        async:false, 
+        success:function(data){
+       	 console.log("data:"+JSON.stringify(data));
+
+       	 if(data.length!=0){
+       		 if(data[0].entryDays>90&&modifyABECheck){
+       			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",staff);
+       		 }else{
+       			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",$('#taskMaker').text());
+       		 }
+
+       	 }
+        },
+        error:function(){}
+    })
+	
+}
+
+
+//检查是否处于实习期
+var isInternship=function(staff,result){
+	
+	$.ajax({
+        method:'get',
+        data:{SQL:"SQLGetEntryDays",filter:"staffName='"+staff+"'"},
+        url:"/app/PM/getSQLDBData",
+        async:false, 
+        success:function(data){
+       	 console.log("data:"+JSON.stringify(data));
+       	 
+
+       	 if(data.length!=0){
+       		 if(data[0].entryDays>90){
+       			 
+       			 result=false;
+       		 }else{
+       			 result=true;
+       			 
+       		 }
+
+       	 }
+        },
+        error:function(){}
+    })
+    
+    return result;
+}
+
+
+
 
 //页面加载函数---------------
 $(document).ready( function () {
@@ -1385,7 +1467,7 @@ $('#BTNTaskSave').click(function(){
 						"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 						"taskBugID":$('#taskBugID').val(),
 						"taskStaff":$('#taskStaff option:selected').text(),
-						"modfiyABE":getCheckBoxValue('modfiyABE'),
+						"modifyABE":getCheckBoxValue('modifyABE'),
 						"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 						"taskLimitDate":$('#taskLimitDate').val(),
 						"taskMaker":sessionName,
@@ -1854,7 +1936,7 @@ $('#BTNTaskUpdVer').click(function() {
 						"taskCTRName":dataSelect.taskCTRName,
 						"taskStaff":dataSelect.taskStaff,
 						"taskBPID":dataSelect.taskBPID,
-						"modfiyABE":dataSelect.modfiyABE,
+						"modifyABE":dataSelect.modifyABE,
 						"taskDBE":dataSelect.taskDBE,
 						"taskLimitDate":dataSelect.taskLimitDate,
 						"taskMaker":sessionName,
@@ -2020,11 +2102,11 @@ $('#BTNTaskRecordAudit').click(function() {
 									
 									
 								});
-						}else{
-							alert("您不是该记录的指定审核人,无法审核!");
 						}
 						
 						
+				  }else{
+						alert("您不是该记录的指定审核人,无法审核!");
 				  }
 				  
 				  
@@ -2081,6 +2163,15 @@ $('#BTNTaskRecordAudit').click(function() {
 //    }
 //    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
 //});
+
+
+
+//获取任务单审核人
+$('#BTNGetTaskAuditor').click(function() {
+	
+	getTaskAuditor($("input[name='modifyABE']:checked"),sessionName);
+
+});
 
 
 //按钮-表单关闭按钮,添加刷新数据功能

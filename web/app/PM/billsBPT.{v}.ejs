@@ -382,7 +382,7 @@
 
                  	 <button id="BTNTaskDel" type="button" class="btn btn-danger">删除任务</button>
                  	 
-                 	<button id="BTNTaskAuto" type="button" class="btn btn-danger">智能分配任务</button>
+                 	<!--	<button id="BTNTaskAuto" type="button" class="btn btn-danger">智能分配任务</button>-->
                  	 </div>
                  	 </div>
 
@@ -473,20 +473,20 @@
                      <label class="col-sm-2 control-label">修改属性:</label>
                  	 <div class="col-sm-8">
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE1"> 画面
+                 	        <input type="checkbox" name="modifyABE"  value="ABE1"> 画面
                  	    </label>
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE2"> 结构
+                 	        <input type="checkbox" name="modifyABE"  value="ABE2"> 结构
                  	    </label>
                  	    <label class="checkbox-inline">
-                 	        <input type="checkbox" name="modfiyABE"  value="ABE3"> 参数
+                 	        <input type="checkbox" name="modifyABE"  value="ABE3"> 参数
                  	    </label>
 
                  	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE4">通信
+                	        <input type="checkbox" name="modifyABE"  value="ABE4">通信
                 	    </label>
                 	        <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE5">逻辑
+                	        <input type="checkbox" name="modifyABE"  value="ABE5">逻辑
                 	    </label>
                 	        
                  	 </div>
@@ -631,7 +631,7 @@
                      <div class="form-group">
 
                      <label  class="col-sm-1 control-label" for="name">制单人:</label>
-                     <div class="col-sm-3">
+                     <div class="col-sm-5">
                     
                      <span id="maker"  class="help-block"></span>
                      
@@ -651,10 +651,15 @@
                      <div class="form-group">
 
                      <label  class="col-sm-1 control-label" for="name">审核人:</label>
-                     <div class="col-sm-3">
+                     <div class="col-sm-5">
                      <select  id="auditor" class="selectpicker" data-live-search="true">
                      </select>
+                     
+                     <button id="BTNGetAuditor" type="button" class="btn btn-default">系统指定</button>
+                     
                      </div>
+                     
+                    
 
                      <label  class="col-sm-1 control-label" for="name">审核日期:</label>
                      <div class="col-sm-3">
@@ -787,7 +792,65 @@ function Fun_BTIDCreate(){
 
 }
 
+//函数 获取方案审核人
 
+var getUpAuditor=function(BPID,staffName){
+	
+	let orderFrom=BPID.substring(BPID.length-1);
+	console.log("orderFrom:"+orderFrom);
+	
+	switch(orderFrom){
+	case 'A':
+	case 'B':
+		
+		switch(staffName){
+		case (staffName=='周永汉'&&$('#modelH option:selected').text().indexOf("OS")!= -1):
+			
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
+
+			break;
+			
+		case (staffName=='周颖'&&$('#modelH option:selected').text().indexOf("Q15")!= -1):
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
+			break;
+
+		default:
+			$.ajax({
+		         method:'get',
+		         data:{SQL:"SQLGetUpAuditor",filter:"staffName='"+staffName+"'"},
+		         url:"/app/PM/getSQLDBData",
+//		         async:false, 
+		         success:function(data){
+		        	 if(data.length!=0){
+		        		 console.log(data[0].upAuditor);
+		        		 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",data[0].upAuditor);
+		        	 }
+		         },
+		         error:function(){}
+		     })
+
+		}
+
+	     break;
+	case 'C':
+		if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()!=undefined){
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
+		}else{
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","许静静");
+		}
+		break;
+	case 'D':
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","孙凌财");
+		break;
+		
+	
+	}
+	
+	
+	
+	
+	 
+}
 
 
 //函数:详情按钮详情页加载数据------------------------
@@ -978,7 +1041,7 @@ function Fun_BPTDetailInitVal(dataChoose){
 					]
 		     }
 		
-		Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+	  Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
 		
 	  $('#taskBPID').val(dataSelect.BPID);
 	  $('#taskLimitDate').val(dataSelect.limitDate);
@@ -989,8 +1052,6 @@ function Fun_BPTDetailInitVal(dataChoose){
 		
 	  Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",dataSelect.modelD);
 
-
-	  
 	  
 	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion.replace(/<br\/>/g,'\n'));
 		 
@@ -998,12 +1059,12 @@ function Fun_BPTDetailInitVal(dataChoose){
 	  $('#makeDate').text(dataSelect.makeDate);
 	  
 	  if(dataSelect.auditor==""){
-		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
+
 	  }else{
 		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",dataSelect.auditor);
 	  }
 
-	  
 	  $('#auditDate').text(dataSelect.auditDate);
 
 
@@ -1172,9 +1233,9 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 					$("#taskTypeRspan").show();
 
 
-			 	 $('input:checkbox[name="modfiyABE"]').prop("checked",false);
+			 	 $('input:checkbox[name="modifyABE"]').prop("checked",false);
 
-			     setCheckBoxValue("modfiyABE",dataSelectTask.modfiyABE);
+			     setCheckBoxValue("modifyABE",dataSelectTask.modifyABE);
 		     
 			     $("#taskDBID").val(dataSelectTask.DBID);
 
@@ -1521,7 +1582,7 @@ function checkTaskInput(){
 	}else if($("#taskModel").val()==null){
 		alert("系统未选择,请检查!");
 		return false;
-	}else if(getCheckBoxValue("modfiyABE")==""){
+	}else if(getCheckBoxValue("modifyABE")==""){
 		alert("修改属性未选择,请检查!");
 		return false;
 	}else if($("#taskStaff").val()==null){
@@ -1868,7 +1929,7 @@ $('#BTNTaskAdd').click(function(){
 	
 	$('input:radio[name="taskType"]').attr("disabled",false);
 
-	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
+	$('input:checkbox[name="modifyABE"]').prop("checked",false);
 	
 	$("input:radio[name=taskSortType][value='D']").prop("checked",true);
 
@@ -1898,8 +1959,6 @@ $('#BTNTaskAdd').click(function(){
 	
 	$('#taskLimitDate').val($('#limitDate').val());
 	
-	
-	
 
 	$('#taskDBE').val("");
 	$('#taskMaker').text("");
@@ -1909,69 +1968,62 @@ $('#BTNTaskAdd').click(function(){
 
 
 });
-//按钮-任务智能分配------
-$('#BTNTaskAuto').click(function() {
-	
-let CTRNameDBID=$('#CTRName option:selected').val();
-	
-	
-if(CTRNameDBID==undefined){
-	alert("请选择客户,以便系统加载绑定数据!");
-}else{
-	let filter="CTRVal="+CTRNameDBID;
 
-	if($('#MHEName option:selected').val()!=undefined){
-		filter=filter+" AND MHEVal="+$('#MHEName option:selected').val();
-	}
-	
-	if($('#modelD option:selected').val()!=undefined){
-		filter=filter+" AND DModelVal="+$('#modelD option:selected').val();
-	}
-	
-	if($('#modelH option:selected').val()!=undefined){
-		filter=filter+" AND HModelVal="+$('#modelH option:selected').val();
-	}
-	
-	
-	let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
-
-		let bindStaffs=[];
-		
-		
-		 $.ajax({
-	         method:'get',
-	         data:selectSQL,
-	         url:"/app/PM/getSQLDBData",
-	         async:false, 
-	         success:function(data){
-	        	 if(data.length==0){
-	        		 if(confirm("系统未检测精确绑定数据,是否启用模糊关系查找?")){
-	        			 findMoreBindInfo();
-	        		 }
-	        		 
-	        	 }else{
-	        		 let bindsInfo=data[0];
-//	        		 alert("成功数据:" + JSON.stringify(data));
-	        		 
-	        		 createSystemTasks(bindsInfo);
-	        	 }
-	         },
-	         error:function(){}
-	     })
-	     
-//--------------------------------------------------------------	     
-	     
-	     
-		 
-
-			 
-			 
-			 
-	
-			
-	}
-
-})
+////按钮-任务智能分配------
+//$('#BTNTaskAuto').click(function() {
+//	
+//let CTRNameDBID=$('#CTRName option:selected').val();
+//	
+//	
+//if(CTRNameDBID==undefined){
+//	alert("请选择客户,以便系统加载绑定数据!");
+//}else{
+//	let filter="CTRVal="+CTRNameDBID;
+//
+//	if($('#MHEName option:selected').val()!=undefined){
+//		filter=filter+" AND MHEVal="+$('#MHEName option:selected').val();
+//	}
+//	
+//	if($('#modelD option:selected').val()!=undefined){
+//		filter=filter+" AND DModelVal="+$('#modelD option:selected').val();
+//	}
+//	
+//	if($('#modelH option:selected').val()!=undefined){
+//		filter=filter+" AND HModelVal="+$('#modelH option:selected').val();
+//	}
+//	
+//	
+//	let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
+//
+//		let bindStaffs=[];
+//		
+//		
+//		 $.ajax({
+//	         method:'get',
+//	         data:selectSQL,
+//	         url:"/app/PM/getSQLDBData",
+//	         async:false, 
+//	         success:function(data){
+//	        	 if(data.length==0){
+//	        		 if(confirm("系统未检测精确绑定数据,是否启用模糊关系查找?")){
+//	        			 findMoreBindInfo();
+//	        		 }
+//	        		 
+//	        	 }else{
+//	        		 let bindsInfo=data[0];
+////	        		 alert("成功数据:" + JSON.stringify(data));
+//	        		 
+//	        		 createSystemTasks(bindsInfo);
+//	        	 }
+//	         },
+//	         error:function(){}
+//	     })
+//	     
+////--------------------------------------------------------------	     
+//			
+//	}
+//
+//})
 
 
 //按钮-任务删除---------
@@ -2026,7 +2078,7 @@ $('#BTNTaskSave').click(function(){
 
 			var taskBPID=$('#taskBPID').val();
 			
-			var modfiyABE=getCheckBoxValue('modfiyABE');
+			var modifyABE=getCheckBoxValue('modifyABE');
 
 //			var BTAcceptResultText=$('#BTAcceptResultText').text();
 
@@ -2047,7 +2099,7 @@ $('#BTNTaskSave').click(function(){
 						"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 						"taskBugID":$('#taskBugID').val(),
 						"taskStaff":$('#taskStaff option:selected').text(),
-						"modfiyABE":modfiyABE,
+						"modifyABE":modifyABE,
 						"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 						"taskLimitDate":$('#taskLimitDate').val(),
 						"taskMaker":sessionName,
@@ -2077,7 +2129,7 @@ $('#BTNTaskSave').click(function(){
 							"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 							"taskBugID":$('#taskBugID').val(),
 							"taskStaff":$('#taskStaff option:selected').text(),
-							"modfiyABE":modfiyABE,
+							"modifyABE":modifyABE,
 							"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 							"taskLimitDate":$('#taskLimitDate').val(),
 							"taskMaker":sessionName,
@@ -2107,7 +2159,7 @@ $('#BTNTaskSave').click(function(){
 								"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 								"taskBugID":$('#taskBugID').val(),
 								"taskStaff":$('#taskStaff option:selected').text(),
-								"modfiyABE":modfiyABE,
+								"modifyABE":modifyABE,
 								"taskDBE":$('#taskDBE').val().replace(/\n|\r\n/g,'<br/>'),
 								"taskLimitDate":$('#taskLimitDate').val(),
 								"taskMaker":sessionName,
@@ -2560,6 +2612,8 @@ $('#BTNBPTAuditYes').click(function() {
 									"DBTable":"ppm_bills_task",
 									"BillIDName":"taskBPID",
 									"BillID":$('#BPTBPID').val(),
+									"taskMaker":sessionName,
+									"taskMakeDate":Ndate,
 									"BTAcceptResult":0,
 									"filter":"BTAcceptResult IS NULL"
 						}
@@ -2764,6 +2818,12 @@ $('#BTNBPTAuditNo').click(function() {
 
 
 });
+
+//按钮-系统指定方案人
+$('#BTNGetAuditor').click(function() {
+	getUpAuditor( $('#BPTBPID').val(),sessionName);
+});
+
 
 
 //按钮-表单关闭按钮,添加刷新数据功能

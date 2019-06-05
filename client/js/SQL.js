@@ -145,3 +145,8 @@ SQLCTRBindsCount="SELECT Count(1) AS CountNum,CTRName,CTRVal FROM `ppm_customerb
 SQLGetOldBillInfo="SELECT * FROM `pm_orders`";
 
 SQLGetBindsInfo="SELECT * FROM `ppm_customerbinds`";
+
+SQLGetUpAuditor="SELECT upAuditor FROM `ppm_staffs`";
+
+
+SQLGetEntryDays="SELECT DATEDIFF(NOW(),entryDate) AS entryDays FROM `ppm_staffs`";

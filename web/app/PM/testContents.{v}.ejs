@@ -145,7 +145,7 @@
             
             </p>
             
-            <p align="right"><button id="BTNUpdVer" class="btn btn-default">更新版本</button></p>
+            <p align="right"><button id="BTNUpdVer" class="btn btn-default">编辑更新</button></p>
             <div id="DIVContentTableShow">
 
             <table id="TableTestContents" class="table table-bordered" style="width:100%;" >
@@ -153,8 +153,8 @@
                 <tr>
                     <th width="150px">模块</th>
                     <th>测试内容</th>
-                    <th width="120px">测试类型</th>
-                    <th width="200px">版本号</th>
+                    <th width="70px">测试类型</th>
+                    <th width="50px">版本</th>
                 </tr>
             </thead>
             <tbody>
@@ -170,14 +170,16 @@
                 <tr>
                     <th width="150px">模块</th>
                     <th>测试内容</th>
-                    <th width="120px">测试类型</th>
-                    <th width="200px">版本号</th>
+                    <th width="70px">测试类型</th>
+                    <th width="50px">版本</th>
                     <th width="60px">删除</th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
             </table>
+            
+            <p align="right"><button type="button" onclick='addTr()'>新增项目</button> <button type="button" id="saveTCVer">保存新版本</button> </p>
             
             </div>
 
@@ -225,7 +227,20 @@ function addDataInfo(DBTable,funct_ID,funct_Name,funct_Sort){
 	this.funct_Name=funct_Name;
 	this.funct_Sort=funct_Sort;
 }
-
+//添加测试项目行
+function addTr(){
+	
+	let tr="<tr>"+
+    "<td><input type='text' value='' style='width:100%'></td>" +
+		"<td><input type='text' value='' style='width:100%'></td>" +
+		"<td>"+$('#spanBillType').text()+"</td>" +
+		"<td>"+parseInt($('#spanBillVersion').text()+1)+"</td>" +
+		"<td><button onclick='delTr(this)'>删除</button></td>" +
+		"</tr>";
+	$('#TableTestContentsModify').append(tr);
+	
+//    $(trID).parent().parent().after(tr);
+}
 
 //页面加载函数---------------
 $(document).ready( function () {
@@ -265,7 +280,7 @@ $('#liDA').click(function() {
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 
 	$('#spanTypeName').text("DSP-APP");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'D' AND taskType = 'A' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'D' AND taskType = 'A' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='D' AND taskType='A' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -277,7 +292,7 @@ $('#liDK').click(function() {
 	
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("DSP-Kernel");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'D' AND taskType = 'K' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'D' AND taskType = 'K' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='D' AND taskType='K' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -288,7 +303,7 @@ $('#liHA').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("HMI-APP");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'A' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'A' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='H' AND taskType='A' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -299,7 +314,7 @@ $('#liHK').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("HMI-Kernel");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'K' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'K' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='H' AND taskType='K' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -310,7 +325,7 @@ $('#liHO').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("HMI-OS");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'O' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'H' AND taskType = 'O' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='H' AND taskType='O' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -321,7 +336,7 @@ $('#liMA').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("轴卡-APP");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'M' AND taskType = 'A' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'M' AND taskType = 'A' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='M' AND taskType='A' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -332,7 +347,7 @@ $('#liMB').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("轴卡-BOOT");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'M' AND taskType = 'B' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'M' AND taskType = 'B' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='M' AND taskType='B' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -343,7 +358,7 @@ $('#liPA').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("PLC-APP");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'A' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'A' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='P' AND taskType='A' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -354,7 +369,7 @@ $('#liPL').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("PLC-LIB");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'L' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'L' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='P' AND taskType='L' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -365,7 +380,7 @@ $('#liPO').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("PLC-OS");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'O' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'P' AND taskType = 'O' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='P' AND taskType='O' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -376,7 +391,7 @@ $('#liCA').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("codesys-APP");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'A' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'A' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='C' AND taskType='A' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -387,7 +402,7 @@ $('#liCL').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("codesys-LIB");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'L' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'L' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='C' AND taskType='L' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -399,7 +414,7 @@ $('#liCO').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("codesys-OS");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'O' AND billType='IPQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = 'C' AND taskType = 'O' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='C' AND taskType='O' AND billType='IPQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -410,7 +425,7 @@ $('#FQC').click(function() {
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
 	$('#spanTypeName').text("FQC");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC'"};
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });
@@ -480,91 +495,9 @@ $('#AddDoButton').click(function() {
 	
 	
 	addDBData(DBData);
-	
-//    var UID = "";
-//    // UID + form的数据 ==> 构造obj
-//    var aRemainVal = [];
-//    for (var ID in oInput) {
-//        ID = "#" + ID;
-//        var nVal = $(ID).val();
-//        aRemainVal.push(nVal);
-//    }
-//    var formData = new moniData(UID, ...aRemainVal);
-//    // alert("formData:" + JSON.stringify(formData));
-//
-//    if (checkinput(formData)) {
-//        // 保存本次提交表格内数据的值至obj内，便于连续操作
-//        var inputNum = $("#win").find("input").length;
-//        for (var i = 0; i < inputNum; ++i) {
-//            var inputElem = $("#win").find("input").eq(i);
-//            var inputID = inputElem.attr("id");
-//            // console.log("#1", inputID);
-//            if (oInput.hasOwnProperty(inputID) && (aIgnID.indexOf(inputID) === -1)) {
-//                var IDTmp = "#" + inputID; // id选择器要加个#
-//                oInput[inputID] = $(IDTmp).val();
-//            }
-//        }
-//        sessionStorage.setItem("lastFormData", JSON.stringify(oInput));
-//        ajaxAdd(formData);
-//    } else {
-//        //  alert("输入错误");
-//    }
+
 
 });
-
-
-
-
-//form 更新按钮------------
-$('#UpdDoButton').click(function() {
-	
- //   var UID = table.row('.selected').data().UID;
-	
-//	var funct_ID=$('#funct_ID').val();
-//    var funct_Name=$('#funct_Name').val();
-//    var funct_Sort=$('#funct_Sort').val();
-	
-	var updInput={
-			funct_ID:$('#funct_ID').val(),
-			funct_Name:$('#funct_Name').val(),
-			funct_Sort:$('#funct_Sort').val()			
-	}
-
-   
-    var updJSON={
-			'DBTable':"PM_functions",
-			'DBID':table.row('.selected').data().DBID
-    	};
-	var changed=0;
-
-    for (var key in updInput) {   	
-//   	alert(key);
-    	if(updInput[key]!=table.row('.selected').data()[key]){    		
-//    		alert("updInput:"+updInput[key]);
-//    		alert("selected:"+table.row('.selected').data()[key]);    		
-    		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
-    		changed=changed+1;
-    	}
-    }
-
-//   alert("updJSON:"+JSON.stringify(updJSON));
-    
-    if(changed!=0){
-    	if (checkinput(updJSON)) {
-    		 var msg = confirm("共调整"+changed+"处信息,请确认！");
-    		 if(msg==true){
-    			 updDBData(updJSON);
-    		 }
-    		 
-    	}
-    }else{
-    	alert("未有任何信息修改!");
-    }
-    
-});
-
-
-
 
 
 //form框 取消按钮----------------
@@ -580,6 +513,42 @@ $('#BTNUpdVer').click(function() {
 	controlElementShowHide({hideElements:['DIVContentTableShow'],showElements:['DIVContentTableModify']});
 	fillTestContentsModifyTable({tableID:'TableTestContentsModify',data:getAjaxDataSync({"SQL":"SQLTableTestContents","filter":"taskSortType = '"+$('#spanTaskSortType').text()+"' AND taskType = '"+$('#spanTaskType').text()+"' AND billType='"+$('#spanBillType').text()+"' AND billVersion='"+$('#spanBillVersion').text()+"'"})});
 });
+
+$('#saveTCVer').click(function() {
+	let DataRowNum=$('#TableTestContentsModify tbody tr').length;
+//	alert(DataRowNum);
+	
+	let tableDatas=[];
+	
+	for(let i=0;i<DataRowNum;i++){
+		
+		let rowData=[
+			$('#spanTaskSortType').text(),
+			$('#spanTaskType').text(),
+			$("#TableTestContentsModify tbody tr:eq("+i+") td:eq(0) input:first").val(),
+			$("#TableTestContentsModify tbody tr:eq("+i+") td:eq(1) input:first").val(),
+			$("#TableTestContentsModify tbody tr:eq("+i+") td:eq(2)").text(),
+			$("#TableTestContentsModify tbody tr:eq("+i+") td:eq(3)").text()
+			]
+		
+//		console.log(rowData);
+		
+		tableDatas.push(rowData);
+	}
+	
+	let ips={
+			tableName:'ppm_testcontents',
+			tableTitles:['taskSortType','taskType','modelType','content','billType','billVersion'],
+			tableDatas:tableDatas
+	}
+	
+	console.log(ips);
+	
+	IOF_insertDBData(ips,null,refresh);
+
+	
+});
+
 
 	
 }); 

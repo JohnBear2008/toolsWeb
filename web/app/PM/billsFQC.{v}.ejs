@@ -223,7 +223,7 @@
                    <!-------------------------------------------------------------------------->
                    <div class="form-group">
                    <label class="col-sm-1 control-label">测试结果:</label>
-               	   <div class="col-sm-10">
+               	   <div class="col-sm-6">
                	    <label class="radio-inline">
                	        <input type="radio" name="FQCResult" id="radio1" value="1" checked> 测试通过
                	    </label>
@@ -234,6 +234,13 @@
                	        <input type="radio" name="FQCResult" id="radio3" value="3"> 立即修正
                	    </label>
                	 </div>
+               	 
+               	 
+               	 
+               	<label class="col-sm-2 control-label">测试项目版本:</label>
+                <div class="col-sm-1">
+                <span id="testContentsVer" class="help-block"></span>
+                </div>
                	 
                	 
                	 
@@ -447,7 +454,7 @@ function Fun_winDetailInit(dataChoose){
 	}
 	
 	
-	$('#FQCAuditor').text(dataSelect.FQCAuditor);
+//	$('#FQCAuditor').text(dataSelect.FQCAuditor);
 	$('#FQCAuditDate').text(dataSelect.FQCAuditDate);
 	
 	$('#FQCResultText').text(dataSelect.FQCResultText);
@@ -455,16 +462,9 @@ function Fun_winDetailInit(dataChoose){
 	
 	var SQLAuditor={SQL:"SQLSRStaffs"};
 	var FQCAuditor="#FQCAuditor";
-	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,sessionName);
+	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,"刘梦");
 
 
-//	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
-//
-//	var tableID="#billsTaskTable";
-//
-//
-//
-//	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
 	//加载任务表内容, 
 	var SQLParamTask={
@@ -483,13 +483,8 @@ function Fun_winDetailInit(dataChoose){
 			"BID":"BTID",
 			"VER":"BTVersion"
 			};
-	
-	
-	
-	Fun_fillTrackTable("#billsTaskTable",SQLParamTask);
-	
-	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC'"};
+
+	  Fun_fillTrackTable("#billsTaskTable",SQLParamTask);
 
 	  var tableID="#TableTestContents";
 
@@ -497,10 +492,15 @@ function Fun_winDetailInit(dataChoose){
 	  console.log("FQCTestResult:"+dataSelect.FQCTestResult);
 	  
 	  if(dataSelect.FQCTestResult==""){
+		  
+		  let tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')","orderBy":"modelType"};
+
+		  
 		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,null,null);
 	  }else{
 		  var FQCTestResult=JSON.parse(dataSelect.FQCTestResult);
-
+		  
+		  let tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND billVersion='"+$('#testContentsVer').text()+"'","orderBy":"modelType"};
 		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,FQCTestResult,dataSelect.FQCAuditResult);
 	  }
 	  
@@ -526,10 +526,6 @@ function Fun_winDetailInit(dataChoose){
 		$("#FQCAuditor").attr("disabled",true);
 		$('#BTNUpdVer').show();
 	}
-
-
-
-
 
 }
 
@@ -562,13 +558,12 @@ $(document).ready( function () {
 		}
 		
 //		if(undone=="true"){
-//			
 //			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
 //		}else{
 //			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
 //		}
 
-	console.log("sessionName:"+sessionName);
+	 console.log("sessionName:"+sessionName);
 
 	 tableInfo={
 			"tableID":"#billsPLDTable",

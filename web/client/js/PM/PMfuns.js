@@ -2008,6 +2008,8 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         		 
         	 }
         	 
+        	 $('#testContentsVer').text(data[0].billVersion);
+        	 
 //        	 console.log("TestResult:"+TestResult);
         	 if(TestResult!=null){
         		 
@@ -2424,6 +2426,10 @@ function funtest(){
 	console.log("funtest done!");
 }
 
+var refresh= function(){
+	window.location.reload();
+}
+
 
 function controlElementShowHide(ips,ops){
 	
@@ -2467,13 +2473,8 @@ function getAjaxDataSync(ips,ops,funs){
 	         url:"/app/PM/getSQLDBData",
 	         async:false,
 	         success:function(data){
-	        	 
 //	        	 console.log("Ajax data:"+JSON.stringify(data));
-	        	 funs;
-	        	 
 	        	 ops=data;
-	        	 
-	        	
 	         },
 	         error:function(){}
 	     })
@@ -2489,44 +2490,27 @@ function delTr(trID){
     $(trID).parent().parent().remove();
 }
 
-function addTr(trID,tr){
-    $(trID).parent().parent().after(tr);
-}
+
 
 function fillTestContentsModifyTable(ips,ops,funs){
 	
 	$('#'+ips.tableID+" tbody").html("");
 
-
 	if(ips.data.length!=0){
 		for(let i=0;i<ips.data.length;i++){
-			
-//			let trAddModel="<tr>"+
-//	        "<td><input id='modelTypeInput"+i+"' type='text' value='"+ips.data[i].modelType+"' style='width:100%'></td>" +
-//	 		"<td><input id='contentInput"+i+"' type='text' value='"+ips.data[i].content+"' style='width:100%'></td>" +
-//	 		"<td>"+ips.data[i].billType+"</td>" +
-//	 		"<td>"+ips.data[i].billVersion+"</td>" +
-//	 		"<td><button onclick='delTr(this)'>删除</button></td>" +
-//	 		"</tr>"
-			
-			let trAddModel="<tr>" +
-					"<td>4</td>" +
-					"<td>4</td>" +
-					"<td>4</td>" +
-					"<td>4</td>" +
-					"<td><button onclick="+'delTr(this)'+">删除</button></td>" +
-					"</tr>";
-			
+
 			let tr="<tr>"+
 	        "<td><input type='text' value='"+ips.data[i].modelType+"' style='width:100%'></td>" +
 	 		"<td><input type='text' value='"+ips.data[i].content+"' style='width:100%'></td>" +
 	 		"<td>"+ips.data[i].billType+"</td>" +
-	 		"<td>"+ips.data[i].billVersion+"</td>" +
-	 		"<td><button onclick='addTr(this,\""+trAddModel+"\")'>插入</button><button onclick='delTr(this)'>删除</button></td>" +
+	 		"<td>"+parseInt(ips.data[i].billVersion+1)+"</td>" +
+	 		"<td><button onclick='delTr(this)'>删除</button></td>" +
 	 		"</tr>";
 			
 			$('#'+ips.tableID).append(tr);
 		}
+	}else{
+		$('#'+ips.tableID).append(trAddBlank);
 	}
 
 	
@@ -2537,7 +2521,7 @@ function fillTestContentsModifyTable(ips,ops,funs){
 
 //函数-添加附件信息数据库ips={tableName:'ppm_table',tableTitles:['1','2'],tableDatas:[[1,2],[2,2]]}
 
-function IOF_insertDBData(ips,ops,funs) {
+function IOF_insertDBData(ips,ops,fun) {
 	
     $.ajax({
         method: 'post',
@@ -2546,17 +2530,17 @@ function IOF_insertDBData(ips,ops,funs) {
         success: function(data) {
 //            alert("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-        	   
-        	   
         	   alert("新增成功!");
            }
-           
-           funs;
-           ops=data;
-           return ops;
+      
+//           ops=data;
+//           return ops;
        },
        error:function(err){
        	alert("失败数据:"+JSON.stringify(err));
+       },
+       complete:function(){
+    	   fun();
        }
     });
 }

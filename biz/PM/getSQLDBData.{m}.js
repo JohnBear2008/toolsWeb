@@ -172,6 +172,12 @@ module.exports = function(sender) {
 	case "SQLGetBindsInfo":
 		var SQLExecute=SQLGetBindsInfo;
 		break;
+	case "SQLGetUpAuditor":
+		var SQLExecute=SQLGetUpAuditor;
+		break;
+	case "SQLGetEntryDays":
+		var SQLExecute=SQLGetEntryDays;
+		break;
 		
 		
 		

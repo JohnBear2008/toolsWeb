@@ -116,20 +116,20 @@
                     <label class="col-sm-1 control-label">修改属性:</label>
                 	 <div class="col-sm-8">
                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE1"> 画面
+                	        <input type="checkbox" name="modifyABE"  value="ABE1"> 画面
                 	    </label>
                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE2"> 结构
+                	        <input type="checkbox" name="modifyABE"  value="ABE2"> 结构
                 	    </label>
                 	    <label class="checkbox-inline">
-                	        <input type="checkbox" name="modfiyABE"  value="ABE3"> 参数
+                	        <input type="checkbox" name="modifyABE"  value="ABE3"> 参数
                 	    </label>
 
                 	    <label class="checkbox-inline">
-               	        <input type="checkbox" name="modfiyABE"  value="ABE4">通信
+               	        <input type="checkbox" name="modifyABE"  value="ABE4">通信
                	    </label>
                	        <label class="checkbox-inline">
-               	        <input type="checkbox" name="modfiyABE"  value="ABE5">逻辑
+               	        <input type="checkbox" name="modifyABE"  value="ABE5">逻辑
                	    </label>
                	        
                 	 </div>
@@ -151,8 +151,17 @@
                      <div class="col-sm-2">
                      <span id="taskLimitDate" class="help-block"></span>  	
                  	 </div>
+                 	 
+                 	 
+                 	<label  class="col-sm-2 control-label" for="name">任务发布人:</label>
+                    <div class="col-sm-2">
+
+                    <span id="taskMaker"  class="help-block"></span>
+                    </div>
 
                      </div>
+                     
+                     
                      
                      
                      <div class="form-group"> 
@@ -314,6 +323,10 @@
                     <span id="IPQCAuditResultText" class="help-block"></span>
                     </div>
                  	 
+                    <label class="col-sm-2 control-label">测试项目版本:</label>
+                    <div class="col-sm-1">
+                    <span id="testContentsVer" class="help-block"></span>
+                    </div>
                  
 
                      </div>
@@ -355,7 +368,7 @@
                      <div class="col-sm-10">
                      <button id="BTNTaskIPQCSave" class="btn btn-success" data-toggle="modal" >保存IPQC记录</button>
                      <button id="BTNTaskIPQCAudit" class="btn btn-warning" data-toggle="modal" >审核IPQC记录</button>
-                     <button id="BTNReportCreate" class="btn btn-warning" data-toggle="modal" >生成IPQC报告(开发中)</button>
+                     <!-- <button id="BTNReportCreate" class="btn btn-warning" data-toggle="modal" >生成IPQC报告(开发中)</button>-->
                      </div>
                      </div>
                      
@@ -459,12 +472,27 @@ function checkIPQCInput(){
 		alert("IPQC审核人未选择,请检查!");
 		return false;
 	}
-	
-	
+
 	return true;
 	
 }
 
+//绑定change事件
+
+function IPQCResultEventBind(){
+	//绑定radio切换改变 计划单号事件
+	$('input[type=radio][name=IPQCResult]').unbind();
+
+	$('input[type=radio][name=IPQCResult]').change(function() {
+		
+		if($('input:radio[name="IPQCResult"]:checked').val()==1){
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#IPQCAuditor",sessionName);
+		}else{
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#IPQCAuditor",$('#taskMaker').text());
+		}
+
+	});
+}
 
 
 
@@ -485,9 +513,9 @@ function Fun_IPQCRecordInit(dataChoose){
 //	$("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true); 
 //	$('input:radio[name="taskType"]').attr("disabled",true);
 	
-	$('input:checkbox[name="modfiyABE"]').prop("checked",false);
-    setCheckBoxValue("modfiyABE",dataSelect.modfiyABE);
-    $('input:checkbox[name="modfiyABE"]').attr("disabled",true);
+	$('input:checkbox[name="modifyABE"]').prop("checked",false);
+    setCheckBoxValue("modifyABE",dataSelect.modifyABE);
+    $('input:checkbox[name="modifyABE"]').attr("disabled",true);
 	
 	
 	$('#BTID').text(dataSelect.BTID); 
@@ -498,6 +526,8 @@ function Fun_IPQCRecordInit(dataChoose){
 
 	$('#taskStaff').text(dataSelect.taskStaff);
 	$('#taskLimitDate').text(dataSelect.taskLimitDate);
+	
+	$('#taskMaker').text(dataSelect.taskMaker);
 	
 
 	
@@ -543,21 +573,23 @@ function Fun_IPQCRecordInit(dataChoose){
 		
 		
 		Fun_fillTrackTable("#tableRecords",SQLParamRecords);
+		
 
-	 
-
-	
-	  tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = '"+dataSelect.taskSortType+"' AND taskType = '"+dataSelect.taskType+"' AND billType='IPQC'"};
 
 	  var tableID="#TableTestContents";
 
 	  console.log("IPQCTestResult:"+dataSelect.IPQCTestResult);
 	  
 	  if(dataSelect.IPQCTestResult==""){
+		  
+		  let tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = '"+dataSelect.taskSortType+"' AND taskType = '"+dataSelect.taskType+"' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='"+dataSelect.taskSortType+"' AND taskType='"+dataSelect.taskType+"' AND billType='IPQC')","orderBy":"modelType"};
+		  	  
 		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,null,null);
 	  }else{
 		  var IPQCTestResult=JSON.parse(dataSelect.IPQCTestResult);
 
+		  let tasksTableSQL={"SQL":"SQLTableTestContents","filter":"taskSortType = '"+dataSelect.taskSortType+"' AND taskType = '"+dataSelect.taskType+"' AND billType='IPQC' AND billVersion='"+$('#testContentsVer').text()+"'","orderBy":"modelType"};
+		  
 		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,IPQCTestResult,dataSelect.IPQCAuditResult);
 	  }
 	  
@@ -644,8 +676,11 @@ function Fun_IPQCRecordInit(dataChoose){
 //		}else{
 //			$('#DivIPQCBTNS').show();
 //		}
+	  
+	  IPQCResultEventBind()
 
 }
+
 
 
 
@@ -826,11 +861,21 @@ $('#BTNTaskIPQCSave').click(function() {
 				                
 				                if(sessionName==$("#IPQCAuditor option:selected").text()){
 				                	let msgNext=confirm("是否立即审核?");
-				                	
 				                	if(msgNext){
 				                		$('#BTNTaskIPQCAudit').click();
 				                	}
 				                }
+				                
+				                
+				                if(sessionName!=$("#IPQCAuditor option:selected").text()&&$('input:radio[name="IPQCResult"]:checked').val()==2){
+				                	
+				                	
+				                	let msgContent="@"+$("#IPQCAuditor option:selected").text()+",检测到未通过的IPQC待您审核,请登陆系统处理!";
+				                	
+				                	sendDingMsg({at:$("#IPQCAuditor option:selected").text(),msg:msgContent});
+				                	
+				                }
+				                
 	
 				            } else {
 				                alert("IPQC记录未有数据更新!");
@@ -998,82 +1043,82 @@ $('#BTNTaskIPQCAudit').click(function() {
 });
 
 
-//按钮-生成报告---------
-$('#BTNReportCreate').click(function() {
-	
-	var IPQCtr="";
-	
-	var tableLength=$("#TableTestContents tbody").find("tr").length-1;
-	
-	for(var i=0;i<=tableLength;i++){
-		
-		var IPQCtr=IPQCtr+"<tr>" +
-				"<td>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(2)").text()+"</td>" +
-				"<td colspan='5'>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(3)").text()+"</td>" +
-				"<td>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(4)").find("input[type='radio']:checked").next("span").text()+"</td>" +
-				"<td>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(5)").find("input").val()+"</td>" +
-						"</tr>";
-	}
-
-	
-	var htmlContent=" <html><head></head>" +
-			"<body>" +
-			"<table   border='1' width='100%'>" +
-			"<thead>" +
-			"<tr>" +
-			"<th>任务单号:</th>" +
-			"<th>"+$('#BTID').text()+"</th>" +
-			"<th>客户名称:</th>" +
-			"<th  colspan='2'>"+$('#taskCTRName').text()+"</th>" +
-			"<th>IPQC结果:</th>" +
-			"<th  colspan='2'>"+$('#IPQCAuditResultText').text()+"</th>" +
-			"</tr>" +
-			"<tr>" +
-			"<th>修改内容:</th>" +
-			"<th colspan='7'></th>" +
-			"</tr>" +
-			"<tr>" +
-			"<th>功能说明:</th>" +
-			"<th colspan='7'></th>" +
-			"</tr>" +
-			"<tr>" +
-			"<th>测试人:</th>" +
-			"<th>"+$('#IPQCMaker').text()+"</th>" +
-			"<th>审核人:</th>" +
-			"<th colspan='2'>"+$('#IPQCAuditor option:selected').text()+"</th>" +
-			"<th>测试日期:</th>" +
-			"<th colspan='2'>"+$('#IPQCAuditDate').text()+"</th>" +
-			"</tr>" +
-			"</thead>" +
-			"<tbody>" +
-			"<tr>" +
-			"<th>模块</th>" +
-			"<th colspan='5'>测试内容</th>" +
-			"<th>结果</th>" +
-			"<th>备注</th>" +
-			"</tr>" +
-			IPQCtr+
-			"</table>" +
-			"</body>" +
-			"</html>";
-			
-	
-	
-  $.ajax({
-        method: 'post',
-        url: '/app/PM/createReportPDF',
-        data: {"BTID":$("#BTID").text(),"htmlContent":htmlContent},
-        success: function(data, textStatus) {
-        	
-        	console.log("filename:"+JSON.stringify(data));
-        	
-        	reportLink="<a href='/system.files.download/"+$("#BTID").text()+"_IPQC.pdf' download='"+$("#BTID").text()+"_IPQC.pdf'>"+$("#BTID").text()+"_IPQC.pdf</a>";
-        	
-        	$("#report").html(reportLink);
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-        });
-});
+////按钮-生成报告---------
+//$('#BTNReportCreate').click(function() {
+//	
+//	var IPQCtr="";
+//	
+//	var tableLength=$("#TableTestContents tbody").find("tr").length-1;
+//	
+//	for(var i=0;i<=tableLength;i++){
+//		
+//		var IPQCtr=IPQCtr+"<tr>" +
+//				"<td>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(2)").text()+"</td>" +
+//				"<td colspan='5'>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(3)").text()+"</td>" +
+//				"<td>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(4)").find("input[type='radio']:checked").next("span").text()+"</td>" +
+//				"<td>"+$("#TableTestContents tbody tr:eq("+i+") td:nth-child(5)").find("input").val()+"</td>" +
+//						"</tr>";
+//	}
+//
+//	
+//	var htmlContent=" <html><head></head>" +
+//			"<body>" +
+//			"<table   border='1' width='100%'>" +
+//			"<thead>" +
+//			"<tr>" +
+//			"<th>任务单号:</th>" +
+//			"<th>"+$('#BTID').text()+"</th>" +
+//			"<th>客户名称:</th>" +
+//			"<th  colspan='2'>"+$('#taskCTRName').text()+"</th>" +
+//			"<th>IPQC结果:</th>" +
+//			"<th  colspan='2'>"+$('#IPQCAuditResultText').text()+"</th>" +
+//			"</tr>" +
+//			"<tr>" +
+//			"<th>修改内容:</th>" +
+//			"<th colspan='7'></th>" +
+//			"</tr>" +
+//			"<tr>" +
+//			"<th>功能说明:</th>" +
+//			"<th colspan='7'></th>" +
+//			"</tr>" +
+//			"<tr>" +
+//			"<th>测试人:</th>" +
+//			"<th>"+$('#IPQCMaker').text()+"</th>" +
+//			"<th>审核人:</th>" +
+//			"<th colspan='2'>"+$('#IPQCAuditor option:selected').text()+"</th>" +
+//			"<th>测试日期:</th>" +
+//			"<th colspan='2'>"+$('#IPQCAuditDate').text()+"</th>" +
+//			"</tr>" +
+//			"</thead>" +
+//			"<tbody>" +
+//			"<tr>" +
+//			"<th>模块</th>" +
+//			"<th colspan='5'>测试内容</th>" +
+//			"<th>结果</th>" +
+//			"<th>备注</th>" +
+//			"</tr>" +
+//			IPQCtr+
+//			"</table>" +
+//			"</body>" +
+//			"</html>";
+//			
+//	
+//	
+//  $.ajax({
+//        method: 'post',
+//        url: '/app/PM/createReportPDF',
+//        data: {"BTID":$("#BTID").text(),"htmlContent":htmlContent},
+//        success: function(data, textStatus) {
+//        	
+//        	console.log("filename:"+JSON.stringify(data));
+//        	
+//        	reportLink="<a href='/system.files.download/"+$("#BTID").text()+"_IPQC.pdf' download='"+$("#BTID").text()+"_IPQC.pdf'>"+$("#BTID").text()+"_IPQC.pdf</a>";
+//        	
+//        	$("#report").html(reportLink);
+//        },
+//        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+//        });
+//});
 
 
 //按钮-表单关闭按钮,添加刷新数据功能

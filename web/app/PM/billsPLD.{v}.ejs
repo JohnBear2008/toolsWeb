@@ -218,8 +218,8 @@
                      <div class="col-sm-6 ">
                      <select  id="CTRName" class="selectpicker" data-live-search="true" data-dropup-auto="false"> 
                      </select>
-                     <button id="BTNFormAuto" class="btn btn-primary" >智能填单</button>
-                     <button id="BTNFormClear" class="btn btn-warning" >清空选择</button>
+                    <!-- <button id="BTNFormAuto" class="btn btn-primary" >智能填单</button>-->
+                    <!--<button id="BTNFormClear" class="btn btn-warning" >清空选择</button>-->
                      </div>
                      
 
@@ -344,9 +344,12 @@
                     <div class="form-group">   
                     <label  class="col-sm-1 control-label" for="name">方案负责人:</label>    
                     <div class="col-sm-3 ">
-                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-dropup-auto="false"> 
+                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-dropup-auto="true"> 
                     </select>
                     </div>
+                    
+                    <button id="BTNGetPEGMaker" type="button" class="btn btn-default">系统指定</button>
+                    
                     </div>
                     
                   
@@ -379,7 +382,7 @@
                      
                      <label  class="col-sm-1 control-label" for="name">审核人:</label>    
                      <div class="col-sm-3 ">
-                     <select  id="auditor" class="selectpicker" data-live-search="true"> 
+                     <select  id="auditor" class="selectpicker" data-live-search="true"  data-dropup-auto="true"> 
                      </select>
                      </div>
                      
@@ -525,10 +528,6 @@ function Fun_BPIDCreate(){
 	     })
 	}
 
-	 
-	
-	
-
 
 }
 
@@ -557,47 +556,133 @@ function getPLDOld(BPID){
 	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
 }
 
+//函数 获取方案人
+function fillFGEMaker(){
+	
+	
+
+	if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
+		alert("DSP,HMI系统必须选择一个 请检查!");
+	}else{
+		
+		let filter="";
+		
+		let CTRNameDBID=$('#CTRName option:selected').val();
+		
+		if(CTRNameDBID!=undefined){
+			filter="CTRVal="+CTRNameDBID;
+		}
+		
+		let ModelVal="";
+
+		
+		if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()!=undefined){
+			
+			ModelVal=$('#modelH option:selected').val();
+
+		}else{
+			ModelVal=$('#modelD option:selected').val();
+		}
+		
+		if(filter==""){
+			filter="ModelVal='"+ModelVal+"'";
+		}else{
+			filter=filter+" AND ModelVal='"+ModelVal+"'";
+		}
+
+		
+		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
+		
+		 $.ajax({
+	         method:'get',
+	         data:selectSQL,
+	         url:"/app/PM/getSQLDBData",
+//	         async:false, 
+	         success:function(data){
+
+	        	 if(data.length==0){
+	        		 alert("系统未检测到绑定关系,请手动选择!");
+	        	 }else{
+	        		 console.log("bindData:"+JSON.stringify(data));
+	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
+	        		 
+	        		 $("#PGEMaker").selectpicker('refresh');
+
+	        	 }
+
+	         },
+	         error:function(){}
+	     })
+	     
+	     
+//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
+//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+	}
+}
 
 
-////根据获得的DBID 详情加载
-//function getDBIDInfo(tableName,DBID){
-//
-//
-//	$('#winDetail').window('open');
+//函数 根据单据类型确认审核人
+
+function fillAuditor(){
+	
+	let ips ={orderFromDep:$('input:radio[name="orderFromDep"]:checked').val(),modelD:$('#modelD option:selected').val(),modelH:$('#modelH option:selected').val()};
+	console.log(ips);
+	switch(ips.orderFromDep){
+	case 'A':
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
+		break;
+	case 'B':
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
+		break;
+	case 'C':
+		if(ips.modelD==undefined&&ips.modelH!=undefined){
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
+		}else{
+			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","许静静");
+		}
+		break;
+	case 'D':
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","孙凌财");
+		break;
+	}
+}
+
+//绑定change事件
+
+function changeEventBind(){
+	//绑定radio切换改变 计划单号事件
+	$('input[type=radio][name=PLDArea]').unbind();
+	$('input[type=radio][name=orderFrom]').unbind();
+	$('input[type=radio][name=orderFromDep]').unbind();
+	
+//	$('#modelD').unbind();
+//	$('#modelH').unbind();
+
+	$('input[type=radio][name=PLDArea]').change(function() {
+		Fun_BPIDCreate();
+
+	});
+
+	$('input[type=radio][name=orderFrom]').change(function() {
+		Fun_BPIDCreate();
+
+	});
+
+	$('input[type=radio][name=orderFromDep]').change(function() {
+		Fun_BPIDCreate();
+		fillAuditor();
+	});
+	
+//	$('#modelD').change(function(){
+//		fillFGEMaker($('#modelD option:selected').val());
+//	});
 //	
-//	switch(tableName){
-//	case 'ppm_bills_plan':
-//		
-//		let SQLParamPLD={
-//			"tableName":"ppm_bills_plan",
-//			"titles":[
-//				"DBID",
-//				"BPID",
-//				"version",
-//				"CTRName",
-//				"topic",
-//				"detail",
-//				"PGEMaker",
-//				"OGNSystemVersion",
-//				"MHEName",
-//				"files",
-//				"modelD",
-//				"modelH",
-//				"applyDate",
-//				"limitDate",
-//				"maker",
-//				"makeDate"
-//				],
-//			"filter":"DBID='"+DBID+"'"
-//			};
-//		
-//		showDBIDInfo("#tableDetail",SQLParamPLD);
-//		
-//		break;
-//
-//	}
-//
-//}
+//	$('#modelH').change(function(){
+//		fillFGEMaker($('#modelH option:selected').val());
+//	});
+	
+}
+
 
 //函数:新增详情页自动填写内容------------------------
 function Fun_winAddInit(){
@@ -632,7 +717,10 @@ function Fun_winAddInit(){
 	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker);
 	
 
-	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
+	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
+	
+	
+	fillAuditor();
 
 //    $("#auditor").attr("disabled",true);
     
@@ -671,13 +759,16 @@ function Fun_winAddInit(){
   $("#BTNFormSave").show();
   $("#BTNFormSaveAudit").show();
   
+  $('#BTNGetPEGMaker').show();
+  
   
   $("#BTNFormModify").hide();
   $("#BTNFormUpdate").hide();
   $("#BTNFormAuditYes").hide();
   $("#BTNFormAuditNo").hide();
   
-  
+  changeEventBind();
+
 
 }
 
@@ -805,9 +896,9 @@ function Fun_winDetailInit(dataChoose){
 	  
 	  $("#auditOpinionDiv").hide();
 	  
-	  
-	  $("#BTNFormAuto").show();
-	  $("#BTNFormClear").show();
+	  $('#BTNGetPEGMaker').show();
+//	  $("#BTNFormAuto").show();
+//	  $("#BTNFormClear").show();
 	  
 
 	  $("#BTNFormModify").show();
@@ -843,20 +934,22 @@ function Fun_winDetailInit(dataChoose){
 	    
 	    $('#auditDate').text(dataSelect.auditDate);
 	    
-	    $("#BTNFormAuto").hide();
-	    $("#BTNFormClear").hide();
+//	    $("#BTNFormAuto").hide();
+//	    $("#BTNFormClear").hide();
 	    
 	    
 	    $("#DivFileBTNS").hide();
-	    
 	    $("#BTNFormModify").hide();
-	    
+	    $('#BTNGetPEGMaker').hide();
 	    
 	    $("#BTNFormUpdate").show();
 	    $("#BTNFormAuditYes").hide();
 	    $("#BTNFormAuditNo").hide();
 
   }
+  
+  
+  changeEventBind();
   
 }
 
@@ -868,6 +961,9 @@ function checkPLDInput(){
 	console.log("detail:"+$("#detail").val());
 	if($("#CTRName").val()==null){
 		alert("客户未输入,请检查!");
+		return false;
+	}else if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
+		alert("DSP系统,HMI系统至少选择一项,请检查!");
 		return false;
 	}else if($("#topic").val()==""){
 		alert("主题未输入,请检查!");
@@ -988,22 +1084,7 @@ $('#BTNFilterAll').click(function() {
 
 
 
-//绑定radio切换改变 计划单号事件
 
-$('input[type=radio][name=PLDArea]').change(function() {
-	Fun_BPIDCreate();
-
-});
-
-$('input[type=radio][name=orderFrom]').change(function() {
-	Fun_BPIDCreate();
-
-});
-
-$('input[type=radio][name=orderFromDep]').change(function() {
-	Fun_BPIDCreate();
-
-});
 
 
 //按钮-新增计划单---------
@@ -1159,61 +1240,61 @@ $('#BTNAudit').click(function() {
     }
 });
 
-//按钮-表单自动填单
-$('#BTNFormAuto').click(function(){
-	
-	let CTRNameDBID=$('#CTRName option:selected').val();
-
-	if(CTRNameDBID==undefined){
-		alert("请选择客户,以便系统加载绑定数据!");
-	}else{
-		let filter="CTRVal="+CTRNameDBID;
-	
-		if($('#MHEName option:selected').val()!=undefined){
-			filter=filter+" AND MHEVal="+$('#MHEName option:selected').val();
-		}
-		
-		if($('#modelD option:selected').val()!=undefined){
-			filter=filter+" AND DModelVal="+$('#modelD option:selected').val();
-		}
-		
-		if($('#modelH option:selected').val()!=undefined){
-			filter=filter+" AND HModelVal="+$('#modelH option:selected').val();
-		}
-		
-		
-		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
-		
-		 $.ajax({
-	         method:'get',
-	         data:selectSQL,
-	         url:"/app/PM/getSQLDBData",
-//	         async:false, 
-	         success:function(data){
-
-	        	 if(data.length==0){
-	        		 alert("系统未检测到对应绑定关系,请先维护绑定关系基础数据!");
-	        	 }else{
-	        		 console.log("bindData:"+JSON.stringify(data));
-	        		 
-	        		 $("#MHEName").selectpicker('val',data[0].MHEVal);
-	        		 $("#modelD").selectpicker('val',data[0].DModelVal);
-	        		 $("#modelH").selectpicker('val',data[0].HModelVal);
-	        		 $("#PGEMaker").selectpicker('val',data[0].DStaffVal);
-
-	        	 }
-
-	         },
-	         error:function(){}
-	     })
-	     
-	     
-	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
-		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
-	}
-
-
-})
+////按钮-表单自动填单
+//$('#BTNFormAuto').click(function(){
+//	
+//	let CTRNameDBID=$('#CTRName option:selected').val();
+//
+//	if(CTRNameDBID==undefined){
+//		alert("请选择客户,以便系统加载绑定数据!");
+//	}else{
+//		let filter="CTRVal="+CTRNameDBID;
+//	
+//		if($('#MHEName option:selected').val()!=undefined){
+//			filter=filter+" AND MHEVal="+$('#MHEName option:selected').val();
+//		}
+//		
+//		if($('#modelD option:selected').val()!=undefined){
+//			filter=filter+" AND DModelVal="+$('#modelD option:selected').val();
+//		}
+//		
+//		if($('#modelH option:selected').val()!=undefined){
+//			filter=filter+" AND HModelVal="+$('#modelH option:selected').val();
+//		}
+//		
+//		
+//		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
+//		
+//		 $.ajax({
+//	         method:'get',
+//	         data:selectSQL,
+//	         url:"/app/PM/getSQLDBData",
+////	         async:false, 
+//	         success:function(data){
+//
+//	        	 if(data.length==0){
+//	        		 alert("系统未检测到对应绑定关系,请先维护绑定关系基础数据!");
+//	        	 }else{
+//	        		 console.log("bindData:"+JSON.stringify(data));
+//	        		 
+//	        		 $("#MHEName").selectpicker('val',data[0].MHEVal);
+//	        		 $("#modelD").selectpicker('val',data[0].DModelVal);
+//	        		 $("#modelH").selectpicker('val',data[0].HModelVal);
+//	        		 $("#PGEMaker").selectpicker('val',data[0].DStaffVal);
+//
+//	        	 }
+//
+//	         },
+//	         error:function(){}
+//	     })
+//	     
+//	     
+//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
+//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+//	}
+//
+//
+//})
 
 //按钮-表单清空选择
 $('#BTNFormClear').click(function(){
@@ -1604,6 +1685,13 @@ $('#BTNFormAuditNo').click(function() {
 
 });
 
+
+
+
+//按钮-系统指定方案人
+$('#BTNGetPEGMaker').click(function() {
+	fillFGEMaker();
+});
 
 
 //按钮-表单关闭按钮,添加刷新数据功能
