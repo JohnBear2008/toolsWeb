@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -469,7 +469,7 @@
 function checkIPQCInput(){
 	
 	if($("#IPQCAuditor").val()==null){
-		alert("IPQC审核人未选择,请检查!");
+		swal("IPQC审核人未选择,请检查!");
 		return false;
 	}
 
@@ -610,8 +610,8 @@ function Fun_IPQCRecordInit(dataChoose){
 
 // 		  if(IPQCTestResult!=null){
 // 			 for(var i=0;i<IPQCTestResult.length;i++){
-// 				alert(1);
-// 	  		  alert(IPQCTestResult[i].testResult);
+// 				swal(1);
+// 	  		  swal(IPQCTestResult[i].testResult);
 // 	 		$("input:radio[name='testResultRadio"+i+"']").attr("disabled",true); 
 // 	        }
 // 		  }
@@ -789,7 +789,7 @@ $('#BTNIPQCRecord').click(function() {
 	
 	  var dataSelect = table.row('.selected').data();
 	    if (dataSelect == undefined) {
-	        alert("请先点击选择表格中的任务单!");
+	        swal("请先点击选择表格中的任务单!");
 	    } else {
 //	    	console.log("dataSelect:"+JSON.stringify(dataSelect));
 	    	
@@ -815,7 +815,7 @@ $('#BTNTaskIPQCSave').click(function() {
 			
 			var radioCheck=true;
 		//	
-//			alert($("#TableTestContents").find("tr").length );
+//			swal($("#TableTestContents").find("tr").length );
 			
 			for(var i=0;i<testNum;i++){
 				var testResult={
@@ -831,7 +831,7 @@ $('#BTNTaskIPQCSave').click(function() {
 			
 			
 			if(radioCheck!=undefined){
-//				alert(JSON.stringify(IPQCTestResult));
+//				swal(JSON.stringify(IPQCTestResult));
 				
 				
 				var recordData={
@@ -854,9 +854,9 @@ $('#BTNTaskIPQCSave').click(function() {
 				        url: '/app/PM/updDBData',
 				        data: recordData,
 				        success: function(data, textStatus) {
-				 //                alert("成功数据:"+JSON.stringify(data));
+				 //                swal("成功数据:"+JSON.stringify(data));
 				            if (data.changedRows != 0) {
-				                alert("IPQC记录更新数据成功!");
+				                swal("IPQC记录更新数据成功!");
 				                $('#IPQCMakeDate').text(Ndate);
 				                
 				                if(sessionName==$("#IPQCAuditor option:selected").text()){
@@ -878,7 +878,7 @@ $('#BTNTaskIPQCSave').click(function() {
 				                
 	
 				            } else {
-				                alert("IPQC记录未有数据更新!");
+				                swal("IPQC记录未有数据更新!");
 
 				            }
 				        },
@@ -887,7 +887,7 @@ $('#BTNTaskIPQCSave').click(function() {
 
 				
 			}else{
-				alert("存在未测试内容,请检查!");
+				swal("存在未测试内容,请检查!");
 			}
 			
 			
@@ -898,7 +898,7 @@ $('#BTNTaskIPQCSave').click(function() {
 
 
 	}else{
-		alert("非指定的IPQC填单人,不允许填单!");
+		swal("非指定的IPQC填单人,不允许填单!");
 	}
 
 
@@ -913,7 +913,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 	var IPQCMakeDate=$('#IPQCMakeDate').text();
 
 	if(IPQCMakeDate==""){
-		alert("请先保存IPQC单,再审核");
+		swal("请先保存IPQC单,再审核");
 	}else{
 		
 		var msg = confirm("审核后无法对IPQC记录进行修改,是否立即审核?");
@@ -1001,7 +1001,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 					
 
 						$.when(ajax1,ajax2).done(function(){
-								alert("通过IPQC测试,该任务单完结!");
+								swal("通过IPQC测试,该任务单完结!");
 							window.location.reload();
 							
 						});
@@ -1029,7 +1029,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 						        });
 			        	 
 			        	 $.when(ajax1).done(function(){
-			        		    alert("未通过IPQC测试,请更新任务单版本重新开始该任务!");
+			        		    swal("未通过IPQC测试,请更新任务单版本重新开始该任务!");
 								window.location.reload();
 								
 						 });

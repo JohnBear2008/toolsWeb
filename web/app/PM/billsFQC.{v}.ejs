@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -391,7 +391,7 @@
 
 //function Fun_showSQLFileTable(SQL,tableID){
 //
-//	//alert(JSON.stringify(DataPara));
+//	//swal(JSON.stringify(DataPara));
 //
 //	 $.ajax({
 //         method:'get',
@@ -629,7 +629,7 @@ $('#BTNFQCDetail').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请先点击表格中的表单!");
+        swal("请先点击表格中的表单!");
     } else {
 
     	$('#BillPLD').modal('show')
@@ -653,7 +653,7 @@ $('#BTNFQCSave').click(function() {
 	
 	var radioCheck=true;
 
-//	alert($("#TableTestContents").find("tr").length );
+//	swal($("#TableTestContents").find("tr").length );
 	
 	for(var i=0;i<testNum;i++){
 		var testResult={
@@ -669,7 +669,7 @@ $('#BTNFQCSave').click(function() {
 	
 	
 	if(radioCheck!=undefined){
-//		alert(JSON.stringify(FQCTestResult));
+//		swal(JSON.stringify(FQCTestResult));
 
 		 var FQCData={
 					"DBTable":"ppm_bills_FQC",
@@ -690,7 +690,7 @@ $('#BTNFQCSave').click(function() {
 		        url: '/app/PM/saveDBData',
 		        data: FQCData,
 		        success: function(data) {
-		  //         alert("成功数据:" + JSON.stringify(data));
+		  //         swal("成功数据:" + JSON.stringify(data));
 		           if (data.affectedRows != 0) {
 		        	   
 		        	   if(sessionName==$('#FQCAuditor option:selected').text()){
@@ -702,7 +702,7 @@ $('#BTNFQCSave').click(function() {
 		        		   }
 		        		   
 		        	   }else{
-		        		   alert("FQC数据保存成功!");
+		        		   swal("FQC数据保存成功!");
 		        	   }
 
 //		              window.location.reload();
@@ -710,9 +710,9 @@ $('#BTNFQCSave').click(function() {
 		       },
 		       error:function(err){
 		    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-		    		   alert("系统中已存在重复数据,请检查!");
+		    		   swal("系统中已存在重复数据,请检查!");
 		    	   }else{
-		    		   alert("失败数据:"+JSON.stringify(err));
+		    		   swal("失败数据:"+JSON.stringify(err));
 		    	   }
 		       }
 		    });
@@ -721,7 +721,7 @@ $('#BTNFQCSave').click(function() {
 		 
 		 
 	}else{
-		alert("存在未测试内容,请检查!");
+		swal("存在未测试内容,请检查!");
 	}
 
 });
@@ -846,13 +846,13 @@ $('#BTNFQCAudit').click(function() {
 		        });
 
 			$.when(ajax1,ajax2).done(function(){
-				alert(msg);
+				swal(msg);
 				window.location.reload();
 				
 			});
 		
 	}else{
-		alert("您不是该FQC单的指定审核人,无法审核!");
+		swal("您不是该FQC单的指定审核人,无法审核!");
 	}
 
 		 
@@ -938,9 +938,9 @@ $('#BTNUpdVer').click(function() {
         error:function(err){
      	   
      	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-     		   alert("系统中已存在重复数据,请检查!");
+     		   swal("系统中已存在重复数据,请检查!");
      	   }else{
-     		   alert("失败数据:"+JSON.stringify(err));
+     		   swal("失败数据:"+JSON.stringify(err));
      	   }
      	   
         	
@@ -949,7 +949,7 @@ $('#BTNUpdVer').click(function() {
 	 
 	 $.when(ajax1,ajax2).done(function(){
  		
-			alert("更新版本成功!");
+			swal("更新版本成功!");
 			window.location.reload();
 
 		});

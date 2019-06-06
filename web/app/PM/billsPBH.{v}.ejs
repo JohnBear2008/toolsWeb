@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -483,7 +483,7 @@
 //
 //function Fun_showSQLFileTable(SQL,tableID){
 //
-//	//alert(JSON.stringify(DataPara));
+//	//swal(JSON.stringify(DataPara));
 //
 //	 $.ajax({
 //         method:'get',
@@ -515,10 +515,10 @@
 function checkPBHInput(){
 	
 	if($("#emailADRS").val()==""){
-		alert("收件人邮箱未填写,请检查!");
+		swal("收件人邮箱未填写,请检查!");
 		return false;
 	}else if($("#emailContent").val()==null){
-		alert("邮件内容未填写,请检查!");
+		swal("邮件内容未填写,请检查!");
 		return false;
 	}
 	return true;
@@ -761,7 +761,7 @@ $('#BTNPBHDetail').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请先点击表格中的表单!");
+        swal("请先点击表格中的表单!");
     } else {
 
     	$('#BillPLD').modal('show')
@@ -799,7 +799,7 @@ var filesHtml=$("#divFilesUploaded").html();
         	 
         	 $("#emailADRS").val(data[0].email);
         	 
-        	// alert(JSON.stringify(getEmails(data[0].contacts)));
+        	// swal(JSON.stringify(getEmails(data[0].contacts)));
         	 
         	 $("#emailCopyADRS").val(getEmails(data[0].contacts));
         	 
@@ -924,7 +924,7 @@ $('#BTNPBHAudit').click(function() {
 	
 	
      if($('#DBID').val()==""){
-    	 alert("请先保存发布单再审核!");
+    	 swal("请先保存发布单再审核!");
      }else{
     	 var PBHData={
 					"DBTable":"ppm_bills_PBH",
@@ -1022,12 +1022,12 @@ $('#BTNModelEmailSend').click(function() {
         url: '/app/PM/sendSYSMail',
         data: emailData,
         success: function(data, textStatus) {
-              alert("发送成功:"+JSON.stringify(textStatus));
+              swal("发送成功:"+JSON.stringify(textStatus));
 
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
         	
-        	 alert("发送失败:"+JSON.stringify(textStatus));
+        	 swal("发送失败:"+JSON.stringify(textStatus));
         }
     });
    
@@ -1136,9 +1136,9 @@ $('#BTNUpdVer').click(function() {
         error:function(err){
      	   
      	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-     		   alert("系统中已存在重复数据,请检查!");
+     		   swal("系统中已存在重复数据,请检查!");
      	   }else{
-     		   alert("失败数据:"+JSON.stringify(err));
+     		   swal("失败数据:"+JSON.stringify(err));
      	   }
      	   
         	
@@ -1147,7 +1147,7 @@ $('#BTNUpdVer').click(function() {
 	 
 	 $.when(ajax1,ajax2).done(function(){
  		
-			alert("更新版本成功!");
+			swal("更新版本成功!");
 			window.location.reload();
 
 		});
@@ -1199,7 +1199,7 @@ $('#BTNEnd').click(function() {
 		        });
 	
 		$.when(ajax1,ajax2).done(function(){
-				alert("归档完成,该计划任务完结!");
+				swal("归档完成,该计划任务完结!");
 			window.location.reload();
 		});
     }

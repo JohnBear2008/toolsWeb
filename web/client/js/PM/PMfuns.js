@@ -87,7 +87,7 @@ Array.prototype.delRepeat = function () {
 
 function showDBData(DataPara,columnsData){
 	
- //alert(JSON.stringify(DataPara));
+ //swal(JSON.stringify(DataPara));
 	$(DataPara.tableID).DataTable({
 	    ajax: {
 	        url: '/app/PM/getDBInfo',
@@ -118,7 +118,7 @@ function showDBData(DataPara,columnsData){
 
 function showOrdersDBData(DataPara,columnsData){
 	
-//alert(JSON.stringify(DataPara));
+//swal(JSON.stringify(DataPara));
 	
 	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 	
@@ -140,7 +140,7 @@ function showOrdersDBData(DataPara,columnsData){
 	
 //	var TableData=dataTable.$("input").serialize();
 //	
-//	alert("TableData:"+JSON.stringify(TableData));
+//	swal("TableData:"+JSON.stringify(TableData));
 
 }
 
@@ -150,7 +150,7 @@ function showOrdersDBData(DataPara,columnsData){
 
 function showFilterDBData(DataPara,columnsData){
 	
-//alert(JSON.stringify(DataPara));
+//swal(JSON.stringify(DataPara));
 	
 //	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 	
@@ -176,7 +176,7 @@ function showFilterDBData(DataPara,columnsData){
 
 function showFilterDBDataAsyncNo(DataPara,columnsData){
 	
-//alert(JSON.stringify(DataPara));
+//swal(JSON.stringify(DataPara));
 	
 //	$(DataPara.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 	
@@ -291,18 +291,23 @@ function addDBData(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-  //         alert("成功数据:" + JSON.stringify(data));
+  //         swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("新增数据成功!");
-              window.location.reload();
+        	   
+        	   
+        	   swal("Good job!", "新增成功!", "success")
+        	   .then((value) => {
+        	     window.location.reload();
+        	   });
+
            }
        },
        error:function(err){
     	   
     	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-    		   alert("系统中已存在重复数据,请检查!");
+    		   swal("系统中已存在重复数据,请检查!");
     	   }else{
-    		   alert("失败数据:"+JSON.stringify(err));
+    		   swal("失败数据:"+JSON.stringify(err));
     	   }
     	   
        	
@@ -317,13 +322,23 @@ function updDBData(DBData,showText) {
         url: '/app/PM/updDBData',
         data: DBData,
         success: function(data, textStatus) {
- //                alert("成功数据:"+JSON.stringify(data));
+ //                swal("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
-                alert(showText+"更新数据成功!");
-               window.location.reload();
+//                swal(showText+"更新数据成功!");
+//               window.location.reload();
+               
+               swal("Good job!", "更新成功!", "success")
+        	   .then((value) => {
+        	     window.location.reload();
+        	   });
+               
             } else {
-                alert(showText+"未有数据更新!");
-                window.location.reload();
+//                swal(showText+"未有数据更新!");
+//                window.location.reload();
+            	swal("Good job!", "无数据更新!", "warning")
+         	   .then((value) => {
+         	     window.location.reload();
+         	   });
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -340,12 +355,22 @@ function delDBData(IDData) {
         url: '/app/PM/delDBData',
         data: IDData,
         success: function(data, textStatus) {
-            //  alert("成功数据:"+JSON.stringify(data));
+            //  swal("成功数据:"+JSON.stringify(data));
             if (data.affectedRows != 0) {
-                alert("删除数据成功!");
-                window.location.reload();
+//                swal("删除数据成功!");
+//                window.location.reload();
+                swal("Good job!", "删除数据成功!", "success")
+         	   .then((value) => {
+         	     window.location.reload();
+         	   });
+                
             } else {
-                alert("删除数据失败!");
+//                swal("删除数据失败!");
+            	 swal("Good job!", "未有数据删除!", "warning")
+           	   .then((value) => {
+           	     window.location.reload();
+           	   });
+            	
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -360,17 +385,23 @@ function saveDBData(DBData,showText) {
         url: '/app/PM/saveDBData',
         data: DBData,
         success: function(data) {
-  //         alert("成功数据:" + JSON.stringify(data));
+  //         swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert(showText+"数据保存成功!");
-              window.location.reload();
+//               swal(showText+"数据保存成功!");
+//              window.location.reload();
+              
+              swal("Good job!", showText+"数据保存成功!", "success")
+        	   .then((value) => {
+        	     window.location.reload();
+        	   });
+              
            }
        },
        error:function(err){
     	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-    		   alert("系统中已存在重复数据,请检查!");
+    		   swal("系统中已存在重复数据,请检查!");
     	   }else{
-    		   alert("失败数据:"+JSON.stringify(err));
+    		   swal("失败数据:"+JSON.stringify(err));
     	   }
        }
     });
@@ -389,7 +420,7 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
           url:"/app/PM/getSelectDBData",
           success:function(data){
         	  
-        	  //alert("return1111:"+JSON.stringify(data));
+        	  //swal("return1111:"+JSON.stringify(data));
         	  
         	  
         		$(selectorID).selectpicker({
@@ -440,7 +471,7 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
         	  
         	  
         	
-        //	  alert("return1111:"+JSON.stringify(data));
+        //	  swal("return1111:"+JSON.stringify(data));
         	  
         	  $(selectorID).selectpicker({
       			noneSelectedText :"未选择"//默认显示内容
@@ -468,7 +499,7 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 
               $(selectorID).selectpicker('refresh');
 
-//              alert($(selectorID).find("option:selected").text() );
+//              swal($(selectorID).find("option:selected").text() );
 
           },
           error:function(){}
@@ -493,7 +524,7 @@ function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
         	  
         	  
         	
-        //	  alert("return1111:"+JSON.stringify(data));
+        //	  swal("return1111:"+JSON.stringify(data));
 
         		
         		
@@ -522,7 +553,7 @@ function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
 
               $(selectorID).selectpicker('refresh');
               
-//              alert($(selectorID).find("option:selected").text() );
+//              swal($(selectorID).find("option:selected").text() );
 
           },
           error:function(){}
@@ -667,7 +698,7 @@ function uploadFile() {
 	
 //	if(fileName!=undefined&&fileName!=""){
 //		
-//		alert("附件已存在,上传新附件请先清空!");
+//		swal("附件已存在,上传新附件请先清空!");
 //		
 //	}else{
 	
@@ -675,13 +706,13 @@ function uploadFile() {
 	var files = document.getElementById('fileToUpload').files;
 	
 //	if(files.length>1){
-//		alert("多文件上传请统一打包成唯一压缩包!");
+//		swal("多文件上传请统一打包成唯一压缩包!");
 //		document.getElementById('div_previewImages').innerHTML="";
 //		
 //	}else{
         for ( var i = 0; i < files.length; i++) {
 			
-//			alert("files[i]:"+JSON.stringify(files[i]));
+//			swal("files[i]:"+JSON.stringify(files[i]));
 			fd.append(i, files[i]);
 			
 		}
@@ -709,7 +740,7 @@ function taskUploadFile() {
 	
 //	if(fileName!=undefined&&fileName!=""){
 //		
-//		alert("附件已存在,上传新附件请先清空!");
+//		swal("附件已存在,上传新附件请先清空!");
 //		
 //	}else{
 	
@@ -717,13 +748,13 @@ function taskUploadFile() {
 	var files = document.getElementById('fileToUpload').files;
 	
 //	if(files.length>1){
-//		alert("多文件上传请统一打包成唯一压缩包!");
+//		swal("多文件上传请统一打包成唯一压缩包!");
 //		document.getElementById('div_previewImages').innerHTML="";
 //		
 //	}else{
         for ( var i = 0; i < files.length; i++) {
 			
-//			alert("files[i]:"+JSON.stringify(files[i]));
+//			swal("files[i]:"+JSON.stringify(files[i]));
 			fd.append(i, files[i]);
 			
 		}
@@ -758,15 +789,15 @@ var g_uploaded = null;
 
 function uploadComplete(evt) {
 	if (evt.target.status != 200) {
-//		alert(evt.target.responseText);
+//		swal(evt.target.responseText);
 		return;
 	}
 	/* 服务器端返回响应时候触发event事件*/
 	//var img=document.getElementById('img_show');
 	var div = document.getElementById('divFilesUploaded');
-//	alert(evt.target.responseText);
+//	swal(evt.target.responseText);
 	g_uploaded = JSON.parse(evt.target.responseText);
-	//alert(obj[0].key);
+	//swal(obj[0].key);
 	var span = document.createElement("span");
 //	span.innerHTML = JSON.stringify(g_uploaded.fields);
 	div.appendChild(span);
@@ -774,13 +805,13 @@ function uploadComplete(evt) {
 	for ( var name in g_uploaded.files) {
 		var file=g_uploaded.files[name];
 		
-//		alert("g_uploaded.files[name]:"+JSON.stringify(g_uploaded.files[name]));
+//		swal("g_uploaded.files[name]:"+JSON.stringify(g_uploaded.files[name]));
 		
 	
 		for (var i=0;i<file.length;i++){
 			if (file[i].status == "success") {
 				
-//				alert("file[i]:"+JSON.stringify(file[i]));	
+//				swal("file[i]:"+JSON.stringify(file[i]));	
 				var span = document.createElement("span");
 				var url = "/system.files.download/" + file[i].key;
 //				var url = "/system.files.download/" + file[i].fileRawName;
@@ -799,7 +830,7 @@ function uploadComplete(evt) {
 				span.innerHTML =downloadurl;
 				div.appendChild(document.createElement("br"));
 			} else {
-				alert(file[i].errorMessage);
+				swal(file[i].errorMessage);
 			}
 		}
 	}
@@ -807,7 +838,7 @@ function uploadComplete(evt) {
 //任务文件上传完毕
 function taskUploadComplete(evt) {
 	if (evt.target.status != 200) {
-//		alert(evt.target.responseText);
+//		swal(evt.target.responseText);
 		return;
 	}
 	/* 服务器端返回响应时候触发event事件*/
@@ -863,7 +894,7 @@ function taskUploadComplete(evt) {
 				
 				
 			} else {
-				alert(file[i].errorMessage);
+				swal(file[i].errorMessage);
 			}
 		}
 	}
@@ -881,17 +912,17 @@ function taskUploadComplete(evt) {
 }
 
 function uploadFailed(evt) {
-	alert("There was an error attempting to upload the file.");
+	swal("There was an error attempting to upload the file.");
 }
 
 function uploadCanceled(evt) {
-	alert("The upload has been canceled by the user or the browser dropped the connection.");
+	swal("The upload has been canceled by the user or the browser dropped the connection.");
 }
 
 function deleteFile() {
 	
 //	var filePath=$('#filePath').attr("href");
-//	alert(filePath);
+//	swal(filePath);
 	
 	var files=[];
 	
@@ -931,12 +962,12 @@ function deleteFile() {
 	    	 fileInput.value = "";
 	     }
 	     
-		alert("清空附件成功!");
+		swal("清空附件成功!");
 		
 		
 		
 	}else{
-		alert("无附件,无需清空!");
+		swal("无附件,无需清空!");
 	}
 	
 
@@ -946,7 +977,7 @@ function deleteFile() {
 function taskDeleteFile() {
 	
 //	var filePath=$('#filePath').attr("href");
-//	alert(filePath);
+//	swal(filePath);
 	
 	var files=[];
 	
@@ -988,12 +1019,12 @@ function taskDeleteFile() {
 	     
 	     $("#fileVersion").val("");
 	     
-		alert("清空附件成功!");
+		swal("清空附件成功!");
 		
 		
 		
 	}else{
-		alert("无附件,无需清空!");
+		swal("无附件,无需清空!");
 	}
 	
 
@@ -1006,7 +1037,7 @@ function taskDeleteFile() {
 
 function Fun_getFilterDBData(DataPara,DivID){
 	
-//alert(JSON.stringify(DataPara));
+//swal(JSON.stringify(DataPara));
 	
 	$.ajax({
 	      type: "get",      //data 传送数据类型。post 传递
@@ -1015,10 +1046,10 @@ function Fun_getFilterDBData(DataPara,DivID){
 	      cache: false,      
 	      data: DataPara,  //传送的数据
 	      error:function(){
-	         alert("数据传输错误");
+	         swal("数据传输错误");
 	      },
 	      success: function (data) {
-//	    	  alert("成功返回数据:"+JSON.stringify(data));
+//	    	  swal("成功返回数据:"+JSON.stringify(data));
 	    	  
 //	    	  console.log("成功返回数据:"+JSON.stringify(data[0]));
 	    	  
@@ -1058,13 +1089,13 @@ function ajaxMail(data) {
         url: '/app/PM/sendMail',
         data: data,
         success: function(data, textStatus) {
-              alert("发送成功:"+JSON.stringify(textStatus));
+              swal("发送成功:"+JSON.stringify(textStatus));
 
 
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
         	
-        	 alert("发送失败:"+JSON.stringify(textStatus));
+        	 swal("发送失败:"+JSON.stringify(textStatus));
         }
     });
 }
@@ -1094,17 +1125,17 @@ function sendDingMsg(DDMsg) {
 
 //函数 获取绑定数据----------------------
 function F_getBindDBData(choData){
-	//alert("choData:"+JSON.stringify(choData));
+	//swal("choData:"+JSON.stringify(choData));
 	
 	 $.ajax({
 	        method: 'get',
 	        url: '/app/PM/getBindDBData',
 	        data: choData,
 	        success: function(data) {
-	            alert("成功数据:" + JSON.stringify(data));
+	            swal("成功数据:" + JSON.stringify(data));
 	        },
 	        error: function(err) {
-	        	alert("失败数据:"+JSON.stringify(err));   
+	        	swal("失败数据:"+JSON.stringify(err));   
 	        }
 	    });
 
@@ -1162,7 +1193,7 @@ function Fun_getEndDate(date, days) {
 
 function Fun_showSQLTable(SQL,tableInfo){
 	
-	//alert(JSON.stringify(DataPara));
+	//swal(JSON.stringify(DataPara));
 		
 		$(tableInfo.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 		
@@ -1196,14 +1227,14 @@ function Fun_addFileInfo(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//            swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("附件添加绑定成功!");
+               swal("附件添加绑定成功!");
 //               window.location.reload();
            }
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+       	swal("失败数据:"+JSON.stringify(err));
        }
     });
 }
@@ -1217,14 +1248,14 @@ function Fun_updFileInfo(DBData) {
         url: '/app/PM/updDBData',
         data: DBData,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//            swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("更新附件绑定成功!");
+               swal("更新附件绑定成功!");
 //             window.location.reload();
            }
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+       	swal("失败数据:"+JSON.stringify(err));
        }
     });
 }
@@ -1267,14 +1298,14 @@ function Fun_getSelectTextPre(obj){
 //        url: '/app/PM/getSQLDBData',
 //        data: {SQL:fileSQL},
 //        success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//            swal("成功数据:" + JSON.stringify(data));
 //           if (data.affectedRows != 0) {
 //
 ////               window.location.reload();
 //           }
 //       },
 //       error:function(err){
-//       	alert("失败数据:"+JSON.stringify(err));
+//       	swal("失败数据:"+JSON.stringify(err));
 //       }
 //    });
 //}
@@ -1287,17 +1318,27 @@ function Fun_addDBDataDD(DBData,DDMsg) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-//         alert("成功数据:" + JSON.stringify(data));
+//         swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("新增成功!");
-               if(DDMsg!=""){
+        	   
+        	   
+        	   if(DDMsg!=""){
             	   sendDingMsg(DDMsg);
                }
-              window.location.reload();
+        	   
+        	   
+        	   swal("Good job!", "新增成功!", "success")
+        	   .then((value) => {
+//        	     swal(`The returned value is: ${value}`);
+        	     
+        	     window.location.reload();
+        	   });
+
+             
            }
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+       	swal("失败数据:"+JSON.stringify(err));
        }
     });
 }
@@ -1310,20 +1351,30 @@ function Fun_updDBDataDD(DBData,DDMsg,showText) {
         url: '/app/PM/updDBData',
         data: DBData,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//            swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-        	   alert(showText+"更新数据成功!");
+//        	   swal(showText+"更新数据成功!");
                if(DDMsg!=""){
             	   sendDingMsg(DDMsg);
                }
-              window.location.reload();
+//              window.location.reload();
+              
+              
+           swal("Good job!", showText+"更新成功!", "success")
+       	   .then((value) => {
+//       	     swal(`The returned value is: ${value}`);
+       	     
+       	     window.location.reload();
+       	   });
+
+              
            }else{
-        	   alert(showText+"未有数据更新!");
+        	   swal(showText+"未有数据更新!");
         	   window.location.reload();
            }
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+       	swal("失败数据:"+JSON.stringify(err));
        }
     });
 }
@@ -1399,9 +1450,9 @@ function Fun_getBillFile(Para,DivID,feedBack){
 //        url: '/app/PM/addDBData',
 //        data: DBData,
 //        success: function(data) {
-////            alert("成功数据:" + JSON.stringify(data));
+////            swal("成功数据:" + JSON.stringify(data));
 //           if (data.affectedRows != 0) {
-//               alert("新增数据成功!");
+//               swal("新增数据成功!");
 //               
 //               callback(data){
 //            	   return data
@@ -1412,7 +1463,7 @@ function Fun_getBillFile(Para,DivID,feedBack){
 //           }
 //       },
 //       error:function(err){
-//       	alert("失败数据:"+JSON.stringify(err));
+//       	swal("失败数据:"+JSON.stringify(err));
 //       }
 //    });
 //    
@@ -1722,6 +1773,37 @@ function getDBIDInfo(tableName,DBID){
 		showDBIDInfo("#tableDetail",SQLParamPLD);
 		
 		break;
+		
+        case 'ppm_bills_plan_t':
+		let SQLParamPLD_T={
+			"tableName":"ppm_bills_plan_t",
+			"titles":[
+				"DBID",
+				"BPID",
+				"BPIDfrom",
+				"BTIDfrom",
+				"version",
+				"CTRName",
+				"topic",
+				"detail",
+				"PGEMaker",
+				"OGNSystemVersion",
+				"MHEName",
+				"files",
+				"modelD",
+				"modelH",
+				"applyDate",
+				"limitDate",
+				"maker",
+				"makeDate",
+				"auditOpinion"
+				],
+			"filter":"DBID='"+DBID+"'"
+			};
+	
+		showDBIDInfo("#tableDetail",SQLParamPLD_T);
+		
+		break;
 	case 'ppm_bills_blueprint':
 		let SQLParamBPT={
 			"tableName":"ppm_bills_blueprint",
@@ -1847,7 +1929,7 @@ function showDBIDInfo(tableID,SQLParam){
         	 
         	 let dataR= NulltoEmpty(data);
         	 
-        //	 alert(JSON.stringify(dataR));
+        //	 swal(JSON.stringify(dataR));
         	 
         	 $(tableID+" tr:eq(0)").append("<th>DBID</th>");   
        	  
@@ -1870,7 +1952,7 @@ function showDBIDInfo(tableID,SQLParam){
          success:function(data){
         	 
         	 let dataR= NulltoEmpty(data);
- //      	 alert(JSON.stringify(dataR));
+ //      	 swal(JSON.stringify(dataR));
 
        	  if(dataR.length!=0){  
        		  let trtd="";
@@ -1986,7 +2068,7 @@ function showDBIDInfo(tableID,SQLParam){
 
 function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 	
-	//alert(JSON.stringify(DataPara));
+	//swal(JSON.stringify(DataPara));
 	 $(tableID+" tbody").html("");
 	
 	 $.ajax({
@@ -2014,7 +2096,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
         	 if(TestResult!=null){
         		 
         		 for(var i=0;i<TestResult.length;i++){
-//          		  alert(TestResult[i].testResult);
+//          		  swal(TestResult[i].testResult);
           		  $("input:radio[name='testResultRadio"+i+"'][value="+TestResult[i].testResult+"]").prop("checked",true); 
           		  $("#testRemark"+i).val(TestResult[i].testRemark);
                 }
@@ -2051,7 +2133,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 
 //function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 //	
-//	//alert(JSON.stringify(DataPara));
+//	//swal(JSON.stringify(DataPara));
 //	 $(tableID+" tbody").html("");
 //	
 //	 $.ajax({
@@ -2077,7 +2159,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 //        	 if(TestResult!=null){
 //        		 
 //        		 for(var i=0;i<TestResult.length;i++){
-////          		  alert(TestResult[i].testResult);
+////          		  swal(TestResult[i].testResult);
 //          		  $("input:radio[name='testResultRadio"+i+"'][value="+TestResult[i].testResult+"]").prop("checked",true); 
 //          		  $("#testRemark"+i).val(TestResult[i].testRemark);
 //                }
@@ -2113,7 +2195,7 @@ function Fun_showSQLTestContentsTable(SQL,tableID,TestResult,auditCheck){
 
 function Fun_showSQLTestContentsTableLite(SQL,tableID,TestResult){
 	
-	//alert(JSON.stringify(DataPara));
+	//swal(JSON.stringify(DataPara));
 	 $(tableID+" tbody").html("");
 	
 	 $.ajax({
@@ -2126,7 +2208,7 @@ function Fun_showSQLTestContentsTableLite(SQL,tableID,TestResult){
         	 if(TestResult!=null){
         		 
         		 for(let i=0;i<TestResult.length;i++){
-//          		  alert(TestResult[i].testResult);
+//          		  swal(TestResult[i].testResult);
         			 
         			 for(let j=0;j<data.length;j++){
         				 
@@ -2190,7 +2272,7 @@ function Fun_showSQLTestContentsTableLite(SQL,tableID,TestResult){
 
 function Fun_previewSQLTestContents(SQL,tableID){
 	
-	//alert(JSON.stringify(DataPara));
+	//swal(JSON.stringify(DataPara));
 	 $(tableID+" tbody").html("");
 	
 	 $.ajax({
@@ -2361,7 +2443,7 @@ function checkAuthority(selectSQL,AuthorityID){
      })
      
      if(checkResult==false){
-    	 alert("监测到当前账号无该操作权限,请联系管理员授权!");
+    	 swal("监测到当前账号无该操作权限,请联系管理员授权!");
      }
 
      return checkResult;
@@ -2528,16 +2610,16 @@ function IOF_insertDBData(ips,ops,fun) {
         url: '/app/PM/IOF_insertDBData',
         data: ips,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//            swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-        	   alert("新增成功!");
+        	   swal("新增成功!");
            }
       
 //           ops=data;
 //           return ops;
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+       	swal("失败数据:"+JSON.stringify(err));
        },
        complete:function(){
     	   fun();

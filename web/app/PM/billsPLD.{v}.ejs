@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -500,9 +500,7 @@
 //函数:计划单号生成规则
 
 function Fun_BPIDCreate(){
-	
-	
-	
+
 	if($("#BPID").val()!=""){
 		let BPID=$("#BPID").val().substring(0,11)+"_"+$('input:radio[name="PLDArea"]:checked').val()+$('input:radio[name="orderFrom"]:checked').val()+"_"+$('input:radio[name="orderFromDep"]:checked').val();
 		 $("#BPID").val(BPID);
@@ -562,7 +560,7 @@ function fillFGEMaker(){
 	
 
 	if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
-		alert("DSP,HMI系统必须选择一个 请检查!");
+		swal("DSP,HMI系统必须选择一个 请检查!");
 	}else{
 		
 		let filter="";
@@ -601,7 +599,7 @@ function fillFGEMaker(){
 	         success:function(data){
 
 	        	 if(data.length==0){
-	        		 alert("系统未检测到绑定关系,请手动选择!");
+	        		 swal("系统未检测到绑定关系,请手动选择!");
 	        	 }else{
 	        		 console.log("bindData:"+JSON.stringify(data));
 	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
@@ -722,7 +720,7 @@ function Fun_winAddInit(){
 	
 	fillAuditor();
 
-//    $("#auditor").attr("disabled",true);
+
     
     $('#topic').val(""); 
     $('#detail').val(""); 
@@ -960,19 +958,19 @@ function Fun_winDetailInit(dataChoose){
 function checkPLDInput(){
 	console.log("detail:"+$("#detail").val());
 	if($("#CTRName").val()==null){
-		alert("客户未输入,请检查!");
+		swal("客户未输入,请检查!");
 		return false;
 	}else if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
-		alert("DSP系统,HMI系统至少选择一项,请检查!");
+		swal("DSP系统,HMI系统至少选择一项,请检查!");
 		return false;
 	}else if($("#topic").val()==""){
-		alert("主题未输入,请检查!");
+		swal("主题未输入,请检查!");
 		return false;
 	}else if($("#detail").val()==""){
-		alert("要求未输入,请检查!");
+		swal("要求未输入,请检查!");
 		return false;
 	}else if($("#PGEMaker").val()==null){
-		alert("方案人未输入,请检查!");
+		swal("方案人未输入,请检查!");
 		return false;
 	}
 	
@@ -990,7 +988,7 @@ $(document).ready( function () {
 
 //权限测试
 //	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
-//		alert("有权限");
+//		swal("有权限");
 //	}
 	
 	var undone=getQueryString("undone");
@@ -1145,7 +1143,7 @@ $('#BTNInfo').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("操作提示:单击选中数据行后,再双击可快速打开表单!!");
+        swal("操作提示:单击选中数据行后,再双击可快速打开表单!!");
     } else {
 
     	$('#BillPLD').modal('show')
@@ -1165,26 +1163,44 @@ $('#BTNInfo').click(function() {
 $('#BTNDelete').click(function() {
     var dataSelect = table.row('.selected').data();
     
- //   alert(JSON.stringify(dataSelect));
+ //   swal(JSON.stringify(dataSelect));
     
     if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先单击选择需要删除的数据行!");
+        swal("当前未选择任何数据,请先单击选择需要删除的数据行!");
     } else {
     	
     	
     	if(dataSelect.auditResult!=null){
-    		alert("已审核单据禁止删除!");
+    		swal("已审核单据禁止删除!");
     	}else{
     		
     		
-    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+   		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+    		
+//    		var msg1 =swal({
+//    			  title: "操作提示",
+//    			  text: "该单据删除后无法恢复,是否继续!",
+//    			  icon: "warning",
+//    			  buttons: true,
+//    			  dangerMode: true,
+//    			})
+//    			.then((next) => {
+//    			  if (next) {
+//    			    swal("Poof! Your imaginary file has been deleted!", {
+//    			      icon: "success",
+//    			    });
+//    			     result=true;
+//    			  } 
+//    			  return result;
+//    			});
+    		
             if (msg1 === true) {
                 var msg2 = confirm("确认删除此行数据？");
                 if (msg2 === true) {
                 	
-                //	alert(dataSelect.DBID);
+                //	swal(dataSelect.DBID);
                     var IDData = {"DBTable":"ppm_bills_plan","DBID":dataSelect.DBID};
- //                   alert("IDData:"+JSON.stringify(IDData));
+ //                   swal("IDData:"+JSON.stringify(IDData));
                     delDBData(IDData);
                 }
             }
@@ -1204,7 +1220,7 @@ $('#BTNAudit').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("操作提示:单击选中数据行后,再双击可快速打开表单!!");
+        swal("操作提示:单击选中数据行后,再双击可快速打开表单!!");
     } else {
     	
     	if(dataSelect.auditResult==null||dataSelect.auditResult==""){
@@ -1234,7 +1250,7 @@ $('#BTNAudit').click(function() {
      	    
     		
     	}else{
-    		alert("此计划单已审核,无需再审,可点击详情查看!");
+    		swal("此计划单已审核,无需再审,可点击详情查看!");
     	}
 
     }
@@ -1246,7 +1262,7 @@ $('#BTNAudit').click(function() {
 //	let CTRNameDBID=$('#CTRName option:selected').val();
 //
 //	if(CTRNameDBID==undefined){
-//		alert("请选择客户,以便系统加载绑定数据!");
+//		swal("请选择客户,以便系统加载绑定数据!");
 //	}else{
 //		let filter="CTRVal="+CTRNameDBID;
 //	
@@ -1273,7 +1289,7 @@ $('#BTNAudit').click(function() {
 //	         success:function(data){
 //
 //	        	 if(data.length==0){
-//	        		 alert("系统未检测到对应绑定关系,请先维护绑定关系基础数据!");
+//	        		 swal("系统未检测到对应绑定关系,请先维护绑定关系基础数据!");
 //	        	 }else{
 //	        		 console.log("bindData:"+JSON.stringify(data));
 //	        		 
@@ -1597,9 +1613,9 @@ $('#BTNFormUpdate').click(function() {
 	               error:function(err){
 	            	   
 	            	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-	            		   alert("系统中已存在重复数据,请检查!");
+	            		   swal("系统中已存在重复数据,请检查!");
 	            	   }else{
-	            		   alert("失败数据:"+JSON.stringify(err));
+	            		   swal("失败数据:"+JSON.stringify(err));
 	            	   }
 	            	   
 	               	
@@ -1609,7 +1625,7 @@ $('#BTNFormUpdate').click(function() {
 	        	
 	        	$.when(ajax1,ajax2).done(function(){
 	        		
-					alert("更新版本成功!");
+					swal("更新版本成功!");
 					window.location.reload();
 
 				});
@@ -1646,7 +1662,7 @@ $('#BTNFormAuditYes').click(function() {
 //			window.location.reload();
 		}
 	}else{
-		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
+		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 	}
 	
 //	$('#BillPLD').modal('hide');
@@ -1674,11 +1690,11 @@ $('#BTNFormAuditNo').click(function() {
 //			updDBData(auditData,"表单审核状态");
 			
 			let msgContent="@"+$('#maker').text()+",计划单审核未通过,请登陆系统处理!";
-			Fun_updDBDataDD(billData,{at:$('#maker').text(),msg:msgContent},"审核状态");
+			Fun_updDBDataDD(auditData,{at:$('#maker').text(),msg:msgContent},"审核状态");
 //			window.location.reload();
 		}
 	}else{
-		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
+		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 	}
 	
 //	$('#BillPLD').modal('hide');

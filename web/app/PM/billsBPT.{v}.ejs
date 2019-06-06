@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -1174,7 +1174,7 @@ function Fun_BPTDetailInit(dataSelect){
 
 function Fun_showSQLLiteTable(SQL,tableInfo){
 
-	//alert(JSON.stringify(DataPara));
+	//swal(JSON.stringify(DataPara));
 
 		$(tableInfo.tableID).DataTable().destroy();//销毁原数据表格,防止加载错误
 
@@ -1288,7 +1288,7 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 				Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff",dataSelectTask.taskStaff);
 				
 				
-//			     alert($("#taskStaff").text() );
+//			     swal($("#taskStaff").text() );
 //			     $("#taskStaff option[text='熊奇龙']").attr("selected", true);  
 
 				 $('#taskLimitDate').val(dataSelectTask.taskLimitDate);
@@ -1319,9 +1319,9 @@ function Fun_addTask(DBData) {
         url: '/app/PM/addDBData',
         data: DBData,
         success: function(data) {
-//            alert("成功数据:" + JSON.stringify(data));
+//            swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               alert("新增任务单成功!");
+               swal("新增任务单成功!");
           	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
           	   $('#BTNTaskAdd').click();
           	   $('#billTaskPanel').hide();
@@ -1329,7 +1329,7 @@ function Fun_addTask(DBData) {
            }
        },
        error:function(err){
-       	alert("失败数据:"+JSON.stringify(err));
+       	swal("失败数据:"+JSON.stringify(err));
        }
     });
 }
@@ -1342,9 +1342,9 @@ function Fun_updTask(DBData) {
         url: '/app/PM/updDBData',
         data: DBData,
         success: function(data, textStatus) {
- //                alert("成功数据:"+JSON.stringify(data));
+ //                swal("成功数据:"+JSON.stringify(data));
             if (data.changedRows != 0) {
-                alert("更新任务单数据成功!");
+                swal("更新任务单数据成功!");
 
                 Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
 
@@ -1352,7 +1352,7 @@ function Fun_updTask(DBData) {
            	    $('#billTaskPanel').hide();
 
             } else {
-                alert("未有任务单数据更新!");
+                swal("未有任务单数据更新!");
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -1366,9 +1366,9 @@ function Fun_saveTask(DBData) {
         url: '/app/PM/saveDBData',
         data: DBData,
         success: function(data, textStatus) {
-            //     alert("成功数据:"+JSON.stringify(data));
+            //     swal("成功数据:"+JSON.stringify(data));
             if (data.affectedRows != 0) {
-                alert("保存任务单数据成功!");
+                swal("保存任务单数据成功!");
 
                 Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
 
@@ -1376,7 +1376,7 @@ function Fun_saveTask(DBData) {
            	    $('#billTaskPanel').hide();
 
             } else {
-                alert("未有任务单数据更新!");
+                swal("未有任务单数据更新!");
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -1391,15 +1391,15 @@ function Fun_delTask(IDData) {
         url: '/app/PM/delDBData',
         data: IDData,
         success: function(data, textStatus) {
-            //  alert("成功数据:"+JSON.stringify(data));
+            //  swal("成功数据:"+JSON.stringify(data));
             if (data.affectedRows != 0) {
-                alert("删除任务单成功!");
+                swal("删除任务单成功!");
              	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
              	  $('#BTNTaskAdd').click();
              	  $('#billTaskPanel').hide();
 
             } else {
-                alert("删除任务单失败!");
+                swal("删除任务单失败!");
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {}
@@ -1429,16 +1429,16 @@ function createSystemTasks(bindsInfo){
 	        url: '/app/PM/autoAddTasks',
 	        data: DBData,
 	        success: function(data) {
-//	            alert("成功数据:" + JSON.stringify(data));
+//	            swal("成功数据:" + JSON.stringify(data));
 	           if (data.affectedRows != 0) {
-	               alert("生成系统任务单成功,请点击任务单完善细节!");
+	               swal("生成系统任务单成功,请点击任务单完善细节!");
 	          	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
 	          	   $('#BTNTaskAdd').click();
 	          	   $('#billTaskPanel').hide();
 	           }
 	       },
 	       error:function(err){
-	       	alert("失败数据:"+JSON.stringify(err));
+	       	swal("失败数据:"+JSON.stringify(err));
 	       }
 	    });
 }
@@ -1530,7 +1530,7 @@ function getTaskBindStaff(Params){
         data:Params,
         url:"/app/PM/getSQLDBData",
         success:function(data){
-//        	alert("get Binds:"+JSON.stringify(data));
+//        	swal("get Binds:"+JSON.stringify(data));
         	
         	if(data.length!=0){
         		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff",data[0].StaffName);
@@ -1549,22 +1549,27 @@ function getTaskBindStaff(Params){
 function checkBPTInput(){
 	
 	if(getCheckBoxValue("modifyReason")==""){
-		alert("修改原因未选择,请检查!");
+		swal("修改原因未选择,请检查!");
+		return false;
+	}else if($('#MHEName option:selected').val()==undefined){
+		swal("机型未选择未输入,请检查!");
 		return false;
 	}else if($("#BPTDescribe").val()==""){
-		alert("方案说明未输入,请检查!");
+		swal("方案说明未输入,请检查!");
 		return false;
 	}else if($("#auditor").val()==null){
-		alert("审核人未选则,请检查!");
+		swal("审核人未选则,请检查!");
 		return false;
 	}
+	
+	
 	
 	let tableTask = $('#billsTaskTable').DataTable();
 	let TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
 	let modifyType=$('input:radio[name="modifyType"]:checked').val();
 	
 	if(modifyType==1&&TaskNum==0){
-		alert("未分配任务单,请检查!");
+		swal("未分配任务单,请检查!");
 		return false;
 	}
 	
@@ -1577,19 +1582,19 @@ function checkBPTInput(){
 function checkTaskInput(){
 	
 	if($("#taskMHEName").val()==null){
-		alert("机型未选择,请检查!");
+		swal("机型未选择,请检查!");
 		return false;
 	}else if($("#taskModel").val()==null){
-		alert("系统未选择,请检查!");
+		swal("系统未选择,请检查!");
 		return false;
 	}else if(getCheckBoxValue("modifyABE")==""){
-		alert("修改属性未选择,请检查!");
+		swal("修改属性未选择,请检查!");
 		return false;
 	}else if($("#taskStaff").val()==null){
-		alert("任务负责人未选则,请检查!");
+		swal("任务负责人未选则,请检查!");
 		return false;
 	}else if($("#taskDBE").val()==""){
-		alert("任务要求未填写,请检查!");
+		swal("任务要求未填写,请检查!");
 		return false;
 	}
 
@@ -1813,7 +1818,7 @@ $("[data-toggle='popover']").popover({html : true });
 ////radio 定义更换按键触发事件-----------
 //$('input:radio[name="auditType"]').click(function(){
 //	var radioValue = $('input:radio[name="auditType"]:checked').val();
-////	alert(radioValue);
+////	swal(radioValue);
 //
 //	switch(radioValue){
 //	case "1":
@@ -1854,7 +1859,7 @@ $('#BTNBPTInfo').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("操作提示:单击选中数据行后,再双击可快速打开表单!");
+        swal("操作提示:单击选中数据行后,再双击可快速打开表单!");
     } else {
     	Fun_BPTDetailInit(dataSelect);
 
@@ -1868,12 +1873,12 @@ $('#BTNBPTAudit').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请点击表格先选中需要审核的方案!");
+        swal("请点击表格先选中需要审核的方案!");
     } else {
 
     	switch(dataSelect.auditResult){
     	case null:
-    		alert("该计划单不存待审核的方案,请与方案人确认!");
+    		swal("该计划单不存待审核的方案,请与方案人确认!");
     		break;
     	case 0:
 
@@ -1891,7 +1896,7 @@ $('#BTNBPTAudit').click(function() {
     		 $("#BTNBPTAuditNo").show();
         	break;
     	default:
-    		alert("该方案已经审核,无需再次审核!");
+    		swal("该方案已经审核,无需再次审核!");
 
     	}
 
@@ -1976,7 +1981,7 @@ $('#BTNTaskAdd').click(function(){
 //	
 //	
 //if(CTRNameDBID==undefined){
-//	alert("请选择客户,以便系统加载绑定数据!");
+//	swal("请选择客户,以便系统加载绑定数据!");
 //}else{
 //	let filter="CTRVal="+CTRNameDBID;
 //
@@ -2011,7 +2016,7 @@ $('#BTNTaskAdd').click(function(){
 //	        		 
 //	        	 }else{
 //	        		 let bindsInfo=data[0];
-////	        		 alert("成功数据:" + JSON.stringify(data));
+////	        		 swal("成功数据:" + JSON.stringify(data));
 //	        		 
 //	        		 createSystemTasks(bindsInfo);
 //	        	 }
@@ -2035,11 +2040,11 @@ $('#BTNTaskDel').click(function() {
    console.log(JSON.stringify(dataSelectTask));
 
     if (dataSelectTask == undefined) {
-        alert("未选择任何任务单,请在任务清单中选中需要删除的任务单!");
+        swal("未选择任何任务单,请在任务清单中选中需要删除的任务单!");
     } else {
 
     	if(dataSelectTask.BTAcceptResult==1||dataSelectTask.BTAcceptResult==2){
-    		alert("已确认过的任务单禁止删除!");
+    		swal("已确认过的任务单禁止删除!");
     	}else{
 
     		var msg = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
@@ -2063,7 +2068,7 @@ $('#BTNTaskDel').click(function() {
 $('#BTNTaskSave').click(function(){
 	
 	if(sessionName!=$("#PGEMaker").val()){
-		alert("当前账号非指定方案人,不允许新增该方案任务!");
+		swal("当前账号非指定方案人,不允许新增该方案任务!");
 	}else{
 		
 		
@@ -2206,7 +2211,7 @@ $("#taskModel").change(function() {
 $('#BTNBPTSave').click(function(){
 	
 	if(sessionName!=$("#PGEMaker").val()){
-		alert("当前账号非指定方案人,不允许保存方案!");
+		swal("当前账号非指定方案人,不允许保存方案!");
 	}else{
 		
 		if(checkBPTInput()){
@@ -2271,7 +2276,7 @@ $('#BTNBPTSave').click(function(){
 		    			}
 		    
 		        	
-//		        	alert("BPTData:"+JSON.stringify(BPTData));
+//		        	swal("BPTData:"+JSON.stringify(BPTData));
 		        	
 		        	
 		        	if(auditor==sessionName){
@@ -2282,9 +2287,9 @@ $('#BTNBPTSave').click(function(){
 		            	        url: '/app/PM/saveDBData',
 		            	        data: BPTData,
 		            	        success: function(data) {
-		            	  //         alert("成功数据:" + JSON.stringify(data));
+		            	  //         swal("成功数据:" + JSON.stringify(data));
 		            	           if (data.affectedRows != 0) {
-		            	               alert("方案单数据保存成功!");
+		            	               swal("方案单数据保存成功!");
 
 		            	               let msg=confirm("是否立刻自动审核通过并发布任务?");
 		            	               
@@ -2295,9 +2300,9 @@ $('#BTNBPTSave').click(function(){
 		            	       },
 		            	       error:function(err){
 		            	    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-		            	    		   alert("系统中已存在重复数据,请检查!");
+		            	    		   swal("系统中已存在重复数据,请检查!");
 		            	    	   }else{
-		            	    		   alert("失败数据:"+JSON.stringify(err));
+		            	    		   swal("失败数据:"+JSON.stringify(err));
 		            	    	   }
 		            	       }
 		            	    });
@@ -2325,7 +2330,7 @@ $('#BTNBPTUpdateVer').click(function(){
     	
     	 var tableTask = $('#billsTaskTable').DataTable();
 		 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
-//		 alert("TaskNum:"+TaskNum);
+//		 swal("TaskNum:"+TaskNum);
 
 			 let allTaskCheck=0;
 			 
@@ -2381,13 +2386,13 @@ $('#BTNBPTUpdateVer').click(function(){
 //			if(msg2){
 //				addDBData(billData);
 //			}else{
-//				alert("方案单版本更新取消!");
+//				swal("方案单版本更新取消!");
 //			}
 //			 
 //		 }
 		 
 		 if(allTaskCheck!=0){
-		 alert("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
+		 swal("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
 		 }
 		 
 		 
@@ -2438,9 +2443,9 @@ $('#BTNBPTUpdateVer').click(function(){
             error:function(err){
          	   
          	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-         		   alert("系统中已存在重复数据,请检查!");
+         		   swal("系统中已存在重复数据,请检查!");
          	   }else{
-         		   alert("失败数据:"+JSON.stringify(err));
+         		   swal("失败数据:"+JSON.stringify(err));
          	   }
          	   
             	
@@ -2449,7 +2454,7 @@ $('#BTNBPTUpdateVer').click(function(){
 		 
 		 $.when(ajax1,ajax2).done(function(){
      		
-				alert("更新版本成功!");
+				swal("更新版本成功!");
 				window.location.reload();
 
 		});
@@ -2477,7 +2482,7 @@ $('#BTNBPTAuditYes').click(function() {
 			
 //		//原审核功能-----------------
 
-////			 alert("TaskNum:"+TaskNum);
+////			 swal("TaskNum:"+TaskNum);
 //
 //				 let allTaskCheck=0;
 //				 
@@ -2513,7 +2518,7 @@ $('#BTNBPTAuditYes').click(function() {
 						
 //						 var tableTask = $('#billsTaskTable').DataTable();
 //						 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
-//						 alert("TaskNum:"+TaskNum);
+//						 swal("TaskNum:"+TaskNum);
 
 							 let taskStaffs="";
 							 let taskModels="";
@@ -2544,7 +2549,7 @@ $('#BTNBPTAuditYes').click(function() {
 					  url: '/app/PM/getSQLDBData',
 					  data: {"SQL":SQLGetFQCRequest},
 					  success: function(data) {
-//					      alert("成功数据:" + JSON.stringify(data));
+//					      swal("成功数据:" + JSON.stringify(data));
 					      
 					      if(data[0].FQCRequestResult==1){
 					    	  var FQCRequest=1;
@@ -2632,7 +2637,7 @@ $('#BTNBPTAuditYes').click(function() {
 
 
 						$.when(ajax1,ajax2,ajax3).done(function(){
-							alert("方案已审核通过!");
+							swal("方案已审核通过!");
 							window.location.reload();
 
 						});
@@ -2640,7 +2645,7 @@ $('#BTNBPTAuditYes').click(function() {
 
 					 },
 					 error:function(err){
-					 	alert("失败数据:"+JSON.stringify(err));
+					 	swal("失败数据:"+JSON.stringify(err));
 					   }
 					 });
 			    	 
@@ -2716,7 +2721,7 @@ $('#BTNBPTAuditYes').click(function() {
 
 
 					$.when(ajax1,ajax2,ajax3).done(function(){
-						alert("方案已审核通过!");
+						swal("方案已审核通过!");
 						window.location.reload();
 
 					});
@@ -2731,7 +2736,7 @@ $('#BTNBPTAuditYes').click(function() {
 	
 				
 //			 }else{
-//				 alert("不符合审核标准,存在正在进行的任务单,请更新全部任务单版本后再审核!");
+//				 swal("不符合审核标准,存在正在进行的任务单,请更新全部任务单版本后再审核!");
 //				 
 //			 }
 			 
@@ -2741,7 +2746,7 @@ $('#BTNBPTAuditYes').click(function() {
 //	window.location.reload();
 		}
 	}else{
-		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
+		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 	}
 
 
@@ -2805,7 +2810,7 @@ $('#BTNBPTAuditNo').click(function() {
 
 
 		$.when(ajax1,ajax2).done(function(){
-			alert("方案已审核驳回!");
+			swal("方案已审核驳回!");
 			window.location.reload();
 
 		});
@@ -2813,7 +2818,7 @@ $('#BTNBPTAuditNo').click(function() {
 
 		}
 	}else{
-		alert("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
+		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 	}
 
 
