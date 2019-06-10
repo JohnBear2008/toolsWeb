@@ -27,7 +27,7 @@
 
 
 <div class="divcontent">
-    <h1>内核任务流程-T计划单</h1>
+    <h1>内核流程-T计划单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -357,7 +357,7 @@
                     <div class="form-group">   
                     <label  class="col-sm-1 control-label" for="name">方案负责人:</label>    
                     <div class="col-sm-3 ">
-                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-dropup-auto="true"> 
+                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-toggle="dropup"> 
                     </select>
                     </div>
                     
@@ -394,7 +394,7 @@
                      
                      <label  class="col-sm-1 control-label" for="name">审核人:</label>    
                      <div class="col-sm-3 ">
-                     <select  id="auditor" class="selectpicker" data-live-search="true"  data-dropup-auto="true"> 
+                     <select  id="auditor" class="selectpicker" data-live-search="true"  data-toggle="dropup"> 
                      </select>
                      </div>
                      
@@ -417,8 +417,12 @@
                      </div>
                      </div>
                     
+                     
+                     
 
                     </div>
+                    
+                   
                     
                     <div class="panel-footer">
                     <button id="BTNFormSave" type="button" class="btn btn-primary">保存</button>
@@ -583,31 +587,6 @@ function getPLDOld(BPID){
 			};
 
 	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
-}
-
-//函数,检查输入项是否完整
-
-function checkPLDInput(){
-	console.log("detail:"+$("#detail").val());
-	if($("#CTRName").val()==null){
-		swal("客户未输入,请检查!");
-		return false;
-	}else if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
-		swal("DSP系统,HMI系统至少选择一项,请检查!");
-		return false;
-	}else if($("#topic").val()==""){
-		swal("主题未输入,请检查!");
-		return false;
-	}else if($("#detail").val()==""){
-		swal("要求未输入,请检查!");
-		return false;
-	}else if($("#PGEMaker").val()==null){
-		swal("方案人未输入,请检查!");
-		return false;
-	}
-	
-	return true;
-	
 }
 
 //函数 获取方案人
@@ -775,7 +754,7 @@ function Fun_winAddInit(){
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
 	
 	
-	fillAuditor();
+//	fillAuditor();
 
 
     
@@ -812,7 +791,7 @@ function Fun_winAddInit(){
 //  $("#auditTypeDiv").show();
   
   $("#BTNFormSave").show();
-//  $("#BTNFormSaveAudit").show();
+  $("#BTNFormSaveAudit").show();
   
   $('#BTNGetPEGMaker').show();
   
@@ -875,13 +854,7 @@ function Fun_winDetailInit(dataChoose){
     
   $('#divFilesUploaded').html("");
   
-//  if(dataSelect.fileKey!=null){
-//	  
-//	  console.log("不为空"+dataSelect.fileKey);
-//	  var downloadurl="<a id='filePath' href="+'/system.files.download/upload_'+dataSelect.fileKey+" download="+dataSelect.fileName+">"+"<span id='fileName'>"+dataSelect.fileName+"</span></a>";
-//	  $('#divFilesUploaded').html(downloadurl);
-//  }
-//  
+  console.log("dataSelect.files:"+dataSelect.files);
   
   
   
@@ -891,9 +864,12 @@ function Fun_winDetailInit(dataChoose){
 	  var files=JSON.parse(dataSelect.files);
 	  if(files!=null){
 		  
+		  
+		  console.log("file is not null:"+JSON.stringify(files));
+		  
 		  var fileLink="";
 			 if(files.length>0){
-				 for(var i=0;i<files.length;i++){
+				 for(let i=0;i<files.length;i++){
 					 console.log("files[i].fileName:"+files[i].fileName);
 					 
 					fileLink=fileLink+"<a  href="+'/system.files.download/'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
@@ -905,6 +881,8 @@ function Fun_winDetailInit(dataChoose){
 	  }else{
 		  downloadurl="";
 	  }
+	  
+	  console.log("downloadurl:"+downloadurl);
 	  $('#divFilesUploaded').html(downloadurl);
   }
   
@@ -1000,13 +978,13 @@ function Fun_winDetailInit(dataChoose){
 	   
 //	    $("#auditTypeOption1").attr("checked",true);
 	    
-	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
+//	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
 	    $("#auditor").attr("disabled",true);
 	    
 	    $('#auditDate').text(dataSelect.auditDate);
 	    
-	    $('#auditOpinion').val(dataSelect.auditOpinion);
-	    
+//	    $("#BTNFormAuto").hide();
+//	    $("#BTNFormClear").hide();
 	    
 	    
 	    $("#DivFileBTNS").hide();
@@ -1023,7 +1001,34 @@ function Fun_winDetailInit(dataChoose){
   
   
   changeEventBind();
+  
+}
 
+
+
+//函数,检查输入项是否完整
+
+function checkPLDInput(){
+	console.log("detail:"+$("#detail").val());
+	if($("#CTRName").val()==null){
+		swal("客户未输入,请检查!");
+		return false;
+	}else if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
+		swal("DSP系统,HMI系统至少选择一项,请检查!");
+		return false;
+	}else if($("#topic").val()==""){
+		swal("主题未输入,请检查!");
+		return false;
+	}else if($("#detail").val()==""){
+		swal("要求未输入,请检查!");
+		return false;
+	}else if($("#PGEMaker").val()==null){
+		swal("方案人未输入,请检查!");
+		return false;
+	}
+	
+	return true;
+	
 }
 
 //页面加载函数---------------
@@ -1248,23 +1253,22 @@ $('#BTNInfo').click(function() {
 
 //按钮:-绑定新增
 $('#BTNTaskBindAdd').click(function() {
+	
 	$('#BillPLD').modal('show');
 	
-	$("#BPIDfrom").text("");//先清空
-	$("#BPIDfrom").text("");//先清空
-	$("#BPID").val("");//先清空
+	Fun_winAddInit();
+	
 	$("input:radio[name=orderFrom][value='P']").prop("checked",true);
 	$("input:radio[name=orderFromDep][value='C']").prop("checked",true);
-	
-	Fun_BPIDCreate();
-	
+
+//	
     var dataSelectTask = tableTask.row('.selected').data();
     
     console.log("dataSelectTask:"+dataSelectTask.taskBPID);
     
     $('#BTIDfrom').text(dataSelectTask.BTID); 
     $('#BPIDfrom').text(dataSelectTask.taskBPID); 
-    
+//    
     $.ajax({
       method: 'get',
       url: '/app/PM/getSQLDBData',
@@ -1337,11 +1341,6 @@ $('#BTNTaskBindAdd').click(function() {
         	  $('#applyDate').val(data[0].applyDate); 
         	  $('#limitDate').val(data[0].limitDate);
 
-
-        	 $("[name='urgency'][value='"+data[0].urgency+"']").prop("checked", true);
-
-        	  
-        	  
         	  var SQLAuditor={SQL:"SQLSRStaffs"};
         	  var auditor="#auditor";
         	  Fun_getSQLSelectDBData(SQLAuditor,auditor,data[0].auditor);
@@ -1587,18 +1586,24 @@ $.when(ajax1,ajax2).done(function(){
 
 $('#BTNFormModify').click(function() {
 	
-	
+	if(checkPLDInput()){
+		
+		
+		
+	var files=[];
 
 	
-	if($('#filePath').attr('href')!=undefined){
-	var fileKey=$('#filePath').attr('href').substring(30);//去掉多余的字符串前缀
-	var fileName=$('#fileName').html();
-	}else{
-	var fileKey="";
-	var fileName="";
-	}
-	
-	files={"fileName":fileName,"fileKey":fileKey};
+	$('#divFilesUploaded a').each(function(){
+		var fileKey=$(this).attr('href').substring(23);
+		var fileName=$(this).attr('download');
+		
+		var fileInfo={
+				"fileName":fileName,
+				"fileKey":fileKey
+		}
+		
+		files.push(fileInfo);
+	});
 
 	var billData={
 			"DBTable":"ppm_bills_plan_t",
@@ -1628,7 +1633,9 @@ $('#BTNFormModify').click(function() {
 	}
 	
 	let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!";
-	Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"计划单");
+	Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"T计划单");
+	
+	}
 
 
 });
@@ -1701,8 +1708,6 @@ $('#BTNFormUpdate').click(function() {
 //        	}
         	
 
-
-        	
         }
     }
     
@@ -1730,7 +1735,7 @@ $('#BTNFormAuditYes').click(function() {
 //			updDBData(auditData,"审核状态");
 			
 			let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
-			Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
+			Fun_updDBDataDD(auditData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
 //			window.location.reload();
 		}
 	}else{

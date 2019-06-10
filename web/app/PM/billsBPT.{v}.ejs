@@ -620,7 +620,7 @@
                      </div>
  
                      </div>
-                     <!-------------------------------------------------------------------------->
+  
 
                       <!-------------------------------------------------------------------------->
   
@@ -1046,7 +1046,7 @@ function Fun_BPTDetailInitVal(dataChoose){
 	  $('#taskBPID').val(dataSelect.BPID);
 	  $('#taskLimitDate').val(dataSelect.limitDate);
 	  
-	  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
+//	  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
 		
 	  Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",dataSelect.MHEName);
 		
@@ -1119,7 +1119,6 @@ function Fun_BPTDetailInitShow(dataSelect){
 		break;
 	
 	}
-	
 }
 
 //初始化控制可用
@@ -1534,6 +1533,8 @@ function getTaskBindStaff(Params){
         	
         	if(data.length!=0){
         		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff",data[0].StaffName);
+        	}else{
+        		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
         	}
         	
         },
@@ -1541,7 +1542,6 @@ function getTaskBindStaff(Params){
     })
 
 }
-
 
 
 //函数,检查输入项是否完整
@@ -1600,6 +1600,21 @@ function checkTaskInput(){
 
 	return true;
 	
+}
+
+
+function addBindEvent(){
+	
+	$("#taskModel").unbind();
+	$("#taskModel").change(function() {
+		
+		if($("#taskMakeDate").text()==""){//自动抓取功能只在新增时生效
+			console.log($("#taskModel option:selected").text());
+			getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#taskModel option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+			
+		}
+
+	})
 }
 
 
@@ -1703,6 +1718,7 @@ $('#BTNFilterAll').click(function() {
 //绑定radio切换改变任务单号事件
 
 $('input[type=radio][name=taskSortType]').change(function() {
+	$('#taskStaff').selectpicker('val','');
 	
 	var taskSortType=$('input:radio[name="taskSortType"]:checked').val();
 	
@@ -1748,10 +1764,12 @@ $('input[type=radio][name=taskSortType]').change(function() {
 	}
 
 	Fun_BTIDCreate();
+	
 
 });
 
 $('input[type=radio][name=taskType]').change(function() {
+	$('#taskStaff').selectpicker('val','');
 	
 	let taskSortType=$('input:radio[name="taskSortType"]:checked').val();
 	let taskType=$('input:radio[name="taskType"]:checked').val();
@@ -1793,9 +1811,9 @@ $('input[type=radio][name=taskType]').change(function() {
 		break;
 	
 	}
-	
-	
+
 	Fun_BTIDCreate();
+	
 
 });
 
@@ -1954,7 +1972,7 @@ $('#BTNTaskAdd').click(function(){
 	
 	if($('#modelD option:selected').text()!=""){
 		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
-		getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#modelD option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+//		getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#modelD option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
 	}else{
 		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel");
 //		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
@@ -1970,6 +1988,8 @@ $('#BTNTaskAdd').click(function(){
 	$('#taskMakeDate').text("");
 	
 	Fun_BTIDCreate();
+	
+	addBindEvent();
 
 
 });
@@ -2195,15 +2215,7 @@ $('#BTNTaskSave').click(function(){
 
 //任务系统切换事件
 
-$("#taskModel").change(function() {
-	
-	if($("#taskMakeDate").text()==""){//自动抓取功能只在新增时生效
-		console.log($("#taskModel option:selected").text());
-		getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#taskModel option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
-		
-	}
 
-})
 
 
 //按钮-方案保存

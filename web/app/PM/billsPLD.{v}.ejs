@@ -71,15 +71,12 @@
                 				   href="#collapseTrack" >
                 					流程跟踪面板:点击可收起
                 				</a>
-                				
-                				
+
                 			</h4>
                 		</div>
+                		
                 		<div id="collapseTrack" class="panel-collapse collapse in" >
                 			<div class="panel-body">
-                			
-                			 
-                			 
                 			
                 			 <!--------------panel--------------------->
                 			 <button id="BTNTrack" style="float: right">跳转到进度跟踪</button>
@@ -344,7 +341,7 @@
                     <div class="form-group">   
                     <label  class="col-sm-1 control-label" for="name">方案负责人:</label>    
                     <div class="col-sm-3 ">
-                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-dropup-auto="true"> 
+                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-toggle="dropup" > 
                     </select>
                     </div>
                     
@@ -382,7 +379,7 @@
                      
                      <label  class="col-sm-1 control-label" for="name">审核人:</label>    
                      <div class="col-sm-3 ">
-                     <select  id="auditor" class="selectpicker" data-live-search="true"  data-dropup-auto="true"> 
+                     <select  id="auditor" class="selectpicker" data-live-search="true" data-toggle="dropup" > 
                      </select>
                      </div>
                      
@@ -718,7 +715,7 @@ function Fun_winAddInit(){
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
 	
 	
-	fillAuditor();
+//	fillAuditor();
 
 
     
@@ -817,12 +814,16 @@ function Fun_winDetailInit(dataChoose){
     
   $('#divFilesUploaded').html("");
   
+  console.log("dataSelect.files:"+dataSelect.files);
+  
 
 
   if(dataSelect.files!=null){
 	  
 	  var files=JSON.parse(dataSelect.files);
 	  if(files!=null){
+		  
+		  console.log("file is not null:"+JSON.stringify(files));
 		  
 		  var fileLink="";
 			 if(files.length>0){
@@ -1658,7 +1659,7 @@ $('#BTNFormAuditYes').click(function() {
 //			updDBData(auditData,"审核状态");
 			
 			let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
-			Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
+			Fun_updDBDataDD(auditData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
 //			window.location.reload();
 		}
 	}else{

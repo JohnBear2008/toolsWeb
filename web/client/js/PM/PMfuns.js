@@ -1829,6 +1829,31 @@ function getDBIDInfo(tableName,DBID){
 		showDBIDInfo("#tableDetail",SQLParamBPT);
 		
 		break;
+	case 'ppm_bills_blueprint_t':
+		let SQLParamBPT_T={
+			"tableName":"ppm_bills_blueprint_t",
+			"titles":[
+				"DBID",
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"BPTDescribe",
+				"PGEMaker",
+				"auditor",
+				"auditDate",
+				"files",
+				"modelD",
+				"modelH",
+				"BPTAuditOpinion",
+				"limitDate",
+				"maker",
+				"makeDate"
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		showDBIDInfo("#tableDetail",SQLParamBPT_T);
+		
+		break;
 	case 'ppm_bills_task':
 		let SQLParamTask={
 			"tableName":"ppm_bills_task",
@@ -1860,6 +1885,37 @@ function getDBIDInfo(tableName,DBID){
 		showDBIDInfo("#tableDetail",SQLParamTask);
 		
 		break;
+	case 'ppm_bills_task_t':
+		let SQLParamTask_T={
+			"tableName":"ppm_bills_task_t",
+			"titles":[
+				"DBID",
+				"BTID",
+				"BTVersion",
+				"taskCTRName",
+				"taskStaff",
+				"taskDBE",
+				"taskLimitDate",
+				"taskRemark",
+				"taskMaker",
+				"taskMakeDate",
+				"BTAcceptDate",
+				"modifyContent",
+				"functionsDBE",
+				"IPQCAuditResultText",
+				"IPQCMaker",
+				"IPQCMakeDate",
+				"BTStatusText",
+				"taskFiles",
+				"IPQCTestResult"
+				
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamTask_T);
+		
+		break;
 	case 'ppm_bills_fqc':
 		let SQLParamFQC={
 			"tableName":"ppm_bills_fqc",
@@ -1878,6 +1934,26 @@ function getDBIDInfo(tableName,DBID){
 				"filter":"DBID='"+DBID+"'"
 			};
 		showDBIDInfo("#tableDetail",SQLParamFQC);
+		
+		break;
+	case 'ppm_bills_fqc_t':
+		let SQLParamFQC_T={
+			"tableName":"ppm_bills_fqc_t",
+			"titles":[
+				"DBID",
+				"FQCVersion",
+				"FQCRecord",
+				"FQCRemark",
+				"FQCMaker",
+				"FQCMakeDate",
+				"FQCAuditor",
+				"FQCAuditDate",
+				"FQCStatusText",
+				"FQCTestResult"
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		showDBIDInfo("#tableDetail",SQLParamFQC_T);
 		
 		break;
 	case 'ppm_bills_pbh':
@@ -1899,6 +1975,26 @@ function getDBIDInfo(tableName,DBID){
 			};
 		
 		showDBIDInfo("#tableDetail",SQLParamPBH);
+		
+		break;
+	case 'ppm_bills_pbh_t':
+		let SQLParamPBH_T={
+			"tableName":"ppm_bills_pbh_t",
+			"titles":[
+				"DBID",
+				"PBHVersion",
+				"PBHRemark",
+				"PBHMaker",
+				"PBHMakeDate",
+				"PBHAuditor",
+				"PBHAuditDate",
+				"emailADRS",
+				"files"
+				],
+				"filter":"DBID='"+DBID+"'"
+			};
+		
+		showDBIDInfo("#tableDetail",SQLParamPBH_T);
 		
 		break;
 	
