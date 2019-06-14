@@ -544,7 +544,7 @@ function Fun_winDetailInit(dataChoose){
 	$('#applyDate').text(dataSelect.applyDate);
 	$('#limitDate').text(dataSelect.limitDate);
 	$('#topic').text(dataSelect.topic);
-	$('#detail').text(dataSelect.detail);
+	$('#detail').text(dataSelect.detail.replace(/<br\/>/g,'\n'));
 	
 //	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
 //	var tableID="#billsTaskTable";
@@ -616,6 +616,26 @@ function Fun_winDetailInit(dataChoose){
 		  }
 		  $('#divFilesUploaded').html(downloadurl);
 	  }
+   
+   if(dataSelect.files!=""){
+		  
+		  var files=JSON.parse(dataSelect.files);
+		  if(files!=null){
+			  
+			  var fileLink="";
+				 if(files.length>0){
+					 for(var i=0;i<files.length;i++){
+						console.log("files[i].fileName:"+files[i].fileName); 
+						fileLink=fileLink+"<a  href="+'/system.files.download/'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+					 } 
+					 fileLink=fileLink.substr(0, fileLink.length-3); 
+				 }
+		  var downloadurl=fileLink;
+		  }else{
+			  downloadurl="";
+		  }
+		  $('#divFilesUploaded').html(downloadurl);
+	   }
 
 	
 	$('#emailContent').val(dataSelect.emailContent.replace(/<br\/>/g,'\n'));

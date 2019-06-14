@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -27,7 +27,7 @@
 
 
 <div class="divcontent">
-    <h1>内核工作流程-FQC单</h1>
+    <h1>内核流程-T-FQC单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -36,6 +36,13 @@
 
         <!-- 按钮触发模态框 -->
         <button id="BTNFQCDetail" class="btn btn-primary" data-toggle="modal" >FQC维护</button>
+        
+        <div class="btn-group" style="margin-left:20px">
+        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        </div>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
 
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
@@ -95,7 +102,14 @@
                        <span id="model" class="help-block"></span>
                        </div>
 
+
+
+
+
                      </div>
+
+
+
 
                      <!-------------------------------------------------------------------------->
                      <div class="form-group">
@@ -209,7 +223,7 @@
                    <!-------------------------------------------------------------------------->
                    <div class="form-group">
                    <label class="col-sm-1 control-label">测试结果:</label>
-               	   <div class="col-sm-10">
+               	   <div class="col-sm-6">
                	    <label class="radio-inline">
                	        <input type="radio" name="FQCResult" id="radio1" value="1" checked> 测试通过
                	    </label>
@@ -220,6 +234,13 @@
                	        <input type="radio" name="FQCResult" id="radio3" value="3"> 立即修正
                	    </label>
                	 </div>
+               	 
+               	 
+               	 
+               	<label class="col-sm-2 control-label">测试项目版本:</label>
+                <div class="col-sm-1">
+                <span id="testContentsVer" class="help-block"></span>
+                </div>
                	 
                	 
                	 
@@ -325,6 +346,7 @@
     <table id="billsPLDTable" class="table table-striped table-bordered"  >
         <thead>
             <tr>
+                <th>时间戳</th>
                 <th>数据库ID</th>
                 <th>计划单号</th>
                 <th>计划版本号</th>
@@ -369,7 +391,7 @@
 
 //function Fun_showSQLFileTable(SQL,tableID){
 //
-//	//alert(JSON.stringify(DataPara));
+//	//swal(JSON.stringify(DataPara));
 //
 //	 $.ajax({
 //         method:'get',
@@ -400,9 +422,11 @@
 
 
 //函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataSelect){
+function Fun_winDetailInit(dataChoose){
 	
-	 console.log("dataSelect:"+JSON.stringify(dataSelect));
+
+	 
+	 let dataSelect=NulltoEmpty(dataChoose);
 
 
 	$('#DBID').val(dataSelect.DBID);
@@ -418,13 +442,19 @@ function Fun_winDetailInit(dataSelect){
 	$('#topic').text(dataSelect.topic);
 	$('#detail').text(dataSelect.detail);
 	
-	$('#FQCRemark').val(dataSelect.FQCRemark);
+	$('#FQCRemark').val(dataSelect.FQCRemark.replace(/<br\/>/g,'\n'));
 	
 	$('#FQCMaker').text(dataSelect.FQCMaker);
 	$('#FQCMakeDate').text(dataSelect.FQCMakeDate);
-	$('#FQCVersion').text(dataSelect.FQCVersion);
 	
-	$('#FQCAuditor').text(dataSelect.FQCAuditor);
+	if(dataSelect.FQCVersion==""){
+		$('#FQCVersion').text(0);
+	}else{
+		$('#FQCVersion').text(dataSelect.FQCVersion);
+	}
+	
+	
+//	$('#FQCAuditor').text(dataSelect.FQCAuditor);
 	$('#FQCAuditDate').text(dataSelect.FQCAuditDate);
 	
 	$('#FQCResultText').text(dataSelect.FQCResultText);
@@ -432,16 +462,9 @@ function Fun_winDetailInit(dataSelect){
 	
 	var SQLAuditor={SQL:"SQLSRStaffs"};
 	var FQCAuditor="#FQCAuditor";
-	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,sessionName);
+	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,"刘梦");
 
 
-//	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
-//
-//	var tableID="#billsTaskTable";
-//
-//
-//
-//	Fun_showSQLFileTable(tasksTableSQL,tableID);
 	
 	//加载任务表内容, 
 	var SQLParamTask={
@@ -460,34 +483,29 @@ function Fun_winDetailInit(dataSelect){
 			"BID":"BTID",
 			"VER":"BTVersion"
 			};
-	
-	
-	
-	Fun_fillTrackTable("#billsTaskTable",SQLParamTask);
-	
-	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC'"};
+
+	  Fun_fillTrackTable("#billsTaskTable",SQLParamTask);
 
 	  var tableID="#TableTestContents";
 
 	  
 	  console.log("FQCTestResult:"+dataSelect.FQCTestResult);
 	  
-	  var FQCTestResult=JSON.parse(dataSelect.FQCTestResult);
+	  if(dataSelect.FQCTestResult==""){
+		  
+		  let tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')","orderBy":"modelType"};
 
-	  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,FQCTestResult,dataSelect.FQCAuditResult);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	if(dataSelect.FQCAuditResult==0||dataSelect.FQCAuditResult==null){
+		  
+		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,null,null);
+	  }else{
+		  var FQCTestResult=JSON.parse(dataSelect.FQCTestResult);
+		  
+		  let tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND billVersion='"+$('#testContentsVer').text()+"'","orderBy":"modelType"};
+		  Fun_showSQLTestContentsTable(tasksTableSQL,tableID,FQCTestResult,dataSelect.FQCAuditResult);
+	  }
+	  
+
+	if(dataSelect.FQCAuditResult==0||dataSelect.FQCAuditResult==null||dataSelect.FQCAuditResult==""){
 		
 		$('#FQCRemarkShow').hide();
 		$('#FQCRemark').show();
@@ -509,10 +527,6 @@ function Fun_winDetailInit(dataSelect){
 		$('#BTNUpdVer').show();
 	}
 
-
-
-
-
 }
 
 //页面加载函数---------------
@@ -520,19 +534,41 @@ $(document).ready( function () {
 
 	 sessionName="<%-locals.session.yjUser.Name%>";
 
-	 var undone=getQueryString("undone");
+		var undone=getQueryString("undone");
 		
-		if(undone=="true"){
-			
-			var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)"};
-		}else{
-			var tableSQL={"SQL":"SQLTableBillsFQC_T"};
+		switch(undone){
+	    case "unRecord":
+	    	var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unAudit":
+			var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unPass":
+			var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "all":
+			var tableSQL={"SQL":"SQLTableBillsFQC_T","orderBy":" saveTimeStamp DESC"};
+			$("#BTNFilterAll").addClass("active");
+			break;
+		default:
+		    var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  (FQCAuditResult IS NULL OR FQCAuditResult=0) ","orderBy":" saveTimeStamp DESC"};
+		    $("#BTNFilterSimple").addClass("active");	
+		    break;
 		}
+		
+		
+//		if(undone=="true"){
+//			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
+//		}else{
+//			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
+//		}
 
+	 console.log("sessionName:"+sessionName);
 
 	 tableInfo={
 			"tableID":"#billsPLDTable",
 			"columnsData":[
+				{ data: 'saveTimeStamp' ,"visible": false},
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
@@ -549,9 +585,6 @@ $(document).ready( function () {
 	Fun_showSQLTable(tableSQL,tableInfo);
 
 
-
-
-
 //判断是否选中数据-------
 var table = $('#billsPLDTable').DataTable();
 $('#billsPLDTable tbody').on('click', 'tr', function() {
@@ -563,10 +596,26 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
     }
 
     var dataSelect = table.row('.selected').data();
+});
 
+//dbclick 测试判断是否选中数据-------
+
+$('#billsPLDTable tbody').on('dblclick', 'tr', function() {
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
+	$('#BTNFQCDetail').click();
 
 });
 
+
+//过滤按钮组
+$('#BTNFilterSimple').click(function() {
+	window.location.href='/app/PM/T-billsFQC';
+});
+
+$('#BTNFilterAll').click(function() {
+	window.location.href='/app/PM/T-billsFQC?undone=all';
+});
 
 //按钮-FQC维护---------
 $('#BTNFQCDetail').click(function() {
@@ -575,38 +624,31 @@ $('#BTNFQCDetail').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请先点击表格中的表单!");
+        swal("请先点击表格中的表单!");
     } else {
-
     	$('#BillPLD').modal('show')
     	Fun_winDetailInit(dataSelect);
-
     }
-
 
 });
 
 
-
 //按钮-FQC保存---------
 $('#BTNFQCSave').click(function() {
-	
-	
-	
+
 	var FQCTestResult=[];
 	
 	var testNum=$("#TableTestContents").find("tr").length-1;
 	
 	var radioCheck=true;
-//	
-//	alert($("#TableTestContents").find("tr").length );
+
+//	swal($("#TableTestContents").find("tr").length );
 	
 	for(var i=0;i<testNum;i++){
 		var testResult={
 				"testContentDBID":$("#testContentDBID"+i).text(),
 				"testResult":$('input:radio[name="testResultRadio'+i+'"]:checked').val(),
 				"testRemark":$("#testRemark"+i).val()
-				
 		}
 		radioCheck=radioCheck&&$('input:radio[name="testResultRadio'+i+'"]:checked').val();
 		
@@ -615,26 +657,59 @@ $('#BTNFQCSave').click(function() {
 	
 	
 	if(radioCheck!=undefined){
-//		alert(JSON.stringify(FQCTestResult));
+//		swal(JSON.stringify(FQCTestResult));
 
 		 var FQCData={
-					"DBTable":"ppm_bills_FQC_t",
+					"DBTable":"ppm_bills_fqc_t",
 					"DBID":$('#DBID').val(),
 					"fqcBPID":$('#BPID').text(),
 					"CTRName":$('#CTRName').text(),
 					"FQCTestResult":JSON.stringify(FQCTestResult),
-					"FQCRemark":$('#FQCRemark').val(),
+					"FQCRemark":$('#FQCRemark').val().replace(/\n|\r\n/g,'<br/>'),
 				    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
 					"FQCMaker":sessionName,
 					"FQCMakeDate":Ndate,
 					"FQCAuditor":$('#FQCAuditor option:selected').text()
 			}
+		 
+		 
+		 $.ajax({
+		        method: 'post',
+		        url: '/app/PM/saveDBData',
+		        data: FQCData,
+		        success: function(data) {
+		  //         swal("成功数据:" + JSON.stringify(data));
+		           if (data.affectedRows != 0) {
+		        	   
+		        	   if(sessionName==$('#FQCAuditor option:selected').text()){
+		        		   
+		        		   
+		        		   let msgNext=confirm("FQC数据保存成功,是否立即审核?");
+		        		   if(msgNext){
+		        			   $('#BTNFQCAudit').click();
+		        		   }
+		        		   
+		        	   }else{
+		        		   swal("FQC数据保存成功!");
+		        	   }
 
-	saveDBData(FQCData,"FQC单");
+//		              window.location.reload();
+		           }
+		       },
+		       error:function(err){
+		    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+		    		   swal("系统中已存在重复数据,请检查!");
+		    	   }else{
+		    		   swal("失败数据:"+JSON.stringify(err));
+		    	   }
+		       }
+		    });
+
+//	saveDBData(FQCData,"FQC单");
 		 
 		 
 	}else{
-		alert("存在未测试内容,请检查!");
+		swal("存在未测试内容,请检查!");
 	}
 
 });
@@ -645,11 +720,10 @@ $('#BTNFQCSave').click(function() {
 $('#BTNFQCAudit').click(function() {
 	
 	
-	var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
+	if(sessionName==$('#FQCAuditor option:selected').text()){
+		var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
 
 
-
-		 
 		 switch(FQCResult){
 		 case "1":
 			 var PLDUpdData={
@@ -661,13 +735,15 @@ $('#BTNFQCAudit').click(function() {
 			}
 			 
 			 var FQCData={
-						"DBTable":"ppm_bills_FQC_t",
-						"DBID":$('#DBID').val(),
+						"DBTable":"ppm_bills_fqc_t",
+						"BillIDName":"fqcBPID",
+						"BillID":$('#BPID').text(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
 						"FQCStatus":1,
-						"FQCStatusText":"已通过"
+						"FQCStatusText":"已通过",
+						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
 			 
 			 var msg="该计划单已通过FQC检测,等待最终发布!";
@@ -683,13 +759,15 @@ $('#BTNFQCAudit').click(function() {
 			}
 			 
 			 var FQCData={
-						"DBTable":"ppm_bills_FQC_t",
-						"DBID":$('#DBID').val(),
+						"DBTable":"ppm_bills_fqc_t",
+						"BillIDName":"fqcBPID",
+						"BillID":$('#BPID').text(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
 						"FQCStatus":2,
-						"FQCStatusText":"出货后修正"
+						"FQCStatusText":"出货后修正",
+						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
 			 
 			 var msg="该计划单FQC检测存在问题,请发布后继续跟踪解决!";
@@ -705,17 +783,19 @@ $('#BTNFQCAudit').click(function() {
 			}
 			 
 			 var FQCData={
-						"DBTable":"ppm_bills_FQC_t",
-						"DBID":$('#DBID').val(),
+						"DBTable":"ppm_bills_fqc_t",
+						"BillIDName":"fqcBPID",
+						"BillID":$('#BPID').text(),
+//						"DBID":$('#DBID').val(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":2,
 						"FQCStatus":3,
-						"FQCStatusText":"立即修正"
+						"FQCStatusText":"立即修正",
+						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
 			 
 			 var msg="该计划单未通过FQC检测,请更新后再次进行FQC检测!";
-
 			 break;	 
 		
 		 
@@ -723,7 +803,7 @@ $('#BTNFQCAudit').click(function() {
 		 
 		 
 //		 var FQCData={
-//					"DBTable":"ppm_bills_FQC",
+//					"DBTable":"ppm_bills_fqc_t",
 //					"DBID":$('#DBID').val(),
 //					"FQCAuditor":sessionName,
 //					"FQCAuditDate":Ndate,
@@ -733,6 +813,7 @@ $('#BTNFQCAudit').click(function() {
 		 
 		 
 		 console.log("PLDUpdData:"+JSON.stringify(PLDUpdData));
+		 console.log("FQCData:"+JSON.stringify(FQCData));
 		 
 			 var ajax1=$.ajax({
 			        method: 'post',
@@ -742,10 +823,10 @@ $('#BTNFQCAudit').click(function() {
 			        },
 			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 			        });
-//			 
+			 
 			var ajax2=$.ajax({
 		        method: 'post',
-		        url: '/app/PM/updDBData',
+		        url: '/app/PM/updBillStatus',
 		        data: FQCData,
 		        success: function(data, textStatus) {
 		        },
@@ -753,10 +834,15 @@ $('#BTNFQCAudit').click(function() {
 		        });
 
 			$.when(ajax1,ajax2).done(function(){
-				alert(msg);
+				swal(msg);
 				window.location.reload();
 				
 			});
+		
+	}else{
+		swal("您不是该FQC单的指定审核人,无法审核!");
+	}
+
 		 
 });
 
@@ -798,22 +884,67 @@ $('#BTNUpdVer').click(function() {
 	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 	if(msg==true){	
 		
-		var newVersion=parseInt($('#FQCVersion').text())+1;
+	 var newVersion=parseInt($('#FQCVersion').text())+1;
+	 
+	 
+	 let oldFQCData={
+				"DBTable":"ppm_bills_fqc",
+				"BillIDName":"fqcBPID",
+				"BillID":$('#BPID').text(),
+				"FQCStatus":0
+		}
+   
+    let ajax1=$.ajax({
+	        method: 'post',
+	        url: '/app/PM/updBillStatus',
+	        data: oldFQCData,
+	        success: function(data, textStatus) {
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+	        });
+	 
 	
-	
-	 var FQCData={
-				"DBTable":"ppm_bills_FQC_t",
+	 let newFQCData={
+				"DBTable":"ppm_bills_fqc_t",
 				"fqcBPID":$('#BPID').text(),
 				"FQCVersion":newVersion,
 				"CTRName":$('#CTRName').text(),
-				"FQCRemark":$('#FQCRemark').val(),
+				"FQCRemark":$('#FQCRemark').val().replace(/\n|\r\n/g,'<br/>'),
 			    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
 				"FQCMaker":sessionName,
 				"FQCMakeDate":Ndate,
 				"FQCAuditor":$('#FQCAuditor option:selected').text()
 		}
+	 
+	 let ajax2=$.ajax({
+         method: 'post',
+         url: '/app/PM/addDBData',
+         data: newFQCData,
+         success: function(data) {
 
-        addDBData(FQCData);
+        },
+        error:function(err){
+     	   
+     	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+     		   swal("系统中已存在重复数据,请检查!");
+     	   }else{
+     		   swal("失败数据:"+JSON.stringify(err));
+     	   }
+     	   
+        	
+        }
+     });
+	 
+	 $.when(ajax1,ajax2).done(function(){
+ 		
+			swal("更新版本成功!");
+			window.location.reload();
+
+		});
+	 
+	 
+
+//        addDBData(FQCData);
 	 
 	 
 	}

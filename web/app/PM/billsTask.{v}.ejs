@@ -640,9 +640,10 @@
                 <th>任务负责人</th>
                 <th>完成期限</th>
                 <th>确认结果</th>
-                <th>任务登记</th>
+                <th>记录状态</th>
+                <th>记录审核人</th>
                 <th>IPQC结果</th>
-                <th>任务状态</th>
+                <th>任务完结状态</th>
 
             </tr>
         </thead>
@@ -905,7 +906,7 @@ function Fun_taskRecordInit(dataChoose){
 	    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#taskModel",dataSelect.taskModel);
 	    	break;
 	    case 'M':
-	    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='轴卡' AND status=1"},"#taskModel",dataSelect.taskModel);
+	    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND status=1"},"#taskModel",dataSelect.taskModel);
 	    	break;
 	    case 'P':
 	    	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='PLC' AND status=1"},"#taskModel",dataSelect.taskModel);
@@ -1286,23 +1287,29 @@ var getTaskAuditor=function(modifyABE,staff){
 	      })
 
 	      console.log("modifyABECheck:"+modifyABECheck);
-	      
-	
-	
+
 	$.ajax({
         method:'get',
-        data:{SQL:"SQLGetEntryDays",filter:"staffName='"+staff+"'"},
+        data:{SQL:"SQLGetUpAuditor",filter:"staffName='"+staff+"'"},
         url:"/app/PM/getSQLDBData",
 //        async:false, 
         success:function(data){
-       	 console.log("data:"+JSON.stringify(data));
-
-       	 if(data.length!=0){
-       		 if(data[0].entryDays>90&&modifyABECheck){
-       			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",staff);
+//       	 console.log("data555:"+JSON.stringify(data));
+       	 if(data.length!=0){	 
+       		 if(data[0].entryDays<90){
+       			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",$('#taskMaker').text());
+       		 }else if(data[0].entryDays>90&&modifyABECheck){
+       			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",staff);
        		 }else{
-       			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",$('#taskMaker').text());
+       			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",data[0].upAuditor);
        		 }
+       		 
+       		 
+//       		 if(data[0].entryDays>90&&modifyABECheck){
+//       			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",staff);
+//       		 }else{
+//       			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",$('#taskMaker').text());
+//       		 }
 
        	 }
         },
@@ -1374,7 +1381,10 @@ $(document).ready( function () {
 		$("#BTNFilterAll").addClass("active");
 	    break;
 	default:
-	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
+//	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
+	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR recordAuditor = '"+sessionName+"') AND recordNum=0  AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
+    
+	
 	    $("#BTNFilterSimple").addClass("active");
 	
 		break;
@@ -1405,7 +1415,8 @@ $(document).ready( function () {
 		        { data: 'taskStaff'},
 		        { data: 'taskLimitDate'},
 		        { data: 'BTAcceptResultText'},
-		        { data: 'recordText'},
+		        { data: 'recordStatus'},
+		        { data: 'recordAuditor'},
 		        { data: 'IPQCAuditResultText'},
 		        { data: 'BTStatusText'}
 			]
@@ -1477,7 +1488,8 @@ $('#BTNTaskSave').click(function(){
 //						"taskType":$('input:radio[name="taskType"]:checked').val(),
 //						"taskTypeText":$('input:radio[name="taskType"]:checked').next("span").text(),
 						"taskMHEName":Fun_getSelectText($('#taskMHEName option:selected').text()),
-						"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
+//						"taskModel":Fun_getSelectText($('#taskModel option:selected').text()),
+						"taskModel":$('#taskModel option:selected').text(),
 						"taskOGNSystemVersion":$('#taskOGNSystemVersion').val(),
 						"taskBugID":$('#taskBugID').val(),
 						"taskStaff":$('#taskStaff option:selected').text(),
@@ -1550,7 +1562,6 @@ $('#BTNTaskAcceptYes').click(function() {
 					}
 					
 
-					 
 					var ajax1=$.ajax({
 				        method: 'post',
 				        url: '/app/PM/updDBData',
@@ -1752,6 +1763,7 @@ $('#BTNTaskRecordSave').click(function() {
 									"taskFiles":JSON.stringify(taskFiles),
 									"recordMaker":sessionName,
 									"recordMakeDate":Ndate,
+									"recordStatus":"已登记,已审核",
 									"recordAuditor":$('#recordAuditor option:selected').text(),
 									"recordAuditDate":Ndate
 							}
@@ -1827,6 +1839,7 @@ $('#BTNTaskRecordSave').click(function() {
 									"taskFiles":JSON.stringify(taskFiles),
 									"recordMaker":sessionName,
 									"recordMakeDate":Ndate,
+									"recordStatus":"已登记,待审核",
 									"recordAuditor":$('#recordAuditor option:selected').text()
 							}
 							
@@ -1850,6 +1863,7 @@ $('#BTNTaskRecordSave').click(function() {
 								"taskFiles":JSON.stringify(taskFiles),
 								"recordMaker":sessionName,
 								"recordMakeDate":Ndate,
+								"recordStatus":"已登记,待审核",
 								"recordAuditor":$('#recordAuditor option:selected').text()
 						}
 						
@@ -2093,6 +2107,7 @@ $('#BTNTaskRecordAudit').click(function() {
 											"DBTable":"ppm_bills_taskrecord",
 											"DBID":$('#recordDBID').text(),
 											"recordAuditor":sessionName,
+											"recordStatus":"已登记,已审核",
 											"recordAuditDate":Ndate
 									}
 

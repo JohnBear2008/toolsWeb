@@ -36,7 +36,9 @@
         <!-- 按钮触发模态框 -->
 
         <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >查看详情</button>
-        <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >完结归档</button>
+        <button id="BTNStop" class="btn btn-danger">终止</button>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
             <div class="modal-dialog" style="width:90%">
@@ -47,8 +49,6 @@
                     </div>
                     <div class="modal-body">
 
-                    
-                    
                     <div class="panel panel-info" style="width:100%">
                     
                     <!--------------panel--------------------->
@@ -59,12 +59,10 @@
 
                     <table id="tableTrackPLD" class="table table-bordered">
                     <thead></thead>
-                    
                     <tbody></tbody>
                     </table>
-
                     </div>
-                    <!--------------panel--------------------->
+
                     <!--------------panel--------------------->
                     <div class="panel-heading">
                         <h3 class="panel-title">T方案单信息</h3>
@@ -158,6 +156,15 @@
             </tr>
         </thead>
     </table>
+    
+    <!-- 点击详情后弹出的窗口 -->
+    <div id="winDetail" class="easyui-window" title="表单详情" closed="true" style="width:80%;height:90%;">
+    
+    <table id="tableDetail" class="table table-bordered">
+
+    </table>
+    
+    </div>
 
     
 </div>
@@ -184,76 +191,65 @@ function Fun_winDetailInit(dataSelect){
 				"OGNSystemVersion",
 				"MHEName",
 				"files",
-				"model",
+//				"modelD",
+//				"modelH",
 				"applyDate",
-				"limitDate",
-				"maker",
-				"makeDate"
+				"limitDate"
 				],
 			"filter":"BPID='"+dataSelect.BPID+"'"
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
 	
 	var SQLParamBPT={
 			"tableName":"ppm_bills_blueprint_t",
 			"titles":[
+				"DBID",
 				"BPTID",
 				"BPTVersion",
 				"CTRName",
-				"BPTDescribe",
 				"PGEMaker",
-				"auditor",
 				"auditDate",
 				"files",
-				"model",
-				"BPTAuditOpinion",
+//				"modelD",
+//				"modelH",
 				"limitDate",
-				"maker",
 				"makeDate"
 				],
 			"filter":"BPTID='"+dataSelect.BPID+"'"
 			};
-
-	Fun_fillTrackTable("#tableTrackBPT",SQLParamBPT);
+	
+	
+	Fun_fillTrackTableWithDBID("#tableTrackBPT",SQLParamBPT);
 	
 	//数据量不能过多,否则会报错
 	var SQLParamTask={
 			"tableName":"ppm_bills_task_t",
 			"titles":[
+				"DBID",
 				"BTID",
 				"BTVersion",
-//				"taskCTRName",
 				"taskStaff",
-				"taskDBE",
 				"taskLimitDate",
-//				"taskRemark",
-				
-//				"taskMaker",
-//				"taskMakeDate",
 				"BTAcceptDate",
-				"modifyContent",
-//				"functionsDBE",
-//				"IPQCAuditResultText",
-//				"IPQCMaker",
 				"IPQCMakeDate",
 				"BTStatusText",
 				"taskFiles"
 				],
-			"filter":"taskBPID='"+dataSelect.BPID+"'"
+			"filter":"taskBPID='"+dataSelect.BPID+"'",
+			"orderBy":"BTID "
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackTask",SQLParamTask);
+	Fun_fillTrackTableWithDBID("#tableTrackTask",SQLParamTask);
 	
 	
 	var SQLParamFQC={
 			"tableName":"ppm_bills_fqc_t",
 			"titles":[
+				"DBID",
 				"FQCVersion",
-				"FQCRecord",
-				"FQCRemark",
 				"FQCMaker",
 				"FQCMakeDate",
 				"FQCAuditor",
@@ -264,38 +260,41 @@ function Fun_winDetailInit(dataSelect){
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackFQC",SQLParamFQC);
+	Fun_fillTrackTableWithDBID("#tableTrackFQC",SQLParamFQC);
 	
 	
 	var SQLParamPBH={
 			"tableName":"ppm_bills_pbh_t",
 			"titles":[
+				"DBID",
 				"PBHVersion",
-				"PBHRemark",
 				"PBHMaker",
 				"PBHMakeDate",
 				"PBHAuditor",
 				"PBHAuditDate",
-				"files",
-				"PBHStatusText"
+				"emailADRS",
+				"files"
 				],
 			"filter":"pbhBPID='"+dataSelect.BPID+"'"
 			};
 	
 	
-	Fun_fillTrackTable("#tableTrackPBH",SQLParamPBH);
+	Fun_fillTrackTableWithDBID("#tableTrackPBH",SQLParamPBH);
 
 }
+
 
 //页面加载函数---------------
 $(document).ready( function () {
 	
-	
-	const tableSQL={"SQL":"SQLTableBillsTrack_T"};
-	
-	var sessionName="<%-locals.session.yjUser.Name%>";
-	
+    var sessionName="<%-locals.session.yjUser.Name%>";
 	console.log("sessionName:"+sessionName);
+    var trackBPID=getQueryString("BPID");
+    if(trackBPID!=null){
+    	var tableSQL={"SQL":"SQLTableBillsTrack_T","filter":"BPID ='"+trackBPID+"'"};
+    }else{
+    	var tableSQL={"SQL":"SQLTableBillsTrack_T"};
+    }
 	
 	
 	const tableInfo={
@@ -335,10 +334,14 @@ $('#billsTrackTable tbody').on('click', 'tr', function() {
 });
 	
 
+//dbclick 测试判断是否选中数据-------
 
+$('#billsTrackTable tbody').on('dblclick', 'tr', function() {
+	 table.$('tr.selected').removeClass('selected');
+     $(this).addClass('selected');
+	$('#BTNInfo').click();
 
-
-
+});
 
 
 //详情按钮---------
@@ -363,37 +366,65 @@ $('#BTNInfo').click(function() {
 
 //删除按钮----------
 $('#BTNDelete').click(function() {
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Track01")){
     var dataSelect = table.row('.selected').data();
     
  //   alert(JSON.stringify(dataSelect));
     
     if (dataSelect == undefined) {
-        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+	        alert("请先选择需要终止的计划!");
     } else {
-    	
-    	
-    	if(dataSelect.auditDate!=null){
-    		alert("已审核单据禁止删除!");
-    	}else{
     		
-    		
-    		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+	    	var msg1 = confirm("风险操作:终止计划单后,系统不再显示关于该计划的所有单据!是否继续?");
             if (msg1 === true) {
-                var msg2 = confirm("确认删除此行数据？");
-                if (msg2 === true) {
-                	
-                //	alert(dataSelect.DBID);
-                    var IDData = {"DBTable":"ppm_bills_plan_t","DBID":dataSelect.DBID};
- //                   alert("IDData:"+JSON.stringify(IDData));
-//                    delDBData(IDData);
-                }
-            }
-    		
-    		
-    	}
+	        	
+	        	 var PLDUpdData={
+							"DBTable":"ppm_bills_plan_t",
+							"BillIDName":"BPID",
+							"BillID":dataSelect.BPID,
+							"WFStatus":0,
+							"WFEndDate":Ndate
+					}
+	        	 
+	        	 var taskUpdData={
+							"DBTable":"ppm_bills_task_t",
+							"BillIDName":"taskBPID",
+							"BillID":dataSelect.BPID,
+							"WFStatus":0
+					}
+	        	 
+	        	 var ajax1=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: PLDUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+				 
+	        	 var ajax2=$.ajax({
+				        method: 'post',
+				        url: '/app/PM/updBillStatus',
+				        data: taskUpdData,
+				        success: function(data, textStatus) {
+				        },
+				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+				        });
+			
 
-    }
-    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+				$.when(ajax1,ajax2).done(function(){
+						alert("计划单已终止,相关任务单已终止!");
+					window.location.reload();
+					
+				});
+
+	        }
+	    	
+	    }
+	    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+		//-----
+	}
+	
 });
 
 

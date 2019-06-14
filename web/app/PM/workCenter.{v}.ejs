@@ -140,6 +140,20 @@
 </div>
 
 
+<div id="TaskunAudit" class="panel panel-default">
+<div class="panel-heading">
+<h3 class="panel-title">任务单-未审核  
+<a href="/app/PM/billsTask?undone=unAudit"><span id="TaskunAuditNum" class="badge"></span></a>
+<a href="/app/PM/billsTask?undone=unAudit">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="TaskunAuditContent">
+</div>
+</div>
+</div>
+
+
 <div id="TaskunPass" class="panel panel-danger">
 <div class="panel-heading">
 <h3 class="panel-title">任务单-失败  
@@ -494,6 +508,9 @@ $(function(){
 	
 	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
 	getUndoneInfo("#TaskunRecord",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
+	getUndoneInfo("#TaskunAudit",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
 	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 "};
 	getUndoneInfo("#TaskunPass",panelSQLTask,["taskBPID","taskCTRName","BTID"]);

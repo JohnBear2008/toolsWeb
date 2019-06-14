@@ -438,7 +438,7 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
         			
         			 for(i=0;i<data.length;i++){
                      	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));
-                     	  if(data[i][selectPara.selectTitle]==InitValue){
+                     	  if(data[i][selectPara.selectTitle]==InitValue||data[i].DBID==InitValue){
                      		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
                      	  }
                      }
@@ -469,7 +469,7 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
           url:"/app/PM/getSQLDBData",
           success:function(data){
         	  
-        	  
+        	//  console.log("data1:"+JSON.stringify(data));
         	
         //	  swal("return1111:"+JSON.stringify(data));
         	  
@@ -491,16 +491,16 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
         			
         			 for(i=0;i<data.length;i++){
                      	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
-                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue){
+                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue||data[i].DBID==InitValue){
                      		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
                      	  }
                      }
         		}
+        		
+        		console.log("selectorID:"+selectorID);
 
               $(selectorID).selectpicker('refresh');
-
-//              swal($(selectorID).find("option:selected").text() );
-
+//              swal($(selectorID).find("option:selected").text())
           },
           error:function(){}
       })
@@ -522,12 +522,8 @@ function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
           url:"/app/PM/getSQLDBData",
           success:function(data){
         	  
-        	  
-        	
-        //	  swal("return1111:"+JSON.stringify(data));
+        //	  console.log("data:"+JSON.stringify(data));
 
-        		
-        		
         		if(InitValue==undefined||InitValue==""){	
 //        			console.log("InitValue11:"+InitValue);
            		
@@ -540,7 +536,7 @@ function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
         			
         			 for(i=0;i<data.length;i++){
                      	  $(selectorID).append($('<option value='+data[i].DBID+'>'+Fun_getValSelectText(data[i].selectTitle)+'</option>'));
-                     	  if(Fun_getValSelectText(data[i].selectTitle)==InitValue){
+                     	  if(Fun_getValSelectText(data[i].selectTitle)==InitValue||data[i].DBID==InitValue){
                      		  $(selectorID).selectpicker('val',data[i].DBID);//留空不设置默认选项
                      	  }
                      }
@@ -564,9 +560,7 @@ function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
 function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
 	
 //	console.log("InitValue:"+InitValue);
-	
 
-	
 	$(selectorID).empty();//用select组件不用先清空
 	  
 	  $.ajax({
@@ -587,7 +581,7 @@ function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
         			
         			 for(i=0;i<data.length;i++){
                      	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i].selectTitle+'</option>'));
-                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue){
+                     	  if(Fun_getSelectText(data[i].selectTitle)==InitValue||data[i].DBID==InitValue){
                      		  
                      		 $(selectorID).val(data[i].DBID);
 
@@ -2744,4 +2738,42 @@ function IOF_sendDingMsg(ips,ops,funs) {
 	    });
 		
 	}
+}
+
+
+//ips:{confirmMsg,DDMsg}
+function confirmSendDDMsg(ips){
+	
+	swal(ips.confirmMsg, {
+		  buttons: {
+		    cancel: "不发送",
+		    catch: {
+		      text: "发送",
+		      value: "send",
+		    }
+		  },
+		})
+		.then((value) => {
+		  switch (value) {
+
+		    case "defeat":
+		      break;
+		    case "send":
+		    	
+		    	$.ajax({
+			        method: 'post',
+			        url: '/app/PM/sendDingTalk',
+			        data: ips.DDMsg,
+			        success: function(data, textStatus) {
+			 //           console.log("成功数据:" + JSON.stringify(data));
+			        	 swal("系统消息!", "系统钉钉消息已发送!", "success");
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {  
+			        }
+			    });
+		      break;
+		    default:
+		  }
+		});
+	
 }

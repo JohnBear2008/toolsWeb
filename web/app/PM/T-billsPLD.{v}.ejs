@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -40,6 +40,8 @@
         <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
         <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
         <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >审核</button>
+        
+        
         
        
         
@@ -634,7 +636,7 @@ function fillFGEMaker(){
 	         success:function(data){
 
 	        	 if(data.length==0){
-	        		 swal("系统未检测到绑定关系,请手动选择!");
+	        		 swal("系统未检测指定负责人,请手动选择!");
 	        	 }else{
 	        		 console.log("bindData:"+JSON.stringify(data));
 	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
@@ -646,10 +648,7 @@ function fillFGEMaker(){
 	         },
 	         error:function(){}
 	     })
-	     
-	     
-//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
-//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+
 	}
 }
 
@@ -734,27 +733,22 @@ function Fun_winAddInit(){
 	  
 	  $("#BPID").attr("disabled",true);
 
-//	var SQLCTRName={SQL:"SQLSRCustomers"};
-	var CTRName="#CTRName";
-	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},CTRName);
+	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#CTRName");
     	
 	var SQLMHEName={SQL:"SQLSRMachines"};
 	var MHEName="#MHEName";
 	Fun_getSQLSelectDBData(SQLMHEName,MHEName);
 	
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD");
+	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'HMI' AND sort<>'APP' AND status=1"},"#modelD");
+	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'DSP' AND sort<>'APP' AND status=1"},"#modelH");
 	
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH");
-	
-	var SQLPGEMaker={SQL:"SQLSRStaffs"};
-	var PGEMaker="#PGEMaker";
-	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker);
+
+	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#PGEMaker");
 	
 
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
 	
 	
-//	fillAuditor();
 
 
     
@@ -832,9 +826,8 @@ function Fun_winDetailInit(dataChoose){
 	Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.MHEName);
 	
 
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
-	
+	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'HMI' AND sort<>'APP' AND status=1"},"#modelD");
+	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'DSP' AND sort<>'APP' AND status=1"},"#modelH");
 	
 
 	
@@ -976,15 +969,12 @@ function Fun_winDetailInit(dataChoose){
 	    var SQLAuditor={SQL:"SQLSRStaffs"};
 	    var auditor="#auditor";
 	   
-//	    $("#auditTypeOption1").attr("checked",true);
-	    
-//	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
+
 	    $("#auditor").attr("disabled",true);
 	    
 	    $('#auditDate').text(dataSelect.auditDate);
 	    
-//	    $("#BTNFormAuto").hide();
-//	    $("#BTNFormClear").hide();
+
 	    
 	    
 	    $("#DivFileBTNS").hide();
@@ -1202,33 +1192,7 @@ $('input:radio[name="auditType"]').click(function(){
 
 
 
-////方案人change事件
-//$('#PGEMaker').change(function(){  
-//　　　　console.log($(this).children('option:selected').text());
-//     var PGEMaker=$(this).children('option:selected').text();
-//
-//     var radioValue = $('input:radio[name="auditType"]:checked').val(); 
-//     switch(radioValue){
-// 	case "1":		
-// 		var SQLAuditor={SQL:"SQLSRStaffs"};
-// 		var auditor="#auditor";
-// 		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
-// 	    $("#auditor").attr("disabled",true);
-// 	   $('#auditDate').val("");
-//	    $('#auditResult').val("");
-// 	    break;
-// 	case "2":
-// 	    $('#auditDate').val("");
-// 	    var SQLAuditor={SQL:"SQLSRStaffs"};
-// 		var auditor="#auditor";
-// 		Fun_getSQLSelectDBData(SQLAuditor,auditor);
-// 	    $("#auditor").attr("disabled",false);
-// 	   $('#auditDate').val("");
-//	    $('#auditResult').val("");
-// 	    break;
-// 	}
-//
-//　　})  
+
 
 
 //详情按钮---------
@@ -1292,8 +1256,11 @@ $('#BTNTaskBindAdd').click(function() {
 
 //        		Fun_getSQLSelectDBData({SQL:"SQLSRSystems"},"#modelD",data[0].modelD);
         		
-        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",data[0].modelD);
-        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",data[0].modelH);
+        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'HMI' AND sort<>'APP' AND status=1"},"#modelD",data[0].modelD);
+        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'DSP' AND sort<>'APP' AND status=1"},"#modelH",data[0].modelH);
+        		
+//        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",data[0].modelD);
+//        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",data[0].modelH);
         		
         		
         		var SQLPGEMaker={SQL:"SQLSRStaffs"};
@@ -1472,114 +1439,6 @@ $('#BTNAudit').click(function() {
 });
 
 
-//按钮-表格新增计划单
-
-$('#BTNFormAdd').click(function(){
-	
-
-    var files=[];
-	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
-		var fileName=$(this).attr('download');
-		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
-		
-		files.push(fileInfo);
-	});
-	
-
-	var PLDData={
-			"DBTable":"ppm_bills_plan_t",
-			"BTIDfrom":$('#BTIDfrom').text(),
-			"BPIDfrom":$('#BPIDfrom').text(),
-			"BPID":$('#BPID').val(),
-			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-			"topic":$('#topic').val(),
-			"detail":$('#detail').val(),
-			"PGEMaker":$('#PGEMaker option:selected').text(),
-			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-			"PLDAreaText":$('input:radio[name="PLDArea"]:checked').next("span").text(),
-			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-			"orderFromText":$('input:radio[name="orderFrom"]:checked').next("span").text(),
-			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-			"orderFromDepText":$('input:radio[name="orderFromDep"]:checked').next("span").text(),
-			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-			"model":Fun_getSelectText($('#model option:selected').text()),
-			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-			"applyDate":$('#applyDate').val(),
-			"limitDate":$('#limitDate').val(),
-			"urgency":$('input:radio[name="urgency"]:checked').val(),
-			"urgencyText":$('input:radio[name="urgency"]:checked').next("span").text(),
-			"maker":sessionName,
-			"auditor":$('#auditor option:selected').text(),
-			"makeDate":Ndate,
-			"auditDate":$('#auditDate').val(),
-			"auditResult":$('#auditResult').val(),
-			"version": $('#version').text(),
-			"files":JSON.stringify(files),
-			"WFStatus":1
-	}
-	
-
-var dataSelectTask = tableTask.row('.selected').data();
-	
-	
- var taskUpdData={
-			"DBTable":"ppm_bills_task",
-			"BillIDName":"BTID",
-			"BillID":$('#BTIDfrom').val(),
-			"T_BPID":$('#BPID').val(),
-			"T_StatusText":"计划单"
-			
-
-}
- 
- var ajax1=$.ajax({
-        method: 'post',
-        url: '/app/PM/addDBData',
-        data: PLDData,
-        success: function(data, textStatus) {
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-        });
- 
-var ajax2=$.ajax({
-    method: 'post',
-    url: '/app/PM/updBillStatus',
-    data: taskUpdData,
-    success: function(data, textStatus) {
-    },
-    error: function(XMLHttpRequest, textStatus, errorThrown) {}
-    });
-
-
-$.when(ajax1,ajax2).done(function(){
-	
-	
-	swal("新增计划单成功!");
-
-	window.location.reload();
-	
-});
-	
-	
-
-	
-	if(billData.auditor!=""){
-
-		var DDMsg={"Msg":billData.auditor+"您已被指定为,计划单单号:"+billData.BPID+"的审核人,请注意审核!"};
-		
-		Fun_addDBDataDD(billData,DDMsg,"计划单");
-	}else{
-		swal("该计划单没有指定审核人,请检查!");
-	}
-//	
-
-});
 
 
 //按钮-表格修改计划单
@@ -1587,9 +1446,7 @@ $.when(ajax1,ajax2).done(function(){
 $('#BTNFormModify').click(function() {
 	
 	if(checkPLDInput()){
-		
-		
-		
+
 	var files=[];
 
 	
@@ -1792,57 +1649,73 @@ $('#BTNFormClose').click(function() {
 $('#BTNFormSave').click(function(){
 	
 	if(checkPLDInput()){
-		 var files=[];
+		
+		
+		var files=[];
+		
+		$('#divFilesUploaded a').each(function(){
+			var fileKey=$(this).attr('href').substring(23);
+			var fileName=$(this).attr('download');
 			
-			$('#divFilesUploaded a').each(function(){
-				var fileKey=$(this).attr('href').substring(23);
-				var fileName=$(this).attr('download');
+			var fileInfo={
+					"fileName":fileName,
+					"fileKey":fileKey
+			}
+			
+			files.push(fileInfo);
+		});
+		
+		
+		var PLDData={
+				"DBTable":"ppm_bills_plan_t",
+				"BPIDfrom":$('#BPIDfrom').text(),
+				"BTIDfrom":$('#BTIDfrom').text(),
+				"BPID":$('#BPID').val(),
+				"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+				"topic":$('#topic').val(),
+				"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+				"PGEMaker":$('#PGEMaker option:selected').text(),
+				"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+				"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+				"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+				"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+				"modelD":$('#modelD option:selected').text(),
+				"modelH":$('#modelH option:selected').text(),
+				"OGNSystemVersion":$('#OGNSystemVersion').val(),
+				"applyDate":$('#applyDate').val(),
+				"limitDate":$('#limitDate').val(),
+				"maker":sessionName,
+				"auditor":$('#auditor option:selected').text(),
+				"makeDate":Ndate,
+				"files":JSON.stringify(files),
+				"WFStatus":1
+		}
+
+//		let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!";
+//		Fun_addDBDataDD(billData,{at:$('#auditor option:selected').text(),msg:msgContent});
+		
+		 var ajax1=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/addDBData',
+		        data: PLDData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+		
+		
+		
+		if($('#BPIDfrom').text()==""&&$('#BTIDfrom').text()==""){
+			
+			$.when(ajax1).done(function(){
 				
-				var fileInfo={
-						"fileName":fileName,
-						"fileKey":fileKey
-				}
-				
-				files.push(fileInfo);
+				let i={confirmMsg:'新增T计划单成功,是否发送钉钉提醒消息?',DDMsg:{at:$('#auditor option:selected').text(),msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}}	
+				iof_chooseSendDDMsg(i,iof_refresh)
 			});
 			
-			var PLDData={
-					"DBTable":"ppm_bills_plan_t",
-					"BPIDfrom":$('#BPIDfrom').text(),
-					"BTIDfrom":$('#BTIDfrom').text(),
-					"BPID":$('#BPID').val(),
-					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-					"topic":$('#topic').val(),
-					"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-					"PGEMaker":$('#PGEMaker option:selected').text(),
-					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-					"modelD":$('#modelD option:selected').text(),
-					"modelH":$('#modelH option:selected').text(),
-					"OGNSystemVersion":$('#OGNSystemVersion').val(),
-					"applyDate":$('#applyDate').val(),
-					"limitDate":$('#limitDate').val(),
-					"maker":sessionName,
-					"auditor":$('#auditor option:selected').text(),
-					"makeDate":Ndate,
-					"files":JSON.stringify(files),
-					"WFStatus":1
-			}
 
-//			let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!";
-//			Fun_addDBDataDD(billData,{at:$('#auditor option:selected').text(),msg:msgContent});
-			
-			 var ajax1=$.ajax({
-			        method: 'post',
-			        url: '/app/PM/addDBData',
-			        data: PLDData,
-			        success: function(data, textStatus) {
-			        },
-			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-			        });
-			
+		}else{
+
 
 		var dataSelectTask = tableTask.row('.selected').data();
 			
@@ -1869,20 +1742,14 @@ $('#BTNFormSave').click(function(){
 
 		$.when(ajax1,ajax2).done(function(){
 
+			let i={confirmMsg:'绑定新增T计划单成功,是否发送钉钉提醒消息?',DDMsg:{at:$('#auditor option:selected').text(),msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}}	
+			iof_chooseSendDDMsg(i,iof_refresh)
 
-			swal("Good job!", "绑定新增T计划单成功!", "success")
-	       	   .then((value) => {
-//	       	     swal(`The returned value is: ${value}`);
-	       	     
-	       		let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!";
-	       		let DDMsg={at:$('#auditor option:selected').text(),msg:msgContent};
-           	    sendDingMsg(DDMsg);
-           	    window.location.reload();
-         
-	       	     
-	       	   });
-			
 		});
+			
+		}
+		
+		 
 
 
 			

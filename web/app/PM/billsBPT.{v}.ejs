@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -853,321 +853,6 @@ var getUpAuditor=function(BPID,staffName){
 }
 
 
-//函数:详情按钮详情页加载数据------------------------
-function Fun_BPTDetailInitVal(dataChoose){
-	
-	console.log("dataChoose:"+JSON.stringify(dataChoose));
-	
-	let dataSelect=NulltoEmpty(dataChoose);
-	
-
-	
-	//-加载跟踪信息----------------------
-	
-//	var SQLParamPLD={
-//			"tableName":"ppm_bills_plan",
-//			"titles":[
-//				"BPID",
-//				"version",
-//				"CTRName",
-////				"topic",
-//				"detail",
-////				"MHEName",
-////				"modelD",
-////				"modelH",
-////				"OGNSystemVersion",
-//				"limitDate",
-//				"files"
-//				],
-//			"BID":"BPID",
-//			"VER":"version",
-//			"filter":"BPID='"+dataSelect.BPID+"'"
-//			};
-//	
-//	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
-	
-	var SQLParamPLD={
-			"tableName":"ppm_bills_plan",
-			"titles":[
-				"DBID",
-				"BPID",
-				"version",
-				"CTRName",
-				"topic",
-				"PGEMaker",
-				"MHEName",
-				"files",
-//				"modelD",
-//				"modelH",
-				"applyDate",
-				"limitDate"
-				],
-			"filter":"BPID='"+dataSelect.BPID+"'"
-			};
-	
-	
-	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
-	
-	var SQLParamBPT={
-			"tableName":"ppm_bills_blueprint",
-			"titles":[
-				"DBID",
-				"BPTID",
-				"BPTVersion",
-				"CTRName",
-				"PGEMaker",
-				"auditDate",
-				"files",
-//				"modelD",
-//				"modelH",
-				"limitDate",
-				"makeDate"
-				],
-			"filter":"BPTID='"+dataSelect.BPID+"'"
-			};
-	
-	
-	Fun_fillTrackTableWithDBID("#tableTrackBPT",SQLParamBPT);
-	
-	//-加载跟踪信息----------------------
-
-
-	$('#PLDDBID').val(dataSelect.PLDDBID);
-    $('#DBID').val(dataSelect.DBID);
-	$('#BPTBPID').val(dataSelect.BPID);
-	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#CTRName",dataSelect.PLDCTRName);
-	$('#PGEMaker').val(dataSelect.PLDPGEMaker);
-	$('#limitDate').val(dataSelect.PLDLimitDate);
-	$('#BPTID').val(dataSelect.BPID);
-
-	if(dataSelect.BPTVersion==""){
-		$('#BPTVersion').text(0);
-	}else{
-		$('#BPTVersion').text(dataSelect.BPTVersion);
-	}
-	$('#BPTStatusText').text(dataSelect.BPTStatusText);
-	
-	
-//	if(dataSelect.auditResult==""){
-//		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.PLDMHEName);
-//		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
-//		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
-//		$('#OGNSystemVersion').val(dataSelect.PLDOGNSystemVersion);
-//	}else{
-//		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.MHEName);
-//		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
-//		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
-//		$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
-//	}
-	
-	
-	if(dataSelect.MHEName!=""){
-		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.MHEName);
-	}else{
-		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.PLDMHEName);
-	}
-	
-	if(dataSelect.modelD!=""){
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
-	}else{
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
-	}
-	
-	if(dataSelect.modelH!=""){
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
-	}else{
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
-	}
-	
-	
-	switch(dataSelect.modifyType){
-	  case 1:
-		  $("#modifyTypeOption1").prop("checked",true);
-		  break;
-	  case 2:
-		  $("#modifyTypeOption2").prop("checked",true);
-		  break;
-	  case 3:
-		  $("#modifyTypeOption3").prop("checked",true);
-		  break;
-      case 4:
-	      $("#modifyTypeOption4").prop("checked",true);
-	      break;
-	  default:
-		  $("#modifyTypeOption1").prop("checked",true);
-     }
-
-	 if(dataSelect.modifyReason!=""){
-		 setCheckBoxValue("modifyReason",dataSelect.modifyReason);
-	 }
-
-	 $('#BPTDescribe').val(dataSelect.BPTDescribe.replace(/<br\/>/g,'\n'));
-
-	 $('#divFilesUploaded').html("");
-
-	  if(dataSelect.files!=""){
-		  
-		  var files=JSON.parse(dataSelect.files);
-		  if(files!=null){
-			  
-			  var fileLink="";
-				 if(files.length>0){
-					 for(var i=0;i<files.length;i++){
-						console.log("files[i].fileName:"+files[i].fileName); 
-						fileLink=fileLink+"<a  href="+'/system.files.download/'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
-					 } 
-					 fileLink=fileLink.substr(0, fileLink.length-3); 
-				 }
-		  var downloadurl=fileLink;
-		  }else{
-			  downloadurl="";
-		  }
-		  $('#divFilesUploaded').html(downloadurl);
-	   }
-
-		tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
-
-		tasksTableInfo={
-					"tableID":"#billsTaskTable",
-					"columnsData":[
-						{ data: 'DBID' ,"visible": false},
-				        { data: 'BTID' },
-				        { data: 'BTVersion'},
-				        { data: 'taskSortTypeText'},
-				        { data: 'taskTypeText'},
-				        { data: 'taskStaff'},
-				        { data: 'taskLimitDate'},
-				        { data: 'BTStatusText'}
-					]
-		     }
-		
-	  Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-		
-	  $('#taskBPID').val(dataSelect.BPID);
-	  $('#taskLimitDate').val(dataSelect.limitDate);
-	  
-//	  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
-		
-	  Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",dataSelect.MHEName);
-		
-	  Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",dataSelect.modelD);
-
-	  
-	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion.replace(/<br\/>/g,'\n'));
-		 
-	  $('#maker').text(dataSelect.maker);
-	  $('#makeDate').text(dataSelect.makeDate);
-	  
-	  if(dataSelect.auditor==""){
-		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
-
-	  }else{
-		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",dataSelect.auditor);
-	  }
-
-	  $('#auditDate').text(dataSelect.auditDate);
-
-
-}
-
-
-//初始化控制显示
-function Fun_BPTDetailInitShow(dataSelect){
-	
-	console.log("dataSelect.auditResult"+dataSelect.auditResult);
-	switch(dataSelect.auditResult){
-	case null:
-	case "":
-	case 0:
-		console.log("show0");
-		 $("#DivAuditImage").attr('src',"");
-		 $("#DivFileBTNS").show();
-		 $("#DivTaskBTNS").show();
-		 $('#billTaskPanel').hide();
-		 $('#BTNTaskSave').show();
-		 $('#DivBPTAudit').hide();
-		 $("#BTNBPTSave").show();
-		 $("#BTNBPTUpdateVer").hide();
-		 $("#BTNBPTAuditYes").hide();
-		 $("#BTNBPTAuditNo").hide();
-		break;
-	case 1:
-		console.log("show1");
-		 $("#DivAuditImage").attr('src',"/images/auditYes.png");
-		 $("#DivFileBTNS").hide();
-		 $("#DivTaskBTNS").hide();
-		 $('#billTaskPanel').hide();
-		 $('#BTNTaskSave').hide();
-		 $('#DivBPTAudit').show();
-		 $("#BTNBPTSave").hide();
-		 $("#BTNBPTUpdateVer").show();
-		 $("#BTNBPTAuditYes").hide();
-		 $("#BTNBPTAuditNo").hide();
-		break;
-	case 2:
-		console.log("show2");
-		 $("#DivAuditImage").attr('src',"/images/auditNo.png");
-		 $("#DivFileBTNS").hide();
-		 $("#DivTaskBTNS").hide();
-		 $('#billTaskPanel').hide();
-		 $('#BTNTaskSave').hide();
-		 $('#DivBPTAudit').show();
-		 $("#BTNBPTSave").hide();
-		 $("#BTNBPTUpdateVer").show();
-		 $("#BTNBPTAuditYes").hide();
-		 $("#BTNBPTAuditNo").hide();
-		break;
-	
-	}
-}
-
-//初始化控制可用
-
-function Fun_BPTDetailInitDisable(dataSelect){
-
-	 switch(dataSelect.auditResult){
-		case null:
-		case "":
-		case 0:
-			 $('input').attr("disabled",false);
-			 $('select').attr("disabled",false);
-			 $('textarea').attr("disabled",false);
-			 $('#DIVPLDInfo input').attr("disabled",true);
-			 $('#DIVPLDInfo select').attr("disabled",true);
-			 
-			 $('.form_date').datetimepicker({
-		      language:  'zh-CN',
-		      weekStart: 1,
-		      todayBtn:  1,
-				autoclose: 1,
-				todayHighlight: 1,
-				startView: 2,
-				minView: 2,
-				forceParse: 0,
-				startDate:Ndate,//设置最小日期
-				endDate:$('#limitDate').val()//设置最大日期
-		     });
-			break;
-		case 1:
-		case 2:
-			$('input').attr("disabled",true);
-			$('select').attr("disabled",true);
-			$('textarea').attr("disabled",true);
-			break;
-	 }		
-}
-
-//函数:详情按钮详情页自动填写内容------------------------
-function Fun_BPTDetailInit(dataSelect){
-	$('#BillBPT').modal('show');
-	Fun_BPTDetailInitVal(dataSelect);
-	Fun_BPTDetailInitShow(dataSelect);
-	Fun_BPTDetailInitDisable(dataSelect);
-//	$('#BTNTaskAdd').click();
-}
-
-
-
 //函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
 
 
@@ -1309,6 +994,318 @@ function Fun_showSQLLiteTable(SQL,tableInfo){
 }
 
 
+//函数:详情按钮详情页加载数据------------------------
+function Fun_BPTDetailInitVal(dataChoose){
+	
+	console.log("dataChoose:"+JSON.stringify(dataChoose));
+	
+	let dataSelect=NulltoEmpty(dataChoose);
+	
+
+	
+	//-加载跟踪信息----------------------
+	
+//	var SQLParamPLD={
+//			"tableName":"ppm_bills_plan",
+//			"titles":[
+//				"BPID",
+//				"version",
+//				"CTRName",
+////				"topic",
+//				"detail",
+////				"MHEName",
+////				"modelD",
+////				"modelH",
+////				"OGNSystemVersion",
+//				"limitDate",
+//				"files"
+//				],
+//			"BID":"BPID",
+//			"VER":"version",
+//			"filter":"BPID='"+dataSelect.BPID+"'"
+//			};
+//	
+//	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+	
+	var SQLParamPLD={
+			"tableName":"ppm_bills_plan",
+			"titles":[
+				"DBID",
+				"BPID",
+				"version",
+				"CTRName",
+				"topic",
+				"PGEMaker",
+				"MHEName",
+				"files",
+//				"modelD",
+//				"modelH",
+				"applyDate",
+				"limitDate"
+				],
+			"filter":"BPID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
+	
+	var SQLParamBPT={
+			"tableName":"ppm_bills_blueprint",
+			"titles":[
+				"DBID",
+				"BPTID",
+				"BPTVersion",
+				"CTRName",
+				"PGEMaker",
+				"auditDate",
+				"files",
+//				"modelD",
+//				"modelH",
+				"limitDate",
+				"makeDate"
+				],
+			"filter":"BPTID='"+dataSelect.BPID+"'"
+			};
+	
+	
+	Fun_fillTrackTableWithDBID("#tableTrackBPT",SQLParamBPT);
+	
+	//-加载跟踪信息----------------------
+
+
+	$('#PLDDBID').val(dataSelect.PLDDBID);
+    $('#DBID').val(dataSelect.DBID);
+	$('#BPTBPID').val(dataSelect.BPID);
+	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},"#CTRName",dataSelect.PLDCTRName);
+	$('#PGEMaker').val(dataSelect.PLDPGEMaker);
+	$('#limitDate').val(dataSelect.PLDLimitDate);
+	$('#BPTID').val(dataSelect.BPID);
+
+	if(dataSelect.BPTVersion==""){
+		$('#BPTVersion').text(0);
+	}else{
+		$('#BPTVersion').text(dataSelect.BPTVersion);
+	}
+	$('#BPTStatusText').text(dataSelect.BPTStatusText);
+	
+	
+	if(dataSelect.auditResult==""){
+		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.PLDMHEName);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
+		$('#OGNSystemVersion').val(dataSelect.PLDOGNSystemVersion);
+	}else{
+		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.MHEName);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
+		$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
+	}
+	
+	
+	if(dataSelect.MHEName!=""){
+		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.MHEName);
+	}else{
+		Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#MHEName",dataSelect.PLDMHEName);
+	}
+	
+	if(dataSelect.modelD!=""){
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
+	}else{
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
+	}
+	
+	if(dataSelect.modelH!=""){
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
+	}else{
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
+	}
+	
+	
+	switch(dataSelect.modifyType){
+	  case 1:
+		  $("#modifyTypeOption1").prop("checked",true);
+		  break;
+	  case 2:
+		  $("#modifyTypeOption2").prop("checked",true);
+		  break;
+	  case 3:
+		  $("#modifyTypeOption3").prop("checked",true);
+		  break;
+      case 4:
+	      $("#modifyTypeOption4").prop("checked",true);
+	      break;
+	  default:
+		  $("#modifyTypeOption1").prop("checked",true);
+     }
+
+	 if(dataSelect.modifyReason!=""){
+		 setCheckBoxValue("modifyReason",dataSelect.modifyReason);
+	 }
+
+	 $('#BPTDescribe').val(dataSelect.BPTDescribe.replace(/<br\/>/g,'\n'));
+
+	 $('#divFilesUploaded').html("");
+
+	  if(dataSelect.files!=""){
+		  
+		  var files=JSON.parse(dataSelect.files);
+		  if(files!=null){
+			  
+			  var fileLink="";
+				 if(files.length>0){
+					 for(var i=0;i<files.length;i++){
+						console.log("files[i].fileName:"+files[i].fileName); 
+						fileLink=fileLink+"<a  href="+'/system.files.download/'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
+					 } 
+					 fileLink=fileLink.substr(0, fileLink.length-3); 
+				 }
+		  var downloadurl=fileLink;
+		  }else{
+			  downloadurl="";
+		  }
+		  $('#divFilesUploaded').html(downloadurl);
+	   }
+
+		tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
+
+		tasksTableInfo={
+					"tableID":"#billsTaskTable",
+					"columnsData":[
+						{ data: 'DBID' ,"visible": false},
+				        { data: 'BTID' },
+				        { data: 'BTVersion'},
+				        { data: 'taskSortTypeText'},
+				        { data: 'taskTypeText'},
+				        { data: 'taskStaff'},
+				        { data: 'taskLimitDate'},
+				        { data: 'BTStatusText'}
+					]
+		     }
+		
+	  Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+		
+	  $('#taskBPID').val(dataSelect.BPID);
+	  $('#taskLimitDate').val(dataSelect.limitDate);
+
+	  
+	  $('#BPTAuditOpinion').val(dataSelect.BPTAuditOpinion.replace(/<br\/>/g,'\n'));
+		 
+	  $('#maker').text(dataSelect.maker);
+	  $('#makeDate').text(dataSelect.makeDate);
+	  
+	  if(dataSelect.auditor==""){
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
+
+	  }else{
+		  Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",dataSelect.auditor);
+	  }
+
+	  $('#auditDate').text(dataSelect.auditDate);
+
+
+}
+
+
+//初始化控制显示
+function Fun_BPTDetailInitShow(dataSelect){
+	
+	console.log("dataSelect.auditResult"+dataSelect.auditResult);
+	switch(dataSelect.auditResult){
+	case null:
+	case "":
+	case 0:
+		console.log("show0");
+		 $("#DivAuditImage").attr('src',"");
+		 $("#DivFileBTNS").show();
+		 $("#DivTaskBTNS").show();
+		 $('#billTaskPanel').hide();
+		 $('#BTNTaskSave').show();
+		 $('#DivBPTAudit').hide();
+		 $("#BTNBPTSave").show();
+		 $("#BTNBPTUpdateVer").hide();
+		 $("#BTNBPTAuditYes").hide();
+		 $("#BTNBPTAuditNo").hide();
+		break;
+	case 1:
+		console.log("show1");
+		 $("#DivAuditImage").attr('src',"/images/auditYes.png");
+		 $("#DivFileBTNS").hide();
+		 $("#DivTaskBTNS").hide();
+		 $('#billTaskPanel').hide();
+		 $('#BTNTaskSave').hide();
+		 $('#DivBPTAudit').show();
+		 $("#BTNBPTSave").hide();
+		 $("#BTNBPTUpdateVer").show();
+		 $("#BTNBPTAuditYes").hide();
+		 $("#BTNBPTAuditNo").hide();
+		break;
+	case 2:
+		console.log("show2");
+		 $("#DivAuditImage").attr('src',"/images/auditNo.png");
+		 $("#DivFileBTNS").hide();
+		 $("#DivTaskBTNS").hide();
+		 $('#billTaskPanel').hide();
+		 $('#BTNTaskSave').hide();
+		 $('#DivBPTAudit').show();
+		 $("#BTNBPTSave").hide();
+		 $("#BTNBPTUpdateVer").show();
+		 $("#BTNBPTAuditYes").hide();
+		 $("#BTNBPTAuditNo").hide();
+		break;
+	
+	}
+}
+
+//初始化控制可用
+
+function Fun_BPTDetailInitDisable(dataSelect){
+
+	 switch(dataSelect.auditResult){
+		case null:
+		case "":
+		case 0:
+			 $('input').attr("disabled",false);
+			 $('select').attr("disabled",false);
+			 $('textarea').attr("disabled",false);
+			 $('#DIVPLDInfo input').attr("disabled",true);
+			 $('#DIVPLDInfo select').attr("disabled",true);
+			 
+			 $('.form_date').datetimepicker({
+		      language:  'zh-CN',
+		      weekStart: 1,
+		      todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0,
+				startDate:Ndate,//设置最小日期
+				endDate:$('#limitDate').val()//设置最大日期
+		     });
+			break;
+		case 1:
+		case 2:
+			$('input').attr("disabled",true);
+			$('select').attr("disabled",true);
+			$('textarea').attr("disabled",true);
+			break;
+	 }		
+}
+
+//函数:详情按钮详情页自动填写内容------------------------
+function Fun_BPTDetailInit(dataSelect){
+	$('#BillBPT').modal('show');
+	Fun_BPTDetailInitVal(dataSelect);
+	Fun_BPTDetailInitShow(dataSelect);
+	Fun_BPTDetailInitDisable(dataSelect);
+//	$('#BTNTaskAdd').click();
+}
+
+
+
+
+
+
 
 //函数-添加任务单,并刷新任务单列表
 function Fun_addTask(DBData) {
@@ -1405,42 +1402,42 @@ function Fun_delTask(IDData) {
     });
 }
 
-//函数-生成系统模版任务单
-function createSystemTasks(bindsInfo){
-	
-	Fun_BTIDCreate();
-	 
-	let BTID=$('#BTID').text();
-
-		let DBData={
-				taskBPID:$('#taskBPID').val(),
-				BTID:BTID,
-				CTRDBID:$('#CTRName').val(),
-				taskCTRName:Fun_getSelectText($('#CTRName option:selected').text()),
-				bindsInfo:JSON.stringify(bindsInfo),
-				taskMaker:sessionName,
-				taskMakeDate:Ndate,
-				taskLimitDate:$('#limitDate').val()	
-		}
-		
-		$.ajax({
-	        method: 'post',
-	        url: '/app/PM/autoAddTasks',
-	        data: DBData,
-	        success: function(data) {
-//	            swal("成功数据:" + JSON.stringify(data));
-	           if (data.affectedRows != 0) {
-	               swal("生成系统任务单成功,请点击任务单完善细节!");
-	          	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-	          	   $('#BTNTaskAdd').click();
-	          	   $('#billTaskPanel').hide();
-	           }
-	       },
-	       error:function(err){
-	       	swal("失败数据:"+JSON.stringify(err));
-	       }
-	    });
-}
+////函数-生成系统模版任务单
+//function createSystemTasks(bindsInfo){
+//	
+//	Fun_BTIDCreate();
+//	 
+//	let BTID=$('#BTID').text();
+//
+//		let DBData={
+//				taskBPID:$('#taskBPID').val(),
+//				BTID:BTID,
+//				CTRDBID:$('#CTRName').val(),
+//				taskCTRName:Fun_getSelectText($('#CTRName option:selected').text()),
+//				bindsInfo:JSON.stringify(bindsInfo),
+//				taskMaker:sessionName,
+//				taskMakeDate:Ndate,
+//				taskLimitDate:$('#limitDate').val()	
+//		}
+//		
+//		$.ajax({
+//	        method: 'post',
+//	        url: '/app/PM/autoAddTasks',
+//	        data: DBData,
+//	        success: function(data) {
+////	            swal("成功数据:" + JSON.stringify(data));
+//	           if (data.affectedRows != 0) {
+//	               swal("生成系统任务单成功,请点击任务单完善细节!");
+//	          	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
+//	          	   $('#BTNTaskAdd').click();
+//	          	   $('#billTaskPanel').hide();
+//	           }
+//	       },
+//	       error:function(err){
+//	       	swal("失败数据:"+JSON.stringify(err));
+//	       }
+//	    });
+//}
 
 
 //函数-生成系统模版任务单
@@ -1529,7 +1526,7 @@ function getTaskBindStaff(Params){
         data:Params,
         url:"/app/PM/getSQLDBData",
         success:function(data){
-//        	swal("get Binds:"+JSON.stringify(data));
+        	//swal("get Binds:"+JSON.stringify(data));
         	
         	if(data.length!=0){
         		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff",data[0].StaffName);
@@ -1605,15 +1602,13 @@ function checkTaskInput(){
 
 function addBindEvent(){
 	
-	$("#taskModel").unbind();
+//	$("#taskModel").unbind();  不注销影响选择显示问题
 	$("#taskModel").change(function() {
 		
 		if($("#taskMakeDate").text()==""){//自动抓取功能只在新增时生效
 			console.log($("#taskModel option:selected").text());
 			getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#taskModel option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
-			
 		}
-
 	})
 }
 
@@ -1824,50 +1819,7 @@ $('input[type=radio][name=taskType]').change(function() {
 $("[data-toggle='popover']").popover({html : true });
 
 
-////按钮-新增计划单---------
-//$('#BTNAdd').click(function() {
-//	$('#BillBPT').modal('show');
-//	Fun_winAddInit();
-// 
-//});
 
-
-
-////radio 定义更换按键触发事件-----------
-//$('input:radio[name="auditType"]').click(function(){
-//	var radioValue = $('input:radio[name="auditType"]:checked').val();
-////	swal(radioValue);
-//
-//	switch(radioValue){
-//	case "1":
-//
-//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
-//	    $("#auditor").attr("disabled",true);
-//	    $('#auditDate').text("");
-//	    $('#auditResult').val("");
-//
-//	    break;
-//	case "2":
-//
-//
-//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
-//	    $("#auditor").attr("disabled",true);
-//	    $('#auditDate').text("");
-//	    $('#auditResult').val(0);
-//	    break;
-//	case "3":
-//
-//	    $('#auditDate').text("");
-//
-//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
-//	    $("#auditor").attr("disabled",false);
-//	    $('#auditResult').val(0);
-//	    break;
-//
-//
-//	}
-//
-//});
 
 
 
@@ -1963,19 +1915,18 @@ $('#BTNTaskAdd').click(function(){
 	$('#BTVersion').text(0);
 	$('#BTStatusText').text('新增');
 	
-//	$("#taskStaff").selectpicker('val','');
-//	$("#taskMHEName").selectpicker('val','');
-//	$("#taskModel").selectpicker('val','');
-	
+
 	
 	Fun_getSQLSelectDBData({SQL:"SQLSRMachines"},"#taskMHEName",Fun_getSelectText($('#MHEName option:selected').text()));
 	
-	if($('#modelD option:selected').text()!=""){
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').text());
-//		getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#modelD option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+	console.log("modelH:"+$('#modelH option:selected').val());
+	
+	if($('#modelD option:selected').val()!=undefined){
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel",$('#modelD option:selected').val());
+
 	}else{
 		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='APP' AND status=1"},"#taskModel");
-//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
+
 	}
 	
 	$('#taskOGNSystemVersion').val($("#OGNSystemVersion").val());
@@ -1989,7 +1940,7 @@ $('#BTNTaskAdd').click(function(){
 	
 	Fun_BTIDCreate();
 	
-	addBindEvent();
+//	addBindEvent(); //添加后taskModel更换失效
 
 
 });
@@ -2301,13 +2252,29 @@ $('#BTNBPTSave').click(function(){
 		            	        success: function(data) {
 		            	  //         swal("成功数据:" + JSON.stringify(data));
 		            	           if (data.affectedRows != 0) {
-		            	               swal("方案单数据保存成功!");
 
-		            	               let msg=confirm("是否立刻自动审核通过并发布任务?");
+//		            	               swal("方案单数据保存成功!");
+
+		            	               let msg=confirm("方案单数据保存成功,是否立刻自动审核通过并发布任务?");
 		            	               
 		            	               if(msg){
 		            	            	   $('#BTNBPTAuditYes').click();
+		            	               }else{
+		            	            	   io_refresh()
 		            	               }
+		            	               
+//		            	        	   let clickAudit=()=>{
+//		            	        		   $('#BTNBPTAuditYes').click()
+//		            	        	   }
+//		            	        	   
+//		            	               let iof_swcf_i={
+//		            	            		   confirmMsg:'方案单数据保存成功,是否立刻自动审核通过并发布任务?',
+//		            	            		   f:clickAudit
+//		            	               }
+//		            	               
+//		            	               iof_swcf(iof_swcf_i)
+		            	               
+		            	               
 		            	           }
 		            	       },
 		            	       error:function(err){
@@ -2387,9 +2354,7 @@ $('#BTNBPTUpdateVer').click(function(){
 
 	            
 
-//	            	console.log("无方案 billData:"+JSON.stringify(billData));
-			 
-
+//	     console.log("无方案 billData:"+JSON.stringify(billData));
 //		 if(allTaskCheck==0){
 //			 addDBData(billData);
 //		 }else{
@@ -2853,6 +2818,8 @@ $('#BTNTrack').click(function(){
 	window.location.href='/app/PM/billsTrack?BPID='+$('#BPTBPID').val();
 });
 
+
+addBindEvent();
 
 });
 

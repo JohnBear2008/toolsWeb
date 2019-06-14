@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -1409,7 +1409,7 @@ function checkTaskInput(){
 
 function addBindEvent(){
 	
-	$("#taskModel").unbind();
+//	$("#taskModel").unbind();
 	$("#taskModel").change(function() {
 		
 		if($("#taskMakeDate").text()==""){//自动抓取功能只在新增时生效
@@ -1726,7 +1726,7 @@ $('#BTNTaskAdd').click(function(){
 	
 	Fun_BTIDCreate();
 	
-	addBindEvent();
+
 
 
 });
@@ -2326,6 +2326,8 @@ $('#BTNBPTAuditNo').click(function() {
 $('#BTNBPTClose').click(function() {
 	 window.location.reload();
 });
+
+addBindEvent();
 
 });
 

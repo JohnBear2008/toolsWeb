@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -27,7 +27,7 @@
 
 
 <div class="divcontent">
-    <h1>内核工作流程-T发布单</h1>
+    <h1>内核流程-T发布单</h1>
     <hr>
 
     <!-- 操作区（按钮等） -->
@@ -36,6 +36,13 @@
 
         <!-- 按钮触发模态框 -->
         <button id="BTNPBHDetail" class="btn btn-primary" data-toggle="modal" >发布维护</button>
+        
+        <div class="btn-group" style="margin-left:20px">
+        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        </div>
+        
+        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
 
         <!-- 模态框（Modal） -->
         <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
@@ -52,7 +59,8 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">计划单信息</h3>
                     </div>
-
+                    
+                    
                     <div class="panel-body">
 
 
@@ -146,11 +154,7 @@
                     <span id="FQCPassText" class="help-block"></span>
                     </div>
 
-
                  	 </div>
-
-
-
 
                      <!-------------------------------------------------------------------------->
 
@@ -362,6 +366,8 @@
                    <!--panel------------------------------------------------------------------------>
                    
                    <button id="BTNUpdVer" class="btn btn-danger" data-toggle="modal" >更新版本</button>
+                   
+                   <button id="BTNEnd" class="btn btn-success" data-toggle="modal" >完结归档</button>
 
 
 
@@ -385,9 +391,10 @@
     <br/>
 
     <!--数据呈现区-->
-    <table id="billsPLDTable" class="table table-striped table-bordered"  >
+    <table id="billsPBHTable" class="table table-striped table-bordered"  >
         <thead>
             <tr>
+                <th>时间戳</th>
                 <th>数据库ID</th>
                 <th>计划单号</th>
                 <th>计划版本号</th>
@@ -517,25 +524,23 @@
 function checkPBHInput(){
 	
 	if($("#emailADRS").val()==""){
-		alert("收件人邮箱未填写,请检查!");
+		swal("收件人邮箱未填写,请检查!");
 		return false;
 	}else if($("#emailContent").val()==null){
-		alert("邮件内容未填写,请检查!");
+		swal("邮件内容未填写,请检查!");
 		return false;
 	}
-	
-
 	return true;
-	
 }
 
 
 
 
 //函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataSelect){
+function Fun_winDetailInit(dataChoose){
 	
-	console.log("dataSelect1111:"+JSON.stringify(dataSelect));
+
+	let dataSelect=NulltoEmpty(dataChoose);
 
 	$('#DBID').val(dataSelect.DBID);
 	
@@ -604,7 +609,7 @@ function Fun_winDetailInit(dataSelect){
 //    
 //   emailFilesValue=emailFiles;
    
-   if(dataSelect.files!=null){
+   if(dataSelect.files!=null&&dataSelect.files!=""){
 		  
 		  var files=JSON.parse(dataSelect.files);
 		  if(files!=null){
@@ -627,7 +632,7 @@ function Fun_winDetailInit(dataSelect){
 	  }
 
 	
-	$('#emailContent').val(dataSelect.emailContent);
+	$('#emailContent').val(dataSelect.emailContent.replace(/<br\/>/g,'\n'));
 	$('#PBHRemark').val(dataSelect.PBHRemark);
 	
 	$('#PBHMaker').text(dataSelect.PBHMaker);
@@ -645,7 +650,7 @@ function Fun_winDetailInit(dataSelect){
 
 	
 
-	if(dataSelect.PBHAuditResult==0||dataSelect.PBHAuditResult==null){
+	if(dataSelect.PBHAuditResult==0||dataSelect.PBHAuditResult==null||dataSelect.PBHAuditResult==""){
 		$("#DivFileBTNS").show();
 		$('#DivToolBTNS').show();
 		$('#DivPBHBTNS').show();
@@ -677,17 +682,33 @@ $(document).ready( function () {
 	 sessionName="<%-locals.session.yjUser.Name%>";
 
 	 var undone=getQueryString("undone");
-		
-		if(undone=="true"){
-			var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( PBHStatus IS NULL OR PBHStatus =0)"};
-		}else{
-			var tableSQL={"SQL":"SQLTableBillsPBH_T"};
+	 
+	 
+	 switch(undone){
+	    case "unRecord":
+	    	var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus IS NULL","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unAudit":
+			var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =0","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "unSend":
+			var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND  PBHStatus =1 AND emailResult=0","orderBy":" saveTimeStamp DESC"};
+	    	break;
+		case "all":
+			var tableSQL={"SQL":"SQLTableBillsPBH_T","orderBy":" saveTimeStamp DESC"};
+			 $("#BTNFilterAll").addClass("active");	
+			break;
+		default:
+			var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND emailResult=0","orderBy":" saveTimeStamp DESC"};
+		    $("#BTNFilterSimple").addClass("active");	
+		    break;
 		}
 
 
 	 tableInfo={
-			"tableID":"#billsPLDTable",
+			"tableID":"#billsPBHTable",
 			"columnsData":[
+				{ data: 'saveTimeStamp' ,"visible": false},
 				{ data: 'DBID' ,"visible": false},
 		        { data: 'BPID' },
 		        { data: 'version'},
@@ -696,7 +717,7 @@ $(document).ready( function () {
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
 		        { data: 'WFStatusText'},
-		        { data: 'PBHStatusText'}
+		        { data: 'PBHResultText'}
 			]
 	}
 
@@ -706,8 +727,8 @@ $(document).ready( function () {
 
 
 //判断是否选中数据-------
-var table = $('#billsPLDTable').DataTable();
-$('#billsPLDTable tbody').on('click', 'tr', function() {
+var table = $('#billsPBHTable').DataTable();
+$('#billsPBHTable tbody').on('click', 'tr', function() {
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     } else {
@@ -720,6 +741,24 @@ $('#billsPLDTable tbody').on('click', 'tr', function() {
 
 });
 
+//dbclick 测试判断是否选中数据-------
+
+$('#billsPBHTable tbody').on('dblclick', 'tr', function() {
+	table.$('tr.selected').removeClass('selected');
+    $(this).addClass('selected');
+	$('#BTNPBHDetail').click();
+
+});
+
+
+//过滤按钮组
+$('#BTNFilterSimple').click(function() {
+	window.location.href='/app/PM/T-billsPBH';
+});
+
+$('#BTNFilterAll').click(function() {
+	window.location.href='/app/PM/T-billsPBH?undone=all';
+});
 
 //按钮-发布维护---------
 $('#BTNPBHDetail').click(function() {
@@ -728,7 +767,7 @@ $('#BTNPBHDetail').click(function() {
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
-        alert("请先点击表格中的表单!");
+        swal("请先点击表格中的表单!");
     } else {
 
     	$('#BillPLD').modal('show')
@@ -765,7 +804,7 @@ var filesHtml=$("#divFilesUploaded").html();
         	 
         	 $("#emailADRS").val(data[0].email);
         	 
-        	// alert(JSON.stringify(getEmails(data[0].contacts)));
+        	// swal(JSON.stringify(getEmails(data[0].contacts)));
         	 
         	 $("#emailCopyADRS").val(getEmails(data[0].contacts));
         	 
@@ -780,6 +819,8 @@ var filesHtml=$("#divFilesUploaded").html();
              for(var i=0;i<fileNum;i++){
             	 
             	 var tdFiles=$("#billsTaskTable tbody tr:eq("+i+") td:last").html();
+            	 
+            	 var tdTaskType=$("#billsTaskTable tbody tr:eq("+i+") td:eq(3)").html();
 
             	 if(tdFiles!=""){
             		 
@@ -840,21 +881,21 @@ $('#BTNResetInfo').click(function() {
 $('#BTNPBHSave').click(function() {
 	
 	
-	
-	
-   var files=[];
-	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
-		var fileName=$(this).attr('download');
+	if(checkPBHInput()){
 		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
+		var files=[];
 		
-		files.push(fileInfo);
-	});
+		$('#divFilesUploaded a').each(function(){
+			var fileKey=$(this).attr('href').substring(23);
+			var fileName=$(this).attr('download');
+			
+			var fileInfo={
+					"fileName":fileName,
+					"fileKey":fileKey
+			}
+			
+			files.push(fileInfo);
+		});
 
 		 var PBHData={
 					"DBTable":"ppm_bills_PBH_t",
@@ -866,7 +907,7 @@ $('#BTNPBHSave').click(function() {
 					"emailTitle":$('#emailTitle').val(),
 //					"files":JSON.stringify(filesValue),
 					"files":JSON.stringify(files),
-					"emailContent":$('#emailContent').val(),
+						"emailContent":$('#emailContent').val().replace(/\n|\r\n/g,'<br/>'),
 					"PBHRemark":$('#PBHRemark').val(),
 					"PBHMaker":sessionName,
 					"PBHMakeDate":Ndate,
@@ -874,6 +915,7 @@ $('#BTNPBHSave').click(function() {
 			}
 
 	saveDBData(PBHData,"PBH单");
+	}
 
 });
 
@@ -1043,7 +1085,7 @@ $('#BTNModelEmailSend').click(function() {
     var files=[];
 	
 	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(30);
+		var fileKey=$(this).attr('href').substring(23);
 		var fileName=$(this).attr('download');
 		
 		var fileInfo={
@@ -1071,12 +1113,12 @@ $('#BTNModelEmailSend').click(function() {
         url: '/app/PM/sendSYSMail',
         data: emailData,
         success: function(data, textStatus) {
-              alert("发送成功:"+JSON.stringify(textStatus));
+              swal("发送成功:"+JSON.stringify(textStatus));
 
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
         	
-        	 alert("发送失败:"+JSON.stringify(textStatus));
+        	 swal("发送失败:"+JSON.stringify(textStatus));
         }
     });
    
@@ -1110,7 +1152,7 @@ $('#BTNSendEmailDiv').click(function() {
     });
 	
 	
-	$('#mailhref').attr("href","mailto:"+$('#emailADRS').val()+"?subject="+$('#emailTitle').val()+"&cc="+$('#emailCopyADRS').val()+"&body="+$('#emailContent').val());
+	$('#mailhref').attr("href","mailto:"+$('#emailADRS').val()+"?subject="+$('#emailTitle').val()+"&cc="+$('#emailCopyADRS').val()+"&body="+$('#emailContent').val().replace(/\n|\r\n/g,'<br/>'));
 	$('#mailhref').click();
 	
 	}

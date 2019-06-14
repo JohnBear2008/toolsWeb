@@ -27,17 +27,13 @@ module.exports = function(sender) {
 		     for(var i=0;i<emailFiles.length;i++){
 		    	 var j={
 		    			 filename:emailFiles[i].fileName,
-		    			 path:'./uploaded/upload_'+emailFiles[i].fileKey
+		    			 path:'./uploaded/'+emailFiles[i].fileKey
 		    	 }
 		    	 attachmentfiles.push(j);
 		    	 
 		     }
 		     
-		   
 
-		     
-		
-		
 		
 	const nodemailer = require('nodemailer');
 
@@ -93,10 +89,7 @@ module.exports = function(sender) {
 	        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 	    });
 	});
-	    	 
-	    	 
-	    	 
-	    	 
+
 	    	 
 	     }else if(emailResult=="2"){
 	    	 
