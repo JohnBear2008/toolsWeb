@@ -935,113 +935,79 @@ $('#BTNTaskIPQCAudit').click(function() {
 		swal("请先保存IPQC单,再审核");
 	}else{
 		
-		var msg = confirm("审核后无法对IPQC记录进行修改,是否立即审核?");
-		if(msg==true){	
+		if(sessionName==$("#IPQCAuditor option:selected").text()){
 			
+			var msg = confirm("审核后无法对IPQC记录进行修改,是否立即审核?");
+			if(msg==true){	
 
-			         var IPQCResult=$('input:radio[name="IPQCResult"]:checked').val();
-			         
-			         var taskRepeat=$('#taskRepeat').text();
-			         
+				         var IPQCResult=$('input:radio[name="IPQCResult"]:checked').val();
+				         var taskRepeat=$('#taskRepeat').text();
 
+				         //如果为重复订单 则不更新计划单信息
+				         if(taskRepeat!=1&&IPQCResult==1){
 
-			        
-			         
-			         //如果为重复订单 则不更新计划单信息
-			         if(taskRepeat!=1&&IPQCResult==1){
-			        	 
-			        	 
-//			        	 console.log( $("#tableRecords tbody").find("tr").length)
+//				        	 console.log( $("#tableRecords tbody").find("tr").length)
 
-//			        	 console.log($("#tableRecords tbody tr:eq(0) td:last").html());
-			        	 
-			        	 var trNum=$("#tableRecords tbody").find("tr").length;
-			        	 
-			        	 var taskFiles=[];
-			        	 var modifyContent="";
-			        	 var functionsDBE="";
-			        	 
-			        	 for(var i=0;i<trNum;i++){
-			        		 
-//			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23));
-//			        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'));
-			        		 var tdfile={
-			        				 "fileName":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'),
-			        				 "fileKey":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23)
-			        		 }
-			        		 taskFiles.push(tdfile);
-			        		 
-			        		 modifyContent=modifyContent+$("#tableRecords tbody tr:eq("+i+") td:last").text()+":"+"\n"+$("#tableRecords tbody tr:eq("+i+") td:first").text()+"\n";
-			        		 functionsDBE=functionsDBE+$("#tableRecords tbody tr:eq("+i+") td:last").text()+":"+"\n"+$("#tableRecords tbody tr:eq("+i+") td:eq(1)").text()+"\n";
-			        		 
-			        	 }
+//				        	 console.log($("#tableRecords tbody tr:eq(0) td:last").html());
+				        	 
+				        	 var trNum=$("#tableRecords tbody").find("tr").length;
+				        	 
+				        	 var taskFiles=[];
+				        	 var modifyContent="";
+				        	 var functionsDBE="";
+				        	 
+				        	 for(var i=0;i<trNum;i++){
+				        		 
+//				        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23));
+//				        		 console.log($("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'));
+				        		 var tdfile={
+				        				 "fileName":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('download'),
+				        				 "fileKey":$("#tableRecords tbody tr:eq("+i+") td:last a").attr('href').substring(23)
+				        		 }
+				        		 taskFiles.push(tdfile);
+				        		 
+				        		 modifyContent=modifyContent+$("#tableRecords tbody tr:eq("+i+") td:last").text()+":"+"\n"+$("#tableRecords tbody tr:eq("+i+") td:first").text()+"\n";
+				        		 functionsDBE=functionsDBE+$("#tableRecords tbody tr:eq("+i+") td:last").text()+":"+"\n"+$("#tableRecords tbody tr:eq("+i+") td:eq(1)").text()+"\n";
+				        		 
+				        	 }
 
 
-//			        	 console.log("taskFiles:"+JSON.stringify(taskFiles));
+//				        	 console.log("taskFiles:"+JSON.stringify(taskFiles));
 
-			        	 var PLDUpdData={
-									"DBTable":"ppm_bills_plan_t",
-									"BillIDName":"BPID",
-									"BillID":$('#taskBPID').text(),
-									"TaskNumDone":1,
-									"WFStatus":30
-							}
+				        	 var PLDUpdData={
+										"DBTable":"ppm_bills_plan_t",
+										"BillIDName":"BPID",
+										"BillID":$('#taskBPID').text(),
+										"TaskNumDone":1,
+										"WFStatus":30
+								}
 
-						 var taskUpdData={
-									"DBTable":"ppm_bills_task_t",
-									"DBID":$('#DBID').text(),
-									"IPQCAuditResult":1,
-									"IPQCAuditResultText":"测试通过",
-									"IPQCAuditor":sessionName,
-									"IPQCAuditDate":Ndate,
-									"BTStatus":3,
-									"BTStatusText":"任务完成",
-									"modifyContent":modifyContent,
-									"functionsDBE":functionsDBE,
-									"taskFiles":JSON.stringify(taskFiles)
-			        	 
-						}
-						
-						 
-						 var ajax1=$.ajax({
-						        method: 'post',
-						        url: '/app/PM/updBillStatus',
-						        data: PLDUpdData,
-						        success: function(data, textStatus) {
-						        },
-						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-						        });
-						 
-						var ajax2=$.ajax({
-					        method: 'post',
-					        url: '/app/PM/updDBData',
-					        data: taskUpdData,
-					        success: function(data, textStatus) {
-					        },
-					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
-					        });
-					
-
-						$.when(ajax1,ajax2).done(function(){
-								swal("通过IPQC测试,该任务单完结!");
-							window.location.reload();
-							
-						});
-
-			         }else{
-			        	 
-			        		 var taskUpdData={
+							 var taskUpdData={
 										"DBTable":"ppm_bills_task_t",
 										"DBID":$('#DBID').text(),
-										"IPQCAuditResult":2,
-										"IPQCAuditResultText":"测试未通过",
+										"IPQCAuditResult":1,
+										"IPQCAuditResultText":"测试通过",
 										"IPQCAuditor":sessionName,
 										"IPQCAuditDate":Ndate,
-										"BTStatus":4,
-										"BTStatusText":"任务失败"
+										"BTStatus":3,
+										"BTStatusText":"任务完成",
+										"modifyContent":modifyContent,
+										"functionsDBE":functionsDBE,
+										"taskFiles":JSON.stringify(taskFiles)
+				        	 
 							}
-
-			        	 var ajax1=$.ajax({
+							
+							 
+							 var ajax1=$.ajax({
+							        method: 'post',
+							        url: '/app/PM/updBillStatus',
+							        data: PLDUpdData,
+							        success: function(data, textStatus) {
+							        },
+							        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+							        });
+							 
+							var ajax2=$.ajax({
 						        method: 'post',
 						        url: '/app/PM/updDBData',
 						        data: taskUpdData,
@@ -1049,16 +1015,50 @@ $('#BTNTaskIPQCAudit').click(function() {
 						        },
 						        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 						        });
-			        	 
-			        	 $.when(ajax1).done(function(){
-			        		    swal("未通过IPQC测试,请更新任务单版本重新开始该任务!");
+						
+
+							$.when(ajax1,ajax2).done(function(){
+									swal("通过IPQC测试,该任务单完结!");
 								window.location.reload();
 								
-						 });
+							});
 
-			         }
+				         }else{
+				        	 
+				        		 var taskUpdData={
+											"DBTable":"ppm_bills_task_t",
+											"DBID":$('#DBID').text(),
+											"IPQCAuditResult":2,
+											"IPQCAuditResultText":"测试未通过",
+											"IPQCAuditor":sessionName,
+											"IPQCAuditDate":Ndate,
+											"BTStatus":4,
+											"BTStatusText":"任务失败"
+								}
 
+				        	 var ajax1=$.ajax({
+							        method: 'post',
+							        url: '/app/PM/updDBData',
+							        data: taskUpdData,
+							        success: function(data, textStatus) {
+							        },
+							        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+							        });
+				        	 
+				        	 $.when(ajax1).done(function(){
+				        		    swal("未通过IPQC测试,请更新任务单版本重新开始该任务!");
+									window.location.reload();
+									
+							 });
+
+				         }
+
+			}
+		}else{
+			swal('非指定IPQC审核人,不允许审核!')
 		}
+		
+		
 		
 	}
 

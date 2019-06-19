@@ -166,6 +166,11 @@ module.exports = function(sender) {
 	case "SQLTableBillsDBCenter":
 		var SQLExecute=SQLTableBillsDBCenter;
 		break;
+	case "SQLTableBillsDBCenter_T":
+		var SQLExecute=SQLTableBillsDBCenter_T;
+		break;
+		
+		
 	case "SQLGetOldBillInfo":
 		var SQLExecute=SQLGetOldBillInfo;
 		break;

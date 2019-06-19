@@ -1192,6 +1192,52 @@ $('#BTNUpdVer').click(function() {
 });
 
 
+//按钮-完结归档
+$('#BTNEnd').click(function() {
+	
+	var msg1 = confirm("归档后,系统不再显示关于该计划的所有单据!是否继续?");
+    if (msg1 === true) {
+    	
+    	 var PLDUpdData={
+					"DBTable":"ppm_bills_plan_t",
+					"BillIDName":"BPID",
+					"BillID":$('#BPID').text(),
+					"WFStatus":100,
+					"WFEndDate":Ndate
+			}
+    	 
+    	 var taskUpdData={
+					"DBTable":"ppm_bills_task_t",
+					"BillIDName":"taskBPID",
+					"BillID":$('#BPID').text(),
+					"WFStatus":0
+			}
+    	 
+    	 var ajax1=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updBillStatus',
+		        data: PLDUpdData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+		 
+    	 var ajax2=$.ajax({
+		        method: 'post',
+		        url: '/app/PM/updBillStatus',
+		        data: taskUpdData,
+		        success: function(data, textStatus) {
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+		        });
+	
+		$.when(ajax1,ajax2).done(function(){
+				swal("归档完成,该计划任务完结!");
+			window.location.reload();
+		});
+    }
+});
+	
 
 
 

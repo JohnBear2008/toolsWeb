@@ -17,6 +17,7 @@
 <div class="panel-body" align="left">
 <h4>提示:点击未完成数字可跳转至对应模块</h4>
 <hr>
+
 <div style="width:30%;float:left;margin-left:2%;">
 <h4>未完结的计划单</h4>
 
@@ -32,6 +33,7 @@
 </div>
 </div>
 </div>
+
 
 <div id="PLDAuditNo" class="panel panel-danger">
 <div class="panel-heading">
@@ -323,79 +325,295 @@
 <div class="panel-body" align="left">
 
 
-<div class="panel panel-warning" id="panelT-PLD" style="width:30%;float:left;margin-left:2%;">
+<div style="width:30%;float:left;margin-left:2%;">
+<h4>未完结的T计划单</h4>
+
+<div id="T-PLDunAudit" class="panel panel-warning">
 <div class="panel-heading">
-    <h3 class="panel-title">未完成的T计划单 <a href="/app/PM/T-billsPLD?undone=true"><span id="panelT-PLDNum" class="badge"></span></a></h3>
+    <h3 class="panel-title">T计划单-未审核 
+    <a href="/app/PM/T-billsPLD?undone=unAudit"><span id="T-PLDunAuditNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsPLD?undone=unAudit">点击处理</a>
+    </h3>
 </div>
 <div class="panel-body">
-<div id="panelT-PLDContent">
-
-</div>
-
+<div id="T-PLDunAuditContent">
 </div>
 </div>
+</div>
 
-
-<div class="panel panel-warning" id="panelT-BPT" style="width:30%;float:left;margin-left:2%;">
+<div id="T-PLDAuditNo" class="panel panel-danger">
 <div class="panel-heading">
-    <h3 class="panel-title">未完成的T方案单  <a href="/app/PM/T-billsBPT?undone=true"><span id="panelT-BPTNum" class="badge"></span></a></h3>
+<h3 class="panel-title">T计划单-审核驳回 
+<a href="/app/PM/T-billsPLD?undone=auditNo"><span id="T-PLDAuditNoNum" class="badge"></span></a>
+<a href="/app/PM/T-billsPLD?undone=auditNo">点击处理</a>
+</h3>
 </div>
 <div class="panel-body">
-<div id="panelT-BPTContent">
-
+<div id="T-PLDAuditNoContent">
+</div>
+</div>
 </div>
 
 </div>
-</div>
 
-<div class="panel panel-warning" id="panelT-Task" style="width:30% ;float:left;margin-left:2%;">
+
+<div style="width:30%;float:left;margin-left:2%;">
+<h4>未完结的T方案单</h4>
+
+<div id="T-BPTunRecord" class="panel panel-default">
 <div class="panel-heading">
-    <h3 class="panel-title">未完成的T任务单  <a href="/app/PM/T-billsTask?undone=true"><span id="panelT-TaskNum" class="badge"></span></a></h3>
+    <h3 class="panel-title">T方案单-未填写  
+    <a href="/app/PM/T-billsBPT?undone=unRecord"><span id="T-BPTunRecordNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsBPT?undone=unRecord">点击处理</a>
+    </h3>
 </div>
 <div class="panel-body">
-<div id="panelT-TaskContent">
+<div id="T-BPTunRecordContent">
+</div>
+</div>
+</div>
 
+<div id="T-BPTunAudit" class="panel panel-warning">
+<div class="panel-heading">
+<h3 class="panel-title">T方案单-未审核  
+<a href="/app/PM/T-billsBPT?undone=unAudit"><span id="T-BPTunAuditNum" class="badge"></span></a>
+<a href="/app/PM/T-billsBPT?undone=unAudit">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-BPTunAuditContent">
+</div>
+</div>
+</div>
+
+
+<div id="T-BPTauditNo" class="panel panel-danger">
+<div class="panel-heading">
+<h3 class="panel-title">T方案单-已驳回  
+<a href="/app/PM/T-billsBPT?undone=auditNo"><span id="T-BPTauditNoNum" class="badge"></span></a>
+<a href="/app/PM/T-billsBPT?undone=auditNo">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-BPTauditNoContent">
+</div>
+</div>
 </div>
 
 </div>
+
+
+
+
+<div id="T-panelTask" style="width:30% ;float:left;margin-left:2%;">
+<h4>未完结的T任务单</h4>
+<div id="T-TaskunAccept" class="panel panel-warning">
+<div class="panel-heading">
+    <h3 class="panel-title">T任务单-未确认  
+    <a href="/app/PM/T-billsTask?undone=unAccept"><span id="T-TaskunAcceptNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsTask?undone=unAccept">点击处理</a>
+    </h3>
+</div>
+<div class="panel-body">
+<div id="T-TaskunAcceptContent">
+</div>
+</div>
+</div>
+
+<div id="T-TaskAcceptNo" class="panel panel-danger">
+<div class="panel-heading">
+    <h3 class="panel-title">T任务单-确认驳回  
+    <a href="/app/PM/T-billsTask?undone=acceptNo"><span id="T-TaskAcceptNoNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsTask?undone=acceptNo">点击处理</a>
+    </h3>
+</div>
+<div class="panel-body">
+<div id="T-TaskAcceptNoContent">
+</div>
+</div>
+</div>
+
+
+<div id="T-TaskunRecord" class="panel panel-default">
+<div class="panel-heading">
+<h3 class="panel-title">T任务单-未登记  
+<a href="/app/PM/T-billsTask?undone=unRecord"><span id="T-TaskunRecordNum" class="badge"></span></a>
+<a href="/app/PM/T-billsTask?undone=unRecord">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-TaskunRecordContent">
+</div>
+</div>
+</div>
+
+
+<div id="T-TaskunAudit" class="panel panel-default">
+<div class="panel-heading">
+<h3 class="panel-title">T任务单-未审核  
+<a href="/app/PM/T-billsTask?undone=unAudit"><span id="T-TaskunAuditNum" class="badge"></span></a>
+<a href="/app/PM/T-billsTask?undone=unAudit">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-TaskunAuditContent">
+</div>
+</div>
+</div>
+
+
+<div id="T-TaskunPass" class="panel panel-danger">
+<div class="panel-heading">
+<h3 class="panel-title">T任务单-失败  
+<a href="/app/PM/T-billsTask?undone=unPass"><span id="T-TaskunPassNum" class="badge"></span></a>
+<a href="/app/PM/T-billsTask?undone=unPass">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-TaskunPassContent">
+</div>
+</div>
+</div>
+
 </div>
 
 <!---------清除浮动---------------------------------->
+
 <div style='clear:both'></div>
+<hr>
+<div style="width:30% ;float:left;margin-left:2%;">
 
-<div class="panel panel-warning" id="panelT-IPQC"  style="width:30% ;float:left;margin-left:2%;">
+<h4>未完结的T-IPQC单</h4>
+
+<div id="T-IPQCunRecord" class="panel panel-default">
 <div class="panel-heading">
-    <h3 class="panel-title">未完成的T-IPQC单  <a href="/app/PM/T-billsIPQC?undone=true"><span id="panelT-IPQCNum" class="badge"></span></a></h3>
+    <h3 class="panel-title">T-IPQC单-未登记  
+    <a href="/app/PM/T-billsIPQC?undone=unRecord"><span id="T-IPQCunRecordNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsIPQC?undone=unRecord">点击处理</a>
+    </h3>
 </div>
 <div class="panel-body">
-<div id="panelT-IPQCContent">
+<div id="T-IPQCunRecordContent">
+</div>
+</div>
 </div>
 
-</div>
-</div>
-
-<div class="panel panel-warning" id="panelT-FQC"  style="width:30% ;float:left;margin-left:2%;">
+<div id="T-IPQCunAudit" class="panel panel-warning">
 <div class="panel-heading">
-    <h3 class="panel-title">未完成的T-FQC单  <a href="/app/PM/T-billsFQC?undone=true"><span id="panelT-FQCNum" class="badge"></span></a></h3>
+<h3 class="panel-title">T-IPQC单-未审核  
+<a href="/app/PM/T-billsIPQC?undone=unAudit"><span id="T-IPQCunAuditNum" class="badge"></span></a>
+<a href="/app/PM/T-billsIPQC?undone=unAudit">点击处理</a>
+</h3>
 </div>
 <div class="panel-body">
-<div id="panelT-FQCContent">
-
-</div>
-
+<div id="T-IPQCunAuditContent">
 </div>
 </div>
+</div>
 
-<div class="panel panel-warning" id="panelT-PBH" style="width:30% ;float:left;margin-left:2%;">
+<div id="T-IPQCunPass" class="panel panel-danger">
 <div class="panel-heading">
-    <h3 class="panel-title">未完成的T发布单  <a href="/app/PM/T-billsPBH?undone=true"><span id="panelT-PBHNum" class="badge"></span></a></h3>
+<h3 class="panel-title">T-IPQC单-未通过  
+<a href="/app/PM/T-billsIPQC?undone=unPass"><span id="T-IPQCunPassNum" class="badge"></span></a>
+<a href="/app/PM/T-billsIPQC?undone=unPass">点击处理</a>
+</h3>
 </div>
 <div class="panel-body">
-<div id="panelT-PBHContent">
-
+<div id="T-IPQCunPassContent">
+</div>
+</div>
 </div>
 
 </div>
+
+
+<div style="width:30% ;float:left;margin-left:2%;">
+<h4>未完结的T-FQC单</h4>
+
+<div id="T-FQCunRecord" class="panel panel-default">
+<div class="panel-heading">
+    <h3 class="panel-title">T-FQC单-未填写  
+    <a href="/app/PM/T-billsFQC?undone=unRecord"><span id="T-FQCunRecordNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsFQC?undone=unRecord">点击处理</a>
+    </h3>
+</div>
+<div class="panel-body">
+<div id="T-FQCunRecordContent">
+</div>
+</div>
+</div>
+
+
+<div id="T-FQCunAudit" class="panel panel-warning">
+<div class="panel-heading">
+<h3 class="panel-title">T-FQC单-未审核  
+<a href="/app/PM/T-billsFQC?undone=unAudit"><span id="T-FQCunAuditNum" class="badge"></span></a>
+<a href="/app/PM/T-billsFQC?undone=unAudit">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-FQCunAuditContent">
+</div>
+</div>
+</div>
+
+<div id="T-FQCunPass" class="panel panel-danger">
+<div class="panel-heading">
+<h3 class="panel-title">T-FQC单-未通过  
+<a href="/app/PM/T-billsFQC?undone=unPass"><span id="T-FQCunPassNum" class="badge"></span></a>
+<a href="/app/PM/T-billsFQC?undone=unPass">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-FQCunPassContent">
+</div>
+</div>
+</div>
+
+</div>
+
+<div style="width:30% ;float:left;margin-left:2%;">
+<h4>未完结的T发布单</h4>
+<div id="T-PBHunRecord" class="panel panel-default">
+<div class="panel-heading">
+    <h3 class="panel-title">T发布单-未填写  
+    <a href="/app/PM/T-billsPBH?undone=unRecord"><span id="T-PBHunRecordNum" class="badge"></span></a>
+    <a href="/app/PM/T-billsPBH?undone=unRecord">点击处理</a>
+    </h3>
+</div>
+<div class="panel-body">
+<div id="T-PBHunRecordContent">
+</div>
+</div>
+</div>
+
+<div id="T-PBHunAudit" class="panel panel-warning">
+<div class="panel-heading">
+<h3 class="panel-title">T发布单-未审核  
+<a href="/app/PM/T-billsPBH?undone=unAudit"><span id="T-PBHunAuditNum" class="badge"></span></a>
+<a href="/app/PM/T-billsPBH?undone=unAudit">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-PBHunAuditContent">
+</div>
+</div>
+</div>
+
+<div id="T-PBHunSend" class="panel panel-success">
+<div class="panel-heading">
+<h3 class="panel-title">T发布单-未发邮件  
+<a href="/app/PM/T-billsPBH?undone=unSend"><span id="T-PBHunSendNum" class="badge"></span></a>
+<a href="/app/PM/T-billsPBH?undone=unSend">点击处理</a>
+</h3>
+</div>
+<div class="panel-body">
+<div id="T-PBHunSendContent">
+</div>
+</div>
+</div>
+
+
 </div>
 
 
@@ -541,26 +759,66 @@ $(function(){
 	
 	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =1 AND emailResult=0"};
 	getUndoneInfo("#PBHunSend",panelSQLPBH,["BPID","PLDCTRName"]);
-//	
-//	//-内核流程面板-------------------------------
-//	var panelSQLPLD_T={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  "};
-//	getUndoneInfo("#panelT-PLDNum","#panelT-PLDContent",panelSQLPLD_T,["BPID","CTRName"]);
-//	
-//	var panelSQLBPT_T={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND (BPTStatus IS NULL OR BPTStatus <>1)  "};
-//	getUndoneInfo("#panelT-BPTNum","#panelT-BPTContent",panelSQLBPT_T,["BPID","PLDCTRName"]);
-//	
-//	var panelSQLTask_T={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3"};
-//	getUndoneInfo("#panelT-TaskNum","#panelT-TaskContent",panelSQLTask_T,["BTID","taskCTRName"]);
-//	
-//	var panelSQLIPQC_T={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3"};
-//	getUndoneInfo("#panelT-IPQCNum","#panelT-IPQCContent",panelSQLIPQC_T,["BTID","taskCTRName"]);
-//	
-//	var panelSQLFQC_T={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus IS NULL OR FQCStatus <>1)"};
-//	getUndoneInfo("#panelT-FQCNum","#panelT-FQCContent",panelSQLFQC_T,["BPID","PLDCTRName"]);
-//	
-//	var panelSQLPBH_T={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND ( PBHStatus IS NULL OR PBHStatus =0)"};
-//	getUndoneInfo("#panelT-PBHNum","#panelT-PBHContent",panelSQLPBH_T,["BPID","PLDCTRName"]);
 	
+//	//-内核流程面板-------------------------------
+
+	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL   "};
+	getUndoneInfo("#T-PLDunAudit",panelSQLPLD,["BPID","CTRName"]);
+	
+	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus=2   "};
+	getUndoneInfo("#T-PLDAuditNo",panelSQLPLD,["BPID","CTRName"]);
+	
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND BPTStatus IS NULL "};
+	getUndoneInfo("#T-BPTunRecord",panelSQLBPT,["BPID","PLDCTRName"]);
+	
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND auditResult =0 "};
+	getUndoneInfo("#T-BPTunAudit",panelSQLBPT,["BPID","PLDCTRName"]);
+	
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND auditResult =2 "};
+	getUndoneInfo("#T-BPTauditNo",panelSQLBPT,["BPID","PLDCTRName"]);
+
+
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0"};
+	getUndoneInfo("#T-TaskunAccept",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =2"};
+	getUndoneInfo("#T-TaskAcceptNo",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
+	getUndoneInfo("#T-TaskunRecord",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
+	getUndoneInfo("#T-TaskunAudit",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 "};
+	getUndoneInfo("#T-TaskunPass",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult IS NULL"};
+	getUndoneInfo("#T-IPQCunRecord",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCAuditDate IS NULL"};
+	getUndoneInfo("#T-IPQCunAudit",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2"};
+	getUndoneInfo("#T-IPQCunPass",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+	
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL"};
+	getUndoneInfo("#T-FQCunRecord",panelSQLFQC,["BPID","PLDCTRName"]);
+	
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0"};
+	getUndoneInfo("#T-FQCunAudit",panelSQLFQC,["BPID","PLDCTRName"]);
+	
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)"};
+	getUndoneInfo("#T-FQCunPass",panelSQLFQC,["BPID","PLDCTRName"]);
+
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus IS NULL"};
+	getUndoneInfo("#T-PBHunRecord",panelSQLPBH,["BPID","PLDCTRName"]);
+
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =0"};
+	getUndoneInfo("#T-PBHunAudit",panelSQLPBH,["BPID","PLDCTRName"]);
+	
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =1 AND emailResult=0"};
+	getUndoneInfo("#T-PBHunSend",panelSQLPBH,["BPID","PLDCTRName"]);
 	
 })
 

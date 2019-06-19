@@ -884,15 +884,15 @@ function Fun_BPTDetailInitVal(dataChoose){
 	}
 	
 	if(dataSelect.modelD!=""){
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort<>'APP' AND  status=1"},"#modelD",dataSelect.modelD);
 	}else{
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.PLDModelD);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort<>'APP' AND status=1"},"#modelD",dataSelect.PLDModelD);
 	}
 	
 	if(dataSelect.modelH!=""){
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort<>'APP' AND status=1"},"#modelH",dataSelect.modelH);
 	}else{
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.PLDModelH);
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort<>'APP' AND status=1"},"#modelH",dataSelect.PLDModelH);
 	}
 	
 	
@@ -1581,10 +1581,10 @@ $('input[type=radio][name=taskType]').change(function() {
 		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='Kernel' AND status=1"},"#taskModel",$('#modelD option:selected').text());
 		break;
 	case 'HK':
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='Kernel' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='Kernel' AND status=1"},"#taskModel",$('#modelH option:selected').text());
 		break;
 	case 'HO':
-		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='OS' AND status=1"},"#taskModel",$('#modelD option:selected').text());
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND sort='OS' AND status=1"},"#taskModel",$('#modelH option:selected').text());
 		break;
 	case 'MB':
 		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='运动控制卡' AND sort='BOOT' AND status=1"},"#taskModel",$('#modelD option:selected').text());
@@ -1714,7 +1714,15 @@ $('#BTNTaskAdd').click(function(){
 ////		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#taskStaff");
 //	}
 	
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort='Kernel' AND status=1"},"#taskModel");
+	if($('#modelD option:selected').val()!=undefined){
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort<>'APP' AND status=1"},"#taskModel",$('#modelD option:selected').val());
+
+	}else{
+		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort<>'APP' AND status=1"},"#taskModel");
+
+	}
+	
+//	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND sort<>'APP' AND status=1"},"#taskModel");
 	
 	$('#taskOGNSystemVersion').val($("#OGNSystemVersion").val());
 	
@@ -2176,7 +2184,7 @@ $('#BTNBPTAuditYes').click(function() {
 			
 			
 			let PLDUpdData={
-					"DBTable":"ppm_bills_plan",
+					"DBTable":"ppm_bills_plan_t",
 					"BillIDName":"BPID",
 					"BillID":$('#BPTBPID').val(),
 					"TaskNum":TaskNum,

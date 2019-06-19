@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -1624,16 +1624,18 @@ $('#BTNTaskAcceptYes').click(function() {
 				
 				if($('#taskTypeText').text()!="APP"){
 					
-					let msgContent="新增内核任务单已确认,请填写内核计划单!";
+//					let msgContent="新增内核任务单已确认,请填写内核计划单!";
+//					
+//					sendDingMsg(msgContent);
+//					
+//					window.location.reload();
 					
-					sendDingMsg(msgContent);
-					
-					window.location.reload();
+					let i={confirmMsg:'内核任务已确认,是否发送钉钉消息?',DDMsg:{at:'"'+$('#taskMaker').text()+'"',msg:'@'+$('#taskMaker').text()+' 内核任务已确认,请新增内核计划!'},alertMsg:'发送成功'}
+					let o={f:io_refresh}
+					aio_chooseSendDDMsg(i,o)
 					
 				}else{
-					
-					
-					
+
 					let msgnext=confirm("是否立即登记任务?");
 					if(msgnext){
 						
@@ -1712,8 +1714,7 @@ $('#BTNTaskRecord').click(function() {
 	    if (dataSelect == undefined) {
 	        swal("操作提示:单击选中数据行后,再双击可快速打开表单!");
 	    } else {
-//	    	console.log("dataSelect:"+JSON.stringify(dataSelect));
-
+//	    	console.log("dataSelect:"+JSON.stringify(dataSelect))
 	    		Fun_taskRecordInit(dataSelect);
 
 	    }
