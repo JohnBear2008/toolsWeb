@@ -46,12 +46,10 @@ var aio_swcf=async (i,o)=>{
 		    case 'NO':
 		    	o=false
 		      return o
-
 		      break
 		    case 'YES':
 		    	o=true
 			  return o
-
 			  break
 		  }
 		})
@@ -73,25 +71,25 @@ var aio_sendDDMsg=async (i,o)=>{
         	return o  //throw 返回reject
         }
     })	
-
 }
 
 
 
 //定义提示消息,选择后发送钉钉消息货不发let i={confirmMsg:'this is confirm Msg',DDMsg:{at:'熊奇龙',msg:'this is DDMsg'}}let o={f:io_refresh}
 var aio_chooseSendDDMsg=async (i,o)=>{
-//	console.log('i:'+JSON.stringify(i))
-//	console.log('o:'+JSON.stringify(o))
+	console.log('i:'+JSON.stringify(i))
+	console.log('o:'+o.f)
 	
 	let t1_r= await aio_swcf(i,'')
-//	console.log('t1_r:'+t1_r)
+	console.log('t1_r:'+t1_r)
 	if(t1_r){
+//		
 		let t2_r=await aio_sendDDMsg(i,'')
 //		console.log('t2_r:'+JSON.stringify(t2_r))
 		let t3_r=io_isEmptyObject(t2_r)
-//		console.log('t3_r:'+JSON.stringify(t3_r))
+		console.log('t3_r:'+JSON.stringify(t3_r))
 		if(t3_r){
-			let t4_r=await aio_swal(i,'')
+			let t4_r=await aio_swal({alertMsg:'发送成功'},'')
 //			console.log('t4_r:'+JSON.stringify(t4_r))
 			if(t4_r){
 				o.f()
@@ -108,7 +106,7 @@ var aio_ajaxGet=async (i,o)=>{
 	o=await $.ajax({
 		method: 'get',
 	    url: '/app/public/ajaxGet',
-	    data: i.sql,
+	    data: i,
 	    success: (data, textStatus)=>{
 	    	return textStatus  //return 返回 resolve
 	    	},
@@ -125,7 +123,7 @@ var io_ajaxGet=(i,o)=>{
 	$.ajax({
         method: 'get',
         url: '/app/public/ajaxGet',
-        data: i.sql,
+        data: i,
         async:false,
         success:(data, textStatus)=>{
         	o=data
@@ -144,12 +142,12 @@ var aio_ajaxPost=async (i,o)=>{
 	o=await $.ajax({
 		method: 'post',
 	    url: '/app/public/ajaxPost',
-	    data: i.sql,
+	    data: i,
 	    success: (data, textStatus)=>{
 	    	return textStatus  //return 返回 resolve
 	    	},
 	    error: (XMLHttpRequest, textStatus, errorThrown)=>{
-	        	throw textStatus  //throw 返回reject
+	    	return textStatus  //throw 返回reject
 	        }
 	    });
 	return o
@@ -160,7 +158,7 @@ var io_ajaxPost=(i,o)=>{
 	$.ajax({
         method: 'post',
         url: '/app/public/ajaxPost',
-        data: i.sql,
+        data: i,
         async:false,
         success:(data, textStatus)=>{
         	o=data

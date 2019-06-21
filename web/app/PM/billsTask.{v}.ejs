@@ -1382,9 +1382,7 @@ $(document).ready( function () {
 	    break;
 	default:
 //	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
-	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR recordAuditor = '"+sessionName+"') AND recordNum=0  AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
-    
-	
+	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' AND recordNum=0) OR (recordAuditor = '"+sessionName+"' AND recordStatus='已登记,未审核') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
 	
 		break;
@@ -1800,7 +1798,8 @@ $('#BTNTaskRecordSave').click(function() {
 									"DBTable":"ppm_bills_task",
 									"BillIDName":"BTID",
 									"BillID":$('#BTID').text(),
-									"recordNum":1
+									"recordNum":1,
+									"IPQCStatus":"未填写"
 						}
 						 
 						var ajax2=$.ajax({
@@ -2117,7 +2116,8 @@ $('#BTNTaskRecordAudit').click(function() {
 											"DBTable":"ppm_bills_task",
 											"BillIDName":"BTID",
 											"BillID":$('#BTID').text(),
-											"recordNum":1
+											"recordNum":1,
+											"IPQCStatus":"未填写"
 								}
 								 
 								 

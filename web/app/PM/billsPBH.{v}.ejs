@@ -388,7 +388,9 @@
                 <th>完成期限</th>
                 <th>任务数量</th>
                 <th>任务完结数量</th>
-                <th>流程状态</th>
+                <th>制单人</th>
+                <th>审核人</th>
+                <th>发布单状态</th>
                 <th>邮件发布结果</th>
             </tr>
         </thead>
@@ -728,7 +730,9 @@ $(document).ready( function () {
 		        { data: 'limitDate'},
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
-		        { data: 'WFStatusText'},
+		        { data: 'PBHMaker'},
+		        { data: 'PBHAuditor'},
+		        { data: 'billPBHStatus'},
 		        { data: 'PBHResultText'}
 			]
 	}
@@ -927,7 +931,8 @@ $('#BTNPBHSave').click(function() {
 						"PBHRemark":$('#PBHRemark').val(),
 						"PBHMaker":sessionName,
 						"PBHMakeDate":Ndate,
-						"PBHAuditor":$('#PBHAuditor option:selected').text()
+						"PBHAuditor":$('#PBHAuditor option:selected').text(),
+						"billPBHStatus":"已填单,未审核"
 				}
 
 		saveDBData(PBHData,"PBH单");
@@ -953,7 +958,8 @@ $('#BTNPBHAudit').click(function() {
 					"PBHAuditDate":Ndate,
 					"PBHAuditResult":1,
 					"PBHStatus":1,
-					"PBHStatusText":"已审核"
+					"PBHStatusText":"已审核",
+					"billPBHStatus":"已填单,未审核"
 			}
 
 	     updDBData(PBHData,"PBH单审核状态");

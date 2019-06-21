@@ -735,6 +735,7 @@
                 <th>计划单完成期限</th>
                 <th>方案人</th>
                 <th>方案版本号</th>
+                <th>审核人</th>
                 <th>方案单状态</th>
 
             </tr>
@@ -783,6 +784,7 @@ function Fun_BTIDCreate(){
 
 }
 
+//函数 获取方案审核人
 
 
 //函数:详情按钮详情页自动填写内容1:所有情况必定加载------------------------
@@ -1465,6 +1467,7 @@ $(document).ready( function () {
 		        { data: 'PLDLimitDate'},
 		        { data: 'PLDPGEMaker'},
 		        { data: 'BPTVersion'},
+		        { data: 'auditor'},
 		        { data: 'BPTStatusText'}
 
 			]
@@ -2329,6 +2332,16 @@ $('#BTNBPTAuditNo').click(function() {
 
 
 });
+
+
+//按钮-系统指定方案人
+$('#BTNGetAuditor').click(function() {
+     var dataSelect = table.row('.selected').data();
+     
+     Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",dataSelect.PLDAuditor);
+     
+});
+
 
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNBPTClose').click(function() {

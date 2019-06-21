@@ -473,6 +473,7 @@
                 <th>版本号</th>
                 <th>客户简称</th>
                 <th>主题</th>
+                <th>制单人</th>
                 <th>审核人</th>
                 <th>审核状态</th>
 
@@ -670,26 +671,47 @@ function fillFGEMaker(){
 
 function fillAuditor(){
 	
-	let ips ={orderFromDep:$('input:radio[name="orderFromDep"]:checked').val(),modelD:$('#modelD option:selected').val(),modelH:$('#modelH option:selected').val()};
-	console.log(ips);
-	switch(ips.orderFromDep){
-	case 'A':
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
-		break;
-	case 'B':
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
-		break;
-	case 'C':
-		if(ips.modelD==undefined&&ips.modelH!=undefined){
-			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
-		}else{
-			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","许静静");
-		}
-		break;
-	case 'D':
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","孙凌财");
-		break;
-	}
+	let ips ={staffName:sessionName,modelD:$('#modelD option:selected').text(),modelH:$('#modelH option:selected').text()};
+	
+	$.ajax({
+        method:'get',
+        data:{SQL:"SQLGetUpAuditor",filter:"staffName='"+ips.staffName+"'"},
+        url:"/app/PM/getSQLDBData",
+//        async:false, 
+        success:function(data){
+       	 if(data.length!=0){
+//       		 console.log(data[0].upAuditor);
+       		 
+       		 var upAuditor=data[0].upAuditor
+       		 
+       		 switch(sessionName){
+       		 
+       		 case '周永汉':
+//       			 console.log("sessionName:"+sessionName);
+//       			 
+//       			 console.log(ips.modelH.indexOf("OS"))
+      			 if(ips.modelH.indexOf("OS")!=-1){
+      				 
+      				
+      				 upAuditor='蒋伟贞'
+      			 }
+       			 
+       			 break
+       		 case '周颖':
+       			 if(ips.modelH.indexOf("Q15")!=-1){
+       				 upAuditor='蒋伟贞'
+       			 }
+       			 
+       			 break
+       		 }
+
+       		 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",upAuditor);
+       	 }
+        },
+        error:function(){}
+    })
+	
+	
 }
 
 //绑定change事件
@@ -715,7 +737,7 @@ function changeEventBind(){
 
 	$('input[type=radio][name=orderFromDep]').change(function() {
 		Fun_BPIDCreate();
-		fillAuditor();
+
 	});
 	
 //	$('#modelD').change(function(){
@@ -759,7 +781,7 @@ function Fun_winAddInit(){
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#PGEMaker");
 	
 
-	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
+	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
 	
 	
 
@@ -1040,7 +1062,7 @@ $(document).ready( function () {
 	
 //	console.log("undone:"+getQueryString("undone"));
 	
-	var sessionName="<%-locals.session.yjUser.Name%>";
+    sessionName="<%-locals.session.yjUser.Name%>";
 	
 	var undone=getQueryString("undone");
 	
@@ -1076,6 +1098,7 @@ $(document).ready( function () {
 		        { data: 'version'},
 		        { data: 'CTRName'},
 		        { data: 'topic'},
+		        { data: 'maker'},
 		        { data: 'auditor'},
 		        { data: 'auditText'}
 			]
@@ -1232,8 +1255,6 @@ $('#BTNInfo').click(function() {
     	
     	$("#BTNFormSave").hide();
 
-    	
-
     }
 });
 
@@ -1293,10 +1314,8 @@ $('#BTNTaskBindAdd').click(function() {
         		
 
 //        		Fun_getSQLSelectDBData({SQL:"SQLSRSystems"},"#modelD",data[0].modelD);
-        		
 //        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'HMI' AND sort<>'APP' AND status=1"},"#modelD",data[0].modelD);
 //        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong<>'DSP' AND sort<>'APP' AND status=1"},"#modelH",data[0].modelH);
-//        		
 //        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",data[0].modelD);
 //        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",data[0].modelH);
         		
@@ -1573,7 +1592,7 @@ $('#BTNFormAuditYes').click(function() {
 //			window.location.reload();
 		}
 	}else{
-		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
+		swal("审核人未指定,或当前账号非该单据的指定审核人,不允许审核!");
 	}
 	
 //	$('#BillPLD').modal('hide');
@@ -1686,8 +1705,15 @@ $('#BTNFormSave').click(function(){
 			
 			$.when(ajax1).done(function(){
 				
-				let i={confirmMsg:'新增T计划单成功,是否发送钉钉提醒消息?',DDMsg:{at:$('#auditor option:selected').text(),msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}}	
-				iof_chooseSendDDMsg(i,iof_refresh)
+				let i={
+						confirmMsg:'新增T计划单成功,是否发送钉钉提醒消息?',
+						DDMsg:{
+							at:$('#auditor option:selected').text(),
+							msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}
+				}	
+				
+				let o={f:io_refresh}
+				aio_chooseSendDDMsg(i,o)
 			});
 			
 
@@ -1733,6 +1759,7 @@ $('#BTNFormSave').click(function(){
 //按钮-系统指定方案人
 $('#BTNGetPEGMaker').click(function() {
 	fillFGEMaker();
+	fillAuditor();
 });
 
 

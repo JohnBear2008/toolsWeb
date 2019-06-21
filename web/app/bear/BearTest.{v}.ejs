@@ -24,17 +24,16 @@ $('#bt_test').click(function(){
 	
 	var fun1=()=>{console.log(111)}
 	
-//	function fun1(){
-//		console.log(111)
-//	}
-	let b={f:'1'}
-	console.log('b:'+fun1)
+	let i={
+			confirmMsg:'新增T计划单成功,是否发送钉钉提醒消息?',
+			DDMsg:{
+				at:$('#auditor option:selected').text(),
+				msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}
+	}	
 	
-//	let i={confirmMsg:'内核任务已确认,是否发送钉钉消息?',DDMsg:{at:'熊奇龙',msg:'内核任务已确认,请新增内核计划!'},alertMsg:'发送成功'}
-//	let o={f:io_refresh}
-//	console.log('o11:'+JSON.stringify(o))
-//	
-//	aio_chooseSendDDMsg(i,o)
+	let o={f:io_refresh}
+	
+	aio_chooseSendDDMsg(i,o)
 
 })
 
