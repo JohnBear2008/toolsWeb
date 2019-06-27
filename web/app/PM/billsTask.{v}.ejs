@@ -42,8 +42,8 @@
         
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
@@ -52,7 +52,7 @@
             <div class="modal-dialog" style="width:70%">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" id="BTNModelClose" class="close"  aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="BillTaskLabel">任务单详情</h4>
                     </div>
                     <div class="modal-body">
@@ -163,6 +163,11 @@
                     <span id="taskTypeText" class="help-block"></span>
                     </div>
                     
+                    
+                    <label class="col-sm-1 control-label">类型码:</label>
+                    <div class="col-sm-1">
+                    <span id="taskSortType" class="help-block"></span>
+                    </div>
                    
                     
                     </div>
@@ -566,15 +571,6 @@
                     </div>
                     
 
-                    
-
-                    
-                   
-                    
-
-                   
-                     
-                     
                     <!----end task panel---------------------->
 
                     </div>
@@ -882,12 +878,10 @@ function Fun_taskRecordInit(dataChoose){
 	$('#BTVersion').text(dataSelect.BTVersion); 
 	$('#taskCTRName').text(dataSelect.taskCTRName);
 	$('#taskTypeText').text(dataSelect.taskTypeText);
-	
+	$('#taskSortType').text(dataSelect.taskSortType);
 	
 //	 $("input:radio[name=taskSortType][value="+dataSelect.taskSortType+"]").prop("checked",true);
-//     $('input:radio[name="taskSortType"]').attr("disabled",true);
-//     
-//
+//   $('input:radio[name="taskSortType"]').attr("disabled",true);
 //     $("input:radio[name=taskType][value="+dataSelect.taskType+"]").prop("checked",true);
 //     $('input:radio[name="taskType"]').attr("disabled",true);
 	
@@ -963,15 +957,17 @@ function Fun_taskRecordInit(dataChoose){
 	
 	
 	Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
+	
+	
 
-//	console.log("dataSelect.BTAcceptResult:"+dataSelect.BTAcceptResult);
+	console.log("dataSelect.BTAcceptResult:"+dataSelect.BTAcceptResult);
 	switch(dataSelect.BTAcceptResult){
 	case 0:
+		
 		$('#divTaskInfo input').attr("disabled",false);
 		$('#divTaskInfo select').attr("disabled",false);
 		$('#divTaskInfo textarea').attr("disabled",false);
-		
-		
+
 		if(sessionName==$('#taskMaker').text()){
 			$("#BTNTaskSave").show();
 		}else{
@@ -1013,7 +1009,6 @@ function Fun_taskRecordInit(dataChoose){
 			$('#DIVRecordContent').hide();
 		}
 		
-
 		break;
 	case 2:
 		$('#divTaskInfo input').attr("disabled",true);
@@ -1036,31 +1031,6 @@ function Fun_taskRecordInit(dataChoose){
 	}
 	
 
-	
-	
-	
-//	
-//	
-//
-//	$('#DivTaskInfo input').attr("disabled",true);
-//	$('#DivTaskInfo select').attr("disabled",true);
-//	$('#DivTaskInfo textarea').attr("disabled",true);
-//	
-//	$('#BTAcceptOpinion').hide();
-//	
-//	 $('#IPQCMaker').attr("disabled",true);
-//
-//		$('#DivTaskAcceptBTNS').hide();
-//		
-//		
-
-//
-//		$('#DIVRecordContent').hide();
-//		
-//		$('#DivRecordPanel').show();
-	
-	
-	
 	  
 	
 }
@@ -1206,16 +1176,16 @@ function Fun_showRecordsLiteTable(SQL,tableInfo){
 //检查输入项
 function checkTaskInput(){
 	
-	if($("#taskMHEName").val()==null){
+	if($("#taskMHEName").val()==null||$("#taskMHEName").val()==""){
 		swal("机型未选择,请检查!");
 		return false;
-	}else if($("#taskModel").val()==null){
+	}else if($("#taskModel").val()==null||$("#taskModel").val()==""){
 		swal("系统未选择,请检查!");
 		return false;
 	}else if(getCheckBoxValue("modifyABE")==""){
 		swal("修改内容未选择,请检查!");
 		return false;
-	}else if($("#taskStaff").val()==null){
+	}else if($("#taskStaff").val()==null||$("#taskStaff").val()==""){
 		swal("任务负责人未选则,请检查!");
 		return false;
 	}else if($("#taskDBE").val()==""){
@@ -1233,13 +1203,13 @@ function checkTaskInput(){
 
 function checkAcceptInput(){
 	
-	if($("#taskStaff").val()==null){
+	if($("#taskStaff").val()==null||$("#taskStaff").val()==""){
 		swal("任务负责人未选择,请检查!");
 		return false;
 	}else if($("#taskOGNSystemVersion").val()==""){
 		swal("原系统版本必填,请检查!");
 		return false;
-	}else if($("#IPQCMaker").val()==null){
+	}else if($("#IPQCMaker").val()==null||$("#IPQCMaker").val()==""){
 		swal("IPQC填单人未选择,请检查!");
 		return false;
 	}
@@ -1258,8 +1228,7 @@ function checkRecordInput(){
 		swal("功能说明未填写,请检查!");
 		return false;
 	}else if(isInternship(sessionName)&&$('#recordAuditor option:selected').text()==sessionName){
-		
-		
+
 		swal("您现在处于实习期,不允许自我审核,请重新选择审核人!");
 		return false;
 	}
@@ -1365,16 +1334,20 @@ $(document).ready( function () {
     
     switch(undone){
     case "unAccept":
-    	var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0","orderBy":" saveTimeStamp DESC"};
+    	var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" taskStaff = '"+sessionName+"' AND BTAcceptResult =0","orderBy":" saveTimeStamp DESC"};
     	break;
-	case "unAudit":
-		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =2","orderBy":" saveTimeStamp DESC"};
-		break;
+    case "acceptNo":
+    	var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" taskMaker = '"+sessionName+"' AND BTAcceptResult =2","orderBy":" saveTimeStamp DESC"};
+    	break;
+	
 	case "unRecord":
-		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" taskStaff = '"+sessionName+"' AND BTAcceptResult =1 AND recordStatus IS NULL ","orderBy":" saveTimeStamp DESC"};
+		break;
+	case "unAudit":
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" recordAuditor = '"+sessionName+"' AND recordStatus='已登记,未审核' ","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "unPass":
-		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" taskStaff = '"+sessionName+"' AND BTStatus=4 ","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "all":
 		var tableSQL={"SQL":"SQLTableBillsTaskRecord","orderBy":" saveTimeStamp DESC"};
@@ -1382,9 +1355,8 @@ $(document).ready( function () {
 	    break;
 	default:
 //	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
-	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' AND recordNum=0) OR (recordAuditor = '"+sessionName+"' AND recordStatus='已登记,未审核') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
+	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" taskMaker = '"+sessionName+"' OR taskStaff = '"+sessionName+"'  OR recordAuditor = '"+sessionName+"' ","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
-	
 		break;
 	
 	}
@@ -1502,14 +1474,10 @@ $('#BTNTaskSave').click(function(){
 		    	updDBData(taskData,"任务单数据");
 	    		
 	    	}
-	    	
-	    	
-	    	
+
 	    }else{
 	    	swal("非发布人不允许修改!");
 	    }
-
-
 
 });
 
@@ -1556,6 +1524,7 @@ $('#BTNTaskAcceptYes').click(function() {
 							"BillIDName":"BPID",
 							"BillID":$('#taskBPID').text(),
 							"FQCRequest":1,
+							"FQCStaff":"刘梦",
 							"FQCRequestText":"有"
 					}
 					
@@ -1661,11 +1630,7 @@ $('#BTNTaskAcceptYes').click(function() {
 					}
 					
 				}
-				
-				
-				
 
-				
 			}
 			
 		}
@@ -1712,7 +1677,7 @@ $('#BTNTaskRecord').click(function() {
 	    if (dataSelect == undefined) {
 	        swal("操作提示:单击选中数据行后,再双击可快速打开表单!");
 	    } else {
-//	    	console.log("dataSelect:"+JSON.stringify(dataSelect))
+	    	console.log("dataSelect:"+JSON.stringify(dataSelect))
 	    		Fun_taskRecordInit(dataSelect);
 
 	    }
@@ -1839,7 +1804,7 @@ $('#BTNTaskRecordSave').click(function() {
 									"taskFiles":JSON.stringify(taskFiles),
 									"recordMaker":sessionName,
 									"recordMakeDate":Ndate,
-									"recordStatus":"已登记,待审核",
+									"recordStatus":"已登记,未审核",
 									"recordAuditor":$('#recordAuditor option:selected').text()
 							}
 							
@@ -1863,7 +1828,7 @@ $('#BTNTaskRecordSave').click(function() {
 								"taskFiles":JSON.stringify(taskFiles),
 								"recordMaker":sessionName,
 								"recordMakeDate":Ndate,
-								"recordStatus":"已登记,待审核",
+								"recordStatus":"已登记,未审核",
 								"recordAuditor":$('#recordAuditor option:selected').text()
 						}
 						
@@ -1872,28 +1837,17 @@ $('#BTNTaskRecordSave').click(function() {
 					 Fun_saveTaskRecord(recordData);
 					 
 				 }
-				 
-				 
-				 
+
 			 }
 			 //--------------------
 				
 			}
 
-			 
-			 
-			 
 		}else{
 			swal("您不是该任务单的负责人,无法登记任务!");
 		}
 
 });
-
-
-
-
-
-
 
 ////详情按钮---------
 //$('#BTNInfo').click(function() {
@@ -2022,18 +1976,8 @@ $('#BTNTaskUpdVer').click(function() {
 //	        	addDBData(taskData);
 	        }
 	    }
-		 
-		 
-		 
-		 
-		 
-	 }
-	  
 
-  	
-  	
-  
-  	
+	 }
 
   }
 
@@ -2224,6 +2168,11 @@ $('#BTNGetTaskAuditor').click(function() {
 
 //按钮-表单关闭按钮,添加刷新数据功能
 $('#BTNFormClose').click(function() {
+	 window.location.reload();
+});
+
+
+$('#BTNModelClose').click(function() {
 	 window.location.reload();
 });
 	

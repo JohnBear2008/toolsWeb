@@ -427,6 +427,8 @@ function getSelectDBData(selectPara,selectorID,InitValue) {
         			noneSelectedText :"未选择"//默认显示内容
         		});
         		
+        		 $(selectorID).append($('<option value="">未选择</option>'));
+        		
         		if(InitValue==undefined){
            		
            		 for(i=0;i<data.length;i++){
@@ -477,7 +479,7 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
       			noneSelectedText :"未选择"//默认显示内容
       		  });
 
-        		
+        	  $(selectorID).append($('<option value="">未选择</option>'));
         		
         		if(InitValue==undefined||InitValue==""){	
 //        			console.log("InitValue11:"+InitValue);
@@ -497,7 +499,7 @@ function Fun_getSQLSelectDBData(selectSQL,selectorID,InitValue) {
                      }
         		}
         		
-        		console.log("selectorID:"+selectorID);
+
 
               $(selectorID).selectpicker('refresh');
 //              swal($(selectorID).find("option:selected").text())
@@ -523,6 +525,8 @@ function Fun_getSQLFullSelectDBData(selectSQL,selectorID,InitValue) {
           success:function(data){
         	  
         //	  console.log("data:"+JSON.stringify(data));
+        	  
+        	  $(selectorID).append($('<option value="">未选择</option>'));
 
         		if(InitValue==undefined||InitValue==""){	
 //        			console.log("InitValue11:"+InitValue);
@@ -568,6 +572,8 @@ function getSQLSelectDBData(selectSQL,selectorID,InitValue) {
           data:selectSQL,
           url:"/app/PM/getSQLDBData",
           success:function(data){
+        	  
+        	  $(selectorID).append($('<option value="">未选择</option>'));
 
         		if(InitValue==undefined||InitValue==""){	
 //        			console.log("InitValue11:"+InitValue);
@@ -842,7 +848,9 @@ function taskUploadComplete(evt) {
 	var span = document.createElement("span");
 	div.appendChild(span);
 	
-	let BTType=$("#BTID").text().substring(12,13);//自动识别版本号功能,获取BTID做任务类型判断
+	//let BTType=$("#BTID").text().substring(12,13);//自动识别版本号功能,获取BTID做任务类型判断
+	
+	let BTType=$('#taskSortType').text();
 	
 	for ( var name in g_uploaded.files) {
 		var file=g_uploaded.files[name];

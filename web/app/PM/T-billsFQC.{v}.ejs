@@ -38,8 +38,8 @@
         <button id="BTNFQCDetail" class="btn btn-primary" data-toggle="modal" >FQC维护</button>
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
@@ -462,7 +462,7 @@ function Fun_winDetailInit(dataChoose){
 	
 	var SQLAuditor={SQL:"SQLSRStaffs"};
 	var FQCAuditor="#FQCAuditor";
-	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,"刘梦");
+	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor);
 
 
 	
@@ -538,10 +538,10 @@ $(document).ready( function () {
 		
 		switch(undone){
 	    case "unRecord":
-	    	var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL","orderBy":" saveTimeStamp DESC"};
+	    	var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":"FQCMaker IS NULL","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "unAudit":
-			var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0","orderBy":" saveTimeStamp DESC"};
+			var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND billFQCStatus ='已填单,未审核'","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "unPass":
 			var tableSQL={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
@@ -930,8 +930,7 @@ $('#BTNUpdVer').click(function() {
      	   }else{
      		   swal("失败数据:"+JSON.stringify(err));
      	   }
-     	   
-        	
+
         }
      });
 	 
@@ -941,19 +940,12 @@ $('#BTNUpdVer').click(function() {
 			window.location.reload();
 
 		});
-	 
-	 
 
 //        addDBData(FQCData);
-	 
-	 
+
 	}
 	
 
-	
-	
-	
-	
 });
 
 //按钮-表单关闭按钮,添加刷新数据功能

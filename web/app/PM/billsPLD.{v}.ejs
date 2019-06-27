@@ -44,8 +44,8 @@
        
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
         
@@ -55,7 +55,7 @@
             <div class="modal-dialog" style="width:65%">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button  type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button  type="button"  id="BTNModelClose" class="close"  aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="BillPLDLabel">计划单面板</h4>
                     </div>
                     <div class="modal-body">
@@ -141,13 +141,13 @@
                      <label  class="col-sm-1 control-label" for="name">地区:</label>  
                      <div class="col-sm-3">
                	    <label class="radio-inline">
-               	        <input type="radio" name="PLDArea" id="PLDAreaOption1" value="D" checked> 大港
+               	        <input type="radio" name="PLDArea" id="PLDAreaOption1" value="D" autocomplete="off" checked > 大港
                	    </label>
                	    <label class="radio-inline">
-               	        <input type="radio" name="PLDArea" id="PLDAreaOption2"  value="H"> 虎门
+               	        <input type="radio" name="PLDArea" id="PLDAreaOption2" autocomplete="off" value="H"> 虎门
                	    </label>
                	    <label class="radio-inline">
-              	        <input type="radio" name="PLDArea" id="PLDAreaOption3"  value="T"> 台湾
+              	        <input type="radio" name="PLDArea" id="PLDAreaOption3" autocomplete="off"  value="T"> 台湾
               	    </label>
                	    </div>
                      
@@ -159,19 +159,19 @@
                     
                      
                      <label class="radio-inline">
-            	        <input type="radio" name="orderFrom" id="orderFromOption1" value="M" checked> 邮件
+            	        <input type="radio" name="orderFrom" id="orderFromOption1" autocomplete="off" value="M" checked> 邮件
             	    </label>
             	    <label class="radio-inline">
-            	        <input type="radio" name="orderFrom" id="orderFromOption2"  value="T"> 电话
+            	        <input type="radio" name="orderFrom" id="orderFromOption2" autocomplete="off" value="T"> 电话
             	    </label>
             	    <label class="radio-inline">
-           	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="F"> 传真
+           	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="F"> 传真
            	        </label>
            	        <label class="radio-inline">
-        	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="W"> 微信
+        	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="W"> 微信
         	        </label>
         	        <label class="radio-inline">
-        	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="P"> 工具
+        	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="P"> 工具
         	        </label>
         	        
                      
@@ -187,16 +187,16 @@
                     
                      
                      <label class="radio-inline">
-            	        <input type="radio" name="orderFromDep" id="orderFromDepOption1" value="A" checked> 客户订单
+            	        <input type="radio" name="orderFromDep" id="orderFromDepOption1" autocomplete="off" value="A" checked> 客户订单
             	    </label>
             	    <label class="radio-inline">
-            	        <input type="radio" name="orderFromDep" id="orderFromDepOption2"  value="B"> 其他部门需求
+            	        <input type="radio" name="orderFromDep" id="orderFromDepOption2" autocomplete="off"  value="B"> 其他部门需求
             	    </label>
             	    <label class="radio-inline">
-           	        <input type="radio" name="orderFromDep" id="orderFromDepOption3"  value="C"> 软体部内部
+           	        <input type="radio" name="orderFromDep" id="orderFromDepOption3" autocomplete="off" value="C"> 软体部内部
            	        </label>
            	        <label class="radio-inline">
-        	        <input type="radio" name="orderFromDep" id="orderFromDepOption3"  value="D"> 公司预算或经营会议
+        	        <input type="radio" name="orderFromDep" id="orderFromDepOption3" autocomplete="off" value="D"> 公司预算或经营会议
         	        </label>
         	        
                      </div>  
@@ -557,7 +557,8 @@ function fillFGEMaker(){
 	
 	
 
-	if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
+	if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&
+			($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
 		swal("DSP,HMI系统必须选择一个 请检查!");
 	}else{
 		
@@ -565,14 +566,15 @@ function fillFGEMaker(){
 		
 		let CTRNameDBID=$('#CTRName option:selected').val();
 		
-		if(CTRNameDBID!=undefined){
+		if(CTRNameDBID!=undefined&&CTRNameDBID!=""){
 			filter="CTRVal="+CTRNameDBID;
 		}
 		
 		let ModelVal="";
 
 		
-		if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()!=undefined){
+		if(($('#modelD option:selected').val()==""||$('#modelD option:selected').val()==undefined)&&
+				($('#modelH option:selected').val()!=undefined||$('#modelH option:selected').val()!="")){
 			
 			ModelVal=$('#modelH option:selected').val();
 
@@ -959,10 +961,10 @@ function Fun_winDetailInit(dataChoose){
 
 function checkPLDInput(){
 	console.log("detail:"+$("#detail").val());
-	if($("#CTRName").val()==null){
+	if($("#CTRName").val()==null||$("#CTRName").val()==""){
 		swal("客户未输入,请检查!");
 		return false;
-	}else if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
+	}else if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
 		swal("DSP系统,HMI系统至少选择一项,请检查!");
 		return false;
 	}else if($("#topic").val()==""){
@@ -971,7 +973,7 @@ function checkPLDInput(){
 	}else if($("#detail").val()==""){
 		swal("要求未输入,请检查!");
 		return false;
-	}else if($("#PGEMaker").val()==null){
+	}else if($("#PGEMaker").val()==null||$("#PGEMaker").val()==""){
 		swal("方案人未输入,请检查!");
 		return false;
 	}
@@ -998,17 +1000,17 @@ $(document).ready( function () {
 	
 	switch(undone){
 	case "unAudit":
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL   ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":"auditor ='"+sessionName+"' AND auditResult IS NULL","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "auditNo":
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' )  AND PLDStatus =2  ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" maker = '"+sessionName+"' AND PLDStatus=2 ","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "all":
 		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
 		 $("#BTNFilterAll").addClass("active");
 		break;
 	default:
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus IS NULL  ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
 		break;
 	
@@ -1173,7 +1175,7 @@ $('#BTNDelete').click(function() {
     } else {
     	
     	
-    	if(dataSelect.auditResult!=null){
+    	if(dataSelect.auditResult!=null&&dataSelect.auditResult!=""){
     		swal("已审核单据禁止删除!");
     	}else{
     		
@@ -1467,61 +1469,70 @@ $('#BTNFormSaveAudit').click(function(){
 //按钮-表格修改计划单
 
 $('#BTNFormModify').click(function() {
-
-
-	if(checkPLDInput()){
-	var files=[];
 	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(23);
-		var fileName=$(this).attr('download');
+	
+	if(sessionName==$('#maker').text()){
 		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
+		if(checkPLDInput()){
+			var files=[];
+			
+			$('#divFilesUploaded a').each(function(){
+				var fileKey=$(this).attr('href').substring(23);
+				var fileName=$(this).attr('download');
+				
+				var fileInfo={
+						"fileName":fileName,
+						"fileKey":fileKey
+				}
+				
+				files.push(fileInfo);
+			});
+			
+
+			
+			console.log("files:"+JSON.stringify(files));
+
+			var billData={
+					"DBTable":"ppm_bills_plan",
+					"DBID":$('#DBID').val(),
+					"BPID":$('#BPID').val(),
+					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+					"topic":$('#topic').val(),
+					"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+					"PGEMaker":$('#PGEMaker option:selected').text(),
+					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+					"modelD":$('#modelD option:selected').text(),
+					"modelH":$('#modelH option:selected').text(),
+					"OGNSystemVersion":$('#OGNSystemVersion').val(),
+					"applyDate":$('#applyDate').val(),
+					"limitDate":$('#limitDate').val(),
+					"maker":sessionName,
+					"auditor":$('#auditor option:selected').text(),
+					"makeDate":Ndate,
+//					"version": $('#version').text(),
+					"files":JSON.stringify(files),
+					"WFStatus":1
+			}
+
+
+			
+//			updDBData(billData,"计划单");
+			
+			
+			let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的计划单,请登陆系统处理!";
+			Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"计划单");
+			
+			}
 		
-		files.push(fileInfo);
-	});
-	
-
-	
-	console.log("files:"+JSON.stringify(files));
-
-	var billData={
-			"DBTable":"ppm_bills_plan",
-			"DBID":$('#DBID').val(),
-			"BPID":$('#BPID').val(),
-			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-			"topic":$('#topic').val(),
-			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-			"PGEMaker":$('#PGEMaker option:selected').text(),
-			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-			"modelD":$('#modelD option:selected').text(),
-			"modelH":$('#modelH option:selected').text(),
-			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-			"applyDate":$('#applyDate').val(),
-			"limitDate":$('#limitDate').val(),
-			"maker":sessionName,
-			"auditor":$('#auditor option:selected').text(),
-			"makeDate":Ndate,
-//			"version": $('#version').text(),
-			"files":JSON.stringify(files),
-			"WFStatus":1
+	}else{
+		swal('当前账号非制单人不允许修改!')
 	}
 
 
 	
-//	updDBData(billData,"计划单");
-	
-	
-	let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的计划单,请登陆系统处理!";
-	Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"计划单");
-	
-	}
 	
 
 
@@ -1718,6 +1729,9 @@ $('#BTNFormClose').click(function() {
 	 window.location.reload();
 });
 
+$('#BTNModelClose').click(function() {
+	 window.location.reload();
+});
 
 //按钮-流程跟踪
 $('#BTNTrack').click(function(){

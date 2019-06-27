@@ -46,8 +46,8 @@
        
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
         
@@ -57,7 +57,7 @@
             <div class="modal-dialog" style="width:70%">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" id="BTNModelClose" class="close"  aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="BillPLDLabel">计划单面板</h4>
                     </div>
                     <div class="modal-body">
@@ -169,13 +169,13 @@
                      <label  class="col-sm-1 control-label" for="name">地区:</label>  
                      <div class="col-sm-3">
                	    <label class="radio-inline">
-               	        <input type="radio" name="PLDArea" id="PLDAreaOption1" value="D" checked> 大港
+               	        <input type="radio" name="PLDArea" id="PLDAreaOption1" value="D" autocomplete="off" checked> 大港
                	    </label>
                	    <label class="radio-inline">
-               	        <input type="radio" name="PLDArea" id="PLDAreaOption2"  value="H"> 虎门
+               	        <input type="radio" name="PLDArea" id="PLDAreaOption2" autocomplete="off" value="H"> 虎门
                	    </label>
                	    <label class="radio-inline">
-              	        <input type="radio" name="PLDArea" id="PLDAreaOption3"  value="T"> 台湾
+              	        <input type="radio" name="PLDArea" id="PLDAreaOption3" autocomplete="off" value="T"> 台湾
               	    </label>
                	    </div>
                      
@@ -187,19 +187,19 @@
                     
                      
                      <label class="radio-inline">
-            	        <input type="radio" name="orderFrom" id="orderFromOption1" value="M" checked> 邮件
+            	        <input type="radio" name="orderFrom" id="orderFromOption1" autocomplete="off" value="M" checked> 邮件
             	    </label>
             	    <label class="radio-inline">
-            	        <input type="radio" name="orderFrom" id="orderFromOption2"  value="T"> 电话
+            	        <input type="radio" name="orderFrom" id="orderFromOption2" autocomplete="off" value="T"> 电话
             	    </label>
             	    <label class="radio-inline">
-           	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="F"> 传真
+           	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="F"> 传真
            	        </label>
            	        <label class="radio-inline">
-        	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="W"> 微信
+        	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="W"> 微信
         	        </label>
         	        <label class="radio-inline">
-        	        <input type="radio" name="orderFrom" id="orderFromOption3"  value="P" > 工具
+        	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="P" > 工具
         	        </label>
         	        
                      
@@ -214,16 +214,16 @@
                     
                      
                      <label class="radio-inline">
-            	        <input type="radio" name="orderFromDep" id="orderFromDepOption1" value="A" > <span>客户订单</span>
+            	        <input type="radio" name="orderFromDep" id="orderFromDepOption1" autocomplete="off" value="A" > <span>客户订单</span>
             	    </label>
             	    <label class="radio-inline">
-            	        <input type="radio" name="orderFromDep" id="orderFromDepOption2"  value="B"> <span>其他部门需求</span>
+            	        <input type="radio" name="orderFromDep" id="orderFromDepOption2" autocomplete="off" value="B"> <span>其他部门需求</span>
             	    </label>
             	    <label class="radio-inline">
-           	        <input type="radio" name="orderFromDep" id="orderFromDepOption3"  value="C" checked> <span>软体部内部</span>
+           	        <input type="radio" name="orderFromDep" id="orderFromDepOption3" autocomplete="off" value="C" checked> <span>软体部内部</span>
            	        </label>
            	        <label class="radio-inline">
-        	        <input type="radio" name="orderFromDep" id="orderFromDepOption3"  value="D"> <span>公司预算或经营会议</span>
+        	        <input type="radio" name="orderFromDep" id="orderFromDepOption3" autocomplete="off" value="D"> <span>公司预算或经营会议</span>
         	        </label>
         	        
                      </div>  
@@ -582,96 +582,11 @@ function getPLDOld(BPID){
 	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
 }
 
-//函数 获取方案人
-function fillFGEMaker(){
-
-	if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
-		swal("DSP,HMI系统必须选择一个 请检查!");
-	}else{
-		
-		let filter="";
-		
-		let CTRNameDBID=$('#CTRName option:selected').val();
-		
-		if(CTRNameDBID!=undefined){
-			filter="CTRVal="+CTRNameDBID;
-		}
-		
-		let ModelVal="";
-
-		
-		if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()!=undefined){
-			
-			ModelVal=$('#modelH option:selected').val();
-
-		}else{
-			ModelVal=$('#modelD option:selected').val();
-		}
-		
-		if(filter==""){
-			filter="ModelVal='"+ModelVal+"'";
-		}else{
-			filter=filter+" AND ModelVal='"+ModelVal+"'";
-		}
-
-		filter2="ModelVal='"+ModelVal+"'";
-		
-		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
-		let selectSQL2={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter2,"limit":1}
-		
-		 $.ajax({
-	         method:'get',
-	         data:selectSQL,
-	         url:"/app/PM/getSQLDBData",
-//	         async:false, 
-	         success:function(data){
-
-	        	 if(data.length!=0){
-	        		 console.log("bindData:"+JSON.stringify(data));
-	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
-	        		 
-	        		 $("#PGEMaker").selectpicker('refresh');
-	        		 
-	        	 }else{
-	        		 
-	        		 $.ajax({
-	        	         method:'get',
-	        	         data:selectSQL2,
-	        	         url:"/app/PM/getSQLDBData",
-//	        	         async:false, 
-	        	         success:function(data){
-
-	        	        	 if(data.length!=0){
-	        	        		 console.log("bindData:"+JSON.stringify(data));
-	        	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
-	        	        		 
-	        	        		 $("#PGEMaker").selectpicker('refresh');
-	        	        		 
-	        	        	 }else{
-	        	        		 swal("系统未检测指定负责人,请手动选择!");
-
-	        	        	 }
-
-	        	         },
-	        	         error:function(){}
-	        	     })
-
-//	        		 swal("系统未检测指定负责人,请手动选择!");
-
-	        	 }
-	         },
-	         error:function(){}
-	     })
-
-	}
-}
-
-
 //函数 根据单据类型确认审核人
 
-function fillAuditor(){
+function fillAuditor(PGEName){
 	
-	let ips ={staffName:sessionName,modelD:$('#modelD option:selected').text(),modelH:$('#modelH option:selected').text()};
+	let ips ={staffName:PGEName,modelD:$('#modelD option:selected').text(),modelH:$('#modelH option:selected').text()};
 	
 	$.ajax({
         method:'get',
@@ -684,7 +599,7 @@ function fillAuditor(){
        		 
        		 var upAuditor=data[0].upAuditor
        		 
-       		 switch(sessionName){
+       		 switch(PGEName){
        		 
        		 case '周永汉':
 //       			 console.log("sessionName:"+sessionName);
@@ -713,6 +628,104 @@ function fillAuditor(){
 	
 	
 }
+
+//函数 获取方案人
+function fillFGEMaker(){
+
+	if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&
+			($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
+		swal("DSP,HMI系统必须选择一个 请检查!");
+	}else{
+		
+		let filter="";
+		
+		let CTRNameDBID=$('#CTRName option:selected').val();
+		
+		if(CTRNameDBID!=undefined&&CTRNameDBID!=""){
+			filter="CTRVal="+CTRNameDBID;
+		}
+		
+		let ModelVal="";
+
+		
+		if(($('#modelD option:selected').val()==""||$('#modelD option:selected').val()==undefined)&&
+				($('#modelH option:selected').val()!=undefined||$('#modelH option:selected').val()!="")){
+			
+			ModelVal=$('#modelH option:selected').val();
+
+		}else{
+			ModelVal=$('#modelD option:selected').val();
+		}
+		
+		if(filter==""){
+			filter="ModelVal='"+ModelVal+"'";
+		}else{
+			filter=filter+" AND ModelVal='"+ModelVal+"'";
+		}
+
+		filter2="ModelVal='"+ModelVal+"'";
+		
+		
+		console.log("filter1:"+filter);
+		console.log("filter2:"+filter2);
+		
+		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
+		let selectSQL2={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter2,"limit":1}
+		
+		 $.ajax({
+	         method:'get',
+	         data:selectSQL,
+	         url:"/app/PM/getSQLDBData",
+//	         async:false, 
+	         success:function(data){
+
+	        	 if(data.length!=0){
+	        		 console.log("bindData:"+JSON.stringify(data));
+	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
+	        		 
+	        		 $("#PGEMaker").selectpicker('refresh');
+	        		 
+	        		 
+	        		 fillAuditor(data[0].StaffName);
+	        		 
+	        	 }else{
+	        		 
+	        		 $.ajax({
+	        	         method:'get',
+	        	         data:selectSQL2,
+	        	         url:"/app/PM/getSQLDBData",
+//	        	         async:false, 
+	        	         success:function(data){
+
+	        	        	 if(data.length!=0){
+	        	        		 console.log("bindData:"+JSON.stringify(data));
+	        	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
+	        	        		 
+	        	        		 $("#PGEMaker").selectpicker('refresh');
+	        	        		 
+	        	        		 fillAuditor(data[0].StaffName);
+	        	        		 
+	        	        	 }else{
+	        	        		 swal("系统未检测指定负责人,请手动选择!");
+
+	        	        	 }
+
+	        	         },
+	        	         error:function(){}
+	        	     })
+
+//	        		 swal("系统未检测指定负责人,请手动选择!");
+
+	        	 }
+	         },
+	         error:function(){}
+	     })
+
+	}
+}
+
+
+
 
 //绑定change事件
 
@@ -781,7 +794,7 @@ function Fun_winAddInit(){
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#PGEMaker");
 	
 
-	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",sessionName);
+	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor");
 	
 	
 
@@ -829,6 +842,9 @@ function Fun_winAddInit(){
   $("#BTNFormUpdate").hide();
   $("#BTNFormAuditYes").hide();
   $("#BTNFormAuditNo").hide();
+  
+  
+  changeEventBind();
   
 }
 
@@ -1035,10 +1051,10 @@ function Fun_winDetailInit(dataChoose){
 
 function checkPLDInput(){
 	console.log("detail:"+$("#detail").val());
-	if($("#CTRName").val()==null){
+	if($("#CTRName").val()==null||$("#CTRName").val()==""){
 		swal("客户未输入,请检查!");
 		return false;
-	}else if($('#modelD option:selected').val()==undefined&&$('#modelH option:selected').val()==undefined){
+	}else if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
 		swal("DSP系统,HMI系统至少选择一项,请检查!");
 		return false;
 	}else if($("#topic").val()==""){
@@ -1047,7 +1063,7 @@ function checkPLDInput(){
 	}else if($("#detail").val()==""){
 		swal("要求未输入,请检查!");
 		return false;
-	}else if($("#PGEMaker").val()==null){
+	}else if($("#PGEMaker").val()==null||$("#PGEMaker").val()==""){
 		swal("方案人未输入,请检查!");
 		return false;
 	}
@@ -1069,17 +1085,17 @@ $(document).ready( function () {
 	
 	switch(undone){
 	case "unAudit":
-		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL   ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":"auditor ='"+sessionName+"' AND auditResult IS NULL","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "auditNo":
-		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' )  AND PLDStatus =2  ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" maker = '"+sessionName+"' AND PLDStatus=2 ","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "all":
 		var tableSQL={"SQL":"SQLTableBillsPLD_T","orderBy":" saveTimeStamp DESC"};
 		 $("#BTNFilterAll").addClass("active");
 		break;
 	default:
-		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus IS NULL  ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD_T","filter":" maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
 		break;
 	
@@ -1421,7 +1437,7 @@ $('#BTNDelete').click(function() {
     } else {
     	
     	
-    	if(dataSelect.auditResult!=null){
+    	if(dataSelect.auditResult!=null&&dataSelect.auditResult!=""){
     		swal("已审核单据禁止删除!");
     	}else{
     		
@@ -1501,71 +1517,187 @@ $('#BTNAudit').click(function() {
 //按钮-表格修改计划单
 
 $('#BTNFormModify').click(function() {
-	
-	if(checkPLDInput()){
 
-	var files=[];
+	if(sessionName==$('#maker').text()){
+		if(checkPLDInput()){
 
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(23);
-		var fileName=$(this).attr('download');
-		
-		var fileInfo={
-				fileName:fileName,
-				fileKey:fileKey
+			var files=[];
+
+			$('#divFilesUploaded a').each(function(){
+				var fileKey=$(this).attr('href').substring(23);
+				var fileName=$(this).attr('download');
+				
+				var fileInfo={
+						fileName:fileName,
+						fileKey:fileKey
+				}
+				
+				files.push(fileInfo);
+			});
+
+
+			
+			let billData={
+			"DBID":$('#DBID').val(),
+			"BTIDfrom":$('#BTIDfrom').text(),
+			"BPIDfrom":$('#BPIDfrom').text(),
+			"BPID":$('#BPID').val(),
+			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+			"topic":$('#topic').val(),
+			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+			"PGEMaker":$('#PGEMaker option:selected').text(),
+			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+			"modelD":$('#modelD option:selected').text(),
+			"modelH":$('#modelH option:selected').text(),
+			"OGNSystemVersion":$('#OGNSystemVersion').val(),
+			"applyDate":$('#applyDate').val(),
+			"limitDate":$('#limitDate').val(),
+			"maker":sessionName,
+			"auditor":$('#auditor option:selected').text(),
+			"makeDate":Ndate,
+//			"version": $('#version').text(),
+			"files":JSON.stringify(files),
+			"WFStatus":1
 		}
-		
-		files.push(fileInfo);
-	});
+			
+			
+			
+			let i={
+					tableName:'ppm_bills_plan_t',
+					data:billData,
+					filter:'BPID="'+$('#BPID').val()+'" and version="'+$('#version').text()+'"',
+					confirmMsg:'修改T计划单成功,是否发送钉钉提醒消息?',
+					DDMsg:{at:$('#auditor option:selected').text(),msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"},
+					alertMsg:'T计划单修改成功'
+					}
+			
+			let o={f:io_refresh}
+			
+			
+			aio_updateBill(i,o)
 
-
-	
-	let billData={
-	"DBID":$('#DBID').val(),
-	"BTIDfrom":$('#BTIDfrom').text(),
-	"BPIDfrom":$('#BPIDfrom').text(),
-	"BPID":$('#BPID').val(),
-	"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-	"topic":$('#topic').val(),
-	"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-	"PGEMaker":$('#PGEMaker option:selected').text(),
-	"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-	"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-	"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-	"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-	"modelD":$('#modelD option:selected').text(),
-	"modelH":$('#modelH option:selected').text(),
-	"OGNSystemVersion":$('#OGNSystemVersion').val(),
-	"applyDate":$('#applyDate').val(),
-	"limitDate":$('#limitDate').val(),
-	"maker":sessionName,
-	"auditor":$('#auditor option:selected').text(),
-	"makeDate":Ndate,
-//	"version": $('#version').text(),
-	"files":JSON.stringify(files),
-	"WFStatus":1
-}
-	
-	
-	
-	let i={
-			tableName:'ppm_bills_plan_t',
-			data:billData,
-			filter:'BPID="'+$('#BPID').val()+'" and version="'+$('#version').text()+'"',
-			confirmMsg:'修改T计划单成功,是否发送钉钉提醒消息?',
-			DDMsg:{at:$('#auditor option:selected').text(),msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"},
-			alertMsg:'T计划单修改成功'
 			}
-	
-	let o={f:io_refresh}
-	
-	
-	aio_updateBill(i,o)
 
+	}else{
+		swal('当前账号非制单人不允许修改!')
 	}
 
 });
 
+
+
+//更新版本
+$('#BTNFormUpdate').click(function() {
+	
+//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD05")){//------检查权限
+
+		
+		var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
+	    if (msg1 === true) {
+	        var msg2 = confirm("确认更新版本？");
+	        if (msg2 === true) {
+
+	        	var newVersion=parseInt($('#version').text())+1;
+	        	
+	        	var files=[];
+	        	
+	        	$('#divFilesUploaded a').each(function(){
+	        		var fileKey=$(this).attr('href').substring(23);
+	        		var fileName=$(this).attr('download');
+	        		
+	        		var fileInfo={
+	        				"fileName":fileName,
+	        				"fileKey":fileKey
+	        		}
+	        		
+	        		files.push(fileInfo);
+	        	});
+	        	
+	        	
+	        	
+	        	var oldPLDData={
+	        			"DBTable":"ppm_bills_plan_t",
+	        			"DBID":$('#DBID').val(),
+	        			"BPID":$('#BPID').val(),
+	        			"WFStatus":0
+	        	}
+	        	
+	        	let ajax1=$.ajax({
+	                method: 'post',
+	                url: '/app/PM/updDBData',
+	                data: oldPLDData,
+	                success: function(data, textStatus) {
+
+	                },
+	                error: function(XMLHttpRequest, textStatus, errorThrown) {}
+	            });
+	        	
+
+
+	        	var newPLDData={
+	        			"DBTable":"ppm_bills_plan_t",
+	        			"BTIDfrom":$('#BTIDfrom').text(),
+	        			"BPIDfrom":$('#BPIDfrom').text(),
+	        			"BPID":$('#BPID').val(),
+	        			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+	        			"topic":$('#topic').val(),
+	        			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+	        			"PGEMaker":$('#PGEMaker option:selected').text(),
+	        			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+	        			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+	        			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+	        			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+	        			"modelD":$('#modelD option:selected').text(),
+	        			"modelH":$('#modelH option:selected').text(),
+	        			"OGNSystemVersion":$('#OGNSystemVersion').val(),
+	        			"applyDate":$('#applyDate').val(),
+	        			"limitDate":$('#limitDate').val(),
+	        			"maker":sessionName,
+	        			"makeDate":Ndate,
+	        			"auditor":$('#auditor option:selected').text(),
+	        			"version": newVersion,
+	        			"files":JSON.stringify(files),
+	        			"WFStatus":1
+	        	}
+	        	
+	        	
+	        	let ajax2=$.ajax({
+	                method: 'post',
+	                url: '/app/PM/addDBData',
+	                data: newPLDData,
+	                success: function(data) {
+
+	               },
+	               error:function(err){
+	            	   
+	            	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+	            		   swal("系统中已存在重复数据,请检查!");
+	            	   }else{
+	            		   swal("失败数据:"+JSON.stringify(err));
+	            	   }
+	            	   
+	               	
+	               }
+	            });
+
+	        	
+	        	$.when(ajax1,ajax2).done(function(){
+	        		
+					swal("更新版本成功!");
+					window.location.reload();
+
+				});
+
+	        }
+	    }
+//	    $('#BillPLD').modal('hide');
+
+//	}//------检查权限
+
+});
 
 
 //按钮-表单审核通过按钮
@@ -1634,11 +1766,7 @@ $('#BTNFormAuditNo').click(function() {
 
 
 
-//按钮-表单关闭按钮,添加刷新数据功能
-$('#BTNFormClose').click(function() {
-	 window.location.reload();
-});
-	
+
 
 //按钮-表格新增计划单
 
@@ -1759,9 +1887,17 @@ $('#BTNFormSave').click(function(){
 //按钮-系统指定方案人
 $('#BTNGetPEGMaker').click(function() {
 	fillFGEMaker();
-	fillAuditor();
+//	fillAuditor();
 });
 
+//按钮-表单关闭按钮,添加刷新数据功能
+$('#BTNFormClose').click(function() {
+	 window.location.reload();
+});
+	
+$('#BTNModelClose').click(function() {
+	 window.location.reload();
+});
 
 
 }); 

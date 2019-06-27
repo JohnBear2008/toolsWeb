@@ -19,6 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
+<script src="/js/sweetalert.min.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -37,6 +38,11 @@
 
         <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >查看详情</button>
         <button id="BTNStop" class="btn btn-danger">终止</button>
+        
+        <div class="btn-group" style="margin-left:20px">
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
+        </div>
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
         <!-- 模态框（Modal） -->
@@ -287,12 +293,24 @@ function Fun_winDetailInit(dataSelect){
 $(document).ready( function () {
 	
     var sessionName="<%-locals.session.yjUser.Name%>";
-	console.log("sessionName:"+sessionName);
+    
     var trackBPID=getQueryString("BPID");
+    
+    var trackType=getQueryString("trackType");
+	
+	
+    
     if(trackBPID!=null){
     	var tableSQL={"SQL":"SQLTableBillsTrack_T","filter":"BPID ='"+trackBPID+"'"};
     }else{
-    	var tableSQL={"SQL":"SQLTableBillsTrack_T"};
+    	
+    	if(trackType=='all'){
+    		var tableSQL={"SQL":"SQLTableBillsTrack_T"};
+    		$("#BTNFilterAll").addClass("active");
+    	}else{
+    		var tableSQL={"SQL":"SQLTableBillsTrack_T","filter":"maker = '"+sessionName+"' OR auditor = '"+sessionName+"' OR PGEMaker = '"+sessionName+"'"};
+    		 $("#BTNFilterSimple").addClass("active");
+    	}
     }
 	
 	
@@ -343,6 +361,20 @@ $('#billsTrackTable tbody').on('dblclick', 'tr', function() {
 });
 
 
+//过滤按钮组
+
+$('#BTNFilterSimple').click(function() {
+	
+	window.location.href='/app/PM/T-billsTrack';
+ 
+});
+
+$('#BTNFilterAll').click(function() {
+	
+	window.location.href='/app/PM/T-billsTrack?trackType=all';
+ 
+});
+
 //详情按钮---------
 $('#BTNInfo').click(function() {
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
@@ -364,7 +396,7 @@ $('#BTNInfo').click(function() {
 
 
 //删除按钮----------
-$('#BTNDelete').click(function() {
+$('#BTNStop').click(function() {
 	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Track01")){
     var dataSelect = table.row('.selected').data();
     
@@ -421,7 +453,7 @@ $('#BTNDelete').click(function() {
 	    	
 	    }
 	    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
-		//-----
+
 	}
 	
 });

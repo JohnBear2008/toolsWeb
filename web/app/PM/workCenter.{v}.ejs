@@ -205,18 +205,7 @@
 </div>
 </div>
 
-<div id="IPQCunPass" class="panel panel-danger">
-<div class="panel-heading">
-<h3 class="panel-title">IPQC单-未通过  
-<a href="/app/PM/billsIPQC?undone=unPass"><span id="IPQCunPassNum" class="badge"></span></a>
-<a href="/app/PM/billsIPQC?undone=unPass">点击处理</a>
-</h3>
-</div>
-<div class="panel-body">
-<div id="IPQCunPassContent">
-</div>
-</div>
-</div>
+
 
 </div>
 
@@ -511,18 +500,7 @@
 </div>
 </div>
 
-<div id="T-IPQCunPass" class="panel panel-danger">
-<div class="panel-heading">
-<h3 class="panel-title">T-IPQC单-未通过  
-<a href="/app/PM/T-billsIPQC?undone=unPass"><span id="T-IPQCunPassNum" class="badge"></span></a>
-<a href="/app/PM/T-billsIPQC?undone=unPass">点击处理</a>
-</h3>
-</div>
-<div class="panel-body">
-<div id="T-IPQCunPassContent">
-</div>
-</div>
-</div>
+
 
 </div>
 
@@ -679,7 +657,55 @@ function getUndoneInfo(divID,panelSQL,dataCols){
 	
 }
 
+function getUndoneInfo_T(divID,panelSQL,dataCols){
+	
+	
+	 $.ajax({
+        method:'get',
+        data:panelSQL,
+        url:"/app/PM/getSQLDBData",
+        success:function(data){
 
+ //    	  alert("return1111:"+JSON.stringify(data));
+
+     	  $(divID+"Num").text(data.length);
+     	  
+     	  if(data.length==0){
+     		 $(divID).hide();
+     	  }else{
+     		 $(divID).show();
+     		 
+     		DivContent="";
+       	  
+       	  for(let i=0;i<data.length;i++){
+       		  
+       		  for(let j=0;j<dataCols.length;j++){
+       			 
+       			DivContent=DivContent+data[i][dataCols[j]]+"|";
+       			
+       		  }
+       		  
+       		  if(data[i]['BPID']==null){
+       			  DivContent=" "+DivContent+"<a href='/app/PM/T-billsTrack?BPID="+data[i]['taskBPID']+"'>进度跟踪</a>" +" ";
+       		  }else{
+       			  DivContent=" "+DivContent+"<a href='/app/PM/T-billsTrack?BPID="+data[i]['BPID']+"'>进度跟踪</a>" +" ";
+       		  }
+               
+
+       		  
+       		DivContent=DivContent+"<br \>";
+       	  }
+
+       	 $(divID+"Content").html(DivContent);
+     	  }
+
+        },
+        error:function(){}
+    })
+	
+	
+	
+}
 
 
 ////函数-控制面板显示状态
@@ -702,123 +728,123 @@ $(function(){
 	
 	sessionName="<%-locals.session.yjUser.Name%>";
 	
-	var panelSQLPLD={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL   "};
+	var panelSQLPLD={"SQL":"SQLTableBillsPLD","filter":"auditor ='"+sessionName+"' AND auditResult IS NULL"};
 	getUndoneInfo("#PLDunAudit",panelSQLPLD,["BPID","CTRName"]);
 	
-	var panelSQLPLD={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus=2   "};
+	var panelSQLPLD={"SQL":"SQLTableBillsPLD","filter":" maker = '"+sessionName+"' AND PLDStatus=2 "};
 	getUndoneInfo("#PLDAuditNo",panelSQLPLD,["BPID","CTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND BPTStatus IS NULL "};
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":"PLDPGEMaker = '"+sessionName+"' AND BPTStatus IS NULL "};
 	getUndoneInfo("#BPTunRecord",panelSQLBPT,["BPID","PLDCTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND auditResult =0 "};
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":"auditor = '"+sessionName+"' AND auditResult =0 "};
 	getUndoneInfo("#BPTunAudit",panelSQLBPT,["BPID","PLDCTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND auditResult =2 "};
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":"maker = '"+sessionName+"' AND auditResult =2 "};
 	getUndoneInfo("#BPTauditNo",panelSQLBPT,["BPID","PLDCTRName"]);
 
 
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0"};
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" taskStaff = '"+sessionName+"' AND BTAcceptResult =0"};
 	getUndoneInfo("#TaskunAccept",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =2"};
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" taskMaker = '"+sessionName+"' AND BTAcceptResult =2"};
 	getUndoneInfo("#TaskAcceptNo",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" taskStaff = '"+sessionName+"' AND BTAcceptResult =1 AND recordStatus IS NULL "};
 	getUndoneInfo("#TaskunRecord",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" recordAuditor = '"+sessionName+"' AND recordStatus='已登记,未审核' "};
 	getUndoneInfo("#TaskunAudit",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 "};
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord","filter":" taskStaff = '"+sessionName+"' AND BTStatus=4 "};
 	getUndoneInfo("#TaskunPass",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult IS NULL"};
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":"IPQCMaker = '"+sessionName+"' AND IPQCResult IS NULL"};
 	getUndoneInfo("#IPQCunRecord",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCAuditDate IS NULL"};
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":"IPQCAuditor = '"+sessionName+"' AND IPQCAuditDate IS NULL"};
 	getUndoneInfo("#IPQCunAudit",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 
-	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2"};
-	getUndoneInfo("#IPQCunPass",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+//	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2"};
+//	getUndoneInfo("#IPQCunPass",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL"};
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":"FQCStaff = '"+sessionName+"' AND FQCMaker IS NULL"};
 	getUndoneInfo("#FQCunRecord",panelSQLFQC,["BPID","PLDCTRName"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0"};
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":"FQCAuditor = '"+sessionName+"' AND billFQCStatus ='已填单,未审核'"};
 	getUndoneInfo("#FQCunAudit",panelSQLFQC,["BPID","PLDCTRName"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)"};
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)"};
 	getUndoneInfo("#FQCunPass",panelSQLFQC,["BPID","PLDCTRName"]);
 
-	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus IS NULL"};
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":" maker = '"+sessionName+"' AND PBHStatus IS NULL"};
 	getUndoneInfo("#PBHunRecord",panelSQLPBH,["BPID","PLDCTRName"]);
 
-	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =0"};
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":"PBHAuditor = '"+sessionName+"' AND PBHStatus =0"};
 	getUndoneInfo("#PBHunAudit",panelSQLPBH,["BPID","PLDCTRName"]);
 	
-	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =1 AND emailResult=0"};
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":"PBHMaker = '"+sessionName+"' AND PBHStatus =1 AND emailResult=0"};
 	getUndoneInfo("#PBHunSend",panelSQLPBH,["BPID","PLDCTRName"]);
 	
-//	//-内核流程面板-------------------------------
+//-内核流程面板-------------------------------
 
-	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND auditResult IS NULL   "};
-	getUndoneInfo("#T-PLDunAudit",panelSQLPLD,["BPID","CTRName"]);
+	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":"auditor ='"+sessionName+"' AND auditResult IS NULL"};
+	getUndoneInfo_T("#T-PLDunAudit",panelSQLPLD,["BPID","CTRName"]);
 	
-	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus=2   "};
-	getUndoneInfo("#T-PLDAuditNo",panelSQLPLD,["BPID","CTRName"]);
+	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":" maker = '"+sessionName+"' AND PLDStatus=2 "};
+	getUndoneInfo_T("#T-PLDAuditNo",panelSQLPLD,["BPID","CTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND BPTStatus IS NULL "};
-	getUndoneInfo("#T-BPTunRecord",panelSQLBPT,["BPID","PLDCTRName"]);
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":"PLDPGEMaker = '"+sessionName+"' AND BPTStatus IS NULL "};
+	getUndoneInfo_T("#T-BPTunRecord",panelSQLBPT,["BPID","PLDCTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND auditResult =0 "};
-	getUndoneInfo("#T-BPTunAudit",panelSQLBPT,["BPID","PLDCTRName"]);
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":"auditor = '"+sessionName+"' AND auditResult =0 "};
+	getUndoneInfo_T("#T-BPTunAudit",panelSQLBPT,["BPID","PLDCTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND auditResult =2 "};
-	getUndoneInfo("#T-BPTauditNo",panelSQLBPT,["BPID","PLDCTRName"]);
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":"maker = '"+sessionName+"' AND auditResult =2 "};
+	getUndoneInfo_T("#T-BPTauditNo",panelSQLBPT,["BPID","PLDCTRName"]);
 
 
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =0"};
-	getUndoneInfo("#T-TaskunAccept",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" taskStaff = '"+sessionName+"' AND BTAcceptResult =0"};
+	getUndoneInfo_T("#T-TaskunAccept",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTAcceptResult =2"};
-	getUndoneInfo("#T-TaskAcceptNo",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" taskMaker = '"+sessionName+"' AND BTAcceptResult =2"};
+	getUndoneInfo_T("#T-TaskAcceptNo",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
-	getUndoneInfo("#T-TaskunRecord",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" taskStaff = '"+sessionName+"' AND BTAcceptResult =1 AND recordStatus IS NULL "};
+	getUndoneInfo_T("#T-TaskunRecord",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND recordNum =0 "};
-	getUndoneInfo("#T-TaskunAudit",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" recordAuditor = '"+sessionName+"' AND recordStatus='已登记,未审核' "};
+	getUndoneInfo_T("#T-TaskunAudit",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus=4 "};
-	getUndoneInfo("#T-TaskunPass",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLTask={"SQL":"SQLTableBillsTaskRecord_T","filter":" taskStaff = '"+sessionName+"' AND BTStatus=4 "};
+	getUndoneInfo_T("#T-TaskunPass",panelSQLTask,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult IS NULL"};
-	getUndoneInfo("#T-IPQCunRecord",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":"IPQCMaker = '"+sessionName+"' AND IPQCResult IS NULL"};
+	getUndoneInfo_T("#T-IPQCunRecord",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCAuditDate IS NULL"};
-	getUndoneInfo("#T-IPQCunAudit",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":"IPQCAuditor = '"+sessionName+"' AND IPQCAuditDate IS NULL"};
+	getUndoneInfo_T("#T-IPQCunAudit",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 
-	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2"};
-	getUndoneInfo("#T-IPQCunPass",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
+//	var panelSQLIPQC={"SQL":"SQLTableBillsTaskIPQC_T","filter":" (taskStaff = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND IPQCResult =2"};
+//	getUndoneInfo_T("#T-IPQCunPass",panelSQLIPQC,["taskBPID","taskCTRName","BTID"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL"};
-	getUndoneInfo("#T-FQCunRecord",panelSQLFQC,["BPID","PLDCTRName"]);
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" FQCMaker IS NULL"};
+	getUndoneInfo_T("#T-FQCunRecord",panelSQLFQC,["BPID","PLDCTRName"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0"};
-	getUndoneInfo("#T-FQCunAudit",panelSQLFQC,["BPID","PLDCTRName"]);
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":"FQCAuditor = '"+sessionName+"' AND billFQCStatus ='已填单,未审核'"};
+	getUndoneInfo_T("#T-FQCunAudit",panelSQLFQC,["BPID","PLDCTRName"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)"};
-	getUndoneInfo("#T-FQCunPass",panelSQLFQC,["BPID","PLDCTRName"]);
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC_T","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"' ) AND ( FQCStatus <>0 AND FQCStatus <>1)"};
+	getUndoneInfo_T("#T-FQCunPass",panelSQLFQC,["BPID","PLDCTRName"]);
 
-	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus IS NULL"};
-	getUndoneInfo("#T-PBHunRecord",panelSQLPBH,["BPID","PLDCTRName"]);
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" maker = '"+sessionName+"' AND PBHStatus IS NULL"};
+	getUndoneInfo_T("#T-PBHunRecord",panelSQLPBH,["BPID","PLDCTRName"]);
 
-	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =0"};
-	getUndoneInfo("#T-PBHunAudit",panelSQLPBH,["BPID","PLDCTRName"]);
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":"PBHAuditor = '"+sessionName+"' AND PBHStatus =0"};
+	getUndoneInfo_T("#T-PBHunAudit",panelSQLPBH,["BPID","PLDCTRName"]);
 	
-	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":" (PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"') AND PBHStatus =1 AND emailResult=0"};
-	getUndoneInfo("#T-PBHunSend",panelSQLPBH,["BPID","PLDCTRName"]);
+	var panelSQLPBH={"SQL":"SQLTableBillsPBH_T","filter":"PBHMaker = '"+sessionName+"' AND PBHStatus =1 AND emailResult=0"};
+	getUndoneInfo_T("#T-PBHunSend",panelSQLPBH,["BPID","PLDCTRName"]);
 	
 })
 

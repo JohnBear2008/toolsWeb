@@ -38,8 +38,8 @@
         <button id="BTNFQCDetail" class="btn btn-primary" data-toggle="modal" >FQC维护</button>
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
@@ -512,7 +512,6 @@ function Fun_winDetailInit(dataChoose){
 		$('select').attr("disabled",true);
 		$('textarea').attr("disabled",true);
 		
-		
 		$('#FQCRemarkShow').show();
 		$('#FQCRemark').hide();
 		$('#DivFQCBTNS').hide();
@@ -531,20 +530,20 @@ $(document).ready( function () {
 		
 		switch(undone){
 	    case "unRecord":
-	    	var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  FQCStatus IS NULL","orderBy":" saveTimeStamp DESC"};
+	    	var tableSQL={"SQL":"SQLTableBillsFQC","filter":"FQCStaff = '"+sessionName+"' AND FQCMaker IS NULL","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "unAudit":
-			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND FQCStatus =0","orderBy":" saveTimeStamp DESC"};
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":"FQCAuditor = '"+sessionName+"' AND billFQCStatus ='已填单,未审核'","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "unPass":
-			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "all":
 			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};
 			$("#BTNFilterAll").addClass("active");
 			break;
 		default:
-		    var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"') AND  (FQCAuditResult IS NULL OR FQCAuditResult=0) ","orderBy":" saveTimeStamp DESC"};
+		    var tableSQL={"SQL":"SQLTableBillsFQC","filter":" FQCStaff = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"'  OR FQCAuditor = '"+sessionName+"' ","orderBy":" saveTimeStamp DESC"};
 		    $("#BTNFilterSimple").addClass("active");	
 		    break;
 		

@@ -42,18 +42,18 @@ module.exports = function(sender) {
 	nodemailer.createTestAccount((err, account) => {
 	    // create reusable transporter object using the default SMTP transport
 	    let transporter = nodemailer.createTransport({
-	        host: 'TMDGMAIL.tmdg.com',
-	        port: 587,
+	        host: 'mail.techmation.com.cn',
+	        port: 25,
 	        secure: false, // true for 465, false for other ports
 	        auth: {
-	            user: 'xiongql', // generated ethereal user
-	            pass: '338168' // generated ethereal password
+	            user: 'servicetech', // generated ethereal user
+	            pass: 'rw563346' // generated ethereal password
 	        }
 	    });
 
 	    // setup email data with unicode symbols
 	    let mailOptions = {
-	        from: 'xiongql@tmdg.com', // sender address
+	        from: 'servicetech@techmation.com.cn', // sender address
 	        to: emailADRS, // list of receivers
 	        cc:emailCopyADRS,
 	        subject:emailTitle, // Subject line
@@ -69,10 +69,7 @@ module.exports = function(sender) {
 	            sender.error;
 	        }
 //	        console.log('Message sent: %s', info.messageId);
-	        
-	        
-	       
-	   
+
 	            yjDBService.exec({
 	                sql: SQLUpdate,
 	                parameters: [emailResult,pbhBPID],

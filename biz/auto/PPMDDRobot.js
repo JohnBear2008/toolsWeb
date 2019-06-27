@@ -56,7 +56,7 @@ var j1 = schedule
 							        "btns": [
 							            {
 							            	 "title": "登陆PPM系统", 
-								             "actionURL": "http://172.16.3.48:2019/app/pm/linkpage"
+								             "actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
 							            }
 							        ]
 							    }, 
@@ -69,18 +69,6 @@ var j1 = schedule
 						
 						DDRobotMsgSender(actionCard);
 
-//					var SQLExcute = "SELECT PGEMaker FROM  (SELECT tbb.*  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe ";
-//
-//					yjDBService.exec({
-//						sql : SQLExcute,
-//						parameters : [],
-//						rowsAsArray : false,
-//						success : function(result) {
-//							
-//						},
-//						error : function(error) {
-//							console.log("error" + JSON.stringify(error));
-//						},
-//					});
+
 
 				});

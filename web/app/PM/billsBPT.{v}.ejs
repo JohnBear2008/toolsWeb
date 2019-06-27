@@ -40,8 +40,8 @@
         <button id="BTNBPTAudit" class="btn btn-warning" data-toggle="modal" >方案审核</button>
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >过滤模式</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
         <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
@@ -1123,20 +1123,20 @@ function Fun_BPTDetailInitVal(dataChoose){
 	
 	
 	switch(dataSelect.modifyType){
-	  case 1:
-		  $("#modifyTypeOption1").prop("checked",true);
+	  case '1':
+		  $("input:radio[name=modifyType][value='1']").prop("checked",true);
 		  break;
-	  case 2:
-		  $("#modifyTypeOption2").prop("checked",true);
+	  case '2':
+		  $("input:radio[name=modifyType][value='2']").prop("checked",true);
 		  break;
-	  case 3:
-		  $("#modifyTypeOption3").prop("checked",true);
+	  case '3':
+		  $("input:radio[name=modifyType][value='3']").prop("checked",true);
 		  break;
-      case 4:
-	      $("#modifyTypeOption4").prop("checked",true);
+      case '4':
+    	  $("input:radio[name=modifyType][value='4']").prop("checked",true);
 	      break;
 	  default:
-		  $("#modifyTypeOption1").prop("checked",true);
+		  $("input:radio[name=modifyType][value='1']").prop("checked",true);
      }
 
 	 if(dataSelect.modifyReason!=""){
@@ -1546,25 +1546,35 @@ function getTaskBindStaff(Params){
 
 function checkBPTInput(){
 	
-	if(getCheckBoxValue("modifyReason")==""){
-		swal("修改原因未选择,请检查!");
-		return false;
-	}else if($('#MHEName option:selected').val()==undefined){
-		swal("机型未选择未输入,请检查!");
-		return false;
-	}else if($("#BPTDescribe").val()==""){
-		swal("方案说明未输入,请检查!");
-		return false;
-	}else if($("#auditor").val()==null){
+	
+	let modifyType=$('input:radio[name="modifyType"]:checked').val();
+	
+	let tableTask = $('#billsTaskTable').DataTable();
+	let TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
+	
+	if(modifyType=='1'){
+		
+		if(getCheckBoxValue("modifyReason")==""){
+			swal("修改原因未选择,请检查!");
+			return false;
+		}else if($('#MHEName option:selected').val()==undefined||$('#MHEName option:selected').val()==""){
+			swal("机型未选择未输入,请检查!");
+			return false;
+		}else if($("#BPTDescribe").val()==""){
+			swal("方案说明未输入,请检查!");
+			return false;
+		}
+		
+		
+	}
+	
+	if($("#auditor").val()==null||$("#auditor").val()==""){
 		swal("审核人未选则,请检查!");
 		return false;
 	}
 	
-	
-	
-	let tableTask = $('#billsTaskTable').DataTable();
-	let TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
-	let modifyType=$('input:radio[name="modifyType"]:checked').val();
+
+//	let modifyType=$('input:radio[name="modifyType"]:checked').val();
 	
 	if(modifyType==1&&TaskNum==0){
 		swal("未分配任务单,请检查!");
@@ -1573,7 +1583,7 @@ function checkBPTInput(){
 	
 
 	return true;
-	
+
 }
 
 
@@ -1582,13 +1592,13 @@ function checkTaskInput(){
 	if($("#taskMHEName").val()==null){
 		swal("机型未选择,请检查!");
 		return false;
-	}else if($("#taskModel").val()==null){
+	}else if($("#taskModel").val()==null||$("#taskModel").val()==""){
 		swal("系统未选择,请检查!");
 		return false;
 	}else if(getCheckBoxValue("modifyABE")==""){
 		swal("修改属性未选择,请检查!");
 		return false;
-	}else if($("#taskStaff").val()==null){
+	}else if($("#taskStaff").val()==null||$("#taskStaff").val()==""){
 		swal("任务负责人未选则,请检查!");
 		return false;
 	}else if($("#taskDBE").val()==""){
@@ -1607,8 +1617,12 @@ function addBindEvent(){
 	$("#taskModel").change(function() {
 		
 		if($("#taskMakeDate").text()==""){//自动抓取功能只在新增时生效
-			console.log($("#taskModel option:selected").text());
-			getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#taskModel option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+			console.log("taskModel11:"+$("#taskModel option:selected").val());
+			
+			if($('#CTRName option:selected').val()!=""){
+				getTaskBindStaff({SQL:"SQLGetBindsInfo",filter:"CTRVal ='"+$('#CTRName option:selected').val()+"' AND ModelName ='"+$('#taskModel option:selected').text()+"'",orderBy:" saveTimeStamp DESC",limit:1});
+			}
+			
 		}
 	})
 }
@@ -1627,20 +1641,20 @@ $(document).ready( function () {
     
     switch(undone){
     case "unRecord":
-    	var tableSQL={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND BPTStatus IS NULL ","orderBy":" saveTimeStamp DESC"};
+    	var tableSQL={"SQL":"SQLTableBillsBPT","filter":"PLDPGEMaker = '"+sessionName+"' AND BPTStatus IS NULL ","orderBy":" saveTimeStamp DESC"};
     	break;
 	case "unAudit":
-		var tableSQL={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"')  AND auditResult =0  ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsBPT","filter":"auditor = '"+sessionName+"' AND auditResult =0 ","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "auditNo":
-		var tableSQL={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"')  AND auditResult =2 ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsBPT","filter":"maker = '"+sessionName+"' AND auditResult =2 ","orderBy":" saveTimeStamp DESC"};
 		break;
 	case "all":
 		var tableSQL={"SQL":"SQLTableBillsBPT","orderBy":" saveTimeStamp DESC"};
 		$("#BTNFilterAll").addClass("active");
 	    	break;
 	default:	
-	    var tableSQL={"SQL":"SQLTableBillsBPT","filter":" (maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"') AND (BPTStatus IS NULL OR auditResult<>1) ","orderBy":" saveTimeStamp DESC"};
+	    var tableSQL={"SQL":"SQLTableBillsBPT","filter":"maker = '"+sessionName+"' OR auditor = '"+sessionName+"'  OR PLDPGEMaker = '"+sessionName+"' ","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
 		break;
 	
@@ -2532,9 +2546,11 @@ $('#BTNBPTAuditYes').click(function() {
 					      if(data[0].FQCRequestResult==1){
 					    	  var FQCRequest=1;
 					    	  var FQCRequestText="有";
+					    	  var FQCStaff="刘梦";
 					      }else{
 					    	  var FQCRequest=0;
 					    	  var FQCRequestText="无";
+					    	  var FQCStaff="";
 					      }
 					      
 					      let PLDUpdData={
@@ -2543,6 +2559,7 @@ $('#BTNBPTAuditYes').click(function() {
 									"BillID":$('#BPTBPID').val(),
 									"FQCRequest":FQCRequest,
 									"FQCRequestText":FQCRequestText,
+									"FQCStaff":FQCStaff,
 									"TaskNum":TaskNum,
 									"WFStatus":20
 							}
@@ -2694,9 +2711,7 @@ $('#BTNBPTAuditYes').click(function() {
 					        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 					        });
 
-
 			//		updDBData(BPTAuditData,"方案审核状态");
-
 
 					$.when(ajax1,ajax2,ajax3).done(function(){
 						swal("方案已审核通过!");

@@ -41,7 +41,7 @@ module.exports = function(sender) {
 					        "btns": [
 					            {
 					            	 "title": "登陆PPM系统", 
-						             "actionURL": "http://172.16.3.48:2019/app/pm/linkpage"
+						             "actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
 					            }
 					        ]
 					    }, 
