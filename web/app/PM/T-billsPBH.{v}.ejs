@@ -38,7 +38,7 @@
         <button id="BTNPBHDetail" class="btn btn-primary" data-toggle="modal" >发布维护</button>
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >未完成单据</button>
         <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
@@ -699,7 +699,7 @@ $(document).ready( function () {
 			 $("#BTNFilterAll").addClass("active");	
 			break;
 		default:
-			var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":" maker = '"+sessionName+"'  OR PGEMaker = '"+sessionName+"' OR PBHMaker = '"+sessionName+"'  OR PBHAuditor = '"+sessionName+"'","orderBy":" saveTimeStamp DESC"};
+			var tableSQL={"SQL":"SQLTableBillsPBH_T","filter":"PBHAuditDate IS NULL","orderBy":" saveTimeStamp DESC"};
 		    $("#BTNFilterSimple").addClass("active");	
 		    break;
 		}

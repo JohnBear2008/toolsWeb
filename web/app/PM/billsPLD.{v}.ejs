@@ -44,7 +44,7 @@
        
         
         <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >与我相关</button>
+        <button id="BTNFilterSimple" class="btn btn-default" >未完成单据</button>
         <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
         </div>
         
@@ -1010,10 +1010,9 @@ $(document).ready( function () {
 		 $("#BTNFilterAll").addClass("active");
 		break;
 	default:
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ","orderBy":" saveTimeStamp DESC"};
+		var tableSQL={"SQL":"SQLTableBillsPLD","filter":"auditResult <>1 OR auditResult IS NULL","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
 		break;
-	
 	}
 	
 //	if(undone=="true"){
