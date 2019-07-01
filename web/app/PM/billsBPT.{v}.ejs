@@ -1854,7 +1854,10 @@ $('#BTNBPTInfo').click(function() {
 
 //按钮-方案审核--------
 $('#BTNBPTAudit').click(function() {
-    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"BPT02")){
+	
+//    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
@@ -1886,6 +1889,8 @@ $('#BTNBPTAudit').click(function() {
     	}
 
     }
+    
+	}
 });
 
 
@@ -2188,6 +2193,8 @@ $('#BTNTaskSave').click(function(){
 
 $('#BTNBPTSave').click(function(){
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"BPT01")){
+	
 	if(sessionName!=$("#PGEMaker").val()){
 		swal("当前账号非指定方案人,不允许保存方案!");
 	}else{
@@ -2310,12 +2317,16 @@ $('#BTNBPTSave').click(function(){
 		
 	}
 
+	
+	}
 });
 
 
 //按钮-方案更新
 
 $('#BTNBPTUpdateVer').click(function(){
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"BPT03")){
 
 
 	var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
@@ -2452,18 +2463,16 @@ $('#BTNBPTUpdateVer').click(function(){
 		});
 		 
 
-		 
-		 
-		 
-		 
-
      }
 
+	}
 });
 
 
 //按钮-表单审核通过按钮
 $('#BTNBPTAuditYes').click(function() {
+	
+	
 
 
 	if(sessionName==$('#auditor option:selected').text()){

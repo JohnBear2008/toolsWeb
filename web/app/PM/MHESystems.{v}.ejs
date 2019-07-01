@@ -119,6 +119,8 @@ function checkinput(Data) {
 //页面加载函数---------------
 $(document).ready( function () {
 		
+	var sessionName="<%-locals.session.yjUser.Name%>";
+	
 	const tableSQL={"SQL":"SQLDBMHESystems"};
 	const tableInfo={
 			"tableID":"#ppm_systems",
@@ -162,10 +164,13 @@ $('#ppm_systems tbody').on('dblclick', 'tr', function() {
 
 //添加按钮-----
 $('#Add').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"System01")){
     $('#win').window('open');
     $('#AddDoButton').show();
     $('#UpdDoButton').hide();
     
+	}
 });
 
 
@@ -195,6 +200,8 @@ $('#Upd').click(function() {
 
 //删除按钮----------
 $('#Del').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"System01")){
     var dataSelect = table.row('.selected').data();
     
 //    alert(JSON.stringify(dataSelect));
@@ -215,6 +222,7 @@ $('#Del').click(function() {
         }
     }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+	}
 });
 
 
@@ -271,6 +279,8 @@ $('#AddDoButton').click(function() {
 //form 更新按钮------------
 $('#UpdDoButton').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"System01")){
+	
 	var DBTable="ppm_systems";
 	var DBID=table.row('.selected').data().DBID;
 	var belong=$("#belong").val();
@@ -312,36 +322,7 @@ $('#UpdDoButton').click(function() {
 	
 	 updDBData(updInput,"系统信息");
 
-   
-//    var updJSON={
-//			'DBTable':"ppm_systems",
-//			'DBID':table.row('.selected').data().DBID
-//    	};
-//	var changed=1;
-//
-//    for (var key in updInput) {   	
-//
-//    	if(updInput[key]!=table.row('.selected').data()[key]){    		
-////    		alert("updInput:"+updInput[key]);
-////    		alert("selected:"+table.row('.selected').data()[key]);    		
-//    		updJSON[key]=updInput[key];//不可用updJSON.key 会以"key"属性直接加入
-//    		changed=changed+1;
-//    	}
-//    }
-//
-//  alert("updJSON:"+JSON.stringify(updJSON));
-//    
-//    if(changed!=1){
-//    	if (checkinput(updJSON)) {
-//    		 var msg = confirm("共调整"+(changed-1)+"处信息,请确认！");
-//    		 if(msg==true){
-//    			 updDBData(updJSON);
-//    		 }
-//    		 
-//    	}
-//    }else{
-//    	alert("未有任何信息修改!");
-//    }
+	}
     
 });
 

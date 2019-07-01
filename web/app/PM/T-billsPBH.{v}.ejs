@@ -762,6 +762,8 @@ $('#BTNFilterAll').click(function() {
 
 //按钮-发布维护---------
 $('#BTNPBHDetail').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PBH01")){
 
 	console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
@@ -775,6 +777,7 @@ $('#BTNPBHDetail').click(function() {
 
     }
 
+	}
 
 });
 
@@ -880,6 +883,7 @@ $('#BTNResetInfo').click(function() {
 //按钮-PBH保存---------
 $('#BTNPBHSave').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PBH01")){
 	
 	if(checkPBHInput()){
 		
@@ -917,12 +921,14 @@ $('#BTNPBHSave').click(function() {
 	saveDBData(PBHData,"PBH单");
 	}
 
+	}
 });
 
 
 
 //按钮-PBH审核---------
 $('#BTNPBHAudit').click(function() {
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PBH02")){
 	
     var files=[];
 	
@@ -1022,7 +1028,7 @@ $('#BTNPBHAudit').click(function() {
 			
 		});
 		 
-
+	}
 });
 
 
@@ -1054,115 +1060,116 @@ $('input:radio[name="auditType"]').click(function(){
 
 });
 
-//按钮-邮件预览
-$('#BTNModelEmail').click(function() {
-	
-	$('#winEmail').window('open');
-	
-	$('#emailADRSModel').text($('#emailADRS').val());
-	$('#emailCopyADRSModel').text($('#emailCopyADRS').val());
-	$('#emailTitleModel').text($('#emailTitle').val());
-	$('#emailFilesModel').text($('#divFilesUploaded').text());
-	
-	
-	
-	$('#emailContentModel').html($('#emailContent').val());
-	
+////按钮-邮件预览
+//$('#BTNModelEmail').click(function() {
+//	
+//	$('#winEmail').window('open');
+//	
+//	$('#emailADRSModel').text($('#emailADRS').val());
+//	$('#emailCopyADRSModel').text($('#emailCopyADRS').val());
+//	$('#emailTitleModel').text($('#emailTitle').val());
+//	$('#emailFilesModel').text($('#divFilesUploaded').text());
+//	
+//	
+//	
+//	$('#emailContentModel').html($('#emailContent').val());
+//	
+//
+//	
+//
+//	     
+//
+//
+//   
+//});
+//
+////按钮-发送邮件
+//
+//$('#BTNModelEmailSend').click(function() {
+//	
+//	
+//    var files=[];
+//	
+//	$('#divFilesUploaded a').each(function(){
+//		var fileKey=$(this).attr('href').substring(23);
+//		var fileName=$(this).attr('download');
+//		
+//		var fileInfo={
+//				"fileName":fileName,
+//				"fileKey":fileKey
+//		}
+//		
+//		files.push(fileInfo);
+//	});
+//	
+//	 var emailData={
+//			    "pbhBPID":$('#BPID').text(),
+//			    "emailResult":1,
+//				"emailADRS":$('#emailADRS').val(),
+//				"emailCopyADRS":$('#emailCopyADRS').val(),
+//				"emailTitle":$('#emailTitle').val(),
+//				"emailFiles":JSON.stringify(files),
+//				"emailContent":$('#emailContent').val(),
+//				"PBHStatus":1
+//
+//		}
+//
+//	$.ajax({
+//        method: 'post',
+//        url: '/app/PM/sendSYSMail',
+//        data: emailData,
+//        success: function(data, textStatus) {
+//              swal("发送成功:"+JSON.stringify(textStatus));
+//
+//        },
+//        error: function(XMLHttpRequest, textStatus, errorThrown) {
+//        	
+//        	 swal("发送失败:"+JSON.stringify(textStatus));
+//        }
+//    });
+//   
+//});
 
-	
 
-	     
-
-
-   
-});
-
-//按钮-发送邮件
-
-$('#BTNModelEmailSend').click(function() {
-	
-	
-    var files=[];
-	
-	$('#divFilesUploaded a').each(function(){
-		var fileKey=$(this).attr('href').substring(23);
-		var fileName=$(this).attr('download');
-		
-		var fileInfo={
-				"fileName":fileName,
-				"fileKey":fileKey
-		}
-		
-		files.push(fileInfo);
-	});
-	
-	 var emailData={
-			    "pbhBPID":$('#BPID').text(),
-			    "emailResult":1,
-				"emailADRS":$('#emailADRS').val(),
-				"emailCopyADRS":$('#emailCopyADRS').val(),
-				"emailTitle":$('#emailTitle').val(),
-				"emailFiles":JSON.stringify(files),
-				"emailContent":$('#emailContent').val(),
-				"PBHStatus":1
-
-		}
-
-	$.ajax({
-        method: 'post',
-        url: '/app/PM/sendSYSMail',
-        data: emailData,
-        success: function(data, textStatus) {
-              swal("发送成功:"+JSON.stringify(textStatus));
-
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-        	
-        	 swal("发送失败:"+JSON.stringify(textStatus));
-        }
-    });
-   
-});
-
-
-//按钮-邮件自定义
-$('#BTNSendEmailDiv').click(function() {
-	
-	var msg = confirm("点击自定义邮件后,讲跳转至邮件客户端,发布单默认邮件已发送,是否继续?");
-	if(msg==true){	
-	
-	
-	var emailData={
-		    "pbhBPID":$('#BPID').text(),
-		    "emailResult":2,
-		    "PBHStatus":2
-			
-	}
-
-   $.ajax({
-    method: 'post',
-    url: '/app/PM/sendSYSMail',
-    data: emailData,
-    success: function(data, textStatus) {
-
-    },
-    error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-    }
-    });
-	
-	
-	$('#mailhref').attr("href","mailto:"+$('#emailADRS').val()+"?subject="+$('#emailTitle').val()+"&cc="+$('#emailCopyADRS').val()+"&body="+$('#emailContent').val().replace(/\n|\r\n/g,'<br/>'));
-	$('#mailhref').click();
-	
-	}
-   
-});
+////按钮-邮件自定义
+//$('#BTNSendEmailDiv').click(function() {
+//	
+//	var msg = confirm("点击自定义邮件后,讲跳转至邮件客户端,发布单默认邮件已发送,是否继续?");
+//	if(msg==true){	
+//	
+//	
+//	var emailData={
+//		    "pbhBPID":$('#BPID').text(),
+//		    "emailResult":2,
+//		    "PBHStatus":2
+//			
+//	}
+//
+//   $.ajax({
+//    method: 'post',
+//    url: '/app/PM/sendSYSMail',
+//    data: emailData,
+//    success: function(data, textStatus) {
+//
+//    },
+//    error: function(XMLHttpRequest, textStatus, errorThrown) {
+//
+//    }
+//    });
+//	
+//	
+//	$('#mailhref').attr("href","mailto:"+$('#emailADRS').val()+"?subject="+$('#emailTitle').val()+"&cc="+$('#emailCopyADRS').val()+"&body="+$('#emailContent').val().replace(/\n|\r\n/g,'<br/>'));
+//	$('#mailhref').click();
+//	
+//	}
+//   
+//});
 
 //按钮-更新版本
 
 $('#BTNUpdVer').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PBH03")){
 	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 	if(msg==true){	
 		
@@ -1189,12 +1196,14 @@ $('#BTNUpdVer').click(function() {
 	 
 	}
 	
+	}
 });
 
 
 //按钮-完结归档
 $('#BTNEnd').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PBH04")){
 	var msg1 = confirm("归档后,系统不再显示关于该计划的所有单据!是否继续?");
     if (msg1 === true) {
     	
@@ -1235,7 +1244,9 @@ $('#BTNEnd').click(function() {
 				swal("归档完成,该计划任务完结!");
 			window.location.reload();
 		});
-    }
+      }
+    
+	}
 });
 	
 

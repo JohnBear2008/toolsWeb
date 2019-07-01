@@ -132,6 +132,8 @@ function checkinput(Data) {
 
 //页面加载函数---------------
 $(document).ready( function () {
+	
+	var sessionName="<%-locals.session.yjUser.Name%>";
 		
 	var DataPara={
 			"tableID":"#tableStaffs",
@@ -177,12 +179,16 @@ $('#tableStaffs tbody').on('dblclick', 'tr', function() {
 
 //添加按钮-----
 $('#Add').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Staff01")){
     $('#win').window('open');
     $('#AddDoButton').show();
     $('#UpdDoButton').hide();
     
     getSQLSelectDBData({SQL:"SQLSRRoles"},"#staffRole","");
     
+    
+	}
 });
 
 
@@ -213,6 +219,8 @@ $('#Upd').click(function() {
 
 //删除按钮----------
 $('#Del').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Staff01")){
     var dataSelect = table.row('.selected').data();
     
 //    alert(JSON.stringify(dataSelect));
@@ -233,6 +241,8 @@ $('#Del').click(function() {
         }
     }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+    
+	}
 });
 
 
@@ -265,7 +275,7 @@ $('#AddDoButton').click(function() {
 $('#UpdDoButton').click(function() {
 	
  
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Staff01")){
 	
 	  var updJSON={
 				DBTable:"PPM_staffs",
@@ -283,6 +293,8 @@ $('#UpdDoButton').click(function() {
 	    	};
 		
 	    updDBData(updJSON,"人员信息");
+	    
+	}
     
 });
 

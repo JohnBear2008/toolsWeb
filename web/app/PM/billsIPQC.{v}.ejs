@@ -801,6 +801,8 @@ $('#BTNIPQCRecord').click(function() {
 $('#BTNTaskIPQCSave').click(function() {
 
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"IPQC01")){
+	
 	if(sessionName==$('#IPQCMaker').text()){
 		
 		
@@ -903,7 +905,7 @@ $('#BTNTaskIPQCSave').click(function() {
 		swal("非指定的IPQC填单人,不允许填单!");
 	}
 
-
+	}
 });
 
 
@@ -912,7 +914,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 	
 //	if(sessionName==){}
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"IPQC02")){
 	
 	var IPQCMakeDate=$('#IPQCMakeDate').text();
 
@@ -1058,6 +1060,8 @@ $('#BTNTaskIPQCAudit').click(function() {
 		
 	}
 
+	
+	}
 });
 
 

@@ -1484,6 +1484,8 @@ $('#BTNTaskSave').click(function(){
 //按钮-任务审核通过按钮
 $('#BTNTaskAcceptYes').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Task01")){
+	
 	if(sessionName==$('#taskStaff option:selected').text()){
 		
 		
@@ -1637,13 +1639,17 @@ $('#BTNTaskAcceptYes').click(function() {
 	}else{
 		swal("您不是该任务单的负责人,无法确认任务!");
 	}
-
+	
+	
+	}
 
 });
 
 
 //按钮-任务审核驳回按钮
 $('#BTNTaskAcceptNo').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Task01")){
 	
 	if(sessionName==$('#taskStaff option:selected').text()){
 		var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
@@ -1666,6 +1672,8 @@ $('#BTNTaskAcceptNo').click(function() {
 	}else{
 		swal("您不是该任务单的负责人,无法驳回任务!");
 	}
+	
+	}
 });
 
 //按钮-记录任务单---------
@@ -1683,6 +1691,8 @@ $('#BTNTaskRecord').click(function() {
 
 //按钮-任务记录保存按钮
 $('#BTNTaskRecordSave').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Task01")){
 
 		if(sessionName==$('#taskStaff option:selected').text()){
 			
@@ -1844,7 +1854,7 @@ $('#BTNTaskRecordSave').click(function() {
 		}else{
 			swal("您不是该任务单的负责人,无法登记任务!");
 		}
-
+	}
 });
 
 ////详情按钮---------
@@ -1869,7 +1879,7 @@ $('#BTNTaskRecordSave').click(function() {
 //按钮-更新版本---------
 $('#BTNTaskUpdVer').click(function() {
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Task03")){
 //  console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
   // table.row('.selected').remove().draw( false );
   var dataSelect = table.row('.selected').data();
@@ -1979,7 +1989,7 @@ $('#BTNTaskUpdVer').click(function() {
 
   }
 
-    	
+	}  	
 });
 
 

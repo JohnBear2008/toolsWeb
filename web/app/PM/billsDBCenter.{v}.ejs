@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -701,6 +701,8 @@ $(document).ready( function () {
 
 //详情按钮---------
 $('#BTNInfo').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"BillCenter02")){
 //    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
 	var table = $('#billsTrackTable').DataTable();
@@ -712,11 +714,15 @@ $('#BTNInfo').click(function() {
     	$('#BillPLD').modal('show')
     	Fun_winDetailInit(dataSelect);
     }
+    
+	}
 });
 
 
 //删除按钮----------
 $('#BTNReTrack').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"BillCenter03")){
 	var table = $('#billsTrackTable').DataTable();
     var dataSelect = table.row('.selected').data();
     
@@ -771,6 +777,8 @@ $('#BTNReTrack').click(function() {
     	
     }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+    
+	}
 });
 
 
@@ -901,6 +909,9 @@ $('#FilterCancelBtn').click(function() {
 
 //报表 按钮 报表1----
 $('#BTNReport1').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"BillCenter01")){
+	
 	 $('#reportDetail').window('open');
 	 
 	 var table = $('#billsTrackTable').DataTable();
@@ -925,7 +936,7 @@ $('#BTNReport1').click(function() {
 
 	 
 	 
-	 
+	}
 	 
 	 
 });

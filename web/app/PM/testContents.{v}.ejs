@@ -19,7 +19,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -172,7 +172,7 @@
                     <th>测试内容</th>
                     <th width="70px">测试类型</th>
                     <th width="50px">版本</th>
-                    <th width="60px">删除</th>
+                    <th width="65px">删除</th>
                 </tr>
             </thead>
             <tbody>
@@ -244,6 +244,9 @@ function addTr(){
 
 //页面加载函数---------------
 $(document).ready( function () {
+	
+	
+	var sessionName="<%-locals.session.yjUser.Name%>";
 		
 	var DataPara={
 			"tableID":"#tableTestContents",
@@ -509,9 +512,12 @@ $('#CancelButton').click(function() {
 
 //form框 取消按钮----------------
 $('#BTNUpdVer').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"TestContent01")){
 	console.log($('#spanTaskSortType').text()+$('#spanTaskType').text());
 	controlElementShowHide({hideElements:['DIVContentTableShow'],showElements:['DIVContentTableModify']});
 	fillTestContentsModifyTable({tableID:'TableTestContentsModify',data:getAjaxDataSync({"SQL":"SQLTableTestContents","filter":"taskSortType = '"+$('#spanTaskSortType').text()+"' AND taskType = '"+$('#spanTaskType').text()+"' AND billType='"+$('#spanBillType').text()+"' AND billVersion='"+$('#spanBillVersion').text()+"'"})});
+	}
 });
 
 $('#saveTCVer').click(function() {

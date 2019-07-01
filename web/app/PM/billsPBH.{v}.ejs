@@ -900,7 +900,7 @@ $('#BTNResetInfo').click(function() {
 //按钮-PBH保存---------
 $('#BTNPBHSave').click(function() {
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PBH01")){
 	if(checkPBHInput()){
 		
 		var files=[];
@@ -938,7 +938,8 @@ $('#BTNPBHSave').click(function() {
 		saveDBData(PBHData,"PBH单");
 		
 	}
-
+	
+	}
 
 });
 
@@ -946,7 +947,7 @@ $('#BTNPBHSave').click(function() {
 
 //按钮-PBH审核---------
 $('#BTNPBHAudit').click(function() {
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PBH02")){
 	
      if($('#DBID').val()==""){
     	 swal("请先保存发布单再审核!");
@@ -965,7 +966,7 @@ $('#BTNPBHAudit').click(function() {
 	     updDBData(PBHData,"PBH单审核状态");
      }
 		 
-		 
+	}	 
 
 });
 
@@ -1001,6 +1002,7 @@ $('input:radio[name="auditType"]').click(function(){
 //按钮-邮件预览
 $('#BTNModelEmail').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PBH03")){
 	$('#winEmail').window('open');
 	
 	$('#emailADRSModel').text($('#emailADRS').val());
@@ -1010,7 +1012,7 @@ $('#BTNModelEmail').click(function() {
 
 	$('#emailContentModel').html($('#emailContent').val());
 	
-
+	}
 });
 
 //按钮-发送邮件
@@ -1097,6 +1099,7 @@ $('#BTNSendEmailDiv').click(function() {
 
 $('#BTNUpdVer').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PBH04")){
 	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 	if(msg==true){	
 		
@@ -1182,11 +1185,14 @@ $('#BTNUpdVer').click(function() {
 	 
 	}
 	
+	}
 });
 
 
 //按钮-完结归档
 $('#BTNEnd').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PBH05")){
 	
 	var msg1 = confirm("归档后,系统不再显示关于该计划的所有单据!是否继续?");
     if (msg1 === true) {
@@ -1230,6 +1236,7 @@ $('#BTNEnd').click(function() {
 		});
     }
 	
+	}
 
 });
 

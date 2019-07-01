@@ -105,6 +105,8 @@ function checkinput(Data) {
 
 //页面加载函数---------------
 $(document).ready( function () {
+	
+	var sessionName="<%-locals.session.yjUser.Name%>";
 		
 	const tableSQL={"SQL":"SQLDBCustomers"};
 	const tableInfo={
@@ -150,10 +152,15 @@ $('#ppm_customers tbody').on('dblclick', 'tr', function() {
 
 //添加按钮-----
 $('#Add').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Customer01")){
+
+		
     $('#win').window('open');
     $('#AddDoButton').show();
     $('#UpdDoButton').hide();
     
+	}
 });
 
 
@@ -187,6 +194,9 @@ $('#Upd').click(function() {
 
 //删除按钮----------
 $('#Del').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Customer01")){
+	
     var dataSelect = table.row('.selected').data();
     
 //    alert(JSON.stringify(dataSelect));
@@ -209,6 +219,8 @@ $('#Del').click(function() {
         }
     }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+    
+	}
 });
 
 
@@ -273,6 +285,8 @@ $('#AddDoButton').click(function() {
 //form 更新按钮------------
 $('#UpdDoButton').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Customer01")){
+	
 	var DBTable="ppm_customers";
 	var DBID=table.row('.selected').data().DBID;
 	var FTYID=$("#FTYID").val();
@@ -322,8 +336,10 @@ $('#UpdDoButton').click(function() {
 	if(checkinput(updInput)){
 	 updDBData(updInput,"客户信息");
 	}
+	
+	
 
-
+	}
 });
 
 

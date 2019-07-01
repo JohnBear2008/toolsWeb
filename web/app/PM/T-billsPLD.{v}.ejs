@@ -1217,9 +1217,12 @@ $('#BTNFilterAll').click(function() {
 
 //按钮-新增计划单---------
 $('#BTNAdd').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PLD01")){
 	$('#BillPLD').modal('show');
 	Fun_winAddInit();
- 
+	
+	}
 });
 
 
@@ -1259,6 +1262,8 @@ $('input:radio[name="auditType"]').click(function(){
 
 //详情按钮---------
 $('#BTNInfo').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PLD01")){
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
@@ -1272,12 +1277,15 @@ $('#BTNInfo').click(function() {
     	$("#BTNFormSave").hide();
 
     }
+    
+	}
 });
 
 
 //按钮:-绑定新增
 $('#BTNTaskBindAdd').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PLD01")){
 	$('#BillPLD').modal('show');
 	
 	Fun_winAddInit();
@@ -1416,18 +1424,14 @@ $('#BTNTaskBindAdd').click(function() {
      }
   });
     
-    
-    
-    
-	
-	
-	
-	
+	}
  
 });
 
 //删除按钮----------
 $('#BTNDelete').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PLD01")){
     var dataSelect = table.row('.selected').data();
     
  //   swal(JSON.stringify(dataSelect));
@@ -1467,10 +1471,13 @@ $('#BTNDelete').click(function() {
     
  //   window.location.reload();
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+	}
 });
 
 //按钮-审核---------
 $('#BTNAudit').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PLD02")){
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
@@ -1509,6 +1516,9 @@ $('#BTNAudit').click(function() {
     	}
 
     }
+    
+    
+	}
 });
 
 
@@ -1592,7 +1602,7 @@ $('#BTNFormModify').click(function() {
 //更新版本
 $('#BTNFormUpdate').click(function() {
 	
-//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD05")){//------检查权限
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-PLD03")){//------检查权限
 
 		
 		var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
@@ -1695,7 +1705,7 @@ $('#BTNFormUpdate').click(function() {
 	    }
 //	    $('#BillPLD').modal('hide');
 
-//	}//------检查权限
+	}//------检查权限
 
 });
 

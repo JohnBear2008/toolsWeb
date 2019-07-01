@@ -224,6 +224,7 @@ function showSQLDataTable(DataPara){
 	    ajax: {
 	        url: '/app/PM/getSQLDBData',
 	        data:DataPara.SQLPara,
+//	        async: true,
 	        dataSrc: ''
 	    },
 	    columns: DataPara.columnsData,

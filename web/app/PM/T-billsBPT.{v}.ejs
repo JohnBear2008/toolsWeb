@@ -1628,6 +1628,8 @@ $("[data-toggle='popover']").popover({html : true });
 
 //按钮-方案维护--------
 $('#BTNBPTInfo').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-BPT01")){
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
@@ -1635,14 +1637,16 @@ $('#BTNBPTInfo').click(function() {
         swal("操作提示:单击选中数据行后,再双击可快速打开表单!");
     } else {
     	Fun_BPTDetailInit(dataSelect);
-
-
     }
+    
+	}
 });
 
 
 //按钮-方案审核--------
 $('#BTNBPTAudit').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-BPT03")){
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
@@ -1675,6 +1679,9 @@ $('#BTNBPTAudit').click(function() {
     	}
 
     }
+    
+    
+	}
 });
 
 
@@ -1926,6 +1933,8 @@ $('#BTNTaskSave').click(function(){
 
 $('#BTNBPTSave').click(function(){
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-BPT02")){
+	
 	if(sessionName!=$("#PGEMaker").val()){
 		swal("当前账号非指定方案人,不允许保存方案!");
 	}else{
@@ -2034,6 +2043,8 @@ $('#BTNBPTSave').click(function(){
 		
 	}
 
+	
+	}
 });
 
 
@@ -2041,7 +2052,7 @@ $('#BTNBPTSave').click(function(){
 
 $('#BTNBPTUpdateVer').click(function(){
 
-
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-BPT04")){
 	var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
     if (msg1 === true) {
     	
@@ -2175,11 +2186,12 @@ $('#BTNBPTUpdateVer').click(function(){
 				swal("更新版本成功!");
 				window.location.reload();
 
-});
+         });
 
 
      }
 
+	}
 });
 
 

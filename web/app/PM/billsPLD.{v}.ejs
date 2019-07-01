@@ -1091,9 +1091,14 @@ $('#BTNFilterAll').click(function() {
 
 //按钮-新增计划单---------
 $('#BTNAdd').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
+	
 	$('#BillPLD').modal('show');
 	
 	Fun_winAddInit();
+	
+	}
  
 });
 
@@ -1220,6 +1225,9 @@ $('#BTNDelete').click(function() {
 
 //按钮-审核---------
 $('#BTNAudit').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Binds02")){
+	
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
     var dataSelect = table.row('.selected').data();
@@ -1258,6 +1266,8 @@ $('#BTNAudit').click(function() {
     	}
 
     }
+    
+	}
 });
 
 ////按钮-表单自动填单
@@ -1401,63 +1411,74 @@ $('#BTNFormSave').click(function(){
 
 $('#BTNFormSaveAudit').click(function(){
 	
-	if(checkPLDInput()){
-	
-	let msg=confirm("启用保存审核,计划单将审核通过,直接发布至方案单,是否继续?");
-	
-	if(msg){
-		
-		 var files=[];
+	if(sessionName!=$('#auditor option:selected').text()){
+		swal('当前用户非指定审核人,无法使用此功能')
+	}else{
+		if(checkPLDInput()){
 			
-			$('#divFilesUploaded a').each(function(){
-				var fileKey=$(this).attr('href').substring(23);
-				var fileName=$(this).attr('download');
-				
-				var fileInfo={
-						"fileName":fileName,
-						"fileKey":fileKey
-				}
-				
-				files.push(fileInfo);
-			});
+			let msg=confirm("启用保存审核,计划单将审核通过,直接发布至方案单,是否继续?");
 			
-			var billData={
-					"DBTable":"ppm_bills_plan",
-					"BPID":$('#BPID').val(),
-					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-					"topic":$('#topic').val(),
-					"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-					"PGEMaker":$('#PGEMaker option:selected').text(),
-					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-					"modelD":$('#modelD option:selected').text(),
-					"modelH":$('#modelH option:selected').text(),
-					"OGNSystemVersion":$('#OGNSystemVersion').val(),
-					"applyDate":$('#applyDate').val(),
-					"limitDate":$('#limitDate').val(),
-					"maker":sessionName,
-					"makeDate":Ndate,
-					"version": $('#version').text(),
-					"files":JSON.stringify(files),
-					"auditor":sessionName,
-					"auditDate":Ndate,
-					"auditResult":1,
-					"PLDStatus":1,
-					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
-					"WFStatus":10
-			}
+			if(msg){
+				
+				 var files=[];
+					
+					$('#divFilesUploaded a').each(function(){
+						var fileKey=$(this).attr('href').substring(23);
+						var fileName=$(this).attr('download');
+						
+						var fileInfo={
+								"fileName":fileName,
+								"fileKey":fileKey
+						}
+						
+						files.push(fileInfo);
+					});
+					
+					var billData={
+							"DBTable":"ppm_bills_plan",
+							"BPID":$('#BPID').val(),
+							"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
+							"topic":$('#topic').val(),
+							"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+							"PGEMaker":$('#PGEMaker option:selected').text(),
+							"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
+							"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
+							"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
+							"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
+							"modelD":$('#modelD option:selected').text(),
+							"modelH":$('#modelH option:selected').text(),
+							"OGNSystemVersion":$('#OGNSystemVersion').val(),
+							"applyDate":$('#applyDate').val(),
+							"limitDate":$('#limitDate').val(),
+							"maker":sessionName,
+							"makeDate":Ndate,
+							"version": $('#version').text(),
+							"files":JSON.stringify(files),
+							"auditor":sessionName,
+							"auditDate":Ndate,
+							"auditResult":1,
+							"PLDStatus":1,
+							"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
+							"WFStatus":10
+					}
 
+					
+		            let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
+					Fun_addDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent});
+					
+					
+				
+			   }
 			
-            let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
-			Fun_addDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent});
-			
-			
+			}
 		
-	   }
-	
+		
+		
 	}
+	
+	
+	
+	
 	
 
    
@@ -1469,7 +1490,7 @@ $('#BTNFormSaveAudit').click(function(){
 
 $('#BTNFormModify').click(function() {
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
 	if(sessionName==$('#maker').text()){
 		
 		if(checkPLDInput()){
@@ -1533,7 +1554,7 @@ $('#BTNFormModify').click(function() {
 
 	
 	
-
+	}
 
 });
 
@@ -1543,7 +1564,7 @@ $('#BTNFormModify').click(function() {
 
 $('#BTNFormUpdate').click(function() {
 	
-//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD05")){//------检查权限
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD03")){//------检查权限
 
 		
 		var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
@@ -1647,7 +1668,7 @@ $('#BTNFormUpdate').click(function() {
 	    }
 //	    $('#BillPLD').modal('hide');
 
-//	}//------检查权限
+	}//------检查权限
 
 });
 

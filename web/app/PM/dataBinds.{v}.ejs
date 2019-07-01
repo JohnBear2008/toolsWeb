@@ -18,7 +18,7 @@
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
-
+<script src="/js/sweetalert.min.js"></script>
 
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -50,39 +50,7 @@
 
             </div>
             
- <!-------------------------------------------------------------------------->
-
-            
-            <div class="form-group">  
-            
-            <hr>
-            <button id="BTNDelBindDo" class="btn btn-danger" >解除绑定</button>
-            </div>
-            
-            
-
-            <!-------------------------------------------------------------------------->
-            <table id="tableBinds" class="table table-bordered" width="100%" >
-            <thead>
-                <tr>
-                    <th>DBID</th>
-                    <th>机种</th>
-                    <th>系统</th>
-                    <th>负责人</th>
-                    <th>代理人1</th>
-                    <th>代理人2</th>
-                    <th>生效时间</th>
-                </tr>
-            </thead> 
-            <tbody>
-            </tbody>
-           
-            </table>
-            
-            
-          
-            
-            <!-------------------------------------------------------------------------->
+ 
 
             <!-------------------------------------------------------------------------->
             
@@ -137,6 +105,44 @@
             </table>
             
             
+<!-------------------------------------------------------------------------->
+
+            
+            <div class="form-group">  
+            
+            
+            <hr>
+            <h4>已添加的绑定关系</h4>
+            
+            <button id="BTNDelBindDo" class="btn btn-danger" >解除绑定</button>
+            </div>
+            
+            
+
+            <!-------------------------------------------------------------------------->
+            <table id="tableBinds" class="table table-bordered" width="100%" >
+            <thead>
+                <tr>
+                    <th>DBID</th>
+                    <th>机种</th>
+                    <th>系统</th>
+                    <th>负责人</th>
+                    <th>代理人1</th>
+                    <th>代理人2</th>
+                    <th>生效时间</th>
+                </tr>
+            </thead> 
+            <tbody>
+            </tbody>
+           
+            </table>
+            
+            
+          
+            
+            <!-------------------------------------------------------------------------->
+            
+            
          
             
            
@@ -176,61 +182,14 @@
 
 <script>
 
-//
-////检查输入信息-------------------
-//function Fun_checkinput(Data) {
-//	
-////	alert(JSON.stringify(Data));
-//	
-//    if (Data.OrgDBType=="0") {
-//        alert('源数据类型未选择，请检查!');
-//        return false;
-//    } else if (Data.OrgDBTypeSub==null) {
-//        alert('源数据值未选择，请检查!');
-//        return false;
-//    }else if (Data.BindDBType=="0") {
-//        alert('绑定数据类型未选择，请检查!');
-//        return false;
-//    }else if (Data.BindDBTypeSub==null) {
-//        alert('绑定数据值未选择，请检查!');
-//        return false;
-//    }else if (Data.OrgDBType==Data.BindDBType) {
-//        alert('选择同类型数据不能绑定，请检查!');
-//        return false;
-//    }
-//    return true;
-//}  
-//
-////函数 检查绑定DBID是否已经添加
-//
-//function checkBindDBID(DBID){
-//	let tableTrNum=$("#tableSingleDataBinds").find("tr").length-1;
-//
-//		for(let i=0;i<tableTrNum;i++){
-//		 let tableDBID=$("#tableSingleDataBinds tr:eq("+(i+1)+") td:eq(2)").html();
-//
-//		 if(DBID==tableDBID){
-//			 alert("该绑定数据已存在,无需重复添加!");
-//			 return false;
-//		  }
-//		 }
-//
-//	return true;
-//
-//}
-//
-//
-///**删除一行*/
-//function delTr(trID){
-//    $(trID).parent().parent().remove();
-//}
+
 
 
 
 //函数加载绑定关系
 function tableBindsShow(FilterDBID){
 	//表加载数据------------------
-	console.log("FilterDBID:"+FilterDBID);
+//	console.log("FilterDBID:"+FilterDBID);
 	
 	var columnsData=[
 		{ data: 'DBID' ,"visible": false},
@@ -242,7 +201,7 @@ function tableBindsShow(FilterDBID){
         { data: 'saveTimeStamp' }
     ];
 	
-	if(FilterDBID!=undefined){
+	if(FilterDBID!=undefined||FilterDBID!=""){
 		
 		let DataPara={
 				"tableID":"#tableBinds",
@@ -273,6 +232,8 @@ function tableBindsShow(FilterDBID){
 }
 
 $(document).ready( function () {
+	
+	var sessionName="<%-locals.session.yjUser.Name%>";
 	
 	//表加载数据------------------
 	var DataPara={
@@ -427,6 +388,8 @@ $('#BTNBindsAdd').click(function() {
 
 $('#BTNAddBindDo').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Binds01")){
+	
 	let DataBind={
 			DBTable:"ppm_customerbinds",
 			CTRName:$("#CTRName option:selected").text(),
@@ -469,12 +432,15 @@ $('#BTNAddBindDo').click(function() {
        }
     });
 	
-
+	}
 }); 
 
 
 //解除绑定按钮----------
 $('#BTNDelBindDo').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Binds01")){
+	
 	let tablePanel = $('#tableBinds').DataTable();
 	let dataSelectPanel = tablePanel.row('.selected').data();
 
@@ -506,6 +472,8 @@ $('#BTNDelBindDo').click(function() {
         }
     }
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+    
+	}
 });
 
     

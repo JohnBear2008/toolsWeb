@@ -1569,20 +1569,22 @@ $('#BTNTaskAcceptNo').click(function() {
 //按钮-记录任务单---------
 $('#BTNTaskRecord').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-Task01")){
 	  var dataSelect = table.row('.selected').data();
 	    if (dataSelect == undefined) {
 	        swal("操作提示:单击选中数据行后,再双击可快速打开表单!");
 	    } else {
 //	    	console.log("dataSelect:"+JSON.stringify(dataSelect));
-
 	    		Fun_taskRecordInit(dataSelect);
-	    	
 	    }
-
+	
+	}
 });
 
 //按钮-任务记录保存按钮
 $('#BTNTaskRecordSave').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-Task01")){
 
 		if(sessionName==$('#taskStaff option:selected').text()){
 			
@@ -1749,6 +1751,8 @@ $('#BTNTaskRecordSave').click(function() {
 			swal("您不是该任务单的负责人,无法登记任务!");
 		}
 
+		
+	}
 });
 
 
@@ -1779,7 +1783,7 @@ $('#BTNTaskRecordSave').click(function() {
 //按钮-更新版本---------
 $('#BTNTaskUpdVer').click(function() {
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-Task03")){
 //  console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
   // table.row('.selected').remove().draw( false );
   var dataSelect = table.row('.selected').data();
@@ -1890,17 +1894,12 @@ $('#BTNTaskUpdVer').click(function() {
 		 
 		 
 	 }
-	  
 
-  	
-  	
-  
-  	
 
   }
 	
 	
-
+	}
 
 });
 
@@ -1947,6 +1946,8 @@ $('#BTNTaskRecordAdd').click(function() {
 	
 //按钮-记录审核按钮
 $('#BTNTaskRecordAudit').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-Task02")){
 	
 	 var tableRecords = $("#tableRecords").DataTable();
 	 
@@ -2028,6 +2029,8 @@ $('#BTNTaskRecordAudit').click(function() {
 			 
 			  
 		  }
+	  
+	}
 
 });
 

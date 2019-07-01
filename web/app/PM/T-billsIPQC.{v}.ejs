@@ -807,6 +807,8 @@ $('#BTNFilterAll').click(function() {
 //按钮-记录任务单---------
 $('#BTNIPQCRecord').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-IPQC01")){
+	
 	  var dataSelect = table.row('.selected').data();
 	    if (dataSelect == undefined) {
 	        swal("请先点击选择表格中的任务单!");
@@ -818,13 +820,14 @@ $('#BTNIPQCRecord').click(function() {
 		    	Fun_IPQCRecordInit(dataSelect);
 
 	    }
-
+	    
+	}
 });
 
 //按钮-任务记录保存按钮
 $('#BTNTaskIPQCSave').click(function() {
 
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-IPQC01")){
 	if(sessionName==$('#IPQCMaker').text()){
 		
 		
@@ -921,6 +924,7 @@ $('#BTNTaskIPQCSave').click(function() {
 		swal("非指定的IPQC填单人,不允许填单!");
 	}
 
+	}
 
 });
 
@@ -928,7 +932,7 @@ $('#BTNTaskIPQCSave').click(function() {
 //按钮-任务记录审核按钮
 $('#BTNTaskIPQCAudit').click(function() {
 	
-//	if(sessionName==){}
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-IPQC02")){
 	
 	var IPQCMakeDate=$('#IPQCMakeDate').text();
 
@@ -1065,6 +1069,7 @@ $('#BTNTaskIPQCAudit').click(function() {
 		
 	}
 
+	}
 });
 
 

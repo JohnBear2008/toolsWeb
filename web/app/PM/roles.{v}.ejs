@@ -50,18 +50,54 @@
         </thead>
     </table>
     <!-- 点击更新、添加按钮后弹出的窗口 -->
-    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:80%;">
+    <div id="win" class="easyui-window" title="DBinfo" closed="true" style="width:80%;height:90%">
         <form style="padding:10px 50px;">
 
             <p>角色名称 : <input id="roleName" size="30" type="text" class="required"></p>
             
-            <p>角色描述 : </br><textarea id="remark" rows="3" cols="100" ></textarea></p>
+            <p>角色描述 : </br><textarea id="remark" rows="2" cols="100" ></textarea></p>
             
             <!-------------------------------------------------------------------------->
          
 
             <p>权限维护:</p>
             <table id="tableAuthorities"   class="table table-bordered">
+            <tr>
+            <th>基础信息-客户</th>
+            <th>基础信息-人员</th>
+            <th>基础信息-机种</th>
+            <th>基础信息-系统</th>
+            <th>基础信息-角色</th>
+            <th>基础信息-测试内容</th>
+            <th>基础信息-数据关系</th>
+            </tr>
+            <tr>
+            <td>
+            <p><input type="checkbox"  value="Customer01"> <span>客户-新增,修改,删除</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="Staff01"> <span>人员-新增,修改,删除</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="Machine01"> <span>机型-新增,修改,删除</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="System01"> <span>系统-新增,修改,删除</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="Role01"> <span>角色-新增,修改,删除</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="TestContent01"> <span>测试内容-维护</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="Binds01"> <span>数据关系-新增,修改,删除</span></p>
+
+            </td>
+            
+            </tr>
+            
+            
             <tr>
             <th>进度跟踪</th>
             <th>计划单</th>
@@ -78,37 +114,37 @@
             <p><input type="checkbox"  value="Track01"> <span>进度跟踪-终止</span></p>
             </td>
             <td>
-            <p><input type="checkbox"  value="PLD01"> <span>计划单-新增</span></p>
-            <p><input type="checkbox"  value="PLD02"> <span>计划单-修改</span></p>
-            <p><input type="checkbox"  value="PLD03"> <span>计划单-删除</span></p>
-            <p><input type="checkbox"  value="PLD04"> <span>计划单-审核</span></p>
-            <p><input type="checkbox"  value="PLD05"> <span>计划单-更新版本</span></p>
+            <p><input type="checkbox"  value="PLD01"> <span>计划单-新增,修改,删除</span></p>
+            <p><input type="checkbox"  value="PLD02"> <span>计划单-审核</span></p>
+            <p><input type="checkbox"  value="PLD03"> <span>计划单-更新版本</span></p>
             </td>
             <td>
             <p><input type="checkbox"  value="BPT01"> <span>方案单-保存方案</span></p>
-            <p><input type="checkbox"  value="BPT02"> <span>方案单-任务管理</span></p>
             <p><input type="checkbox"  value="BPT03"> <span>方案单-审核方案</span></p>
             <p><input type="checkbox"  value="BPT04"> <span>方案单-更新版本</span></p>
             </td>
             <td>
-            <p><input type="checkbox"  value="Task01"> <span>任务单-确认</span></p>
-            <p><input type="checkbox"  value="Task02"> <span>任务单-记录</span></p>
+
+            <p><input type="checkbox"  value="Task01"> <span>任务单-确认,记录</span></p>
             <p><input type="checkbox"  value="Task02"> <span>任务单-记录审核</span></p>
+            <p><input type="checkbox"  value="Task03"> <span>任务单-更新版本</span></p>
+            
             </td>
             <td>
-            <p><input type="checkbox"  value="IPQC-01"> <span>IPQC单-保存</span></p>
-            <p><input type="checkbox"  value="IPQC-02"> <span>IPQC单-审核</span></p>
+            <p><input type="checkbox"  value="IPQC01"> <span>IPQC单-保存</span></p>
+            <p><input type="checkbox"  value="IPQC02"> <span>IPQC单-审核</span></p>
             </td>
             <td>
-            <p><input type="checkbox"  value="FQC-01"> <span>FQC单-保存</span></p>
-            <p><input type="checkbox"  value="FQC-02"> <span>FQC单-审核</span></p>
+            <p><input type="checkbox"  value="FQC01"> <span>FQC单-保存</span></p>
+            <p><input type="checkbox"  value="FQC02"> <span>FQC单-审核</span></p>
+            <p><input type="checkbox"  value="FQC03"> <span>FQC单-更新版本</span></p>
             </td>
             <td>
-            <p><input type="checkbox"  value="PBH-01"> <span>发布单-保存</span></p>
-            <p><input type="checkbox"  value="PBH-02"> <span>发布单-审核</span></p>
-            <p><input type="checkbox"  value="PBH-03"> <span>发布单-邮件</span></p>
-            <p><input type="checkbox"  value="PBH-03"> <span>发布单-完结归档</span></p>
-            <p><input type="checkbox"  value="PBH-03"> <span>发布单-更新版本</span></p>
+            <p><input type="checkbox"  value="PBH01"> <span>发布单-保存</span></p>
+            <p><input type="checkbox"  value="PBH02"> <span>发布单-审核</span></p>
+            <p><input type="checkbox"  value="PBH03"> <span>发布单-邮件</span></p>
+            <p><input type="checkbox"  value="PBH04"> <span>发布单-更新版本</span></p>
+            <p><input type="checkbox"  value="PBH05"> <span>发布单-完结归档</span></p>
             </td>
             </tr>
             
@@ -122,6 +158,67 @@
             <th>T-FQC单</th>
             <th>T发布单</th>
             </tr>
+            
+            <tr>
+            <td>
+            <p><input type="checkbox"  value="T-Track01"> <span>T-进度跟踪-终止</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="T-PLD01"> <span>T-计划单-新增,详情,修改,删除</span></p>
+            <p><input type="checkbox"  value="T-PLD02"> <span>T-计划单-审核</span></p>
+            <p><input type="checkbox"  value="T-PLD03"> <span>T-计划单-更新版本</span></p>
+            </td>
+            
+            <td>
+            <p><input type="checkbox"  value="T-BPT01"> <span>T-方案单-方案维护</span></p>
+            <p><input type="checkbox"  value="T-BPT02"> <span>T-方案单-保存方案</span></p>
+            <p><input type="checkbox"  value="T-BPT03"> <span>T-方案单-审核方案</span></p>
+            <p><input type="checkbox"  value="T-BPT04"> <span>T-方案单-更新版本</span></p>
+            </td>
+            
+            
+            
+            <td>
+            <p><input type="checkbox"  value="T-Task01"> <span>T-任务单-确认,记录</span></p>
+            <p><input type="checkbox"  value="T-Task02"> <span>T-任务单-记录审核</span></p>
+            <p><input type="checkbox"  value="T-Task03"> <span>T-任务单-更新版本</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="T-IPQC01"> <span>T-IPQC单-保存</span></p>
+            <p><input type="checkbox"  value="T-IPQC02"> <span>T-IPQC单-审核</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="T-FQC01"> <span>T-FQC单-保存</span></p>
+            <p><input type="checkbox"  value="T-FQC02"> <span>T-FQC单-审核</span></p>
+            <p><input type="checkbox"  value="T-FQC03"> <span>T-FQC单-更新版本</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="T-PBH01"> <span>T-发布单-保存</span></p>
+            <p><input type="checkbox"  value="T-PBH02"> <span>T-发布单-审核</span></p>
+            <p><input type="checkbox"  value="T-PBH03"> <span>T-发布单-更新版本</span></p>
+            <p><input type="checkbox"  value="T-PBH04"> <span>T-发布单-完结归档</span></p>
+            </td>
+            </tr>
+            </tr>
+            
+            <tr>
+            <th>信息管理-归档单据</th>
+            <th>信息管理-内核归档单据</th>
+            </tr>
+            <tr>
+            <td>
+            <p><input type="checkbox"  value="BillCenter01"> <span>归档单据-数据统计</span></p>
+            <p><input type="checkbox"  value="BillCenter02"> <span>归档单据-查看详情</span></p>
+            <p><input type="checkbox"  value="BillCenter03"> <span>归档单据-恢复计划</span></p>
+            </td>
+            <td>
+            <p><input type="checkbox"  value="T-BillCenter01"> <span>内核归档单据-数据统计</span></p>
+            <p><input type="checkbox"  value="T-BillCenter02"> <span>内核归档单据-查看详情</span></p>
+            <p><input type="checkbox"  value="T-BillCenter03"> <span>内核归档单据-恢复计划</span></p>
+            </td>
+            
+            </tr>
+            
             
             </table>
         	 
@@ -241,12 +338,9 @@ $('#Upd').click(function() {
         				 $(this).prop("checked",true);
         			 }
         		 });
-        		
-        		
         	}
         }
        
-        
         $('#status').val(dataSelect.status);  
     }
 });

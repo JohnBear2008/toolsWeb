@@ -620,8 +620,10 @@ $('#BTNFilterAll').click(function() {
 //按钮-FQC维护---------
 $('#BTNFQCDetail').click(function() {
 
-	console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
+//	console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-FQC01")){
     var dataSelect = table.row('.selected').data();
     if (dataSelect == undefined) {
         swal("请先点击表格中的表单!");
@@ -629,12 +631,15 @@ $('#BTNFQCDetail').click(function() {
     	$('#BillPLD').modal('show')
     	Fun_winDetailInit(dataSelect);
     }
-
+    
+	}
 });
 
 
 //按钮-FQC保存---------
 $('#BTNFQCSave').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-FQC01")){
 
 	var FQCTestResult=[];
 	
@@ -712,6 +717,7 @@ $('#BTNFQCSave').click(function() {
 		swal("存在未测试内容,请检查!");
 	}
 
+	}
 });
 
 
@@ -719,6 +725,7 @@ $('#BTNFQCSave').click(function() {
 //按钮-FQC审核---------
 $('#BTNFQCAudit').click(function() {
 	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-FQC02")){
 	
 	if(sessionName==$('#FQCAuditor option:selected').text()){
 		var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
@@ -843,6 +850,7 @@ $('#BTNFQCAudit').click(function() {
 		swal("您不是该FQC单的指定审核人,无法审核!");
 	}
 
+	}
 		 
 });
 
@@ -880,6 +888,8 @@ $('input:radio[name="auditType"]').click(function(){
 
 //按钮-更新版本
 $('#BTNUpdVer').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"T-FQC03")){
 	
 	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 	if(msg==true){	
@@ -945,7 +955,7 @@ $('#BTNUpdVer').click(function() {
 
 	}
 	
-
+	}
 });
 
 //按钮-表单关闭按钮,添加刷新数据功能

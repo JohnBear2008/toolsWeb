@@ -640,7 +640,7 @@ $('#BTNFQCDetail').click(function() {
 $('#BTNFQCSave').click(function() {
 	
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"FQC01")){
 	var FQCTestResult=[];
 	
 	var testNum=$("#TableTestContents").find("tr").length-1;
@@ -719,6 +719,8 @@ $('#BTNFQCSave').click(function() {
 		swal("存在未测试内容,请检查!");
 	}
 
+	}
+	
 });
 
 
@@ -726,7 +728,7 @@ $('#BTNFQCSave').click(function() {
 //按钮-FQC审核---------
 $('#BTNFQCAudit').click(function() {
 	
-	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"FQC02")){
 	if(sessionName==$('#FQCAuditor option:selected').text()){
 		var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
 
@@ -853,7 +855,7 @@ $('#BTNFQCAudit').click(function() {
 		swal("您不是该FQC单的指定审核人,无法审核!");
 	}
 
-		 
+	}		 
 });
 
 
@@ -890,6 +892,9 @@ $('input:radio[name="auditType"]').click(function(){
 
 //按钮-更新版本
 $('#BTNUpdVer').click(function() {
+	
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"FQC03")){
 	
 	var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 	if(msg==true){	
@@ -960,9 +965,7 @@ $('#BTNUpdVer').click(function() {
 	}
 	
 
-	
-	
-	
+	}
 	
 });
 

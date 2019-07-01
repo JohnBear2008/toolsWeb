@@ -13,7 +13,7 @@ module.exports = function(sender) {
 
     
     
-// console.log("Filter:"+JSON.stringify(Filter));
+ console.log("Filter:"+JSON.stringify(Filter));
     
     
    
@@ -44,14 +44,21 @@ module.exports = function(sender) {
         }
     	
     	 SQLFilter=SQLFilter.substring(0,SQLFilter.length-5);//去掉最后"AND"字符串
-    	 var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
+    	 
+    	 if(SQLFilter==""){
+    		 var sqlGetTableData = "SELECT * FROM "+DBTable;
+    	 }else{
+    		 var sqlGetTableData = "SELECT * FROM "+DBTable+" WHERE "+SQLFilter;
+    	 }
+    	 
+    	
     }else{
     	var sqlGetTableData = "SELECT * FROM "+DBTable;
     }
     
     
     
- //  console.log("sqlGetTableData:"+sqlGetTableData);
+  console.log("sqlGetTableData:"+sqlGetTableData);
     
 
     
