@@ -536,7 +536,7 @@ $(document).ready( function () {
 			var tableSQL={"SQL":"SQLTableBillsFQC","filter":"FQCAuditor = '"+sessionName+"' AND billFQCStatus ='已填单,未审核'","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "unPass":
-			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
+			var tableSQL={"SQL":"SQLTableBillsFQC","filter":" PGEMaker = '"+sessionName+"' AND ( FQCStatus <>0 AND FQCStatus <>1)","orderBy":" saveTimeStamp DESC"};
 	    	break;
 		case "all":
 			var tableSQL={"SQL":"SQLTableBillsFQC","orderBy":" saveTimeStamp DESC"};

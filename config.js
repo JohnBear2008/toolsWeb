@@ -43,7 +43,8 @@ var config = {
             // url: "http://192.168.0.9:2019/" // 这个是我们公司服务器的地址
         }
     },
-    homePage_url: "/app/PM/workCenter",
+//    homePage_url: "/app/PM/workCenter",
+    homePage_url: "/app/system/sitemap/showSitemap",
     db_Connection: g_dbConenctions,
     product: {
         name: "ToolsWeb",

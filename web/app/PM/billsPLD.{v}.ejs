@@ -668,7 +668,7 @@ function changeEventBind(){
 
 	$('input[type=radio][name=orderFromDep]').change(function() {
 		Fun_BPIDCreate();
-		fillAuditor();
+		
 	});
 	
 //	$('#modelD').change(function(){
@@ -717,8 +717,6 @@ function Fun_winAddInit(){
 
 	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
 	
-	
-//	fillAuditor();
 
 
     
@@ -1170,6 +1168,8 @@ $('#BTNInfo').click(function() {
 
 //删除按钮----------
 $('#BTNDelete').click(function() {
+	
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD04")){
     var dataSelect = table.row('.selected').data();
     
  //   swal(JSON.stringify(dataSelect));
@@ -1221,12 +1221,13 @@ $('#BTNDelete').click(function() {
     
  //   window.location.reload();
     //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+	}
 });
 
 //按钮-审核---------
 $('#BTNAudit').click(function() {
 	
-	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"Binds02")){
+	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD02")){
 	
     console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
     // table.row('.selected').remove().draw( false );
@@ -1741,6 +1742,7 @@ $('#BTNFormAuditNo').click(function() {
 //按钮-系统指定方案人
 $('#BTNGetPEGMaker').click(function() {
 	fillFGEMaker();
+	fillAuditor();
 });
 
 

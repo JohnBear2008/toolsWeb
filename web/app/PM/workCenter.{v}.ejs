@@ -774,7 +774,7 @@ $(function(){
 	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":"FQCAuditor = '"+sessionName+"' AND billFQCStatus ='已填单,未审核'"};
 	getUndoneInfo("#FQCunAudit",panelSQLFQC,["BPID","PLDCTRName"]);
 	
-	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" (PGEMaker = '"+sessionName+"' OR FQCMaker = '"+sessionName+"') AND ( FQCStatus <>0 AND FQCStatus <>1)"};
+	var panelSQLFQC={"SQL":"SQLTableBillsFQC","filter":" PGEMaker = '"+sessionName+"'  AND ( FQCStatus <>0 AND FQCStatus <>1)"};
 	getUndoneInfo("#FQCunPass",panelSQLFQC,["BPID","PLDCTRName"]);
 
 	var panelSQLPBH={"SQL":"SQLTableBillsPBH","filter":" maker = '"+sessionName+"' AND PBHStatus IS NULL"};
