@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -232,12 +232,19 @@
                 
                   <div id="divFilesUploaded"></div>
                   
+                  
                	</div>
                	
                	
                	</div>
                	
                	<!-------------------------------------------------------------------------->
+                <div class="form-group">
+                <label class="col-sm-1 control-label">联系人:</label>
+                <div class="col-sm-10">
+                  <input id="emailContact" class="form-control"  type="text" value="">
+                </div>
+                </div>
                    <!-------------------------------------------------------------------------->
                    <div class="form-group">
                    <label class="col-sm-1 control-label">邮件内容:</label>
@@ -444,7 +451,48 @@
      <div class="form-group">
      <label class="col-sm-1 control-label">邮件内容:</label>
      <div class="col-sm-10">
-     <div id="emailContentModel" class="help-block" style="white-space:pre;"></div>
+     
+     <div>
+     
+     <div id="emailContentHello" class="help-block" style="white-space:pre;"></div>
+     
+     <table width="60%" border="1">
+     <tr>
+       <td colspan="2">
+       <p  align="center">出货附件档案说明</p>
+       <p  align="right">表单编号：TMC011 版次：1 </p>
+       </td>
+     </tr>
+    
+     <tr>
+       <td width="100">需求单编号：</td>
+       <td><div id="emailBPID" class="help-block" ></div></td>
+     </tr>
+     <tr>
+       <td>主机：</td>
+       <td>&nbsp;</td>
+     </tr>
+     <tr>
+       <td>面板：</td>
+       <td>&nbsp;</td>
+     </tr>
+     <tr>
+       <td colspan="2">修改内容：</td>
+     </tr>
+     <tr>
+       <td colspan="2">
+       
+       <div id="emailContentModel" class="help-block" style="white-space:pre;">
+
+       </div>
+       
+       </td>
+     </tr>
+   </table>
+     </div>
+     
+     
+     
 
 
      </div>
@@ -580,6 +628,8 @@ function Fun_winDetailInit(dataChoose){
 
 	$('#emailTitle').val(dataSelect.emailTitle);
 	
+	
+	
 //    var emailFiles=JSON.parse(dataSelect.emailFiles);
 //    
 //    var emailFilesHtml=$('#emailFiles').html();
@@ -638,6 +688,8 @@ function Fun_winDetailInit(dataChoose){
 		  }
 		  $('#divFilesUploaded').html(downloadurl);
 	   }
+   
+   $('#emailContact').val(dataSelect.emailContact);
 
 	
 	$('#emailContent').val(dataSelect.emailContent.replace(/<br\/>/g,'\n'));
@@ -827,7 +879,10 @@ var filesHtml=$("#divFilesUploaded").html();
         	 
         	 $("#emailCopyADRS").val(getEmails(data[0].contacts));
         	 
-             emailContentFormat="Dear "+data[0].contact+":\n        您的需求已处理完成,需求单编号:"+$("#BPID").text()+";\n";
+        	 $("#emailContact").val(data[0].contact);
+        	 
+        	 
+            let emailContentFormat="";
              
              var filesHtml="";
              
@@ -890,6 +945,8 @@ $('#BTNResetInfo').click(function() {
 	$("#emailCopyADRS").val("");
 	$("#emailTitle").val("");
 	$("#divFilesUploaded").text("");
+	$("#emailContact").val("");
+	
 	$("#emailContent").val("");
 	$("#PBHRemark").val("");
 
@@ -927,6 +984,7 @@ $('#BTNPBHSave').click(function() {
 						"emailTitle":$('#emailTitle').val(),
 //						"files":JSON.stringify(filesValue),
 						"files":JSON.stringify(files),
+						"emailContact":$('#emailContact').val(),
 						"emailContent":$('#emailContent').val().replace(/\n|\r\n/g,'<br/>'),
 						"PBHRemark":$('#PBHRemark').val(),
 						"PBHMaker":sessionName,
@@ -935,12 +993,49 @@ $('#BTNPBHSave').click(function() {
 						"billPBHStatus":"已填单,未审核"
 				}
 
-		saveDBData(PBHData,"PBH单");
+//		saveDBData(PBHData,"PBH单");
+			 
+			 $.ajax({
+     	        method: 'post',
+     	        url: '/app/PM/saveDBData',
+     	        data: PBHData,
+     	        success: function(data) {
+     	  //         swal("成功数据:" + JSON.stringify(data));
+     	           if (data.affectedRows != 0) {
+
+//     	               swal("方案单数据保存成功!");
+     	        	   
+     	        	   if(sessionName==$('#PBHAuditor option:selected').text()){
+     	        		  let msg=confirm("发布单保存成功,是否立刻自动审核?");
+        	               
+        	               if(msg){
+        	            	   $('#BTNPBHAudit').click();
+        	               }else{
+        	            	   io_refresh()
+        	               }
+     	        		   
+     	        	   }else{
+     	        		   swal('发布单保存成功')
+     	        		   io_refresh()
+     	        	   }
+
+     	               
+     	               
+     	               
+     	           }
+     	       },
+     	       error:function(err){
+     	    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+     	    		   swal("系统中已存在重复数据,请检查!");
+     	    	   }else{
+     	    		   swal("失败数据:"+JSON.stringify(err));
+     	    	   }
+     	       }
+     	    });
 		
 	}
 	
 	}
-
 });
 
 
@@ -960,10 +1055,30 @@ $('#BTNPBHAudit').click(function() {
 					"PBHAuditResult":1,
 					"PBHStatus":1,
 					"PBHStatusText":"已审核",
-					"billPBHStatus":"已填单,未审核"
+					"billPBHStatus":"已填单,已审核"
 			}
 
-	     updDBData(PBHData,"PBH单审核状态");
+//	     updDBData(PBHData,"PBH单审核状态");
+    	 
+    	 $.ajax({
+  	        method: 'post',
+  	        url: '/app/PM/saveDBData',
+  	        data: PBHData,
+  	        success: function(data) {
+  	  //         swal("成功数据:" + JSON.stringify(data));
+  	           if (data.affectedRows != 0) {
+  	        		   swal('发布单审核成功')
+  	        		   io_refresh()
+  	           }
+  	       },
+  	       error:function(err){
+  	    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
+  	    		   swal("系统中已存在重复数据,请检查!");
+  	    	   }else{
+  	    		   swal("失败数据:"+JSON.stringify(err));
+  	    	   }
+  	       }
+  	    });
      }
 		 
 	}	 
@@ -1009,6 +1124,11 @@ $('#BTNModelEmail').click(function() {
 	$('#emailCopyADRSModel').text($('#emailCopyADRS').val());
 	$('#emailTitleModel').text($('#emailTitle').val());
 	$('#emailFilesModel').text($('#divFilesUploaded').text());
+	
+	$('#emailContentHello').html("Dear "+$('#emailContact').val()+": \n  您好！程序已修改完成，请查收，谢谢！");
+	
+	$('#emailBPID').html($('#BPID').text())
+	
 
 	$('#emailContentModel').html($('#emailContent').val());
 	
@@ -1041,6 +1161,7 @@ $('#BTNModelEmailSend').click(function() {
 				"emailCopyADRS":$('#emailCopyADRS').val(),
 				"emailTitle":$('#emailTitle').val(),
 				"emailFiles":JSON.stringify(files),
+				"emailContact":$('#emailContact').val(),
 				"emailContent":$('#emailContent').val()
 
 		}
@@ -1148,6 +1269,7 @@ $('#BTNUpdVer').click(function() {
 				"emailCopyADRS":$('#emailCopyADRS').val(),
 				"emailTitle":$('#emailTitle').val(),
 				"emailFiles":JSON.stringify(files),
+				"emailContact":$('#emailContact').val(),
 				"emailContent":$('#emailContent').val().replace(/\n|\r\n/g,'<br/>'),
 				"PBHRemark":$('#PBHRemark').val(),
 				"PBHMaker":sessionName,

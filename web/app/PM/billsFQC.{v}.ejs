@@ -348,6 +348,7 @@
                 <th>任务完结数量</th>
                 <th>制单人</th>
                 <th>审核人</th>
+                <th>FQC结果</th>
                 <th>FQC状态</th>
             </tr>
         </thead>
@@ -433,7 +434,7 @@ function Fun_winDetailInit(dataChoose){
 	$('#applyDate').text(dataSelect.applyDate);
 	$('#limitDate').text(dataSelect.limitDate);
 	$('#topic').text(dataSelect.topic);
-	$('#detail').text(dataSelect.detail);
+	$('#detail').text(dataSelect.detail.replace(/<br\/>/g,'\n'));
 	
 	$('#FQCRemark').val(dataSelect.FQCRemark.replace(/<br\/>/g,'\n'));
 	
@@ -450,12 +451,24 @@ function Fun_winDetailInit(dataChoose){
 //	$('#FQCAuditor').text(dataSelect.FQCAuditor);
 	$('#FQCAuditDate').text(dataSelect.FQCAuditDate);
 	
+	if(dataSelect.FQCResult!=""){
+		$("input:radio[name=FQCResult][value="+dataSelect.FQCResult+"]").prop("checked",true); 
+	}
+	
+	if(dataSelect.FQCResult!=""){
+		$("input:radio[name=FQCResult][value="+dataSelect.FQCResult+"]").prop("checked",true); 
+	}
+	
+	
 	$('#FQCResultText').text(dataSelect.FQCResultText);
 	
+	if(dataSelect.FQCAuditor!=""){
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#FQCAuditor",dataSelect.FQCAuditor);
+	}else{
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#FQCAuditor","刘梦");
+	}
+
 	
-	var SQLAuditor={SQL:"SQLSRStaffs"};
-	var FQCAuditor="#FQCAuditor";
-	Fun_getSQLSelectDBData(SQLAuditor,FQCAuditor,"刘梦");
 
 
 	
@@ -546,7 +559,6 @@ $(document).ready( function () {
 		    var tableSQL={"SQL":"SQLTableBillsFQC","filter":"FQCStatus<>1 OR FQCStatus IS NULL","orderBy":" saveTimeStamp DESC"};
 		    $("#BTNFilterSimple").addClass("active");	
 		    break;
-		
 		}
 		
 //		if(undone=="true"){
@@ -570,7 +582,7 @@ $(document).ready( function () {
 		        { data: 'taskNumDone'},
 		        { data: 'FQCMaker'},
 		        { data: 'FQCAuditor'},
-//		        { data: 'WFStatusText'},
+		        { data: 'FQCResultText'},
 		        { data: 'billFQCStatus'}
 			]
 	}
@@ -694,10 +706,14 @@ $('#BTNFQCSave').click(function() {
 		        		   let msgNext=confirm("FQC数据保存成功,是否立即审核?");
 		        		   if(msgNext){
 		        			   $('#BTNFQCAudit').click();
+		        		   }else{
+		        			   window.location.reload();
 		        		   }
 		        		   
 		        	   }else{
 		        		   swal("FQC数据保存成功!");
+		        		   
+		        		   window.location.reload();
 		        	   }
 
 //		              window.location.reload();
@@ -751,7 +767,7 @@ $('#BTNFQCAudit').click(function() {
 						"FQCAuditDate":Ndate,
 						"FQCAuditResult":1,
 						"FQCStatus":1,
-						"FQCStatusText":"已通过",
+						"FQCResultText":"已通过",
 						"billFQCStatus":"已填单,已审核",
 						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
@@ -774,9 +790,9 @@ $('#BTNFQCAudit').click(function() {
 						"BillID":$('#BPID').text(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
-						"FQCAuditResult":1,
+						"FQCAuditResult":2,
 						"FQCStatus":2,
-						"FQCStatusText":"出货后修正",
+						"FQCResultText":"出货后修正",
 						"billFQCStatus":"已填单,已审核",
 						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
@@ -800,9 +816,9 @@ $('#BTNFQCAudit').click(function() {
 //						"DBID":$('#DBID').val(),
 						"FQCAuditor":sessionName,
 						"FQCAuditDate":Ndate,
-						"FQCAuditResult":2,
+						"FQCAuditResult":3,
 						"FQCStatus":3,
-						"FQCStatusText":"立即修正",
+						"FQCResultText":"立即修正",
 						"billFQCStatus":"已填单,已审核",
 						"filter":" FQCVersion ="+$('#FQCVersion').text()
 				}
@@ -928,7 +944,8 @@ $('#BTNUpdVer').click(function() {
 			    "FQCResult":$('input:radio[name="FQCResult"]:checked').val(),
 				"FQCMaker":sessionName,
 				"FQCMakeDate":Ndate,
-				"FQCAuditor":$('#FQCAuditor option:selected').text()
+				"FQCAuditor":$('#FQCAuditor option:selected').text(),
+				"billFQCStatus":"已填单,未审核"
 		}
 	 
 	 let ajax2=$.ajax({
@@ -950,12 +967,30 @@ $('#BTNUpdVer').click(function() {
         }
      });
 	 
+	 var PLDUpdData={
+				"DBTable":"ppm_bills_plan",
+				"BillIDName":"BPID",
+				"BillID":$('#BPID').text(),
+				"FQCRequest":1,
+				"FQCPass":0
+		}
+	 var ajax3=$.ajax({
+	        method: 'post',
+	        url: '/app/PM/updBillStatus',
+	        data: PLDUpdData,
+	        success: function(data, textStatus) {
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+	        });
+	 
+	 
+	 
 	 $.when(ajax1,ajax2).done(function(){
  		
 			swal("更新版本成功!");
 			window.location.reload();
 
-		});
+	 });
 	 
 	 
 

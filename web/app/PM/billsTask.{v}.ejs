@@ -457,7 +457,7 @@
                     <div class="col-sm-8">
                     <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none" onchange="taskFileSelected()" >
                     <a class="btn btn-info" onclick="$('#fileToUpload').click()">上传程序文件</a>
-                	<!--<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >-->
+
                 	<input type="button" class="btn btn-warning" onclick="taskDeleteFile()" value="清空附件" >
 
                     </div>
@@ -979,6 +979,15 @@ function Fun_taskRecordInit(dataChoose){
 		$('#divTaskAccept select').attr("disabled",false);
 		$('#divTaskAccept textarea').attr("disabled",false);
 		
+		$('#modifyContent').val("");
+	     $('#functionsDBE').val("");
+
+	     $('#fileVersion').val("");
+	     $('#recordRemark').val("");
+		
+		
+		
+		
 		$('#DivTaskAcceptBTNS').show();
 		
 		$('#DivRecordPanel').hide();
@@ -1004,7 +1013,14 @@ function Fun_taskRecordInit(dataChoose){
 
 		if(RecordNum==0){
 			$('#DIVRecordContent').show();
-			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
+			
+			 $('#modifyContent').val("");
+		     $('#functionsDBE').val("");
+
+		     $('#fileVersion').val("");
+		     $('#recordRemark').val("");
+
+			 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor");
 		}else{
 			$('#DIVRecordContent').hide();
 		}
@@ -1623,7 +1639,7 @@ $('#BTNTaskAcceptYes').click(function() {
 						$('#BTAcceptDate').text(Ndate);
 						
 						$('#DivRecordPanel').show();
-						Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
+//						Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
 						
 					}else{
 						window.location.reload();
@@ -1819,6 +1835,7 @@ $('#BTNTaskRecordSave').click(function() {
 //							console.log("recordData:"+JSON.stringify(recordData));
 
 						 Fun_saveTaskRecord(recordData);
+						 window.location.reload();
 					 }
 					 
 				 }else{
@@ -1843,14 +1860,14 @@ $('#BTNTaskRecordSave').click(function() {
 //						console.log("recordData:"+JSON.stringify(recordData));
 
 					 Fun_saveTaskRecord(recordData);
-					 
+					 window.location.reload();
 				 }
 
 			 }
 			 //--------------------
-				
 			}
-
+			
+			
 		}else{
 			swal("您不是该任务单的负责人,无法登记任务!");
 		}
@@ -2018,7 +2035,7 @@ $('#BTNTaskRecordAdd').click(function() {
 	    $('#recordMaker').text("");
 	    $('#recordMakeDate').text("");
 	    
-	    Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
+//	    Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
 	    
 //	    $('#recordAuditor').text("");
 	    $('#recordAuditDate').text("");

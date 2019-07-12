@@ -646,7 +646,7 @@ function fileSelected() {
 
 //----文件上传功能代码----------------------------------------------
 function taskFileSelected() {
-	console.log("fileseleted111");
+
 
 		var files = document.getElementById('fileToUpload').files;
 		var div = document.getElementById('div_previewImages');
@@ -685,6 +685,39 @@ function taskFileSelected() {
 		
 		
 		taskUploadFile();
+		
+}
+
+//----文件上传功能代码----------------------------------------------
+function T_taskFileSelected() {
+
+
+		var files = document.getElementById('fileToUpload').files;
+		var div = document.getElementById('div_previewImages');
+		
+		var selectedFileNames="";
+		
+		for ( var i = 0; i < files.length; i++) {
+			
+			console.log("filename:"+files[i].name);
+			
+			let fileNameStr = files[i].name.replace(/\s*/g,"");//去除文件名中所有空格
+			
+			console.log("fileNameStr:"+fileNameStr);
+			
+			selectedFileNames=selectedFileNames+fileNameStr+";";
+			
+
+			var reader = new FileReader();
+
+
+			reader.readAsDataURL(files[i]);
+			/* else if (files.value) {
+				img.src = files.value; }*/
+		}
+		
+		document.getElementById('div_previewImages').innerHTML="已选择文件:"+selectedFileNames;
+		T_taskUploadFile();
 		
 }
 
@@ -762,6 +795,49 @@ function taskUploadFile() {
 		var xhr = new XMLHttpRequest();
 		xhr.upload.addEventListener("progress", uploadProgress, false);
 		xhr.addEventListener("load", taskUploadComplete, false);
+		xhr.addEventListener("error", uploadFailed, false);
+		xhr.addEventListener("abort", uploadCanceled, false);
+		xhr.open("POST", "/system.files.upload/");
+		xhr.send(fd);
+		
+//	}
+	
+//	}
+	
+}
+
+//任务上传文件
+function T_taskUploadFile() {
+	
+
+	var filePath=$('#filePath').attr("href");
+	
+	var fileName=$('#fileName').html();
+//	console.log("fileName:"+fileName);
+	
+//	if(fileName!=undefined&&fileName!=""){
+//		
+//		swal("附件已存在,上传新附件请先清空!");
+//		
+//	}else{
+	
+	var fd = new FormData();
+	var files = document.getElementById('fileToUpload').files;
+	
+//	if(files.length>1){
+//		swal("多文件上传请统一打包成唯一压缩包!");
+//		document.getElementById('div_previewImages').innerHTML="";
+//		
+//	}else{
+        for ( var i = 0; i < files.length; i++) {
+			
+//			swal("files[i]:"+JSON.stringify(files[i]));
+			fd.append(i, files[i]);
+			
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.upload.addEventListener("progress", uploadProgress, false);
+		xhr.addEventListener("load", T_taskUploadComplete, false);
 		xhr.addEventListener("error", uploadFailed, false);
 		xhr.addEventListener("abort", uploadCanceled, false);
 		xhr.open("POST", "/system.files.upload/");
@@ -894,6 +970,64 @@ function taskUploadComplete(evt) {
 				}
 
 
+				
+				
+			} else {
+				swal(file[i].errorMessage);
+			}
+		}
+	}
+	
+	//--增加版本号自动填写功能--------------
+	
+//	let BTID=$("#BTID").text();
+
+	
+	
+	
+	
+	
+	
+}
+
+//任务文件上传完毕
+function T_taskUploadComplete(evt) {
+	if (evt.target.status != 200) {
+//		swal(evt.target.responseText);
+		return;
+	}
+	/* 服务器端返回响应时候触发event事件*/
+	//var img=document.getElementById('img_show');
+	var div = document.getElementById('divFilesUploaded');
+	g_uploaded = JSON.parse(evt.target.responseText);
+	var span = document.createElement("span");
+	div.appendChild(span);
+	
+	//let BTType=$("#BTID").text().substring(12,13);//自动识别版本号功能,获取BTID做任务类型判断
+	
+	let BTType=$('#taskSortType').text();
+	
+	for ( var name in g_uploaded.files) {
+		var file=g_uploaded.files[name];
+		for (var i=0;i<file.length;i++){
+			if (file[i].status == "success") {
+				var span = document.createElement("span");
+				var url = "/system.files.download/" + file[i].key;
+				span.innerHTML = url;
+				div.appendChild(span);
+				let fileRawNameStr=file[i].fileRawName.replace(/\s*/g,"");//去除文件名中所有空格
+				var downloadurl="<a id='filePath' href="+url+" download="+fileRawNameStr+">"+"<span id='fileName'>"+fileRawNameStr+"</span></a>";
+				span.innerHTML =downloadurl;
+				div.appendChild(document.createElement("br"));
+				
+				//自动识别版本号功能
+				
+				let fileVersion=$("#fileVersion").val();
+				if(fileVersion==""){
+					$("#fileVersion").val(fileRawNameStr);
+				}else{
+					$("#fileVersion").val(fileVersion+" "+fileRawNameStr);
+				}
 				
 				
 			} else {
