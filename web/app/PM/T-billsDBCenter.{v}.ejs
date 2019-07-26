@@ -21,6 +21,7 @@
 
 
 <script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -324,13 +325,13 @@ function getDBIDInfo(tableName,DBID){
 				"PGEMaker",
 				"OGNSystemVersion",
 				"MHEName",
-				"files",
 				"modelD",
 				"modelH",
 				"applyDate",
 				"limitDate",
 				"maker",
-				"makeDate"
+				"makeDate",
+				"files"
 				],
 			"filter":"DBID='"+DBID+"'"
 			};
@@ -350,13 +351,13 @@ function getDBIDInfo(tableName,DBID){
 				"PGEMaker",
 				"auditor",
 				"auditDate",
-				"files",
 				"modelD",
 				"modelH",
 				"BPTAuditOpinion",
 				"limitDate",
 				"maker",
-				"makeDate"
+				"makeDate",
+				"files"
 				],
 				"filter":"DBID='"+DBID+"'"
 			};
@@ -370,6 +371,7 @@ function getDBIDInfo(tableName,DBID){
 				"DBID",
 				"BTID",
 				"BTVersion",
+				"taskTypeText",
 				"taskCTRName",
 				"taskStaff",
 				"taskDBE",
@@ -384,8 +386,8 @@ function getDBIDInfo(tableName,DBID){
 				"IPQCMaker",
 				"IPQCMakeDate",
 				"BTStatusText",
-				"taskFiles",
-				"IPQCTestResult"
+				"IPQCTestResult",
+				"taskFiles"
 				
 				],
 				"filter":"DBID='"+DBID+"'",
@@ -407,7 +409,7 @@ function getDBIDInfo(tableName,DBID){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText",
+				"FQCResultText",
 				"FQCTestResult"
 				],
 				"filter":"DBID='"+DBID+"'"
@@ -460,11 +462,11 @@ function Fun_winDetailInit(dataSelect){
 				"topic",
 				"PGEMaker",
 				"MHEName",
-				"files",
 //				"modelD",
 //				"modelH",
 				"applyDate",
-				"limitDate"
+				"limitDate",
+				"files"
 				],
 			"filter":"BPID='"+dataSelect.BPID+"'"
 			};
@@ -481,11 +483,11 @@ function Fun_winDetailInit(dataSelect){
 				"CTRName",
 				"PGEMaker",
 				"auditDate",
-				"files",
 //				"modelD",
 //				"modelH",
 				"limitDate",
-				"makeDate"
+				"makeDate",
+				"files"
 				],
 			"filter":"BPTID='"+dataSelect.BPID+"'"
 			};
@@ -500,6 +502,7 @@ function Fun_winDetailInit(dataSelect){
 				"DBID",
 				"BTID",
 				"BTVersion",
+				"taskTypeText",
 				"taskStaff",
 				"taskLimitDate",
 				"BTAcceptDate",
@@ -523,7 +526,7 @@ function Fun_winDetailInit(dataSelect){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText"
+				"FQCResultText"
 				],
 			"filter":"fqcBPID='"+dataSelect.BPID+"'"
 			};
@@ -767,8 +770,10 @@ $('#BTNReTrack').click(function() {
 		
 
 			$.when(ajax1,ajax2).done(function(){
-					alert("该计划单已恢复!");
-				window.location.reload();
+
+
+				let i={alertMsg:"该T-计划单已恢复!"}
+	                swalAndRefresh(i)
 				
 			});
 

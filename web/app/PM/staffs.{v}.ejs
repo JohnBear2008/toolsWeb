@@ -77,6 +77,14 @@
             
             <!-------------------------------------------------------------------------->
             <p>账号 : <input id="staffUser" size="30" type="text" class="required"></p>
+
+            
+
+            <p>工作职位 : <input id="staffWorkType" size="30" type="text" class="required"></p>
+
+            <p>上级 : <input id="upAuditor" size="30" type="text" class="required"></p>
+
+            <p>入职时间 : <input id="entryDate" size="30" type="date" class="required"></p>
             
             <p>FQC要求: 
                 <select id="FQCRequest">
@@ -207,11 +215,21 @@ $('#Upd').click(function() {
         $('#staffID').val(dataSelect.staffID);
         $('#staffName').val(dataSelect.staffName);
         $('#staffSex').val(dataSelect.staffSex);
+        $('#entryDate').val(dataSelect.entryDate);
+
         getSQLSelectDBData({SQL:"SQLSRRoles"},"#staffRole",dataSelect.staffRole);
         
         $('#FQCRequest').val(dataSelect.FQCRequest);
         $('#status').val(dataSelect.status);
         $('#staffUser').val(dataSelect.staffUser);
+
+        $('#staffWorkType').val(dataSelect.staffWorkType);
+
+        $('#upAuditor').val(dataSelect.upAuditor);
+
+        
+
+        
         
     }
 });
@@ -255,9 +273,12 @@ $('#AddDoButton').click(function() {
 			staffID:$("#staffID").val(),
 			staffName:$("#staffName").val(),
 			staffID:$("#staffID").val(),
-			staffSex:$('#staffSex option:selected').val(),
+            staffSex:$('#staffSex option:selected').val(),
 			staffRole:$('#staffRole option:selected').text(),
-			staffUser:$("#staffUser").val(),
+            staffUser:$("#staffUser").val(),
+            upAuditor:$("#upAuditor").val(),
+            staffWorkType:$("#staffWorkType").val(),
+            entryDate:$("#entryDate").val(),
 			FQCRequest:$('#FQCRequest option:selected').val(),
 			FQCRequestText:$('#FQCRequest option:selected').text(),
 			status:$('#status option:selected').val(),
@@ -285,7 +306,10 @@ $('#UpdDoButton').click(function() {
 				staffID:$("#staffID").val(),
 				staffSex:$('#staffSex option:selected').val(),
 				staffRole:$('#staffRole option:selected').text(),
-				staffUser:$("#staffUser").val(),
+                staffUser:$("#staffUser").val(),
+                upAuditor:$("#upAuditor").val(),
+                staffWorkType:$("#staffWorkType").val(),
+                entryDate:$("#entryDate").val(),
 				FQCRequest:$('#FQCRequest option:selected').val(),
 				FQCRequestText:$('#FQCRequest option:selected').text(),
 				status:$('#status option:selected').val(),

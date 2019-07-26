@@ -2065,7 +2065,7 @@ function getDBIDInfo(tableName,DBID){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText",
+				"FQCResultText",
 				"FQCTestResult"
 				],
 				"filter":"DBID='"+DBID+"'"

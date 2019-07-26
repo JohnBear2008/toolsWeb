@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -1023,8 +1023,9 @@ $('#BTNPBHAudit').click(function() {
 		        });
 
 		$.when(ajax1,ajax2).done(function(){
-				alert("发布单已审核,来源任务单已回填,该内核任务完结!");
-			window.location.reload();
+
+			let i={alertMsg:"发布单已审核,来源任务单已回填,该内核任务完结!"}
+	        swalAndRefresh(i)
 			
 		});
 		 
@@ -1241,8 +1242,9 @@ $('#BTNEnd').click(function() {
 		        });
 	
 		$.when(ajax1,ajax2).done(function(){
-				swal("归档完成,该计划任务完结!");
-			window.location.reload();
+
+			let i={alertMsg:"归档完成,该计划任务完结!"}
+	        swalAndRefresh(i)
 		});
       }
     

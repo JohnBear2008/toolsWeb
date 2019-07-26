@@ -15,6 +15,23 @@ var io_isEmptyObject=(i,o)=>{
 }
 
 
+const swalAndRefresh= async (i,o)=>{
+	let clickResult= await swal(i.alertMsg,{
+		buttons:{
+			'OK':"确定"
+		}
+	})
+	console.log("clickResult:"+clickResult)
+
+	if(clickResult==='OK'){
+		window.location.reload()
+	}
+
+
+
+}
+
+
 
 //异步美化alert    i={alertMsg:'this is alert Msg'}
 var aio_swal=async (i,o)=>{

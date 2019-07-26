@@ -18,57 +18,75 @@ function DDRobotMsgSender(divMsg) {
 
 	var url = 'oapi.dingtalk.com';
 	var req = https.request({
-		hostname : url,
-		port : 443,
-		path : '/robot/send?access_token=' + token,
-		method : "POST",
-		json : true,
-		headers : {
-			'Content-Type' : "application/json; charset=utf-8"
+		hostname: url,
+		port: 443,
+		path: '/robot/send?access_token=' + token,
+		method: "POST",
+		json: true,
+		headers: {
+			'Content-Type': "application/json; charset=utf-8"
 		}
 	});
 	req.write(requestData);
-	req.on('error', function(err) {
+	req.on('error', function (err) {
 		console.error(err);
 	});
 	req.end();
 
 }
 
+const getSQLData=async (I,O)=>{
 
-// 报餐通知任务---------
+	yjDBService.exec({
+		sql: sqlGetUndone,
+		parameters: [],
+		rowsAsArray: false, // Chenly 2018-10-19 返回obj arr
+		success: function(result) {
+			sender.success(result);
+		},
+		error: sender.error
+	});
+
+}
+
+
+// 通知任务---------
 var j1 = schedule
-		.scheduleJob(
-				{
-					hour : 08,
-					minute : 30,
-					dayOfWeek : [ 1, 2, 3, 4, 5 ]
+	.scheduleJob(
+		{
+			hour: 08,
+			minute: 30,
+			dayOfWeek: [1, 2, 3, 4, 5]
+		},
+		function () {
+
+			// sqlGetUndone = "SELECT * FROM hmiprint_mold WHERE DataID=" + DataID + " ";
+			
+			
+
+
+			var actionCard = {
+				"actionCard": {
+					"title": "[PPM定时提醒]",
+					"text": "[PPM定时提醒]请大家登陆PPM系统个人中心处理相关工作项!\n\n",
+					"hideAvatar": "0",
+					"btnOrientation": "0",
+					"btns": [
+						{
+							"title": "登陆PPM系统",
+							"actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
+						}
+					]
 				},
-				function() {
-					
-					
-					 var  actionCard={
-							    "actionCard": {
-							        "title": "[PPM定时提醒]", 
-							        "text": "[PPM定时提醒]请大家登陆PPM系统个人中心处理相关工作项!\n\n",
-							        "hideAvatar": "0", 
-							        "btnOrientation": "0", 
-							        "btns": [
-							            {
-							            	 "title": "登陆PPM系统", 
-								             "actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
-							            }
-							        ]
-							    }, 
-							    "msgtype": "actionCard",
-							    "at" : {
-									"atMobiles" : [],
-									"isAtAll" : true
-								}
-							}
-						
-						DDRobotMsgSender(actionCard);
+				"msgtype": "actionCard",
+				"at": {
+					"atMobiles": [],
+					"isAtAll": true
+				}
+			}
+
+			DDRobotMsgSender(actionCard);
 
 
 
-				});
+		});

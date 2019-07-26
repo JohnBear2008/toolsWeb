@@ -8,14 +8,21 @@ module.exports = function(sender) {
 //	     var mailData=sender.req.query;
 	     var pbhBPID=sender.req.query.pbhBPID;
 	     var emailResult=sender.req.query.emailResult;
+	     var emailDSPInfo=sender.req.query.emailDSPInfo
+	     var emailHMIInfo=sender.req.query.emailHMIInfo
+	     
+	     
+	     var emailContentHello=sender.req.query.emailContentHello
+	     var emailContentModel=sender.req.query.emailContentModel.replace(/\n|\r\n/g,'<br/>')
+	     
+	     console.log("emailContentModel:"+emailContentModel)
 	     
 	     var SQLUpdate=" update `ppm_bills_pbh` set emailResult =? where pbhBPID=?";
 	     
 	     
 	     if(emailResult=="1"){
 	    	 
-		     
-		     
+
 		     var emailADRS=sender.req.query.emailADRS;
 		     var emailCopyADRS=sender.req.query.emailCopyADRS;
 		     var emailTitle=sender.req.query.emailTitle;
@@ -58,7 +65,42 @@ module.exports = function(sender) {
 	        cc:emailCopyADRS,
 	        subject:emailTitle, // Subject line
 //	        text: 'Hello nodemailer', // plain text body
-	        html:'<div style="white-space:pre">'+emailContent+'</div>',
+	        
+//	        html:emailContentModel,
+	        
+//	        html:'<div style="white-space:pre">'+emailContent+'</div>',
+	        html:'<div style="white-space:pre;">'+emailContentHello+'</div>'+
+	            '<table width="60%" table border="1" cellspacing="0">'+
+	            '<tr>'+
+	              '<td colspan="2">'+
+	              '<p  align="center">出货附件档案说明</p>'+
+	              '<p  align="right">表单编号：TMC011 版次：1 </p>'+
+	              '</td>'+
+	            '</tr>'+
+	           
+	            '<tr>'+
+	              '<td width="100">需求单编号：</td>'+
+	              '<td><div>'+pbhBPID+'</div></td>'+
+	            '</tr>'+
+	            '<tr>'+
+	              '<td>主机：</td>'+
+	              '<td><div>'+emailDSPInfo+'</div></td>'+
+	            '</tr>'+
+	            '<tr>'+
+	              '<td>面板：</td>'+
+	              '<td><div>'+emailHMIInfo+'</div></td>'+
+	            '</tr>'+
+	           
+	            '<tr>'+
+	              '<td colspan="2">'+
+	              
+	              '<div>'+emailContentModel+
+
+	              '</div>'+
+	              
+	              '</td>'+
+	            '</tr>'+
+	          '</table>',
 	        attachments:attachmentfiles
 	    };
 

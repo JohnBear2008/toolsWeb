@@ -857,7 +857,23 @@ function Fun_BPTDetailInitVal(dataChoose){
 
 	if(dataSelect.BPTVersion==""){
 		
-		$('#BPTVersion').text(0);
+		$.ajax({
+	        method: 'get',
+	        url: '/app/public/ajaxGet',
+	        data: {sql:'select max(BPTVersion) as maxBPTVersion from `ppm_bills_blueprint` where BPTID="'+dataSelect.BPID+'"'},
+	        success:(data, textStatus)=>{
+	        	
+	        	if(data[0].maxBPTVersion!=null){
+	    			$('#BPTVersion').text(parseInt(data[0].maxBPTVersion+1));
+	    		}else{
+	    			$('#BPTVersion').text(0);
+	    		}
+	        	
+	        },
+	        error: (XMLHttpRequest, textStatus, errorThrown)=>{
+	        }
+	    })
+		
 	}else{
 		$('#BPTVersion').text(dataSelect.BPTVersion);
 	}
@@ -1457,7 +1473,7 @@ $(document).ready( function () {
 		$("#BTNFilterAll").addClass("active");
 	    	break;
 	default:	
-	    var tableSQL={"SQL":"SQLTableBillsBPT_T","filter":"auditResult <>1 OR auditResult IS NULL","orderBy":" saveTimeStamp DESC"};
+	    var tableSQL={"SQL":"SQLTableBillsBPT_T","filter":"auditResult <>1 OR effective IS NULL","orderBy":" saveTimeStamp DESC"};
 	    $("#BTNFilterSimple").addClass("active");
 		break;
 	
@@ -2016,13 +2032,15 @@ $('#BTNBPTSave').click(function(){
 		            	        success: function(data) {
 		            	  //         swal("成功数据:" + JSON.stringify(data));
 		            	           if (data.affectedRows != 0) {
-		            	               swal("方案单数据保存成功!");
 
-		            	               let msg=confirm("是否立刻自动审核通过并发布任务?");
+
+		            	               let msg=confirm("方案单数据保存成功，是否立刻自动审核通过并发布任务?");
 		            	               
 		            	               if(msg){
 		            	            	   $('#BTNBPTAuditYes').click();
-		            	               }
+		            	               }else{
+										io_refresh()
+									   }
 		            	           }
 		            	       },
 		            	       error:function(err){
@@ -2183,8 +2201,10 @@ $('#BTNBPTUpdateVer').click(function(){
 		 
 		 $.when(ajax1,ajax2).done(function(){
      		
-				swal("更新版本成功!");
-				window.location.reload();
+
+
+				let i={alertMsg:"更新版本成功!"}
+	                swalAndRefresh(i)
 
          });
 
@@ -2205,13 +2225,26 @@ $('#BTNBPTAuditYes').click(function() {
 			
 			
 			 var tableTask = $('#billsTaskTable').DataTable();
-		     var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
+			 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
+			 
+			 var taskStaffsPLD="";
+		     
+		     for(let i=0;i<TaskNum;i++){
+				var trStaff=tableTask.row(i).data().taskStaff;
+
+				 taskStaffsPLD=taskStaffsPLD+trStaff+",";
+			 }
+
+			 
+			 taskStaffsPLD=taskStaffsPLD.substring(0,taskStaffsPLD.length-1);
+		     
 			
 			
 			let PLDUpdData={
 					"DBTable":"ppm_bills_plan_t",
 					"BillIDName":"BPID",
 					"BillID":$('#BPTBPID').val(),
+					"taskStaffs":taskStaffsPLD,
 					"TaskNum":TaskNum,
 					"WFStatus":20
 			} 
@@ -2276,8 +2309,10 @@ $('#BTNBPTAuditYes').click(function() {
 
 
 		$.when(ajax1,ajax2,ajax3).done(function(){
-			swal("方案已审核通过!");
-			window.location.reload();
+
+
+			let i={alertMsg:"方案已审核通过!"}
+	        swalAndRefresh(i)
 
 		});
     	 
@@ -2341,8 +2376,10 @@ $('#BTNBPTAuditNo').click(function() {
 
 
 		$.when(ajax1,ajax2).done(function(){
-			swal("方案已审核驳回!");
-			window.location.reload();
+
+
+			let i={alertMsg:"方案已审核驳回!"}
+	        swalAndRefresh(i)
 
 		});
 

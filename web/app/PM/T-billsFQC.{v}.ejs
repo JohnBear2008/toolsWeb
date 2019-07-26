@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -706,11 +706,13 @@ $('#BTNFQCSave').click(function() {
 		        		   }
 		        		   
 		        	   }else{
-		        		   swal("FQC数据保存成功!");
-		        		   window.location.reload();
+
+						   
+						   let i={alertMsg:"T-FQC数据保存成功!"}
+	                       swalAndRefresh(i)
 		        	   }
 
-//		              window.location.reload();
+
 		           }
 		       },
 		       error:function(err){
@@ -856,8 +858,9 @@ $('#BTNFQCAudit').click(function() {
 		        });
 
 			$.when(ajax1,ajax2).done(function(){
-				swal(msg);
-				window.location.reload();
+
+				let i={alertMsg:msg}
+	            swalAndRefresh(i)
 				
 			});
 		
@@ -961,8 +964,9 @@ $('#BTNUpdVer').click(function() {
 	 
 	 $.when(ajax1,ajax2).done(function(){
  		
-			swal("更新版本成功!");
-			window.location.reload();
+
+			let i={alertMsg:"更新版本成功!"}
+	        swalAndRefresh(i)
 
 		});
 

@@ -21,6 +21,7 @@
 
 
 <script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -256,7 +257,17 @@
                <option value="<>">不等于</option>
         </select>
         <input id="filterCTRName" size="30" type="text" class="required">
-    </div>
+	</div>
+	
+
+	<div class="form-group">   
+		任务人 :
+			<select  id="from_Selector3" > 
+				   <option value="LIKE">包含</option>
+				   <option value="NOT LIKE">不包含</option>
+			</select>
+			<input id="filterTasker" size="30" type="text" class="required">
+		</div>
 
     <div class="form-group">   
     开始时间:<input id="filterBDate1" size="30" type="date" class="required">-
@@ -324,13 +335,13 @@ function getDBIDInfo(tableName,DBID){
 				"PGEMaker",
 				"OGNSystemVersion",
 				"MHEName",
-				"files",
 				"modelD",
 				"modelH",
 				"applyDate",
 				"limitDate",
 				"maker",
-				"makeDate"
+				"makeDate",
+				"files"
 				],
 			"filter":"DBID='"+DBID+"'"
 			};
@@ -350,13 +361,13 @@ function getDBIDInfo(tableName,DBID){
 				"PGEMaker",
 				"auditor",
 				"auditDate",
-				"files",
 				"modelD",
 				"modelH",
 				"BPTAuditOpinion",
 				"limitDate",
 				"maker",
-				"makeDate"
+				"makeDate",
+				"files"
 				],
 				"filter":"DBID='"+DBID+"'"
 			};
@@ -370,6 +381,7 @@ function getDBIDInfo(tableName,DBID){
 				"DBID",
 				"BTID",
 				"BTVersion",
+				"taskTypeText",
 				"taskCTRName",
 				"taskStaff",
 				"taskDBE",
@@ -384,8 +396,8 @@ function getDBIDInfo(tableName,DBID){
 				"IPQCMaker",
 				"IPQCMakeDate",
 				"BTStatusText",
-				"taskFiles",
-				"IPQCTestResult"
+				"IPQCTestResult",
+				"taskFiles"
 				
 				],
 				"filter":"DBID='"+DBID+"'",
@@ -407,7 +419,7 @@ function getDBIDInfo(tableName,DBID){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText",
+				"FQCResultText",
 				"FQCTestResult"
 				],
 				"filter":"DBID='"+DBID+"'"
@@ -460,11 +472,11 @@ function Fun_winDetailInit(dataSelect){
 				"topic",
 				"PGEMaker",
 				"MHEName",
-				"files",
 //				"modelD",
 //				"modelH",
 				"applyDate",
-				"limitDate"
+				"limitDate",
+				"files"
 				],
 			"filter":"BPID='"+dataSelect.BPID+"'"
 			};
@@ -481,11 +493,11 @@ function Fun_winDetailInit(dataSelect){
 				"CTRName",
 				"PGEMaker",
 				"auditDate",
-				"files",
 //				"modelD",
 //				"modelH",
 				"limitDate",
-				"makeDate"
+				"makeDate",
+				"files"
 				],
 			"filter":"BPTID='"+dataSelect.BPID+"'"
 			};
@@ -500,6 +512,7 @@ function Fun_winDetailInit(dataSelect){
 				"DBID",
 				"BTID",
 				"BTVersion",
+				"taskTypeText",
 				"taskStaff",
 				"taskLimitDate",
 				"BTAcceptDate",
@@ -523,7 +536,7 @@ function Fun_winDetailInit(dataSelect){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText"
+				"FQCResultText"
 				],
 			"filter":"fqcBPID='"+dataSelect.BPID+"'"
 			};
@@ -766,10 +779,9 @@ $('#BTNReTrack').click(function() {
 			        error: function(XMLHttpRequest, textStatus, errorThrown) {}
 			        });
 		
-
 			$.when(ajax1,ajax2).done(function(){
-					alert("该计划单已恢复!");
-				window.location.reload();
+				let i={alertMsg:"该计划单已恢复!"}
+	            swalAndRefresh(i)
 				
 			});
 
@@ -780,8 +792,6 @@ $('#BTNReTrack').click(function() {
     
 	}
 });
-
-
 
 
 //按钮:过滤本周
@@ -835,7 +845,7 @@ $('#BTNFitlerDiv').click(function() {
 $('#FilterComfirmBtn').click(function() {
 	
 	let filter="";
-	if($("#filterBill_ID").val()!=""){
+	if($("#filterBill_ID").val()!==""){
 		switch($("#from_Selector1").val()){
 		case 'LIKE':
 		case 'NOT LIKE':
@@ -848,8 +858,8 @@ $('#FilterComfirmBtn').click(function() {
 		}
 	}
 	
-	if($("#filterCTRName").val()!=""){
-		switch($("#from_Selector1").val()){
+	if($("#filterCTRName").val()!==""){
+		switch($("#from_Selector2").val()){
 		case 'LIKE':
 		case 'NOT LIKE':
 			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '%"+$("#filterCTRName").val()+"%'"
@@ -861,15 +871,11 @@ $('#FilterComfirmBtn').click(function() {
 		}
 	}
 	
-	if($("#filterCTRName").val()!=""){
-		switch($("#from_Selector1").val()){
+	if($("#filterTasker").val()!==""){
+		switch($("#from_Selector3").val()){
 		case 'LIKE':
 		case 'NOT LIKE':
-			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '%"+$("#filterCTRName").val()+"%'";
-			break;
-		case '=':
-		case '<>':
-			filter=filter+"AND CTRName "+$("#from_Selector2").val()+" '"+$("#filterCTRName").val()+"'";
+			filter=filter+"AND taskStaffs "+$("#from_Selector3").val()+" '%"+$("#filterTasker").val()+"%'";
 			break;
 		}
 	}
@@ -890,10 +896,11 @@ $('#FilterComfirmBtn').click(function() {
 		filter=filter+"AND WFEndDate <='"+$("#filterEDate2").val()+"'";
 	}
 
+	// console.log("filter:"+filter);
+
 
 	filter=filter.substring(3);
 	
-
 	datatableReload(createParams(filter));
 	tableClickBind();
 	
@@ -928,14 +935,11 @@ $('#BTNReport1').click(function() {
 		 }
 	 }
 	 
-
 	 $('#spanTotalBillNum').text(totalNum);
 	 $('#spanDelayBillNum').text(delayNum);
 	 
 	 $('#spanDelayRate').text((delayNum/totalNum*100).toFixed(2)+"%");
-
-	 
-	 
+ 
 	}
 	 
 	 

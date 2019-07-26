@@ -13,480 +13,507 @@
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
-<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 <div class="divcontent">
-    <h1>工作流程-计划单</h1>
-    <hr>
+	<h1>工作流程-计划单</h1>
+	<hr>
 
-    <!-- 操作区（按钮等） -->
-    <div class="lineitem">
-        
-     <!--   <button id="BTNInfo" class="btn btn-warning">详情</button> -->
-        
-        <!-- 按钮触发模态框 -->
-        
-        
-        <button id="BTNAdd" class="btn btn-primary" data-toggle="modal" >新增</button>
-        <button id="BTNInfo" class="btn btn-info" data-toggle="modal" >详情</button>
-        <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
-        <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >审核</button>
-        
-       
-        
-        <div class="btn-group" style="margin-left:20px">
-        <button id="BTNFilterSimple" class="btn btn-default" >未完成单据</button>
-        <button id="BTNFilterAll" class="btn btn-default">全部单据</button>
-        </div>
-        
-        
-        <a href="/app/PM/workCenter"><button id="BTNWorkCenter"  class="btn btn-success" style="float:right">个人中心</button></a>
-        <!-- 模态框（Modal） -->
-        <div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel" aria-hidden="true">
-            <div class="modal-dialog" style="width:65%">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button  type="button"  id="BTNModelClose" class="close"  aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="BillPLDLabel">计划单面板</h4>
-                    </div>
-                    <div class="modal-body">
-                    
-                    <!---折叠------------------------>
-                    
-                    <div class="panel-group" id="accordion">
-                	
-                	<div class="panel panel-default">
-                		<div class="panel-heading">
-                			<h4 class="panel-title">
-                				<a data-toggle="collapse" data-parent="#accordion" 
-                				   href="#collapseTrack" >
-                					流程跟踪面板:点击可收起
-                				</a>
+	<!-- 操作区（按钮等） -->
+	<div class="lineitem">
 
-                			</h4>
-                		</div>
-                		
-                		<div id="collapseTrack" class="panel-collapse collapse in" >
-                			<div class="panel-body">
-                			
-                			 <!--------------panel--------------------->
-                			 <button id="BTNTrack" style="float: right">跳转到进度跟踪</button>
-                			 
-                             <h3 class="panel-title">计划单信息</h3>
-                             </br>
-                            
+		<!--   <button id="BTNInfo" class="btn btn-warning">详情</button> -->
 
-                             <table id="tableTrackPLD" class="table table-bordered">
-                             <thead></thead>
-                             
-                             <tbody></tbody>
-                             </table>
+		<!-- 按钮触发模态框 -->
 
-                             
-                             <!--------------panel--------------------->
-                			</div>
-                		</div>
-                	</div>
-                	
-                </div>
-              
-                <!---折叠------------------------>
-                    
-                    
-                    
-                    
 
-                    <div class="panel panel-info">
-                	
-                    <div class="panel-heading">
-                        <h3 class="panel-title">基本信息</h3>
-                    </div>
-                    
-                    <div class="panel-body">
+		<button id="BTNAdd" class="btn btn-primary" data-toggle="modal">新增</button>
+		<button id="BTNInfo" class="btn btn-info" data-toggle="modal">详情</button>
+		<button id="BTNDelete" class="btn btn-danger" data-toggle="modal">删除</button>
+		<button id="BTNAudit" class="btn btn-warning" data-toggle="modal">审核</button>
 
-                    <div class="form-horizontal" id="DivPLD" >  
-      
-                    <div  style="z-index:999;position:absolute;right:50px" >
-                    <img id="DivAuditImage" src="">
-                    </div>
-                    
-                    <input id="DBID" type="text" value="" style="display:none;">
+		<div class="btn-group" style="margin-left:20px">
+			<button id="BTNFilterSimple" class="btn btn-default">未完成单据</button>
+			<button id="BTNFilterAll" class="btn btn-default">全部单据</button>
+		</div>
 
-                    <input id="auditResult" type="text" value="" style="display:none;">
-                    
-                    
-                    <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                       <label class="col-sm-1 control-label">计划单号:</label>
-                       <div class="col-sm-4">
-                         <input id="BPID" class="form-control"  type="text" value="" disabled="true">
-                       </div>
-                       
-                       <label class="col-sm-1 control-label">版本号:   <span id="version"></span></label> 
 
-                       
-                     </div>
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     
-                     <label  class="col-sm-1 control-label" for="name">地区:</label>  
-                     <div class="col-sm-3">
-               	    <label class="radio-inline">
-               	        <input type="radio" name="PLDArea" id="PLDAreaOption1" value="D" autocomplete="off" checked > 大港
-               	    </label>
-               	    <label class="radio-inline">
-               	        <input type="radio" name="PLDArea" id="PLDAreaOption2" autocomplete="off" value="H"> 虎门
-               	    </label>
-               	    <label class="radio-inline">
-              	        <input type="radio" name="PLDArea" id="PLDAreaOption3" autocomplete="off"  value="T"> 台湾
-              	    </label>
-               	    </div>
-                     
-                     
-                     
-                     
-                     <label  class="col-sm-1 control-label" for="name">来源:</label>    
-                     <div class="col-sm-4 ">
-                    
-                     
-                     <label class="radio-inline">
-            	        <input type="radio" name="orderFrom" id="orderFromOption1" autocomplete="off" value="M" checked> 邮件
-            	    </label>
-            	    <label class="radio-inline">
-            	        <input type="radio" name="orderFrom" id="orderFromOption2" autocomplete="off" value="T"> 电话
-            	    </label>
-            	    <label class="radio-inline">
-           	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="F"> 传真
-           	        </label>
-           	        <label class="radio-inline">
-        	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="W"> 微信
-        	        </label>
-        	        <label class="radio-inline">
-        	        <input type="radio" name="orderFrom" id="orderFromOption3" autocomplete="off" value="P"> 工具
-        	        </label>
-        	        
-                     
-                     
-                     </div>  
-                     
-                     </div> 
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     
-                     <label  class="col-sm-1 control-label" for="name">需求方:</label>    
-                     <div class="col-sm-6 ">
-                    
-                     
-                     <label class="radio-inline">
-            	        <input type="radio" name="orderFromDep" id="orderFromDepOption1" autocomplete="off" value="A" checked> 客户订单
-            	    </label>
-            	    <label class="radio-inline">
-            	        <input type="radio" name="orderFromDep" id="orderFromDepOption2" autocomplete="off"  value="B"> 其他部门需求
-            	    </label>
-            	    <label class="radio-inline">
-           	        <input type="radio" name="orderFromDep" id="orderFromDepOption3" autocomplete="off" value="C"> 软体部内部
-           	        </label>
-           	        <label class="radio-inline">
-        	        <input type="radio" name="orderFromDep" id="orderFromDepOption3" autocomplete="off" value="D"> 公司预算或经营会议
-        	        </label>
-        	        
-                     </div>  
-                     
-                     
+		<a href="/app/PM/workCenter"><button id="BTNWorkCenter" class="btn btn-success"
+				style="float:right">个人中心</button></a>
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" style="width:65%">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" id="BTNModelClose" class="close" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="BillPLDLabel">计划单面板</h4>
+					</div>
+					<div class="modal-body">
 
-                     </div>
-                     
-                     
-                   
-                     
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">   
-                     
-                     <label  class="col-sm-1 control-label" for="name">客户:</label>    
-                     <div class="col-sm-6 ">
-                     <select  id="CTRName" class="selectpicker" data-live-search="true" data-dropup-auto="false"> 
-                     </select>
-                    <!-- <button id="BTNFormAuto" class="btn btn-primary" >智能填单</button>-->
-                    <!--<button id="BTNFormClear" class="btn btn-warning" >清空选择</button>-->
-                     </div>
-                     
+						<!---折叠------------------------>
 
-                    
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     
-                     <label  class="col-sm-1 control-label" for="name">机型:</label>    
-                     <div class="col-sm-3 ">
-                     <select  id="MHEName" class="selectpicker" data-live-search="true" data-dropup-auto="false"> 
-                     </select>
-                     </div>  
-                     
-            <!--     <label class="col-sm-2 control-label">原系统版本:</label>
+						<div class="panel-group" id="accordion">
+
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapseTrack">
+											流程跟踪面板:点击可收起
+										</a>
+
+									</h4>
+								</div>
+
+								<div id="collapseTrack" class="panel-collapse collapse in">
+									<div class="panel-body">
+
+										<!--------------panel--------------------->
+										<button id="BTNTrack" style="float: right">跳转到进度跟踪</button>
+
+										<h3 class="panel-title">计划单信息</h3>
+										</br>
+
+
+										<table id="tableTrackPLD" class="table table-bordered">
+											<thead></thead>
+
+											<tbody></tbody>
+										</table>
+
+
+										<!--------------panel--------------------->
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<!---折叠------------------------>
+
+
+
+
+
+						<div class="panel panel-info">
+
+							<div class="panel-heading">
+								<h3 class="panel-title">基本信息</h3>
+							</div>
+
+							<div class="panel-body">
+
+								<div class="form-horizontal" id="DivPLD">
+
+									<div style="z-index:999;position:absolute;right:50px">
+										<img id="DivAuditImage" src="">
+									</div>
+
+									<input id="DBID" type="text" value="" style="display:none;">
+
+									<input id="auditResult" type="text" value="" style="display:none;">
+
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label">计划单号:</label>
+										<div class="col-sm-4">
+											<input id="BPID" class="form-control" type="text" value="" disabled="true">
+										</div>
+
+										<label class="col-sm-1 control-label">版本号: <span id="version"></span></label>
+
+
+									</div>
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">地区:</label>
+										<div class="col-sm-3">
+											<label class="radio-inline">
+												<input type="radio" name="PLDArea" id="PLDAreaOption1" value="D"
+													autocomplete="off" checked> 大港
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="PLDArea" id="PLDAreaOption2"
+													autocomplete="off" value="H"> 虎门
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="PLDArea" id="PLDAreaOption3"
+													autocomplete="off" value="T"> 台湾
+											</label>
+										</div>
+
+
+
+
+										<label class="col-sm-1 control-label" for="name">来源:</label>
+										<div class="col-sm-4 ">
+
+
+											<label class="radio-inline">
+												<input type="radio" name="orderFrom" id="orderFromOption1"
+													autocomplete="off" value="M" checked> 邮件
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFrom" id="orderFromOption2"
+													autocomplete="off" value="T"> 电话
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFrom" id="orderFromOption3"
+													autocomplete="off" value="F"> 传真
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFrom" id="orderFromOption3"
+													autocomplete="off" value="W"> 微信
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFrom" id="orderFromOption3"
+													autocomplete="off" value="P"> 工具
+											</label>
+
+
+
+										</div>
+
+									</div>
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">需求方:</label>
+										<div class="col-sm-6 ">
+
+
+											<label class="radio-inline">
+												<input type="radio" name="orderFromDep" id="orderFromDepOption1"
+													autocomplete="off" value="A" checked> 客户订单
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFromDep" id="orderFromDepOption2"
+													autocomplete="off" value="B"> 其他部门需求
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFromDep" id="orderFromDepOption3"
+													autocomplete="off" value="C"> 软体部内部
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="orderFromDep" id="orderFromDepOption3"
+													autocomplete="off" value="D"> 公司预算或经营会议
+											</label>
+
+										</div>
+
+
+
+									</div>
+
+
+
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">客户:</label>
+										<div class="col-sm-6 ">
+											<select id="CTRName" class="selectpicker" data-live-search="true"
+												data-dropup-auto="false">
+											</select>
+											<!-- <button id="BTNFormAuto" class="btn btn-primary" >智能填单</button>-->
+											<!--<button id="BTNFormClear" class="btn btn-warning" >清空选择</button>-->
+										</div>
+
+
+
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">机型:</label>
+										<div class="col-sm-3 ">
+											<select id="MHEName" class="selectpicker" data-live-search="true"
+												data-dropup-auto="false">
+											</select>
+										</div>
+
+										<!--     <label class="col-sm-2 control-label">原系统版本:</label>
                      <div class="col-sm-2 ">
                        <input id="OGNSystemVersion" class="form-control"  type="text" value="" >
                      </div>   -->
 
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     
-                       <label  class="col-sm-1 control-label" for="name">系统DSP:</label>    
-                       <div class="col-sm-3 ">
-                       <select  id="modelD" class="selectpicker" data-live-search="true" data-dropup-auto="false"> 
-                       </select>
-                       </div>  
-                       
-                       <label  class="col-sm-1 control-label" for="name">系统HMI:</label>    
-                       <div class="col-sm-3 ">
-                       <select  id="modelH" class="selectpicker" data-live-search="true" data-dropup-auto="false"> 
-                       </select>
-                       </div>  
-     
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     
-                     <label for="applyDate" class="col-sm-1 control-label">申请日期:</label>                     
-                     <div class="col-sm-3 ">
-                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="applyDate" data-link-format="yyyy-mm-dd" >
-                         <input id="applyDate" class="form-control " size="16" type="text" value="" readonly>
-                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                     </div>
-                     <input type="hidden" id="applyDate" value="" />                 	
-                 	 </div>
-                     
-                     
-                     <label for="limitDate" class="col-sm-1 control-label">完成期限:</label>                     
-                     <div class="col-sm-3 ">
-                     <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="limitDate" data-link-format="yyyy-mm-dd" >
-                         <input id="limitDate" class="form-control " size="16" type="text" value="" readonly>
-                 		<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                     </div>
-                     <input type="hidden" id="limitDate" value="" />                 	
-                 	 </div>
-                 	
-                 	
-                 	
-                 	
-                 	 </div>
-                 	
+									</div>
 
-                     <!-------------------------------------------------------------------------->
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
 
-                     <div class="form-group">
-                     <label class="col-sm-1 control-label">修改主题:</label>
-                     <div class="col-sm-8">
-                       <input id="topic" class="form-control"  type="text" value="">
-                     </div>
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     <div class="form-group">
-                     <label  class="col-sm-1 control-label" for="name">修改要求:</label>    
-                     <div class="col-sm-8">
-                     <textarea id="detail" class="form-control" rows="6"></textarea>
-                     </div>
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     
-                     <div class="form-group" id="DivFileBTNS">
-                     <label  class="col-sm-1 control-label" for="name">上传</label>  
-                     
-                     <div class="col-sm-8">
-                     <input type="file" name="myHead" multiple="multiple" id="fileToUpload" style="display:none;" onchange="fileSelected()" >
-                     <a class="btn btn-info" onclick="$('#fileToUpload').click()">上传附件</a>
-                     
-                     
-                 <!--	<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >-->
-                 	<input type="button" class="btn btn-warning" onclick="deleteFile()" value="清空附件" >
+										<label class="col-sm-1 control-label" for="name">系统DSP:</label>
+										<div class="col-sm-3 ">
+											<select id="modelD" class="selectpicker" data-live-search="true"
+												data-dropup-auto="false">
+											</select>
+										</div>
 
-                     </div>
+										<label class="col-sm-1 control-label" for="name">系统HMI:</label>
+										<div class="col-sm-3 ">
+											<select id="modelH" class="selectpicker" data-live-search="true"
+												data-dropup-auto="false">
+											</select>
+										</div>
 
-                 	</div>
-                 	
-                 	<!-------------------------------------------------------------------------->
-                 	 <div class="form-group">
-                 	<label  class="col-sm-1 control-label" for="name">附件:</label>
-                 	
-                 	<div class="col-sm-8">
+									</div>
 
-                 	
-                 	<div id="div_previewImages"></div>
-                    <div id="progressNumber"></div> 
-                  
-                    <div id="divFilesUploaded"></div>
-                    
-                 	</div>
-                 	
-                 	
-                 	</div>
-                 	
-                 	<!-------------------------------------------------------------------------->
-                    <div class="form-group">   
-                    <label  class="col-sm-1 control-label" for="name">方案负责人:</label>    
-                    <div class="col-sm-3 ">
-                    <select  id="PGEMaker" class="selectpicker" data-live-search="true" data-toggle="dropup" > 
-                    </select>
-                    </div>
-                    
-                    <button id="BTNGetPEGMaker" type="button" class="btn btn-default">系统指定</button>
-                    
-                    </div>
-                    
-                  
-                    
-                    <!-------------------------------------------------------------------------->
+									<!-------------------------------------------------------------------------->
 
-                    
-                     <!-------------------------------------------------------------------------->
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
 
-                     <div class="form-group">  
-                     
-                     <label  class="col-sm-1 control-label" for="name">制单人:</label>    
-                     <div class="col-sm-3 ">
-             
-                     <span id="maker"  class="help-block"></span>
-                     </div>
-                     
-                     <label  class="col-sm-1 control-label" for="name">制单日期:</label>    
-                     <div class="col-sm-3 ">
-
-                     <span id="makeDate"  class="help-block"></span>
-                     </div>
-                     
-                     
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-
-                     <div class="form-group">  
-                     
-                     <label  class="col-sm-1 control-label" for="name">审核人:</label>    
-                     <div class="col-sm-3 ">
-                     <select  id="auditor" class="selectpicker" data-live-search="true" data-toggle="dropup" > 
-                     </select>
-                     </div>
-                     
-                     <label  class="col-sm-1 control-label" for="name">审核日期:</label>    
-                     <div class="col-sm-3 ">
-
-                     <span id="auditDate"  class="help-block"></span>
-                     </div>
-                     
-                     
-                     </div>
-                     
-                     <!-------------------------------------------------------------------------->
-                     
-                     <div class="form-group" id="auditOpinionDiv">
-                     <label  class="col-sm-1 control-label" for="name" disabled="true">审核意见:</label>    
-                     <div class="col-sm-8">
-                     <textarea id="auditOpinion" class="form-control" rows="3"></textarea>
-                     </div>
-                     </div>
-                     
-                     
-                     
-                     </div>
-                    
-
-                    </div>
-                    
-                    <div class="panel-footer">
-                    <button id="BTNFormSave" type="button" class="btn btn-primary">保存</button>
-                    <button id="BTNFormSaveAudit" type="button" class="btn btn-warning">保存并审核</button>
-                    
-                    <button id="BTNFormModify" type="button" class="btn btn-info">修改</button> 
-                    <button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
-                    
-                    
-                    <button id="BTNFormAuditYes" type="button" class="btn btn-success">审核通过</button>
-                    <button id="BTNFormAuditNo" type="button" class="btn btn-danger">审核驳回</button>
-                    </div>
-                    
-                    
-                    
-                   </div>
-                    
-
-                    
-                    
-                    </div>
-                    <div class="modal-footer">
-                        <button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal -->
-        </div>
-        
-        
-
-    </div>
-    
-    
-    
-    
-    <br/>
-
-    <!--数据呈现区-->
-    <table id="billsPLDTable" class="table table-striped table-bordered"  >
-        <thead>
-            <tr>
-                <th>时间戳</th>
-                <th>数据库ID</th>
-                <th>计划单号</th>
-                <th>版本号</th>
-                <th>客户简称</th>
-                <th>主题</th>
-                <th>制单人</th>
-                <th>审核人</th>
-                <th>审核状态</th>
+										<label for="applyDate" class="col-sm-1 control-label">申请日期:</label>
+										<div class="col-sm-3 ">
+											<div class="input-group date form_date " data-date=""
+												data-date-format="yyyy-mm-dd" data-link-field="applyDate"
+												data-link-format="yyyy-mm-dd">
+												<input id="applyDate" class="form-control " size="16" type="text"
+													value="" readonly>
+												<span class="input-group-addon"><span
+														class="glyphicon glyphicon-calendar"></span></span>
+											</div>
+											<input type="hidden" id="applyDate" value="" />
+										</div>
 
 
-            </tr>
-        </thead>
-    </table>
-    
-
-    <!-- 点击详情后弹出的窗口 -->
-    <div id="winDetail" class="easyui-window" title="表单详情" closed="true" style="width:80%;height:90%;">
-    
-    <table id="tableDetail" class="table table-bordered">
-
-    </table>
-    
-    </div>
-    <!-- 点击详情后弹出的窗口 -->
+										<label for="limitDate" class="col-sm-1 control-label">完成期限:</label>
+										<div class="col-sm-3 ">
+											<div class="input-group date form_date " data-date=""
+												data-date-format="yyyy-mm-dd" data-link-field="limitDate"
+												data-link-format="yyyy-mm-dd">
+												<input id="limitDate" class="form-control " size="16" type="text"
+													value="" readonly>
+												<span class="input-group-addon"><span
+														class="glyphicon glyphicon-calendar"></span></span>
+											</div>
+											<input type="hidden" id="limitDate" value="" />
+										</div>
 
 
-	
-	
 
-    </div>
-        
-        
-        
-        
 
-    
-    
+									</div>
+
+
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label">修改主题:</label>
+										<div class="col-sm-8">
+											<input id="topic" class="form-control" type="text" value="">
+										</div>
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="name">修改要求:</label>
+										<div class="col-sm-8">
+											<textarea id="detail" class="form-control" rows="6"></textarea>
+										</div>
+									</div>
+
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group" id="DivFileBTNS">
+										<label class="col-sm-1 control-label" for="name">上传</label>
+
+										<div class="col-sm-8">
+											<input type="file" name="myHead" multiple="multiple" id="fileToUpload"
+												style="display:none;" onchange="fileSelected()">
+											<a class="btn btn-info" onclick="$('#fileToUpload').click()">上传附件</a>
+
+
+											<!--	<input  type="button" class="btn btn-success" onclick="uploadFile()" value="确认上传" >-->
+											<input type="button" class="btn btn-warning" onclick="deleteFile()"
+												value="清空附件">
+
+										</div>
+
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="name">附件:</label>
+
+										<div class="col-sm-8">
+
+
+											<div id="div_previewImages"></div>
+											<div id="progressNumber"></div>
+
+											<div id="divFilesUploaded"></div>
+
+										</div>
+
+
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="name">方案负责人:</label>
+										<div class="col-sm-3 ">
+											<select id="PGEMaker" class="selectpicker" data-live-search="true"
+												data-toggle="dropup">
+											</select>
+										</div>
+
+										<button id="BTNGetPEGMaker" type="button" class="btn btn-default">系统指定</button>
+
+									</div>
+
+
+
+									<!-------------------------------------------------------------------------->
+
+
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">制单人:</label>
+										<div class="col-sm-3 ">
+
+											<span id="maker" class="help-block"></span>
+										</div>
+
+										<label class="col-sm-1 control-label" for="name">制单日期:</label>
+										<div class="col-sm-3 ">
+
+											<span id="makeDate" class="help-block"></span>
+										</div>
+
+
+									</div>
+
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">审核人:</label>
+										<div class="col-sm-3 ">
+											<select id="auditor" class="selectpicker" data-live-search="true"
+												data-toggle="dropup">
+											</select>
+										</div>
+
+										<label class="col-sm-1 control-label" for="name">审核日期:</label>
+										<div class="col-sm-3 ">
+
+											<span id="auditDate" class="help-block"></span>
+										</div>
+
+
+									</div>
+
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group" id="auditOpinionDiv">
+										<label class="col-sm-1 control-label" for="name" disabled="true">审核意见:</label>
+										<div class="col-sm-8">
+											<textarea id="auditOpinion" class="form-control" rows="3"></textarea>
+										</div>
+									</div>
+
+
+
+								</div>
+
+
+							</div>
+
+							<div class="panel-footer">
+								<button id="BTNFormSave" type="button" class="btn btn-primary">保存</button>
+								<button id="BTNFormSaveAudit" type="button" class="btn btn-warning">保存并审核</button>
+
+								<button id="BTNFormModify" type="button" class="btn btn-info">修改</button>
+								<button id="BTNFormUpdate" type="button" class="btn btn-warning">更新版本</button>
+
+
+								<button id="BTNFormAuditYes" type="button" class="btn btn-success">审核通过</button>
+								<button id="BTNFormAuditNo" type="button" class="btn btn-danger">审核驳回</button>
+							</div>
+
+
+
+						</div>
+
+
+
+
+					</div>
+					<div class="modal-footer">
+						<button id="BTNFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+
+
+
+	</div>
+
+
+
+
+	<br />
+
+	<!--数据呈现区-->
+	<table id="billsPLDTable" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>时间戳</th>
+				<th>数据库ID</th>
+				<th>计划单号</th>
+				<th>版本号</th>
+				<th>客户简称</th>
+				<th>主题</th>
+				<th>制单人</th>
+				<th>审核人</th>
+				<th>审核状态</th>
+
+
+			</tr>
+		</thead>
+	</table>
+
+
+	<!-- 点击详情后弹出的窗口 -->
+	<div id="winDetail" class="easyui-window" title="表单详情" closed="true" style="width:80%;height:90%;">
+
+		<table id="tableDetail" class="table table-bordered">
+
+		</table>
+
+	</div>
+	<!-- 点击详情后弹出的窗口 -->
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
 </div>
 
 
@@ -495,43 +522,43 @@
 
 
 
-//函数:计划单号生成规则
+	//函数:计划单号生成规则
 
-function Fun_BPIDCreate(){
+	function Fun_BPIDCreate() {
 
-	if($("#BPID").val()!=""){
-		let BPID=$("#BPID").val().substring(0,11)+"_"+$('input:radio[name="PLDArea"]:checked').val()+$('input:radio[name="orderFrom"]:checked').val()+"_"+$('input:radio[name="orderFromDep"]:checked').val();
-		 $("#BPID").val(BPID);
-	}else{
-		$.ajax({
-	         method:'get',
-	         data:{"SQL":"SQLGetPLDNum"},
-	         url:"/app/PM/getSQLDBData",
-	         success:function(data){
-	        	 
-	        	 if(data[0].GPLDNum<9){
-	        		 var Num="0"+(data[0].GPLDNum+1);
-	        	 }else{
-	        		 var Num=data[0].GPLDNum+1;
-	        	 }
-	        	 
-	        	 console.log("back Task data:"+JSON.stringify(data));
-	        	 let BPID="P"+new Date(Ndate).Format("yyyyMMdd")+Num+"_"+$('input:radio[name="PLDArea"]:checked').val()+$('input:radio[name="orderFrom"]:checked').val()+"_"+$('input:radio[name="orderFromDep"]:checked').val();
-	        	 $("#BPID").val(BPID);
+		if ($("#BPID").val() != "") {
+			let BPID = $("#BPID").val().substring(0, 11) + "_" + $('input:radio[name="PLDArea"]:checked').val() + $('input:radio[name="orderFrom"]:checked').val() + "_" + $('input:radio[name="orderFromDep"]:checked').val();
+			$("#BPID").val(BPID);
+		} else {
+			$.ajax({
+				method: 'get',
+				data: { "SQL": "SQLGetPLDNum" },
+				url: "/app/PM/getSQLDBData",
+				success: function (data) {
 
-	         },
-	         error:function(){}
-	     })
+					if (data[0].GPLDNum < 9) {
+						var Num = "0" + (data[0].GPLDNum + 1);
+					} else {
+						var Num = data[0].GPLDNum + 1;
+					}
+
+					console.log("back Task data:" + JSON.stringify(data));
+					let BPID = "P" + new Date(Ndate).Format("yyyyMMdd") + Num + "_" + $('input:radio[name="PLDArea"]:checked').val() + $('input:radio[name="orderFrom"]:checked').val() + "_" + $('input:radio[name="orderFromDep"]:checked').val();
+					$("#BPID").val(BPID);
+
+				},
+				error: function () { }
+			})
+		}
+
+
 	}
 
-
-}
-
-//函数:加载老版本计划单信息
-function getPLDOld(BPID){
-	let SQLParamPLD={
-			"tableName":"ppm_bills_plan",
-			"titles":[
+	//函数:加载老版本计划单信息
+	function getPLDOld(BPID) {
+		let SQLParamPLD = {
+			"tableName": "ppm_bills_plan",
+			"titles": [
 				"DBID",
 				"BPID",
 				"version",
@@ -540,1227 +567,1305 @@ function getPLDOld(BPID){
 				"PGEMaker",
 				"MHEName",
 				"files",
-//				"modelD",
-//				"modelH",
+				//				"modelD",
+				//				"modelH",
 				"applyDate",
 				"limitDate"
-				],
-			"filter":"BPID='"+BPID+"'"
-			};
+			],
+			"filter": "BPID='" + BPID + "'"
+		};
 
-//	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
-	Fun_fillTrackTableWithDBID("#tableTrackPLD",SQLParamPLD);
-}
-
-//函数 获取方案人
-function fillFGEMaker(){
-	
-	
-
-	if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&
-			($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
-		swal("DSP,HMI系统必须选择一个 请检查!");
-	}else{
-		
-		let filter="";
-		
-		let CTRNameDBID=$('#CTRName option:selected').val();
-		
-		if(CTRNameDBID!=undefined&&CTRNameDBID!=""){
-			filter="CTRVal="+CTRNameDBID;
-		}
-		
-		let ModelVal="";
-
-		
-		if(($('#modelD option:selected').val()==""||$('#modelD option:selected').val()==undefined)&&
-				($('#modelH option:selected').val()!=undefined||$('#modelH option:selected').val()!="")){
-			
-			ModelVal=$('#modelH option:selected').val();
-
-		}else{
-			ModelVal=$('#modelD option:selected').val();
-		}
-		
-		if(filter==""){
-			filter="ModelVal='"+ModelVal+"'";
-		}else{
-			filter=filter+" AND ModelVal='"+ModelVal+"'";
-		}
-
-		
-		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
-		
-		 $.ajax({
-	         method:'get',
-	         data:selectSQL,
-	         url:"/app/PM/getSQLDBData",
-//	         async:false, 
-	         success:function(data){
-
-	        	 if(data.length==0){
-	        		 swal("系统未检测到绑定关系,请手动选择!");
-	        	 }else{
-	        		 console.log("bindData:"+JSON.stringify(data));
-	        		 $("#PGEMaker").selectpicker('val',data[0].StaffVal);
-	        		 
-	        		 $("#PGEMaker").selectpicker('refresh');
-
-	        	 }
-
-	         },
-	         error:function(){}
-	     })
-	     
-	     
-//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
-//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+		//	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
+		Fun_fillTrackTableWithDBID("#tableTrackPLD", SQLParamPLD);
 	}
-}
+
+	//函数 获取方案人
+	function fillFGEMaker() {
 
 
-//函数 根据单据类型确认审核人
 
-function fillAuditor(){
-	
-	let ips ={orderFromDep:$('input:radio[name="orderFromDep"]:checked').val(),modelD:$('#modelD option:selected').val(),modelH:$('#modelH option:selected').val()};
-	console.log(ips);
-	switch(ips.orderFromDep){
-	case 'A':
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
-		break;
-	case 'B':
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
-		break;
-	case 'C':
-		if(ips.modelD==undefined&&ips.modelH!=undefined){
-			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","蒋伟贞");
-		}else{
-			Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","许静静");
+		if (($('#modelD option:selected').val() == undefined || $('#modelD option:selected').val() == "") &&
+			($('#modelH option:selected').val() == undefined || $('#modelH option:selected').val() == "")) {
+			swal("DSP,HMI系统必须选择一个 请检查!");
+		} else {
+
+			let filter = "";
+
+			let CTRNameDBID = $('#CTRName option:selected').val();
+
+			if (CTRNameDBID != undefined && CTRNameDBID != "") {
+				filter = "CTRVal=" + CTRNameDBID;
+			}
+
+			let ModelVal = "";
+
+
+			if (($('#modelD option:selected').val() == "" || $('#modelD option:selected').val() == undefined) &&
+				($('#modelH option:selected').val() != undefined || $('#modelH option:selected').val() != "")) {
+
+				ModelVal = $('#modelH option:selected').val();
+
+			} else {
+				ModelVal = $('#modelD option:selected').val();
+			}
+
+			if (filter == "") {
+				filter = "ModelVal='" + ModelVal + "'";
+			} else {
+				filter = filter + " AND ModelVal='" + ModelVal + "'";
+			}
+
+
+			let selectSQL = { "SQL": "SQLGetCTRBinds", "orderBy": "saveTimeStamp DESC", "filter": filter, "limit": 1 }
+
+			$.ajax({
+				method: 'get',
+				data: selectSQL,
+				url: "/app/PM/getSQLDBData",
+				//	         async:false, 
+				success: function (data) {
+
+					if (data.length == 0) {
+						swal("系统未检测到绑定关系,请手动选择!");
+					} else {
+						console.log("bindData:" + JSON.stringify(data));
+						$("#PGEMaker").selectpicker('val', data[0].StaffVal);
+
+						$("#PGEMaker").selectpicker('refresh');
+
+					}
+
+				},
+				error: function () { }
+			})
+
+
+			//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
+			//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
 		}
-		break;
-	case 'D':
-		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","孙凌财");
-		break;
 	}
-}
 
-//绑定change事件
 
-function changeEventBind(){
-	//绑定radio切换改变 计划单号事件
-	$('input[type=radio][name=PLDArea]').unbind();
-	$('input[type=radio][name=orderFrom]').unbind();
-	$('input[type=radio][name=orderFromDep]').unbind();
-	
-//	$('#modelD').unbind();
-//	$('#modelH').unbind();
+	//函数 根据单据类型确认审核人
 
-	$('input[type=radio][name=PLDArea]').change(function() {
+	function fillAuditor() {
+
+		let ips = { orderFromDep: $('input:radio[name="orderFromDep"]:checked').val(), modelD: $('#modelD option:selected').val(), modelH: $('#modelH option:selected').val() };
+		console.log(ips);
+		switch (ips.orderFromDep) {
+			case 'A':
+				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "谢丽君");
+				break;
+			case 'B':
+				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "蒋伟贞");
+				break;
+			case 'C':
+				if (ips.modelD == undefined && ips.modelH != undefined) {
+					Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "蒋伟贞");
+				} else {
+					Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "许静静");
+				}
+				break;
+			case 'D':
+				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "孙凌财");
+				break;
+		}
+	}
+
+	//绑定change事件
+
+	function changeEventBind() {
+		//绑定radio切换改变 计划单号事件
+		$('input[type=radio][name=PLDArea]').unbind();
+		$('input[type=radio][name=orderFrom]').unbind();
+		$('input[type=radio][name=orderFromDep]').unbind();
+
+		//	$('#modelD').unbind();
+		//	$('#modelH').unbind();
+
+		$('input[type=radio][name=PLDArea]').change(function () {
+			Fun_BPIDCreate();
+
+		});
+
+		$('input[type=radio][name=orderFrom]').change(function () {
+			Fun_BPIDCreate();
+
+		});
+
+		$('input[type=radio][name=orderFromDep]').change(function () {
+			Fun_BPIDCreate();
+
+		});
+
+		//	$('#modelD').change(function(){
+		//		fillFGEMaker($('#modelD option:selected').val());
+		//	});
+		//	
+		//	$('#modelH').change(function(){
+		//		fillFGEMaker($('#modelH option:selected').val());
+		//	});
+
+	}
+
+
+	//函数:新增详情页自动填写内容------------------------
+	function Fun_winAddInit() {
+
+		getPLDOld();
+
+		$("#BPID").val("");//先清空
 		Fun_BPIDCreate();
 
-	});
 
-	$('input[type=radio][name=orderFrom]').change(function() {
-		Fun_BPIDCreate();
+		$('input').attr("disabled", false);
+		$('select').attr("disabled", false);
+		$('textarea').attr("disabled", false);
+		$("#DivAuditImage").attr('src', "");
 
-	});
+		$("#BPID").attr("disabled", true);
 
-	$('input[type=radio][name=orderFromDep]').change(function() {
-		Fun_BPIDCreate();
-		
-	});
-	
-//	$('#modelD').change(function(){
-//		fillFGEMaker($('#modelD option:selected').val());
-//	});
-//	
-//	$('#modelH').change(function(){
-//		fillFGEMaker($('#modelH option:selected').val());
-//	});
-	
-}
+		//	var SQLCTRName={SQL:"SQLSRCustomers"};
+		var CTRName = "#CTRName";
+		Fun_getSQLSelectDBData({ SQL: "SQLSRCustomers" }, CTRName);
 
+		var SQLMHEName = { SQL: "SQLSRMachines" };
+		var MHEName = "#MHEName";
+		Fun_getSQLSelectDBData(SQLMHEName, MHEName);
 
-//函数:新增详情页自动填写内容------------------------
-function Fun_winAddInit(){
-	
-	getPLDOld();
-	
-	$("#BPID").val("");//先清空
-	Fun_BPIDCreate();
-	
-	
-	  $('input').attr("disabled",false);
-	  $('select').attr("disabled",false);
-	  $('textarea').attr("disabled",false);
-	  $("#DivAuditImage").attr('src',"");
-	  
-	  $("#BPID").attr("disabled",true);
+		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='DSP' AND status=1" }, "#modelD");
 
-//	var SQLCTRName={SQL:"SQLSRCustomers"};
-	var CTRName="#CTRName";
-	Fun_getSQLSelectDBData({SQL:"SQLSRCustomers"},CTRName);
-    	
-	var SQLMHEName={SQL:"SQLSRMachines"};
-	var MHEName="#MHEName";
-	Fun_getSQLSelectDBData(SQLMHEName,MHEName);
-	
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD");
-	
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH");
-	
-	var SQLPGEMaker={SQL:"SQLSRStaffs"};
-	var PGEMaker="#PGEMaker";
-	Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker);
-	
+		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='HMI' AND status=1" }, "#modelH");
 
-	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor","谢丽君");
-	
+		var SQLPGEMaker = { SQL: "SQLSRStaffs" };
+		var PGEMaker = "#PGEMaker";
+		Fun_getSQLSelectDBData(SQLPGEMaker, PGEMaker);
 
 
-    
-    $('#topic').val(""); 
-    $('#detail').val(""); 
-    $('#version').text(0); 
-    
-  
-  $('.form_date').datetimepicker({
-      language:  'zh-CN',
-      weekStart: 1,
-      todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		minView: 2,
-		forceParse: 0
-  });
-  
-  $("#DivFileBTNS").show();
-  
-  $('#divFilesUploaded').html("");
-  
-//  $("#auditTypeOption1").attr("checked",true);
-
-  
-  
-  $('#applyDate').val(Ndate); 
-  $('#limitDate').val(Fun_getEndDate(Ndate,3));
-
-  
-  $('#auditOpinionDiv').hide();
-  
-//  $("#auditTypeDiv").show();
-  
-  $("#BTNFormSave").show();
-  $("#BTNFormSaveAudit").show();
-  
-  $('#BTNGetPEGMaker').show();
-  
-  
-  $("#BTNFormModify").hide();
-  $("#BTNFormUpdate").hide();
-  $("#BTNFormAuditYes").hide();
-  $("#BTNFormAuditNo").hide();
-  
-  changeEventBind();
-
-
-}
-
-//函数:详情按钮详情页自动填写内容------------------------
-function Fun_winDetailInit(dataChoose){
-	getPLDOld(dataChoose.BPID);
-	
-	let dataSelect=NulltoEmpty(dataChoose);
-	
-	$('#DBID').val(dataSelect.DBID); 
-
-	$('#BPID').val(dataSelect.BPID); 
-	$('#version').text(dataSelect.version); 
-	
-	
-	$("[name='PLDArea'][value='"+dataSelect.PLDArea+"']").prop("checked", true);
-	$("[name='orderFrom'][value='"+dataSelect.orderFrom+"']").prop("checked", true);
-	$("[name='orderFromDep'][value='"+dataSelect.orderFromDep+"']").prop("checked", true);
-	
-	var SQLCTRName={SQL:"SQLSRCustomers"};
-	var CTRName="#CTRName";
-	Fun_getSQLSelectDBData(SQLCTRName,CTRName,dataSelect.CTRName);
-	
-	var SQLMHEName={SQL:"SQLSRMachines"};
-	var MHEName="#MHEName";
-	Fun_getSQLSelectDBData(SQLMHEName,MHEName,dataSelect.MHEName);
-	
-
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='DSP' AND status=1"},"#modelD",dataSelect.modelD);
-	Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",dataSelect.modelH);
-	
-	
-
-	
-	Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#PGEMaker",dataSelect.PGEMaker);
-	
-
-	
-
-	$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
-
-    $('#topic').val(dataSelect.topic); 
-    $('#detail').val(dataSelect.detail.replace(/<br\/>/g,'\n')); 
-    
-    
-    var Para={"billName":"ppm_bills_plan","billID":dataSelect.BPID,"billVersion":dataSelect.version}
-	Fun_getBillFile(Para,"#divFilesUploaded",true);
-    
-  $('#divFilesUploaded').html("");
-  
-  console.log("dataSelect.files:"+dataSelect.files);
-  
-
-
-  if(dataSelect.files!=null){
-	  
-	  var files=JSON.parse(dataSelect.files);
-	  if(files!=null){
-		  
-		  console.log("file is not null:"+JSON.stringify(files));
-		  
-		  var fileLink="";
-			 if(files.length>0){
-				 for(var i=0;i<files.length;i++){
-					 console.log("files[i].fileName:"+files[i].fileName);
-					 
-					fileLink=fileLink+"<a  href="+'/system.files.download/'+files[i].fileKey+" download="+files[i].fileName+">"+"<span>"+files[i].fileName+"</span></a>"+" ; ";
-				 } 
-				 
-				 fileLink=fileLink.substr(0, fileLink.length-3); 
-			 }
-	  var downloadurl=fileLink;
-	  }else{
-		  downloadurl="";
-	  }
-	  $('#divFilesUploaded').html(downloadurl);
-  }
-  
-  
-  
-  $('#applyDate').val(dataSelect.applyDate); 
-  $('#limitDate').val(dataSelect.limitDate);
-  $('#maker').text(dataSelect.maker);
-  $('#makeDate').text(dataSelect.makeDate);
-
-  
-  
+		Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "谢丽君");
 
 
 
-  $('#auditResult').val(dataSelect.auditResult);
-  
-  var SQLAuditor={SQL:"SQLSRStaffs"};
-  var auditor="#auditor";
-  Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
-  
 
-  $('#auditDate').text(dataSelect.auditDate);
-  
-  //已经审核 或者登陆人为审核人则显示
-  
+		$('#topic').val("");
+		$('#detail').val("");
+		$('#version').text(0);
 
-  
-  //如果是已审核单据 则不显示更新和审核按钮
-  if(dataSelect.auditResult==null||dataSelect.auditResult==0){
-	  
-	  $('input').attr("disabled",false);
-	  $('select').attr("disabled",false);
-	  $('textarea').attr("disabled",false);
-	  $("#DivAuditImage").attr('src',"");
-	  $("#BPID").attr("disabled",true);
-	  
-	  
-	  $('.form_date').datetimepicker({
-	      language:  'zh-CN',
-	      weekStart: 1,
-	      todayBtn:  1,
+
+		$('.form_date').datetimepicker({
+			language: 'zh-CN',
+			weekStart: 1,
+			todayBtn: 1,
 			autoclose: 1,
 			todayHighlight: 1,
 			startView: 2,
 			minView: 2,
 			forceParse: 0
-	  });
-	  
+		});
 
-	  $("#DivAuditImage").attr('src',"");
-	  
-	  $("#DivFileBTNS").show();
-	  
-	  $("#auditOpinionDiv").hide();
-	  
-	  $('#BTNGetPEGMaker').show();
-//	  $("#BTNFormAuto").show();
-//	  $("#BTNFormClear").show();
-	  
+		$("#DivFileBTNS").show();
 
-	  $("#BTNFormModify").show();
-	  $("#BTNFormUpdate").hide();
-	  
-	  $("#BTNFormAuditYes").hide();
-	  $("#BTNFormAuditNo").hide();
+		$('#divFilesUploaded').html("");
 
-
-  }else{ 
-	  
-
-	  if(dataSelect.auditResult==1){
-		  $("#DivAuditImage").attr('src',"/images/auditYes.png");
-	  }else{ 
-		  $("#DivAuditImage").attr('src',"/images/auditNo.png");
-		  }
-	  
-	  $('#auditOpinion').val(dataSelect.auditOpinion.replace(/<br\/>/g,'\n'));
-	  $("#auditOpinionDiv").show();
-	  
-	  $('input').attr("disabled",true);
-	  $('select').attr("disabled",true);
-	  $('textarea').attr("disabled",true);
-
-	    var SQLAuditor={SQL:"SQLSRStaffs"};
-	    var auditor="#auditor";
-	   
-//	    $("#auditTypeOption1").attr("checked",true);
-	    
-//	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
-	    $("#auditor").attr("disabled",true);
-	    
-	    $('#auditDate').text(dataSelect.auditDate);
-	    
-//	    $("#BTNFormAuto").hide();
-//	    $("#BTNFormClear").hide();
-	    
-	    
-	    $("#DivFileBTNS").hide();
-	    $("#BTNFormModify").hide();
-	    $('#BTNGetPEGMaker').hide();
-	    
-	    $("#BTNFormUpdate").show();
-	    $("#BTNFormAuditYes").hide();
-	    $("#BTNFormAuditNo").hide();
-
-  }
-  
-  
-  changeEventBind();
-  
-}
+		//  $("#auditTypeOption1").attr("checked",true);
 
 
 
-//函数,检查输入项是否完整
-
-function checkPLDInput(){
-	console.log("detail:"+$("#detail").val());
-	if($("#CTRName").val()==null||$("#CTRName").val()==""){
-		swal("客户未输入,请检查!");
-		return false;
-	}else if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
-		swal("DSP系统,HMI系统至少选择一项,请检查!");
-		return false;
-	}else if($("#topic").val()==""){
-		swal("主题未输入,请检查!");
-		return false;
-	}else if($("#detail").val()==""){
-		swal("要求未输入,请检查!");
-		return false;
-	}else if($("#PGEMaker").val()==null||$("#PGEMaker").val()==""){
-		swal("方案人未输入,请检查!");
-		return false;
-	}
-	
-	return true;
-	
-}
+		$('#applyDate').val(Ndate);
+		$('#limitDate').val(Fun_getEndDate(Ndate, 3));
 
 
-//页面加载函数---------------
-$(document).ready( function () {
-	
-//	console.log("undone:"+getQueryString("undone"));
-	
-	var sessionName="<%-locals.session.yjUser.Name%>";
+		$('#auditOpinionDiv').hide();
 
-//权限测试
-//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
-//		swal("有权限");
-//	}
-	
-	var undone=getQueryString("undone");
-	
-	
-	switch(undone){
-	case "unAudit":
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":"auditor ='"+sessionName+"' AND auditResult IS NULL","orderBy":" saveTimeStamp DESC"};
-		break;
-	case "auditNo":
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" maker = '"+sessionName+"' AND PLDStatus=2 ","orderBy":" saveTimeStamp DESC"};
-		break;
-	case "all":
-		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
-		 $("#BTNFilterAll").addClass("active");
-		break;
-	default:
-		var tableSQL={"SQL":"SQLTableBillsPLD","filter":"auditResult <>1 OR auditResult IS NULL","orderBy":" saveTimeStamp DESC"};
-	    $("#BTNFilterSimple").addClass("active");
-		break;
-	}
-	
-//	if(undone=="true"){
-//		
-//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
-//	}else{
-//		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
-//	}
+		//  $("#auditTypeDiv").show();
+
+		$("#BTNFormSave").show();
+		$("#BTNFormSaveAudit").show();
+
+		$('#BTNGetPEGMaker').show();
 
 
-	console.log("sessionName:"+sessionName);
+		$("#BTNFormModify").hide();
+		$("#BTNFormUpdate").hide();
+		$("#BTNFormAuditYes").hide();
+		$("#BTNFormAuditNo").hide();
 
-	const tableInfo={
-			"tableID":"#billsPLDTable",
-			"columnsData":[
-				{ data: 'saveTimeStamp' ,"visible": false},
-				{ data: 'DBID' ,"visible": false},
-		        { data: 'BPID' },
-		        { data: 'version'},
-		        { data: 'CTRName'},
-		        { data: 'topic'},
-		        { data: 'maker'},
-		        { data: 'auditor'},
-		        { data: 'auditText'}
-			]
+		changeEventBind();
+
+
 	}
 
-	Fun_showSQLTable(tableSQL,tableInfo)
+	//函数:详情按钮详情页自动填写内容------------------------
+	function Fun_winDetailInit(dataChoose) {
+		getPLDOld(dataChoose.BPID);
 
-	
-//	tableChangeColWidth("billsPLDTable");
-	
-//判断是否选中数据-------
-var table = $('#billsPLDTable').DataTable();
-$('#billsPLDTable tbody').on('click', 'tr', function() {
-    if ($(this).hasClass('selected')) {
-        $(this).removeClass('selected');
-    } else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
-    }
- 
-    var dataSelect = table.row('.selected').data();
+		let dataSelect = NulltoEmpty(dataChoose);
+
+		$('#DBID').val(dataSelect.DBID);
+
+		$('#BPID').val(dataSelect.BPID);
+		$('#version').text(dataSelect.version);
 
 
-});
+		$("[name='PLDArea'][value='" + dataSelect.PLDArea + "']").prop("checked", true);
+		$("[name='orderFrom'][value='" + dataSelect.orderFrom + "']").prop("checked", true);
+		$("[name='orderFromDep'][value='" + dataSelect.orderFromDep + "']").prop("checked", true);
 
-//dbclick 测试判断是否选中数据-------
+		var SQLCTRName = { SQL: "SQLSRCustomers" };
+		var CTRName = "#CTRName";
+		Fun_getSQLSelectDBData(SQLCTRName, CTRName, dataSelect.CTRName);
 
-$('#billsPLDTable tbody').on('dblclick', 'tr', function() {
-	
-	 table.$('tr.selected').removeClass('selected');
-     $(this).addClass('selected');
-	$('#BTNInfo').click();
+		var SQLMHEName = { SQL: "SQLSRMachines" };
+		var MHEName = "#MHEName";
+		Fun_getSQLSelectDBData(SQLMHEName, MHEName, dataSelect.MHEName);
 
-});
 
-//过滤按钮组
-
-$('#BTNFilterSimple').click(function() {
-	
-	window.location.href='/app/PM/billsPLD';
- 
-});
-
-$('#BTNFilterAll').click(function() {
-	
-	window.location.href='/app/PM/billsPLD?undone=all';
- 
-});
+		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='DSP' AND status=1" }, "#modelD", dataSelect.modelD);
+		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='HMI' AND status=1" }, "#modelH", dataSelect.modelH);
 
 
 
 
-
-
-//按钮-新增计划单---------
-$('#BTNAdd').click(function() {
-	
-	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
-	
-	$('#BillPLD').modal('show');
-	
-	Fun_winAddInit();
-	
-	}
- 
-});
-
-
-
-////radio 定义更换按键触发事件-----------
-//$('input:radio[name="auditType"]').click(function(){
-//	
-//	  var PGEMaker=$('#PGEMaker').children('option:selected').text();
-//	  console.log("PGEMaker:"+PGEMaker);
-//	  var radioValue = $('input:radio[name="auditType"]:checked').val(); 
-//	     switch(radioValue){
-//	 	case "1":		
-//	 		var SQLAuditor={SQL:"SQLSRStaffs"};
-//	 		var auditor="#auditor";
-//	 		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
-//	 	    $("#auditor").attr("disabled",true);
-//	 	    $('#auditDate').text("");
-//     	    $('#auditResult').val("");
-//	 	    break;
-//	 	case "2":
-//	 	   
-//	 	    var SQLAuditor={SQL:"SQLSRStaffs"};
-//	 		var auditor="#auditor";
-//	 		Fun_getSQLSelectDBData(SQLAuditor,auditor);
-//	 	    $("#auditor").attr("disabled",false);
-//	 	    $('#auditDate').text("");
-//	 	    $('#auditResult').val("");
-//	 	    break;
-//	 	}
-//
-//});
-
-
-
-////方案人change事件  影响审核人展开数据准确性暂时 取消
-//$('#PGEMaker').change(function(){  
-//	
-////	console.log("11:"+$('#auditor option:selected').text());
-//	
-//	if($('#auditor option:selected').text()==""){
-//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",$('#PGEMaker option:selected').text());	
-//	}
-//
-//})  
-
-
-//详情按钮---------
-$('#BTNInfo').click(function() {
-    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
-    // table.row('.selected').remove().draw( false );
-    var dataSelect = table.row('.selected').data();
-    if (dataSelect == undefined) {
-        swal("操作提示:单击选中数据行后,再双击可快速打开表单!!");
-    } else {
-
-    	$('#BillPLD').modal('show')
-    	Fun_winDetailInit(dataSelect);
-    	
-    	$("#BTNFormSave").hide();
-    	$("#BTNFormSaveAudit").hide();
-    	
-
-    }
-});
+		Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#PGEMaker", dataSelect.PGEMaker);
 
 
 
 
-//删除按钮----------
-$('#BTNDelete').click(function() {
-	
-	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD04")){
-    var dataSelect = table.row('.selected').data();
-    
- //   swal(JSON.stringify(dataSelect));
-    
-    if (dataSelect == undefined) {
-        swal("当前未选择任何数据,请先单击选择需要删除的数据行!");
-    } else {
-    	
-    	
-    	if(dataSelect.auditResult!=null&&dataSelect.auditResult!=""){
-    		swal("已审核单据禁止删除!");
-    	}else{
-    		
-    		
-   		var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
-    		
-//    		var msg1 =swal({
-//    			  title: "操作提示",
-//    			  text: "该单据删除后无法恢复,是否继续!",
-//    			  icon: "warning",
-//    			  buttons: true,
-//    			  dangerMode: true,
-//    			})
-//    			.then((next) => {
-//    			  if (next) {
-//    			    swal("Poof! Your imaginary file has been deleted!", {
-//    			      icon: "success",
-//    			    });
-//    			     result=true;
-//    			  } 
-//    			  return result;
-//    			});
-    		
-            if (msg1 === true) {
-                var msg2 = confirm("确认删除此行数据？");
-                if (msg2 === true) {
-                	
-                //	swal(dataSelect.DBID);
-                    var IDData = {"DBTable":"ppm_bills_plan","DBID":dataSelect.DBID};
- //                   swal("IDData:"+JSON.stringify(IDData));
-                    delDBData(IDData);
-                }
-            }
-    		
-    		
-    	}
+		$('#OGNSystemVersion').val(dataSelect.OGNSystemVersion);
 
-    }
-    
- //   window.location.reload();
-    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
-	}
-});
+		$('#topic').val(dataSelect.topic);
+		$('#detail').val(dataSelect.detail.replace(/<br\/>/g, '\n'));
 
-//按钮-审核---------
-$('#BTNAudit').click(function() {
-	
-	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD02")){
-	
-    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
-    // table.row('.selected').remove().draw( false );
-    var dataSelect = table.row('.selected').data();
-    if (dataSelect == undefined) {
-        swal("操作提示:请先点击选中需要审核的计划单!");
-    } else {
-    	
-    	if(dataSelect.auditResult==null||dataSelect.auditResult==""){
-    		
 
-    		$('#BillPLD').modal('show')
-        	Fun_winDetailInit(dataSelect);
-    		
-    		 $('input').attr("disabled",true);
-    		 $('select').attr("disabled",true);
-    		 $('textarea').attr("disabled",true);
-    		
-    		$("#DivFileBTNS").hide();
-    		
-    		$("#BTNFormSave").hide();
-    		$("#BTNFormSaveAudit").hide();
-    		
-    		$("#BTNFormModify").hide();
-    		$("#BTNFormUpdate").hide();
-    		
-    		$("#auditOpinionDiv").show();
-    		
-    		$('#auditOpinion').attr("disabled",false);
-        	
-        	$("#BTNFormAuditYes").show();
-     	    $("#BTNFormAuditNo").show();
-     	    
-    		
-    	}else{
-    		swal("此计划单已审核,无需再审,可点击详情查看!");
-    	}
+		var Para = { "billName": "ppm_bills_plan", "billID": dataSelect.BPID, "billVersion": dataSelect.version }
+		Fun_getBillFile(Para, "#divFilesUploaded", true);
 
-    }
-    
-	}
-});
+		$('#divFilesUploaded').html("");
 
-////按钮-表单自动填单
-//$('#BTNFormAuto').click(function(){
-//	
-//	let CTRNameDBID=$('#CTRName option:selected').val();
-//
-//	if(CTRNameDBID==undefined){
-//		swal("请选择客户,以便系统加载绑定数据!");
-//	}else{
-//		let filter="CTRVal="+CTRNameDBID;
-//	
-//		if($('#MHEName option:selected').val()!=undefined){
-//			filter=filter+" AND MHEVal="+$('#MHEName option:selected').val();
-//		}
-//		
-//		if($('#modelD option:selected').val()!=undefined){
-//			filter=filter+" AND DModelVal="+$('#modelD option:selected').val();
-//		}
-//		
-//		if($('#modelH option:selected').val()!=undefined){
-//			filter=filter+" AND HModelVal="+$('#modelH option:selected').val();
-//		}
-//		
-//		
-//		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
-//		
-//		 $.ajax({
-//	         method:'get',
-//	         data:selectSQL,
-//	         url:"/app/PM/getSQLDBData",
-////	         async:false, 
-//	         success:function(data){
-//
-//	        	 if(data.length==0){
-//	        		 swal("系统未检测到对应绑定关系,请先维护绑定关系基础数据!");
-//	        	 }else{
-//	        		 console.log("bindData:"+JSON.stringify(data));
-//	        		 
-//	        		 $("#MHEName").selectpicker('val',data[0].MHEVal);
-//	        		 $("#modelD").selectpicker('val',data[0].DModelVal);
-//	        		 $("#modelH").selectpicker('val',data[0].HModelVal);
-//	        		 $("#PGEMaker").selectpicker('val',data[0].DStaffVal);
-//
-//	        	 }
-//
-//	         },
-//	         error:function(){}
-//	     })
-//	     
-//	     
-//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
-//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
-//	}
-//
-//
-//})
+		console.log("dataSelect.files:" + dataSelect.files);
 
-//按钮-表单清空选择
-$('#BTNFormClear').click(function(){
-	
-	 $("#CTRName").selectpicker('val',"");
-	 $("#MHEName").selectpicker('val',"");
-	 $("#modelD").selectpicker('val',"");
-	 $("#modelH").selectpicker('val',"");
-	 $("#PGEMaker").selectpicker('val',"");
-	 $("#topic").val("");
-	 $("#detail").val("");
-	
 
-})
 
-//按钮-表格新增计划单
+		if (dataSelect.files != null) {
 
-$('#BTNFormSave').click(function(){
-	
-	if(checkPLDInput()){
-		 var files=[];
-			
-			$('#divFilesUploaded a').each(function(){
-				var fileKey=$(this).attr('href').substring(23);
-				var fileName=$(this).attr('download');
-				
-				var fileInfo={
-						"fileName":fileName,
-						"fileKey":fileKey
+			var files = JSON.parse(dataSelect.files);
+			if (files != null) {
+
+				console.log("file is not null:" + JSON.stringify(files));
+
+				var fileLink = "";
+				if (files.length > 0) {
+					for (var i = 0; i < files.length; i++) {
+						console.log("files[i].fileName:" + files[i].fileName);
+
+						fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" + files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
+					}
+
+					fileLink = fileLink.substr(0, fileLink.length - 3);
 				}
-				
-				files.push(fileInfo);
-			});
-			
-			var billData={
-					"DBTable":"ppm_bills_plan",
-					"BPID":$('#BPID').val(),
-					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-					"topic":$('#topic').val(),
-					"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-					"PGEMaker":$('#PGEMaker option:selected').text(),
-					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-					"modelD":$('#modelD option:selected').text(),
-					"modelH":$('#modelH option:selected').text(),
-					"OGNSystemVersion":$('#OGNSystemVersion').val(),
-					"applyDate":$('#applyDate').val(),
-					"limitDate":$('#limitDate').val(),
-					"maker":sessionName,
-					"auditor":$('#auditor option:selected').text(),
-					"makeDate":Ndate,
-//					"auditDate":$('#auditDate').text(),
-//					"auditResult":$('#auditResult').val(),
-//					"version": $('#version').text(),
-					"files":JSON.stringify(files),
-					"WFStatus":1
+				var downloadurl = fileLink;
+			} else {
+				downloadurl = "";
 			}
-			
+			$('#divFilesUploaded').html(downloadurl);
+		}
 
-			
-//			addDBData(billData);
-			let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的计划单,请登陆系统处理!";
-			
-			
-			Fun_addDBDataDD(billData,{at:$('#auditor option:selected').text(),msg:msgContent});
-			
-//			IOF_insertDBData(
-//					{tableName:'ppm_bills_plan',tableDatas:[billData]},null,
-//					IOF_sendDingMsg(
-//							{at:'熊奇龙',msg:'test'}
-//					)
-//			);
-		
+
+
+		$('#applyDate').val(dataSelect.applyDate);
+		$('#limitDate').val(dataSelect.limitDate);
+		$('#maker').text(dataSelect.maker);
+		$('#makeDate').text(dataSelect.makeDate);
+
+
+
+
+
+
+		$('#auditResult').val(dataSelect.auditResult);
+
+		var SQLAuditor = { SQL: "SQLSRStaffs" };
+		var auditor = "#auditor";
+		Fun_getSQLSelectDBData(SQLAuditor, auditor, dataSelect.auditor);
+
+
+		$('#auditDate').text(dataSelect.auditDate);
+
+		//已经审核 或者登陆人为审核人则显示
+
+
+
+		//如果是已审核单据 则不显示更新和审核按钮
+		if (dataSelect.auditResult == null || dataSelect.auditResult == 0) {
+
+			$('input').attr("disabled", false);
+			$('select').attr("disabled", false);
+			$('textarea').attr("disabled", false);
+			$("#DivAuditImage").attr('src', "");
+			$("#BPID").attr("disabled", true);
+
+
+			$('.form_date').datetimepicker({
+				language: 'zh-CN',
+				weekStart: 1,
+				todayBtn: 1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+			});
+
+
+			$("#DivAuditImage").attr('src', "");
+
+			$("#DivFileBTNS").show();
+
+			$("#auditOpinionDiv").hide();
+
+			$('#BTNGetPEGMaker').show();
+			//	  $("#BTNFormAuto").show();
+			//	  $("#BTNFormClear").show();
+
+
+			$("#BTNFormModify").show();
+			$("#BTNFormUpdate").hide();
+
+			$("#BTNFormAuditYes").hide();
+			$("#BTNFormAuditNo").hide();
+
+
+		} else {
+
+
+			if (dataSelect.auditResult == 1) {
+				$("#DivAuditImage").attr('src', "/images/auditYes.png");
+			} else {
+				$("#DivAuditImage").attr('src', "/images/auditNo.png");
+			}
+
+			$('#auditOpinion').val(dataSelect.auditOpinion.replace(/<br\/>/g, '\n'));
+			$("#auditOpinionDiv").show();
+
+			$('input').attr("disabled", true);
+			$('select').attr("disabled", true);
+			$('textarea').attr("disabled", true);
+
+			var SQLAuditor = { SQL: "SQLSRStaffs" };
+			var auditor = "#auditor";
+
+			//	    $("#auditTypeOption1").attr("checked",true);
+
+			//	    Fun_getSQLSelectDBData(SQLAuditor,auditor,dataSelect.auditor);
+			$("#auditor").attr("disabled", true);
+
+			$('#auditDate').text(dataSelect.auditDate);
+
+			//	    $("#BTNFormAuto").hide();
+			//	    $("#BTNFormClear").hide();
+
+
+			$("#DivFileBTNS").hide();
+			$("#BTNFormModify").hide();
+			$('#BTNGetPEGMaker').hide();
+
+			$("#BTNFormUpdate").show();
+			$("#BTNFormAuditYes").hide();
+			$("#BTNFormAuditNo").hide();
+
+		}
+
+
+		changeEventBind();
+
 	}
-	
-
-});
 
 
 
-//按钮-表格保存审核计划单
+	//函数,检查输入项是否完整
 
-$('#BTNFormSaveAudit').click(function(){
-	
-	if(sessionName!=$('#auditor option:selected').text()){
-		swal('当前用户非指定审核人,无法使用此功能')
-	}else{
-		if(checkPLDInput()){
-			
-			let msg=confirm("启用保存审核,计划单将审核通过,直接发布至方案单,是否继续?");
-			
-			if(msg){
-				
-				 var files=[];
-					
-					$('#divFilesUploaded a').each(function(){
-						var fileKey=$(this).attr('href').substring(23);
-						var fileName=$(this).attr('download');
-						
-						var fileInfo={
-								"fileName":fileName,
-								"fileKey":fileKey
+	function checkPLDInput() {
+		console.log("detail:" + $("#detail").val());
+		if ($("#CTRName").val() == null || $("#CTRName").val() == "") {
+			swal("客户未输入,请检查!");
+			return false;
+		} else if (($('#modelD option:selected').val() == undefined || $('#modelD option:selected').val() == "") && ($('#modelH option:selected').val() == undefined || $('#modelH option:selected').val() == "")) {
+			swal("DSP系统,HMI系统至少选择一项,请检查!");
+			return false;
+		} else if ($("#topic").val() == "") {
+			swal("主题未输入,请检查!");
+			return false;
+		} else if ($("#detail").val() == "") {
+			swal("要求未输入,请检查!");
+			return false;
+		} else if ($("#PGEMaker").val() == null || $("#PGEMaker").val() == "") {
+			swal("方案人未输入,请检查!");
+			return false;
+		}
+
+		return true;
+
+	}
+
+
+	//页面加载函数---------------
+	$(document).ready(function () {
+
+		//	console.log("undone:"+getQueryString("undone"));
+
+		var sessionName = "<%-locals.session.yjUser.Name%>";
+
+		//权限测试
+		//	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
+		//		swal("有权限");
+		//	}
+
+		var undone = getQueryString("undone");
+
+
+		switch (undone) {
+			case "unAudit":
+				var tableSQL = { "SQL": "SQLTableBillsPLD", "filter": "auditor ='" + sessionName + "' AND auditResult IS NULL", "orderBy": " saveTimeStamp DESC" };
+				break;
+			case "auditNo":
+				var tableSQL = { "SQL": "SQLTableBillsPLD", "filter": " maker = '" + sessionName + "' AND PLDStatus=2 ", "orderBy": " saveTimeStamp DESC" };
+				break;
+			case "all":
+				var tableSQL = { "SQL": "SQLTableBillsPLD", "orderBy": " saveTimeStamp DESC" };
+				$("#BTNFilterAll").addClass("active");
+				break;
+			default:
+				var tableSQL = { "SQL": "SQLTableBillsPLD", "filter": "auditResult <>1 OR auditResult IS NULL", "orderBy": " saveTimeStamp DESC" };
+				$("#BTNFilterSimple").addClass("active");
+				break;
+		}
+
+		//	if(undone=="true"){
+		//		
+		//		var tableSQL={"SQL":"SQLTableBillsPLD","filter":" (maker = '"+sessionName+"' OR PGEMaker = '"+sessionName+"' OR auditor = '"+sessionName+"' ) AND PLDStatus <>1  ","orderBy":" saveTimeStamp DESC"};
+		//	}else{
+		//		var tableSQL={"SQL":"SQLTableBillsPLD","orderBy":" saveTimeStamp DESC"};
+		//	}
+
+
+		console.log("sessionName:" + sessionName);
+
+		const tableInfo = {
+			"tableID": "#billsPLDTable",
+			"columnsData": [
+				{ data: 'saveTimeStamp', "visible": false },
+				{ data: 'DBID', "visible": false },
+				{ data: 'BPID' },
+				{ data: 'version' },
+				{ data: 'CTRName' },
+				{ data: 'topic' },
+				{ data: 'maker' },
+				{ data: 'auditor' },
+				{ data: 'auditText' }
+			]
+		}
+
+		Fun_showSQLTable(tableSQL, tableInfo)
+
+
+		//	tableChangeColWidth("billsPLDTable");
+
+		//判断是否选中数据-------
+		var table = $('#billsPLDTable').DataTable();
+		$('#billsPLDTable tbody').on('click', 'tr', function () {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
+
+			var dataSelect = table.row('.selected').data();
+
+
+		});
+
+		//dbclick 测试判断是否选中数据-------
+
+		$('#billsPLDTable tbody').on('dblclick', 'tr', function () {
+
+			table.$('tr.selected').removeClass('selected');
+			$(this).addClass('selected');
+			$('#BTNInfo').click();
+
+		});
+
+		//过滤按钮组
+
+		$('#BTNFilterSimple').click(function () {
+
+			window.location.href = '/app/PM/billsPLD';
+
+		});
+
+		$('#BTNFilterAll').click(function () {
+
+			window.location.href = '/app/PM/billsPLD?undone=all';
+
+		});
+
+
+
+
+
+
+		//按钮-新增计划单---------
+		$('#BTNAdd').click(function () {
+
+			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD01")) {
+
+				$('#BillPLD').modal('show');
+
+				Fun_winAddInit();
+
+			}
+
+		});
+
+
+
+		////radio 定义更换按键触发事件-----------
+		//$('input:radio[name="auditType"]').click(function(){
+		//	
+		//	  var PGEMaker=$('#PGEMaker').children('option:selected').text();
+		//	  console.log("PGEMaker:"+PGEMaker);
+		//	  var radioValue = $('input:radio[name="auditType"]:checked').val(); 
+		//	     switch(radioValue){
+		//	 	case "1":		
+		//	 		var SQLAuditor={SQL:"SQLSRStaffs"};
+		//	 		var auditor="#auditor";
+		//	 		Fun_getSQLSelectDBData(SQLAuditor,auditor,PGEMaker);	 
+		//	 	    $("#auditor").attr("disabled",true);
+		//	 	    $('#auditDate').text("");
+		//     	    $('#auditResult').val("");
+		//	 	    break;
+		//	 	case "2":
+		//	 	   
+		//	 	    var SQLAuditor={SQL:"SQLSRStaffs"};
+		//	 		var auditor="#auditor";
+		//	 		Fun_getSQLSelectDBData(SQLAuditor,auditor);
+		//	 	    $("#auditor").attr("disabled",false);
+		//	 	    $('#auditDate').text("");
+		//	 	    $('#auditResult').val("");
+		//	 	    break;
+		//	 	}
+		//
+		//});
+
+
+
+		////方案人change事件  影响审核人展开数据准确性暂时 取消
+		//$('#PGEMaker').change(function(){  
+		//	
+		////	console.log("11:"+$('#auditor option:selected').text());
+		//	
+		//	if($('#auditor option:selected').text()==""){
+		//		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",$('#PGEMaker option:selected').text());	
+		//	}
+		//
+		//})  
+
+
+		//详情按钮---------
+		$('#BTNInfo').click(function () {
+			console.log("seclet: " + JSON.stringify(table.row('.selected').data()));
+			// table.row('.selected').remove().draw( false );
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				swal("操作提示:单击选中数据行后,再双击可快速打开表单!!");
+			} else {
+
+				$('#BillPLD').modal('show')
+				Fun_winDetailInit(dataSelect);
+
+				$("#BTNFormSave").hide();
+				$("#BTNFormSaveAudit").hide();
+
+
+			}
+		});
+
+
+
+
+		//删除按钮----------
+		$('#BTNDelete').click(function () {
+
+			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD04")) {
+				var dataSelect = table.row('.selected').data();
+
+				//   swal(JSON.stringify(dataSelect));
+
+				if (dataSelect == undefined) {
+					swal("当前未选择任何数据,请先单击选择需要删除的数据行!");
+				} else {
+
+
+					if (dataSelect.auditResult != null && dataSelect.auditResult != "") {
+						swal("已审核单据禁止删除!");
+					} else {
+
+
+						var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+
+						//    		var msg1 =swal({
+						//    			  title: "操作提示",
+						//    			  text: "该单据删除后无法恢复,是否继续!",
+						//    			  icon: "warning",
+						//    			  buttons: true,
+						//    			  dangerMode: true,
+						//    			})
+						//    			.then((next) => {
+						//    			  if (next) {
+						//    			    swal("Poof! Your imaginary file has been deleted!", {
+						//    			      icon: "success",
+						//    			    });
+						//    			     result=true;
+						//    			  } 
+						//    			  return result;
+						//    			});
+
+						if (msg1 === true) {
+							var msg2 = confirm("确认删除此行数据？");
+							if (msg2 === true) {
+
+								//	swal(dataSelect.DBID);
+								var IDData = { "DBTable": "ppm_bills_plan", "DBID": dataSelect.DBID };
+								//                   swal("IDData:"+JSON.stringify(IDData));
+								delDBData(IDData);
+							}
 						}
-						
-						files.push(fileInfo);
-					});
-					
-					var billData={
-							"DBTable":"ppm_bills_plan",
-							"BPID":$('#BPID').val(),
-							"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-							"topic":$('#topic').val(),
-							"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-							"PGEMaker":$('#PGEMaker option:selected').text(),
-							"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-							"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-							"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-							"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-							"modelD":$('#modelD option:selected').text(),
-							"modelH":$('#modelH option:selected').text(),
-							"OGNSystemVersion":$('#OGNSystemVersion').val(),
-							"applyDate":$('#applyDate').val(),
-							"limitDate":$('#limitDate').val(),
-							"maker":sessionName,
-							"makeDate":Ndate,
+
+
+					}
+
+				}
+
+
+			}
+		});
+
+		//按钮-审核---------
+		$('#BTNAudit').click(function () {
+
+			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD02")) {
+
+				console.log("seclet: " + JSON.stringify(table.row('.selected').data()));
+				// table.row('.selected').remove().draw( false );
+				var dataSelect = table.row('.selected').data();
+				if (dataSelect == undefined) {
+					swal("操作提示:请先点击选中需要审核的计划单!");
+				} else {
+
+					if (dataSelect.auditResult == null || dataSelect.auditResult == "") {
+
+
+						$('#BillPLD').modal('show')
+						Fun_winDetailInit(dataSelect);
+
+						$('input').attr("disabled", true);
+						$('select').attr("disabled", true);
+						$('textarea').attr("disabled", true);
+
+						$("#DivFileBTNS").hide();
+
+						$("#BTNFormSave").hide();
+						$("#BTNFormSaveAudit").hide();
+
+						$("#BTNFormModify").hide();
+						$("#BTNFormUpdate").hide();
+
+						$("#auditOpinionDiv").show();
+
+						$('#auditOpinion').attr("disabled", false);
+
+						$("#BTNFormAuditYes").show();
+						$("#BTNFormAuditNo").show();
+
+
+					} else {
+						swal("此计划单已审核,无需再审,可点击详情查看!");
+					}
+
+				}
+
+			}
+		});
+
+		////按钮-表单自动填单
+		//$('#BTNFormAuto').click(function(){
+		//	
+		//	let CTRNameDBID=$('#CTRName option:selected').val();
+		//
+		//	if(CTRNameDBID==undefined){
+		//		swal("请选择客户,以便系统加载绑定数据!");
+		//	}else{
+		//		let filter="CTRVal="+CTRNameDBID;
+		//	
+		//		if($('#MHEName option:selected').val()!=undefined){
+		//			filter=filter+" AND MHEVal="+$('#MHEName option:selected').val();
+		//		}
+		//		
+		//		if($('#modelD option:selected').val()!=undefined){
+		//			filter=filter+" AND DModelVal="+$('#modelD option:selected').val();
+		//		}
+		//		
+		//		if($('#modelH option:selected').val()!=undefined){
+		//			filter=filter+" AND HModelVal="+$('#modelH option:selected').val();
+		//		}
+		//		
+		//		
+		//		let selectSQL={"SQL":"SQLGetCTRBinds","orderBy":"saveTimeStamp DESC","filter":filter,"limit":1}
+		//		
+		//		 $.ajax({
+		//	         method:'get',
+		//	         data:selectSQL,
+		//	         url:"/app/PM/getSQLDBData",
+		////	         async:false, 
+		//	         success:function(data){
+		//
+		//	        	 if(data.length==0){
+		//	        		 swal("系统未检测到对应绑定关系,请先维护绑定关系基础数据!");
+		//	        	 }else{
+		//	        		 console.log("bindData:"+JSON.stringify(data));
+		//	        		 
+		//	        		 $("#MHEName").selectpicker('val',data[0].MHEVal);
+		//	        		 $("#modelD").selectpicker('val',data[0].DModelVal);
+		//	        		 $("#modelH").selectpicker('val',data[0].HModelVal);
+		//	        		 $("#PGEMaker").selectpicker('val',data[0].DStaffVal);
+		//
+		//	        	 }
+		//
+		//	         },
+		//	         error:function(){}
+		//	     })
+		//	     
+		//	     
+		//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
+		//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+		//	}
+		//
+		//
+		//})
+
+		//按钮-表单清空选择
+		$('#BTNFormClear').click(function () {
+
+			$("#CTRName").selectpicker('val', "");
+			$("#MHEName").selectpicker('val', "");
+			$("#modelD").selectpicker('val', "");
+			$("#modelH").selectpicker('val', "");
+			$("#PGEMaker").selectpicker('val', "");
+			$("#topic").val("");
+			$("#detail").val("");
+
+
+		})
+
+		//按钮-表格新增计划单
+
+		$('#BTNFormSave').click(function () {
+
+			if (checkPLDInput()) {
+				var files = [];
+
+				$('#divFilesUploaded a').each(function () {
+					var fileKey = $(this).attr('href').substring(23);
+					var fileName = $(this).attr('download');
+
+					var fileInfo = {
+						"fileName": fileName,
+						"fileKey": fileKey
+					}
+
+					files.push(fileInfo);
+				});
+
+				var billData = {
+					"DBTable": "ppm_bills_plan",
+					"BPID": $('#BPID').val(),
+					"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
+					"topic": $('#topic').val(),
+					"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>'),
+					"PGEMaker": $('#PGEMaker option:selected').text(),
+					"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
+					"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
+					"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
+					"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
+					"modelD": $('#modelD option:selected').text(),
+					"modelH": $('#modelH option:selected').text(),
+					"OGNSystemVersion": $('#OGNSystemVersion').val(),
+					"applyDate": $('#applyDate').val(),
+					"limitDate": $('#limitDate').val(),
+					"maker": sessionName,
+					"auditor": $('#auditor option:selected').text(),
+					"makeDate": Ndate,
+					//					"auditDate":$('#auditDate').text(),
+					//					"auditResult":$('#auditResult').val(),
+					//					"version": $('#version').text(),
+					"files": JSON.stringify(files),
+					"WFStatus": 1
+				}
+
+
+
+				//			addDBData(billData);
+				let msgContent = "@" + $('#auditor option:selected').text() + ",您存在未审核的计划单,请登陆系统处理!";
+
+
+				Fun_addDBDataDD(billData, { at: $('#auditor option:selected').text(), msg: msgContent });
+
+				//			IOF_insertDBData(
+				//					{tableName:'ppm_bills_plan',tableDatas:[billData]},null,
+				//					IOF_sendDingMsg(
+				//							{at:'熊奇龙',msg:'test'}
+				//					)
+				//			);
+
+			}
+
+
+		});
+
+
+
+		//按钮-表格保存审核计划单
+
+		$('#BTNFormSaveAudit').click(function () {
+
+			if (sessionName != $('#auditor option:selected').text()) {
+				swal('当前用户非指定审核人,无法使用此功能')
+			} else {
+				if (checkPLDInput()) {
+
+					let msg = confirm("启用保存审核,计划单将审核通过,直接发布至方案单,是否继续?");
+
+					if (msg) {
+
+						var files = [];
+
+						$('#divFilesUploaded a').each(function () {
+							var fileKey = $(this).attr('href').substring(23);
+							var fileName = $(this).attr('download');
+
+							var fileInfo = {
+								"fileName": fileName,
+								"fileKey": fileKey
+							}
+
+							files.push(fileInfo);
+						});
+
+						var billData = {
+							"DBTable": "ppm_bills_plan",
+							"BPID": $('#BPID').val(),
+							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
+							"topic": $('#topic').val(),
+							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>'),
+							"PGEMaker": $('#PGEMaker option:selected').text(),
+							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
+							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
+							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
+							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
+							"modelD": $('#modelD option:selected').text(),
+							"modelH": $('#modelH option:selected').text(),
+							"OGNSystemVersion": $('#OGNSystemVersion').val(),
+							"applyDate": $('#applyDate').val(),
+							"limitDate": $('#limitDate').val(),
+							"maker": sessionName,
+							"makeDate": Ndate,
 							"version": $('#version').text(),
-							"files":JSON.stringify(files),
-							"auditor":sessionName,
-							"auditDate":Ndate,
-							"auditResult":1,
-							"PLDStatus":1,
-							"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
-							"WFStatus":10
+							"files": JSON.stringify(files),
+							"auditor": sessionName,
+							"auditDate": Ndate,
+							"auditResult": 1,
+							"PLDStatus": 1,
+							"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>'),
+							"WFStatus": 10
+						}
+
+
+						let msgContent = "@" + $('#PGEMaker option:selected').text() + ",计划单审核通过,请登陆系统填写方案单!";
+						Fun_addDBDataDD(billData, { at: $('#PGEMaker option:selected').text(), msg: msgContent });
+
+
+
+					}
+
+				}
+
+
+
+			}
+
+
+
+
+
+
+
+
+		});
+
+
+		//按钮-表格修改计划单
+
+		$('#BTNFormModify').click(function () {
+
+			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD01")) {
+				if (sessionName == $('#maker').text()) {
+
+					if (checkPLDInput()) {
+						var files = [];
+
+						$('#divFilesUploaded a').each(function () {
+							var fileKey = $(this).attr('href').substring(23);
+							var fileName = $(this).attr('download');
+
+							var fileInfo = {
+								"fileName": fileName,
+								"fileKey": fileKey
+							}
+
+							files.push(fileInfo);
+						});
+
+
+
+						console.log("files:" + JSON.stringify(files));
+
+						var billData = {
+							"DBTable": "ppm_bills_plan",
+							"DBID": $('#DBID').val(),
+							"BPID": $('#BPID').val(),
+							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
+							"topic": $('#topic').val(),
+							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>'),
+							"PGEMaker": $('#PGEMaker option:selected').text(),
+							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
+							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
+							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
+							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
+							"modelD": $('#modelD option:selected').text(),
+							"modelH": $('#modelH option:selected').text(),
+							"OGNSystemVersion": $('#OGNSystemVersion').val(),
+							"applyDate": $('#applyDate').val(),
+							"limitDate": $('#limitDate').val(),
+							"maker": sessionName,
+							"auditor": $('#auditor option:selected').text(),
+							"makeDate": Ndate,
+							//					"version": $('#version').text(),
+							"files": JSON.stringify(files),
+							"WFStatus": 1
+						}
+
+
+
+						//			updDBData(billData,"计划单");
+
+
+						let msgContent = "@" + $('#auditor option:selected').text() + ",您存在未审核的计划单,请登陆系统处理!";
+						Fun_updDBDataDD(billData, { at: $('#PGEMaker option:selected').text(), msg: msgContent }, "计划单");
+
+					}
+
+				} else {
+					swal('当前账号非制单人不允许修改!')
+				}
+
+
+
+
+			}
+
+		});
+
+		//按钮-表单更新版本按钮
+
+
+
+		$('#BTNFormUpdate').click(function () {
+
+			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD03")) {//------检查权限
+
+
+				var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
+				if (msg1 === true) {
+					var msg2 = confirm("确认更新版本？");
+					if (msg2 === true) {
+
+						var newVersion = parseInt($('#version').text()) + 1;
+
+						var files = [];
+
+						$('#divFilesUploaded a').each(function () {
+							var fileKey = $(this).attr('href').substring(23);
+							var fileName = $(this).attr('download');
+
+							var fileInfo = {
+								"fileName": fileName,
+								"fileKey": fileKey
+							}
+
+							files.push(fileInfo);
+						});
+
+
+
+						var oldPLDData = {
+							"DBTable": "ppm_bills_plan",
+							"DBID": $('#DBID').val(),
+							"BPID": $('#BPID').val(),
+							"WFStatus": 0,
+							"effective": 0
+						}
+
+						let ajax1 = $.ajax({
+							method: 'post',
+							url: '/app/PM/updDBData',
+							data: oldPLDData,
+							success: function (data, textStatus) {
+
+							},
+							error: function (XMLHttpRequest, textStatus, errorThrown) { }
+						});
+
+
+
+
+						//	        	 let taskUpdData={
+						//							"DBTable":"ppm_bills_task",
+						//							"BillIDName":"taskBPID",
+						//							"BillID":$('#BPTBPID').val(),
+						//							"taskMaker":sessionName,
+						//							"taskMakeDate":Ndate,
+						//							"BTAcceptResult":0,
+						//							"filter":"BTAcceptResult IS NULL"
+						//				}
+						//
+						//				let ajax3=$.ajax({
+						//				        method: 'post',
+						//				        url: '/app/PM/updBillStatus',
+						//				        data: taskUpdData,
+						//				        success: function(data, textStatus) {
+						//				        },
+						//				        error: function(XMLHttpRequest, textStatus, errorThrown) {}
+						//				        });
+
+						var newPLDData = {
+							"DBTable": "ppm_bills_plan",
+							"BPID": $('#BPID').val(),
+							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
+							"topic": $('#topic').val(),
+							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>'),
+							"PGEMaker": $('#PGEMaker option:selected').text(),
+							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
+							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
+							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
+							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
+							"modelD": $('#modelD option:selected').text(),
+							"modelH": $('#modelH option:selected').text(),
+							"OGNSystemVersion": $('#OGNSystemVersion').val(),
+							"applyDate": $('#applyDate').val(),
+							"limitDate": $('#limitDate').val(),
+							"maker": sessionName,
+							"makeDate": Ndate,
+							"auditor": $('#auditor option:selected').text(),
+							"version": newVersion,
+							"files": JSON.stringify(files),
+							"WFStatus": 1
+						}
+
+
+						let ajax2 = $.ajax({
+							method: 'post',
+							url: '/app/PM/addDBData',
+							data: newPLDData,
+							success: function (data) {
+
+							},
+							error: function (err) {
+
+								if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
+									swal("系统中已存在重复数据,请检查!");
+								} else {
+									swal("失败数据:" + JSON.stringify(err));
+								}
+
+
+							}
+						});
+
+
+
+						$.when(ajax1, ajax2).done(function () {
+
+
+							let i={alertMsg:"更新版本成功!"}
+	                        swalAndRefresh(i)
+
+						});
+
+
+
+
+					}
+				}
+				//	    $('#BillPLD').modal('hide');
+
+			}//------检查权限
+
+		});
+
+		//按钮-表单审核通过按钮
+		$('#BTNFormAuditYes').click(function () {
+
+			if (sessionName == $('#auditor option:selected').text()) {
+				var msg = confirm("审核后无法修改单据,是否立即审核通过?");
+				if (msg == true) {
+					var auditData = {
+						"DBTable": "ppm_bills_plan",
+						"DBID": $('#DBID').val(),
+						"auditor": sessionName,
+						"auditDate": Ndate,
+						"auditResult": 1,
+						"PLDStatus": 1,
+						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>'),
+						"WFStatus": 10
+					}
+
+
+					let ajax1 = $.ajax({
+						method: 'post',
+						url: '/app/PM/updDBData',
+						data: auditData,
+						success: function (data, textStatus) {
+
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+					});
+
+
+					var BPTData = {
+						"DBTable": "ppm_bills_blueprint",
+						"BillIDName": "BPTBPID",
+						"BillID": $('#BPID').val(),
+						"effective": 0
+					}
+
+					let ajax2 = $.ajax({
+						method: 'post',
+						url: '/app/PM/updBillStatus',
+						data: BPTData,
+						success: function (data, textStatus) {
+
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+					});
+
+
+					if ($('#version').text() != '0') {
+
+						let msg2 = confirm('是否需要重做方案?');
+
+						if (msg2) {
+							$.when(ajax1, ajax2).done(function () {
+
+								let i = {
+									confirmMsg: '审核成功,是否发送钉钉提醒消息?',
+									DDMsg: {
+										at: $('#PGEMaker option:selected').text(),
+										msg: "@" + $('#PGEMaker option:selected').text() + ",计划单已更新版本,需重做方案,请登陆系统处理!"
+									}
+								}
+								let o = { f: io_refresh }
+
+								aio_chooseSendDDMsg(i, o)
+
+							});
+
+						}
+
+					} else {
+						$.when(ajax1).done(function () {
+							let i={alertMsg:"计划单审核成功!"}
+	                        swalAndRefresh(i)
+
+						});
 					}
 
 					
-		            let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
-					Fun_addDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent});
-					
-					
-				
-			   }
-			
-			}
-		
-		
-		
-	}
-	
-	
-	
-	
-	
-
-   
-
-});
-
-
-//按钮-表格修改计划单
-
-$('#BTNFormModify').click(function() {
-	
-	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD01")){
-	if(sessionName==$('#maker').text()){
-		
-		if(checkPLDInput()){
-			var files=[];
-			
-			$('#divFilesUploaded a').each(function(){
-				var fileKey=$(this).attr('href').substring(23);
-				var fileName=$(this).attr('download');
-				
-				var fileInfo={
-						"fileName":fileName,
-						"fileKey":fileKey
 				}
-				
-				files.push(fileInfo);
-			});
-			
-
-			
-			console.log("files:"+JSON.stringify(files));
-
-			var billData={
-					"DBTable":"ppm_bills_plan",
-					"DBID":$('#DBID').val(),
-					"BPID":$('#BPID').val(),
-					"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-					"topic":$('#topic').val(),
-					"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-					"PGEMaker":$('#PGEMaker option:selected').text(),
-					"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-					"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-					"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-					"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-					"modelD":$('#modelD option:selected').text(),
-					"modelH":$('#modelH option:selected').text(),
-					"OGNSystemVersion":$('#OGNSystemVersion').val(),
-					"applyDate":$('#applyDate').val(),
-					"limitDate":$('#limitDate').val(),
-					"maker":sessionName,
-					"auditor":$('#auditor option:selected').text(),
-					"makeDate":Ndate,
-//					"version": $('#version').text(),
-					"files":JSON.stringify(files),
-					"WFStatus":1
+			} else {
+				swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 			}
 
-
-			
-//			updDBData(billData,"计划单");
-			
-			
-			let msgContent="@"+$('#auditor option:selected').text()+",您存在未审核的计划单,请登陆系统处理!";
-			Fun_updDBDataDD(billData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"计划单");
-			
-			}
-		
-	}else{
-		swal('当前账号非制单人不允许修改!')
-	}
+			//	$('#BillPLD').modal('hide');
 
 
-	
-	
-	}
+		});
 
-});
+		//按钮-表单审核驳回按钮
+		$('#BTNFormAuditNo').click(function () {
 
-//按钮-表单更新版本按钮
+			if (sessionName == $('#auditor option:selected').text()) {
+				var msg = confirm("如计划单信息有误,可先修改后再审核,驳回后此单立即完结,是否立即审核驳回?");
+				if (msg == true) {
+					var auditData = {
+						"DBTable": "ppm_bills_plan",
+						"DBID": $('#DBID').val(),
+						"auditor": sessionName,
+						"auditDate": Ndate,
+						"auditResult": 2,
+						"PLDStatus": 2,
+						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>'),
+						"WFStatus": 9
+					}
 
+					//			updDBData(auditData,"表单审核状态");
 
+					let msgContent = "@" + $('#maker').text() + ",计划单审核未通过,请登陆系统处理!";
+					Fun_updDBDataDD(auditData, { at: $('#maker').text(), msg: msgContent }, "审核状态");
 
-$('#BTNFormUpdate').click(function() {
-	
-	if(checkAuthority({"SQL":"SQLGetAuthorities","filter":"StaffName='"+sessionName+"'"},"PLD03")){//------检查权限
-
-		
-		var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
-	    if (msg1 === true) {
-	        var msg2 = confirm("确认更新版本？");
-	        if (msg2 === true) {
-
-	        	var newVersion=parseInt($('#version').text())+1;
-	        	
-	        	var files=[];
-	        	
-	        	$('#divFilesUploaded a').each(function(){
-	        		var fileKey=$(this).attr('href').substring(23);
-	        		var fileName=$(this).attr('download');
-	        		
-	        		var fileInfo={
-	        				"fileName":fileName,
-	        				"fileKey":fileKey
-	        		}
-	        		
-	        		files.push(fileInfo);
-	        	});
-	        	
-	        	
-	        	
-	        	var oldPLDData={
-	        			"DBTable":"ppm_bills_plan",
-	        			"DBID":$('#DBID').val(),
-	        			"BPID":$('#BPID').val(),
-	        			"WFStatus":0
-	        	}
-	        	
-	        	let ajax1=$.ajax({
-	                method: 'post',
-	                url: '/app/PM/updDBData',
-	                data: oldPLDData,
-	                success: function(data, textStatus) {
-
-	                },
-	                error: function(XMLHttpRequest, textStatus, errorThrown) {}
-	            });
-	        	
-	        	
-	        	
-	        	
-	        	
-
-	        	var newPLDData={
-	        			"DBTable":"ppm_bills_plan",
-	        			"BPID":$('#BPID').val(),
-	        			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
-	        			"topic":$('#topic').val(),
-	        			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
-	        			"PGEMaker":$('#PGEMaker option:selected').text(),
-	        			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
-	        			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
-	        			"orderFromDep":$('input:radio[name="orderFromDep"]:checked').val(),
-	        			"MHEName":Fun_getSelectText($('#MHEName option:selected').text()),
-	        			"modelD":$('#modelD option:selected').text(),
-	        			"modelH":$('#modelH option:selected').text(),
-	        			"OGNSystemVersion":$('#OGNSystemVersion').val(),
-	        			"applyDate":$('#applyDate').val(),
-	        			"limitDate":$('#limitDate').val(),
-	        			"maker":sessionName,
-	        			"makeDate":Ndate,
-	        			"auditor":$('#auditor option:selected').text(),
-	        			"version": newVersion,
-	        			"files":JSON.stringify(files),
-	        			"WFStatus":1
-	        	}
-	        	
-	        	
-	        	let ajax2=$.ajax({
-	                method: 'post',
-	                url: '/app/PM/addDBData',
-	                data: newPLDData,
-	                success: function(data) {
-
-	               },
-	               error:function(err){
-	            	   
-	            	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-	            		   swal("系统中已存在重复数据,请检查!");
-	            	   }else{
-	            		   swal("失败数据:"+JSON.stringify(err));
-	            	   }
-	            	   
-	               	
-	               }
-	            });
-
-	        	
-	        	$.when(ajax1,ajax2).done(function(){
-	        		
-					swal("更新版本成功!");
-					window.location.reload();
-
-				});
-
-	        }
-	    }
-//	    $('#BillPLD').modal('hide');
-
-	}//------检查权限
-
-});
-
-//按钮-表单审核通过按钮
-$('#BTNFormAuditYes').click(function() {
-	
-	if(sessionName==$('#auditor option:selected').text()){
-		var msg = confirm("审核后无法修改单据,是否立即审核通过?");
-		if(msg==true){	
-			var auditData={
-					"DBTable":"ppm_bills_plan",
-					"DBID":$('#DBID').val(),
-					"auditor":sessionName,
-					"auditDate":Ndate,
-					"auditResult":1,
-					"PLDStatus":1,
-					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
-					"WFStatus":10
+				}
+			} else {
+				swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 			}
 
-//			updDBData(auditData,"审核状态");
-			
-			let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
-			Fun_updDBDataDD(auditData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
-//			window.location.reload();
-		}
-	}else{
-		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
-	}
-	
-//	$('#BillPLD').modal('hide');
+			//	$('#BillPLD').modal('hide');
 
-
-});
-
-//按钮-表单审核驳回按钮
-$('#BTNFormAuditNo').click(function() {
-	
-	if(sessionName==$('#auditor option:selected').text()){
-		var msg = confirm("如计划单信息有误,可先修改后再审核,驳回后此单立即完结,是否立即审核驳回?");
-		if(msg==true){	
-			var auditData={
-					"DBTable":"ppm_bills_plan",
-					"DBID":$('#DBID').val(),
-					"auditor":sessionName,
-					"auditDate":Ndate,
-					"auditResult":2,
-					"PLDStatus":2,
-					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
-					"WFStatus":9
-			}
-
-//			updDBData(auditData,"表单审核状态");
-			
-			let msgContent="@"+$('#maker').text()+",计划单审核未通过,请登陆系统处理!";
-			Fun_updDBDataDD(auditData,{at:$('#maker').text(),msg:msgContent},"审核状态");
-//			window.location.reload();
-		}
-	}else{
-		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
-	}
-	
-//	$('#BillPLD').modal('hide');
-
-});
+		});
 
 
 
 
-//按钮-系统指定方案人
-$('#BTNGetPEGMaker').click(function() {
-	fillFGEMaker();
-	fillAuditor();
-});
+		//按钮-系统指定方案人
+		$('#BTNGetPEGMaker').click(function () {
+			fillFGEMaker();
+			fillAuditor();
+		});
 
 
-//按钮-表单关闭按钮,添加刷新数据功能
-$('#BTNFormClose').click(function() {
-	 window.location.reload();
-});
+		//按钮-表单关闭按钮,添加刷新数据功能
+		$('#BTNFormClose').click(function () {
+			window.location.reload();
+		});
 
-$('#BTNModelClose').click(function() {
-	 window.location.reload();
-});
+		$('#BTNModelClose').click(function () {
+			window.location.reload();
+		});
 
-//按钮-流程跟踪
-$('#BTNTrack').click(function(){
-	window.location.href='/app/PM/billsTrack?BPID='+$('#BPID').val();
-});
+		//按钮-流程跟踪
+		$('#BTNTrack').click(function () {
+			window.location.href = '/app/PM/billsTrack?BPID=' + $('#BPID').val();
+		});
 
 
-}); 
+	});
 
 </script>

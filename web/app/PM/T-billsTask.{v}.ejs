@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -529,7 +529,7 @@
                     <select  id="recordAuditor" class="selectpicker" data-live-search="true"> 
                     </select>
                     
-                    <button id="BTNGetTaskAuditor" class="btn btn-success" data-toggle="modal" >系统确认</button>
+                    <button id="BTNGetTaskAuditor" class="btn btn-success" data-toggle="modal" >系统指定</button>
 
                     </div>
                     
@@ -759,10 +759,13 @@ function Fun_saveTaskRecord(DBData) {
         success: function(data) {
 //            swal("成功数据:" + JSON.stringify(data));
            if (data.affectedRows != 0) {
-               swal("保存任务记录成功!");
+
                Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
 //          	   $('#BTNTaskRecordAdd').click();
-               $('#DIVRecordContent').hide();
+			   $('#DIVRecordContent').hide();
+			   
+			   let i={alertMsg:"保存任务记录成功!"}
+	                swalAndRefresh(i)
 
            }
        },
@@ -1486,13 +1489,7 @@ $('#BTNTaskAcceptYes').click(function() {
 				        });
 					
 					 
-				
-
-//					$.when(ajax1,ajax2).done(function(){
-//							swal("任务单确认状态已更新,计划单FQC申请更新!");
-////						window.location.reload();
-//						
-//					});
+			
 			
 					
 					
@@ -1676,14 +1673,13 @@ $('#BTNTaskRecordSave').click(function() {
 					        });
 
 						$.when(ajax1,ajax2).done(function(){
-							swal("任务登记审核完成,可开始IPQC检测!");
 							
 							Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
-							
-							
 //	1			          	$('#BTNTaskRecordAdd').click();
 							$('#DIVRecordContent').hide();
-							window.location.reload();
+							let i={alertMsg:"T任务登记审核完成,可开始IPQC检测!"}
+	                        swalAndRefresh(i)
+
 							
 							
 						});
@@ -1880,8 +1876,9 @@ $('#BTNTaskUpdVer').click(function() {
 	        	
                 $.when(ajax1,ajax2).done(function(){
 	        		
-					swal("更新版本成功!");
-					window.location.reload();
+
+					let i={alertMsg:"更新版本成功!"}
+	                swalAndRefresh(i)
 
 				});
 	        	
@@ -2006,11 +2003,14 @@ $('#BTNTaskRecordAudit').click(function() {
 							
 
 								$.when(ajax1,ajax2).done(function(){
-									swal("任务登记审核完成,可开始IPQC检测!");
+
 									
 									Fun_showRecordsLiteTable(recordsTableSQL,tasksTableInfo);
 //						          	$('#BTNTaskRecordAdd').click();
 									$('#DIVRecordContent').hide();
+
+									let i={alertMsg:"T任务登记审核完成,可开始IPQC检测!"}
+	                                swalAndRefresh(i)
 									
 									
 								});

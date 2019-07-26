@@ -1010,8 +1010,9 @@ $('#BTNTaskIPQCAudit').click(function() {
 						
 
 							$.when(ajax1,ajax2).done(function(){
-									swal("通过IPQC测试,该任务单完结!");
-								window.location.reload();
+
+								let i={alertMsg:"通过IPQC测试,该任务单完结!"}
+	                            swalAndRefresh(i)
 								
 							});
 
@@ -1039,8 +1040,10 @@ $('#BTNTaskIPQCAudit').click(function() {
 							        });
 				        	 
 				        	 $.when(ajax1).done(function(){
-				        		    swal("未通过IPQC测试,请更新任务单版本重新开始该任务!");
-									window.location.reload();
+
+
+									let i={alertMsg:"未通过IPQC测试,请更新任务单版本重新开始该任务!"}
+	                                swalAndRefresh(i)
 									
 							 });
 

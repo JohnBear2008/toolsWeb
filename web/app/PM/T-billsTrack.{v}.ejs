@@ -20,7 +20,7 @@
 <script src="/js/PM/PMfuns.js"></script>
 
 <script src="/js/sweetalert.min.js"></script>
-
+<script src="/public/funs.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 
@@ -259,7 +259,7 @@ function Fun_winDetailInit(dataSelect){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText"
+				"FQCResultText"
 				],
 			"filter":"fqcBPID='"+dataSelect.BPID+"'"
 			};
@@ -308,7 +308,7 @@ $(document).ready( function () {
     		var tableSQL={"SQL":"SQLTableBillsTrack_T"};
     		$("#BTNFilterAll").addClass("active");
     	}else{
-    		var tableSQL={"SQL":"SQLTableBillsTrack_T","filter":"maker = '"+sessionName+"' OR auditor = '"+sessionName+"' OR PGEMaker = '"+sessionName+"'"};
+    		var tableSQL={"SQL":"SQLTableBillsTrack_T","filter":"taskStaffs like '%"+sessionName+"%' OR PGEMaker='"+sessionName+"'"};
     		 $("#BTNFilterSimple").addClass("active");
     	}
     }
@@ -325,7 +325,7 @@ $(document).ready( function () {
 		        { data: 'BPTStatusText'},
 		        { data: 'taskNum'},
 		        { data: 'taskNumDone'},
-		        { data: 'FQCStatusText'},
+		        { data: 'FQCResultText'},
 		        { data: 'PBHStatusText'}
 			]
 	}
@@ -444,8 +444,9 @@ $('#BTNStop').click(function() {
 			
 
 				$.when(ajax1,ajax2).done(function(){
-						alert("计划单已终止,相关任务单已终止!");
-					window.location.reload();
+
+					let i={alertMsg:"计划单已终止,相关任务单已终止!"}
+	                swalAndRefresh(i)
 					
 				});
 

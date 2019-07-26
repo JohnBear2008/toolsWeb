@@ -7,6 +7,8 @@
 
 <div>
 <button id="bt_test">测试按钮</button>
+
+<button id="bt_test2">弹出消息测试后刷新</button>
 </div>
 
 <script>
@@ -30,12 +32,20 @@ $('#bt_test').click(function(){
 				at:$('#auditor option:selected').text(),
 				msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}
 	}	
-	
 	let o={f:io_refresh}
 	
 	aio_chooseSendDDMsg(i,o)
 
 })
+
+$('#bt_test2').click(function(){
+
+	let i={alertMsg:"11111"}
+	swalAndRefresh(i)
+	
+
+})
+
 
 }); 
 </script>

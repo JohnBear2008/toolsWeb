@@ -1469,8 +1469,7 @@ $('#BTNDelete').click(function() {
 
     }
     
- //   window.location.reload();
-    //          table.row('.selected').remove().draw( false );//前端删除显示数据 ,数据库不删除
+
 	}
 });
 
@@ -1632,7 +1631,8 @@ $('#BTNFormUpdate').click(function() {
 	        			"DBTable":"ppm_bills_plan_t",
 	        			"DBID":$('#DBID').val(),
 	        			"BPID":$('#BPID').val(),
-	        			"WFStatus":0
+	        			"WFStatus":0,
+	        			"effective":0
 	        	}
 	        	
 	        	let ajax1=$.ajax({
@@ -1692,14 +1692,19 @@ $('#BTNFormUpdate').click(function() {
 	               	
 	               }
 	            });
-
 	        	
-	        	$.when(ajax1,ajax2).done(function(){
-	        		
-					swal("更新版本成功!");
-					window.location.reload();
+	        	
+	        	
+	        		$.when(ajax1,ajax2).done(function(){
+		        		
 
-				});
+
+						let i={alertMsg:"更新版本成功!"}
+	                swalAndRefresh(i)
+						
+
+					});
+
 
 	        }
 	    }
@@ -1726,12 +1731,73 @@ $('#BTNFormAuditYes').click(function() {
 					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
 					"WFStatus":10
 			}
-
-//			updDBData(auditData,"审核状态");
 			
-			let msgContent="@"+$('#PGEMaker option:selected').text()+",计划单审核通过,请填写的方案单,请登陆系统处理!";
+			let ajax1=$.ajax({
+                method: 'post',
+                url: '/app/PM/updDBData',
+                data: auditData,
+                success: function(data, textStatus) {
+
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {}
+            });
+			
+			
+			var BPTData={
+        			"DBTable":"ppm_bills_blueprint_t",
+        			"BillIDName":"BPTBPID",
+        			"BillID":$('#BPID').val(),
+        			"effective":0
+        	}
+        	
+        	let ajax2=$.ajax({
+                method: 'post',
+                url: '/app/PM/updBillStatus',
+                data: BPTData,
+                success: function(data, textStatus) {
+
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {}
+            });
+			
+			
+             if($('#version').text()!='0'){
+				
+				let msg2=confirm('是否需要重做T方案?');
+
+	        	if(msg2){
+	        		$.when(ajax1,ajax2).done(function(){
+		        		
+	        			let i={
+	        					confirmMsg:'审核成功,是否发送钉钉提醒消息?',
+	        					DDMsg:{
+	        						at:$('#PGEMaker option:selected').text(),
+	        						msg:"@"+$('#PGEMaker option:selected').text()+",T计划单已更新版本,需重做T方案,请登陆系统处理!"}
+	        			}	
+	        			let o={f:io_refresh}
+	        			
+	        			aio_chooseSendDDMsg(i,o)
+
+					});
+	        		
+	        	}
+	        	
+			}else{
+        		$.when(ajax1).done(function(){
+
+
+					let i={alertMsg:"审核成功!"}
+	                swalAndRefresh(i)
+
+				});
+        	}
+
+
+
+			
+			let msgContent="@"+$('#PGEMaker option:selected').text()+",T计划单审核通过,请登陆系统填写T方案单!";
 			Fun_updDBDataDD(auditData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
-//			window.location.reload();
+
 		}
 	}else{
 		swal("审核人未指定,或当前账号非该单据的指定审核人,不允许审核!");
@@ -1763,7 +1829,7 @@ $('#BTNFormAuditNo').click(function() {
 			
 			let msgContent="@"+$('#maker').text()+",T计划单审核未通过,请登陆系统处理!";
 			Fun_updDBDataDD(auditData,{at:$('#maker').text(),msg:msgContent},"审核状态");
-//			window.location.reload();
+
 		}
 	}else{
 		swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
@@ -1854,9 +1920,7 @@ $('#BTNFormSave').click(function(){
 				aio_chooseSendDDMsg(i,o)
 			});
 			
-
 		}else{
-
 
 		var dataSelectTask = tableTask.row('.selected').data();
 			
