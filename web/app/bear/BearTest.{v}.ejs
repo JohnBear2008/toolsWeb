@@ -1,51 +1,306 @@
+<!--本地路径-->
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+
+
+<script type="text/javascript" src="/public/DataTablesExcel/Bootstrap-3.3.7/js/bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/JSZip-2.5.0/jszip.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/dataTables.buttons.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.html5.js"></script>
+
 
 
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
-
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 <div>
-<button id="bt_test">测试按钮</button>
+	<button id="bt_test">测试按钮</button>
 
-<button id="bt_test2">弹出消息测试后刷新</button>
+	<button id="bt_test2">弹出消息测试后刷新</button>
+
+
+	<button id="bt_test3">多条SQL执行结果</button>
+
+	<button id="bt_test4">生成钉钉消息</button>
+
+	<button id="bt_test5">生成钉钉消息参数</button>
+
+	<button id="bt_test6">变量函数名执行</button>
 </div>
+
+<table id="example" class="table table-striped table-bordered" style="width:100%">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Position</th>
+			<th>Office</th>
+			<th>Age</th>
+			<th>Start date</th>
+			<th>Salary</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Tiger Nixon</td>
+			<td>System Architect</td>
+			<td>Edinburgh</td>
+			<td>61</td>
+			<td>2011/04/25</td>
+			<td>$320,800</td>
+		</tr>
+		<tr>
+			<td>Garrett Winters</td>
+			<td>Accountant</td>
+			<td>Tokyo</td>
+			<td>63</td>
+			<td>2011/07/25</td>
+			<td>$170,750</td>
+		</tr>
+		<tr>
+			<td>Ashton Cox</td>
+			<td>Junior Technical Author</td>
+			<td>San Francisco</td>
+			<td>66</td>
+			<td>2009/01/12</td>
+			<td>$86,000</td>
+		</tr>
+	</tbody>
+	
+</table>
 
 <script>
 
-var test=i=>console.log(i)
+	var test = i => console.log(i)
 
-var getconfirmv=async (i,o)=>{
-	o=await iof_swcf(i)
-	alert(o)
-}
-
-$(function(){
-	
-$('#bt_test').click(function(){
-	
-	var fun1=()=>{console.log(111)}
-	
-	let i={
-			confirmMsg:'新增T计划单成功,是否发送钉钉提醒消息?',
-			DDMsg:{
-				at:$('#auditor option:selected').text(),
-				msg:"@"+$('#auditor option:selected').text()+",您存在未审核的T计划单,请登陆系统处理!"}
-	}	
-	let o={f:io_refresh}
-	
-	aio_chooseSendDDMsg(i,o)
-
-})
-
-$('#bt_test2').click(function(){
-
-	let i={alertMsg:"11111"}
-	swalAndRefresh(i)
-	
-
-})
+	var getconfirmv = async (i, o) => {
+		o = await iof_swcf(i)
+		alert(o)
+	}
 
 
-}); 
+
+
+	//生成标准钉钉消息 I={DDMsg:[{msg:'1111',at:'aaa'}]}
+	const CreateDDMsgText = (I, O) => {
+
+		let DDText = "";
+		for (let i = 0; i < I.DDMsg.length; i++) {
+			DDText = DDText + I.DDMsg[i].msg + '@' + I.DDMsg[i].at + '\n\n';
+		}
+		console.log("DDText:" + DDText)
+
+		O = DDText;
+		return O
+	}
+
+
+	//获取SQL数据发送钉钉提醒i={sql:'select'}
+
+	const sendBillsUndoneDDMsg = async (i, o) => {
+
+		console.log('1.获取sql返回数据')
+
+		let R1 = await aio_ajaxGetData(i, o)
+
+		console.log("R1:" + JSON.stringify(R1))
+
+		console.log('2.返回数据转换格式')
+
+		let R2
+
+		switch (R1.length) {
+			case 0:
+				R2 = { DDMsg: [] }
+				break;
+			case 1:
+
+				R2 = { DDMsg: [{ msg: R1[0].billText, at: R1[0].billStaffs }] }
+				break;
+
+			default:
+
+				// R2={DDMsg:[{msg:R1[0].billText,at:R1[0].billStaffs}]}
+
+				let DDMsgArray = []
+
+				let msgI = R1[0].billText;
+				let atI = R1[0].billStaffs;
+
+				for (let i = 1; i < R1.length; i++) {
+
+					if (R1[i].billText === R1[i - 1].billText) {
+						atI = atI + "," + R1[i].billStaffs;
+					} else {
+						DDMsgArray.push({ msg: msgI, at: atI })
+						msgI = R1[i].billText;
+						atI = R1[i].billStaffs;
+					}
+				}
+
+				R2 = { DDMsg: DDMsgArray }
+				break;
+		}
+
+		console.log("R2:" + JSON.stringify(R2))
+
+		console.log('3.生成DDtext')
+
+		let R3 = CreateDDMsgText(R2, o)
+
+		console.log("R3:" + JSON.stringify(R3))
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+	const a = (i, o) => {
+		alert(i)
+	}
+
+
+
+
+
+
+
+	$(function () {
+
+
+		$('#example').DataTable({
+		
+			aaSorting: [0, 'desc'],//默认排序
+			lengthMenu:[10,20,50,100],
+			dom: 'Bfrtip',
+			buttons: [{
+				extend: 'excelHtml5',
+				customize: function (xlsx) {
+					var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+					$('row c[r^="C"]', sheet).attr('s', '2');
+				}
+			}]
+		});
+
+
+
+
+
+		$('#bt_test').click(function () {
+
+			var fun1 = () => { console.log(111) }
+
+			let i = {
+				confirmMsg: '新增T计划单成功,是否发送钉钉提醒消息?',
+				DDMsg: {
+					at: $('#auditor option:selected').text(),
+					msg: "@" + $('#auditor option:selected').text() + ",您存在未审核的T计划单,请登陆系统处理!"
+				}
+			}
+			let o = { f: io_refresh }
+
+			aio_chooseSendDDMsg(i, o)
+
+		})
+
+		$('#bt_test2').click(function () {
+
+			let i = { alertMsg: "11111" }
+			swalAndRefresh(i)
+
+
+		})
+
+		$('#bt_test3').click(function () {
+
+			let i = {
+				sql: "SELECT '计划单未完成'  as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 ) A where auditResult <>1 OR auditResult IS NULL" + " union " +
+					" SELECT '方案单未完成'  as billText, A.auditor as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
+					" SELECT '任务单未完成'  as billText,A.taskStaff as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A where BTStatusText <> 3 " + " union " +
+					"SELECT 'IPQC单未完成'  as billText,A.IPQCMaker as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordNum>0 AND tbb.WFStatus<>0 AND tbb.WFStatus<>100 ) A where IPQCAuditResult<>1 OR IPQCAuditResult IS NULL"
+			}
+
+			let o = ""
+
+
+			let i2 = {
+				sql: "select * from `test` where productid=1 or productid=2 " + " union " +
+					" select * from `test` where productid=1 or productid=3"
+			}
+
+
+			let R = aio_ajaxGetData2(i, o)
+
+			console.log("R:" + JSON.stringify(R))
+
+
+		})
+
+
+
+		$('#bt_test4').click(function () {
+
+			let I = {
+				DDMsg: [{ msg: '1111', at: 'aa,bb' }, { msg: '2222', at: 'cc' }]
+			}
+
+
+
+			CreateDDMsgText(I);
+
+
+
+		})
+
+		$('#bt_test5').click(function () {
+
+			let i = {
+				sql: "SELECT '计划单未完成'  as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 ) A where auditResult <>1 OR auditResult IS NULL" + " union " +
+					" SELECT '方案单未完成'  as billText, A.auditor as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
+					" SELECT '任务单未完成'  as billText,A.taskStaff as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A where BTStatusText <> 3 " + " union " +
+					"SELECT 'IPQC单未完成'  as billText,A.IPQCMaker as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordNum>0 AND tbb.WFStatus<>0 AND tbb.WFStatus<>100 ) A where IPQCAuditResult<>1 OR IPQCAuditResult IS NULL"
+			}
+			let o
+
+
+			sendBillsUndoneDDMsg(i, o)
+
+
+
+
+		})
+
+
+		$('#bt_test6').click(function () {
+
+			let b = a
+			let i = 1
+			let o
+			b(i, o)
+
+
+
+
+		})
+
+
+
+
+
+
+
+	}); 
 </script>

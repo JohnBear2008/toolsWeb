@@ -108,6 +108,7 @@ function showDBData(DataPara,columnsData){
 //        	}
 //    	} ],
 
+
 	    language: languageCN
 	    
 	});
@@ -275,7 +276,38 @@ function datatableReload(Params){
 	    },
 	    columns: Params.columnsData,
 	    aaSorting: [0, 'desc'],//默认排序
-	    lengthMenu:[10,30,50],
+		lengthMenu:[10,30,50],
+	    "language": languageCN
+	});
+	
+
+
+}
+
+
+function datatableReloadWithExcel(Params){	
+	
+	let table = $(Params.tableID).DataTable();
+	
+	table.destroy();
+
+	$(Params.tableID).DataTable({
+	    ajax: {
+	        url: '/app/PM/getSQLDBData',
+	        data:Params.SQLParam,
+	        dataSrc: ''
+	    },
+	    columns: Params.columnsData,
+	    aaSorting: [0, 'desc'],//默认排序
+		dom: 'Bfrtip',
+		buttons: [{
+			extend: 'excelHtml5',
+			text:'导出excel',
+			customize: function (xlsx) {
+				var sheet = xlsx.xl.worksheets['sheet1.xml'];
+				$('row c[r^="C"]', sheet).attr('s', '2');
+			}
+		}],
 	    "language": languageCN
 	});
 	
@@ -1344,7 +1376,16 @@ function Fun_showSQLTable(SQL,tableInfo){
 //		    bAutoWidth: true,//自动宽度，默认的属性为true。
 //		    'ordering'  :false,//禁止排序,按数据库返回数据排序
 		    aaSorting: [0, 'desc'],//默认排序,按第一列时间戳排序
-		    lengthMenu:[10,30,50],
+			lengthMenu:[10,30,50],
+			dom: 'Bfrtip',
+        buttons: [ {
+            extend: 'excelHtml5',
+            customize: function( xlsx ) {
+                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+ 
+                $('row c[r^="C"]', sheet).attr( 's', '2' );
+            }
+        } ],
 		    "language": languageCN
 		});
 
@@ -2085,7 +2126,7 @@ function getDBIDInfo(tableName,DBID){
 				"FQCMakeDate",
 				"FQCAuditor",
 				"FQCAuditDate",
-				"FQCStatusText",
+				"FQCResultText",
 				"FQCTestResult"
 				],
 				"filter":"DBID='"+DBID+"'"

@@ -1058,10 +1058,10 @@
 				$('#BTNPBHAudit').click(function () {
 					if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PBH02")) {
 
-						let PBHVersion=0
+						let PBHVersion = 0
 
-						if($('#PBHVersion').text()!==""){
-							PBHVersion=$('#PBHVersion').text();
+						if ($('#PBHVersion').text() !== "") {
+							PBHVersion = $('#PBHVersion').text();
 
 						}
 
@@ -1147,8 +1147,8 @@
 						$('#emailTitleModel').text($('#emailTitle').val());
 						$('#emailFilesModel').text($('#divFilesUploaded').text());
 
-						 $('#emailDSPInfo').html("");
-						 $('#emailHMIInfo').html("");
+						$('#emailDSPInfo').html("");
+						$('#emailHMIInfo').html("");
 
 
 						let fileNum = $("#billsTaskTable tbody").find("tr").length;
@@ -1164,11 +1164,11 @@
 
 							let tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(3)").html();
 
-							
+
 
 							if (tdFiles != "" && tdTaskType == "APP") {
 
-							
+
 
 
 								switch (tdBTType) {
@@ -1193,17 +1193,18 @@
 						}
 
 
-
-
 						$('#emailContentHello').html("Dear " + $('#emailContact').val() + ": \n  您好！程序已修改完成，请查收，谢谢！");
 
 						$('#emailBPID').html($('#BPID').text())
 
+						if ($('#emailContent').val().indexOf("功能说明") != -1) {
 
-						let emailContent=$('#emailContent').val().split("功能说明");//去除功能说明
+							let emailContent = $('#emailContent').val().split("功能说明");//去除功能说明
+							$('#emailContentModel').html(emailContent[0]);
 
-
-						$('#emailContentModel').html(emailContent[0]);
+						} else {
+							$('#emailContentModel').html($('#emailContent').val());
+						}
 
 					}
 				});
@@ -1381,11 +1382,11 @@
 
 
 
-								let i={alertMsg:"更新版本成功!"}
-	                        swalAndRefresh(i)
+								let i = { alertMsg: "更新版本成功!" }
+								swalAndRefresh(i)
 
 							});
-							
+
 						}
 
 					}
@@ -1436,8 +1437,8 @@
 							$.when(ajax1, ajax2).done(function () {
 
 
-								let i={alertMsg:"归档完成,该计划任务完结!"}
-	                            swalAndRefresh(i)
+								let i = { alertMsg: "归档完成,该计划任务完结!" }
+								swalAndRefresh(i)
 							});
 						}
 

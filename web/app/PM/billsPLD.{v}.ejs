@@ -405,8 +405,8 @@
 
 										<label class="col-sm-1 control-label" for="name">审核人:</label>
 										<div class="col-sm-3 ">
-											<select id="auditor" class="selectpicker" data-live-search="true"
-												data-toggle="dropup">
+											<select id="auditor" class="selectpicker dropup form-control"
+												data-live-search="true" data-toggle="dropup" data-dropup-auto="false">
 											</select>
 										</div>
 
@@ -640,8 +640,7 @@
 			})
 
 
-			//	     $("#topic").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"】");
-			//		 $("#detail").val("【"+Fun_getSelectText($('#CTRName option:selected').text())+"需求】");
+
 		}
 	}
 
@@ -1504,12 +1503,6 @@
 			}
 
 
-
-
-
-
-
-
 		});
 
 
@@ -1706,8 +1699,8 @@
 						$.when(ajax1, ajax2).done(function () {
 
 
-							let i={alertMsg:"更新版本成功!"}
-	                        swalAndRefresh(i)
+							let i = { alertMsg: "更新版本成功!" }
+							swalAndRefresh(i)
 
 						});
 
@@ -1777,7 +1770,7 @@
 							$.when(ajax1, ajax2).done(function () {
 
 								let i = {
-									confirmMsg: '审核成功,是否发送钉钉提醒消息?',
+									confirmMsg: '计划单审核成功,是否发送钉钉提醒消息?',
 									DDMsg: {
 										at: $('#PGEMaker option:selected').text(),
 										msg: "@" + $('#PGEMaker option:selected').text() + ",计划单已更新版本,需重做方案,请登陆系统处理!"
@@ -1793,13 +1786,25 @@
 
 					} else {
 						$.when(ajax1).done(function () {
-							let i={alertMsg:"计划单审核成功!"}
-	                        swalAndRefresh(i)
+							// let i={alertMsg:"计划单审核成功!"}
+							// swalAndRefresh(i)
+
+
+							let i = {
+								confirmMsg: '计划单审核成功,是否发送钉钉提醒消息?',
+								DDMsg: {
+									at: $('#PGEMaker option:selected').text(),
+									msg: "@" + $('#PGEMaker option:selected').text() + ",计划单已审核通过,需做方案,请登陆系统处理!"
+								}
+							}
+							let o = { f: io_refresh }
+
+							aio_chooseSendDDMsg(i, o)
 
 						});
 					}
 
-					
+
 				}
 			} else {
 				swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");

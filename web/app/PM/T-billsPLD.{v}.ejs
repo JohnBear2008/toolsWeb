@@ -396,7 +396,8 @@
                      
                      <label  class="col-sm-1 control-label" for="name">审核人:</label>    
                      <div class="col-sm-3 ">
-                     <select  id="auditor" class="selectpicker" data-live-search="true"  data-toggle="dropup"> 
+                     <select  id="auditor" class="selectpicker dropup form-control" data-live-search="true"
+					 data-toggle="dropup" data-dropup-auto="false"> 
                      </select>
                      </div>
                      
@@ -1344,9 +1345,9 @@ $('#BTNTaskBindAdd').click(function() {
 //        		Fun_getSQLFullSelectDBData({SQL:"SQLSRSystems",filter:"belong='HMI' AND status=1"},"#modelH",data[0].modelH);
         		
         		
-        		var SQLPGEMaker={SQL:"SQLSRStaffs"};
-        		var PGEMaker="#PGEMaker";
-        		Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker,data[0].PGEMaker);
+        		// var SQLPGEMaker={SQL:"SQLSRStaffs"};
+        		// var PGEMaker="#PGEMaker";
+        		// Fun_getSQLSelectDBData(SQLPGEMaker,PGEMaker,data[0].PGEMaker);
         		
         		
 
@@ -1389,9 +1390,9 @@ $('#BTNTaskBindAdd').click(function() {
         	  $('#applyDate').val(data[0].applyDate); 
         	  $('#limitDate').val(data[0].limitDate);
 
-        	  var SQLAuditor={SQL:"SQLSRStaffs"};
-        	  var auditor="#auditor";
-        	  Fun_getSQLSelectDBData(SQLAuditor,auditor,data[0].auditor);
+        	//   var SQLAuditor={SQL:"SQLSRStaffs"};
+        	//   var auditor="#auditor";
+        	//   Fun_getSQLSelectDBData(SQLAuditor,auditor,data[0].auditor);
         	  
         	  $('.form_date').datetimepicker({
         	      language:  'zh-CN',
@@ -1786,8 +1787,20 @@ $('#BTNFormAuditYes').click(function() {
         		$.when(ajax1).done(function(){
 
 
-					let i={alertMsg:"审核成功!"}
-	                swalAndRefresh(i)
+				// let i={alertMsg:"计划单审核成功!"}
+							// swalAndRefresh(i)
+
+
+							let i = {
+								confirmMsg: 'T计划单审核成功,是否发送钉钉提醒消息?',
+								DDMsg: {
+									at: $('#PGEMaker option:selected').text(),
+									msg: "@" + $('#PGEMaker option:selected').text() + ",T计划单已审核通过,需做方案,请登陆系统处理!"
+								}
+							}
+							let o = { f: io_refresh }
+
+							aio_chooseSendDDMsg(i, o)
 
 				});
         	}
@@ -1795,8 +1808,8 @@ $('#BTNFormAuditYes').click(function() {
 
 
 			
-			let msgContent="@"+$('#PGEMaker option:selected').text()+",T计划单审核通过,请登陆系统填写T方案单!";
-			Fun_updDBDataDD(auditData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
+			// let msgContent="@"+$('#PGEMaker option:selected').text()+",T计划单审核通过,请登陆系统填写T方案单!";
+			// Fun_updDBDataDD(auditData,{at:$('#PGEMaker option:selected').text(),msg:msgContent},"审核状态");
 
 		}
 	}else{

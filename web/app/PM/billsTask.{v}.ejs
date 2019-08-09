@@ -287,14 +287,12 @@
 												<!-------------------------------------------------------------------------->
 												<div class="form-group">
 
-													<label class="col-sm-1 control-label" for="name">任务发布人:</label>
+													<label class="col-sm-1 control-label" for="name">发布人:</label>
 													<div class="col-sm-3">
-
 														<span id="taskMaker" class="help-block"></span>
-
 													</div>
 
-													<label class="col-sm-1 control-label" for="name">任务发布日期:</label>
+													<label class="col-sm-1 control-label" for="name">发布日期:</label>
 													<div class="col-sm-3">
 
 														<span id="taskMakeDate" class="help-block"></span>
@@ -348,15 +346,34 @@
 
 													</div>
 
+													<div id="divFQCMaker">
+
+														<label class="col-sm-1 control-label">FQC检测:</label>
+
+														<div class="col-sm-3 ">
+															<select id="FQCMaker" class="selectpicker"
+																data-live-search="true">
+															</select>
+														</div>
+													</div>
+
+												</div>
+
+
+
+												<!-------------------------------------------------------------------------->
+												<div class="form-group">
+
+
 
 													<label class="col-sm-1 control-label">返工任务:</label>
-													<div class="col-sm-2">
+													<div class="col-sm-3">
 														<span id="taskRepeat" style="display:none"></span>
 														<span id="taskRepeatText" class="help-block"></span>
 													</div>
 
 
-													<label class="col-sm-1 control-label">IPQC填单:</label>
+													<label class="col-sm-1 control-label">IPQC检测:</label>
 
 													<div class="col-sm-3 ">
 														<select id="IPQCMaker" class="selectpicker"
@@ -851,14 +868,14 @@
 			success: function (data) {
 				//            swal("成功数据:" + JSON.stringify(data));
 				if (data.affectedRows != 0) {
-					
+
 					Fun_showRecordsLiteTable(recordsTableSQL, tasksTableInfo);
 					$('#DIVRecordContent').hide();
 
 					// swal("保存任务记录成功!");
 
-					let i={alertMsg:"保存任务记录成功!"}
-	                swalAndRefresh(i)
+					// let i={alertMsg:"保存任务记录成功!"}
+					// swalAndRefresh(i)
 				}
 			},
 			error: function (err) {
@@ -951,6 +968,7 @@
 		$('#taskBugID').val(dataSelect.taskBugID);
 
 
+
 		Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#taskStaff", dataSelect.taskStaff);
 
 		$('#taskLimitDate').val(dataSelect.taskLimitDate);
@@ -966,7 +984,28 @@
 
 
 		$("input:radio[name=FQCRequest][value=" + dataSelect.FQCRequest + "]").prop("checked", true);
-		$('input:radio[name="FQCRequest"]').attr("disabled", true);
+
+		//添加FQCMaker
+
+		// console.log("dataSelect.FQCRequest :"+dataSelect.FQCRequest )
+
+		if (dataSelect.FQCRequest === 1) {
+
+			$("#divFQCMaker").show();
+			if (dataSelect.FQCMaker === "") {
+				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#FQCMaker", "刘梦");
+			} else {
+				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#FQCMaker", dataSelect.FQCMaker);
+			}
+
+		} else {
+			$("#divFQCMaker").hide();
+		}
+
+
+
+
+		// $('input:radio[name="FQCRequest"]').attr("disabled", true);
 
 		Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#IPQCMaker", dataSelect.IPQCMaker);
 
@@ -1200,12 +1239,17 @@
 						$('#DIVRecordContent select').attr("disabled", true);
 						$('#DIVRecordContent textarea').attr("disabled", true);
 
+						$("#BTNGetTaskAuditor").hide();
+
 						$("#DivUploadBTNS").hide();
 						$("#BTNTaskRecordSave").hide();
 					} else {
 
 						$('#DIVRecordContent select').attr("disabled", false);
 						$('#DIVRecordContent textarea').attr("disabled", false);
+
+
+						$("#BTNGetTaskAuditor").show();
 
 						$("#DivUploadBTNS").show();
 						$("#BTNTaskRecordSave").show();
@@ -1254,13 +1298,18 @@
 
 	function checkAcceptInput() {
 
+
+
 		if ($("#taskStaff").val() == null || $("#taskStaff").val() == "") {
 			swal("任务负责人未选择,请检查!");
 			return false;
 		} else if ($("#taskOGNSystemVersion").val() == "") {
 			swal("原系统版本必填,请检查!");
 			return false;
-		} else if ($("#IPQCMaker").val() == null || $("#IPQCMaker").val() == "") {
+		} else if($('input:radio[name="FQCRequest"]:checked').val()==='1'&&($("FQCMaker").val() === null || $("#FQCMaker").val() === "")){
+			swal("已申请FQC检测,请检查FQC检测人!");
+			return false;
+		}else if ($('#taskTypeText').text() === "APP" && ($("#IPQCMaker").val() === null || $("#IPQCMaker").val() === "")) {
 			swal("IPQC填单人未选择,请检查!");
 			return false;
 		}
@@ -1405,7 +1454,7 @@
 				break;
 			default:
 				//	    var tableSQL={"SQL":"SQLTableBillsTaskRecord","filter":" (taskStaff = '"+sessionName+"' OR BTAcceptor = '"+sessionName+"' OR IPQCMaker = '"+sessionName+"'  OR IPQCAuditor = '"+sessionName+"') AND BTStatus <>3","orderBy":" saveTimeStamp DESC"};
-				var tableSQL = { "SQL": "SQLTableBillsTaskRecord", "filter": "BTStatusText <> 3 ", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = { "SQL": "SQLTableBillsTaskRecord", "filter": "BTStatus <> 3 ", "orderBy": " saveTimeStamp DESC" };
 				$("#BTNFilterSimple").addClass("active");
 				break;
 
@@ -1548,8 +1597,6 @@
 
 							if (FQCRequest == 1) {
 
-
-
 								var acceptData = {
 									"DBTable": "ppm_bills_task",
 									"DBID": $('#DBID').text(),
@@ -1560,6 +1607,7 @@
 									"BTAcceptor": sessionName,
 									"BTAcceptDate": Ndate,
 									"FQCRequest": $('input:radio[name="FQCRequest"]:checked').val(),
+									"FQCMaker": $('#FQCMaker option:selected').text(),
 									"FQCRequestText": $('input:radio[name="FQCRequest"]:checked').next("span").text(),
 									"IPQCMaker": $('#IPQCMaker option:selected').text(),
 									"BTAcceptResult": 1,
@@ -1574,7 +1622,7 @@
 									"BillIDName": "BPID",
 									"BillID": $('#taskBPID').text(),
 									"FQCRequest": 1,
-									"FQCStaff": "刘梦",
+									"FQCStaff": $('#FQCMaker option:selected').text(),
 									"FQCRequestText": "有"
 								}
 
@@ -1669,7 +1717,7 @@
 									$('#BTAcceptDate').text(Ndate);
 
 									$('#DivRecordPanel').show();
-									//						Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
+									Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#recordAuditor");
 
 								} else {
 									window.location.reload();
@@ -1722,6 +1770,9 @@
 			}
 		});
 
+
+
+
 		//按钮-记录任务单---------
 		$('#BTNTaskRecord').click(function () {
 
@@ -1763,11 +1814,6 @@
 							swal("程序附件必须上传!");
 						} else {
 
-
-
-
-
-							
 
 							if (sessionName == $('#recordAuditor option:selected').text()) {
 
@@ -1834,8 +1880,19 @@
 										$('#DIVRecordContent').hide();
 
 
-										let i={alertMsg:"任务登记审核完成,可开始IPQC检测!"}
-	                                    swalAndRefresh(i)
+										// let i = { alertMsg: "任务登记审核完成,可开始IPQC检测!" }
+										// swalAndRefresh(i)
+
+										let i = {
+											confirmMsg: '任务登记审核完成,是否发送钉钉IPQC提醒消息?',
+											DDMsg: {
+												at: $('#IPQCMaker option:selected').text(),
+												msg: "@" + $('#IPQCMaker option:selected').text() + "任务记录已审核,请登陆系统填写IPQC!"
+											}
+										}
+										let o = { f: io_refresh }
+
+										aio_chooseSendDDMsg(i, o)
 
 
 									});
@@ -1859,9 +1916,13 @@
 										"recordAuditor": $('#recordAuditor option:selected').text()
 									}
 
-						            console.log("11111:"+JSON.stringify(recordData));
+									// console.log("11111:" + JSON.stringify(recordData));
 
 									Fun_saveTaskRecord(recordData);
+
+									let i = { alertMsg: "保存任务记录成功!" }
+									swalAndRefresh(i)
+
 
 								}
 
@@ -1886,6 +1947,17 @@
 
 
 								Fun_saveTaskRecord(recordData);
+
+								let i = {
+									confirmMsg: '任务保存成功,是否发送钉钉审核提醒消息?',
+									DDMsg: {
+										at: $('#recordAuditor option:selected').text(),
+										msg: "@" + $('#recordAuditor option:selected').text() + "任务记录已保存,请登陆系统审核!"
+									}
+								}
+								let o = { f: io_refresh }
+
+								aio_chooseSendDDMsg(i, o)
 
 							}
 
@@ -2020,8 +2092,8 @@
 								$.when(ajax1, ajax2).done(function () {
 
 
-									let i={alertMsg:"更新版本成功!"}
-	                                swalAndRefresh(i)
+									let i = { alertMsg: "更新版本成功!" }
+									swalAndRefresh(i)
 
 								});
 
@@ -2063,7 +2135,6 @@
 				$('#recordMakeDate').text("");
 
 				//	    Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#recordAuditor",sessionName);
-
 				//	    $('#recordAuditor').text("");
 				$('#recordAuditDate').text("");
 
@@ -2143,8 +2214,20 @@
 								//						          	$('#BTNTaskRecordAdd').click();
 								$('#DIVRecordContent').hide();
 
-								let i={alertMsg:"任务登记审核完成,可开始IPQC检测!"}
-	                            swalAndRefresh(i)
+								// let i = { alertMsg: "任务登记审核完成,可开始IPQC检测!" }
+								// swalAndRefresh(i)
+
+								let i = {
+									confirmMsg: '任务登记审核完成,是否发送钉钉IPQC提醒消息?',
+									DDMsg: {
+										at: $('#IPQCMaker option:selected').text(),
+										msg: "@" + $('#IPQCMaker option:selected').text() + "任务记录已审核,请登陆系统填写IPQC!"
+									}
+								}
+								let o = { f: io_refresh }
+
+								aio_chooseSendDDMsg(i, o)
+
 
 
 							});
@@ -2158,9 +2241,6 @@
 
 
 				}
-
-
-
 
 			}
 
@@ -2193,6 +2273,24 @@
 		$('#BTNTrack').click(function () {
 			window.location.href = '/app/PM/billsTrack?BPID=' + $('#taskBPID').text();
 		});
+
+
+		//FQC申请radio 控制
+
+
+		$('input[type=radio][name=FQCRequest]').change(function () {
+
+
+			let FQCRequest = $('input:radio[name="FQCRequest"]:checked').val();
+			if (FQCRequest === '1') {
+				$("#divFQCMaker").show();
+				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#FQCMaker", "刘梦");
+
+			} else {
+				$("#divFQCMaker").hide();
+			}
+
+		})
 
 
 	});

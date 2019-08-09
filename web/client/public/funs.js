@@ -125,6 +125,8 @@ var aio_ajaxGet=async (i,o)=>{
 	    url: '/app/public/ajaxGet',
 	    data: i,
 	    success: (data, textStatus)=>{
+
+			console.log("data:"+JSON.stringify(data))
 	    	return textStatus  //return 返回 resolve
 	    	},
 	    error: (XMLHttpRequest, textStatus, errorThrown)=>{
@@ -133,6 +135,38 @@ var aio_ajaxGet=async (i,o)=>{
 	    });
 	return o
 }
+
+
+//异步 ajax get 方法i={sql:"select * from `test`"}
+
+var aio_ajaxGetData=async (i,o)=>{
+	return  $.ajax({
+		method: 'get',
+	    url: '/app/public/ajaxGet',
+	    data: i,
+	    success: (data, textStatus)=>{
+
+			o=data
+
+	    	return o  //return 返回 resolve
+	    	},
+	    error: (XMLHttpRequest, textStatus, errorThrown)=>{
+	        	throw textStatus  //throw 返回reject
+	        }
+	    });
+	
+}
+
+
+//测试获取异步data
+var aio_ajaxGetData2=async (i,o)=>{
+	o=await aio_ajaxGetData(i,o)
+	console.log("o:"+JSON.stringify(o))
+	return o
+	
+}
+
+
 
 
 //同步ajax get 方法 i={sql:"select * from `test`"}
@@ -230,4 +264,6 @@ var aio_updateBill=async(i,o)=>{
 			}
 	}
 }
+
+
 

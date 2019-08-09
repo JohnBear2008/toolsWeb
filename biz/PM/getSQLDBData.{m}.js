@@ -183,6 +183,12 @@ module.exports = function(sender) {
 	case "SQLGetEntryDays":
 		var SQLExecute=SQLGetEntryDays;
 		break;
+	case "SQLTableTasksDBCenter":
+		var SQLExecute=SQLTableTasksDBCenter;
+		break;
+	case "SQLTableTasksDBCenter_T":
+		var SQLExecute=SQLTableTasksDBCenter_T;
+		break;
 		
 		
 		

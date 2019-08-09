@@ -29,9 +29,9 @@ SQLSRStaffsBind="select DBID,concat_ws('-',groupLabel,staffName) as selectTitle 
 
 SQLSRRoles="select DBID,roleName as selectTitle from ppm_roles where status=1";
 
-SQLTableBillsDBCenter="SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE (WFStatus=0 OR WFStatus=100) GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) A ";
+// SQLTableBillsDBCenter="SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE (WFStatus=0 OR WFStatus=100) GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) A ";
 
-SQLTableBillsDBCenter_T="SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE (WFStatus=0 OR WFStatus=100) GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) A ";
+// SQLTableBillsDBCenter_T="SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE (WFStatus=0 OR WFStatus=100) GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) A ";
 
 SQLTableBillsTrack="SELECT * FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.PLDStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS PLDStatusText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.BPTBPID,tbd.BPTVersion,CASE tbd.BPTStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID LEFT JOIN (SELECT tbh.fqcBPID,tbh.FQCVersion,FQCResultText  FROM `ppm_bills_fqc` tbh,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbg WHERE tbh.fqcBPID=tbg.fqcBPID AND tbh.FQCVersion=tbg.maxFQCVersion) tbi ON tbi.fqcBPID=tbe.BPID  LEFT JOIN (SELECT tbk.pbhBPID,tbk.PBHVersion,CASE tbk.PBHStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS PBHStatusText,CASE tbk.emailResult WHEN 0 THEN '未发邮件' WHEN 1 THEN '已发系统邮件' WHEN 2 THEN '已发自定义邮件' END AS emailResultText  FROM `ppm_bills_pbh` tbk,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbj WHERE tbk.pbhBPID=tbj.pbhBPID AND tbk.PBHVersion=tbj.maxPBHVersion) tbl ON tbe.BPID=tbl.pbhBPID) A";
 
@@ -171,3 +171,15 @@ SQLGetBindsInfo="SELECT * FROM `ppm_customerbinds`";
 SQLGetUpAuditor="SELECT DATEDIFF(NOW(),entryDate) AS entryDays,upAuditor FROM `ppm_staffs`";
 
 SQLGetEntryDays="SELECT DATEDIFF(NOW(),entryDate) AS entryDays FROM `ppm_staffs`";
+
+
+SQLTableTasksDBCenter="SELECT A.*  FROM (SELECT tbb.* FROM `ppm_bills_task` tbb," +
+    "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A";
+
+SQLTableTasksDBCenter_T="SELECT A.*  FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb," +
+    "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A";
+
+
+SQLTableBillsDBCenter="SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) A ";
+
+SQLTableBillsDBCenter_T="SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) A ";
