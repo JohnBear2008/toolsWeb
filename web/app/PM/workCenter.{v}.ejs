@@ -635,11 +635,11 @@ function getUndoneInfo(divID,panelSQL,dataCols){
         			
         		  }
         		  
-        		  if(data[i]['BPID']==null){
-        			  DivContent=" "+DivContent+"<a href='/app/PM/billsTrack?BPID="+data[i]['taskBPID']+"'>进度跟踪</a>" +" ";
-        		  }else{
-        			  DivContent=" "+DivContent+"<a href='/app/PM/billsTrack?BPID="+data[i]['BPID']+"'>进度跟踪</a>" +" ";
-        		  }
+        		//   if(data[i]['BPID']==null){
+        		// 	  DivContent=" "+DivContent+"<a href='/app/PM/billsTrack?BPID="+data[i]['taskBPID']+"'>进度跟踪</a>" +" ";
+        		//   }else{
+        		// 	  DivContent=" "+DivContent+"<a href='/app/PM/billsTrack?BPID="+data[i]['BPID']+"'>进度跟踪</a>" +" ";
+        		//   }
                 
 
         		  
@@ -685,11 +685,11 @@ function getUndoneInfo_T(divID,panelSQL,dataCols){
        			
        		  }
        		  
-       		  if(data[i]['BPID']==null){
-       			  DivContent=" "+DivContent+"<a href='/app/PM/T-billsTrack?BPID="+data[i]['taskBPID']+"'>进度跟踪</a>" +" ";
-       		  }else{
-       			  DivContent=" "+DivContent+"<a href='/app/PM/T-billsTrack?BPID="+data[i]['BPID']+"'>进度跟踪</a>" +" ";
-       		  }
+       		//   if(data[i]['BPID']==null){
+       		// 	  DivContent=" "+DivContent+"<a href='/app/PM/T-billsTrack?BPID="+data[i]['taskBPID']+"'>进度跟踪</a>" +" ";
+       		//   }else{
+       		// 	  DivContent=" "+DivContent+"<a href='/app/PM/T-billsTrack?BPID="+data[i]['BPID']+"'>进度跟踪</a>" +" ";
+       		//   }
                
 
        		  
@@ -734,7 +734,7 @@ $(function(){
 	var panelSQLPLD={"SQL":"SQLTableBillsPLD","filter":" maker = '"+sessionName+"' AND PLDStatus=2 "};
 	getUndoneInfo("#PLDAuditNo",panelSQLPLD,["BPID","CTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":"PLDPGEMaker = '"+sessionName+"' AND BPTStatus IS NULL "};
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":"PLDPGEMaker = '"+sessionName+"' AND (BPTStatus IS NULL OR BPTStatus=9) "};
 	getUndoneInfo("#BPTunRecord",panelSQLBPT,["BPID","PLDCTRName"]);
 	
 	var panelSQLBPT={"SQL":"SQLTableBillsBPT","filter":"auditor = '"+sessionName+"' AND auditResult =0 "};
@@ -794,7 +794,7 @@ $(function(){
 	var panelSQLPLD={"SQL":"SQLTableBillsPLD_T","filter":" maker = '"+sessionName+"' AND PLDStatus=2 "};
 	getUndoneInfo_T("#T-PLDAuditNo",panelSQLPLD,["BPID","CTRName"]);
 	
-	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":"PLDPGEMaker = '"+sessionName+"' AND BPTStatus IS NULL "};
+	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":"PLDPGEMaker = '"+sessionName+"' AND (BPTStatus IS NULL OR BPTStatus=9)"};
 	getUndoneInfo_T("#T-BPTunRecord",panelSQLBPT,["BPID","PLDCTRName"]);
 	
 	var panelSQLBPT={"SQL":"SQLTableBillsBPT_T","filter":"auditor = '"+sessionName+"' AND auditResult =0 "};

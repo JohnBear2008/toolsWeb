@@ -78,6 +78,8 @@
             <!-------------------------------------------------------------------------->
             <p>账号 : <input id="staffUser" size="30" type="text" class="required"></p>
 
+            <p>电话分机 : <input id="telNo" size="30" type="text" class="required"></p>
+
             
 
             <p>工作职位 : <input id="staffWorkType" size="30" type="text" class="required"></p>
@@ -125,17 +127,6 @@ function checkinput(Data) {
     return true;
 }
 
-////定义添加发送数据结构---------------------
-//
-//function addDataInfo(DBTable,staffID,staffName,staffSex,staffUser,FQCRequest,FQCRequestText){
-//	this.DBTable=DBTable;
-//	this.staffID=staffID;
-//	this.staffName=staffName;
-//	this.staffSex=staffSex;
-//	this.staffUser=staffUser;
-//	this.FQCRequest=FQCRequest;
-//	this.FQCRequestText=FQCRequestText;
-//}
 
 
 //页面加载函数---------------
@@ -222,6 +213,8 @@ $('#Upd').click(function() {
         $('#FQCRequest').val(dataSelect.FQCRequest);
         $('#status').val(dataSelect.status);
         $('#staffUser').val(dataSelect.staffUser);
+        $('#telNo').val(dataSelect.telNo);
+        
 
         $('#staffWorkType').val(dataSelect.staffWorkType);
 
@@ -276,6 +269,7 @@ $('#AddDoButton').click(function() {
             staffSex:$('#staffSex option:selected').val(),
 			staffRole:$('#staffRole option:selected').text(),
             staffUser:$("#staffUser").val(),
+            telNo:$("#telNo").val(),
             upAuditor:$("#upAuditor").val(),
             staffWorkType:$("#staffWorkType").val(),
             entryDate:$("#entryDate").val(),
@@ -307,6 +301,7 @@ $('#UpdDoButton').click(function() {
 				staffSex:$('#staffSex option:selected').val(),
 				staffRole:$('#staffRole option:selected').text(),
                 staffUser:$("#staffUser").val(),
+                telNo:$("#telNo").val(),
                 upAuditor:$("#upAuditor").val(),
                 staffWorkType:$("#staffWorkType").val(),
                 entryDate:$("#entryDate").val(),

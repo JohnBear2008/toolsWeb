@@ -1,38 +1,38 @@
 <!-- CSS -->
 
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css"> -->
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
 
-
- <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" /> 
-<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/dataTables.bootstrap.js"></script>
-
-<script type="text/javascript" src="/public/DataTablesExcel/Bootstrap-3.3.7/js/bootstrap.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" /> -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
 
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
-<script type="text/javascript" src="/public/DataTablesExcel/JSZip-2.5.0/jszip.js"></script>
-<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/dataTables.buttons.js"></script>
-<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.bootstrap.js"></script>
-<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.html5.js"></script> 
-
-<!-- CSS -->
-<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
-<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
-<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css"> -->
-
 <link href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
 
 
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Bootstrap-3.3.7/js/bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/JSZip-2.5.0/jszip.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/dataTables.buttons.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.html5.js"></script>
+
+<!-- CSS -->
+
+<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css"> -->
+
+
+
+
 <!-- JS  -->
 
-<!-- <script src="/css/PM/DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script> -->
 <script src="/css/PM/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
-<!-- <script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script> -->
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
@@ -54,34 +54,34 @@
 		<!-- 按钮触发模态框 -->
 
 		<div class="btn-group" style="margin-left:20px">
-			<button id="BTNFilterHistory" class="btn btn-default">归档模式</button>
-			<button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+			<button id="BTNFilterHistory" class="btn btn-info">归档模式</button>
+			<button id="BTNFilterAll" class="btn btn-info">全部模式</button>
 		</div>
 
 
 
 
-		<div class="btn-group">
+		<div class="btn-group" id='BTNGroupFilter'>
 			<button type="text" class="btn btn-default" disabled="disabled">过滤</button>
-			<button id="BTNFitlerWeek" type="button" class="btn btn-info">本周</button>
-			<button id="BTNFitlerMonth" type="button" class="btn btn-info">本月</button>
-			<button id="BTNFitlerYear" type="button" class="btn btn-info">本年</button>
-			<button id="BTNFitlerAll" type="button" class="btn btn-info">全部</button>
-			<button id="BTNFitlerDiv" type="button" class="btn btn-info">自定义</button>
+			<button id="BTNFitlerWeek" type="button" class="btn btn-default">本周</button>
+			<button id="BTNFitlerMonth" type="button" class="btn btn-default">本月</button>
+			<button id="BTNFitlerYear" type="button" class="btn btn-default">本年</button>
+			<button id="BTNFitlerAll" type="button" class="btn btn-default">全时间段</button>
+			<button id="BTNFitlerDiv" type="button" class="btn btn-default">自定义</button>
 		</div>
 
 		<div class="btn-group">
-			<button type="text" class="btn btn-default" disabled="disabled">报表</button>
-			<button id="BTNReport1" class="btn btn-info">延误率</button>
-			<button id="BTNReport2" class="btn btn-info">不良率</button>
+			<button type="text" class="btn btn-info" disabled="disabled">报表</button>
+			<button id="BTNReport1" class="btn btn-default">延误率</button>
+			<button id="BTNReport2" class="btn btn-default">不良率</button>
 		</div>
 
 		<div class="btn-group">
-			<button type="text" class="btn btn-default" disabled="disabled">操作</button>
-			<button id="BTNInfo" class="btn btn-info">查看详情</button>
-			<button id="BTNExportExcel" class="btn btn-success">导出数据</button>
-			<button id="BTNReTrack" class="btn btn-danger">恢复计划</button>
-			
+			<button type="text" class="btn btn-info" disabled="disabled">操作</button>
+			<button id="BTNInfo" class="btn btn-default">查看详情</button>
+			<button id="BTNExportExcel" class="btn btn-default">导出数据</button>
+			<button id="BTNReTrack" class="btn btn-default">恢复计划</button>
+
 		</div>
 
 
@@ -252,17 +252,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 		</form>
 
 	</div>
@@ -270,25 +259,25 @@
 	<!-- 点击导出excel弹出的窗口 -->
 	<div id="winExprotExcel" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
 
-			<table id="tableExcelExport" class="table table-bordered">
-					<thead>
-							<tr>
-								<th>数据库ID</th>
-								<th>计划单号</th>
-								<th>最大版本号</th>
-								<th>客户简称</th>
-								<th>修改主题</th>
-								<th>开始时间</th>
-								<th>完成期限</th>
-								<th>结束时间</th>
-								<th>分配任务数量</th>
-								<th>完成任务数量</th>
-								<th>任务人</th>
-							</tr>
-						</thead>
-			</table>
-	
-		</div>
+		<table id="tableExcelExport" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>数据库ID</th>
+					<th>计划单号</th>
+					<th>最大版本号</th>
+					<th>客户简称</th>
+					<th>修改主题</th>
+					<th>开始时间</th>
+					<th>完成期限</th>
+					<th>结束时间</th>
+					<th>分配任务数量</th>
+					<th>完成任务数量</th>
+					<th>任务人</th>
+				</tr>
+			</thead>
+		</table>
+
+	</div>
 
 
 
@@ -300,7 +289,7 @@
 <div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:60%;height:50%;">
 	<form style="padding:10px 50px;">
 
-		
+
 
 		<!----newfilter----------------------->
 
@@ -448,7 +437,6 @@
 
 
 <script>
-
 	//函数--在表格末尾加速查看按钮,扩展查看详情
 
 
@@ -533,6 +521,7 @@
 						"BTVersion",
 						"taskTypeText",
 						"taskCTRName",
+						"taskOGNSystemVersion",
 						"taskStaff",
 						"taskDBE",
 						"taskLimitDate",
@@ -722,15 +711,24 @@
 
 	function createParams(filter) {
 
-		filterActive=filter
+		console.log("filter:" + JSON.stringify(filter))
+
+		btnFilterActive = filter.btnFilter
+		divFilterActive = filter.divFilter
+
+
 
 		let filterResult = ""
 
-		if (filter !== undefined) {
-			filterResult = filter
-		}else{
-			filterResult=""
+		if (filter.btnFilter !== "") {
+
+			console.log("filter.btnFilter:" + filter.btnFilter)
+			filterResult = filter.btnFilter
+		} else {
+			filterResult = ""
 		}
+
+		console.log("filterResult:" + JSON.stringify(filterResult))
 
 		var trackType = getQueryString("trackType");
 
@@ -738,10 +736,14 @@
 			case 'all':
 
 				if (filterResult !== "") {
-					filterResult = "((WFStatus=0 OR WFStatus=100) OR WFEndDate IS NULL )  AND " + filterResult + "";
+					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult + " ) OR WFEndDate IS NULL";
 
 				} else {
 					filterResult = "(WFStatus=0 OR WFStatus=100) OR WFEndDate IS NULL"
+				}
+
+				if (filter.divFilter !== "") {
+					filterResult = "(" + filterResult + ") AND" + filter.divFilter
 				}
 
 				$("#BTNFilterAll").addClass("active");
@@ -753,6 +755,11 @@
 					filterResult = " (WFStatus=0 OR WFStatus=100)";
 				}
 
+				if (filter.divFilter !== "") {
+					filterResult = "(" + filterResult + ") AND" + filter.divFilter
+				}
+
+
 				$("#BTNFilterHistory").addClass("active");
 		}
 
@@ -761,18 +768,41 @@
 
 		let Params = {
 			tableID: "#billsTrackTable",
-			SQLParam: { SQL: "SQLTableBillsDBCenter", filter: filterResult },
-			columnsData: [
-				{ data: 'DBID', "visible": false },
-				{ data: 'BPID' },
-				{ data: 'version' },
-				{ data: 'CTRName' },
-				{ data: 'makeDate' },
-				{ data: 'limitDate' },
-				{ data: 'WFEndDate' },
-				{ data: 'taskNum' },
-				{ data: 'taskNumDone' },
-				{ data: 'WFEndText' }
+			SQLParam: {
+				SQL: "SQLTableBillsDBCenter",
+				filter: filterResult
+			},
+			columnsData: [{
+					data: 'DBID',
+					"visible": false
+				},
+				{
+					data: 'BPID'
+				},
+				{
+					data: 'version'
+				},
+				{
+					data: 'CTRName'
+				},
+				{
+					data: 'makeDate'
+				},
+				{
+					data: 'limitDate'
+				},
+				{
+					data: 'WFEndDate'
+				},
+				{
+					data: 'taskNum'
+				},
+				{
+					data: 'taskNumDone'
+				},
+				{
+					data: 'WFEndText'
+				}
 
 			]
 		}
@@ -784,24 +814,39 @@
 
 	function createExportParams(filter) {
 
-		console.log("filter:"+filter);
+		console.log("filter:" + JSON.stringify(filter))
+
+		btnFilterActive = filter.btnFilter
+		divFilterActive = filter.divFilter
 
 
-		if (filter !== undefined) {
-			filterResult = filter
-		}else{
-			filterResult=""
+
+		let filterResult = ""
+
+		if (filter.btnFilter !== "") {
+
+			console.log("filter.btnFilter:" + filter.btnFilter)
+			filterResult = filter.btnFilter
+		} else {
+			filterResult = ""
 		}
 
+		console.log("filterResult:" + JSON.stringify(filterResult))
+
 		var trackType = getQueryString("trackType");
+
 		switch (trackType) {
 			case 'all':
 
 				if (filterResult !== "") {
-					filterResult = "((WFStatus=0 OR WFStatus=100) AND " + filterResult + " ) OR WFEndDate IS NULL";
+					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult + " ) OR WFEndDate IS NULL";
 
 				} else {
 					filterResult = "(WFStatus=0 OR WFStatus=100) OR WFEndDate IS NULL"
+				}
+
+				if (filter.divFilter !== "") {
+					filterResult = "(" + filterResult + ") AND" + filter.divFilter
 				}
 
 				$("#BTNFilterAll").addClass("active");
@@ -813,6 +858,11 @@
 					filterResult = " (WFStatus=0 OR WFStatus=100)";
 				}
 
+				if (filter.divFilter !== "") {
+					filterResult = "(" + filterResult + ") AND" + filter.divFilter
+				}
+
+
 				$("#BTNFilterHistory").addClass("active");
 		}
 
@@ -821,19 +871,44 @@
 
 		let Params = {
 			tableID: "#tableExcelExport",
-			SQLParam: { SQL: "SQLTableBillsDBCenter", filter: filterResult },
-			columnsData: [
-				{ data: 'DBID', "visible": false },
-				{ data: 'BPID' },
-				{ data: 'version' },
-				{ data: 'CTRName' },
-				{ data: 'topic' },
-				{ data: 'makeDate' },
-				{ data: 'limitDate' },
-				{ data: 'WFEndDate' },
-				{ data: 'taskNum' },
-				{ data: 'taskNumDone' },
-				{ data: 'taskStaffs' }
+			SQLParam: {
+				SQL: "SQLTableBillsDBCenter",
+				filter: filterResult
+			},
+			columnsData: [{
+					data: 'DBID',
+					"visible": false
+				},
+				{
+					data: 'BPID'
+				},
+				{
+					data: 'version'
+				},
+				{
+					data: 'CTRName'
+				},
+				{
+					data: 'topic'
+				},
+				{
+					data: 'makeDate'
+				},
+				{
+					data: 'limitDate'
+				},
+				{
+					data: 'WFEndDate'
+				},
+				{
+					data: 'taskNum'
+				},
+				{
+					data: 'taskNumDone'
+				},
+				{
+					data: 'taskStaffs'
+				}
 
 			]
 		}
@@ -863,10 +938,10 @@
 		let now = new Date();
 		let year = now.getFullYear();
 
-		let monthStartDate = new Date(year, now.getMonth(), 1);//当前月1号
-		let nextMonthStartDate = new Date(year, now.getMonth() + 1, 1);//下个月1号
+		let monthStartDate = new Date(year, now.getMonth(), 1); //当前月1号
+		let nextMonthStartDate = new Date(year, now.getMonth() + 1, 1); //下个月1号
 		let days = (nextMonthStartDate.getTime() -
-			monthStartDate.getTime()) / oneDayLong;//计算当前月份的天数
+			monthStartDate.getTime()) / oneDayLong; //计算当前月份的天数
 		let monthEndDate = new Date(year, now.getMonth(), days);
 		let monthRange = [monthStartDate, monthEndDate];
 
@@ -877,7 +952,7 @@
 		let oneDayLong = 24 * 60 * 60 * 1000;
 		let now = new Date();
 		let year = now.getFullYear();
-		let yearStartDate = new Date(year, 0, 1);//当前月1号
+		let yearStartDate = new Date(year, 0, 1); //当前月1号
 		let yearEndDate = new Date(year, 11, 31);
 		let yearRange = [yearStartDate, yearEndDate];
 
@@ -909,9 +984,12 @@
 		$('#billsTrackTable tbody').on('dblclick', 'tr', function () {
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
+			console.log("this:"+this)
 			$('#BTNInfo').click();
 
 		});
+
+		
 	}
 
 	//页面加载函数---------------
@@ -919,13 +997,19 @@
 
 		var sessionName = "<%-locals.session.yjUser.Name%>";
 
-	    filterActive=""
+		btnFilterActive = ""
+		divFilterActive = ""
+
+
+
+		
 
 		//过滤按钮组
 
 		$('#BTNFilterHistory').click(function () {
 
 			window.location.href = '/app/PM/billsDBCenter';
+
 
 		});
 
@@ -941,7 +1025,10 @@
 		//详情按钮---------
 		$('#BTNInfo').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "BillCenter02")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "BillCenter02")) {
 				//    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
 				// table.row('.selected').remove().draw( false );
 				var table = $('#billsTrackTable').DataTable();
@@ -961,7 +1048,10 @@
 		//删除按钮----------
 		$('#BTNReTrack').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "BillCenter03")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "BillCenter03")) {
 				var table = $('#billsTrackTable').DataTable();
 				var dataSelect = table.row('.selected').data();
 
@@ -991,22 +1081,22 @@
 							method: 'post',
 							url: '/app/PM/updBillStatus',
 							data: PLDUpdData,
-							success: function (data, textStatus) {
-							},
-							error: function (XMLHttpRequest, textStatus, errorThrown) { }
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
 						});
 
 						var ajax2 = $.ajax({
 							method: 'post',
 							url: '/app/PM/updBillStatus',
 							data: taskUpdData,
-							success: function (data, textStatus) {
-							},
-							error: function (XMLHttpRequest, textStatus, errorThrown) { }
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
 						});
 
 						$.when(ajax1, ajax2).done(function () {
-							let i = { alertMsg: "该计划单已恢复!" }
+							let i = {
+								alertMsg: "该计划单已恢复!"
+							}
 							swalAndRefresh(i)
 
 						});
@@ -1024,12 +1114,21 @@
 		$('#BTNFitlerWeek').click(function () {
 
 
-			datatableReload(createParams("YEARWEEK(date_format(WFEndDate,'%Y-%m-%d')) = YEARWEEK(now())"));
+			datatableReload(createParams({
+				btnFilter: "YEARWEEK(date_format(WFEndDate,'%Y-%m-%d')) = YEARWEEK(now())",
+				divFilter: ""
+			}));
 
 			tableClickBind();
 
 			let DateRange = getWeekStartDateAndEndDateRange();
-			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format("yyyy/MM/dd"));
+			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
+				"yyyy/MM/dd"));
+
+				$("#BTNGroupFilter").children().removeClass("active");
+				$("#BTNFitlerWeek").addClass("active")
+
+
 
 
 		})
@@ -1037,29 +1136,51 @@
 		//页面加载后默认按周过滤
 		$('#BTNFitlerWeek').click();
 
+
 		//按钮:过滤本周
 		$('#BTNFitlerMonth').click(function () {
-			datatableReload(createParams("DATE_FORMAT( WFEndDate, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )"));
+			datatableReload(createParams({
+				btnFilter: "DATE_FORMAT( WFEndDate, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )",
+				divFilter: ""
+			}));
 			tableClickBind();
 			let DateRange = getMonthStartDateAndDateRange();
-			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format("yyyy/MM/dd"));
+			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
+				"yyyy/MM/dd"));
+
+				$("#BTNGroupFilter").children().removeClass("active");
+				$("#BTNFitlerMonth").addClass("active")
+
 		})
 
 		//按钮:过滤本周
 		$('#BTNFitlerYear').click(function () {
-			datatableReload(createParams("YEAR(WFEndDate)=YEAR(NOW())"));
+			datatableReload(createParams({
+				btnFilter: "YEAR(WFEndDate)=YEAR(NOW())",
+				divFilter: ""
+			}));
 			tableClickBind();
 			let DateRange = getYearStartDateAndDateRange();
-			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format("yyyy/MM/dd"));
+			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
+				"yyyy/MM/dd"));
+
+				$("#BTNGroupFilter").children().removeClass("active");
+				$("#BTNFitlerYear").addClass("active")
 
 
 		})
 
 		//按钮:过滤全部
 		$('#BTNFitlerAll').click(function () {
-			datatableReload(createParams());
+			datatableReload(createParams({
+				btnFilter: "",
+				divFilter: ""
+			}));
 			tableClickBind();
 			$("#spanDateRange").text("ALL");
+
+			$("#BTNGroupFilter").children().removeClass("active");
+				$("#BTNFitlerAll").addClass("active")
 
 		})
 
@@ -1068,17 +1189,31 @@
 
 			$('#DivFilter').window('open');
 
-			Fun_getSQLSelectDBData({ SQL: "SQLSRCustomers" }, "#CTRName");
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRCustomers"
+			}, "#CTRName");
 
-			Fun_getSQLSelectDBData({ SQL: "SQLSRMachines" }, "#MHEName");
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRMachines"
+			}, "#MHEName");
 
-			Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='DSP' " }, "#modelD");
+			Fun_getSQLFullSelectDBData({
+				SQL: "SQLSRSystems",
+				filter: "belong='DSP' "
+			}, "#modelD");
 
-			Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='HMI' " }, "#modelH");
+			Fun_getSQLFullSelectDBData({
+				SQL: "SQLSRSystems",
+				filter: "belong='HMI' "
+			}, "#modelH");
 
-			Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#PGEMaker");
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#PGEMaker");
 
-			Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#taskStaff");
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#taskStaff");
 
 			$('.form_date').datetimepicker({
 				language: 'zh-CN',
@@ -1090,6 +1225,9 @@
 				minView: 2,
 				forceParse: 0
 			});
+
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerDiv").addClass("active")
 		});
 
 
@@ -1100,27 +1238,33 @@
 
 			let filter = "";
 			if (Fun_getSelectText($('#CTRName option:selected').text()) !== "未选择") {
-				filter = filter + "AND CTRName = '" + Fun_getSelectText($('#CTRName option:selected').text()) + "'"
+				filter = filter + "AND CTRName = '" + Fun_getSelectText($('#CTRName option:selected')
+				.text()) + "'"
 			}
 
 			if (Fun_getSelectText($('#MHEName option:selected').text()) !== "未选择") {
-				filter = filter + "AND MHEName = '" + Fun_getSelectText($('#MHEName option:selected').text()) + "'"
+				filter = filter + "AND MHEName = '" + Fun_getSelectText($('#MHEName option:selected')
+				.text()) + "'"
 			}
 
-			if (Fun_getSelectText($('#modelD option:selected').text()) !== "未选择") {
-				filter = filter + "AND modelD = '" + Fun_getSelectText($('#modelD option:selected').text()) + "'"
+			if ($('#modelD option:selected').text() !== "未选择") {
+				filter = filter + "AND modelD = '" + $('#modelD option:selected')
+				.text() + "'"
 			}
 
-			if (Fun_getSelectText($('#modelH option:selected').text()) !== "未选择") {
-				filter = filter + "AND modelH = '" + Fun_getSelectText($('#modelH option:selected').text()) + "'"
+			if ($('#modelH option:selected').text() !== "未选择") {
+				filter = filter + "AND modelH = '" + $('#modelH option:selected')
+				.text() + "'"
 			}
 
-			if (Fun_getSelectText($('#PGEMaker option:selected').text()) !== "未选择") {
-				filter = filter + "AND PGEMaker = '" + Fun_getSelectText($('#PGEMaker option:selected').text()) + "'"
+			if ($('#PGEMaker option:selected').text() !== "未选择") {
+				filter = filter + "AND PGEMaker = '" + $('#PGEMaker option:selected')
+					.text() + "'"
 			}
 
-			if (Fun_getSelectText($('#taskStaff option:selected').text()) !== "未选择") {
-				filter = filter + "AND taskStaffs like  '%" + Fun_getSelectText($('#taskStaff option:selected').text()) + "%'"
+			if ($('#taskStaff option:selected').text() !== "未选择") {
+				filter = filter + "AND taskStaffs like  '%" + $(
+					'#taskStaff option:selected').text() + "%'"
 			}
 
 
@@ -1141,11 +1285,15 @@
 				filter = filter + "AND WFEndDate <='" + $("#WFEndDateE").val() + "'";
 			}
 
-			// console.log("filter:"+filter);
+			console.log("filter:"+filter);
 
 			filter = filter.substring(3);
 
-			datatableReload(createParams(filter));
+			datatableReload(createParams({
+				// btnFilter: btnFilterActive,//按当前模式二次过滤
+				btnFilter: "",
+				divFilter: filter
+			}));
 			tableClickBind();
 
 		});
@@ -1176,7 +1324,10 @@
 		//报表 按钮 报表1----
 		$('#BTNReport1').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "BillCenter01")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "BillCenter01")) {
 
 				$('#reportDetail').window('open');
 
@@ -1240,16 +1391,18 @@
 
 			// tableExcelExport
 
-			datatableReloadWithExcel(createExportParams(filterActive));
+			datatableReloadWithExcel(createExportParams({
+				btnFilter: btnFilterActive,
+				divFilter: divFilterActive
+			}));
 
 
 
-		
+
 		});
 
 
 
 
 	});
-
 </script>

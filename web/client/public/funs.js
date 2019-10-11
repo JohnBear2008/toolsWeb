@@ -266,4 +266,49 @@ var aio_updateBill=async(i,o)=>{
 }
 
 
+//判断是否为json格式
 
+var isJSON=(i,o)=> {
+    if (typeof i === 'string') {
+        try {
+            let obj=JSON.parse(i);
+            if(typeof obj == 'object' && obj ){
+                return true;
+            }else{
+                return false;
+            }
+
+        } catch(e) {
+            console.log('error：'+i+'!!!'+e);
+            return false;
+        }
+    }
+    console.log('It is not a string!')
+}
+
+
+
+//函数将传入的json值为null 的变为空
+
+var JSONNullToEmpty=(i,o)=>{
+	
+	//check i
+	let r1=isJSON(i)
+	//get o
+	try{
+		if(r1){
+			for(let j in i ){
+				if(i[j]===null){
+					i[j]=''
+				}
+			}
+		}
+
+	}catch(e){
+		console.log('error：JSONNullToEmpty,!!!'+e);
+	}
+	
+	o=i
+	return o
+
+}

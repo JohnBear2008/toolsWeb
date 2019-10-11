@@ -325,7 +325,7 @@ function addDBData(DBData) {
         data: DBData,
         success: function(data) {
   //         swal("成功数据:" + JSON.stringify(data));
-           if (data.affectedRows != 0) {
+           if (data.affectedRows !== 0) {
         	   
         	   
         	   swal("Good job!", "新增成功!", "success")
@@ -337,11 +337,11 @@ function addDBData(DBData) {
        },
        error:function(err){
     	   
-    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-    		   swal("系统中已存在重复数据,请检查!");
-    	   }else{
-    		   swal("失败数据:"+JSON.stringify(err));
-    	   }
+		if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
     	   
        	
        }
@@ -431,11 +431,11 @@ function saveDBData(DBData,showText) {
            }
        },
        error:function(err){
-    	   if(err.responseText.indexOf("ER_DUP_ENTRY") != -1){
-    		   swal("系统中已存在重复数据,请检查!");
-    	   }else{
-    		   swal("失败数据:"+JSON.stringify(err));
-    	   }
+		if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
        }
     });
 }
@@ -644,11 +644,11 @@ function fileSelected() {
 		
 		for ( var i = 0; i < files.length; i++) {
 			
-			console.log("filename:"+files[i].name);
+			// console.log("filename:"+files[i].name);
 			
 			let fileNameStr = files[i].name.replace(/\s*/g,"");//去除文件名中所有空格
 			
-			console.log("fileNameStr:"+fileNameStr);
+			// console.log("fileNameStr:"+fileNameStr);
 			
 			selectedFileNames=selectedFileNames+fileNameStr+";";
 			
@@ -675,6 +675,41 @@ function fileSelected() {
 		uploadFile();
 }
 
+//检查是附件文件名是否符合规范
+
+var checkFileName=(i,o)=>{
+	o=true;
+	let forbiddenChar=/['";{}()+\^*\/!%#]/;
+	
+	if(escape(i.fileName).indexOf("%u") !=-1){//包含中文
+		o=false;
+	}else if(forbiddenChar.test(i.fileName)){//检测特殊字符
+		o=false;
+	}else if((i.fileName.split('.')).length>2){//.控制.字符出现次数
+		o=false;
+	}
+	switch(i.taskType){
+		case 'D':
+			let arr=i.fileName.split('.');
+			if(arr[1].length>4){
+				o=false;
+			}
+			if(i.fileName.indexOf("update.rar") !== -1){
+				o=false;
+			}
+
+			break;
+		case 'H':
+			if(i.fileName.indexOf("update.rar") === -1){
+				o=false;
+			}
+			break;
+	}
+	return o;
+}
+
+
+
 
 //----文件上传功能代码----------------------------------------------
 function taskFileSelected() {
@@ -687,11 +722,11 @@ function taskFileSelected() {
 		
 		for ( var i = 0; i < files.length; i++) {
 			
-			console.log("filename:"+files[i].name);
+			// console.log("filename:"+files[i].name);
 			
 			let fileNameStr = files[i].name.replace(/\s*/g,"");//去除文件名中所有空格
 			
-			console.log("fileNameStr:"+fileNameStr);
+			// console.log("fileNameStr:"+fileNameStr);
 			
 			selectedFileNames=selectedFileNames+fileNameStr+";";
 			
@@ -714,9 +749,28 @@ function taskFileSelected() {
 		}
 		
 		document.getElementById('div_previewImages').innerHTML="已选择文件:"+selectedFileNames;
+
+		let fileNameCheckType=$("#taskSortType").text();
 		
+		if(fileNameCheckType!==""){
+
+			let checkFileNameResult=true;
+			for(let j=0;j<files.length;j++){
+				checkFileNameResult=checkFileNameResult&&checkFileName({taskType:fileNameCheckType,fileName:files[j].name});
+
+			}
+
+			if(checkFileNameResult){
+				taskUploadFile();
+			}else{
+				swal("上传的附件不符合文件名命名规范,请检查!");
+			}
+
+		}else{
+			taskUploadFile();
+
+		}
 		
-		taskUploadFile();
 		
 }
 
@@ -731,11 +785,11 @@ function T_taskFileSelected() {
 		
 		for ( var i = 0; i < files.length; i++) {
 			
-			console.log("filename:"+files[i].name);
+			// console.log("filename:"+files[i].name);
 			
 			let fileNameStr = files[i].name.replace(/\s*/g,"");//去除文件名中所有空格
 			
-			console.log("fileNameStr:"+fileNameStr);
+			// console.log("fileNameStr:"+fileNameStr);
 			
 			selectedFileNames=selectedFileNames+fileNameStr+";";
 			
@@ -916,7 +970,7 @@ function uploadComplete(evt) {
 		
 //		swal("g_uploaded.files[name]:"+JSON.stringify(g_uploaded.files[name]));
 		
-	
+let ibtn = "<button  class='btn btn-default btn-xs'>×</button>";
 		for (var i=0;i<file.length;i++){
 			if (file[i].status == "success") {
 				
@@ -924,10 +978,7 @@ function uploadComplete(evt) {
 				var span = document.createElement("span");
 				var url = "/system.files.download/" + file[i].key;
 //				var url = "/system.files.download/" + file[i].fileRawName;
-				
-				
 				span.innerHTML = url;
-
 				div.appendChild(span);
 //				div.appendChild(document.createElement("br"));
 //				var img = document.createElement("img");
@@ -935,14 +986,26 @@ function uploadComplete(evt) {
 //				div.appendChild(img);
 				let fileRawNameStr=file[i].fileRawName.replace(/\s*/g,"");//去除文件名中所有空格
 				
-				var downloadurl="<a id='filePath' href="+url+" download="+fileRawNameStr+">"+"<span id='fileName'>"+fileRawNameStr+"</span></a>";
+				var downloadurl="<a id='filePath' href="+url+" download="+fileRawNameStr+">"+"<span id='fileName'>"+fileRawNameStr+"</span></a>"+ibtn;
 				span.innerHTML =downloadurl;
-				div.appendChild(document.createElement("br"));
+				// div.appendChild(document.createElement("br"));
 			} else {
 				swal(file[i].errorMessage);
 			}
 		}
 	}
+
+
+					// $("#divFilesUploaded").find("a").after(ibtn);
+
+					$("#divFilesUploaded :button").on('click', function () {
+						$(this).prev("a").remove();
+						$(this).prev("span").remove();
+						$(this).remove();
+					})
+
+
+
 }
 //任务文件上传完毕
 function taskUploadComplete(evt) {
@@ -1014,10 +1077,14 @@ function taskUploadComplete(evt) {
 	
 //	let BTID=$("#BTID").text();
 
-	
-	
-	
-	
+// var ibtn = "<button  class='btn btn-default btn-xs'>×</button>";
+// $("#divFilesUploaded").find("a").after(ibtn);
+
+// $("#divFilesUploaded :button").on('click', function () {
+// 	$(this).prev("a").remove();
+// 	$(this).prev("span").remove();
+// 	$(this).remove();
+// })
 	
 	
 }
@@ -1304,7 +1371,11 @@ function F_getBindDBData(choData){
 	            swal("成功数据:" + JSON.stringify(data));
 	        },
 	        error: function(err) {
-	        	swal("失败数据:"+JSON.stringify(err));   
+				if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+					swal("系统中已存在重复数据,请检查!");
+				}else{
+					swal("失败数据:"+JSON.stringify(err));
+				}
 	        }
 	    });
 
@@ -1412,7 +1483,11 @@ function Fun_addFileInfo(DBData) {
            }
        },
        error:function(err){
-       	swal("失败数据:"+JSON.stringify(err));
+        if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
        }
     });
 }
@@ -1433,7 +1508,11 @@ function Fun_updFileInfo(DBData) {
            }
        },
        error:function(err){
-       	swal("失败数据:"+JSON.stringify(err));
+		if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
        }
     });
 }
@@ -1467,26 +1546,7 @@ function Fun_getSelectTextPre(obj){
     return obj;
 }
 
-////函数-获取附件信息数据库
-//
-//function Fun_getfileInfo(fileSQL) {
-//	
-//    $.ajax({
-//        method: 'get',
-//        url: '/app/PM/getSQLDBData',
-//        data: {SQL:fileSQL},
-//        success: function(data) {
-//            swal("成功数据:" + JSON.stringify(data));
-//           if (data.affectedRows != 0) {
-//
-////               window.location.reload();
-//           }
-//       },
-//       error:function(err){
-//       	swal("失败数据:"+JSON.stringify(err));
-//       }
-//    });
-//}
+
 
 //函数-增加数据并发送钉钉消息
 function Fun_addDBDataDD(DBData,DDMsg) {
@@ -1516,7 +1576,11 @@ function Fun_addDBDataDD(DBData,DDMsg) {
            }
        },
        error:function(err){
-       	swal("失败数据:"+JSON.stringify(err));
+		if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
        }
     });
 }
@@ -1552,7 +1616,11 @@ function Fun_updDBDataDD(DBData,DDMsg,showText) {
            }
        },
        error:function(err){
-       	swal("失败数据:"+JSON.stringify(err));
+		if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
        }
     });
 }
@@ -1618,39 +1686,6 @@ function Fun_getBillFile(Para,DivID,feedBack){
 }
 
 
-////AJAX+ 新增数据库数据函数- 添加回调返回结果功能更 ---------
-//function CB_addDBData(DBData,callback) {
-//	
-//	
-//	
-//    $.ajax({
-//        method: 'post',
-//        url: '/app/PM/addDBData',
-//        data: DBData,
-//        success: function(data) {
-////            swal("成功数据:" + JSON.stringify(data));
-//           if (data.affectedRows != 0) {
-//               swal("新增数据成功!");
-//               
-//               callback(data){
-//            	   return data
-//               }
-////               window.location.reload();
-//               
-//               
-//           }
-//       },
-//       error:function(err){
-//       	swal("失败数据:"+JSON.stringify(err));
-//       }
-//    });
-//    
-//    
-//    return data;
-//}
-//
-//
-//var getdata=CB_addDBData();
 
 //函数 获取checkbox值
 function getCheckBoxValue(CBName){
@@ -1749,12 +1784,14 @@ function Fun_fillTrackTable(tableID,SQLParam){
        				  if(dataR[i][SQLParam.titles[j]]!=""){
        					var files=JSON.parse(dataR[i][SQLParam.titles[j]]);
        					
-//       					console.log("files:"+files);
+      				
        					  
        				  }
 
        				 
        				 if(files!=null){
+
+						console.log("files:"+JSON.stringify(files));
        					 
        					 var fileLink="";
        					 if(files.length>0){
@@ -2040,6 +2077,7 @@ function getDBIDInfo(tableName,DBID){
 				"BTID",
 				"BTVersion",
 				"taskCTRName",
+				"taskOGNSystemVersion",
 				"taskStaff",
 				"taskDBE",
 				"taskLimitDate",
@@ -2071,6 +2109,7 @@ function getDBIDInfo(tableName,DBID){
 				"BTID",
 				"BTVersion",
 				"taskCTRName",
+				"taskOGNSystemVersion",
 				"taskStaff",
 				"taskDBE",
 				"taskLimitDate",
@@ -2187,7 +2226,7 @@ function showDBIDInfo(tableID,SQLParam){
 	
 	$(tableID).html("");
 	
-	console.log("SQLParam:"+JSON.stringify(SQLParam));
+	// console.log("SQLParam:"+JSON.stringify(SQLParam));
 	 
 	for(let i=0;i<SQLParam.titles.length+1;i++){
 		$(tableID).append("<tr></tr>");   
@@ -2693,13 +2732,13 @@ function checkAuthority(selectSQL,AuthorityID){
          async:false, //必须同步
          success:function(data){
         	 
-        	 console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
+        	//  console.log("authority:"+JSON.stringify(data[0]["roleAuthorities"]));
         	 if(data[0]["roleAuthorities"]!=null){
         		 let authorityArray=JSON.parse(data[0]["roleAuthorities"]);
             	 
             	 if(authorityArray.length>0){
             		 for(let i=0;i<authorityArray.length;i++){
-            			 console.log(authorityArray[i].val);
+            			//  console.log(authorityArray[i].val);
             			 
             			 if(AuthorityID==authorityArray[i].val){
             				 checkResult=true;
@@ -2809,10 +2848,10 @@ function controlElementShowHide(ips,ops){
 			}
 		}
 	}else{
-		console.log("controlElementShowHide 无显示元素!");
+		// console.log("controlElementShowHide 无显示元素!");
 	}
 
-	console.log('controlElementShowHide执行成功! 返回参数:'+ops);
+	// console.log('controlElementShowHide执行成功! 返回参数:'+ops);
 	
 	return ops;
 }
@@ -2893,7 +2932,11 @@ function IOF_insertDBData(ips,ops,fun) {
 //           return ops;
        },
        error:function(err){
-       	swal("失败数据:"+JSON.stringify(err));
+		if(err.responseText.indexOf("ER_DUP_ENTRY") !== -1){
+			swal("系统中已存在重复数据,请检查!");
+		}else{
+			swal("失败数据:"+JSON.stringify(err));
+		}
        },
        complete:function(){
     	   fun();
@@ -2961,3 +3004,34 @@ function confirmSendDDMsg(ips){
 		});
 	
 }
+
+//根据SQL获取信息
+const getBizDataBySQL = async (i, o) => {
+
+	o = await new Promise((resolve, reject) => {
+
+		$.ajax({
+			method: 'get',
+			data: i,
+			url: "/app/PM/getSQLDBData",
+			// async: false,
+			success: function (data) {
+				// console.log("Ajax data:" + JSON.stringify(data));
+
+				resolve(data)
+			},
+			error: function (err) {
+				reject(err)
+			}
+		});
+
+
+	});
+	// alert(JSON.stringify(o));
+
+	return o
+
+
+}
+
+

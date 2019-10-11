@@ -41,9 +41,7 @@
         <button id="BTNDelete" class="btn btn-danger" data-toggle="modal" >删除</button>
         <button id="BTNAudit" class="btn btn-warning" data-toggle="modal" >审核</button>
         
-        
-        
-       
+
         
         <div class="btn-group" style="margin-left:20px">
         <button id="BTNFilterSimple" class="btn btn-default" >未完成单据</button>
@@ -588,44 +586,58 @@ function getPLDOld(BPID){
 function fillAuditor(PGEName){
 	
 	let ips ={staffName:PGEName,modelD:$('#modelD option:selected').text(),modelH:$('#modelH option:selected').text()};
+
+	console.log('ips:'+JSON.stringify(ips))
+	// console.log('ips:'+$('#modelD option:selected').val())
+	// console.log('ips:'+$('#modelH option:selected').val())
+
+	if(ips.modelD!=='未选择'){
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",'李源');
+	}
+
+	if(ips.modelH!=='未选择'){
+		Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",'孙凌财');
+	}
 	
-	$.ajax({
-        method:'get',
-        data:{SQL:"SQLGetUpAuditor",filter:"staffName='"+ips.staffName+"'"},
-        url:"/app/PM/getSQLDBData",
-//        async:false, 
-        success:function(data){
-       	 if(data.length!=0){
-//       		 console.log(data[0].upAuditor);
+
+
+// 	//原来 按填单人上级主管设定审核人规则!!! 保留
+// 	$.ajax({
+//         method:'get',
+//         data:{SQL:"SQLGetUpAuditor",filter:"staffName='"+ips.staffName+"'"},
+//         url:"/app/PM/getSQLDBData",
+// //        async:false, 
+//         success:function(data){
+//        	 if(data.length!=0){
+// //       		 console.log(data[0].upAuditor);
        		 
-       		 var upAuditor=data[0].upAuditor
+//        		 var upAuditor=data[0].upAuditor
        		 
-       		 switch(PGEName){
+//        		 switch(PGEName){
        		 
-       		 case '周永汉':
-//       			 console.log("sessionName:"+sessionName);
-//       			 
-//       			 console.log(ips.modelH.indexOf("OS"))
-      			 if(ips.modelH.indexOf("OS")!=-1){
+//        		 case '周永汉':
+// //       			 console.log("sessionName:"+sessionName);
+// //       			 console.log(ips.modelH.indexOf("OS"))
+//       			 if(ips.modelH.indexOf("OS")!=-1){
       				 
       				
-      				 upAuditor='蒋伟贞'
-      			 }
+//       				 upAuditor='蒋伟贞'
+//       			 }
        			 
-       			 break
-       		 case '周颖':
-       			 if(ips.modelH.indexOf("Q15")!=-1){
-       				 upAuditor='蒋伟贞'
-       			 }
+//        			 break
+//        		 case '周颖':
+//        			 if(ips.modelH.indexOf("Q15")!=-1){
+//        				 upAuditor='蒋伟贞'
+//        			 }
        			 
-       			 break
-       		 }
+//        			 break
+//        		 }
 
-       		 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",upAuditor);
-       	 }
-        },
-        error:function(){}
-    })
+//        		 Fun_getSQLSelectDBData({SQL:"SQLSRStaffs"},"#auditor",upAuditor);
+//        	 }
+//         },
+//         error:function(){}
+//     })
 	
 	
 }
@@ -1055,8 +1067,11 @@ function checkPLDInput(){
 	if($("#CTRName").val()==null||$("#CTRName").val()==""){
 		swal("客户未输入,请检查!");
 		return false;
-	}else if(($('#modelD option:selected').val()==undefined||$('#modelD option:selected').val()=="")&&($('#modelH option:selected').val()==undefined||$('#modelH option:selected').val()=="")){
+	}else if($('#modelD option:selected').val()===""&&$('#modelH option:selected').val()===""){
 		swal("DSP系统,HMI系统至少选择一项,请检查!");
+		return false;
+	}else if($('#modelD option:selected').val()!==""&&$('#modelH option:selected').val()!==""){
+		swal("内核计划单不能同时选择DSP系统,HMI系统,如果都涉及请分开开单!");
 		return false;
 	}else if($("#topic").val()==""){
 		swal("主题未输入,请检查!");
@@ -1486,7 +1501,6 @@ $('#BTNAudit').click(function() {
     } else {
     	
     	if(dataSelect.auditResult==null||dataSelect.auditResult==""){
-    		
 
     		$('#BillPLD').modal('show')
         	Fun_winDetailInit(dataSelect);
@@ -1554,7 +1568,7 @@ $('#BTNFormModify').click(function() {
 			"BPID":$('#BPID').val(),
 			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 			"topic":$('#topic').val(),
-			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>').replace(/'/g,'"'),
 			"PGEMaker":$('#PGEMaker option:selected').text(),
 			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
 			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
@@ -1655,7 +1669,7 @@ $('#BTNFormUpdate').click(function() {
 	        			"BPID":$('#BPID').val(),
 	        			"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 	        			"topic":$('#topic').val(),
-	        			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+	        			"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>').replace(/'/g,'"'),
 	        			"PGEMaker":$('#PGEMaker option:selected').text(),
 	        			"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
 	        			"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),
@@ -1729,7 +1743,7 @@ $('#BTNFormAuditYes').click(function() {
 					"auditDate":Ndate,
 					"auditResult":1,
 					"PLDStatus":1,
-					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
+					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>').replace(/'/g,'"'),
 					"WFStatus":10
 			}
 			
@@ -1834,7 +1848,7 @@ $('#BTNFormAuditNo').click(function() {
 					"auditDate":Ndate,
 					"auditResult":2,
 					"PLDStatus":2,
-					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>'),
+					"auditOpinion":$('#auditOpinion').val().replace(/\n|\r\n/g,'<br/>').replace(/'/g,'"'),
 					"WFStatus":9
 			}
 
@@ -1886,7 +1900,7 @@ $('#BTNFormSave').click(function(){
 				"BPID":$('#BPID').val(),
 				"CTRName":Fun_getSelectText($('#CTRName option:selected').text()),
 				"topic":$('#topic').val(),
-				"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>'),
+				"detail":$('#detail').val().replace(/\n|\r\n/g,'<br/>').replace(/'/g,'"'),
 				"PGEMaker":$('#PGEMaker option:selected').text(),
 				"PLDArea":$('input:radio[name="PLDArea"]:checked').val(),
 				"orderFrom":$('input:radio[name="orderFrom"]:checked').val(),

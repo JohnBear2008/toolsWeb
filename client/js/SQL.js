@@ -49,7 +49,7 @@ SQLTableBillsTaskFrom="SELECT A.* FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(
 "GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.BTAcceptResult=1 ) A WHERE A.taskType<>'A' AND A.T_BPID IS NULL";
 
 
-SQLTableBillsBPT="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A";
+SQLTableBillsBPT="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion,tbb.maker AS PLDMaker FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A";
 
 //计划单更新版本未审核时其他流程单据加载
 //SQLTableBillsBPT="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion AND tbb.PLDStatus=1 ) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '已填单' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID) A";
@@ -106,18 +106,18 @@ SQLTableBillsTaskIPQC_T="SELECT A.* FROM (SELECT tbb.* FROM `ppm_bills_task_t` t
 //SQLTableBillsTaskIPQC_T="SELECT A.* FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion" +
 //" FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordNum>0) A";
 
-SQLTableBillsFQC="SELECT A.* FROM (SELECT tbc.FQCStaff,tbc.BPID,tbc.version,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE tbc.WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
+SQLTableBillsFQC="SELECT A.* FROM (SELECT tbc.FQCStaff,tbc.BPID,tbc.version,tbc.maker,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE tbc.WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
     " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText," +
     "tbd.* FROM " +
     "(SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba " +
     "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd " +
     "ON tbc.BPID=tbd.fqcBPID) A";
 
-SQLTableBillsFQC_T="SELECT A.* FROM (SELECT tbc.BPID,tbc.version,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE tbc.WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
+SQLTableBillsFQC_T="SELECT A.* FROM (SELECT tbc.FQCStaff,tbc.BPID,tbc.version,tbc.maker,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE tbc.WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
 " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText," +
 "tbd.* FROM " +
 "(SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba " +
-"WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100  ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc_t` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc_t` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd " +
+"WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc_t` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc_t` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd " +
 "ON tbc.BPID=tbd.fqcBPID) A";
 
 
@@ -135,12 +135,19 @@ SQLTableBillsPBH="SELECT A.* FROM (SELECT tbc.maker,tbc.BPID,tbc.version,tbc.lim
 "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone>0 AND tbb.FQCRequest=tbb.FQCPass AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100  ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
 "ON tbc.BPID=tbd.pbhBPID) A";
 
-SQLTableBillsPBH_T="SELECT A.* FROM (SELECT tbc.maker,tbc.BPID,tbc.BTIDfrom,tbc.BPIDfrom,tbc.version,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
+SQLTableBillsPBH_T="SELECT A.* FROM (SELECT tbc.maker,tbc.BPID,tbc.BPIDfrom,tbc.BTIDfrom,tbc.version,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
 " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText,CASE FQCRequest WHEN 1 THEN '有' ELSE '无' END AS FQCRequestText,CASE FQCPass WHEN 1 THEN '通过' ELSE '未通过' END AS FQCPassText," +
 "tbd.*,CASE tbd.emailResult WHEN 1 THEN '已发系统邮件' WHEN 2 THEN '已发自定义邮件' ELSE '未发邮件' END AS PBHResultText FROM " +
 "(SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba " +
-"WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.FQCPass=1 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100  ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh_t` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
+"WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone>0 AND tbb.FQCRequest=tbb.FQCPass AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100  ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh_t` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
 "ON tbc.BPID=tbd.pbhBPID) A";
+
+// SQLTableBillsPBH_T="SELECT A.* FROM (SELECT tbc.maker,tbc.BPID,tbc.BTIDfrom,tbc.BPIDfrom,tbc.version,tbc.limitDate,tbc.taskNum,tbc.taskNumDone,tbc.applyDate,tbc.MHEName,tbc.modelD,tbc.modelH,tbc.PGEMaker,tbc.topic,tbc.detail,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,CASE WFStatus WHEN 1 THEN '计划单-未审核' WHEN 9 THEN '计划单-审核驳回'" +
+// " WHEN 10 THEN '计划单-审核通过' WHEN 19 THEN '方案单-审核驳回' WHEN 20 THEN '方案单-审核通过' WHEN 25 THEN '任务单-处理中' WHEN 30 THEN '任务单-处理完成' WHEN 35 THEN 'FQC单-未通过' WHEN 40 THEN 'FQC单-通过' END  AS  WFStatusText,CASE FQCRequest WHEN 1 THEN '有' ELSE '无' END AS FQCRequestText,CASE FQCPass WHEN 1 THEN '通过' ELSE '未通过' END AS FQCPassText," +
+// "tbd.*,CASE tbd.emailResult WHEN 1 THEN '已发系统邮件' WHEN 2 THEN '已发自定义邮件' ELSE '未发邮件' END AS PBHResultText FROM " +
+// "(SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba " +
+// "WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.FQCPass=1 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100  ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_pbh_t` tbf,(SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` GROUP BY pbhBPID) tbe WHERE tbf.pbhBPID=tbe.pbhBPID AND tbf.PBHVersion=tbe.maxPBHVersion) tbd " +
+// "ON tbc.BPID=tbd.pbhBPID) A";
 
 SQLTableTestContents="SELECT * FROM `ppm_testcontents` ";
 
@@ -173,10 +180,10 @@ SQLGetUpAuditor="SELECT DATEDIFF(NOW(),entryDate) AS entryDays,upAuditor FROM `p
 SQLGetEntryDays="SELECT DATEDIFF(NOW(),entryDate) AS entryDays FROM `ppm_staffs`";
 
 
-SQLTableTasksDBCenter="SELECT A.*  FROM (SELECT tbb.* FROM `ppm_bills_task` tbb," +
+SQLTableTasksDBCenter="SELECT A.*  FROM (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb," +
     "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A";
 
-SQLTableTasksDBCenter_T="SELECT A.*  FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb," +
+SQLTableTasksDBCenter_T="SELECT A.*  FROM (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb," +
     "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A";
 
 

@@ -1907,7 +1907,7 @@
 							"taskBugID": $('#taskBugID').val(),
 							"taskStaff": $('#taskStaff option:selected').text(),
 							"modifyABE": modifyABE,
-							"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>'),
+							"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 							"taskLimitDate": $('#taskLimitDate').val(),
 							"taskMaker": sessionName,
 							"taskMakeDate": Ndate,
@@ -1937,7 +1937,7 @@
 								"taskBugID": $('#taskBugID').val(),
 								"taskStaff": $('#taskStaff option:selected').text(),
 								"modifyABE": modifyABE,
-								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>'),
+								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 								"taskLimitDate": $('#taskLimitDate').val(),
 								"taskMaker": sessionName,
 								"taskMakeDate": Ndate,
@@ -1967,7 +1967,7 @@
 									"taskBugID": $('#taskBugID').val(),
 									"taskStaff": $('#taskStaff option:selected').text(),
 									"modifyABE": modifyABE,
-									"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>'),
+									"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 									"taskLimitDate": $('#taskLimitDate').val(),
 									"taskMaker": sessionName,
 									"taskMakeDate": Ndate,
@@ -2023,7 +2023,7 @@
 
 						var modifyType = $('input:radio[name="modifyType"]:checked').val();
 						var modifyReason = getCheckBoxValue("modifyReason");
-						var BPTDescribe = $('#BPTDescribe').val().replace(/\n|\r\n/g, '<br/>');
+						var BPTDescribe = $('#BPTDescribe').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"');
 						var auditor = Fun_getSelectText($('#auditor option:selected').text());
 						console.log("auditor:" + auditor);
 
@@ -2182,7 +2182,7 @@
 
 					var modifyType = $('input:radio[name="modifyType"]:checked').val();
 					var modifyReason = getCheckBoxValue("modifyReason");
-					var BPTDescribe = $('#BPTDescribe').val().replace(/\n|\r\n/g, '<br/>');
+					var BPTDescribe = $('#BPTDescribe').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"');
 					//	            var auditor=Fun_getSelectText($('#auditor option:selected').text());
 					//	            console.log("auditor:"+auditor);
 
@@ -2356,7 +2356,7 @@
 						"auditor": sessionName,
 						"auditDate": Ndate,
 						"auditResult": 1,
-						"BPTAuditOpinion": $('#BPTAuditOpinion').val().replace(/\n|\r\n/g, '<br/>'),
+						"BPTAuditOpinion": $('#BPTAuditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 						"BPTStatus": 1,
 						"filter": " BPTVersion =" + $('#BPTVersion').text()
 					}
@@ -2443,7 +2443,7 @@
 						"auditor": sessionName,
 						"auditDate": Ndate,
 						"auditResult": 2,
-						"BPTAuditOpinion": $('#BPTAuditOpinion').val().replace(/\n|\r\n/g, '<br/>'),
+						"BPTAuditOpinion": $('#BPTAuditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 						"BPTStatus": 2
 					}
 

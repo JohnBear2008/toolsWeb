@@ -470,9 +470,13 @@
 
 
 		if (dataSelect.FQCAuditor != "") {
-			Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#FQCAuditor", dataSelect.FQCAuditor);
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#FQCAuditor", dataSelect.FQCAuditor);
 		} else {
-			Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#FQCAuditor");
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#FQCAuditor");
 		}
 
 
@@ -505,14 +509,22 @@
 
 		if (dataSelect.FQCTestResult == "") {
 
-			let tasksTableSQL = { "SQL": "SQLTableTestContents", "filter": "billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')", "orderBy": "modelType" };
+			let tasksTableSQL = {
+				"SQL": "SQLTableTestContents",
+				"filter": "billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')",
+				"orderBy": "modelType"
+			};
 
 
 			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, null, null);
 		} else {
 			var FQCTestResult = JSON.parse(dataSelect.FQCTestResult);
 
-			let tasksTableSQL = { "SQL": "SQLTableTestContents", "filter": "billType='FQC' AND billVersion='" + $('#testContentsVer').text() + "'", "orderBy": "modelType" };
+			let tasksTableSQL = {
+				"SQL": "SQLTableTestContents",
+				"filter": "billType='FQC' AND billVersion='" + $('#testContentsVer').text() + "'",
+				"orderBy": "modelType"
+			};
 			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, FQCTestResult, dataSelect.FQCAuditResult);
 		}
 
@@ -550,20 +562,39 @@
 
 		switch (undone) {
 			case "unRecord":
-				var tableSQL = { "SQL": "SQLTableBillsFQC_T", "filter": "FQCMaker IS NULL", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsFQC_T",
+					"filter": "FQCStaff = '" + sessionName + "' AND FQCMaker IS NULL",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				break;
 			case "unAudit":
-				var tableSQL = { "SQL": "SQLTableBillsFQC_T", "filter": " (PGEMaker = '" + sessionName + "' OR FQCMaker = '" + sessionName + "'  OR FQCAuditor = '" + sessionName + "') AND billFQCStatus ='已填单,未审核'", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsFQC_T",
+					"filter": "FQCAuditor = '" + sessionName + "' AND billFQCStatus ='已填单,未审核'",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				break;
 			case "unPass":
-				var tableSQL = { "SQL": "SQLTableBillsFQC_T", "filter": " (PGEMaker = '" + sessionName + "' OR FQCMaker = '" + sessionName + "'  OR FQCAuditor = '" + sessionName + "') AND ( FQCStatus <>0 AND FQCStatus <>1)", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsFQC_T",
+					"filter": " PGEMaker = '" + sessionName + "' AND ( FQCStatus <>0 AND FQCStatus <>1)",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				break;
 			case "all":
-				var tableSQL = { "SQL": "SQLTableBillsFQC_T", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsFQC_T",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				$("#BTNFilterAll").addClass("active");
 				break;
 			default:
-				var tableSQL = { "SQL": "SQLTableBillsFQC_T", "filter": "FQCStatus<>1 OR FQCStatus IS NULL", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsFQC_T",
+					"filter": "FQCStatus<>1 OR FQCStatus IS NULL",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				$("#BTNFilterSimple").addClass("active");
 				break;
 		}
@@ -579,17 +610,38 @@
 
 		tableInfo = {
 			"tableID": "#billsPLDTable",
-			"columnsData": [
-				{ data: 'saveTimeStamp', "visible": false },
-				{ data: 'DBID', "visible": false },
-				{ data: 'BPID' },
-				{ data: 'version' },
-				{ data: 'PLDCTRName' },
-				{ data: 'limitDate' },
-				{ data: 'taskNum' },
-				{ data: 'taskNumDone' },
-				{ data: 'FQCResultText' },
-				{ data: 'billFQCStatus' }
+			"columnsData": [{
+					data: 'saveTimeStamp',
+					"visible": false
+				},
+				{
+					data: 'DBID',
+					"visible": false
+				},
+				{
+					data: 'BPID'
+				},
+				{
+					data: 'version'
+				},
+				{
+					data: 'PLDCTRName'
+				},
+				{
+					data: 'limitDate'
+				},
+				{
+					data: 'taskNum'
+				},
+				{
+					data: 'taskNumDone'
+				},
+				{
+					data: 'FQCResultText'
+				},
+				{
+					data: 'billFQCStatus'
+				}
 			]
 		}
 
@@ -635,7 +687,10 @@
 			//	console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
 			// table.row('.selected').remove().draw( false );
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "T-FQC01")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "T-FQC01")) {
 				var dataSelect = table.row('.selected').data();
 				if (dataSelect == undefined) {
 					swal("请先点击表格中的表单!");
@@ -651,7 +706,10 @@
 		//按钮-FQC保存---------
 		$('#BTNFQCSave').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "T-FQC01")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "T-FQC01")) {
 
 
 				if ($('#FQCAuditor option:selected').text() === '未选择') {
@@ -669,10 +727,12 @@
 					for (var i = 0; i < testNum; i++) {
 						var testResult = {
 							"testContentDBID": $("#testContentDBID" + i).text(),
-							"testResult": $('input:radio[name="testResultRadio' + i + '"]:checked').val(),
+							"testResult": $('input:radio[name="testResultRadio' + i + '"]:checked')
+								.val(),
 							"testRemark": $("#testRemark" + i).val()
 						}
-						radioCheck = radioCheck && $('input:radio[name="testResultRadio' + i + '"]:checked').val();
+						radioCheck = radioCheck && $('input:radio[name="testResultRadio' + i +
+							'"]:checked').val();
 
 						FQCTestResult.push(testResult);
 					}
@@ -687,7 +747,7 @@
 							"fqcBPID": $('#BPID').text(),
 							"CTRName": $('#CTRName').text(),
 							"FQCTestResult": JSON.stringify(FQCTestResult),
-							"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>'),
+							"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 							"FQCResult": $('input:radio[name="FQCResult"]:checked').val(),
 							"FQCMaker": sessionName,
 							"FQCMakeDate": Ndate,
@@ -704,7 +764,8 @@
 								//         swal("成功数据:" + JSON.stringify(data));
 								if (data.affectedRows != 0) {
 
-									if (sessionName == $('#FQCAuditor option:selected').text()) {
+									if (sessionName == $('#FQCAuditor option:selected')
+									.text()) {
 
 
 										let msgNext = confirm("FQC数据保存成功,是否立即审核?");
@@ -717,8 +778,19 @@
 									} else {
 
 
-										let i = { alertMsg: "T-FQC数据保存成功!" }
-										swalAndRefresh(i)
+										let i = {
+											confirmMsg: 'T-FQC单保存成功,是否发送钉钉审核提醒消息?',
+											DDMsg: {
+												at: $('#FQCAuditor option:selected')
+												.text(),
+												msg: "@" + $('#FQCAuditor option:selected')
+													.text() + "T-FQC已完成,请登陆系统审核!"
+											}
+										}
+										let o = {
+											f: io_refresh
+										}
+										aio_chooseSendDDMsg(i, o)
 									}
 
 
@@ -752,7 +824,10 @@
 		//按钮-FQC审核---------
 		$('#BTNFQCAudit').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "T-FQC02")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "T-FQC02")) {
 
 				if (sessionName == $('#FQCAuditor option:selected').text()) {
 					var FQCResult = $('input:radio[name="FQCResult"]:checked').val();
@@ -765,7 +840,7 @@
 								"BillIDName": "BPID",
 								"BillID": $('#BPID').text(),
 								"FQCPass": 1,
-								"WFStatus": 40//FQC 通过
+								"WFStatus": 40 //FQC 通过
 							}
 
 							var FQCData = {
@@ -790,7 +865,7 @@
 								"BillIDName": "BPID",
 								"BillID": $('#BPID').text(),
 								"FQCPass": 1,
-								"WFStatus": 40//FQC 通过
+								"WFStatus": 40 //FQC 通过
 							}
 
 							var FQCData = {
@@ -815,7 +890,7 @@
 								"DBTable": "ppm_bills_plan_t",
 								"BillIDName": "BPID",
 								"BillID": $('#BPID').text(),
-								"WFStatus": 35//FQC 驳回
+								"WFStatus": 35 //FQC 驳回
 							}
 
 							var FQCData = {
@@ -856,24 +931,40 @@
 						method: 'post',
 						url: '/app/PM/updBillStatus',
 						data: PLDUpdData,
-						success: function (data, textStatus) {
-						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+						success: function (data, textStatus) {},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {}
 					});
 
 					var ajax2 = $.ajax({
 						method: 'post',
 						url: '/app/PM/updBillStatus',
 						data: FQCData,
-						success: function (data, textStatus) {
-						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+						success: function (data, textStatus) {},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {}
 					});
 
 					$.when(ajax1, ajax2).done(function () {
 
-						let i = { alertMsg: msg }
+						let i = {
+							alertMsg: msg
+						}
 						swalAndRefresh(i)
+
+						if (FQCResult === '1' || FQCResult === '2') {
+
+							let table = $('#billsPLDTable').DataTable();
+							let dataSelect = table.row('.selected').data();
+							let i = {
+								DDMsg: {
+									at: dataSelect.maker,
+									msg: '@' + dataSelect.maker + ',T计划单号:' + dataSelect.BPID +
+										',客户:' + dataSelect.PLDCTRName + ',该计划单已符合发布条件,请填写发布单!'
+								}
+							}
+							aio_sendDDMsg(i)
+
+
+						}
 
 					});
 
@@ -887,29 +978,30 @@
 
 
 		//radio 定义更换按键触发事件-----------
-		$('input:radio[name="auditType"]').click(function () {
+		$('input:radio[name="FQCResult"]').click(function () {
+			let PGEMaker = $('#PGEMaker').text();
 
-			var PGEMaker = $('#PGEMaker').children('option:selected').text();
-			console.log("PGEMaker:" + PGEMaker);
-			var radioValue = $('input:radio[name="auditType"]:checked').val();
+			
+			let radioValue = $('input:radio[name="FQCResult"]:checked').val();
+
+			// console.log(PGEMaker+radioValue)
+
 			switch (radioValue) {
 				case "1":
-					var SQLAuditor = { SQL: "SQLSRStaffs" };
-					var auditor = "#auditor";
-					Fun_getSQLSelectDBData(SQLAuditor, auditor, PGEMaker);
-					$("#auditor").attr("disabled", true);
-					$('#auditDate').val("");
-					$('#auditResult').val("");
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#FQCAuditor", sessionName);
 					break;
 				case "2":
-
-					var SQLAuditor = { SQL: "SQLSRStaffs" };
-					var auditor = "#auditor";
-					Fun_getSQLSelectDBData(SQLAuditor, auditor);
-					$("#auditor").attr("disabled", false);
-					$('#auditDate').val("");
-					$('#auditResult').val("");
+				case "3":
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#FQCAuditor", PGEMaker);
 					break;
+
+				default:
+				break;
+
 			}
 
 		});
@@ -920,7 +1012,10 @@
 		//按钮-更新版本
 		$('#BTNUpdVer').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "T-FQC03")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "T-FQC03")) {
 
 				var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 				if (msg == true) {
@@ -939,9 +1034,8 @@
 						method: 'post',
 						url: '/app/PM/updBillStatus',
 						data: oldFQCData,
-						success: function (data, textStatus) {
-						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+						success: function (data, textStatus) {},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {}
 					});
 
 
@@ -950,7 +1044,7 @@
 						"fqcBPID": $('#BPID').text(),
 						"FQCVersion": newVersion,
 						"CTRName": $('#CTRName').text(),
-						"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>'),
+						"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 						"FQCResult": $('input:radio[name="FQCResult"]:checked').val(),
 						"FQCMaker": sessionName,
 						"FQCMakeDate": Ndate,
@@ -978,7 +1072,9 @@
 					$.when(ajax1, ajax2).done(function () {
 
 
-						let i = { alertMsg: "更新版本成功!" }
+						let i = {
+							alertMsg: "更新版本成功!"
+						}
 						swalAndRefresh(i)
 
 					});
@@ -998,5 +1094,4 @@
 
 
 	});
-
 </script>

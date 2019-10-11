@@ -76,6 +76,4 @@ module.exports = function(sender) {
 	     		req.end();
 	     		
 	     		sender.success("发送成功!");
-
-
 };

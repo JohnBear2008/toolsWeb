@@ -223,6 +223,9 @@
 
 
 									<!-------------------------------------------------------------------------->
+
+
+									<!-------------------------------------------------------------------------->
 									<div class="form-group">
 										<label class="col-sm-1 control-label" for="name">附件:</label>
 
@@ -320,6 +323,13 @@
 										<div class="col-sm-10">
 											<button id="BTNGetInfo" class="btn btn-success"
 												data-toggle="modal">智能填单</button>
+
+												
+											    <input type="file" name="myHead" multiple="multiple" id="fileToUpload"
+														style="display:none;" onchange="fileSelected()">
+												<a class="btn btn-info" onclick="$('#fileToUpload').click()">附加程序</a>
+		
+												
 											<button id="BTNResetInfo" class="btn btn-warning"
 												data-toggle="modal">清空信息</button>
 
@@ -525,10 +535,6 @@
 				<div>
 
 
-
-
-
-
 				</div>
 
 
@@ -575,13 +581,87 @@
 			//}
 
 
+
+
+
+			//检测填入邮箱格式是否符合 aa<1@1.com>
+
+			const checkEmail = (email) => {
+
+				let o = true;
+				try {
+					let emailAdr = email.substring(email.indexOf('<'), email.length);
+
+					var myReg1 = /^<[a-zA-Z0-9_-]+\.+[a-zA-Z0-9_-]+@([a-zA-Z0-9_-]+\.)+(com|cn|net|org)>$/;
+					var myReg2 = /^<[a-zA-Z0-9_-]+@([a-zA-Z0-9_-]+\.)+(com|cn|net|org)>$/;
+
+
+					if (myReg1.test(emailAdr)||(myReg2.test(emailAdr))) {
+						o = true;
+					} else {
+						o = false;
+					}
+
+				} catch (error) {
+					console.log('checkEmail error:' + error)
+
+				}
+
+				return o;
+			}
+
+			// checkEmail('aaa<596417327@qq.com>');
+
+			const checkEmailAdrsFormate = (adrs) => {
+
+				let o = true
+				try {
+					if (adrs.indexOf(',') !== -1) {
+						let adrsArray = adrs.split(',');
+
+						for (let n = 0; n < adrsArray.length; n++) {
+							o = o && checkEmail(adrsArray[n])
+						}
+
+					} else if (adrs !== "") {
+						o = checkEmail(adrs)
+					}
+				} catch (error) {
+					console.log('checkEmailAdrsFormate error:' + error)
+				}
+
+				console.log('checkEmailAdrsFormate o:' + o)
+
+				return o
+			}
+
+
+
+
+
 			//检查输入项
 			function checkPBHInput() {
 
-				if ($("#emailADRS").val() == "") {
+				var reg =
+					/[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/;
+
+
+				// console.log("a:"+$('#divFilesUploaded a').text())
+
+				if ($("#emailADRS").val() === "") {
 					swal("收件人邮箱未填写,请检查!");
 					return false;
-				} else if ($("#emailContent").val() == null) {
+				} else if (reg.test($("#emailADRS").val()) || reg.test($("#emailCopyADRS").val())) {
+					swal("系统检测到收件人或抄送人地址包含中文标点符号会导致邮件发送失败,请检查!");
+					return false;
+				} else if (!(checkEmailAdrsFormate($("#emailADRS").val()) && checkEmailAdrsFormate($("#emailCopyADRS").val()))) {
+					swal("收件人或抄送人邮件格式不符合系统规范,请检查!" + "\n 标准格式:海天-张三<aaa@163.com>");
+					return false;
+
+				} else if ($('#divFilesUploaded a').text() === "") {
+					swal("程序附件不存在,请检查!");
+					return false;
+				} else if ($("#emailContent").val() === "") {
 					swal("邮件内容未填写,请检查!");
 					return false;
 				}
@@ -671,10 +751,12 @@
 							for (var i = 0; i < files.length; i++) {
 								console.log("files[i].fileName:" + files[i].fileName);
 
-								fileLink = fileLink + "<a  href=" + '/system.files.download/upload_' + files[i].fileKey + " download=" + files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
+								fileLink = fileLink + "<a  href=" + '/system.files.download/upload_' + files[i].fileKey +
+									" download=" + files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" +
+									" ; ";
 							}
 
-							fileLink = fileLink.substr(0, fileLink.length - 3);
+							// fileLink = fileLink.substr(0, fileLink.length - 3);
 						}
 						var downloadurl = fileLink;
 					} else {
@@ -692,9 +774,10 @@
 						if (files.length > 0) {
 							for (var i = 0; i < files.length; i++) {
 								console.log("files[i].fileName:" + files[i].fileName);
-								fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" + files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
+								fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" +
+									files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
 							}
-							fileLink = fileLink.substr(0, fileLink.length - 3);
+							// fileLink = fileLink.substr(0, fileLink.length - 3);
 						}
 						var downloadurl = fileLink;
 					} else {
@@ -712,14 +795,23 @@
 				$('#PBHMaker').text(dataSelect.PBHMaker);
 				$('#PBHMakeDate').text(dataSelect.PBHMakeDate);
 				$('#PBHVersion').text(dataSelect.PBHVersion);
-				$('#PBHAuditor').text(dataSelect.PBHAuditor);
+				// $('#PBHAuditor').text(dataSelect.PBHAuditor);
 				$('#PBHAuditDate').text(dataSelect.PBHAuditDate);
 				$('#PBHResultText').text(dataSelect.PBHResultText);
 
 
-				var SQLAuditor = { SQL: "SQLSRStaffs" };
-				var PBHAuditor = "#PBHAuditor";
-				Fun_getSQLSelectDBData(SQLAuditor, PBHAuditor, sessionName);
+				if (dataSelect.PBHAuditor === "") {
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#PBHAuditor", dataSelect.PGEMaker);
+				} else {
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#PBHAuditor", dataSelect.PBHAuditor);
+				}
+
+
+
 
 
 
@@ -730,6 +822,12 @@
 					$('#DivPBHBTNS').show();
 					$("#PBHAuditor").attr("disabled", false);
 					$('#BTNUpdVer').hide();
+
+					if (sessionName === dataSelect.PBHMaker || dataSelect.PBHMaker === "") {
+						$('#PBHAuditor').attr("disabled", false);
+					} else {
+						$('#PBHAuditor').attr("disabled", true);
+					}
 
 				} else {
 
@@ -747,6 +845,40 @@
 
 			}
 
+
+			//格式化抄送邮件格式
+
+			const formateCopyEmailADS = (adrs, mark) => {
+
+				console.log(adrs)
+				let o = '';
+				try {
+					if (adrs.indexOf(',') !== -1) {
+						adrs = adrs.replace(/;/g, ',');
+						adrsArray = adrs.split(',');
+
+						for (let n = 0; n < adrsArray.length; n++) {
+							adrsArray[n] = mark + '-抄送' + (n + 1) + '<' + adrsArray[n] + '>';
+
+							console.log("adrsArray[n]:" + adrsArray[n]);
+
+							o = o + adrsArray[n] + ',';
+						}
+
+						o = o.substring(0, o.length - 1);
+					} else if (adrs !== '') {
+						o = mark + '-抄送<' + adrs + '>';
+					}
+
+				} catch (error) {
+					console.log("formateCopyEmailADS error:" + error)
+
+				}
+
+				return o;
+
+			}
+
 			//页面加载函数---------------
 			$(document).ready(function () {
 
@@ -760,20 +892,39 @@
 
 				switch (undone) {
 					case "unRecord":
-						var tableSQL = { "SQL": "SQLTableBillsPBH", "filter": " maker = '" + sessionName + "' AND PBHStatus IS NULL", "orderBy": " saveTimeStamp DESC" };
+						var tableSQL = {
+							"SQL": "SQLTableBillsPBH",
+							"filter": " maker = '" + sessionName + "' AND PBHStatus IS NULL",
+							"orderBy": " saveTimeStamp DESC"
+						};
 						break;
 					case "unAudit":
-						var tableSQL = { "SQL": "SQLTableBillsPBH", "filter": "PBHAuditor = '" + sessionName + "' AND PBHStatus =0", "orderBy": " saveTimeStamp DESC" };
+						var tableSQL = {
+							"SQL": "SQLTableBillsPBH",
+							"filter": "PBHAuditor = '" + sessionName + "' AND PBHStatus =0",
+							"orderBy": " saveTimeStamp DESC"
+						};
 						break;
 					case "unSend":
-						var tableSQL = { "SQL": "SQLTableBillsPBH", "filter": "PBHMaker = '" + sessionName + "' AND PBHStatus =1 AND emailResult=0", "orderBy": " saveTimeStamp DESC" };
+						var tableSQL = {
+							"SQL": "SQLTableBillsPBH",
+							"filter": "PBHMaker = '" + sessionName + "' AND PBHStatus =1 AND emailResult=0",
+							"orderBy": " saveTimeStamp DESC"
+						};
 						break;
 					case "all":
-						var tableSQL = { "SQL": "SQLTableBillsPBH", "orderBy": " saveTimeStamp DESC" };
+						var tableSQL = {
+							"SQL": "SQLTableBillsPBH",
+							"orderBy": " saveTimeStamp DESC"
+						};
 						$("#BTNFilterAll").addClass("active");
 						break;
 					default:
-						var tableSQL = { "SQL": "SQLTableBillsPBH", "filter": "emailResult=0 OR emailResult IS NULL", "orderBy": " saveTimeStamp DESC" };
+						var tableSQL = {
+							"SQL": "SQLTableBillsPBH",
+							"filter": "emailResult=0 OR emailResult IS NULL",
+							"orderBy": " saveTimeStamp DESC"
+						};
 						$("#BTNFilterSimple").addClass("active");
 						break;
 				}
@@ -787,19 +938,44 @@
 
 				tableInfo = {
 					"tableID": "#billsPBHTable",
-					"columnsData": [
-						{ data: 'saveTimeStamp', "visible": false },
-						{ data: 'DBID', "visible": false },
-						{ data: 'BPID' },
-						{ data: 'version' },
-						{ data: 'PLDCTRName' },
-						{ data: 'limitDate' },
-						{ data: 'taskNum' },
-						{ data: 'taskNumDone' },
-						{ data: 'PBHMaker' },
-						{ data: 'PBHAuditor' },
-						{ data: 'billPBHStatus' },
-						{ data: 'PBHResultText' }
+					"columnsData": [{
+							data: 'saveTimeStamp',
+							"visible": false
+						},
+						{
+							data: 'DBID',
+							"visible": false
+						},
+						{
+							data: 'BPID'
+						},
+						{
+							data: 'version'
+						},
+						{
+							data: 'PLDCTRName'
+						},
+						{
+							data: 'limitDate'
+						},
+						{
+							data: 'taskNum'
+						},
+						{
+							data: 'taskNumDone'
+						},
+						{
+							data: 'PBHMaker'
+						},
+						{
+							data: 'PBHAuditor'
+						},
+						{
+							data: 'billPBHStatus'
+						},
+						{
+							data: 'PBHResultText'
+						}
 					]
 				}
 
@@ -869,7 +1045,7 @@
 
 					$('#BTNResetInfo').click();
 					var PBHCTRName = $("#PBHCTRName").text();
-					$("#emailTitle").val("【弘讯PPM处理结果】" + $("#topic").text());
+					$("#emailTitle").val("【弘讯PPM处理结果】" + $("#topic").text() + "  ,  单号:" + $("#BPID").text());
 
 					var fileNum = $("#billsTaskTable tbody").find("tr").length;
 					console.log("fileNum:" + fileNum);
@@ -878,7 +1054,68 @@
 					//emailFilesValue=[];
 					//console.log("emailFiles:"+emailFiles);
 
-					SQLEMails = { "SQL": "SQLGetEMails", "filter": "FTYName = '" + PBHCTRName + "'" };
+					SQLEMails = {
+						"SQL": "SQLGetEMails",
+						"filter": "FTYName = '" + PBHCTRName + "'"
+					};
+
+					let emailContentFormat = "";
+
+					var filesHtml = "";
+
+					var emailModifyContent = "";
+
+					var emailFunctionsDBE = "";
+
+					for (var i = 0; i < fileNum; i++) {
+
+						var tdFiles = $("#billsTaskTable tbody tr:eq(" + i + ") td:last")
+							.html();
+
+						var tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(3)")
+							.html();
+
+						if (tdFiles != "" && tdTaskType == "APP") {
+
+							filesHtml = filesHtml + tdFiles + " ; ";
+
+							emailModifyContent = emailModifyContent + $(
+									"#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)")
+								.html() + "\n";
+
+							emailFunctionsDBE = emailFunctionsDBE + $(
+									"#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)")
+								.html() + "\n";
+
+						}
+
+					}
+
+					console.log("filesHtml:" + JSON.stringify(filesHtml));
+
+					if (filesHtml != "") {
+						filesHtml = filesHtml.substr(0, filesHtml.length - 3);
+						$("#divFilesUploaded").html(filesHtml);
+					}
+
+
+					var ibtn = "<button  class='btn btn-default btn-xs'>×</button>";
+					$("#divFilesUploaded").find("a").after(ibtn);
+
+					$("#divFilesUploaded :button").on('click', function () {
+						$(this).prev("a").remove();
+						$(this).prev("span").remove();
+						$(this).remove();
+					})
+
+					$("#emailContent").val(emailContentFormat + "修改内容:\n" +
+						emailModifyContent + "功能说明:\n" + emailFunctionsDBE);
+
+
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#PBHAuditor", $('#PGEMaker').text());
+
 					$.ajax({
 						method: 'get',
 						data: SQLEMails,
@@ -886,68 +1123,21 @@
 						success: function (data) {
 							console.log("back email data:" + JSON.stringify(data));
 
-
-							$("#emailADRS").val(data[0].email);
+							$("#emailADRS").val($('#PBHCTRName').text() + '-' + data[0].contact +
+								'<' + data[0].email + '>');
 
 							// swal(JSON.stringify(getEmails(data[0].contacts)));
 
-							$("#emailCopyADRS").val(getEmails(data[0].contacts));
+
+							let emailCopyADRS = formateCopyEmailADS(getEmails(data[0].contacts), $(
+								'#PBHCTRName').text());
+
+							$("#emailCopyADRS").val(emailCopyADRS);
 
 							$("#emailContact").val(data[0].contact);
 
-
-							let emailContentFormat = "";
-
-							var filesHtml = "";
-
-							var emailModifyContent = "";
-
-							var emailFunctionsDBE = "";
-
-							for (var i = 0; i < fileNum; i++) {
-
-								var tdFiles = $("#billsTaskTable tbody tr:eq(" + i + ") td:last").html();
-
-								var tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(3)").html();
-
-								if (tdFiles != "" && tdTaskType == "APP") {
-
-									filesHtml = filesHtml + tdFiles + " ; ";
-
-									emailModifyContent = emailModifyContent + $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)").html() + "\n";
-
-									emailFunctionsDBE = emailFunctionsDBE + $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)").html() + "\n";
-
-								}
-
-
-
-							}
-
-							console.log("filesHtml:" + JSON.stringify(filesHtml));
-
-							if (filesHtml != "") {
-								filesHtml = filesHtml.substr(0, filesHtml.length - 3);
-								$("#divFilesUploaded").html(filesHtml);
-							}
-
-
-							var ibtn = "<button  class='btn btn-default btn-xs'>×</button>";
-							$("#divFilesUploaded").find("a").after(ibtn);
-
-							$("#divFilesUploaded :button").on('click', function () {
-
-								$(this).prev("a").remove();
-								$(this).prev("span").remove();
-
-								$(this).remove();
-
-							})
-
-							$("#emailContent").val(emailContentFormat + "修改内容:\n" + emailModifyContent + "功能说明:\n" + emailFunctionsDBE);
-
 						},
-						error: function () { }
+						error: function () {}
 					})
 
 				});
@@ -971,7 +1161,10 @@
 				//按钮-PBH保存---------
 				$('#BTNPBHSave').click(function () {
 
-					if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PBH01")) {
+					if (checkAuthority({
+							"SQL": "SQLGetAuthorities",
+							"filter": "StaffName='" + sessionName + "'"
+						}, "PBH01")) {
 						if (checkPBHInput()) {
 
 							var files = [];
@@ -999,7 +1192,7 @@
 								//						"files":JSON.stringify(filesValue),
 								"files": JSON.stringify(files),
 								"emailContact": $('#emailContact').val(),
-								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>'),
+								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
 								"PBHRemark": $('#PBHRemark').val(),
 								"PBHMaker": sessionName,
 								"PBHMakeDate": Ndate,
@@ -1017,6 +1210,10 @@
 									//         swal("成功数据:" + JSON.stringify(data));
 									if (data.affectedRows != 0) {
 
+										$('#PBHMaker').text(sessionName);
+
+
+
 										//     	               swal("方案单数据保存成功!");
 
 										if (sessionName == $('#PBHAuditor option:selected').text()) {
@@ -1029,12 +1226,25 @@
 											}
 
 										} else {
-											swal('发布单保存成功')
-											io_refresh()
+											// swal('发布单保存成功')
+											// io_refresh()
+
+
+											let i = {
+												confirmMsg: '发布单保存成功,是否发送钉钉消息?',
+												DDMsg: {
+													at: '"' + $('#PBHAuditor option:selected')
+														.text() + '"',
+													msg: '@' + $('#PBHAuditor option:selected')
+														.text() + ' 发布单已填写,请审核!'
+												},
+												alertMsg: '发送成功'
+											}
+											let o = {
+												f: io_refresh
+											}
+											aio_chooseSendDDMsg(i, o)
 										}
-
-
-
 
 									}
 								},
@@ -1056,52 +1266,107 @@
 
 				//按钮-PBH审核---------
 				$('#BTNPBHAudit').click(function () {
-					if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PBH02")) {
 
-						let PBHVersion = 0
+					if (sessionName !== $('#PBHAuditor option:selected').text()) {
+						swal('非指定审核人,不允许审核!')
+					} else {
+						if (checkAuthority({
+								"SQL": "SQLGetAuthorities",
+								"filter": "StaffName='" + sessionName + "'"
+							}, "PBH02")) {
 
-						if ($('#PBHVersion').text() !== "") {
-							PBHVersion = $('#PBHVersion').text();
+							if (checkPBHInput()) {
+								let PBHVersion = 0
 
-						}
+								if ($('#PBHVersion').text() !== "") {
+									PBHVersion = $('#PBHVersion').text();
 
-
-						var PBHData = {
-							"DBTable": "ppm_bills_PBH",
-							"BillIDName": "pbhBPID",
-							"BillID": $('#BPID').text(),
-							//					"DBID":$('#DBID').val(),
-							"PBHAuditor": sessionName,
-							"PBHAuditDate": Ndate,
-							"PBHAuditResult": 1,
-							"PBHStatus": 1,
-							"PBHStatusText": "已审核",
-							"billPBHStatus": "已填单,已审核",
-							"filter": " PBHVersion ='" + PBHVersion + "'"
-						}
-
-						//	     updDBData(PBHData,"PBH单审核状态");
-
-						$.ajax({
-							method: 'post',
-							url: '/app/PM/updBillStatus',
-							data: PBHData,
-							success: function (data) {
-								//         swal("成功数据:" + JSON.stringify(data));
-								if (data.affectedRows != 0) {
-									swal('发布单审核成功')
-									io_refresh()
 								}
-							},
-							error: function (err) {
-								if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
-									swal("系统中已存在重复数据,请检查!");
-								} else {
-									swal("失败数据:" + JSON.stringify(err));
+
+								var files = [];
+
+								$('#divFilesUploaded a').each(function () {
+									var fileKey = $(this).attr('href').substring(23);
+									var fileName = $(this).attr('download');
+
+									var fileInfo = {
+										"fileName": fileName,
+										"fileKey": fileKey
+									}
+
+									files.push(fileInfo);
+								});
+
+
+								var PBHData = {
+									"DBTable": "ppm_bills_PBH",
+									"BillIDName": "pbhBPID",
+									"BillID": $('#BPID').text(),
+									"emailADRS": $('#emailADRS').val(),
+									"emailCopyADRS": $('#emailCopyADRS').val(),
+									"emailTitle": $('#emailTitle').val(),
+									"files": JSON.stringify(files),
+									"emailContact": $('#emailContact').val(),
+									"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+									"PBHRemark": $('#PBHRemark').val(),
+									"PBHAuditor": sessionName,
+									"PBHAuditDate": Ndate,
+									"PBHAuditResult": 1,
+									"PBHStatus": 1,
+									"PBHStatusText": "已审核",
+									"billPBHStatus": "已填单,已审核",
+									"filter": " PBHVersion ='" + PBHVersion + "'"
 								}
+
+								//	     updDBData(PBHData,"PBH单审核状态");
+
+								$.ajax({
+									method: 'post',
+									url: '/app/PM/updBillStatus',
+									data: PBHData,
+									success: function (data) {
+										//         swal("成功数据:" + JSON.stringify(data));
+										if (data.affectedRows != 0) {
+											// swal('发布单审核成功')
+											// io_refresh()
+
+											let i = {
+												confirmMsg: '发布单已审核,是否发送钉钉提醒消息?',
+												DDMsg: {
+													at: '"' + $('#PBHMaker').text() + '"',
+													msg: '@' + $('#PBHMaker').text() +
+														' 发布单已审核,请发邮件!'
+												},
+												alertMsg: '发送成功'
+											}
+											let o = {
+												f: io_refresh
+											}
+											aio_chooseSendDDMsg(i, o)
+										}
+									},
+									error: function (err) {
+										if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
+											swal("系统中已存在重复数据,请检查!");
+										} else {
+											swal("失败数据:" + JSON.stringify(err));
+										}
+									}
+								});
+
 							}
-						});
+
+
+
+
+
+						}
+
 					}
+
+
+
+
 
 
 
@@ -1116,7 +1381,9 @@
 					var radioValue = $('input:radio[name="auditType"]:checked').val();
 					switch (radioValue) {
 						case "1":
-							var SQLAuditor = { SQL: "SQLSRStaffs" };
+							var SQLAuditor = {
+								SQL: "SQLSRStaffs"
+							};
 							var auditor = "#auditor";
 							Fun_getSQLSelectDBData(SQLAuditor, auditor, PGEMaker);
 							$("#auditor").attr("disabled", true);
@@ -1125,7 +1392,9 @@
 							break;
 						case "2":
 
-							var SQLAuditor = { SQL: "SQLSRStaffs" };
+							var SQLAuditor = {
+								SQL: "SQLSRStaffs"
+							};
 							var auditor = "#auditor";
 							Fun_getSQLSelectDBData(SQLAuditor, auditor);
 							$("#auditor").attr("disabled", false);
@@ -1139,7 +1408,10 @@
 				//按钮-邮件预览
 				$('#BTNModelEmail').click(function () {
 
-					if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PBH03")) {
+					if (checkAuthority({
+							"SQL": "SQLGetAuthorities",
+							"filter": "StaffName='" + sessionName + "'"
+						}, "PBH03")) {
 						$('#winEmail').window('open');
 
 						$('#emailADRSModel').text($('#emailADRS').val());
@@ -1164,12 +1436,7 @@
 
 							let tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(3)").html();
 
-
-
 							if (tdFiles != "" && tdTaskType == "APP") {
-
-
-
 
 								switch (tdBTType) {
 									case 'D':
@@ -1193,13 +1460,14 @@
 						}
 
 
-						$('#emailContentHello').html("Dear " + $('#emailContact').val() + ": \n  您好！程序已修改完成，请查收，谢谢！");
+						$('#emailContentHello').html("Dear " + $('#emailContact').val() +
+							": \n  您好！程序已修改完成，请查收，谢谢！");
 
 						$('#emailBPID').html($('#BPID').text())
 
 						if ($('#emailContent').val().indexOf("功能说明") != -1) {
 
-							let emailContent = $('#emailContent').val().split("功能说明");//去除功能说明
+							let emailContent = $('#emailContent').val().split("功能说明"); //去除功能说明
 							$('#emailContentModel').html(emailContent[0]);
 
 						} else {
@@ -1214,52 +1482,137 @@
 				$('#BTNModelEmailSend').click(function () {
 
 
-					var files = [];
+					if ($('#PBHAuditDate').text() === "") {
+						swal('该发布单未审核,不允许发送系统邮件!')
+					} else {
 
-					$('#divFilesUploaded a').each(function () {
-						var fileKey = $(this).attr('href').substring(23);
-						var fileName = $(this).attr('download');
+						var files = [];
 
-						var fileInfo = {
-							"fileName": fileName,
-							"fileKey": fileKey
-						}
+						$('#divFilesUploaded a').each(function () {
+							var fileKey = $(this).attr('href').substring(23);
+							var fileName = $(this).attr('download');
 
-						files.push(fileInfo);
-					});
+							var fileInfo = {
+								"fileName": fileName,
+								"fileKey": fileKey
+							}
 
-					var emailData = {
-						"pbhBPID": $('#BPID').text(),
-						"emailResult": 1,
-						"emailADRS": $('#emailADRS').val(),
-						"emailCopyADRS": $('#emailCopyADRS').val(),
-						"emailDSPInfo": $('#emailDSPInfo').html(),
-						"emailHMIInfo": $('#emailHMIInfo').html(),
-						"emailTitle": $('#emailTitle').val(),
-						"emailFiles": JSON.stringify(files),
-						"emailContact": $('#emailContact').val(),
-						"emailContentHello": $('#emailContentHello').html(),
-						"emailContentModel": $('#emailContentModel').html()
+							files.push(fileInfo);
+						});
+
+
+						$.ajax({
+							method: 'get',
+							data: {
+								SQL: 'select staffName,telNo from ppm_staffs',
+								filter: 'staffName ="' + $('#PBHAuditor option:selected').text() + '"'
+							},
+							url: "/app/PM/getSQLDBData",
+							success: function (data) {
+								console.log('staff get:' + JSON.stringify(data))
+
+								let signName = ''
+								let signTelNo = ''
+
+								if (data.length !== 0) {
+									signName = data[0].staffName;
+									signTelNo = data[0].telNo;
+								}
+
+								var emailData = {
+									"pbhBPID": $('#BPID').text(),
+									"emailResult": 1,
+									"emailADRS": $('#emailADRS').val().replace(/;/g, ","),
+									"emailCopyADRS": $('#emailCopyADRS').val().replace(/;/g,
+										","),
+									"emailDSPInfo": $('#emailDSPInfo').html(),
+									"emailHMIInfo": $('#emailHMIInfo').html(),
+									"emailTitle": $('#emailTitle').val(),
+									"emailFiles": JSON.stringify(files),
+									"emailContact": $('#emailContact').val(),
+									"emailContentHello": $('#emailContentHello').html(),
+									"emailContentModel": $('#emailContentModel').html(),
+									"signName": signName,
+									"signTelNo": signTelNo
+								}
+
+								$.ajax({
+									method: 'post',
+									url: '/app/PM/sendSYSMail',
+									data: emailData,
+									success: function (data, textStatus) {
+										// swal("发送成功:" + JSON.stringify(textStatus));
+
+										// let i = {
+										// 	confirmMsg: '系统邮件已发送,是否发送钉钉提醒消息?',
+										// 	DDMsg: {
+										// 		at: '"' + $('#PGEMaker').text() +
+										// 			'"',
+										// 		msg: '@' + $('#PGEMaker').text() +
+										// 			',客户:' + $('#PBHCTRName')
+										// 		.text() +
+										// 			',该客户计划单系统邮件已发送,请知悉!'
+										// 	},
+										// 	alertMsg: '发送成功'
+										// }
+										// let o = {
+										// 	f: io_refresh
+										// }
+										// aio_chooseSendDDMsg(i, o)
+
+										// let i = {
+										// 	DDMsg: {
+										// 		at: dataSelect.maker,
+										// 		msg: '@' + dataSelect.maker +
+										// 			',计划单号:' + dataSelect.BPID +
+										// 			',客户:' + dataSelect.PLDCTRName +
+										// 			',该计划单已符合发布条件,请填写发布单!'
+										// 	}
+										// }
+
+										let i = {
+
+											DDMsg: {
+												at: '"' + $('#PGEMaker').text() +
+													'"',
+												msg: '@' + $('#PGEMaker').text() +
+													',客户:' + $('#PBHCTRName')
+													.text() +
+													',该客户计划单系统邮件已发送,请知悉!'
+											},
+										}
+
+										aio_sendDDMsg(i);
+
+
+
+									},
+									error: function (XMLHttpRequest, textStatus,
+										errorThrown) {
+
+										swal("发送失败:" + JSON.stringify(textStatus));
+									}
+								});
+
+								// let i={alertMsg:"系统邮件已发送!"}
+								// swalAndRefresh(i)
+								swal("系统邮件已发出，正在接收发送结果，请等待约10秒，收到success返回消息后可关闭！");
+
+
+							},
+							error: function () {}
+						})
+
+
+
+
+
+
+
 
 					}
 
-					$.ajax({
-						method: 'post',
-						url: '/app/PM/sendSYSMail',
-						data: emailData,
-						success: function (data, textStatus) {
-							swal("发送成功:" + JSON.stringify(textStatus));
 
-						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) {
-
-							swal("发送失败:" + JSON.stringify(textStatus));
-						}
-					});
-
-					// let i={alertMsg:"系统邮件已发送!"}
-					// swalAndRefresh(i)
-					swal("系统邮件已发出，正在接收发送结果，请等待约10秒，收到success返回消息后可关闭！");
 
 
 				});
@@ -1291,7 +1644,11 @@
 						});
 
 
-						$('#mailhref').attr("href", "mailto:" + $('#emailADRS').val() + "?subject=" + $('#emailTitle').val() + "&cc=" + $('#emailCopyADRS').val() + "&body=" + $('#emailContent').val().replace(/\n|\r\n/g, '<br/>'));
+						$('#mailhref').attr("href", "mailto:" + $('#emailADRS').val() + "?subject=" +
+							$(
+								'#emailTitle').val() + "&cc=" + $('#emailCopyADRS').val() +
+							"&body=" + $(
+								'#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'));
 						$('#mailhref').click();
 
 					}
@@ -1302,7 +1659,10 @@
 
 				$('#BTNUpdVer').click(function () {
 
-					if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PBH04")) {
+					if (checkAuthority({
+							"SQL": "SQLGetAuthorities",
+							"filter": "StaffName='" + sessionName + "'"
+						}, "PBH04")) {
 						var msg = confirm("风险操作,更新版本后原发布单将失效,是否继续?");
 						if (msg == true) {
 
@@ -1322,6 +1682,8 @@
 								files.push(fileInfo);
 							});
 
+							console.log("file:" + JSON.stringify(files))
+
 
 							let oldPBHData = {
 								"DBTable": "ppm_bills_pbh",
@@ -1334,9 +1696,8 @@
 								method: 'post',
 								url: '/app/PM/updBillStatus',
 								data: oldPBHData,
-								success: function (data, textStatus) {
-								},
-								error: function (XMLHttpRequest, textStatus, errorThrown) { }
+								success: function (data, textStatus) {},
+								error: function (XMLHttpRequest, textStatus, errorThrown) {}
 							});
 
 
@@ -1350,9 +1711,10 @@
 								"emailADRS": $('#emailADRS').val(),
 								"emailCopyADRS": $('#emailCopyADRS').val(),
 								"emailTitle": $('#emailTitle').val(),
-								"emailFiles": JSON.stringify(files),
+								"files": JSON.stringify(files),
 								"emailContact": $('#emailContact').val(),
-								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>'),
+								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g,
+									'<br/>'),
 								"PBHRemark": $('#PBHRemark').val(),
 								"PBHMaker": sessionName,
 								"PBHMakeDate": Ndate,
@@ -1382,7 +1744,9 @@
 
 
 
-								let i = { alertMsg: "更新版本成功!" }
+								let i = {
+									alertMsg: "更新版本成功!"
+								}
 								swalAndRefresh(i)
 
 							});
@@ -1396,53 +1760,65 @@
 				//按钮-完结归档
 				$('#BTNEnd').click(function () {
 
-					if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PBH05")) {
+					if ($('#PBHAuditDate').text() === "") {
+						swal("发布单未保存审核,不符合完结归档条件,请检查!")
+					} else {
+						if (checkAuthority({
+								"SQL": "SQLGetAuthorities",
+								"filter": "StaffName='" + sessionName + "'"
+							}, "PBH05")) {
 
-						var msg1 = confirm("归档后,系统不再显示关于该计划的所有单据!是否继续?");
-						if (msg1 === true) {
+							var msg1 = confirm("归档后,系统不再显示关于该计划的所有单据!是否继续?");
+							if (msg1 === true) {
 
-							var PLDUpdData = {
-								"DBTable": "ppm_bills_plan",
-								"BillIDName": "BPID",
-								"BillID": $('#BPID').text(),
-								"WFStatus": 100,
-								"WFEndDate": Ndate
+								var PLDUpdData = {
+									"DBTable": "ppm_bills_plan",
+									"BillIDName": "BPID",
+									"BillID": $('#BPID').text(),
+									"WFStatus": 100,
+									"WFEndDate": Ndate
+								}
+
+								var taskUpdData = {
+									"DBTable": "ppm_bills_task",
+									"BillIDName": "taskBPID",
+									"BillID": $('#BPID').text(),
+									"WFStatus": 100
+								}
+
+								var ajax1 = $.ajax({
+									method: 'post',
+									url: '/app/PM/updBillStatus',
+									data: PLDUpdData,
+									success: function (data, textStatus) {},
+									error: function (XMLHttpRequest, textStatus,
+										errorThrown) {}
+								});
+
+								var ajax2 = $.ajax({
+									method: 'post',
+									url: '/app/PM/updBillStatus',
+									data: taskUpdData,
+									success: function (data, textStatus) {},
+									error: function (XMLHttpRequest, textStatus,
+										errorThrown) {}
+								});
+
+								$.when(ajax1, ajax2).done(function () {
+
+
+									let i = {
+										alertMsg: "归档完成,该计划任务完结!"
+									}
+									swalAndRefresh(i)
+								});
 							}
 
-							var taskUpdData = {
-								"DBTable": "ppm_bills_task",
-								"BillIDName": "taskBPID",
-								"BillID": $('#BPID').text(),
-								"WFStatus": 0
-							}
-
-							var ajax1 = $.ajax({
-								method: 'post',
-								url: '/app/PM/updBillStatus',
-								data: PLDUpdData,
-								success: function (data, textStatus) {
-								},
-								error: function (XMLHttpRequest, textStatus, errorThrown) { }
-							});
-
-							var ajax2 = $.ajax({
-								method: 'post',
-								url: '/app/PM/updBillStatus',
-								data: taskUpdData,
-								success: function (data, textStatus) {
-								},
-								error: function (XMLHttpRequest, textStatus, errorThrown) { }
-							});
-
-							$.when(ajax1, ajax2).done(function () {
-
-
-								let i = { alertMsg: "归档完成,该计划任务完结!" }
-								swalAndRefresh(i)
-							});
 						}
 
 					}
+
+
 
 				});
 
@@ -1455,5 +1831,4 @@
 
 
 			});
-
 		</script>
