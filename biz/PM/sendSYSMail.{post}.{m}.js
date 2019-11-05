@@ -2,16 +2,16 @@ const emailAdrsFormate = (i, o) => {
 	if (i.indexOf(",") === -1) {
 		i = '<' + i + '>';
 
-		o=i
+		o = i
 	} else {
 		let r1 = i.split(',');
 		console.log('r1' + r1)
-		let r2="";
-		for(let i=0;i<r1.length;i++){
-			r2=r2+'<'+r1[i]+'>,'
+		let r2 = "";
+		for (let i = 0; i < r1.length; i++) {
+			r2 = r2 + '<' + r1[i] + '>,'
 		}
 
-		o=r2
+		o = r2
 	}
 
 	return o;
@@ -30,23 +30,35 @@ module.exports = function (sender) {
 	//	     var mailData=sender.req.query;
 	var pbhBPID = sender.req.query.pbhBPID;
 	var emailResult = sender.req.query.emailResult;
-	var emailDSPInfo = sender.req.query.emailDSPInfo
-	var emailHMIInfo = sender.req.query.emailHMIInfo
 
-
-	var emailContentHello = sender.req.query.emailContentHello
-	var emailContentModel = sender.req.query.emailContentModel.replace(/\n|\r\n/g, '<br/>')
-
-	console.log("emailContentModel:" + emailContentModel)
 
 	var SQLUpdate = " update `ppm_bills_pbh` set emailResult =? where pbhBPID=?";
 
+	if (emailResult == "2") {
+		console.log("111emailResult:" + emailResult)
 
-
+		yjDBService.exec({
+			sql: SQLUpdate,
+			parameters: [emailResult, pbhBPID],
+			success: sender.success,
+			error: sender.error
+		});
+	}
 
 
 
 	if (emailResult == "1") {
+
+		var emailDSPInfo = sender.req.query.emailDSPInfo
+		var emailHMIInfo = sender.req.query.emailHMIInfo
+
+
+		var emailContentHello = sender.req.query.emailContentHello
+		var emailContentModel = sender.req.query.emailContentModel.replace(/\n|\r\n/g, '<br/>')
+
+		console.log("emailContentModel:" + emailContentModel)
+
+
 
 
 		var emailADRS = sender.req.query.emailADRS;
@@ -61,8 +73,8 @@ module.exports = function (sender) {
 		// emailCopyADRS=emailAdrsFormate(emailCopyADRS);
 
 
-		console.log('emailADRS:'+emailADRS);
-		console.log('emailCopyADRS:'+emailCopyADRS);
+		console.log('emailADRS:' + emailADRS);
+		console.log('emailCopyADRS:' + emailCopyADRS);
 
 
 		var attachmentfiles = [];
@@ -158,7 +170,7 @@ module.exports = function (sender) {
 					return console.log(error);
 					sender.error;
 				}
-					        console.log('Message sent: %s', info.messageId);
+				console.log('Message sent: %s', info.messageId);
 
 				yjDBService.exec({
 					sql: SQLUpdate,
@@ -175,16 +187,6 @@ module.exports = function (sender) {
 				// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 				// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 			});
-		});
-
-
-	} else if (emailResult == "2") {
-
-		yjDBService.exec({
-			sql: SQLUpdate,
-			parameters: [emailResult, pbhBPID],
-			success: sender.success,
-			error: sender.error
 		});
 
 

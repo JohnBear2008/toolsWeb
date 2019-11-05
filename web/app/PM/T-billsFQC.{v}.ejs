@@ -47,7 +47,7 @@
 
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel"
-			aria-hidden="true">
+			aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog" style="width:75%">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -129,8 +129,13 @@
 
 
 										<label class="col-sm-1 control-label" for="name">方案负责人:</label>
-										<div class="col-sm-3 ">
+										<div class="col-sm-2 ">
 											<span id="PGEMaker" class="help-block"></span>
+										</div>
+
+										<label class="col-sm-1 control-label" for="name">FQC填单:</label>
+										<div class="col-sm-2 ">
+											<span id="FQCStaff" class="help-block"></span>
 										</div>
 
 
@@ -442,6 +447,8 @@
 		$('#model').text(dataSelect.model);
 		$('#PGEMaker').text(dataSelect.PGEMaker);
 
+		$('#FQCStaff').text(dataSelect.FQCStaff);
+
 		$('#applyDate').text(dataSelect.applyDate);
 		$('#limitDate').text(dataSelect.limitDate);
 		$('#topic').text(dataSelect.topic);
@@ -724,6 +731,13 @@
 
 					//	swal($("#TableTestContents").find("tr").length );
 
+					// let FQCMaker = $('#FQCMaker').text();
+
+					// if (FQCMaker === '') {
+					// 	FQCMaker = sessionName;
+					// }
+
+
 					for (var i = 0; i < testNum; i++) {
 						var testResult = {
 							"testContentDBID": $("#testContentDBID" + i).text(),
@@ -747,7 +761,8 @@
 							"fqcBPID": $('#BPID').text(),
 							"CTRName": $('#CTRName').text(),
 							"FQCTestResult": JSON.stringify(FQCTestResult),
-							"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+							"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>').replace(
+								/'/g, '"'),
 							"FQCResult": $('input:radio[name="FQCResult"]:checked').val(),
 							"FQCMaker": sessionName,
 							"FQCMakeDate": Ndate,
@@ -765,7 +780,7 @@
 								if (data.affectedRows != 0) {
 
 									if (sessionName == $('#FQCAuditor option:selected')
-									.text()) {
+										.text()) {
 
 
 										let msgNext = confirm("FQC数据保存成功,是否立即审核?");
@@ -782,7 +797,7 @@
 											confirmMsg: 'T-FQC单保存成功,是否发送钉钉审核提醒消息?',
 											DDMsg: {
 												at: $('#FQCAuditor option:selected')
-												.text(),
+													.text(),
 												msg: "@" + $('#FQCAuditor option:selected')
 													.text() + "T-FQC已完成,请登陆系统审核!"
 											}
@@ -981,7 +996,7 @@
 		$('input:radio[name="FQCResult"]').click(function () {
 			let PGEMaker = $('#PGEMaker').text();
 
-			
+
 			let radioValue = $('input:radio[name="FQCResult"]:checked').val();
 
 			// console.log(PGEMaker+radioValue)
@@ -1000,7 +1015,7 @@
 					break;
 
 				default:
-				break;
+					break;
 
 			}
 
@@ -1044,7 +1059,8 @@
 						"fqcBPID": $('#BPID').text(),
 						"FQCVersion": newVersion,
 						"CTRName": $('#CTRName').text(),
-						"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+						"FQCRemark": $('#FQCRemark').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
+							'"'),
 						"FQCResult": $('input:radio[name="FQCResult"]:checked').val(),
 						"FQCMaker": sessionName,
 						"FQCMakeDate": Ndate,
@@ -1072,10 +1088,20 @@
 					$.when(ajax1, ajax2).done(function () {
 
 
+						$('#BillPLD').modal('hide');
+
 						let i = {
-							alertMsg: "更新版本成功!"
+							msg: '更新版本成功,请填写更新原因!',
+							updateParams: {
+								"DBTable": "ppm_bills_FQC_t",
+								"BillIDName": "fqcBPID",
+								"BillID": $('#BPID').text(),
+								"updateReason": '',
+								"filter": "FQCVersion =" + $('#FQCVersion').text()
+
+							}
 						}
-						swalAndRefresh(i)
+						updateAndWriteReason(i);
 
 					});
 

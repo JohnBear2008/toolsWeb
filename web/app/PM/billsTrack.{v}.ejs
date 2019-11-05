@@ -485,8 +485,23 @@
 						$.when(ajax1, ajax2).done(function () {
 
 
-							let i = { alertMsg: "计划单已终止,相关任务单已终止!" }
-							swalAndRefresh(i)
+							// let i = { alertMsg: "计划单已终止,相关任务单已终止!" }
+							// swalAndRefresh(i)
+
+							$('#BillPLD').modal('hide');
+
+							let i = {
+								msg: '计划单已终止,相关任务单已终止,请填写终止原因!',
+								stopParams: {
+									"DBTable": "ppm_bills_plan",
+									"BillIDName": "BPID",
+									"BillID": dataSelect.BPID,
+									"stopReason":'',
+									"filter": "version =" + dataSelect.version
+								}
+							}
+
+							stopAndWriteReason(i);
 
 						});
 
@@ -498,8 +513,6 @@
 			}
 
 		});
-
-
 
 
 	});

@@ -49,7 +49,7 @@
 				style="float:right">个人中心</button></a>
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel"
-			aria-hidden="true">
+			aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog" style="width:75%">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -1137,10 +1137,10 @@
 
 									modifyContent = modifyContent + $("#tableRecords tbody tr:eq(" + i +
 										") td:last").text() + ":" + "\n" + $(
-										"#tableRecords tbody tr:eq(" + i + ") td:first").text() + "\n";
+										"#tableRecords tbody tr:eq(" + i + ") td:first").html() + "\n";
 									functionsDBE = functionsDBE + $("#tableRecords tbody tr:eq(" + i +
 										") td:last").text() + ":" + "\n" + $(
-										"#tableRecords tbody tr:eq(" + i + ") td:eq(1)").text() + "\n";
+										"#tableRecords tbody tr:eq(" + i + ") td:eq(1)").html() + "\n";
 
 								}
 
@@ -1151,7 +1151,7 @@
 									"DBTable": "ppm_bills_plan_t",
 									"BillIDName": "BPID",
 									"BillID": $('#taskBPID').text(),
-									"TaskNumDone": 1,
+									"TaskNumDoneAdd": 1,
 									"WFStatus": 30
 								}
 
@@ -1162,7 +1162,7 @@
 									"IPQCAuditResultText": "测试通过",
 									"IPQCAuditor": sessionName,
 									"IPQCAuditDate": Ndate,
-									"taskFinishDate": Ndate,
+									// "taskFinishDate": Ndate,
 									"IPQCStatus": "已填写,已审核",
 									"BTStatus": 3,
 									"BTStatusText": "任务完成",

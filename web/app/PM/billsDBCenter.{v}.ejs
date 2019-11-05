@@ -46,7 +46,7 @@
 
 
 <div class="divcontent">
-	<h1>信息管理-计划单归档</h1>
+	<h1>信息管理-计划单</h1>
 	<hr>
 
 	<!-- 操作区（按钮等） -->
@@ -54,8 +54,9 @@
 		<!-- 按钮触发模态框 -->
 
 		<div class="btn-group" style="margin-left:20px">
-			<button id="BTNFilterHistory" class="btn btn-info">归档模式</button>
-			<button id="BTNFilterAll" class="btn btn-info">全部模式</button>
+			<button id="BTNFilterAll" class="btn btn-default">全部模式</button>
+			<button id="BTNFilterHistory" class="btn btn-default">归档模式</button>
+
 		</div>
 
 
@@ -204,6 +205,7 @@
 				<th>结束时间</th>
 				<th>分配任务数量</th>
 				<th>完成任务数量</th>
+				<th>FQC申请</th>
 				<th>归档类型</th>
 			</tr>
 		</thead>
@@ -273,6 +275,7 @@
 					<th>分配任务数量</th>
 					<th>完成任务数量</th>
 					<th>任务人</th>
+					<th>归档类型</th>
 				</tr>
 			</thead>
 		</table>
@@ -479,7 +482,9 @@
 						"limitDate",
 						"maker",
 						"makeDate",
-						"files"
+						"files",
+						"updateReason",
+						"stopReason"
 					],
 					"filter": "DBID='" + DBID + "'"
 				};
@@ -736,10 +741,11 @@
 			case 'all':
 
 				if (filterResult !== "") {
-					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult + " ) OR WFEndDate IS NULL";
+					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult +
+						" ) OR (WFStatus<>0 AND WFStatus<>100 ) ";
 
 				} else {
-					filterResult = "(WFStatus=0 OR WFStatus=100) OR WFEndDate IS NULL"
+					filterResult = "(WFStatus=0 OR WFStatus=100) OR (WFStatus<>0 AND WFStatus<>100 )"
 				}
 
 				if (filter.divFilter !== "") {
@@ -799,6 +805,9 @@
 				},
 				{
 					data: 'taskNumDone'
+				},
+				{
+					data: 'FQCRequestText'
 				},
 				{
 					data: 'WFEndText'
@@ -908,6 +917,8 @@
 				},
 				{
 					data: 'taskStaffs'
+				}, {
+					data: 'WFEndText'
 				}
 
 			]
@@ -984,12 +995,12 @@
 		$('#billsTrackTable tbody').on('dblclick', 'tr', function () {
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			console.log("this:"+this)
+			console.log("this:" + this)
 			$('#BTNInfo').click();
 
 		});
 
-		
+
 	}
 
 	//页面加载函数---------------
@@ -1002,7 +1013,7 @@
 
 
 
-		
+
 
 		//过滤按钮组
 
@@ -1018,6 +1029,9 @@
 			window.location.href = '/app/PM/billsDBCenter?trackType=all';
 
 		});
+
+		// //加载自动切换至全部模式
+		// $('#BTNFilterAll').click();
 
 
 
@@ -1125,8 +1139,8 @@
 			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
 				"yyyy/MM/dd"));
 
-				$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerWeek").addClass("active")
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerWeek").addClass("active")
 
 
 
@@ -1148,8 +1162,8 @@
 			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
 				"yyyy/MM/dd"));
 
-				$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerMonth").addClass("active")
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerMonth").addClass("active")
 
 		})
 
@@ -1164,8 +1178,8 @@
 			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
 				"yyyy/MM/dd"));
 
-				$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerYear").addClass("active")
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerYear").addClass("active")
 
 
 		})
@@ -1180,7 +1194,7 @@
 			$("#spanDateRange").text("ALL");
 
 			$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerAll").addClass("active")
+			$("#BTNFitlerAll").addClass("active")
 
 		})
 
@@ -1239,22 +1253,22 @@
 			let filter = "";
 			if (Fun_getSelectText($('#CTRName option:selected').text()) !== "未选择") {
 				filter = filter + "AND CTRName = '" + Fun_getSelectText($('#CTRName option:selected')
-				.text()) + "'"
+					.text()) + "'"
 			}
 
 			if (Fun_getSelectText($('#MHEName option:selected').text()) !== "未选择") {
 				filter = filter + "AND MHEName = '" + Fun_getSelectText($('#MHEName option:selected')
-				.text()) + "'"
+					.text()) + "'"
 			}
 
 			if ($('#modelD option:selected').text() !== "未选择") {
 				filter = filter + "AND modelD = '" + $('#modelD option:selected')
-				.text() + "'"
+					.text() + "'"
 			}
 
 			if ($('#modelH option:selected').text() !== "未选择") {
 				filter = filter + "AND modelH = '" + $('#modelH option:selected')
-				.text() + "'"
+					.text() + "'"
 			}
 
 			if ($('#PGEMaker option:selected').text() !== "未选择") {
@@ -1285,7 +1299,7 @@
 				filter = filter + "AND WFEndDate <='" + $("#WFEndDateE").val() + "'";
 			}
 
-			console.log("filter:"+filter);
+			console.log("filter:" + filter);
 
 			filter = filter.substring(3);
 

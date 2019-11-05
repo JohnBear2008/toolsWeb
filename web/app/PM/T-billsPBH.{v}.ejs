@@ -47,7 +47,7 @@
 
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel"
-			aria-hidden="true">
+			aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog" style="width:75%">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -1000,7 +1000,8 @@
 								"emailTitle": $('#emailTitle').val(),
 								//					"files":JSON.stringify(filesValue),
 								"files": JSON.stringify(files),
-								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>')
+									.replace(/'/g, '"'),
 								"PBHRemark": $('#PBHRemark').val(),
 								"PBHMaker": sessionName,
 								"PBHMakeDate": Ndate,
@@ -1016,7 +1017,7 @@
 									if (data.affectedRows != 0) {
 
 										$('#PBHMaker').text(sessionName);
-										
+
 										//     	               swal("方案单数据保存成功!");
 
 										if (sessionName == $('#PBHAuditor option:selected').text()) {
@@ -1129,7 +1130,8 @@
 									"emailTitle": $('#emailTitle').val(),
 									"files": JSON.stringify(files),
 									"emailContact": $('#emailContact').val(),
-									"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+									"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>')
+										.replace(/'/g, '"'),
 									"PBHRemark": $('#PBHRemark').val(),
 									"PBHAuditor": sessionName,
 									"PBHAuditDate": Ndate,
@@ -1172,7 +1174,7 @@
 									"BillID": $("#BTIDfrom").text(),
 									"BTStatus": 3,
 									"BTStatusText": "任务完成",
-									"taskFinishDate":Ndate,
+									"taskFinishDate": Ndate,
 									"modifyContent": modifyContent,
 									"functionsDBE": functionsDBE,
 									"taskFiles": JSON.stringify(files)
@@ -1191,7 +1193,7 @@
 									"DBTable": "ppm_bills_plan",
 									"BillIDName": "BPID",
 									"BillID": $("#BPIDfrom").text(),
-									"TaskNumDone": 1,
+									"TaskNumDoneAdd": 1,
 									"WFStatus": 30
 								}
 
@@ -1371,8 +1373,22 @@
 
 							var newVersion = parseInt($('#PBHVersion').text()) + 1;
 
+							var files = [];
 
-							var PBHData = {
+							$('#divFilesUploaded a').each(function () {
+								var fileKey = $(this).attr('href').substring(23);
+								var fileName = $(this).attr('download');
+
+								var fileInfo = {
+									"fileName": fileName,
+									"fileKey": fileKey
+								}
+
+								files.push(fileInfo);
+							});
+
+
+							var newPBHData = {
 
 								"DBTable": "ppm_bills_PBH_t",
 								"PBHVersion": newVersion,
@@ -1389,7 +1405,44 @@
 								"PBHAuditor": $('#PBHAuditor option:selected').text()
 							}
 
-							addDBData(PBHData);
+							let ajax1 = $.ajax({
+								method: 'post',
+								url: '/app/PM/addDBData',
+								data: newPBHData,
+								success: function (data) {
+
+								},
+								error: function (err) {
+
+									if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
+										swal("系统中已存在重复数据,请检查!");
+									} else {
+										swal("失败数据:" + JSON.stringify(err));
+									}
+
+
+								}
+							});
+
+							$.when(ajax1).done(function () {
+
+
+								$('#BillPLD').modal('hide');
+
+								let i = {
+									msg: '更新版本成功,请填写更新原因!',
+									updateParams: {
+										"DBTable": "ppm_bills_pbh_t",
+										"BillIDName": "pbhBPID",
+										"BillID": $('#BPID').text(),
+										"updateReason": '',
+										"filter": "PBHVersion =" + $('#PBHVersion').text()
+
+									}
+								}
+								updateAndWriteReason(i);
+
+							});
 
 						}
 

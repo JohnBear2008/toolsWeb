@@ -34,6 +34,10 @@
 	<button id="bt_test6">变量函数名执行</button>
 
 	<button id="bt_test7">根据sql获取biz数据库数据</button>
+
+	<button id="bt_test8">确认后跳转</button>
+
+	<button id="bt_test9">弹出并填写消息</button>
 </div>
 
 <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -227,12 +231,18 @@
 
 		let R1 = await getBizDataBySQL(R1_i, R1_o)
 
-		console.log("R1:"+JSON.stringify(R1))
+		console.log("R1:" + JSON.stringify(R1))
 
-		let R2_i={DDMsg:{msg:'@'+R1[0].FQCStaff+',计划单号:'+R1[0].BPID+',客户:'+R1[0].PLDCTRName+',该订单已符合FQC检验条件,请进行FQC检验!',at:R1[0].FQCStaff}}
+		let R2_i = {
+			DDMsg: {
+				msg: '@' + R1[0].FQCStaff + ',计划单号:' + R1[0].BPID + ',客户:' + R1[0].PLDCTRName +
+					',该订单已符合FQC检验条件,请进行FQC检验!',
+				at: R1[0].FQCStaff
+			}
+		}
 		let R2_o
 
-		aio_sendDDMsg(R2_i,R2_o)
+		aio_sendDDMsg(R2_i, R2_o)
 
 
 
@@ -274,10 +284,10 @@
 			}
 
 			let i = {
-				confirmMsg: '新增T计划单成功,是否发送钉钉提醒消息?',
+				confirmMsg: '测试消息',
 				DDMsg: {
-					at: $('#auditor option:selected').text(),
-					msg: "@" + $('#auditor option:selected').text() + ",您存在未审核的T计划单,请登陆系统处理!"
+					at: '18969833377',
+					msg: "@熊奇龙,这是测试消息!"
 				}
 			}
 			let o = {
@@ -330,13 +340,20 @@
 
 		$('#bt_test4').click(function () {
 
+			// let I = {
+			// 	DDMsg: [{
+			// 		msg: '测试消息1111',
+			// 		at: 'aa,bb'
+			// 	}, {
+			// 		msg: '测试消息2222',
+			// 		at: 'cc'
+			// 	}]
+			// }
+
 			let I = {
 				DDMsg: [{
-					msg: '1111',
-					at: 'aa,bb'
-				}, {
-					msg: '2222',
-					at: 'cc'
+					msg: '测试消息',
+					at: '17051095060'
 				}]
 			}
 
@@ -397,11 +414,40 @@
 			// getBizDataBySQL(i, o)
 
 
-			checkFQCStatusAndSendDDMsg({BPID:'P2019081601_DM_A'});
+			checkFQCStatusAndSendDDMsg({
+				BPID: 'P2019081601_DM_A'
+			});
 
 
 
 		})
+
+		$('#bt_test8').click(function () {
+			swcfAndGoto({confirmMsg:'确认跳转测试',url:'/app/PM/billsPBH'})
+
+
+
+
+
+		})
+
+
+		$('#bt_test9').click(function () {
+
+			let r= updateAndWriteReason({msg:'测试'});
+
+
+			console.log('r:'+r);
+			
+		
+
+
+
+
+
+		})
+
+
 
 
 

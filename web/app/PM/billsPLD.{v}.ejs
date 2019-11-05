@@ -51,7 +51,7 @@
 				style="float:right">个人中心</button></a>
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel"
-			aria-hidden="true">
+			aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog" style="width:65%">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -518,21 +518,21 @@
 
 
 <script>
-
-
-
-
 	//函数:计划单号生成规则
 
 	function Fun_BPIDCreate() {
 
 		if ($("#BPID").val() != "") {
-			let BPID = $("#BPID").val().substring(0, 11) + "_" + $('input:radio[name="PLDArea"]:checked').val() + $('input:radio[name="orderFrom"]:checked').val() + "_" + $('input:radio[name="orderFromDep"]:checked').val();
+			let BPID = $("#BPID").val().substring(0, 11) + "_" + $('input:radio[name="PLDArea"]:checked').val() + $(
+					'input:radio[name="orderFrom"]:checked').val() + "_" + $('input:radio[name="orderFromDep"]:checked')
+				.val();
 			$("#BPID").val(BPID);
 		} else {
 			$.ajax({
 				method: 'get',
-				data: { "SQL": "SQLGetPLDNum" },
+				data: {
+					"SQL": "SQLGetPLDNum"
+				},
 				url: "/app/PM/getSQLDBData",
 				success: function (data) {
 
@@ -543,11 +543,14 @@
 					}
 
 					console.log("back Task data:" + JSON.stringify(data));
-					let BPID = "P" + new Date(Ndate).Format("yyyyMMdd") + Num + "_" + $('input:radio[name="PLDArea"]:checked').val() + $('input:radio[name="orderFrom"]:checked').val() + "_" + $('input:radio[name="orderFromDep"]:checked').val();
+					let BPID = "P" + new Date(Ndate).Format("yyyyMMdd") + Num + "_" + $(
+						'input:radio[name="PLDArea"]:checked').val() + $(
+						'input:radio[name="orderFrom"]:checked').val() + "_" + $(
+						'input:radio[name="orderFromDep"]:checked').val();
 					$("#BPID").val(BPID);
 
 				},
-				error: function () { }
+				error: function () {}
 			})
 		}
 
@@ -616,7 +619,12 @@
 			}
 
 
-			let selectSQL = { "SQL": "SQLGetCTRBinds", "orderBy": "saveTimeStamp DESC", "filter": filter, "limit": 1 }
+			let selectSQL = {
+				"SQL": "SQLGetCTRBinds",
+				"orderBy": "saveTimeStamp DESC",
+				"filter": filter,
+				"limit": 1
+			}
 
 			$.ajax({
 				method: 'get',
@@ -636,7 +644,7 @@
 					}
 
 				},
-				error: function () { }
+				error: function () {}
 			})
 
 
@@ -649,24 +657,38 @@
 
 	function fillAuditor() {
 
-		let ips = { orderFromDep: $('input:radio[name="orderFromDep"]:checked').val(), modelD: $('#modelD option:selected').val(), modelH: $('#modelH option:selected').val() };
+		let ips = {
+			orderFromDep: $('input:radio[name="orderFromDep"]:checked').val(),
+			modelD: $('#modelD option:selected').val(),
+			modelH: $('#modelH option:selected').val()
+		};
 		console.log(ips);
 		switch (ips.orderFromDep) {
 			case 'A':
-				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "谢丽君");
+				Fun_getSQLSelectDBData({
+					SQL: "SQLSRStaffs"
+				}, "#auditor", "谢丽君");
 				break;
 			case 'B':
-				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "蒋伟贞");
+				Fun_getSQLSelectDBData({
+					SQL: "SQLSRStaffs"
+				}, "#auditor", "蒋伟贞");
 				break;
 			case 'C':
 				if (ips.modelD == undefined && ips.modelH != undefined) {
-					Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "蒋伟贞");
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#auditor", "蒋伟贞");
 				} else {
-					Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "许静静");
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#auditor", "许静静");
 				}
 				break;
 			case 'D':
-				Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "孙凌财");
+				Fun_getSQLSelectDBData({
+					SQL: "SQLSRStaffs"
+				}, "#auditor", "孙凌财");
 				break;
 		}
 	}
@@ -713,7 +735,7 @@
 
 		getPLDOld();
 
-		$("#BPID").val("");//先清空
+		$("#BPID").val(""); //先清空
 		Fun_BPIDCreate();
 
 
@@ -726,22 +748,36 @@
 
 		//	var SQLCTRName={SQL:"SQLSRCustomers"};
 		var CTRName = "#CTRName";
-		Fun_getSQLSelectDBData({ SQL: "SQLSRCustomers" }, CTRName);
+		Fun_getSQLSelectDBData({
+			SQL: "SQLSRCustomers"
+		}, CTRName);
 
-		var SQLMHEName = { SQL: "SQLSRMachines" };
+		var SQLMHEName = {
+			SQL: "SQLSRMachines"
+		};
 		var MHEName = "#MHEName";
 		Fun_getSQLSelectDBData(SQLMHEName, MHEName);
 
-		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='DSP' AND status=1" }, "#modelD");
+		Fun_getSQLFullSelectDBData({
+			SQL: "SQLSRSystems",
+			filter: "belong='DSP' AND status=1"
+		}, "#modelD");
 
-		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='HMI' AND status=1" }, "#modelH");
+		Fun_getSQLFullSelectDBData({
+			SQL: "SQLSRSystems",
+			filter: "belong='HMI' AND status=1"
+		}, "#modelH");
 
-		var SQLPGEMaker = { SQL: "SQLSRStaffs" };
+		var SQLPGEMaker = {
+			SQL: "SQLSRStaffs"
+		};
 		var PGEMaker = "#PGEMaker";
 		Fun_getSQLSelectDBData(SQLPGEMaker, PGEMaker);
 
 
-		Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#auditor", "谢丽君");
+		Fun_getSQLSelectDBData({
+			SQL: "SQLSRStaffs"
+		}, "#auditor", "谢丽君");
 
 
 
@@ -810,22 +846,34 @@
 		$("[name='orderFrom'][value='" + dataSelect.orderFrom + "']").prop("checked", true);
 		$("[name='orderFromDep'][value='" + dataSelect.orderFromDep + "']").prop("checked", true);
 
-		var SQLCTRName = { SQL: "SQLSRCustomers" };
+		var SQLCTRName = {
+			SQL: "SQLSRCustomers"
+		};
 		var CTRName = "#CTRName";
 		Fun_getSQLSelectDBData(SQLCTRName, CTRName, dataSelect.CTRName);
 
-		var SQLMHEName = { SQL: "SQLSRMachines" };
+		var SQLMHEName = {
+			SQL: "SQLSRMachines"
+		};
 		var MHEName = "#MHEName";
 		Fun_getSQLSelectDBData(SQLMHEName, MHEName, dataSelect.MHEName);
 
 
-		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='DSP' AND status=1" }, "#modelD", dataSelect.modelD);
-		Fun_getSQLFullSelectDBData({ SQL: "SQLSRSystems", filter: "belong='HMI' AND status=1" }, "#modelH", dataSelect.modelH);
+		Fun_getSQLFullSelectDBData({
+			SQL: "SQLSRSystems",
+			filter: "belong='DSP' AND status=1"
+		}, "#modelD", dataSelect.modelD);
+		Fun_getSQLFullSelectDBData({
+			SQL: "SQLSRSystems",
+			filter: "belong='HMI' AND status=1"
+		}, "#modelH", dataSelect.modelH);
 
 
 
 
-		Fun_getSQLSelectDBData({ SQL: "SQLSRStaffs" }, "#PGEMaker", dataSelect.PGEMaker);
+		Fun_getSQLSelectDBData({
+			SQL: "SQLSRStaffs"
+		}, "#PGEMaker", dataSelect.PGEMaker);
 
 
 
@@ -836,7 +884,11 @@
 		$('#detail').val(dataSelect.detail.replace(/<br\/>/g, '\n'));
 
 
-		var Para = { "billName": "ppm_bills_plan", "billID": dataSelect.BPID, "billVersion": dataSelect.version }
+		var Para = {
+			"billName": "ppm_bills_plan",
+			"billID": dataSelect.BPID,
+			"billVersion": dataSelect.version
+		}
 		Fun_getBillFile(Para, "#divFilesUploaded", true);
 
 		$('#divFilesUploaded').html("");
@@ -857,7 +909,8 @@
 					for (var i = 0; i < files.length; i++) {
 						console.log("files[i].fileName:" + files[i].fileName);
 
-						fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" + files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
+						fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" +
+							files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
 					}
 
 					fileLink = fileLink.substr(0, fileLink.length - 3);
@@ -883,7 +936,9 @@
 
 		$('#auditResult').val(dataSelect.auditResult);
 
-		var SQLAuditor = { SQL: "SQLSRStaffs" };
+		var SQLAuditor = {
+			SQL: "SQLSRStaffs"
+		};
 		var auditor = "#auditor";
 		Fun_getSQLSelectDBData(SQLAuditor, auditor, dataSelect.auditor);
 
@@ -950,7 +1005,9 @@
 			$('select').attr("disabled", true);
 			$('textarea').attr("disabled", true);
 
-			var SQLAuditor = { SQL: "SQLSRStaffs" };
+			var SQLAuditor = {
+				SQL: "SQLSRStaffs"
+			};
 			var auditor = "#auditor";
 
 			//	    $("#auditTypeOption1").attr("checked",true);
@@ -979,17 +1036,12 @@
 
 	}
 
-
-
 	//函数,检查输入项是否完整
 
 	function checkPLDInput() {
 		console.log("detail:" + $("#detail").val());
 		if ($("#CTRName").val() == null || $("#CTRName").val() == "") {
 			swal("客户未输入,请检查!");
-			return false;
-		} else if (($('#modelD option:selected').val() == undefined || $('#modelD option:selected').val() == "") && ($('#modelH option:selected').val() == undefined || $('#modelH option:selected').val() == "")) {
-			swal("DSP系统,HMI系统至少选择一项,请检查!");
 			return false;
 		} else if ($("#topic").val() == "") {
 			swal("主题未输入,请检查!");
@@ -1024,17 +1076,32 @@
 
 		switch (undone) {
 			case "unAudit":
-				var tableSQL = { "SQL": "SQLTableBillsPLD", "filter": "auditor ='" + sessionName + "' AND auditResult IS NULL", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsPLD",
+					"filter": "auditor ='" + sessionName + "' AND auditResult IS NULL",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				break;
 			case "auditNo":
-				var tableSQL = { "SQL": "SQLTableBillsPLD", "filter": " maker = '" + sessionName + "' AND PLDStatus=2 ", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsPLD",
+					"filter": " maker = '" + sessionName + "' AND PLDStatus=2 ",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				break;
 			case "all":
-				var tableSQL = { "SQL": "SQLTableBillsPLD", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsPLD",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				$("#BTNFilterAll").addClass("active");
 				break;
 			default:
-				var tableSQL = { "SQL": "SQLTableBillsPLD", "filter": "auditResult <>1 OR auditResult IS NULL", "orderBy": " saveTimeStamp DESC" };
+				var tableSQL = {
+					"SQL": "SQLTableBillsPLD",
+					"filter": "auditResult <>1 OR auditResult IS NULL",
+					"orderBy": " saveTimeStamp DESC"
+				};
 				$("#BTNFilterSimple").addClass("active");
 				break;
 		}
@@ -1051,16 +1118,35 @@
 
 		const tableInfo = {
 			"tableID": "#billsPLDTable",
-			"columnsData": [
-				{ data: 'saveTimeStamp', "visible": false },
-				{ data: 'DBID', "visible": false },
-				{ data: 'BPID' },
-				{ data: 'version' },
-				{ data: 'CTRName' },
-				{ data: 'topic' },
-				{ data: 'maker' },
-				{ data: 'auditor' },
-				{ data: 'auditText' }
+			"columnsData": [{
+					data: 'saveTimeStamp',
+					"visible": false
+				},
+				{
+					data: 'DBID',
+					"visible": false
+				},
+				{
+					data: 'BPID'
+				},
+				{
+					data: 'version'
+				},
+				{
+					data: 'CTRName'
+				},
+				{
+					data: 'topic'
+				},
+				{
+					data: 'maker'
+				},
+				{
+					data: 'auditor'
+				},
+				{
+					data: 'auditText'
+				}
 			]
 		}
 
@@ -1090,7 +1176,15 @@
 
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			$('#BTNInfo').click();
+
+
+			var dataSelect = table.row('.selected').data();
+
+			if (dataSelect.auditText === '未审核' && sessionName === dataSelect.auditor) {
+				$('#BTNAudit').click();
+			} else {
+				$('#BTNInfo').click();
+			}
 
 		});
 
@@ -1116,7 +1210,10 @@
 		//按钮-新增计划单---------
 		$('#BTNAdd').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD01")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "PLD01")) {
 
 				$('#BillPLD').modal('show');
 
@@ -1195,7 +1292,10 @@
 		//删除按钮----------
 		$('#BTNDelete').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD04")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "PLD04")) {
 				var dataSelect = table.row('.selected').data();
 
 				//   swal(JSON.stringify(dataSelect));
@@ -1234,7 +1334,10 @@
 							if (msg2 === true) {
 
 								//	swal(dataSelect.DBID);
-								var IDData = { "DBTable": "ppm_bills_plan", "DBID": dataSelect.DBID };
+								var IDData = {
+									"DBTable": "ppm_bills_plan",
+									"DBID": dataSelect.DBID
+								};
 								//                   swal("IDData:"+JSON.stringify(IDData));
 								delDBData(IDData);
 							}
@@ -1252,7 +1355,10 @@
 		//按钮-审核---------
 		$('#BTNAudit').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD02")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "PLD02")) {
 
 				console.log("seclet: " + JSON.stringify(table.row('.selected').data()));
 				// table.row('.selected').remove().draw( false );
@@ -1390,7 +1496,7 @@
 					"BPID": $('#BPID').val(),
 					"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
 					"topic": $('#topic').val(),
-					"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+					"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g, '"'),
 					"PGEMaker": $('#PGEMaker option:selected').text(),
 					"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
 					"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
@@ -1411,13 +1517,14 @@
 					"WFStatus": 1
 				}
 
-
-
 				//			addDBData(billData);
 				let msgContent = "@" + $('#auditor option:selected').text() + ",您存在未审核的计划单,请登陆系统处理!";
 
 
-				Fun_addDBDataDD(billData, { at: $('#auditor option:selected').text(), msg: msgContent });
+				Fun_addDBDataDD(billData, {
+					at: $('#auditor option:selected').text(),
+					msg: msgContent
+				});
 
 				//			IOF_insertDBData(
 				//					{tableName:'ppm_bills_plan',tableDatas:[billData]},null,
@@ -1465,7 +1572,8 @@
 							"BPID": $('#BPID').val(),
 							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
 							"topic": $('#topic').val(),
-							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
+								'"'),
 							"PGEMaker": $('#PGEMaker option:selected').text(),
 							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
 							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
@@ -1484,13 +1592,18 @@
 							"auditDate": Ndate,
 							"auditResult": 1,
 							"PLDStatus": 1,
-							"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+							"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>')
+								.replace(/'/g, '"'),
 							"WFStatus": 10
 						}
 
 
-						let msgContent = "@" + $('#PGEMaker option:selected').text() + ",计划单审核通过,请登陆系统填写方案单!";
-						Fun_addDBDataDD(billData, { at: $('#PGEMaker option:selected').text(), msg: msgContent });
+						let msgContent = "@" + $('#PGEMaker option:selected').text() +
+							",计划单审核通过,请登陆系统填写方案单!";
+						Fun_addDBDataDD(billData, {
+							at: $('#PGEMaker option:selected').text(),
+							msg: msgContent
+						});
 
 
 
@@ -1510,7 +1623,10 @@
 
 		$('#BTNFormModify').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD01")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "PLD01")) {
 				if (sessionName == $('#maker').text()) {
 
 					if (checkPLDInput()) {
@@ -1538,7 +1654,8 @@
 							"BPID": $('#BPID').val(),
 							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
 							"topic": $('#topic').val(),
-							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
+								'"'),
 							"PGEMaker": $('#PGEMaker option:selected').text(),
 							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
 							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
@@ -1562,8 +1679,12 @@
 						//			updDBData(billData,"计划单");
 
 
-						let msgContent = "@" + $('#auditor option:selected').text() + ",您存在未审核的计划单,请登陆系统处理!";
-						Fun_updDBDataDD(billData, { at: $('#PGEMaker option:selected').text(), msg: msgContent }, "计划单");
+						let msgContent = "@" + $('#auditor option:selected').text() +
+							",您存在未审核的计划单,请登陆系统处理!";
+						Fun_updDBDataDD(billData, {
+							at: $('#PGEMaker option:selected').text(),
+							msg: msgContent
+						}, "计划单");
 
 					}
 
@@ -1584,7 +1705,10 @@
 
 		$('#BTNFormUpdate').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "PLD03")) {//------检查权限
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "PLD03")) { //------检查权限
 
 
 				var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
@@ -1625,7 +1749,7 @@
 							success: function (data, textStatus) {
 
 							},
-							error: function (XMLHttpRequest, textStatus, errorThrown) { }
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
 						});
 
 
@@ -1655,7 +1779,8 @@
 							"BPID": $('#BPID').val(),
 							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
 							"topic": $('#topic').val(),
-							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
+								'"'),
 							"PGEMaker": $('#PGEMaker option:selected').text(),
 							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
 							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
@@ -1694,24 +1819,55 @@
 							}
 						});
 
+						//给发布单新增重发布状态
+						let PBHUpdData = {
+							"DBTable": "ppm_bills_pbh",
+							"BillIDName": "pbhBPID",
+							"BillID": $('#BPID').val(),
+							"emailResult": 3
+						}
 
-
-						$.when(ajax1, ajax2).done(function () {
-
-
-							let i = { alertMsg: "更新版本成功!" }
-							swalAndRefresh(i)
-
+						let ajax3 = $.ajax({
+							method: 'post',
+							url: '/app/PM/updBillStatus',
+							data: PBHUpdData,
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest, textStatus,
+								errorThrown) {}
 						});
 
+						$.when(ajax1, ajax2, ajax3).done(function () {
 
+							// let i = {
+							// 	alertMsg: "更新版本成功!"
+							// }
+							// swalAndRefresh(i)
+
+							$('#BillPLD').modal('hide');
+
+							let i = {
+								msg: '更新版本成功,请填写更新原因!',
+								updateParams: {
+									"DBTable": "ppm_bills_plan",
+									"BillIDName": "BPID",
+									"BillID": $('#BPID').val(),
+									"updateReason": '',
+									"filter": "version =" + $('#version').text()
+
+								}
+							}
+
+							updateAndWriteReason(i);
+
+
+						});
 
 
 					}
 				}
 				//	    $('#BillPLD').modal('hide');
 
-			}//------检查权限
+			} //------检查权限
 
 		});
 
@@ -1728,7 +1884,8 @@
 						"auditDate": Ndate,
 						"auditResult": 1,
 						"PLDStatus": 1,
-						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(
+							/'/g, '"'),
 						"WFStatus": 10
 					}
 
@@ -1740,7 +1897,7 @@
 						success: function (data, textStatus) {
 
 						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+						error: function (XMLHttpRequest, textStatus, errorThrown) {}
 					});
 
 
@@ -1758,7 +1915,7 @@
 						success: function (data, textStatus) {
 
 						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) { }
+						error: function (XMLHttpRequest, textStatus, errorThrown) {}
 					});
 
 
@@ -1773,10 +1930,13 @@
 									confirmMsg: '计划单审核成功,是否发送钉钉提醒消息?',
 									DDMsg: {
 										at: $('#PGEMaker option:selected').text(),
-										msg: "@" + $('#PGEMaker option:selected').text() + ",计划单已更新版本,需重做方案,请登陆系统处理!"
+										msg: "@" + $('#PGEMaker option:selected').text() +
+											",计划单已更新版本,需重做方案,请登陆系统处理!"
 									}
 								}
-								let o = { f: io_refresh }
+								let o = {
+									f: io_refresh
+								}
 
 								aio_chooseSendDDMsg(i, o)
 
@@ -1794,10 +1954,13 @@
 								confirmMsg: '计划单审核成功,是否发送钉钉提醒消息?',
 								DDMsg: {
 									at: $('#PGEMaker option:selected').text(),
-									msg: "@" + $('#PGEMaker option:selected').text() + ",计划单已审核通过,需做方案,请登陆系统处理!"
+									msg: "@" + $('#PGEMaker option:selected').text() +
+										",计划单已审核通过,需做方案,请登陆系统处理!"
 								}
 							}
-							let o = { f: io_refresh }
+							let o = {
+								f: io_refresh
+							}
 
 							aio_chooseSendDDMsg(i, o)
 
@@ -1828,14 +1991,18 @@
 						"auditDate": Ndate,
 						"auditResult": 2,
 						"PLDStatus": 2,
-						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(
+							/'/g, '"'),
 						"WFStatus": 9
 					}
 
 					//			updDBData(auditData,"表单审核状态");
 
 					let msgContent = "@" + $('#maker').text() + ",计划单审核未通过,请登陆系统处理!";
-					Fun_updDBDataDD(auditData, { at: $('#maker').text(), msg: msgContent }, "审核状态");
+					Fun_updDBDataDD(auditData, {
+						at: $('#maker').text(),
+						msg: msgContent
+					}, "审核状态");
 
 				}
 			} else {
@@ -1872,5 +2039,4 @@
 
 
 	});
-
 </script>

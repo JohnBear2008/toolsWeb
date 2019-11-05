@@ -24,7 +24,7 @@ module.exports = function (sender) {
             case "BillID":
                 var BillID = obj[key];
                 break;
-            case "TaskNumDone":
+            case "TaskNumDoneAdd":
                 updateContent = updateContent + "TaskNumDone=TaskNumDone+1,";
                 break;
             case "TaskNumDoneCancel":
