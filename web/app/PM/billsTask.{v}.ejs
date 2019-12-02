@@ -1915,23 +1915,30 @@
 				}, "Task01")) {
 
 				if (sessionName == $('#taskStaff option:selected').text()) {
-					var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
-					if (msg == true) {
 
-						var acceptData = {
-							"DBTable": "ppm_bills_task",
-							"DBID": $('#DBID').text(),
-							"BTAcceptOpinion": $('#BTAcceptOpinion').val().replace(/\n|\r\n/g, '<br/>')
-								.replace(/'/g, '"'),
-							"BTAcceptor": sessionName,
-							"BTAcceptDate": Ndate,
-							"BTAcceptResult": 2,
-							"BTAcceptResultText": "已驳回",
-							"BTStatus": 4,
-							"BTStatusText": "任务终止"
+					if ($('#BTAcceptOpinion').val() === '') {
+						swal('驳回任务必须填写确认意见!')
+					} else {
+
+						var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
+						if (msg == true) {
+							var acceptData = {
+								"DBTable": "ppm_bills_task",
+								"DBID": $('#DBID').text(),
+								"BTAcceptOpinion": $('#BTAcceptOpinion').val().replace(/\n|\r\n/g,
+										'<br/>')
+									.replace(/'/g, '"'),
+								"BTAcceptor": sessionName,
+								"BTAcceptDate": Ndate,
+								"BTAcceptResult": 2,
+								"BTAcceptResultText": "已驳回",
+								"BTStatus": 4,
+								"BTStatusText": "任务终止"
+							}
+
+							updDBData(acceptData, "任务单驳回状态");
+
 						}
-
-						updDBData(acceptData, "任务单驳回状态");
 					}
 				} else {
 					swal("您不是该任务单的负责人,无法驳回任务!");
@@ -2208,261 +2215,255 @@
 
 							var msg1 = confirm("风险操作！更新任务版本后,系统内任务单将被新版本替代!");
 							if (msg1 === true) {
-								var msg2 = confirm("再次确认？");
-								if (msg2 === true) {
+								var newBTVersion = parseInt(dataSelect.BTVersion) + 1;
 
-									var newBTVersion = parseInt(dataSelect.BTVersion) + 1;
+								var IPQCResultText = $('#IPQCResultText').text();
 
-									var IPQCResultText = $('#IPQCResultText').text();
+								if (dataSelect.BTStatusText === "任务完成") {
+									var taskRepeat = 1;
+									var taskRepeatText = '是';
 
-									if (dataSelect.BTStatusText === "任务完成") {
-										var taskRepeat = 1;
-										var taskRepeatText = '是';
-
-										let oldTaskData = {
-											"DBTable": "ppm_bills_task",
-											"BillIDName": "BTID",
-											"BillID": dataSelect.BTID,
-											"BTStatus": 0,
-											"BTStatusText": '废弃',
-											"filter":"BTVersion <>"+newBTVersion,
-										}
-
-										let ajax1 = $.ajax({
-											method: 'post',
-											url: '/app/PM/updBillStatus',
-											data: oldTaskData,
-											success: function (data, textStatus) {},
-											error: function (XMLHttpRequest, textStatus,
-												errorThrown) {}
-										});
-
-										let newTaskData = {
-											"DBTable": "ppm_bills_task",
-											"BTID": dataSelect.BTID,
-											"BTVersion": newBTVersion,
-											"taskSortType": dataSelect.taskSortType,
-											"taskSortTypeText": dataSelect.taskSortTypeText,
-											"taskType": dataSelect.taskType,
-											"taskTypeText": dataSelect.taskTypeText,
-											"taskMHEName": dataSelect.taskMHEName,
-											"taskModel": dataSelect.taskModel,
-											"taskOGNSystemVersion": dataSelect.taskOGNSystemVersion,
-											"taskBugID": dataSelect.taskBugID,
-											"taskRepeat": taskRepeat,
-											"taskRepeatText": taskRepeatText,
-											"taskCTRName": dataSelect.taskCTRName,
-											"taskStaff": dataSelect.taskStaff,
-											"taskBPID": dataSelect.taskBPID,
-											"modifyABE": dataSelect.modifyABE,
-											"taskDBE": dataSelect.taskDBE,
-											"taskLimitDate": dataSelect.taskLimitDate,
-											"taskMaker": sessionName,
-											"taskMakeDate": Ndate,
-											"IPQCMaker": dataSelect.IPQCMaker,
-											"FQCMaker": dataSelect.FQCMaker,
-											"BTAcceptResult": 0,
-											"BTStatus": 1,
-											"BTStatusText": "新增"
-										}
-
-										let ajax2 = $.ajax({
-											method: 'post',
-											url: '/app/PM/addDBData',
-											data: newTaskData,
-											success: function (data) {
-
-											},
-											error: function (err) {
-
-												if (err.responseText.indexOf("ER_DUP_ENTRY") !=
-													-
-													1) {
-													swal("系统中已存在重复数据,请检查!");
-												} else {
-													swal("失败数据:" + JSON.stringify(err));
-												}
-
-
-											}
-										});
-
-										//更新计划单信息,如果是已完成任务单跟新 则计划单已完成任务数减1
-
-
-										let PLDUpdData = {
-											"DBTable": "ppm_bills_plan",
-											"BillIDName": "BPID",
-											"BillID": dataSelect.taskBPID,
-											"TaskNumDoneCancel": 1,
-											// "WFStatus": 30
-										}
-
-										let ajax3 = $.ajax({
-											method: 'post',
-											url: '/app/PM/updBillStatus',
-											data: PLDUpdData,
-											success: function (data, textStatus) {},
-											error: function (XMLHttpRequest, textStatus,
-												errorThrown) {}
-										});
-
-
-										//给发布单新增重发布状态
-										let PBHUpdData = {
-											"DBTable": "ppm_bills_pbh",
-											"BillIDName": "pbhBPID",
-											"BillID": dataSelect.taskBPID,
-											"emailResult": 3
-										}
-
-										let ajax4 = $.ajax({
-											method: 'post',
-											url: '/app/PM/updBillStatus',
-											data: PBHUpdData,
-											success: function (data, textStatus) {},
-											error: function (XMLHttpRequest, textStatus,
-												errorThrown) {}
-										});
-
-										$.when(ajax1, ajax2, ajax3, ajax4).done(function () {
-
-
-											// let i = {
-											// 	alertMsg: "更新版本成功!"
-											// }
-											// swalAndRefresh(i)
-
-
-											// $('#BillPLD').modal('hide');
-
-											let i = {
-												msg: '更新版本成功,请填写更新原因!',
-												updateParams: {
-													"DBTable": "ppm_bills_task",
-													"BillIDName": "BTID",
-													"BillID": dataSelect.BTID,
-													"updateReason": '',
-													"filter": "BTVersion =" + dataSelect.BTVersion
-
-												}
-											}
-
-											updateAndWriteReason(i);
-
-										});
-
-
-									} else {
-										var taskRepeat = 0;
-										var taskRepeatText = '否';
-
-
-										let oldTaskData = {
-											"DBTable": "ppm_bills_task",
-											"BillIDName": "BTID",
-											"BillID": dataSelect.BTID,
-											"BTStatus": 0,
-											"BTStatusText": '废弃',
-											"filter":"BTVersion <>"+newBTVersion,
-										}
-
-										let ajax1 = $.ajax({
-											method: 'post',
-											url: '/app/PM/updBillStatus',
-											data: oldTaskData,
-											success: function (data, textStatus) {},
-											error: function (XMLHttpRequest, textStatus,
-												errorThrown) {}
-										});
-
-										let newTaskData = {
-											"DBTable": "ppm_bills_task",
-											"BTID": dataSelect.BTID,
-											"BTVersion": newBTVersion,
-											"taskSortType": dataSelect.taskSortType,
-											"taskSortTypeText": dataSelect.taskSortTypeText,
-											"taskType": dataSelect.taskType,
-											"taskTypeText": dataSelect.taskTypeText,
-											"taskMHEName": dataSelect.taskMHEName,
-											"taskModel": dataSelect.taskModel,
-											"taskOGNSystemVersion": dataSelect.taskOGNSystemVersion,
-											"taskBugID": dataSelect.taskBugID,
-											"taskRepeat": taskRepeat,
-											"taskRepeatText": taskRepeatText,
-											"taskCTRName": dataSelect.taskCTRName,
-											"taskStaff": dataSelect.taskStaff,
-											"taskBPID": dataSelect.taskBPID,
-											"modifyABE": dataSelect.modifyABE,
-											"taskDBE": dataSelect.taskDBE,
-											"taskLimitDate": dataSelect.taskLimitDate,
-											"taskMaker": sessionName,
-											"taskMakeDate": Ndate,
-											"IPQCMaker": dataSelect.IPQCMaker,
-											"FQCMaker": dataSelect.FQCMaker,
-											"BTAcceptResult": 0,
-											"BTStatus": 1,
-											"BTStatusText": "新增"
-										}
-
-										let ajax2 = $.ajax({
-											method: 'post',
-											url: '/app/PM/addDBData',
-											data: newTaskData,
-											success: function (data) {
-
-											},
-											error: function (err) {
-
-												if (err.responseText.indexOf("ER_DUP_ENTRY") !=
-													-
-													1) {
-													swal("系统中已存在重复数据,请检查!");
-												} else {
-													swal("失败数据:" + JSON.stringify(err));
-												}
-
-
-											}
-										});
-
-										//更新计划单信息,如果是已完成任务单跟新 则计划单已完成任务数减1
-
-										$.when(ajax1, ajax2).done(function () {
-
-
-											// let i = {
-											// 	alertMsg: "更新版本成功!"
-											// }
-											// swalAndRefresh(i)
-
-											let i = {
-												msg: '更新版本成功,请填写更新原因!',
-												updateParams: {
-													"DBTable": "ppm_bills_task",
-													"BillIDName": "BTID",
-													"BillID": dataSelect.BTID,
-													"updateReason": '',
-													"filter": "BTVersion =" + dataSelect.BTVersion
-
-												}
-											}
-
-											updateAndWriteReason(i);
-
-										});
-
+									let oldTaskData = {
+										"DBTable": "ppm_bills_task",
+										"BillIDName": "BTID",
+										"BillID": dataSelect.BTID,
+										"BTStatus": 0,
+										"BTStatusText": '废弃',
+										"filter": "BTVersion <>" + newBTVersion,
 									}
 
-									//	        	addDBData(taskData);
+									let ajax1 = $.ajax({
+										method: 'post',
+										url: '/app/PM/updBillStatus',
+										data: oldTaskData,
+										success: function (data, textStatus) {},
+										error: function (XMLHttpRequest, textStatus,
+											errorThrown) {}
+									});
+
+									let newTaskData = {
+										"DBTable": "ppm_bills_task",
+										"BTID": dataSelect.BTID,
+										"BTVersion": newBTVersion,
+										"taskSortType": dataSelect.taskSortType,
+										"taskSortTypeText": dataSelect.taskSortTypeText,
+										"taskType": dataSelect.taskType,
+										"taskTypeText": dataSelect.taskTypeText,
+										"taskMHEName": dataSelect.taskMHEName,
+										"taskModel": dataSelect.taskModel,
+										"taskOGNSystemVersion": dataSelect.taskOGNSystemVersion,
+										"taskBugID": dataSelect.taskBugID,
+										"taskRepeat": taskRepeat,
+										"taskRepeatText": taskRepeatText,
+										"taskCTRName": dataSelect.taskCTRName,
+										"taskStaff": dataSelect.taskStaff,
+										"taskBPID": dataSelect.taskBPID,
+										"modifyABE": dataSelect.modifyABE,
+										"taskDBE": dataSelect.taskDBE,
+										"taskLimitDate": dataSelect.taskLimitDate,
+										"taskMaker": sessionName,
+										"taskMakeDate": Ndate,
+										"IPQCMaker": dataSelect.IPQCMaker,
+										"FQCMaker": dataSelect.FQCMaker,
+										"BTAcceptResult": 0,
+										"BTStatus": 1,
+										"BTStatusText": "新增"
+									}
+
+									let ajax2 = $.ajax({
+										method: 'post',
+										url: '/app/PM/addDBData',
+										data: newTaskData,
+										success: function (data) {
+
+										},
+										error: function (err) {
+
+											if (err.responseText.indexOf("ER_DUP_ENTRY") !=
+												-
+												1) {
+												swal("系统中已存在重复数据,请检查!");
+											} else {
+												swal("失败数据:" + JSON.stringify(err));
+											}
+
+
+										}
+									});
+
+									//更新计划单信息,如果是已完成任务单跟新 则计划单已完成任务数减1
+
+
+									let PLDUpdData = {
+										"DBTable": "ppm_bills_plan",
+										"BillIDName": "BPID",
+										"BillID": dataSelect.taskBPID,
+										"TaskNumDoneCancel": 1,
+										// "WFStatus": 30
+									}
+
+									let ajax3 = $.ajax({
+										method: 'post',
+										url: '/app/PM/updBillStatus',
+										data: PLDUpdData,
+										success: function (data, textStatus) {},
+										error: function (XMLHttpRequest, textStatus,
+											errorThrown) {}
+									});
+
+
+									//给发布单新增重发布状态
+									let PBHUpdData = {
+										"DBTable": "ppm_bills_pbh",
+										"BillIDName": "pbhBPID",
+										"BillID": dataSelect.taskBPID,
+										"emailResult": 3
+									}
+
+									let ajax4 = $.ajax({
+										method: 'post',
+										url: '/app/PM/updBillStatus',
+										data: PBHUpdData,
+										success: function (data, textStatus) {},
+										error: function (XMLHttpRequest, textStatus,
+											errorThrown) {}
+									});
+
+									$.when(ajax1, ajax2, ajax3, ajax4).done(function () {
+
+
+										// let i = {
+										// 	alertMsg: "更新版本成功!"
+										// }
+										// swalAndRefresh(i)
+
+
+										// $('#BillPLD').modal('hide');
+
+										let i = {
+											msg: '更新版本成功,请填写更新原因!',
+											updateParams: {
+												"DBTable": "ppm_bills_task",
+												"BillIDName": "BTID",
+												"BillID": dataSelect.BTID,
+												"updateReason": '',
+												"filter": "BTVersion =" + dataSelect
+													.BTVersion
+
+											}
+										}
+
+										updateAndWriteReason(i);
+
+									});
+
+
+								} else {
+									var taskRepeat = 0;
+									var taskRepeatText = '否';
+
+
+									let oldTaskData = {
+										"DBTable": "ppm_bills_task",
+										"BillIDName": "BTID",
+										"BillID": dataSelect.BTID,
+										"BTStatus": 0,
+										"BTStatusText": '废弃',
+										"filter": "BTVersion <>" + newBTVersion,
+									}
+
+									let ajax1 = $.ajax({
+										method: 'post',
+										url: '/app/PM/updBillStatus',
+										data: oldTaskData,
+										success: function (data, textStatus) {},
+										error: function (XMLHttpRequest, textStatus,
+											errorThrown) {}
+									});
+
+									let newTaskData = {
+										"DBTable": "ppm_bills_task",
+										"BTID": dataSelect.BTID,
+										"BTVersion": newBTVersion,
+										"taskSortType": dataSelect.taskSortType,
+										"taskSortTypeText": dataSelect.taskSortTypeText,
+										"taskType": dataSelect.taskType,
+										"taskTypeText": dataSelect.taskTypeText,
+										"taskMHEName": dataSelect.taskMHEName,
+										"taskModel": dataSelect.taskModel,
+										"taskOGNSystemVersion": dataSelect.taskOGNSystemVersion,
+										"taskBugID": dataSelect.taskBugID,
+										"taskRepeat": taskRepeat,
+										"taskRepeatText": taskRepeatText,
+										"taskCTRName": dataSelect.taskCTRName,
+										"taskStaff": dataSelect.taskStaff,
+										"taskBPID": dataSelect.taskBPID,
+										"modifyABE": dataSelect.modifyABE,
+										"taskDBE": dataSelect.taskDBE,
+										"taskLimitDate": dataSelect.taskLimitDate,
+										"taskMaker": sessionName,
+										"taskMakeDate": Ndate,
+										"IPQCMaker": dataSelect.IPQCMaker,
+										"FQCMaker": dataSelect.FQCMaker,
+										"BTAcceptResult": 0,
+										"BTStatus": 1,
+										"BTStatusText": "新增"
+									}
+
+									let ajax2 = $.ajax({
+										method: 'post',
+										url: '/app/PM/addDBData',
+										data: newTaskData,
+										success: function (data) {
+
+										},
+										error: function (err) {
+
+											if (err.responseText.indexOf("ER_DUP_ENTRY") !=
+												-
+												1) {
+												swal("系统中已存在重复数据,请检查!");
+											} else {
+												swal("失败数据:" + JSON.stringify(err));
+											}
+
+
+										}
+									});
+
+									//更新计划单信息,如果是已完成任务单跟新 则计划单已完成任务数减1
+
+									$.when(ajax1, ajax2).done(function () {
+
+
+										// let i = {
+										// 	alertMsg: "更新版本成功!"
+										// }
+										// swalAndRefresh(i)
+
+										let i = {
+											msg: '更新版本成功,请填写更新原因!',
+											updateParams: {
+												"DBTable": "ppm_bills_task",
+												"BillIDName": "BTID",
+												"BillID": dataSelect.BTID,
+												"updateReason": '',
+												"filter": "BTVersion =" + dataSelect
+													.BTVersion
+
+											}
+										}
+
+										updateAndWriteReason(i);
+
+									});
+
 								}
 							}
 
 						}
 
 					}
-
-
 
 				}
 

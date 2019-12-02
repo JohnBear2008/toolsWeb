@@ -110,6 +110,7 @@ module.exports = function (sender) {
 				'TM.NB-软体公用' + '<br />' +
 				'Application Class' + '<br />' +
 				'MAIL: servicetech@techmation.com.cn' + '<br />' +
+				'负责人:' + signName + '<br />' +
 				'TEL: 86-574-86987281-' + signTelNo + '<br />' +
 				'FAX: 86-574-86829287-0316' + '<br />' +
 				'宁波弘讯科技股份有限公司' + '<br />' +

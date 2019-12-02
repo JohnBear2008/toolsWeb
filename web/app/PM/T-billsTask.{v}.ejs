@@ -969,7 +969,8 @@
 
 		//仅抓取T程序员 或T程序员+T开单
 		Fun_getSQLSelectDBData({
-			SQL: "SQLSRStaffsFilter",filter:"staffRole LIKE 'T程序员%' AND status=1"
+			SQL: "SQLSRStaffsFilter",
+			filter: "staffRole LIKE 'T程序员%' AND status=1"
 		}, "#FQCMaker", dataSelect.FQCMaker);
 		$("#divFQCMaker").show();
 
@@ -1798,25 +1799,32 @@
 		$('#BTNTaskAcceptNo').click(function () {
 
 			if (sessionName == $('#taskStaff option:selected').text()) {
-				var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
-				if (msg == true) {
+
+				if ($('#BTAcceptOpinion').val() === '') {
+					swal('驳回任务必须填写确认意见!')
+				} else {
+					var msg = confirm("驳回后该任务终止,是否立即审核驳回?");
+					if (msg == true) {
 
 
-					var acceptData = {
-						"DBTable": "ppm_bills_task_t",
-						"DBID": $('#DBID').text(),
-						"BTAcceptOpinion": $('#BTAcceptOpinion').val().replace(/\n|\r\n/g, '<br/>')
-							.replace(/'/g, '"'),
-						"BTAcceptor": sessionName,
-						"BTAcceptDate": Ndate,
-						"BTAcceptResult": 2,
-						"BTAcceptResultText": "已驳回",
-						"BTStatus": 4,
-						"BTStatusText": "任务终止"
+						var acceptData = {
+							"DBTable": "ppm_bills_task_t",
+							"DBID": $('#DBID').text(),
+							"BTAcceptOpinion": $('#BTAcceptOpinion').val().replace(/\n|\r\n/g, '<br/>')
+								.replace(/'/g, '"'),
+							"BTAcceptor": sessionName,
+							"BTAcceptDate": Ndate,
+							"BTAcceptResult": 2,
+							"BTAcceptResultText": "已驳回",
+							"BTStatus": 4,
+							"BTStatusText": "任务终止"
+						}
+
+						updDBData(acceptData, "任务单驳回状态");
 					}
 
-					updDBData(acceptData, "任务单驳回状态");
 				}
+
 			} else {
 				swal("您不是该任务单的负责人,无法驳回任务!");
 			}
@@ -2115,7 +2123,7 @@
 										"BillID": dataSelect.BTID,
 										"BTStatus": 0,
 										"BTStatusText": '废弃',
-										"filter":"BTVersion <>"+newBTVersion,
+										"filter": "BTVersion <>" + newBTVersion,
 									}
 
 									let ajax1 = $.ajax({
@@ -2208,18 +2216,18 @@
 										// swalAndRefresh(i)
 
 										let i = {
-												msg: '更新版本成功,请填写更新原因!',
-												updateParams: {
-													"DBTable": "ppm_bills_task_t",
-													"BillIDName": "BTID",
-													"BillID": dataSelect.BTID,
-													"updateReason": '',
-													"filter": "BTVersion =" + dataSelect.BTVersion
+											msg: '更新版本成功,请填写更新原因!',
+											updateParams: {
+												"DBTable": "ppm_bills_task_t",
+												"BillIDName": "BTID",
+												"BillID": dataSelect.BTID,
+												"updateReason": '',
+												"filter": "BTVersion =" + dataSelect.BTVersion
 
-												}
 											}
+										}
 
-											updateAndWriteReason(i);
+										updateAndWriteReason(i);
 
 									});
 
@@ -2236,7 +2244,7 @@
 										"BillID": dataSelect.BTID,
 										"BTStatus": 0,
 										"BTStatusText": '废弃',
-										"filter":"BTVersion <>"+newBTVersion,
+										"filter": "BTVersion <>" + newBTVersion,
 									}
 
 									let ajax1 = $.ajax({
@@ -2309,18 +2317,18 @@
 										// swalAndRefresh(i)
 
 										let i = {
-												msg: '更新版本成功,请填写更新原因!',
-												updateParams: {
-													"DBTable": "ppm_bills_task_t",
-													"BillIDName": "BTID",
-													"BillID": dataSelect.BTID,
-													"updateReason": '',
-													"filter": "BTVersion =" + dataSelect.BTVersion
+											msg: '更新版本成功,请填写更新原因!',
+											updateParams: {
+												"DBTable": "ppm_bills_task_t",
+												"BillIDName": "BTID",
+												"BillID": dataSelect.BTID,
+												"updateReason": '',
+												"filter": "BTVersion =" + dataSelect.BTVersion
 
-												}
 											}
+										}
 
-											updateAndWriteReason(i);
+										updateAndWriteReason(i);
 
 									});
 								}

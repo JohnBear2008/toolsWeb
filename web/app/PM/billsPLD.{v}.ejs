@@ -38,7 +38,7 @@
 
 		<button id="BTNAdd" class="btn btn-primary" data-toggle="modal">新增</button>
 		<button id="BTNInfo" class="btn btn-info" data-toggle="modal">详情</button>
-		<button id="BTNDelete" class="btn btn-danger" data-toggle="modal">删除</button>
+		<!-- <button id="BTNDelete" class="btn btn-danger" data-toggle="modal">删除</button> -->
 		<button id="BTNAudit" class="btn btn-warning" data-toggle="modal">审核</button>
 
 		<div class="btn-group" style="margin-left:20px">
@@ -1982,29 +1982,36 @@
 		$('#BTNFormAuditNo').click(function () {
 
 			if (sessionName == $('#auditor option:selected').text()) {
-				var msg = confirm("如计划单信息有误,可先修改后再审核,驳回后此单立即完结,是否立即审核驳回?");
-				if (msg == true) {
-					var auditData = {
-						"DBTable": "ppm_bills_plan",
-						"DBID": $('#DBID').val(),
-						"auditor": sessionName,
-						"auditDate": Ndate,
-						"auditResult": 2,
-						"PLDStatus": 2,
-						"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>').replace(
-							/'/g, '"'),
-						"WFStatus": 9
+
+				if ($('#auditOpinion').val() === '') {
+					swal("驳回审核必须填写审核意见!")
+				} else {
+					var msg = confirm("如计划单信息有误,可先修改后再审核,驳回后此单立即完结,是否立即审核驳回?");
+					if (msg == true) {
+						var auditData = {
+							"DBTable": "ppm_bills_plan",
+							"DBID": $('#DBID').val(),
+							"auditor": sessionName,
+							"auditDate": Ndate,
+							"auditResult": 2,
+							"PLDStatus": 2,
+							"auditOpinion": $('#auditOpinion').val().replace(/\n|\r\n/g, '<br/>')
+								.replace(
+									/'/g, '"'),
+							"WFStatus": 9
+						}
+
+						//			updDBData(auditData,"表单审核状态");
+
+						let msgContent = "@" + $('#maker').text() + ",计划单审核未通过,请登陆系统处理!";
+						Fun_updDBDataDD(auditData, {
+							at: $('#maker').text(),
+							msg: msgContent
+						}, "审核状态");
+
 					}
-
-					//			updDBData(auditData,"表单审核状态");
-
-					let msgContent = "@" + $('#maker').text() + ",计划单审核未通过,请登陆系统处理!";
-					Fun_updDBDataDD(auditData, {
-						at: $('#maker').text(),
-						msg: msgContent
-					}, "审核状态");
-
 				}
+
 			} else {
 				swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");
 			}
