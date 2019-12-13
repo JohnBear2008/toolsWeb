@@ -1827,10 +1827,10 @@
 	function checkTaskInput() {
 		// console.log("机型:"+$("#taskMHEName").val());
 
-		if ($("#taskMHEName").val() ==="") {
+		if ($("#taskMHEName").val() === "") {
 			swal("机型未选择,请检查!");
 			return false;
-		} else if ( $("#taskModel").val() === "") {
+		} else if ($("#taskModel").val() === "") {
 			swal("系统未选择,请检查!");
 			return false;
 		} else if (getCheckBoxValue("modifyABE") === "") {
@@ -1868,6 +1868,72 @@
 				}
 			}
 		})
+	}
+
+	//自动记忆绑定关系函数
+	const autoUpdateBindsInfo = () => {
+
+
+		const replaceBindsInfo = () => {
+			let bindInfoData = {
+				sql: 'replace into `ppm_customerbinds` (CTRName, CTRVal, MHEName, MHEVal, ModelName, ModelVal, StaffName, StaffVal) values ( ? , ? , ? , ? , ? , ? , ? , ? )',
+				params: [
+					$('#CTRName option:selected').text(),
+					$('#CTRName option:selected').val(),
+					$('#taskMHEName option:selected').text(),
+					$('#taskMHEName option:selected').val(),
+					$('#taskModel option:selected').text(),
+					$('#taskModel option:selected').val(),
+					$('#taskStaff option:selected').text(),
+					$('#taskStaff option:selected').val()
+				]
+			}
+			$.ajax({
+				method: 'post',
+				url: '/app/public/ajaxPost',
+				data: bindInfoData,
+				success: (data, textStatus) => {
+					// swal(JSON.stringify(data))
+					return textStatus //return 返回 resolve
+				},
+				error: (XMLHttpRequest, textStatus,
+					errorThrown) => {
+					return textStatus //throw 返回reject
+				}
+			});
+		}
+
+		let P1 = {
+			SQL: "SQLGetBindsInfo",
+			filter: "CTRName ='" + $('#CTRName option:selected').text() + "'" +
+				"AND MHEName ='" + $('#MHEName option:selected').text() + "'" +
+				"AND ModelName ='" + $('#taskModel option:selected').text() + "'",
+			orderBy: " saveTimeStamp DESC",
+			limit: 1
+		}
+
+		$.ajax({
+			method: 'get',
+			data: P1,
+			async:false,
+			url: "/app/PM/getSQLDBData",
+			success: function (data) {
+				// alert("get Binds:" + JSON.stringify(data));
+
+				if (data.length === 0) {
+					replaceBindsInfo();
+				} else if (data.length !== 0 && data[0].StaffName !== $('#taskStaff option:selected')
+					.text()) {
+
+					if (confirm("系统检测到当前任务负责关系不在关系数据库中,是否保存为新关系?")) {
+						replaceBindsInfo();
+					}
+
+				}
+			},
+			error: function () {}
+		})
+
 	}
 
 
@@ -2394,6 +2460,10 @@
 			if (sessionName != $("#PGEMaker").val()) {
 				swal("当前账号非指定方案人,不允许新增该方案任务!");
 			} else {
+
+				//增加记忆绑定关系功能
+
+				autoUpdateBindsInfo();
 
 				//--增加同类型任务单检测提示功能--------------------
 

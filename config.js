@@ -104,7 +104,7 @@ var config = {
     packages: {
         version: {
             "jquery-easyui": "1.5",
-            "jquery": '1.7.2'
+            "jquery": '1.7.2',
         }
     },
 //    project: {

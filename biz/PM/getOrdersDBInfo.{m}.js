@@ -5,7 +5,6 @@ module.exports = function (sender) {
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 
 
-
     //    var aDataIDs = sender.req.query.t;  
     //  console.log("get:" + JSON.stringify(sender.req.query));
 

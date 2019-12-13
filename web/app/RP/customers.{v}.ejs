@@ -1,0 +1,369 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+
+                <h1>基础信息-客户</h1>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="well">
+
+        <button class="btn btn-primary" id='btnAdd'>新增</button>
+
+
+    </div>
+
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+
+            <!-- 定义基础模块数据表 -->
+            <table id="tbCustomers"" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>简称</th>
+                        <th>地址</th>
+                        <th>客户类型</th>
+                        <th>联系人</th>
+                        <th>手机号</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+    <!-- 按钮触发模态框 -->
+    <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="btnModel" style="display: none;">
+        开始演示模态框
+    </button>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 65%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        客户信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+
+
+
+                    <!-- 表单面板 -->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+
+                            <form class="form-horizontal" role="form" id='rp_customers'>
+
+                                <input id="DBID" type="hidden" value="">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">客户编号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="customerId" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">简称</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="shortName" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">公司名称</label>
+                                    <div class="col-sm-11">
+                                        <input class="form-control" id="companyName" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">客户类型</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="customerType" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">客户归属</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="customerBelong" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">付款方式</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="paymentType" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">客户区域</label>
+                                    <div class="col-sm-5">
+                                        <select id="customerArea" class="selectpicker" data-live-search="true"
+                                            data-dropup-auto="false">
+                                        </select>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">地址</label>
+                                    <div class="col-sm-11">
+                                        <input class="form-control" id="address" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">联系人</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="contact" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">手机号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="mobilePhone" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">工作电话</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="workPhone" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">传真号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="fax" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">邮政编码</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="zipCode" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">电子邮箱</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="email" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">信用等级</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="creditRank" type="text" value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">纳税号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="taxId" type="text" value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">备注</label>
+                                    <div class="col-sm-11">
+                                        <textarea id="remark" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">是否有效</label>
+                                    <div class="col-sm-5">
+                                        <select id="effective" class="selectpicker" data-dropup-auto="true">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnSave">
+                        保存
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        //加载表格
+        loadDataTable({
+            elementId: 'tbCustomers',
+            sqlParams: {
+                tableId: 'rp_customers',
+                filter: ''
+            },
+            dtParams: {
+                columns: [{
+                        data: 'shortName'
+                    },
+                    {
+                        data: 'customerId'
+                    }, {
+                        data: 'address'
+                    }, {
+                        data: 'customerType',
+                    }, {
+                        data: 'contact',
+                    }, {
+                        data: 'mobilePhone',
+                    }
+                ],
+            }
+        })
+
+
+
+
+        loadBootStrapSelector({
+            elementId: 'customerArea',
+            sqlParams: {
+                sql: 'getRegionSelector'
+            },
+            // initValue:'中国,北京'
+        })
+
+        // loadDatePicker({
+        //     elementId: 'saveTimeStamp',
+        //     params: {
+        //         endDate: '2019-12-30'
+        //     }
+        // })
+
+
+
+
+        //dbclick 测试判断是否选中数据-------
+
+        $('#tbCustomers tbody').on('dblclick', 'tr', function () {
+
+            let table = $('#tbCustomers').DataTable();
+
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+            //清空div原有数据
+            clearDivInputs({
+                elementId: 'rp_customers'
+            })
+            //填写div匹配数据
+            fillDivInputs({
+                elementId: 'rp_customers',
+                params: dataSelect
+            })
+            //打开面板
+            $('#btnModel').click();
+
+        });
+
+
+
+        // 新增按钮
+        $('#btnAdd').click(function () {
+            //清空div
+            clearDivInputs({
+                elementId: 'rp_customers'
+            })
+            //默认有效
+            $('#effective').selectpicker('val', '是')
+            //打开面板
+            $('#btnModel').click();
+
+        })
+
+      
+
+        //保存按钮
+        $('#btnSave').click(function () {
+            let formData = getFormData({
+                elementId: 'rp_customers'
+            })
+
+
+            let sqlParams = {
+                sql: 'replace',
+                params: formData
+            }
+
+            let i = {
+                elementId: 'tbCustomers',
+                sqlParams: sqlParams
+            }
+
+            updateDataTable(i);
+
+        })
+
+
+    });
+</script>

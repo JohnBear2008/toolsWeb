@@ -134,8 +134,6 @@ function showOrdersDBData(DataPara, columnsData) {
 		columns: columnsData,
 		aaSorting: [0, 'desc'], //默认排序
 		lengthMenu: [10, 20, 50, 100],
-
-
 		"language": languageCN
 	});
 

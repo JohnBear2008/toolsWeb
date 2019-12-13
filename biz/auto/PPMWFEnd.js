@@ -93,9 +93,9 @@ const autoWFEnd = async () => {
 // 自动归档任务---------
 var j1 = schedule
 	.scheduleJob({
-			hour: 00,
-			minute: 00,
-			dayOfWeek: [1]
+			hour: 10,
+			minute: 24,
+			dayOfWeek: [3]
 		},
 		function () {
 

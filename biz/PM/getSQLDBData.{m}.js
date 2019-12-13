@@ -1,5 +1,6 @@
 require("../../client/js/Date.js");
 require("../../client/js/SQL.js");
+require("../../client/js/SQLrich.js");//J1125 addby rich
 
 
 module.exports = function(sender) {
@@ -14,8 +15,15 @@ module.exports = function(sender) {
     var filter=sender.req.query.filter; 
     var orderBy=sender.req.query.orderBy; 
     var limit=sender.req.query.limit; 
+  
+
+   console.log("SQL:"+SQL);
+
+   var param1="";  
+   var param2="";  
+ 
     
-//    console.log("SQL:"+SQL);
+   
 //    console.log("DBTable:"+DBTable);
 //    console.log("DBID:"+DBID);
     //选择执行的SQL语句
@@ -189,10 +197,48 @@ module.exports = function(sender) {
 	case "SQLTableTasksDBCenter_T":
 		var SQLExecute=SQLTableTasksDBCenter_T;
 		break;
-		
-		
-		
-
+	//J1125 addby rich	
+	case "SQLgetDelayRate":
+		var SQLExecute=SQLgetDelayRate;
+		break;	
+	case "SQLidvDelayRate":
+		var SQLExecute=SQLidvDelayRate;
+		break;	
+	case "SQLgetErrorRate":
+		var SQLExecute=SQLgetErrorRate;
+		break;	
+	case "SQLDelayCount":
+		var SQLExecute=SQLDelayCount;
+		break;	
+	case "SQLDelayTotal":
+		var SQLExecute=SQLDelayTotal;
+		break;	
+	case "SQLErrorCount":
+		var SQLExecute=SQLErrorCount;
+		break;	
+	case "SQLErrorTotal":
+		var SQLExecute=SQLErrorTotal;
+		break;	
+	case "SQLShipment":
+		var SQLExecute=SQLShipment;
+		break;	
+	case "SQLNeworder":
+		var SQLExecute=SQLNeworder;
+		break;	
+	case "SQLNotDone":
+		var SQLExecute=SQLNotDone;
+		  param1=sender.req.query.weekbeg;  
+		  param2=sender.req.query.weekend;  
+ 
+		break;	
+	case "SQLLateList":
+		var SQLExecute=SQLLateList;
+		  param1=sender.req.query.weekbeg;  
+		  param2=sender.req.query.weekend;  
+		console.log("SQLExecute:"+SQLExecute);
+		// console.log("weekbeg:"+param1);
+		// console.log("weekend:"+param2);
+		break;	
 
 	default:
 		var SQLExecute=SQL;
@@ -230,13 +276,13 @@ module.exports = function(sender) {
     	
     	 yjDBService.exec({
     	        sql: SQLExecute,
-    	        parameters: [],
+    	        parameters: [param1,param2],
     	        rowsAsArray: false, // Chenly 2018-10-19 返回obj arr
     	        success: function(result) {
     	        	
 //    	        	
 //    	        	result=NulltoEmpty(result);
-//    	        	console.log("result:"+JSON.stringify(result));
+    	        	//   console.log("result:"+JSON.stringify(result));
     	            sender.success(result);
     	        },
     	        error: sender.error
