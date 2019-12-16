@@ -57,7 +57,7 @@ const currentDate = () => {
  */
 const divDataTableParams = (i) => {
 
-    console.log('i:' + JSON.stringify(i));
+    // console.log('i:' + JSON.stringify(i));
 
     let defaultParams = {
         elementId: i.elementId,
@@ -114,6 +114,19 @@ const divDataTableParams = (i) => {
                             console.log(JSON.stringify(dataSelected[n]));
                         }
                     }
+                }, {
+                    text: '新增',
+                    action: function () {
+                        //清空div
+                        clearFormInputs({
+                            elementId: i.elementId + 'Form'
+                        })
+                        //默认有效
+                        $('#effective').selectpicker('val', '是')
+                        //打开面板
+                        $('#' + i.elementId + 'ModalOpen').click();
+
+                    }
                 },
                 {
                     text: '删除',
@@ -162,6 +175,9 @@ const divDataTableParams = (i) => {
         }
     }
     o = defaultParams;
+
+    // console.log("o:"+JSON.stringify(o));
+
     return o;
 
 }
@@ -176,7 +192,69 @@ const divDataTableParams = (i) => {
 const loadDataTable = async (i) => {
 
     let r1 = divDataTableParams(i);
+    // console.log("r1:"+JSON.stringify(r1));
+
     let table = $('#' + r1.elementId).DataTable(r1.params);
+
+    // // 新增按钮
+    // $('#btnAdd').click(function () {
+    //     //清空div
+    //     clearFormInputs({
+    //         elementId: 'rp_faultClasses'
+    //     })
+    //     //默认有效
+    //     $('#effective').selectpicker('val', '是')
+    //     //打开面板
+    //     $('#btnModal').click();
+
+    // })
+
+
+
+
+    $('#' + r1.elementId + ' tbody').on('dblclick', 'tr', function () {
+
+        let table = $('#' + r1.elementId).DataTable();
+
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+        let dataSelect = table.row('.selected').data();
+        //清空Form原有数据
+        clearFormInputs({
+            elementId: r1.elementId
+        })
+        //填写div匹配数据
+        fillDivInputs({
+            elementId: r1.elementId,
+            params: dataSelect
+        })
+        //打开面板
+        $('#' + r1.elementId + 'ModalOpen').click();
+
+    });
+
+    //保存按钮
+    $('#' + i.elementId + 'Save').click(function () {
+        let formData = getFormData({
+            elementId: r1.elementId
+        })
+
+        let sqlParams = {
+            sql: 'replace',
+            params: formData
+        }
+
+        let i = {
+            elementId: r1.elementId,
+            sqlParams: sqlParams
+        }
+
+        console.log('save i:' + JSON.stringify(i));
+
+
+        updateDataTable(i);
+
+    })
 
 }
 
@@ -254,7 +332,7 @@ const loadDatePicker = async (i) => {
  *
  * @param {*} i={elementId}
  */
-const clearDivInputs = (i) => {
+const clearFormInputs = (i) => {
     $("#" + i.elementId + " input").val("");
     $('#' + i.elementId + " select").selectpicker('val', '');
     $("#" + i.elementId + " textarea").val("");
@@ -268,7 +346,7 @@ const clearDivInputs = (i) => {
  */
 const fillDivInputs = async (i) => {
 
-    console.log('i:' + JSON.stringify(i.params));
+    console.log('fillDivInputs i:' + JSON.stringify(i.params));
 
     for (const p in i.params) {
         if (i.params.hasOwnProperty(p)) {
@@ -298,7 +376,7 @@ const getFormData = (i) => {
     let tableId = i.elementId;
     let data = [];
     //同时遍历3类form元素
-    $('#' + i.elementId + " input,select,textarea").each(function () {
+    $('#' + i.elementId + "Form input,select,textarea").each(function () {
         let id = this.id;
         let value = this.value;
         if (id !== '') {
@@ -313,7 +391,7 @@ const getFormData = (i) => {
         data: data
     }
 
-    console.log(data);
+    console.log('getFormData:' + JSON.stringify(data));
     return o;
 
 }
@@ -363,7 +441,11 @@ const updateDataTable = async (i) => {
         alert('已成功更新数据库!');
         //刷新页面
         // location.replace(location)
-        history.go(0)
+        // history.go(0)
+
+        //不刷新页面直接更新dataTable
+        table.ajax.reload();
+        $("#" + i.elementId + "ModalClose").click();
     }
 
 

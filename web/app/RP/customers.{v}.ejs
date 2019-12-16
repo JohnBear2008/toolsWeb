@@ -30,20 +30,12 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
-
                 <h1>基础信息-客户</h1>
-
-
             </div>
         </div>
     </div>
 
-    <div class="well">
 
-        <button class="btn btn-primary" id='btnAdd'>新增</button>
-
-
-    </div>
 
 
 
@@ -52,7 +44,7 @@
 
 
             <!-- 定义基础模块数据表 -->
-            <table id="tbCustomers"" class=" table table-striped table-bordered" style="width:100%">
+            <table id="rp_customers"" class=" table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <th>名称</th>
@@ -72,20 +64,22 @@
 
 
 
-    <!-- 按钮触发模态框 -->
-    <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="btnModel" style="display: none;">
-        开始演示模态框
-    </button>
+
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="rp_customersModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" style="width: 65%;">
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_customersModal"
+                id="rp_customersModalOpen" style="display: none;">
+                开始演示模态框
+            </button>
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">
+                    <h4 class="modal-title">
                         客户信息
                     </h4>
                 </div>
@@ -99,7 +93,7 @@
                         <div class="panel-body">
 
 
-                            <form class="form-horizontal" role="form" id='rp_customers'>
+                            <form class="form-horizontal" role="form" id='rp_customersForm'>
 
                                 <input id="DBID" type="hidden" value="">
 
@@ -233,9 +227,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_customersModalClose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary" id="btnSave">
+                    <button type="button" class="btn btn-primary" id="rp_customersSave">
                         保存
                     </button>
                 </div>
@@ -258,7 +252,7 @@
 
         //加载表格
         loadDataTable({
-            elementId: 'tbCustomers',
+            elementId: 'rp_customers',
             sqlParams: {
                 tableId: 'rp_customers',
                 filter: ''
@@ -303,66 +297,6 @@
 
 
 
-        //dbclick 测试判断是否选中数据-------
-
-        $('#tbCustomers tbody').on('dblclick', 'tr', function () {
-
-            let table = $('#tbCustomers').DataTable();
-
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            let dataSelect = table.row('.selected').data();
-            //清空div原有数据
-            clearDivInputs({
-                elementId: 'rp_customers'
-            })
-            //填写div匹配数据
-            fillDivInputs({
-                elementId: 'rp_customers',
-                params: dataSelect
-            })
-            //打开面板
-            $('#btnModel').click();
-
-        });
-
-
-
-        // 新增按钮
-        $('#btnAdd').click(function () {
-            //清空div
-            clearDivInputs({
-                elementId: 'rp_customers'
-            })
-            //默认有效
-            $('#effective').selectpicker('val', '是')
-            //打开面板
-            $('#btnModel').click();
-
-        })
-
-      
-
-        //保存按钮
-        $('#btnSave').click(function () {
-            let formData = getFormData({
-                elementId: 'rp_customers'
-            })
-
-
-            let sqlParams = {
-                sql: 'replace',
-                params: formData
-            }
-
-            let i = {
-                elementId: 'tbCustomers',
-                sqlParams: sqlParams
-            }
-
-            updateDataTable(i);
-
-        })
 
 
     });

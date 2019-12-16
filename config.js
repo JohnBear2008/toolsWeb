@@ -151,6 +151,13 @@ var config = {
             dir: path.join(__dirname, './uploaded')
         },
         isCacheView: false
+    },
+    sms:{
+        baidu:{
+            ak:"3ZNfTt6yTX8X3ho5e364FeoE",
+            sk:"h8tah3cAG3SzsFnllW8bobND35A1fzLs",
+            invokeId:'f2VnoRb1-JQ9i-2s8Q'
+        }
     }
 };
 module.exports = config;
