@@ -1118,6 +1118,9 @@
 
 		$('input:radio[name="FQCRequest"]').attr("disabled", true);
 
+		//自动加载审核人
+		$('#BTNGetTaskAuditor').click();
+
 
 
 	}
@@ -1336,55 +1339,106 @@
 
 	}
 
-	//获取系统审核人
+	//获取系统审核人 老规则
 
-	var getTaskAuditor = function (modifyABE, staff) {
+	// var getTaskAuditor = function (modifyABE, staff) {
 
-		let modifyABECheck = true;
+	// 	let modifyABECheck = true;
 
-		let arrCompare = ['ABE1', 'ABE3'];
+	// 	let arrCompare = ['ABE1', 'ABE3'];
 
 
-		$("[name='modifyABE']:checked").each(function () {
-			if (arrCompare.indexOf($(this).val()) > -1) {
-				modifyABECheck = modifyABECheck && true;
-			} else {
-				modifyABECheck = modifyABECheck && false;
-			}
-		})
+	// 	$("[name='modifyABE']:checked").each(function () {
+	// 		if (arrCompare.indexOf($(this).val()) > -1) {
+	// 			modifyABECheck = modifyABECheck && true;
+	// 		} else {
+	// 			modifyABECheck = modifyABECheck && false;
+	// 		}
+	// 	})
 
-		// console.log("modifyABECheck:" + modifyABECheck);
+	// 	// console.log("modifyABECheck:" + modifyABECheck);
 
+
+
+	// 	$.ajax({
+	// 		method: 'get',
+	// 		data: {
+	// 			SQL: "SQLGetEntryDays",
+	// 			filter: "staffName='" + staff + "'"
+	// 		},
+	// 		url: "/app/PM/getSQLDBData",
+	// 		//        async:false, 
+	// 		success: function (data) {
+	// 			// console.log("data:" + JSON.stringify(data));
+
+	// 			if (data.length != 0) {
+	// 				if (data[0].entryDays > 90 && modifyABECheck) {
+	// 					Fun_getSQLSelectDBData({
+	// 						SQL: "SQLSRStaffs"
+	// 					}, "#recordAuditor", staff);
+	// 				} else {
+	// 					Fun_getSQLSelectDBData({
+	// 						SQL: "SQLSRStaffs"
+	// 					}, "#recordAuditor", $('#taskMaker').text());
+	// 				}
+
+	// 			}
+	// 		},
+	// 		error: function () {}
+	// 	})
+
+
+
+
+	// }
+
+
+	//获取任务审核人 i={taskStaff,taskModel}
+	const getTaskAuditor = async (i) => {
+		// console.log("getTaskAuditor i:" + JSON.stringify(i));
+
+		let upAuditor = '';
 
 
 		$.ajax({
 			method: 'get',
 			data: {
-				SQL: "SQLGetEntryDays",
-				filter: "staffName='" + staff + "'"
+				SQL: "SQLGetUpAuditor",
+				filter: "staffName='" + i.taskStaff + "'"
 			},
 			url: "/app/PM/getSQLDBData",
 			//        async:false, 
 			success: function (data) {
-				// console.log("data:" + JSON.stringify(data));
-
 				if (data.length != 0) {
-					if (data[0].entryDays > 90 && modifyABECheck) {
-						Fun_getSQLSelectDBData({
-							SQL: "SQLSRStaffs"
-						}, "#recordAuditor", staff);
-					} else {
-						Fun_getSQLSelectDBData({
-							SQL: "SQLSRStaffs"
-						}, "#recordAuditor", $('#taskMaker').text());
+					      		//  console.log(data[0].upAuditor);
+					var upAuditor = data[0].upAuditor
+					switch (i.taskStaff) {
+						case '周永汉':
+							//       			 console.log("sessionName:"+sessionName);
+							//       			 console.log(ips.modelH.indexOf("OS"))
+							if (i.taskModel.indexOf("OS") != -1) {
+								upAuditor = '蒋伟贞'
+							}
+							break
+						case '周颖':
+							if (i.taskModel.indexOf("Q15") != -1) {
+								upAuditor = '蒋伟贞'
+							}
+							break
 					}
 
+					Fun_getSQLSelectDBData({
+						SQL: "SQLSRStaffs"
+					}, "#recordAuditor", upAuditor);
 				}
 			},
 			error: function () {}
 		})
-
 	}
+
+
+
+
 
 
 	//检查是否处于实习期
@@ -1878,7 +1932,7 @@
 						});
 
 						if (taskFiles.length == 0) {
-							swal("程序附件必须上传!");
+							swal("未上传程序，请检查附件是否上传正确!");
 						} else {
 
 
@@ -2556,10 +2610,16 @@
 
 		//获取任务单审核人
 		$('#BTNGetTaskAuditor').click(function () {
+			let i={
+				taskStaff:$('#taskStaff option:selected').text(),
+				taskModel:$('#taskModel option:selected').text()
+			}
 
-			getTaskAuditor($("input[name='modifyABE']:checked"), sessionName);
+			getTaskAuditor(i);
 
 		});
+
+		
 
 
 		//按钮-表单关闭按钮,添加刷新数据功能

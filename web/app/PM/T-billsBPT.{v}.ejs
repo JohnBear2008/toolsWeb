@@ -2517,184 +2517,193 @@
 					"SQL": "SQLGetAuthorities",
 					"filter": "StaffName='" + sessionName + "'"
 				}, "T-BPT04")) {
-				var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
-				if (msg1 === true) {
 
 
-					let tableTask = $('#billsTaskTable').DataTable();
-					let TaskNum = (tableTask.page.info()).recordsTotal; //总任务数
-					//		 swal("TaskNum:"+TaskNum);
-
-					let allTaskCheck = 0;
-
-					for (let i = 0; i < TaskNum; i++) {
-						var trData = tableTask.row(i).data().BTAcceptResult;
-						allTaskCheck = allTaskCheck + trData;
-					}
-
-					console.log(allTaskCheck);
-
-					if (allTaskCheck != 0) {
-						alert("检测到该T方案单存在正在进行或完成的T任务单,如对应任务单需调整,请在新T方案单中更新对应T任务单版本!");
-					}
+				if (sessionName != $("#PGEMaker").val()) {
+					swal("当前账号非指定方案人,不允许更新他人方案!");
+				} else {
+					var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
+					if (msg1 === true) {
 
 
-					var BPTBPID = $('#BPTBPID').val();
-					var BPTID = $('#BPTID').val();
-					var newVersion = parseInt($('#BPTVersion').text()) + 1;
-					var CTRName = Fun_getSelectText($('#CTRName option:selected').text());
-					var PGEMaker = $('#PGEMaker').val();
-					var limitDate = $('#limitDate').val();
-					var MHEName = Fun_getSelectText($('#MHEName option:selected').text());
+						let tableTask = $('#billsTaskTable').DataTable();
+						let TaskNum = (tableTask.page.info()).recordsTotal; //总任务数
+						//		 swal("TaskNum:"+TaskNum);
 
-					var OGNSystemVersion = $('#OGNSystemVersion').val();
+						let allTaskCheck = 0;
 
-					var modifyType = $('input:radio[name="modifyType"]:checked').val();
-					var modifyReason = getCheckBoxValue("modifyReason");
-					var BPTDescribe = $('#BPTDescribe').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
-						'"');
-					//	            var auditor=Fun_getSelectText($('#auditor option:selected').text());
-					//	            console.log("auditor:"+auditor);
-
-					var files = [];
-
-					$('#divFilesUploaded a').each(function () {
-						var fileKey = $(this).attr('href').substring(23);
-						var fileName = $(this).attr('download');
-
-						var fileInfo = {
-							"fileName": fileName,
-							"fileKey": fileKey
+						for (let i = 0; i < TaskNum; i++) {
+							var trData = tableTask.row(i).data().BTAcceptResult;
+							allTaskCheck = allTaskCheck + trData;
 						}
 
-						files.push(fileInfo);
-					});
+						console.log(allTaskCheck);
+
+						if (allTaskCheck != 0) {
+							alert("检测到该T方案单存在正在进行或完成的T任务单,如对应任务单需调整,请在新T方案单中更新对应T任务单版本!");
+						}
 
 
+						var BPTBPID = $('#BPTBPID').val();
+						var BPTID = $('#BPTID').val();
+						var newVersion = parseInt($('#BPTVersion').text()) + 1;
+						var CTRName = Fun_getSelectText($('#CTRName option:selected').text());
+						var PGEMaker = $('#PGEMaker').val();
+						var limitDate = $('#limitDate').val();
+						var MHEName = Fun_getSelectText($('#MHEName option:selected').text());
 
+						var OGNSystemVersion = $('#OGNSystemVersion').val();
 
-					//	            	console.log("无方案 billData:"+JSON.stringify(billData));
+						var modifyType = $('input:radio[name="modifyType"]:checked').val();
+						var modifyReason = getCheckBoxValue("modifyReason");
+						var BPTDescribe = $('#BPTDescribe').val().replace(/\n|\r\n/g, '<br/>').replace(
+							/'/g,
+							'"');
+						//	            var auditor=Fun_getSelectText($('#auditor option:selected').text());
+						//	            console.log("auditor:"+auditor);
 
+						var files = [];
 
-					//		 if(allTaskCheck==0){
-					//			 addDBData(billData);
-					//		 }else{
-					//			 
-					//			var msg2=confirm("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
-					//			if(msg2){
-					//				addDBData(billData);
-					//			}else{
-					//				swal("方案单版本更新取消!");
-					//			}
-					//			 
-					//		 }
+						$('#divFilesUploaded a').each(function () {
+							var fileKey = $(this).attr('href').substring(23);
+							var fileName = $(this).attr('download');
 
-
-
-
-					var oldBPTData = {
-						"DBTable": "ppm_bills_blueprint_t",
-						"DBID": $('#DBID').val(),
-						"BPTStatus": 0
-					}
-
-					let ajax1 = $.ajax({
-						method: 'post',
-						url: '/app/PM/updDBData',
-						data: oldBPTData,
-						success: function (data, textStatus) {
-
-						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) {}
-					});
-
-					var newBPTData = {
-						"DBTable": "ppm_bills_blueprint_t",
-						"BPTBPID": BPTBPID,
-						"BPTID": BPTID,
-						"BPTVersion": newVersion,
-						"CTRName": CTRName,
-						"PGEMaker": PGEMaker,
-						"limitDate": limitDate,
-						"MHEName": MHEName,
-						"modelD": $('#modelD option:selected').text(),
-						"modelH": $('#modelH option:selected').text(),
-						"OGNSystemVersion": OGNSystemVersion,
-						"modifyType": modifyType,
-						"modifyReason": modifyReason,
-						"BPTDescribe": BPTDescribe,
-						"maker": sessionName,
-						"makeDate": Ndate,
-						"auditResult": 0,
-						"files": JSON.stringify(files)
-					}
-
-					let ajax2 = $.ajax({
-						method: 'post',
-						url: '/app/PM/addDBData',
-						data: newBPTData,
-						success: function (data) {
-
-						},
-						error: function (err) {
-
-							if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
-								swal("系统中已存在重复数据,请检查!");
-							} else {
-								swal("失败数据:" + JSON.stringify(err));
+							var fileInfo = {
+								"fileName": fileName,
+								"fileKey": fileKey
 							}
 
+							files.push(fileInfo);
+						});
 
+
+
+
+						//	            	console.log("无方案 billData:"+JSON.stringify(billData));
+
+
+						//		 if(allTaskCheck==0){
+						//			 addDBData(billData);
+						//		 }else{
+						//			 
+						//			var msg2=confirm("检测到该方案单存在正在进行或完成的任务单,如对应任务单需调整,请在新方案单中更新对应任务单版本!");
+						//			if(msg2){
+						//				addDBData(billData);
+						//			}else{
+						//				swal("方案单版本更新取消!");
+						//			}
+						//			 
+						//		 }
+
+
+
+
+						var oldBPTData = {
+							"DBTable": "ppm_bills_blueprint_t",
+							"DBID": $('#DBID').val(),
+							"BPTStatus": 0
 						}
-					});
 
-					let PLDUpdData = {
-						"DBTable": "ppm_bills_plan_t",
-						"BillIDName": "BPID",
-						"BillID": $('#BPTBPID').val(),
-						"TaskNum": 0,
-						"taskNumDone": 0,
-						"WFStatus": 20
-					}
+						let ajax1 = $.ajax({
+							method: 'post',
+							url: '/app/PM/updDBData',
+							data: oldBPTData,
+							success: function (data, textStatus) {
 
-					let ajax3 = $.ajax({
-						method: 'post',
-						url: '/app/PM/updBillStatus',
-						data: PLDUpdData,
-						success: function (data, textStatus) {},
-						error: function (XMLHttpRequest,
-							textStatus, errorThrown) {}
-					});
+							},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
+						});
 
-					$.when(ajax1, ajax2, ajax3).done(function () {
+						var newBPTData = {
+							"DBTable": "ppm_bills_blueprint_t",
+							"BPTBPID": BPTBPID,
+							"BPTID": BPTID,
+							"BPTVersion": newVersion,
+							"CTRName": CTRName,
+							"PGEMaker": PGEMaker,
+							"limitDate": limitDate,
+							"MHEName": MHEName,
+							"modelD": $('#modelD option:selected').text(),
+							"modelH": $('#modelH option:selected').text(),
+							"OGNSystemVersion": OGNSystemVersion,
+							"modifyType": modifyType,
+							"modifyReason": modifyReason,
+							"BPTDescribe": BPTDescribe,
+							"maker": sessionName,
+							"makeDate": Ndate,
+							"auditResult": 0,
+							"files": JSON.stringify(files)
+						}
 
+						let ajax2 = $.ajax({
+							method: 'post',
+							url: '/app/PM/addDBData',
+							data: newBPTData,
+							success: function (data) {
 
+							},
+							error: function (err) {
 
-						// let i = {
-						// 	alertMsg: "T方案单更新版本成功!"
-						// }
-						// swalAndRefresh(i)
+								if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
+									swal("系统中已存在重复数据,请检查!");
+								} else {
+									swal("失败数据:" + JSON.stringify(err));
+								}
 
-						$('#BillBPT').modal('hide');
-
-						let i = {
-							msg: '更新版本成功,请填写更新原因!',
-							updateParams: {
-								"DBTable": "ppm_bills_blueprint_t",
-								"BillIDName": "BPTBPID",
-								"BillID": BPTID,
-								"updateReason": '',
-								"filter": "BPTVersion =" + $('#BPTVersion').text()
 
 							}
+						});
+
+						let PLDUpdData = {
+							"DBTable": "ppm_bills_plan_t",
+							"BillIDName": "BPID",
+							"BillID": $('#BPTBPID').val(),
+							"TaskNum": 0,
+							"taskNumDone": 0,
+							"WFStatus": 20
 						}
 
-						updateAndWriteReason(i);
+						let ajax3 = $.ajax({
+							method: 'post',
+							url: '/app/PM/updBillStatus',
+							data: PLDUpdData,
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest,
+								textStatus, errorThrown) {}
+						});
 
-					});
+						$.when(ajax1, ajax2, ajax3).done(function () {
 
+
+
+							// let i = {
+							// 	alertMsg: "T方案单更新版本成功!"
+							// }
+							// swalAndRefresh(i)
+
+							$('#BillBPT').modal('hide');
+
+							let i = {
+								msg: '更新版本成功,请填写更新原因!',
+								updateParams: {
+									"DBTable": "ppm_bills_blueprint_t",
+									"BillIDName": "BPTBPID",
+									"BillID": BPTID,
+									"updateReason": '',
+									"filter": "BPTVersion =" + $('#BPTVersion').text()
+
+								}
+							}
+
+							updateAndWriteReason(i);
+
+						});
+
+
+					}
 
 				}
+
 
 			}
 		});
@@ -3174,45 +3183,61 @@
 				modelH: $('#modelH option:selected').text()
 			};
 
+			// 			HMI：蒋伟贞；
+			// DSP：HT李斌，其他静静
 
-			//原来 按填单人上级主管设定审核人规则!!! 保留
-			$.ajax({
-				method: 'get',
-				data: {
-					SQL: "SQLGetUpAuditor",
-					filter: "staffName='" + ips.staffName + "'"
-				},
-				url: "/app/PM/getSQLDBData",
-				//        async:false, 
-				success: function (data) {
-					if (data.length != 0) {
-						//       		 console.log(data[0].upAuditor);
+			let upAuditor = '';
 
-						var upAuditor = data[0].upAuditor
+			if (ips.modelH !== '未选择') {
+				upAuditor = '蒋伟贞';
+			} else if (ips.modelD.indexOf('7HT') !== -1) {
+				upAuditor = '李斌';
+			} else {
+				upAuditor = '许静静';
+			}
 
-						switch (PGEName) {
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#auditor", upAuditor);
 
-							case '周永汉':
-								//       			 console.log("sessionName:"+sessionName);
-								//       			 console.log(ips.modelH.indexOf("OS"))
-								if (ips.modelH.indexOf("OS") != -1) {
-									upAuditor = '蒋伟贞'
-								}
-								break
-							case '周颖':
-								if (ips.modelH.indexOf("Q15") != -1) {
-									upAuditor = '蒋伟贞'
-								}
-								break
-						}
 
-						Fun_getSQLSelectDBData({
-							SQL: "SQLSRStaffs"
-						}, "#auditor", upAuditor);
-					}
-				},
-				error: function () {}
-			})
+
+			// //原来 按填单人上级主管设定审核人规则!!! 保留
+			// $.ajax({
+			// 	method: 'get',
+			// 	data: {
+			// 		SQL: "SQLGetUpAuditor",
+			// 		filter: "staffName='" + ips.staffName + "'"
+			// 	},
+			// 	url: "/app/PM/getSQLDBData",
+			// 	//        async:false, 
+			// 	success: function (data) {
+			// 		if (data.length != 0) {
+			// 			//       		 console.log(data[0].upAuditor);
+			// 			var upAuditor = data[0].upAuditor
+			// 			switch (PGEName) {
+			// 				case '周永汉':
+			// 					//       			 console.log("sessionName:"+sessionName);
+			// 					//       			 console.log(ips.modelH.indexOf("OS"))
+			// 					if (ips.modelH.indexOf("OS") != -1) {
+			// 						upAuditor = '蒋伟贞'
+			// 					}
+			// 					break
+			// 				case '周颖':
+			// 					if (ips.modelH.indexOf("Q15") != -1) {
+			// 						upAuditor = '蒋伟贞'
+			// 					}
+			// 					break
+			// 			}
+
+			// 			Fun_getSQLSelectDBData({
+			// 				SQL: "SQLSRStaffs"
+			// 			}, "#auditor", upAuditor);
+			// 		}
+			// 	},
+			// 	error: function () {}
+			// })
+
 		});
 
 

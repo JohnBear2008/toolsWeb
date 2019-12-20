@@ -9,8 +9,7 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend; 
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
-    console.log("后台个人统计表格开始日:"+param1);  
-    console.log("后台个人统计表格到期日:"+param2);  
+    // console.log("部門统计表格开始日:"+param1+"到期日:"+param2);  
     var DBTable=sender.req.query.DBTable; 
     var sqlGetTableData = "SELECT * FROM "+DBTable;
     sqlGetTableData = "SELECT * FROM ms_agent where FID=?  ";
@@ -28,56 +27,58 @@ module.exports = function(sender) {
     var staff =[ "梅迪凡","王涛","王浩宇","沈航凯","虞晔文","俞洋","裘凯迪", "王锋","陈浩天","张铖","单霖霖","孙维泽","方林杰","柳张成", "谷永亮","赵韦","杨金鑫","谢涛","戎桂"];
     var dpt = "A";
     var dptB = "B";
-
+    let now  = new Date();
+    var duedate = now.Format("yyyy-MM-dd");;
      //表头 FQC测试完成时间，若超出任务单中的需求完成日期（当多个任务单需求日期不一致时，抓取期限最长的日期），则算为延误
     var sql_Page2Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where tb1.staffRole='程序员' and staffName<>'周筱龙' order by staffID "; 
     //上周单   1118-1125
-    var sql_Page2A1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?     "+
-    // var sql_Page2A1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?     "+
-    " and orderFromDep =? "; 
+    var sql_Page2A1 = "Select  count(*) as times from `ppm_bills_plan` tbb where   tbb.ApplyDate < ?     "+
+    "  and tbb.WFEndDate is null "; 
     //本周新单  1125~1202
-    var sql_Page2A2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    // var sql_Page2A2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    " and orderFromDep =? "; 
-    //延误单号
-    var sql_Page2B1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ? and tbb.LimitDate > tbb.WFEndDate  "+
-    " and orderFromDep =? "; 
+    var sql_Page2A2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    "   "; 
+    //延误单号 auditDate表完成
+    var sql_Page2B1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ? "+
+    " and tbb.LimitDate > tbb.auditDate    "; 
     //完成单号
-    var sql_Page2B2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ? and tbb.LimitDate < tbb.WFEndDate  "+
-    " and orderFromDep =? "; 
+    var sql_Page2B2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ? "+
+    " and tbb.LimitDate < tbb.auditDate    "; 
     //客户取消
-    var sql_Page2B3 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    " and stopReason <>'' and orderFromDep =? "; 
-    //延误单号
-    var sql_Page2C1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    " and effective ='0' and orderFromDep =? "; 
-    //完成单号
-    var sql_Page2C2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    " and FQCPass ='1' and orderFromDep =? "; 
-    //其他
-    var sql_Page2C3 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
+    var sql_Page2B3 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    " and stopReason <>''   "; 
+    //延期未完成 3参数 归档日无
+    var sql_Page2C1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    " and tbb.auditDate > ?  and tbb.WFEndDate is null  "; 
+    //期限未到
+    var sql_Page2C2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    " and  tbb.auditDate < ? and tbb.WFEndDate is null  "; 
+    //其他  notdone
+    var sql_Page2C3 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
     " and FQCPass ='1' and orderFromDep =? ";
     //延期单数/本周总出货数  
-    var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    "  and orderFromDep =? "; 
+    var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    "  and  tbb.LimitDate > tbb.auditDate  "; 
     //已完成总单/本周总单  
-    var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ?    "+
-    "  and orderFromDep =? "; 
+    var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    "  and tbb.auditDate <> '' "; 
 
     var dataArr=[]; 
     let LastDateRange = getLastWeekRange();
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
-    LastWeekbeg = '2019-11-18';
-    LastWeekend = '2019-11-24';
+    //labuse
+    // duedate ='2019-11-20';
+    LastWeekbeg = '2019-11-01';
+    LastWeekend = '2019-11-11';
     LastWeekbeg = lastbeg;
     LastWeekend = lastend;
 
     let DateRange = getThisWeekRange();
     let WeekThisbeg = DateRange[0].Format("yyyy-MM-dd");
     let WeekThisend = DateRange[1].Format("yyyy-MM-dd");
-    WeekThisbeg = '2019-11-25';
-    WeekThisend = '2019-12-02';
+    //labuse
+    WeekThisbeg = '2019-11-12';
+    WeekThisend = '2019-11-21';
     WeekThisbeg = param1;
     WeekThisend = param2;
 
@@ -138,7 +139,7 @@ module.exports = function(sender) {
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page2A1,
-                    parameters : [LastWeekbeg ,LastWeekend ,dpt], 
+                    parameters : [LastWeekend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -158,7 +159,7 @@ module.exports = function(sender) {
     function funPage2A2(cb){
         yjDBService.exec({
                     sql : sql_Page2A2,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -178,7 +179,7 @@ module.exports = function(sender) {
     function funPage2B1(cb){
         yjDBService.exec({
                     sql : sql_Page2B1,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -198,7 +199,7 @@ module.exports = function(sender) {
     function funPage2B2(cb){
         yjDBService.exec({
                     sql : sql_Page2B2,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -218,7 +219,7 @@ module.exports = function(sender) {
     function funPage2B3(cb){
         yjDBService.exec({
                     sql : sql_Page2B3,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -238,7 +239,7 @@ module.exports = function(sender) {
     function funPage2C1(cb){
         yjDBService.exec({
                     sql : sql_Page2C1,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ,duedate], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -258,7 +259,7 @@ module.exports = function(sender) {
     function funPage2C2(cb){
         yjDBService.exec({
                     sql : sql_Page2C2,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ,duedate], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

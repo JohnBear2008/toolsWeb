@@ -229,13 +229,11 @@ module.exports = function(sender) {
 		var SQLExecute=SQLNotDone;
 		  param1=sender.req.query.weekbeg;  
 		  param2=sender.req.query.weekend;  
- 
 		break;	
 	case "SQLLateList":
 		var SQLExecute=SQLLateList;
 		  param1=sender.req.query.weekbeg;  
 		  param2=sender.req.query.weekend;  
-		console.log("SQLExecute:"+SQLExecute);
 		// console.log("weekbeg:"+param1);
 		// console.log("weekend:"+param2);
 		break;	

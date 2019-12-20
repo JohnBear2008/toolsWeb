@@ -1,0 +1,247 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>基础信息-产品信息</h1>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_products" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>产品编号</th>
+                        <th>产品名称</th>
+                        <th>产品描述</th>
+                        <th>系统类别</th>
+                        <th>所属部件</th>
+                        <th>创建人</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="rp_productsModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 65%;">
+
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_productsModal"
+                id="rp_productsModalOpen" style="display: none;">
+                开始演示模态框
+            </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        产品信息
+                    </h4>
+
+
+                </div>
+                <div class="modal-body">
+
+
+
+
+                    <!-- 表单面板 -->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+
+                            <form class="form-horizontal" role="form" id='rp_productsForm'>
+
+                                <input id="rp_productsForm-DBID" type="hidden" value="">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">产品编号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-productId" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">产品类型</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-productClass" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">产品名称</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-productName" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">系统类别</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-systemClass" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">所属部件</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-partBelong" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">创建人</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-creater" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">是否有效</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_productsForm-effective" class="selectpicker"
+                                            data-dropup-auto="true">
+                                            <option>是</option>
+                                            <option>否</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_productsModalClose">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="rp_productsSave">
+                        保存
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        //加载表格
+        loadDataTable({
+            elementId: 'rp_products',
+            sqlParams: {
+                tableId: 'rp_products',
+                filter: ''
+            },
+            dtParams: {
+                columns: [{
+                        data: 'productId'
+                    },
+                    {
+                        data: 'productClass'
+                    }, {
+                        data: 'productName'
+                    }, {
+                        data: 'partBelong',
+                    }, {
+                        data: 'systemClass',
+                    }, {
+                        data: 'creater',
+                    }
+                ],
+            }
+        })
+
+
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'customerArea',
+        //     sqlParams: {
+        //         sql: 'getRegionSelector'
+        //     },
+        //     // initValue:'中国,北京'
+        // })
+
+        // loadDatePicker({
+        //     elementId: 'saveTimeStamp',
+        //     params: {
+        //         endDate: '2019-12-30'
+        //     }
+        // })
+
+
+
+
+
+
+
+    });
+</script>

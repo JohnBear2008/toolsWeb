@@ -2,6 +2,8 @@ const getRegion = 'SELECT mername FROM `region`'
 const getRegionSelector = 'SELECT mername AS option,pinyin as token FROM `region`'
 const getCustomers = 'SELECT * FROM `rp_customers`'
 
+//维修出货单主表单sql
+const sqlResponseBills='select * from rp_recordbills ta  left join rp_responsebills tb on ta.responseBillId=tb.responseBillId left join rp_requestbills tc on ta.requestBillId=tc.requestBillId'
 
 /**
  *更具传入参数创建执行sql语句

@@ -17,9 +17,8 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
 
 //SQLNotDone="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`, `limitDate`,  LEFT(tbb.`topic`, 50) as topic_cut from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ? ";
 SQLNotDone="Select `BTID`, `TaskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate , LEFT(tbb.`taskDBE`, 50) as taskDBE_cut  from `ppm_bills_task` tbb  where tbb.taskLimitDate >? and tbb.taskLimitDate < ? ";
-//SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`, `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ? ";
+//SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`, `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.auditDate is null ";
 
 //  `updateReason` 有问题
-SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`  from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ? and orderFrom='W' ";
-//                     单号	   完成期限	   面板修改人	主机修改人	厂商	                    修改内容			 延期时间   	 延期原因	  面板完成日期	  主机完成日期
+SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`  from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.LimitDate > tbb.auditDate ";
  

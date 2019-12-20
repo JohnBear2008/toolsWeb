@@ -1,0 +1,43 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入qrcode 二维码库 -->
+<script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <button type="button" id="btnSMS">短信</button>
+
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // 短信按钮
+        $('#btnSMS').click(function () {
+
+            $.ajax({
+                method: 'post',
+                url: '/app/RP/lib/sms',
+                data: {
+                    sms: 'test'
+                },
+                success: function (data) {
+                    alert(JSON.stringify(data))
+                },
+                error: function () {}
+            })
+
+
+        })
+    });
+</script>

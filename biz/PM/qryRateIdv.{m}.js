@@ -8,52 +8,44 @@ module.exports = function(sender) {
  
     var param1=sender.req.query.weekbeg;  
     var param2=sender.req.query.weekend; 
-    console.log("后台个人统计表格开始日:"+param1);  
-    console.log("后台个人统计表格到期日:"+param2);  
+    // console.log("后台个人统计表格开始日:"+param1+"到期日:"+param2);  
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
     var DBTable=sender.req.query.DBTable; 
-    var sqlGetTableData = "SELECT * FROM "+DBTable;
-    sqlGetTableData = "SELECT * FROM ms_agent where FID=?  ";
+    let now  = new Date();
+    var duedate = now.Format("yyyy-MM-dd");;
     var sql_SoftDep1 = " Select `BPID`,`CTRName`, `taskStaff`,`taskStaffs`,  `applyDate`," +
     " `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut" +
     " from `ppm_bills_plan` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and taskStaff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID)  ";
 
-    var sql_SoftDep2 = "SELECT *  FROM `pm_Shipment` where staff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID) " ;
-
-    var sql_SoftDep3 = " SELECT *  FROM `pm_neworder` where staff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID)  " ;
-   
-    var sql_Page1Num = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and tbb.LimitDate > tbb.WFEndDate  "+
-                       " and taskStaff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID) "; 
-
+ 
     // var staff =[ "梅迪凡","王涛","王浩宇","沈航凯","虞晔文","俞洋","裘凯迪", "王锋","陈浩天","张铖","单霖霖","孙维泽","方林杰","柳张成", "谷永亮","赵韦","杨金鑫","谢涛","戎桂"];
     var staff =[];
 
      //表头 主管审核的时间，若超出任务单中的需求完成日期，则算为延误
-    var sql_Page1Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where tb1.staffRole='程序员' and staffName NOT IN ('周筱龙','单霖霖','张胜勇') order by groupLabel,staffID "; 
+    var sql_Page1Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where tb1.staffRole='程序员' and staffName NOT IN ('周筱龙','单霖霖','张胜勇') order by groupLabel,staffID  limit 21"; 
     //上周单   1118-1125
-    var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?     "+
-    // var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?     "+
-    " and taskStaff =? "; 
+    var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where   tbb.taskMakeDate < ?     "+
+    " and taskStaff =? and (IPQCStatus is null or IPQCStatus='未填写')"; 
     //本周新单  1125~1202
     var sql_Page1A2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    // var sql_Page1A2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    " and taskStaff =? ";  
-    //延误单号
-    var sql_Page1B1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
-    " and taskStaff =? "; 
-    //完成单号
-    var sql_Page1B2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? and  tbb.taskFinishDate < tbb.IPQCAuditDate  "+
-    " and taskStaff =? "; 
+    " and taskStaff =?  ";  
+    //按时完成
+    var sql_Page1B1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? and  tbb.taskFinishDate <= tbb.IPQCAuditDate  "+
+    " and taskStaff =?  and IPQCAuditResultText ='测试通过' "; 
+    //延期已完成
+    var sql_Page1B2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
+    " and taskStaff =?  and IPQCAuditResultText ='测试通过'  "; 
+
     //客户取消
     var sql_Page1B3 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    "  and taskStaff =? "; 
-    //延误单号
+    "  and taskStaff =? and IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') "; 
+    //延期未完成  4参数
     var sql_Page1C1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    " and BTAcceptResultText ='已确认' and taskStaff =? "; 
-    //完成单号
+    " and  taskStaff =? and tbb.taskFinishDate > ? and IPQCAuditResultText is null "; 
+    //期限未到  4参数
     var sql_Page1C2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    " and BTAcceptResult ='1' and taskStaff =? "; 
+    " and  taskStaff =? and tbb.taskFinishDate < ?"; 
     //延误率
     var sql_Page1C3 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
     " and tbb.taskFinishDate >  tbb.IPQCAuditDate and taskStaff =? "; 
@@ -62,8 +54,10 @@ module.exports = function(sender) {
     let LastDateRange = getLastWeekRange();
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
-    LastWeekbeg = '2019-11-18';
-    LastWeekend = '2019-11-24';
+    //labuse
+    // duedate ='2019-11-20';
+    // LastWeekbeg = '2019-11-01';
+    // LastWeekend = '2019-11-11';
     // console.log("金像", LastWeekbeg);
     // console.log("金像", LastWeekend);
     LastWeekbeg = lastbeg;
@@ -72,13 +66,11 @@ module.exports = function(sender) {
     let DateRange = getThisWeekRange();
     let WeekThisbeg = DateRange[0].Format("yyyy-MM-dd");
     let WeekThisend = DateRange[1].Format("yyyy-MM-dd");
-    WeekThisbeg = '2019-11-25';
-    WeekThisend = '2019-12-02';
+    //labuse
+    WeekThisbeg = '2019-11-12';
+    WeekThisend = '2019-11-20';
     WeekThisbeg = param1;
     WeekThisend = param2;
-    console.log("鹏岳", WeekThisbeg);
-    console.log("鹏岳", WeekThisend);
-   
 
     yjDBService.exec({
         sql : sql_Page1Head,
@@ -93,14 +85,13 @@ module.exports = function(sender) {
                 }
                 staff.push(data[i].staffName);
             }
-             
+            // console.log("头", staff);
             findHead();
         },
         // error : sender.error
     })
  
     function funPage1Head(cb){
-        console.log("創威", staff.length);
         yjDBService.exec({
             sql : sql_Page1Head,
             parameters : [],
@@ -114,8 +105,6 @@ module.exports = function(sender) {
                         "staffName" : data[i].staffName,
                         "staffWorkType" : data[i].staffWorkType,
                     }
-                //  console.log("呆哥", temp);
- 
                     datas.push(temp)
                 }
                 cb(null, datas);
@@ -125,11 +114,11 @@ module.exports = function(sender) {
     }
     function funPage1A1(cb){
         var  dataav = [];
-         
+        
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1A1,
-                parameters : [LastWeekbeg ,LastWeekend ,stf], //
+                parameters : [LastWeekend ,stf], 
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -202,7 +191,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
-        console.log("逸朗", staff.length);
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -224,6 +218,8 @@ module.exports = function(sender) {
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }               
+            if(i==19){ funblock.push(A20); }     
+            if(i==20){ funblock.push(A21); }            
         }
         async.parallel( funblock, 
             function(err, result) {
@@ -233,7 +229,7 @@ module.exports = function(sender) {
               
                 //    dataav.push({"Times" : 3 });
                 //    dataav.push({"Times" : 6 }); 
-                    //   console.log("衝出", dataav);
+                    // console.log("衝出", dataav);
                     cb(null, dataav);
                 }
             }
@@ -254,8 +250,8 @@ module.exports = function(sender) {
                         }
                        dataav.push(temp);
                     }
+                    // console.log("本", temp,stf);
                     (cb2(null, dataav));  
-                    // console.log("后", temp);
                 },
                 error : sender.error
             })
@@ -317,6 +313,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -337,7 +339,9 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); } 
+            if(i==19){ funblock.push(A20); }        
+            if(i==20){ funblock.push(A21); }          
         }
         async.parallel( funblock, 
                function(err, result) {
@@ -356,10 +360,11 @@ module.exports = function(sender) {
     }
     function funPage1B1(cb){
         var  dataav = [];
+        var  datagod = [];
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1B1,
-                parameters : [LastWeekbeg , LastWeekend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -367,10 +372,15 @@ module.exports = function(sender) {
                         var temp = {
                             "Times" : data[i].times , 
                         }
+                        var temp2 = {
+                            "Staff" : stf , 
+                            "Times" : data[i].times , 
+                        }
                        dataav.push(temp);
+                       datagod.push(temp2);
                     }
-                    (cb2(null, dataav));  
-                    // console.log("式", temp);
+                    (cb2(null, dataav,datagod));  
+                    //  console.log("按时完成", temp,stf );
                 },
                 error : sender.error
             })
@@ -432,6 +442,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -452,27 +468,35 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); }  
+            if(i==19){ funblock.push(A20); }    
+            if(i==20){ funblock.push(A21); }             
         }
         async.parallel( funblock, 
-               function(err, result) {
-                if (err) {
-
-                } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
-                    cb(null, dataav);
-                }
-            }
-        );
+            function(err, result) {
+             if (err) {
+             } else {
+             dataav=[];
+             for (var i = 0; i < staff.length; i++) {
+                 for (var j = 0; j < datagod.length; j++) {
+                     if(staff[i]==datagod[j].Staff){ 
+                         dataav.push({"Times" : datagod[j].Times });
+                     }else{
+                     }
+                 }
+             }
+                 cb(null, dataav);
+             }
+         }
+     );
     }
     function funPage1B2(cb){
         var  dataav = [];
+        var  datagod = [];
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1B2,
-                parameters : [LastWeekbeg , LastWeekend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -480,10 +504,15 @@ module.exports = function(sender) {
                         var temp = {
                             "Times" : data[i].times , 
                         }
+                        var temp2 = {
+                            "Staff" : stf , 
+                            "Times" : data[i].times , 
+                        }
                        dataav.push(temp);
+                       datagod.push(temp2);
                     }
-                    (cb2(null, dataav));  
-                    // console.log("高", temp);
+                    (cb2(null, dataav,datagod));  
+                    //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
             })
@@ -545,6 +574,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -565,16 +600,50 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); }
+            if(i==19){ funblock.push(A20); }    
+            if(i==20){ funblock.push(A21); }               
         }
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
 
                 } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
+               
+                // console.log("延期烧鸟",datagod);
+                // console.log("延期拷鱼",datagod[0]);
+                // console.log("延期炸排",datagod[0].Staff);
+                // console.log("延期醋溜",datagod[0].Times);
+                dataav=[];
+                for (var i = 0; i < staff.length; i++) {
+                    for (var j = 0; j < datagod.length; j++) {
+                        if(staff[i]==datagod[j].Staff){
+                            // console.log("甜点",datagod[j].Times );
+                            dataav.push({"Times" : datagod[j].Times });
+                        }else{
+                        }
+                    }
+                }
+                // console.log("延期大餐",dataav);
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 5 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 1 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
+                    // dataav.push({"Times" : 0 });
                     cb(null, dataav);
                 }
             }
@@ -582,20 +651,24 @@ module.exports = function(sender) {
     }
     function funPage1B3(cb){
         var  dataav = [];
+        var  datagod = [];
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1B3,
-                parameters : [LastWeekbeg , LastWeekend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                        var temp = {
+                      
+                        var temp2 = {
+                            "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       dataav.push(temp);
+                       datagod.push(temp2);
                     }
-                    (cb2(null, dataav));  
+                    (cb2(null, datagod));  
+                    //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
             })
@@ -624,7 +697,6 @@ module.exports = function(sender) {
         function  A8(cb2 ){
             allAA(cb2,staff[7] );
         }
-        
         function  A9(cb2 ){
             allAA(cb2,staff[8] );
         }
@@ -658,7 +730,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
- 
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -679,17 +756,27 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); }  
+            if(i==19){ funblock.push(A20); }    
+            if(i==20){ funblock.push(A21); }             
         }
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
 
                 } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
-                    // console.log("然", dataav);
+               
+ 
+                dataav=[];
+                for (var i = 0; i < staff.length; i++) {
+                    for (var j = 0; j < datagod.length; j++) {
+                        if(staff[i]==datagod[j].Staff){
+                            dataav.push({"Times" : datagod[j].Times });
+                        }else{
+                        }
+                    }
+                }
+ 
                     cb(null, dataav);
                 }
             }
@@ -697,20 +784,24 @@ module.exports = function(sender) {
     }
     function funPage1C1(cb){
         var  dataav = [];
-         function  allAA( cb2 ,stf){
+        var  datagod = [];
+        function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C1,
-                parameters : [LastWeekbeg , LastWeekend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf, duedate],   
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                        var temp = {
+                      
+                        var temp2 = {
+                            "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       dataav.push(temp);
+                       datagod.push(temp2);
                     }
-                    (cb2(null, dataav));  
+                    (cb2(null, datagod));  
+                    //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
             })
@@ -739,7 +830,6 @@ module.exports = function(sender) {
         function  A8(cb2 ){
             allAA(cb2,staff[7] );
         }
-        
         function  A9(cb2 ){
             allAA(cb2,staff[8] );
         }
@@ -773,6 +863,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -793,38 +889,53 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); }  
+            if(i==19){ funblock.push(A20); }  
+            if(i==20){ funblock.push(A21); }               
         }
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
 
                 } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
-                    // console.log("瑞", dataav);
+               
+ 
+                dataav=[];
+                for (var i = 0; i < staff.length; i++) {
+                    for (var j = 0; j < datagod.length; j++) {
+                        if(staff[i]==datagod[j].Staff){
+                            dataav.push({"Times" : datagod[j].Times });
+                        }else{
+                        }
+                    }
+                }
+ 
                     cb(null, dataav);
                 }
             }
         );
+ 
     }
     function funPage1C2(cb){
         var  dataav = [];
+        var  datagod = [];
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C2,
-                parameters : [LastWeekbeg , LastWeekend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf, duedate],
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                        var temp = {
+                      
+                        var temp2 = {
+                            "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       dataav.push(temp);
+                       datagod.push(temp2);
                     }
-                    (cb2(null, dataav));  
+                    (cb2(null, datagod));  
+                    //  console.log("期限未到", temp,stf );
                 },
                 error : sender.error
             })
@@ -853,7 +964,6 @@ module.exports = function(sender) {
         function  A8(cb2 ){
             allAA(cb2,staff[7] );
         }
-        
         function  A9(cb2 ){
             allAA(cb2,staff[8] );
         }
@@ -887,8 +997,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
-  
-        
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -909,17 +1023,24 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); }      
+            if(i==19){ funblock.push(A20); }     
+            if(i==20){ funblock.push(A21); }        
         }
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
-
                 } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
-                    // console.log("瑞", dataav);
+                dataav=[];
+                for (var i = 0; i < staff.length; i++) {
+                    for (var j = 0; j < datagod.length; j++) {
+                        if(staff[i]==datagod[j].Staff){
+                            dataav.push({"Times" : datagod[j].Times });
+                        }else{
+                        }
+                    }
+                }
+ 
                     cb(null, dataav);
                 }
             }
@@ -927,20 +1048,24 @@ module.exports = function(sender) {
     }
     function funPage1C3(cb){
         var  dataav = [];
+        var  datagod = [];
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C3,
-                parameters : [LastWeekbeg , LastWeekend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                        var temp = {
+                      
+                        var temp2 = {
+                            "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       dataav.push(temp);
+                       datagod.push(temp2);
                     }
-                    (cb2(null, dataav));  
+                    (cb2(null, datagod));  
+                    //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
             })
@@ -969,7 +1094,6 @@ module.exports = function(sender) {
         function  A8(cb2 ){
             allAA(cb2,staff[7] );
         }
-        
         function  A9(cb2 ){
             allAA(cb2,staff[8] );
         }
@@ -1003,7 +1127,12 @@ module.exports = function(sender) {
         function  A19(cb2 ){
             allAA(cb2,staff[18] );
         }
-        
+        function  A20(cb2 ){
+            allAA(cb2,staff[19] );
+        }
+        function  A21(cb2 ){
+            allAA(cb2,staff[20] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -1024,17 +1153,27 @@ module.exports = function(sender) {
             if(i==15){ funblock.push(A16); }
             if(i==16){ funblock.push(A17); }
             if(i==17){ funblock.push(A18); }
-            if(i==18){ funblock.push(A19); }               
+            if(i==18){ funblock.push(A19); }    
+            if(i==19){ funblock.push(A20); }       
+            if(i==20){ funblock.push(A21); }        
         }
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
 
                 } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
-                    // console.log("自", dataav);
+               
+ 
+                dataav=[];
+                for (var i = 0; i < staff.length; i++) {
+                    for (var j = 0; j < datagod.length; j++) {
+                        if(staff[i]==datagod[j].Staff){
+                            dataav.push({"Times" : datagod[j].Times });
+                        }else{
+                        }
+                    }
+                }
+ 
                     cb(null, dataav);
                 }
             }
@@ -1110,20 +1249,23 @@ module.exports = function(sender) {
                 if (err) {
         
                 } else {
-                      console.log("笔数", result[0].length);
-                    //   console.log("笔数", result[1].length);
-                    //   console.log("笔数", result[2].length);
-                    //   console.log("笔数", result[3].length);
-                    //   console.log("笔数", result[4].length);
-                    //   console.log("笔数", result[5].length);
-                    //   console.log("笔数", result[6].length);
-                    //   console.log("笔数", result[7].length); 
+                    //   console.log("Page1Head笔数", result[0].length);
+                    // （延期已完成+延期未完成）/（已完成总单+延期未完成）
+                    //   console.log("职工笔数", staff.length); 
                     let sub=[]; 
                     sub[0] = 0,sub[1] = 0, sub[2] = 0,sub[3] = 0, sub[4] = 0,sub[5] = 0, sub[6] = 0 , sub[7] = 0;
-                    for (var i = 0; i < 19 ; i++) {
-                        var thistot =result[1][i].Times;
-                        var delytot =result[8][i].Times;
-                        var rate = delytot/thistot;
+                    for (var i = 0; i < staff.length ; i++) {
+                        var delytot =result[4][i].Times+result[6][i].Times;  
+                        var thistot =result[3][i].Times+result[4][i].Times+result[5][i].Times+result[6][i].Times;   
+                        var rate = (delytot/thistot)*100;
+                        if(rate!=null && typeof rate!="undefined" && rate!=0){
+                            rate = rate.toFixed(1);  
+                        }
+                        if(   rate!='NaN' && rate!="NaN" &&   rate!=0){
+                            rate =rate+"%";
+                        }else{
+                        }
+                       
                         var obj={
                             "SHIPTYPE":result[0][i].groupLabel,
                             "Staff":result[0][i].staffName,
@@ -1135,9 +1277,9 @@ module.exports = function(sender) {
                             "Bill_STAT5":result[5][i].Times,
                             "Bill_STAT6":result[6][i].Times,
                             "Bill_STAT7":result[7][i].Times,  
-                            "Bill_STAT8":rate,  
+                            "Bill_STAT8":rate
                         };
-                        // console.log("出货rate",rate); 
+                        // console.log("出货rate",rate,delytot,thistot ); 
                         sub[0] =sub[0] + parseInt(result[1][i].Times); 
                         sub[1] =sub[1] + parseInt(result[2][i].Times); 
                         sub[2] =sub[2] + parseInt(result[3][i].Times); 

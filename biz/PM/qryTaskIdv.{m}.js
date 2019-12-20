@@ -11,58 +11,64 @@ module.exports = function(sender) {
     var lastend=sender.req.query.lastend;  
     console.log("get后台个人表头汇总:"+param1+"日期:"+param2); 
     var DBTable=sender.req.query.DBTable; 
- 
-
+    let now  = new Date();
+    var duedate = now.Format("yyyy-MM-dd");;
     //上周单   1118-1125
-    var sql_Page1HA1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?     "+
-    "  "; 
+    var sql_Page1HA1 = "Select  count(*) as times from `ppm_bills_task` tbb where     tbb.taskMakeDate < ?     "+
+    "  and (IPQCStatus is null or IPQCStatus='未填写') "; 
+
     //本周新单  1125~1202
-    var sql_Page1HA2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    "  "; 
-    //延误单号
-    var sql_Page1HB1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
-    "  "; 
-    //完成单号
-    var sql_Page1HB2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? and  tbb.taskFinishDate < tbb.IPQCAuditDate  "+
-    "  "; 
+    var sql_Page1HA2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? ";
+ 
+    //按时完成 2参数  
+    var sql_Page1HB1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? "+
+    " and  tbb.taskFinishDate <= tbb.IPQCAuditDate  and IPQCAuditResultText ='测试通过' "; 
+  
+    //延期已完成 2参数  
+    var sql_Page1HB2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? "+
+    " and  tbb.taskFinishDate > tbb.IPQCAuditDate  and IPQCAuditResultText ='测试通过' ";
+
     //客户取消
     var sql_Page1HB3 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    "   "; 
-    //延误单号
+    " and IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') "; 
+
+    //延期未完成  3参数
     var sql_Page1HC1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    " and BTAcceptResultText ='已确认'  "; 
-    //完成单号
+    " and  tbb.taskFinishDate > ? and IPQCAuditResultText is null "; 
+
+    //期限未到 3参数 BTAcceptResult ='1'
     var sql_Page1HC2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
-    " and BTAcceptResult ='1'  "; 
+    " and tbb.taskFinishDate < ?   "; 
+
     //延误率
     var sql_Page1HC3 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
     " and tbb.taskFinishDate >  tbb.IPQCAuditDate   "; 
- 
 
     var dataArr=[]; 
     let LastDateRange = getLastWeekRange();
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
+    //labuse
+    LastWeekbeg = '2019-11-01';
+    LastWeekend = '2019-11-11';
+    // duedate ='2019-11-20';
     LastWeekbeg = lastbeg;
     LastWeekend = lastend;
-
- 
  
     let DateRange = getThisWeekRange();
     let WeekThisbeg = DateRange[0].Format("yyyy-MM-dd");
     let WeekThisend = DateRange[1].Format("yyyy-MM-dd");
-    WeekThisbeg = '2019-11-25';
-    WeekThisend = '2019-12-02';
+    //labuse
+    WeekThisbeg = '2019-11-12';
+    WeekThisend = '2019-11-20';
     WeekThisbeg = param1;
     WeekThisend = param2;
-
 
     async.parallel([  funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3   ], 
     function(err, result) {
 		if (err) {
 
 		} else {
-             
             let sub=[]; 
             sub[0] = 0,sub[1] = 0, sub[2] = 0,sub[3] = 0, sub[4] = 0,sub[5] = 0, sub[6] = 0;
             for (var i = 0; i < 1 ; i++) {
@@ -84,12 +90,11 @@ module.exports = function(sender) {
             // console.log("部門出货1总计",obj); 
         }
     });     
-       
- 
+  
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page1HA1,
-                    parameters : [LastWeekbeg ,LastWeekend ], 
+                    parameters : [LastWeekend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -189,7 +194,7 @@ module.exports = function(sender) {
     function funPage2C1(cb){
         yjDBService.exec({
                     sql : sql_Page1HC1,
-                    parameters : [WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisend ,duedate ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -209,7 +214,7 @@ module.exports = function(sender) {
     function funPage2C2(cb){
         yjDBService.exec({
                     sql : sql_Page1HC2,
-                    parameters : [WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisend ,duedate], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

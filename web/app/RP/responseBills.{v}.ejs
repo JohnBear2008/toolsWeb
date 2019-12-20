@@ -1,0 +1,442 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<!-- 导入instascan 二维码扫描库 -->
+<script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>工作流程-维修出货单</h1>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+            <!-- 功能组按钮 -->
+            <div class="well">
+                <button id='btnSend' type="button" class="btn btn-info">出货</button>
+                <button id='btnDelete' type="button" class="btn btn-danger">删除出货</button>
+            </div>
+
+
+
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_responsebills" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>申请单号</th>
+                        <th>记录单号</th>
+                        <th>出货单号</th>
+                        <th>客户简称</th>
+                        <th>产品编号</th>
+                        <th>维修结果</th>
+                        <th>出货结果</th>
+                        <th>是否结清</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="rp_responsebillsModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 65%;">
+
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_responsebillsModal"
+                id="rp_responsebillsModalOpen" style="display: none;">
+                开始演示模态框
+            </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        表单详情
+                    </h4>
+
+
+                </div>
+                <div class="modal-body">
+
+
+
+
+                    <!-- 表单面板 -->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+
+                            <form class="form-horizontal" role="form" id='rp_responsebillsForm'>
+
+                                <input id="rp_responsebillsForm-DBID" type="hidden" value="">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">出货单号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-responseBillId" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">收款方式</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-paymentWay" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">客户编号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-customerId" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">客户简称</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-shortName" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">总金额</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-payAmount" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">快递单号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-expressId" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+                                </div>
+
+
+                            </form>
+
+                            <!-- 子表 -->
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+
+
+
+                                    <!-- 定义基础模块数据表 -->
+                                    <table id="rp_recordbills" class=" table table-striped table-bordered"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>记录单号</th>
+                                                <th>产品编号</th>
+                                                <th>维修结果</th>
+                                                <th>维修金额</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+
+                                    <div class="panel panel-default" id='rp_recordbillsPanel'>
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">记录单详情</h3>
+                                        </div>
+                                        <div class="panel-body">
+
+
+                                            <form class="form-horizontal" role="form" id='rp_recordbillsForm'>
+
+                                                <input id="rp_recordbillsForm-DBID" type="hidden" value="">
+                                                <input id="rp_recordbillsForm-requestBillId" type="hidden" value="">
+
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">产品编号</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control" id="rp_recordbillsForm-productId"
+                                                            type="text" value="该输入框获得焦点...">
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">产品描述</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control"
+                                                            id="rp_recordbillsForm-productDescription" type="text"
+                                                            value="该输入框获得焦点...">
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">维修结果</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control" id="rp_recordbillsForm-repairResult"
+                                                            type="text" value="该输入框获得焦点...">
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">维修金额</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control"
+                                                            id="rp_recordbillsForm-repairTotalFee" type="text"
+                                                            value="该输入框获得焦点...">
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">故障描述</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control"
+                                                            id="rp_recordbillsForm-faultDescription" type="text"
+                                                            value="该输入框获得焦点...">
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">是否返修</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control" id="rp_recordbillsForm-isRework"
+                                                            type="text" value="该输入框获得焦点...">
+                                                    </div>
+
+
+                                                </div>
+
+
+                                            </form>
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="rp_responsebillsModalClose">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="rp_responsebillsSave">
+                        保存
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        //加载表格
+        loadBillDataTable({
+            elementId: 'rp_responsebills',
+            sqlParams: {
+                sqlId: 'sqlResponseBills',
+                params: []
+            },
+            dtParams: {
+                columns: [{
+                        data: 'requestBillId',
+                    },
+                    {
+                        data: 'recordBillId'
+                    }, {
+                        data: 'responseBillId'
+                    }, {
+                        data: 'shortName',
+                    }, {
+                        data: 'productId',
+                    }, {
+                        data: 'repairResult',
+                    }, {
+                        data: 'isSended',
+                    }, {
+                        data: 'isFullPay',
+                    },
+                ],
+            }
+        })
+
+        let table = $('#rp_responsebills').DataTable();
+
+
+        //定义主表双击事件
+        $('#rp_responsebills tbody').on('dblclick', 'tr', function () {
+
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+            //清空Form原有数据
+            initFormInputs({
+                elementId: 'rp_responsebillsForm'
+            })
+            //填写div匹配数据
+            fillDivInputs({
+                elementId: 'rp_responsebills',
+                params: dataSelect
+            })
+            //打开面板
+            $('#btnSend').click();
+
+        });
+
+
+        // //加载表格
+        // loadBillDataTable({
+        //     elementId: 'rp_recordbills',
+        //     dtParams: {
+        //         dtConfig: 'dtConfigData',
+        //         data: [],
+        //         columns: [{
+        //             data: 'recordBillId'
+        //         }, {
+        //             data: 'productId',
+        //         }, {
+        //             data: 'repairResult',
+        //         }, {
+        //             data: 'repairTotalFee',
+        //         }],
+        //     }
+        // })
+
+        // let subTable = $('#rp_recordbills').DataTable();
+
+
+        $('#btnSend').click(function () {
+
+            let rowsSelect = table.rows('.selected').data();
+            console.log("rowsSelect:" + JSON.stringify(rowsSelect));
+
+            //清空Form原有数据
+            initFormInputs({
+                elementId: 'rp_responsebillsForm'
+            })
+            //填写div匹配数据
+            fillDivInputs({
+                elementId: 'rp_responsebillsForm',
+                params: rowsSelect[0]
+            })
+
+            //打开面板
+            $('#rp_responsebillsModal').modal('show');
+            $('#rp_recordbillsPanel').hide();
+
+
+            //加载表格
+            loadBillDataTable({
+                elementId: 'rp_recordbills',
+                dtParams: {
+                    dtConfig: 'dtConfigData',
+                    data: rowsSelect,
+                    columns: [{
+                        data: 'recordBillId'
+                    }, {
+                        data: 'productId',
+                    }, {
+                        data: 'repairResult',
+                    }, {
+                        data: 'repairTotalFee',
+                    }],
+                }
+            })
+
+            let subTable = $('#rp_recordbills').DataTable();
+
+            //解绑原事件
+            $('#rp_recordbills tbody').unbind();
+
+            //定义子表双击事件
+            $('#rp_recordbills tbody').on('click', 'tr', function () {
+
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+
+                    $('#rp_recordbillsPanel').hide();
+                } else {
+                    subTable.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+
+                    let rowSelect = subTable.row('.selected').data();
+                    //清空Form原有数据
+                    initFormInputs({
+                        elementId: 'rp_recordbillsForm'
+                    })
+                    //填写div匹配数据
+                    fillDivInputs({
+                        elementId: 'rp_recordbills',
+                        params: rowSelect
+                    })
+                    //打开面板
+                    $('#rp_recordbillsPanel').show();
+                }
+
+            });
+
+
+        })
+
+
+
+    });
+</script>

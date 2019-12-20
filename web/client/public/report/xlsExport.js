@@ -36,8 +36,9 @@ function enterShip() {
           weekend = DateRange[1].format("yyyy-MM-dd");
           console.log("预设本周:" +weekend);
     }
-
-    console.log("我前台功能:" );
+    //labuse
+    // weekbeg = '2019-11-01';
+    // weekend = '2019-11-14'; 
     console.log("lastbeg:"+lastbeg);
     console.log("lastend:"+lastend);
     console.log("weekbeg:"+weekbeg);
@@ -67,8 +68,6 @@ function enterShip() {
             alert("失败数据:"+JSON.stringify(err));
         }
     }); 
-
-    
     let ajax2a = $.ajax({
         url: '/app/PM/getRoute',
 		data: SQL2A, 
@@ -101,6 +100,7 @@ function enterShip() {
         }
     }); 
     $.when(ajax1h, ajax1,  ajax2a, ajax2b, ajax3 ).done(function () {
+        console.log("软体出货延误率--延期单数:" + JSON.stringify(ary2b));
            ShipStat((ary1h),(ary1),(ary2a),(ary2b),(ary3));
     });	
 }
