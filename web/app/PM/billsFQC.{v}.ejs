@@ -150,10 +150,9 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label" for="name">修改要求:</label>
 										<div class="col-sm-8">
-											<span id="detail" class="help-block"></span>
+											<span id="detail" class="help-block" style="white-space:pre-wrap;"></span>
 										</div>
 									</div>
-
 									<!-------------------------------------------------------------------------->
 
 								</div>
@@ -520,7 +519,7 @@
 
 			let tasksTableSQL = {
 				"SQL": "SQLTableTestContents",
-				"filter": "billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')",
+				"filter": "billType='FQC' AND taskType='A' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC' AND taskType='A')",
 				"orderBy": "modelType"
 			};
 
@@ -553,6 +552,7 @@
 			$('textarea').attr("disabled", true);
 
 			$('#FQCRemarkShow').show();
+			$('#FQCRemarkShow').text(dataSelect.FQCRemark.replace(/<br\/>/g, '\n'));
 			$('#FQCRemark').hide();
 			$('#DivFQCBTNS').hide();
 			$("#FQCAuditor").attr("disabled", true);

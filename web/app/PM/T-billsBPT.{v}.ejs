@@ -913,6 +913,7 @@
 		$('#BPTID').val(dataSelect.BPID);
 
 		if (dataSelect.BPTVersion == "") {
+			$('#BPTVersion').text(0);
 
 			$.ajax({
 				method: 'get',
@@ -925,8 +926,6 @@
 
 					if (data[0].maxBPTVersion != null) {
 						$('#BPTVersion').text(parseInt(data[0].maxBPTVersion + 1));
-					} else {
-						$('#BPTVersion').text(0);
 					}
 
 				},

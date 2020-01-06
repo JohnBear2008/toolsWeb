@@ -20,5 +20,10 @@ SQLNotDone="Select `BTID`, `TaskCTRName`, `taskStaff`, `taskSortTypeText` ,`task
 //SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`, `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.auditDate is null ";
 
 //  `updateReason` 有问题
-SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`  from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.LimitDate > tbb.auditDate ";
- 
+//J1220 SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`   from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.LimitDate > tbb.auditDate ";
+
+// SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`,"+
+// " tbc.emailDate from `ppm_bills_plan` tbb   LEFT JOIN (SELECT * FROM `ppm_bills_pbh`  ) tbc ON tbb.BPID=tbc.pbhBPID where tbc.emailDate > tbb.limitDate and tbb.applyDate >? and tbb.applyDate < ?  ";
+SQLLateList="Select (CASE taskSortTypeText WHEN 'DSP任务单' THEN taskFinishDate  END ) as  DSPFinishDate ,(CASE taskSortTypeText WHEN 'HMI任务单' THEN taskFinishDate  END ) as  HMIFinishDate , `BPID`,`CTRName`, BTID, taskFinishDate,taskSortTypeText, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate` from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, BTID,taskMakeDate,taskBPID,taskSortTypeText from ppm_bills_task  GROUP by BTID ) tbk   ON tbb.BPID=tbk.taskBPID  where  (taskFinishDate > tbb.limitDate ) and tbb.applyDate >? and tbb.applyDate <? order by BPID";
+
+SQLPartsUp= "SELECT `DBID`, `Bill_ID`, `Customer_ID`, `Operate`, `Apply_Date`, `Limit_Date`,   `PaUp_ProdNo`,PaDown_ProdNo, `Parts_Name`, `Location`  FROM `ma_parts_detail` ";

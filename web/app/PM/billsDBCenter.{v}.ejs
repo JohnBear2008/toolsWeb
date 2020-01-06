@@ -665,7 +665,8 @@
 				"BTStatusText",
 				"taskFiles"
 			],
-			"filter": "taskBPID='" + dataSelect.BPID + "'"
+			"filter": "taskBPID='" + dataSelect.BPID + "'",
+			"orderBy":"BTID,BTVersion"
 		};
 
 
@@ -684,6 +685,7 @@
 				"FQCResultText"
 			],
 			"filter": "fqcBPID='" + dataSelect.BPID + "'"
+			
 		};
 
 
@@ -716,7 +718,7 @@
 
 	function createParams(filter) {
 
-		console.log("filter:" + JSON.stringify(filter))
+		// console.log("filter:" + JSON.stringify(filter))
 
 		btnFilterActive = filter.btnFilter
 		divFilterActive = filter.divFilter
@@ -727,13 +729,13 @@
 
 		if (filter.btnFilter !== "") {
 
-			console.log("filter.btnFilter:" + filter.btnFilter)
+			// console.log("filter.btnFilter:" + filter.btnFilter)
 			filterResult = filter.btnFilter
 		} else {
 			filterResult = ""
 		}
 
-		console.log("filterResult:" + JSON.stringify(filterResult))
+		// console.log("filterResult:" + JSON.stringify(filterResult))
 
 		var trackType = getQueryString("trackType");
 
@@ -769,7 +771,7 @@
 				$("#BTNFilterHistory").addClass("active");
 		}
 
-		console.log("filterResult:" + filterResult)
+		// console.log("filterResult:" + filterResult)
 
 
 		let Params = {
@@ -823,7 +825,7 @@
 
 	function createExportParams(filter) {
 
-		console.log("filter:" + JSON.stringify(filter))
+		// console.log("filter:" + JSON.stringify(filter))
 
 		btnFilterActive = filter.btnFilter
 		divFilterActive = filter.divFilter
@@ -834,13 +836,13 @@
 
 		if (filter.btnFilter !== "") {
 
-			console.log("filter.btnFilter:" + filter.btnFilter)
+			// console.log("filter.btnFilter:" + filter.btnFilter)
 			filterResult = filter.btnFilter
 		} else {
 			filterResult = ""
 		}
 
-		console.log("filterResult:" + JSON.stringify(filterResult))
+		// console.log("filterResult:" + JSON.stringify(filterResult))
 
 		var trackType = getQueryString("trackType");
 
@@ -875,7 +877,7 @@
 				$("#BTNFilterHistory").addClass("active");
 		}
 
-		console.log("filterResult:" + filterResult)
+		// console.log("filterResult:" + filterResult)
 
 
 		let Params = {
@@ -995,7 +997,7 @@
 		$('#billsTrackTable tbody').on('dblclick', 'tr', function () {
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-			console.log("this:" + this)
+			// console.log("this:" + this)
 			$('#BTNInfo').click();
 
 		});
@@ -1299,7 +1301,7 @@
 				filter = filter + "AND WFEndDate <='" + $("#WFEndDateE").val() + "'";
 			}
 
-			console.log("filter:" + filter);
+			// console.log("filter:" + filter);
 
 			filter = filter.substring(3);
 

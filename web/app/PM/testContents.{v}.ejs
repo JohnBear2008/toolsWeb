@@ -88,7 +88,19 @@
 <!---------------->
 </div>
 
-<button id="FQC" class="btn btn-default">FQC</button>
+
+<!---------------->
+<div class="btn-group">
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		FQC
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+	<li><a id="liHAF" href="#">APP</a></li>
+	<li><a id="liHKF" href="#">Kernel</a></li>
+	<li><a id="liHOF" href="#">OS</a></li>
+	</ul>
+</div>
 
 
 
@@ -423,12 +435,34 @@ $('#liCO').click(function() {
 });
 
 //Ahref 预览-----
-$('#FQC').click(function() {
+$('#liHAF').click(function() {
 	
 	$('#DivTestContent').modal('show');
 	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
-	$('#spanTypeName').text("FQC");	
-	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')","orderBy":"modelType"};
+	$('#spanTypeName').text("FQC-APP");	
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND taskType='A' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC' AND taskType='A')","orderBy":"modelType"};
+	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
+    
+});
+
+//Ahref 预览-----
+$('#liHKF').click(function() {
+	
+	$('#DivTestContent').modal('show');
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("FQC-Kernel");	
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND taskType='K' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC' AND taskType='K')","orderBy":"modelType"};
+	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
+    
+});
+
+//Ahref 预览-----
+$('#liHOF').click(function() {
+	
+	$('#DivTestContent').modal('show');
+	controlElementShowHide({hideElements:['DIVContentTableModify'],showElements:['DIVContentTableShow']});
+	$('#spanTypeName').text("FQC-OS");	
+	tasksTableSQL={"SQL":"SQLTableTestContents","filter":"billType='FQC' AND taskType='O' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC' AND taskType='O')","orderBy":"modelType"};
 	Fun_previewSQLTestContents(tasksTableSQL,"#TableTestContents");
     
 });

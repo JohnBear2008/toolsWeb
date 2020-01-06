@@ -55,7 +55,7 @@ module.exports = function(sender) {
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
     //labuse
-    // duedate ='2019-11-20';
+    // duedate ='2019-10-30';
     // LastWeekbeg = '2019-11-01';
     // LastWeekend = '2019-11-11';
     // console.log("金像", LastWeekbeg);
@@ -67,8 +67,8 @@ module.exports = function(sender) {
     let WeekThisbeg = DateRange[0].Format("yyyy-MM-dd");
     let WeekThisend = DateRange[1].Format("yyyy-MM-dd");
     //labuse
-    WeekThisbeg = '2019-11-12';
-    WeekThisend = '2019-11-20';
+    // WeekThisbeg = '2019-11-12';
+    // WeekThisend = '2019-11-20';
     WeekThisbeg = param1;
     WeekThisend = param2;
 
@@ -114,7 +114,6 @@ module.exports = function(sender) {
     }
     function funPage1A1(cb){
         var  dataav = [];
-        
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1A1,
@@ -128,7 +127,7 @@ module.exports = function(sender) {
                         }
                        dataav.push(temp);
                     }
-                    (cb2(null, dataav));
+                    (cb2(null, temp ));  
                     // console.log("混", temp);
                 },
                 error : sender.error
@@ -226,9 +225,10 @@ module.exports = function(sender) {
                 if (err) {
 
                 } else {
-              
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
+                    dataav=[];
+                    for (var i = 0; i < staff.length; i++) {
+                        dataav.push({"Times" : result[i].Times });
+                    }
                     // console.log("衝出", dataav);
                     cb(null, dataav);
                 }
@@ -250,8 +250,8 @@ module.exports = function(sender) {
                         }
                        dataav.push(temp);
                     }
-                    // console.log("本", temp,stf);
-                    (cb2(null, dataav));  
+                    //  console.log("本新单", temp,stf);
+                    (cb2(null, temp ));  
                 },
                 error : sender.error
             })
@@ -344,14 +344,16 @@ module.exports = function(sender) {
             if(i==20){ funblock.push(A21); }          
         }
         async.parallel( funblock, 
-               function(err, result) {
+            function(err, result) {
                 if (err) {
 
                 } else {
               
-                //    dataav.push({"Times" : 3 });
-                //    dataav.push({"Times" : 6 }); 
-                    // console.log("发", dataav);
+                    dataav=[];
+                    for (var i = 0; i < staff.length; i++) {
+                        dataav.push({"Times" : result[i].Times });
+                        // console.log( "绿:"+result[i].Times);  
+                    }
                     cb(null, dataav);
                 }
             }
@@ -369,17 +371,15 @@ module.exports = function(sender) {
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                        var temp = {
-                            "Times" : data[i].times , 
-                        }
+                        
                         var temp2 = {
                             "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       dataav.push(temp);
                        datagod.push(temp2);
                     }
-                    (cb2(null, dataav,datagod));  
+                    // (cb2(null, datagod));  
+                    (cb2(null, temp2));  
                     //  console.log("按时完成", temp,stf );
                 },
                 error : sender.error
@@ -476,15 +476,23 @@ module.exports = function(sender) {
             function(err, result) {
              if (err) {
              } else {
+ 
+                // console.log("红"+result[0].Staff+"黑:"+result[0].Times);  
+                // console.log("鳟鱼:"+result.length);   
+                // console.log("丁鱼:"+JSON.stringify(result[0]));  
+
              dataav=[];
              for (var i = 0; i < staff.length; i++) {
-                 for (var j = 0; j < datagod.length; j++) {
-                     if(staff[i]==datagod[j].Staff){ 
-                         dataav.push({"Times" : datagod[j].Times });
-                     }else{
-                     }
-                 }
+                 dataav.push({"Times" : result[i].Times });
              }
+            //  for (var i = 0; i < staff.length; i++) {
+            //      for (var j = 0; j < datagod.length; j++) {
+            //          if(staff[i]==datagod[j].Staff){ 
+            //              dataav.push({"Times" : datagod[j].Times });
+            //          }else{
+            //          }
+            //      }
+            //  }
                  cb(null, dataav);
              }
          }
@@ -501,17 +509,13 @@ module.exports = function(sender) {
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                        var temp = {
-                            "Times" : data[i].times , 
-                        }
                         var temp2 = {
                             "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       dataav.push(temp);
                        datagod.push(temp2);
                     }
-                    (cb2(null, dataav,datagod));  
+                    (cb2(null, temp2 ));  
                     //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
@@ -616,34 +620,18 @@ module.exports = function(sender) {
                 // console.log("延期醋溜",datagod[0].Times);
                 dataav=[];
                 for (var i = 0; i < staff.length; i++) {
-                    for (var j = 0; j < datagod.length; j++) {
-                        if(staff[i]==datagod[j].Staff){
-                            // console.log("甜点",datagod[j].Times );
-                            dataav.push({"Times" : datagod[j].Times });
-                        }else{
-                        }
-                    }
+                    dataav.push({"Times" : result[i].Times });
                 }
-                // console.log("延期大餐",dataav);
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 5 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 1 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
-                    // dataav.push({"Times" : 0 });
+                // for (var i = 0; i < staff.length; i++) {
+                //     for (var j = 0; j < datagod.length; j++) {
+                //         if(staff[i]==datagod[j].Staff){
+                //             // console.log("甜点",datagod[j].Times );
+                //             dataav.push({"Times" : datagod[j].Times });
+                //         }else{
+                //         }
+                //     }
+                // }
+ 
                     cb(null, dataav);
                 }
             }
@@ -660,14 +648,13 @@ module.exports = function(sender) {
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                      
                         var temp2 = {
                             "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
                        datagod.push(temp2);
                     }
-                    (cb2(null, datagod));  
+                    (cb2(null, temp2));  
                     //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
@@ -763,20 +750,19 @@ module.exports = function(sender) {
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
-
                 } else {
-               
- 
                 dataav=[];
                 for (var i = 0; i < staff.length; i++) {
-                    for (var j = 0; j < datagod.length; j++) {
-                        if(staff[i]==datagod[j].Staff){
-                            dataav.push({"Times" : datagod[j].Times });
-                        }else{
-                        }
-                    }
+                    dataav.push({"Times" : result[i].Times });
                 }
- 
+                // for (var i = 0; i < staff.length; i++) {
+                //     for (var j = 0; j < datagod.length; j++) {
+                //         if(staff[i]==datagod[j].Staff){
+                //             dataav.push({"Times" : datagod[j].Times });
+                //         }else{
+                //         }
+                //     }
+                // }
                     cb(null, dataav);
                 }
             }
@@ -793,14 +779,13 @@ module.exports = function(sender) {
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                     for (var i = 0; i < data.length; i++) {
-                      
                         var temp2 = {
                             "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
                        datagod.push(temp2);
                     }
-                    (cb2(null, datagod));  
+                    (cb2(null, temp2));  
                     //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
@@ -896,20 +881,19 @@ module.exports = function(sender) {
         async.parallel( funblock, 
                function(err, result) {
                 if (err) {
-
                 } else {
-               
- 
                 dataav=[];
                 for (var i = 0; i < staff.length; i++) {
-                    for (var j = 0; j < datagod.length; j++) {
-                        if(staff[i]==datagod[j].Staff){
-                            dataav.push({"Times" : datagod[j].Times });
-                        }else{
-                        }
-                    }
+                    dataav.push({"Times" : result[i].Times });
                 }
- 
+                // for (var i = 0; i < staff.length; i++) {
+                //     for (var j = 0; j < datagod.length; j++) {
+                //         if(staff[i]==datagod[j].Staff){
+                //             dataav.push({"Times" : datagod[j].Times });
+                //         }else{
+                //         }
+                //     }
+                // }
                     cb(null, dataav);
                 }
             }
@@ -934,7 +918,7 @@ module.exports = function(sender) {
                         }
                        datagod.push(temp2);
                     }
-                    (cb2(null, datagod));  
+                    (cb2(null, temp2));  
                     //  console.log("期限未到", temp,stf );
                 },
                 error : sender.error
@@ -1033,13 +1017,16 @@ module.exports = function(sender) {
                 } else {
                 dataav=[];
                 for (var i = 0; i < staff.length; i++) {
-                    for (var j = 0; j < datagod.length; j++) {
-                        if(staff[i]==datagod[j].Staff){
-                            dataav.push({"Times" : datagod[j].Times });
-                        }else{
-                        }
-                    }
+                    dataav.push({"Times" : result[i].Times });
                 }
+                // for (var i = 0; i < staff.length; i++) {
+                //     for (var j = 0; j < datagod.length; j++) {
+                //         if(staff[i]==datagod[j].Staff){
+                //             dataav.push({"Times" : datagod[j].Times });
+                //         }else{
+                //         }
+                //     }
+                // }
  
                     cb(null, dataav);
                 }
@@ -1064,7 +1051,7 @@ module.exports = function(sender) {
                         }
                        datagod.push(temp2);
                     }
-                    (cb2(null, datagod));  
+                    (cb2(null, temp2));  
                     //  console.log("延期完成", temp,stf );
                 },
                 error : sender.error
@@ -1162,17 +1149,18 @@ module.exports = function(sender) {
                 if (err) {
 
                 } else {
-               
- 
                 dataav=[];
                 for (var i = 0; i < staff.length; i++) {
-                    for (var j = 0; j < datagod.length; j++) {
-                        if(staff[i]==datagod[j].Staff){
-                            dataav.push({"Times" : datagod[j].Times });
-                        }else{
-                        }
-                    }
+                    dataav.push({"Times" : result[i].Times });
                 }
+                // for (var i = 0; i < staff.length; i++) {
+                //     for (var j = 0; j < datagod.length; j++) {
+                //         if(staff[i]==datagod[j].Staff){
+                //             dataav.push({"Times" : datagod[j].Times });
+                //         }else{
+                //         }
+                //     }
+                // }
  
                     cb(null, dataav);
                 }
@@ -1252,9 +1240,10 @@ module.exports = function(sender) {
                     //   console.log("Page1Head笔数", result[0].length);
                     // （延期已完成+延期未完成）/（已完成总单+延期未完成）
                     //   console.log("职工笔数", staff.length); 
+                try {
                     let sub=[]; 
                     sub[0] = 0,sub[1] = 0, sub[2] = 0,sub[3] = 0, sub[4] = 0,sub[5] = 0, sub[6] = 0 , sub[7] = 0;
-                    for (var i = 0; i < staff.length ; i++) {
+                    for (var i = 0; i < staff.length && i<21 ; i++) {
                         var delytot =result[4][i].Times+result[6][i].Times;  
                         var thistot =result[3][i].Times+result[4][i].Times+result[5][i].Times+result[6][i].Times;   
                         var rate = (delytot/thistot)*100;
@@ -1289,9 +1278,8 @@ module.exports = function(sender) {
                         sub[6] =sub[6] + parseInt(result[7][i].Times); 
                         sub[7] =sub[7] + parseInt(result[8][i].Times); 
                         dataArr.push(obj);
-                    }
-                   
-                      var obj2={
+                    }                   
+                        var obj2={
                         "SHIPTYPE":"",
                         "Staff":"总计",
                         "WORK_RANGE":"",
@@ -1305,19 +1293,9 @@ module.exports = function(sender) {
                     };
                     dataArr.push(obj2);
                     sender.success(dataArr);
-                    // console.log("出货1总计",obj2); 
-                    // var obj={
-                    //     "SHIPTYPE":result[0][0].CTRName,
-                    //     "Staff":result[0][0].taskStaff,
-                    //     "WORK_RANGE":result[1][0],
-                    //     "Bill_STAT1":result[2][0],
-                    //     "Bill_STAT2":result[2][0],
-                    //     "Bill_STAT3":result[2][0],
-                    //     "Bill_STAT4":result[2][0],
-                    //     "Bill_STAT5":result[2][0],
-                    //     "Bill_STAT6":result[2][0],
-                    //     "Bill_STAT7":result[2][0],
-                    // };
+                } catch(err) {
+                    console.log("page1 个人统计严重错误: " + err.name + ""); 
+                  }
                 }
             });     
     }

@@ -50,6 +50,7 @@ const currentDate = () => {
 
 
 
+
 /**
  *根据传入参数调整dataTable表格创建参数
  *
@@ -112,6 +113,7 @@ const divDataTableParams = (i) => {
 
                         for (let n = 0; n < dataSelected.length; n++) {
                             console.log(JSON.stringify(dataSelected[n]));
+                            alert(JSON.stringify(dataSelected[n]));
                         }
                     }
                 }, {
@@ -122,7 +124,7 @@ const divDataTableParams = (i) => {
                         this.rows().deselect();
                         //清空div
                         initFormInputs({
-                            elementId: i.elementId + 'Form'
+                            formId: i.elementId + 'Form'
                         })
 
                         //打开面板
@@ -207,11 +209,11 @@ const loadDataTable = async (i) => {
         let dataSelect = table.row('.selected').data();
         //清空Form原有数据
         initFormInputs({
-            elementId: r1.elementId + 'Form'
+            formId: r1.elementId + 'Form'
         })
         //填写div匹配数据
-        fillDivInputs({
-            elementId: r1.elementId,
+        fillFormInputs({
+            formId: r1.elementId + 'Form',
             params: dataSelect
         })
         //打开面板
@@ -222,7 +224,7 @@ const loadDataTable = async (i) => {
     //保存按钮
     $('#' + i.elementId + 'Save').click(function () {
         let formData = getFormData({
-            elementId: r1.elementId
+            formId: r1.elementId + 'Form'
         })
 
         let sqlParams = {
@@ -282,14 +284,14 @@ const divSubDataTableParams = (i) => {
                     action: function () {
                         //清空div
                         initFormInputs({
-                            elementId: i.elementId + 'Form',
+                            formId: i.elementId + 'Form',
                             params: i.params.fixInitValues
                         })
 
-                        console.log(JSON.stringify({
-                            elementId: i.elementId + 'Form',
-                            params: i.params.fixInitValues
-                        }));
+                        // console.log(JSON.stringify({
+                        //     elementId: i.elementId + 'Form',
+                        //     params: i.params.fixInitValues
+                        // }));
 
 
                         //打开面板
@@ -389,11 +391,11 @@ const loadSubDataTable = async (i) => {
         let dataSelect = table.row('.selected').data();
         //清空Form原有数据
         initFormInputs({
-            elementId: r1.elementId + 'Form'
+            formId: r1.elementId + 'Form'
         })
         //填写div匹配数据
-        fillDivInputs({
-            elementId: r1.elementId,
+        fillFormInputs({
+            formId: r1.elementId + 'Form',
             params: dataSelect
         })
         //打开面板
@@ -407,7 +409,7 @@ const loadSubDataTable = async (i) => {
     //保存按钮
     $('#' + i.elementId + 'Save').click(function () {
         let formData = getSubFormData({
-            elementId: r1.elementId
+            formId: r1.elementId + 'Form'
         })
 
         let sqlParams = {
@@ -474,6 +476,7 @@ const loadBootStrapSelector = async (i) => {
  * @param {*} i={elementId,params}
  */
 const loadDatePicker = async (i) => {
+    console.log(JSON.stringify(i))
 
     let defaultParams = {
         language: 'zh-CN',
@@ -484,13 +487,13 @@ const loadDatePicker = async (i) => {
         startView: 2,
         minView: 2,
         forceParse: 0,
-        startDate: currentDate(), //设置最小日期
+        // startDate: currentDate(), //设置最小日期
         // endDate: $('#limitDate').val() //设置最大日期
         format: 'yyyy-mm-dd', //年-月-日
     }
 
-    for (const p in i.params) {
-        if (i.params.hasOwnProperty(p)) {
+    if (i.params) {
+        for (let p in i.params) {
             defaultParams[p] = i.params[p];
         }
     }
@@ -502,59 +505,64 @@ const loadDatePicker = async (i) => {
 /**
  *清空div内所有input,select,textare
  *
- * @param {*} i={elementId}
+ * @param {*} i={formId}
  */
 const clearFormInputs = (i) => {
-    $("#" + i.elementId + " input").val("");
-    $('#' + i.elementId + " select").selectpicker('val', '');
-    $("#" + i.elementId + " textarea").val("");
+    $("#" + i.formId + " input").val("");
+    $('#' + i.formId + " select").selectpicker('val', '');
+    $("#" + i.formId + " textarea").val("");
 }
 
 
 /**
  *初始化Form内inputs状态,先清空,再补充固定值
  *
- * @param {*} i={elementId,params}
+ * @param {*} i={formId,params}
  */
 const initFormInputs = (i) => {
     clearFormInputs(i);
 
     //设置有效默认为是
-    $('#' + i.elementId + "-effective").selectpicker('val', '是');
+    $('#' + i.formId + "-effective").selectpicker('val', '是');
+    $("#" + i.formId + '-' + 'saveTimeStamp').val(currentDate);
 
 
-    if (i.params !== undefined) {
+
+    if (i.params) {
         for (const p in i.params) {
             if (i.params.hasOwnProperty(p)) {
                 console.log("P:" + p + ',' + i.params[p]);
-
-                $('#' + i.elementId + '-' + p).val(i.params[p]);
+                $('#' + i.formId + '-' + p).val(i.params[p]);
             }
         }
     }
-
-
 }
 
 
 /**
  *用数据填写div内匹配input 值
  *
- * @param {*} i={elementId,params}
+ * @param {*} i={formId,params}
  */
-const fillDivInputs = async (i) => {
+const fillFormInputs = async (i) => {
 
-    // console.log('fillDivInputs i:' + JSON.stringify(i.params));
+    console.log('fillFormInputs i:' + JSON.stringify(i));
 
     for (const p in i.params) {
         if (i.params.hasOwnProperty(p)) {
+
+            // console.log('p:'+$("#" + i.formId + '-' + p).length)
+
+
             // 判断是否存在此元素
-            if ($("#" + i.elementId + 'Form-' + p).length > 0) {
+            if ($("#" + i.formId + '-' + p).length > 0) {
+
+
                 // 判断此元素是否为select
-                if ($("#" + i.elementId + 'Form-' + p).is("select")) {
-                    $("#" + i.elementId + 'Form-' + p).selectpicker('val', i.params[p])
+                if ($("#" + i.formId + '-' + p).is("select")) {
+                    $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
                 } else {
-                    $("#" + i.elementId + 'Form-' + p).val(i.params[p]);
+                    $("#" + i.formId + '-' + p).val(i.params[p]);
                 }
             }
         }
@@ -566,15 +574,15 @@ const fillDivInputs = async (i) => {
 /**
  *根据fromid 获取form内所有元素值
  *
- * @param {*} i={elementId}
+ * @param {*} i={formId}
  */
 const getFormData = (i) => {
 
 
-    let tableId = i.elementId;
+    let tableId = i.formId.split('Form')[0];
     let data = [];
     //同时遍历3类form元素
-    $('#' + i.elementId + "Form input,select,textarea").each(function () {
+    $('#' + i.formId + " input,select,textarea").each(function () {
         let id = this.id.split('-')[1];
         let value = this.value;
         if (id !== '' && id !== undefined) {
@@ -598,15 +606,14 @@ const getFormData = (i) => {
 /**
  *根据fromid 获取subform内所有元素值
  *
- * @param {*} i={elementId}
+ * @param {*} i={formId}
  */
 const getSubFormData = (i) => {
 
-
-    let tableId = i.elementId;
+    let tableId = i.formId;
     let data = [];
     //同时遍历3类form元素
-    $('#' + i.elementId + "Form input,select,textarea").each(function () {
+    $('#' + i.formId + " input,select,textarea").each(function () {
         let id = this.id;
         let value = this.value;
         if (id !== '') {

@@ -1202,6 +1202,8 @@
 
 			console.log("dataSelect.BPTVersion1:" + dataSelect.BPTVersion);
 
+			$('#BPTVersion').text(0);
+
 			$.ajax({
 				method: 'get',
 				url: '/app/public/ajaxGet',
@@ -1210,11 +1212,10 @@
 						dataSelect.BPID + '"'
 				},
 				success: (data, textStatus) => {
+					console.log("data[0].maxBPTVersion:" + data[0].maxBPTVersion)
 
 					if (data[0].maxBPTVersion != null) {
 						$('#BPTVersion').text(parseInt(data[0].maxBPTVersion + 1));
-					} else {
-						$('#BPTVersion').text(0);
 					}
 
 				},
@@ -3165,9 +3166,6 @@
 								}
 
 
-
-
-
 								if (BTStatusText === '任务终止') {
 									TaskNumPLD = TaskNumPLD - 1;
 								}
@@ -3311,11 +3309,7 @@
 											textStatus, errorThrown) {}
 									});
 
-
-
-
 									//		updDBData(BPTAuditData,"方案审核状态");
-
 
 									$.when(ajax1, ajax2, ajax3, ajax4).done(function () {
 
@@ -3336,7 +3330,6 @@
 										let o = {
 											f: io_refresh
 										}
-
 										aio_chooseSendDDMsg(i, o)
 									});
 								},
@@ -3486,10 +3479,6 @@
 
 						});
 
-
-
-
-
 						break;
 
 				}
@@ -3518,8 +3507,6 @@
 							"DBID": $('#PLDDBID').val(),
 							"WFStatus": 19
 						}
-
-
 
 						var BPTAuditData = {
 							"DBTable": "ppm_bills_blueprint",
@@ -3556,8 +3543,6 @@
 							error: function (XMLHttpRequest, textStatus, errorThrown) {}
 						});
 
-
-
 						$.when(ajax1, ajax2).done(function () {
 
 							let i = {
@@ -3566,7 +3551,6 @@
 							swalAndRefresh(i)
 
 						});
-
 
 					}
 

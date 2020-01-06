@@ -4,9 +4,14 @@
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
 
+<script>
+    $.noConflict();
+</script>
+
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
 
 <!-- 导入bootstrapSelect -->
 <link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
@@ -21,6 +26,9 @@
 
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
 
 <!-- 定义html元素 -->
 <div class="rpContent">
@@ -143,8 +151,8 @@
 
                                     <label class="col-sm-1 control-label">客户区域</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_customersForm-customerArea" class="selectpicker"
-                                            data-live-search="true" data-dropup-auto="false">
+                                        <select id="rp_customersForm-customerArea" class="selectpicker form-control"
+                                            data-live-search="true">
                                         </select>
                                     </div>
 
@@ -227,8 +235,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">是否有效</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_customersForm-effective" class="selectpicker"
-                                            data-dropup-auto="true">
+                                        <select id="rp_customersForm-effective" class="selectpicker dropup"
+                                            data-dropup-auto="false">
                                             <option>是</option>
                                             <option>否</option>
                                         </select>
@@ -264,6 +272,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+
 
 
         //加载表格

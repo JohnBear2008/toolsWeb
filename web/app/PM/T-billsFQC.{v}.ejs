@@ -157,7 +157,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label" for="name">修改要求:</label>
 										<div class="col-sm-8">
-											<span id="detail" class="help-block"></span>
+											<span id="detail" class="help-block" style="white-space:pre-wrap;"></span>
 										</div>
 									</div>
 
@@ -249,12 +249,6 @@
 										<div class="col-sm-1">
 											<span id="testContentsVer" class="help-block"></span>
 										</div>
-
-
-
-
-
-
 
 
 									</div>
@@ -432,11 +426,16 @@
 
 
 	//函数:详情按钮详情页自动填写内容------------------------
-	function Fun_winDetailInit(dataChoose) {
+	// function Fun_winDetailInit(dataChoose) {
+
+	const Fun_winDetailInit = async (dataChoose) => {
 
 
 
 		let dataSelect = NulltoEmpty(dataChoose);
+
+		console.log(JSON.stringify(dataSelect));
+
 
 
 		$('#DBID').val(dataSelect.DBID);
@@ -509,19 +508,49 @@
 
 		Fun_fillTrackTable("#billsTaskTable", SQLParamTask);
 
+
+
+
 		var tableID = "#TableTestContents";
 
 
-		console.log("FQCTestResult:" + dataSelect.FQCTestResult);
+		// console.log("FQCTestResult:" + dataSelect.FQCTestResult);
+
+		let FQCtaskType='K';
+
+		let FQCtaskTypeData = await $.ajax({
+			method: 'get',
+			url: '/app/public/ajaxGet',
+			data: {
+				sql: 'select taskType from `ppm_bills_task_t` where taskBPID="' +
+				dataSelect.BPID + '"'
+			},
+			success: (data, textStatus) => {
+
+			},
+			error: (XMLHttpRequest, textStatus, errorThrown) => {}
+		})
+
+		console.log("FQCtaskTypeData data" + JSON.stringify(FQCtaskTypeData))
+
+		if(FQCtaskTypeData.length>0){
+			FQCtaskType=FQCtaskTypeData[0].taskType;
+		}
+
+		console.log("FQCtaskType:"+FQCtaskType);
+
+		console.log("FQCTestResult:"+dataSelect.FQCTestResult);
+		
 
 		if (dataSelect.FQCTestResult == "") {
 
 			let tasksTableSQL = {
 				"SQL": "SQLTableTestContents",
-				"filter": "billType='FQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC')",
+				"filter": "billType='FQC' AND taskType='"+FQCtaskType+"' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE billType='FQC' AND taskType='"+FQCtaskType+"')",
 				"orderBy": "modelType"
 			};
 
+			console.log("tasksTableSQL filter:"+tasksTableSQL.filter);
 
 			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, null, null);
 		} else {
@@ -536,7 +565,8 @@
 		}
 
 
-		if (dataSelect.FQCAuditResult == 0 || dataSelect.FQCAuditResult == null || dataSelect.FQCAuditResult == "") {
+		if (dataSelect.FQCAuditResult == 0 || dataSelect.FQCAuditResult == null || dataSelect.FQCAuditResult ==
+			"") {
 
 			$('#FQCRemarkShow').hide();
 			$('#FQCRemark').show();
@@ -550,8 +580,8 @@
 			$('select').attr("disabled", true);
 			$('textarea').attr("disabled", true);
 
-
 			$('#FQCRemarkShow').show();
+			$('#FQCRemarkShow').text(dataSelect.FQCRemark.replace(/<br\/>/g, '\n'));
 			$('#FQCRemark').hide();
 			$('#DivFQCBTNS').hide();
 			$("#FQCAuditor").attr("disabled", true);

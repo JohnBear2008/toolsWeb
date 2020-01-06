@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
 
+
 <!-- 导入bootstrapSelect -->
 <link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
 <script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
@@ -35,9 +36,6 @@
             </div>
         </div>
     </div>
-
-
-
 
 
     <div class="row clearfix">
@@ -352,11 +350,11 @@
             let dataSelect = table.row('.selected').data();
             //清空Form原有数据
             initFormInputs({
-                elementId: 'rp_billsDBForm'
+                formId: 'rp_billsDBForm'
             })
             //填写div匹配数据
-            fillDivInputs({
-                elementId: 'rp_billsDB',
+            fillFormInputs({
+                formId: 'rp_billsDBForm',
                 params: dataSelect
             })
             //打开面板

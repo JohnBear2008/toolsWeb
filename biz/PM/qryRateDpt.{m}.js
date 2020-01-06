@@ -9,7 +9,7 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend; 
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
-    // console.log("部門统计表格开始日:"+param1+"到期日:"+param2);  
+ 
     var DBTable=sender.req.query.DBTable; 
     var sqlGetTableData = "SELECT * FROM "+DBTable;
     sqlGetTableData = "SELECT * FROM ms_agent where FID=?  ";
@@ -37,39 +37,40 @@ module.exports = function(sender) {
     //本周新单  1125~1202
     var sql_Page2A2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
     "   "; 
-    //延误单号 auditDate表完成
-    var sql_Page2B1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ? "+
-    " and tbb.LimitDate > tbb.auditDate    "; 
-    //完成单号
-    var sql_Page2B2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ? "+
-    " and tbb.LimitDate < tbb.auditDate    "; 
+    //延误单号//MAX tbk.taskFinishDate > 期限 tbb.limitdate  
+    var sql_Page2B1 = " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate > tbb.limitdate and tbb.applyDate >? and tbb.applyDate <?    "; 
+    //完成单号   //MAX tbk.taskFinishDate <= 期限 tbb.limitdate
+    var sql_Page2B2 = " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate <= tbb.limitdate and tbb.applyDate >? and tbb.applyDate <?    "; 
     //客户取消
-    var sql_Page2B3 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
-    " and stopReason <>''   "; 
-    //延期未完成 3参数 归档日无
-    var sql_Page2C1 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
-    " and tbb.auditDate > ?  and tbb.WFEndDate is null  "; 
-    //期限未到
-    var sql_Page2C2 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
-    " and  tbb.auditDate < ? and tbb.WFEndDate is null  "; 
+    var sql_Page2B3 = " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate is null and tbb.applyDate >? and tbb.applyDate <?    ";               
+    //延期未完成 3参数  // (tbb.LimitDate > dueDate and tbb.LimitDate <> '') and tbk.taskFinishDate is null 
+    var sql_Page2C1 = "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and (tbb.LimitDate > ? and tbb.LimitDate <> '') and tbk.taskFinishDate is null   "; 
+    //期限未到  // (tbb.LimitDate <= dueDate and tbb.LimitDate <> '' ) and tbk.taskFinishDate is null
+    var sql_Page2C2 = "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and (tbb.LimitDate <= ? and tbb.LimitDate <> '') and tbk.taskFinishDate is null   "; 
     //其他  notdone
-    var sql_Page2C3 = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
-    " and FQCPass ='1' and orderFromDep =? ";
+    var sql_Page2C3 = "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and tbb.LimitDate is null and tbk.taskFinishDate is null   "; 
+    //tbb.LimitDate is null and tbk.taskFinishDate is null
     //延期单数/本周总出货数  
     var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
-    "  and  tbb.LimitDate > tbb.auditDate  "; 
+    "  and  tbb.LimitDate > tbb.auditDate  ";   // B2/(B1+B2+B3)
     //已完成总单/本周总单  
     var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
-    "  and tbb.auditDate <> '' "; 
+    "  and tbb.auditDate <> '' ";        //  B-all/A2
 
     var dataArr=[]; 
     let LastDateRange = getLastWeekRange();
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
     //labuse
-    // duedate ='2019-11-20';
-    LastWeekbeg = '2019-11-01';
-    LastWeekend = '2019-11-11';
+    // duedate ='2019-10-30';
+    // LastWeekbeg = '2019-10-01';
+    // LastWeekend = '2019-10-13';
     LastWeekbeg = lastbeg;
     LastWeekend = lastend;
 
@@ -77,19 +78,47 @@ module.exports = function(sender) {
     let WeekThisbeg = DateRange[0].Format("yyyy-MM-dd");
     let WeekThisend = DateRange[1].Format("yyyy-MM-dd");
     //labuse
-    WeekThisbeg = '2019-11-12';
-    WeekThisend = '2019-11-21';
+    // WeekThisbeg = '2019-10-15';
+    // WeekThisend = '2019-10-31';
     WeekThisbeg = param1;
     WeekThisend = param2;
 
+    console.log("部門统计表格开始日:"+WeekThisbeg+"到期日:"+WeekThisend);  
     async.parallel([ funPage2Head, funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3, funPage2Late, funPage2Done  ], 
     function(err, result) {
 		if (err) {
 
 		} else {
-             
+          
             let sub=[]; 
-            sub[0] = 0,sub[1] = 0, sub[2] = 0,sub[3] = 0, sub[4] = 0,sub[5] = 0, sub[6] = 0;
+            sub[0] = 0,sub[1] = 0, sub[2] = 0,sub[3] = 0, sub[4] = 0,sub[5] = 0, sub[6] = 0, sub[7] = 0, sub[8] = 0, sub[9] = 0, sub[10] = 0;
+            sub[0] = result[0][0].Times; //nouse
+            sub[1] = result[1][0].Times;
+            sub[2] = result[2][0].Times;
+            sub[3] = result[3][0].Times;
+            sub[4] = result[4][0].Times;
+            sub[5] = result[5][0].Times;
+            sub[6] = result[6][0].Times;
+            sub[7] = result[7][0].Times;
+            sub[8] = result[8][0].Times;
+ 
+                        
+            var rate = sub[4]/(sub[3]+sub[4]+sub[5])*100;
+            if(rate!=null && typeof rate!="undefined" && rate!=0){
+                rate = rate.toFixed(1);  
+            }
+            if(   rate!='NaN' && rate!="NaN" &&   rate!=0){
+                rate =rate+"%";
+            }else{
+            }
+            var perc = (sub[3]+sub[4]+sub[5])/(sub[2] )*100;
+            if(perc!=null && typeof perc!="undefined" && perc!=0){
+                perc = perc.toFixed(1);  
+            }
+            if(   perc!='NaN' && perc!="NaN" &&   perc!=0){
+                perc =perc+"%";
+            }else{
+            }
             for (var i = 0; i < 1 ; i++) {
                 var obj={
                     "SHIPTYPE":"宁波PM记录",
@@ -102,8 +131,8 @@ module.exports = function(sender) {
                     "Bill_STAT6":result[6][i].Times,
                     "Bill_STAT7":result[7][i].Times,  
                     "Bill_STAT8":result[8][i].Times,  
-                    "PERC_LATE":result[9][i].Times,  
-                    "PERC_DONE":result[10][i].Times,  
+                    "PERC_LATE": rate,  
+                    "PERC_DONE": perc,  
                 };
                 dataArr.push(obj);
             }
@@ -251,6 +280,8 @@ module.exports = function(sender) {
     					    
                             datas.push(temp)
                         }
+                        // console.log("延期&完成", sql_Page2C1,WeekThisbeg,WeekThisend,duedate );
+                        // console.log("延期^完成", temp );
                         cb(null, datas);
                     },
                     error : sender.error
@@ -268,9 +299,11 @@ module.exports = function(sender) {
                             var temp = {
                                 "Times" : data[i].times , 
                             }
-    					    
+    					   
                             datas.push(temp)
                         }
+                        // console.log("#延期未完成", sql_Page2C2,WeekThisbeg,WeekThisend,duedate );
+                        // console.log("@延期未完成", temp );
                         cb(null, datas);
                     },
                     error : sender.error

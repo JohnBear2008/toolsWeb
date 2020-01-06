@@ -624,7 +624,17 @@
 		// console.log('ips:'+$('#modelD option:selected').val())
 		// console.log('ips:'+$('#modelH option:selected').val())
 
-		if (ips.modelD !== '未选择') {
+		if (ips.modelD !== '未选择' && ips.modelD.indexOf('7HT') !== -1 ) {
+			// Fun_getSQLSelectDBData({
+			// 	SQL: "SQLSRStaffs"
+			// }, "#auditor", '李斌');
+
+
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#auditor", '许静静');
+		} else {
+
 			Fun_getSQLSelectDBData({
 				SQL: "SQLSRStaffs"
 			}, "#auditor", '李斌');
@@ -634,6 +644,7 @@
 			Fun_getSQLSelectDBData({
 				SQL: "SQLSRStaffs"
 			}, "#auditor", '孙凌财');
+			// $('#auditor').selectpicker('val', '孙凌财');
 		}
 
 

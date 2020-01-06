@@ -19,7 +19,7 @@ function enterShip() {
     let ary1h=[];  
     let ary2a=[];
     let ary2b=[];
-    let ary3=[]; 
+    let ary3=[];
     let LastDateRange = getLastWeekRange();
     var lastbeg = DateMakB;
     var lastend = DateMakE; 
@@ -100,7 +100,7 @@ function enterShip() {
         }
     }); 
     $.when(ajax1h, ajax1,  ajax2a, ajax2b, ajax3 ).done(function () {
-        console.log("软体出货延误率--延期单数:" + JSON.stringify(ary2b));
+        // console.log("软体出货延误率--延期单数:" + JSON.stringify(ary2b));
            ShipStat((ary1h),(ary1),(ary2a),(ary2b),(ary3));
     });	
 }
@@ -316,7 +316,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
 
     let space3B =[  ' ' ];
     let title3B =[  '软体出货延误率--延期单数' ];
-    let sub3Btitle =[ '单号','完成期限','面板修改人','主机修改人','厂商','修改内容','','','','延期时间','延期原因','面板完成日期','主机完成日期' 	];
+    let sub3Btitle =[ '单号','完成期限','面板修改人','主机修改人','厂商','修改内容','','','','延期时间','延期原因','DSP完成日期' ,'HMI完成日期',	];
     finary.push( space3B );
     finary.push( title3B );
     finary.push( sub3Btitle );
@@ -335,10 +335,10 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         speebook.push('');  
         speebook.push('');  
         speebook.push('');  
-        speebook.push(kdataB[i].applyDate);  
-        speebook.push(kdataB[i].auditOpinion);  
-        speebook.push(kdataB[i].WFEndDate);  
-        speebook.push(kdataB[i].auditDate);  
+        speebook.push('');  
+        speebook.push('');  
+        speebook.push(kdataB[i].DSPFinishDate);  
+        speebook.push(kdataB[i].HMIFinishDate);  
         finary.push(speebook); 
    }
 
@@ -515,7 +515,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     const workbookBlob = workbook2blob(wb);
     let now = new Date();
     var fname = new Date(now).Format("yyyy-MM-dd");
-    openDownloadDialog(workbookBlob, `软体部一周出货统计`+fname+`.xlsx`);
+    openDownloadDialog(workbookBlob, `软体部一周出货统计`+DateFinE+`.xlsx`);
  }
 
  
@@ -610,10 +610,16 @@ function exportExcel(csv) {
 function getWeekRange() {
     let oneDayLong = 24 * 60 * 60 * 1000;
     let now = new Date();
-    let mondayTime = now.getTime() - (now.getDay() - 1) * oneDayLong;
-    let sundayTime = now.getTime() + (7 - now.getDay()) * oneDayLong;
-    let monday = new Date(mondayTime);
-    let sunday = new Date(sundayTime);
+
+    let mondayLastLast = now.getTime() - (now.getDay() - 1) * oneDayLong  - (14 *oneDayLong); //上上週的星一 -14
+    let sundayLastLast = now.getTime() + (7 - now.getDay()) * oneDayLong  - (14 *oneDayLong); //上上週的星日 -14
+    let mondayLast  = now.getTime() - (now.getDay() - 1) * oneDayLong  - (7 *oneDayLong); //上週的星一 -7
+    let sundayLast  = now.getTime() + (7 - now.getDay()) * oneDayLong  - (7 *oneDayLong); //上週的星日 -7 
+    let mondayTime = now.getTime() - (now.getDay() - 1) * oneDayLong  ;//本週的星一
+    let sundayTime = now.getTime() + (7 - now.getDay()) * oneDayLong  ;//本週的星日
+ 
+    let monday = new Date(mondayLast);
+    let sunday = new Date(sundayLast);
     let weekRange = [monday, sunday];
 
     return weekRange;
@@ -621,10 +627,11 @@ function getWeekRange() {
 function getLastWeekRange() {
     let oneDayLong = 24 * 60 * 60 * 1000;
     let now = new Date();
-    let mondayTime = now.getTime() - (14- now.getDay()) * oneDayLong;
-    let sundayTime = now.getTime() - (8 - now.getDay()) * oneDayLong;
-    let monday = new Date(mondayTime);
-    let sunday = new Date(sundayTime);
+    let mondayLastLast = now.getTime() - (now.getDay() - 1) * oneDayLong  - (14 *oneDayLong); //上上週的星一 -14
+    let sundayLastLast = now.getTime() + (7 - now.getDay()) * oneDayLong  - (14 *oneDayLong); //上上週的星日 -14
+
+    let monday = new Date(mondayLastLast);
+    let sunday = new Date(sundayLastLast);
     let weekRange = [monday, sunday];
 
     return weekRange;
