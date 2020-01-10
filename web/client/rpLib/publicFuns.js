@@ -146,7 +146,7 @@ const divDataTableParams = (i) => {
                         }).data();
 
                         for (let n = 0; n < dataSelected.length; n++) {
-                            console.log(JSON.stringify(dataSelected[n]));
+                            // console.log(JSON.stringify(dataSelected[n]));
                             alert(JSON.stringify(dataSelected[n]));
                         }
                     }
@@ -271,7 +271,7 @@ const loadDataTable = async (i) => {
             sqlParams: sqlParams
         }
 
-        console.log('save i:' + JSON.stringify(i));
+        // console.log('save i:' + JSON.stringify(i));
         updateDataTable(i);
 
     })
@@ -685,7 +685,7 @@ const updateDataTable = async (i) => {
 
     // console.log("updateDataTable runing");
 
-    console.log('i old:' + JSON.stringify(i));
+    // console.log('i old:' + JSON.stringify(i));
 
 
     let table = $('#' + i.elementId).DataTable();
@@ -694,11 +694,11 @@ const updateDataTable = async (i) => {
 
     if (i.sqlParams.sql === 'replace') {
         i.sqlParams.params.data = [formDataToRowData(i.sqlParams.params.data)];
-        console.log('i new:' + JSON.stringify(i));
+        // console.log('i new:' + JSON.stringify(i));
     }
 
     let r1 = await postDBData(i.sqlParams);
-    console.log('r1:' + JSON.stringify(r1));
+    // console.log('r1:' + JSON.stringify(r1));
 
     if (r1.affectedRows > 0) {
         alert('已成功更新数据库!');
@@ -863,11 +863,11 @@ const getDataBySql = async (i) => {
  * @param {*} i={formId,sqlParams}
  */
 const fillFormBySql = async (i) => {
-    console.log('fillFormBySql i:' + JSON.stringify(i));
+    // console.log('fillFormBySql i:' + JSON.stringify(i));
     let r = await getDataBySql(i.sqlParams);
-    console.log('r:' + JSON.stringify(r));
+    // console.log('r:' + JSON.stringify(r));
     //初始化并填写form内inputs
-    initAndFillFormInputs({
+    fillFormInputs({
         formId: i.formId,
         params: r[0]
     })
@@ -930,9 +930,9 @@ const formDataToRowData = (i) => {
 
     for (let n of i) {
         let paramName = Object.keys(n)[0];
-        console.log('paramName:' + paramName)
+        // console.log('paramName:' + paramName)
         let paramValue = n[paramName];
-        console.log('paramValue:' + paramValue)
+        // console.log('paramValue:' + paramValue)
         rowData[paramName] = paramValue
     }
 
@@ -953,12 +953,12 @@ const getPostFormData = (i) => {
 
     let o;
     let r1 = getFormData(i)
-    console.log('r1:' + JSON.stringify(r1));
+    // console.log('r1:' + JSON.stringify(r1));
 
     r1.data = [formDataToRowData(r1.data)]
     o = r1;
 
-    console.log("o:" + JSON.stringify(o));
+    // console.log("o:" + JSON.stringify(o));
 
     return o;
 

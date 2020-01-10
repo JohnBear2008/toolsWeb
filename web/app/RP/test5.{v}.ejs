@@ -52,11 +52,16 @@
                 //图片文件上传
                 onImageUpload: function (files, editor, $editable) {
                     data = new FormData();
+
+                    console.log('files:'+JSON.stringify(files))
                     data.append("file", files[0]);
+                    //添加目录放置到指定文件夹
+                    data.append("desDir","/test");
+
                     $.ajax({
                         data: data,
                         type: "POST",
-                        url: "/system.files.upload/test/",
+                        url: "/system.files.upload/",
                         cache: false,
                         contentType: false,
                         processData: false,

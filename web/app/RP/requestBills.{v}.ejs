@@ -164,10 +164,6 @@
                                         <tbody></tbody>
                                     </table>
 
-
-
-
-
                                 </div>
                             </div>
                         </div>
@@ -638,12 +634,13 @@
     //添加主表监听器,定义双击打开事件
 
     const addMainTableListener = () => {
-        let table = $('#rp_requestbills').DataTable();
+       
 
         //定义主表双击事件
         $('#rp_requestbills tbody').on('dblclick', 'tr', function () {
 
             //设定选中
+            let table = $('#rp_requestbills').DataTable();
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
@@ -666,6 +663,9 @@
             //加载子表记录表数据
 
             loadBillSubTable(dataSelect.requestBillId);
+
+            //将展开模式设为编辑
+            openMode = 'edit'
 
         });
 
@@ -767,6 +767,13 @@
     //保存维修申请单函数
     const saveRequestbill = async () => {
 
+
+        //新增状态等待单号检测完成
+        if (openMode === 'new') {
+            await autoUpdateRequestBillId();
+        }
+
+
         let mainFormData = getPostFormData({
             formId: 'rp_requestbillsForm'
         })
@@ -796,13 +803,6 @@
             }
         })
 
-        // createSql({
-        //     sql: 'replace',
-        //     params: {
-        //         tableId: 'rp_recordbills',
-        //         data: subTableData
-        //     }
-        // })
 
 
         console.log('saveRequestbill r1:' + JSON.stringify(r1));
@@ -821,6 +821,53 @@
 
 
 
+
+    //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
+
+    const checkRequestBillId = async () => {
+        let billId = $("#rp_requestbillsForm-requestBillId").text();
+
+        let r1 = await getDataBySql({
+            sql: 'getReqeustBillsNum',
+            params: {
+                filter: 'requestBillId="' + billId + '"'
+            }
+        })
+
+        let r2 = r1[0].billsNum;
+        console.log("checkRequestBillId:" + r2);
+
+        let o = r2 > 0 ? false : true;
+        return o;
+
+    }
+
+    //更新需求单号加1
+    const updateRequestBillId = () => {
+        let billId = $("#rp_requestbillsForm-requestBillId").text();
+        if (billId) {
+            billIdArr = billId.split('-');
+            let newBillId = billIdArr[0] + '-' + (parseInt(billIdArr[1]) + 1);
+            $("#rp_requestbillsForm-requestBillId").text(newBillId);
+        }
+    }
+
+    //递归更新单号直到不存在冲突单号;
+
+    const autoUpdateRequestBillId = async () => {
+        let r = await checkRequestBillId();
+        if (r) {
+            return true
+        } else {
+            console.log('fail:' + $("#rp_requestbillsForm-requestBillId").text());
+            updateRequestBillId()
+            console.log('fail11:' + $("#rp_requestbillsForm-requestBillId").text());
+            return await autoUpdateRequestBillId();
+        }
+    }
+
+
+
     $(document).ready(function () {
 
         // alert(parseInt(''))
@@ -828,6 +875,8 @@
         sessionName = "<%-locals.session.yjUser.Name%>";
         //定义子表全局变量临时数据数组
         subTableData = [];
+        //展开模式,新增还是编辑,默认新增
+        openMode = 'new';
 
         //初始化主表
         loadBillMainTable();
@@ -873,6 +922,9 @@
             //在保存时赋值
             // $("#rp_requestbillsForm-maker").text(sessionName);
             // $("#rp_requestbillsForm-makeDate").text(currentDate());
+
+            //展开模式设为新增
+            openMode = 'new';
 
         })
 
