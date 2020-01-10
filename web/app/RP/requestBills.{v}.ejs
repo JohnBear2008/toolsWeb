@@ -75,7 +75,8 @@
 
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="rp_requestbillsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="rp_requestbillsModal" tabindex="-1" role="dialog" aria-hidden="true"
+        data-backdrop="static">
 
         <div class="modal-dialog" style="width: 65%;">
 
@@ -181,13 +182,14 @@
 
                             <form class="form-horizontal" role="form" id='rp_requestbillsForm'>
 
-                                <input id="rp_requestbillsForm-DBID" type="hidden" value="">
+                                <!-- <input id="rp_requestbillsForm-DBID" type="hidden" value=""> -->
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">申请单号</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-requestBillId" type="text"
-                                            value="该输入框获得焦点...">
+                                        <!-- <input class="form-control" id="rp_requestbillsForm-requestBillId" type="text"> -->
+                                        <!-- <span class="form-control-static" id="rp_requestbillsForm-requestBillId"></span> -->
+                                        <p class="form-control-static" id="rp_requestbillsForm-requestBillId"></p>
                                     </div>
 
 
@@ -203,7 +205,7 @@
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
-                                        <input type="hidden" id="rp_requestbillsForm-requestDate" value="" />
+                                        <!-- <input type="hidden" id="rp_requestbillsForm-requestDate" value="" /> -->
                                     </div>
 
 
@@ -217,15 +219,13 @@
 
                                     <label class="col-sm-1 control-label">来源单号</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-fromBillId" type="text"
-                                            value="该输入框获得焦点...">
+                                        <input class="form-control" id="rp_requestbillsForm-fromBillId" type="text">
                                     </div>
 
 
                                     <label class="col-sm-1 control-label">客户编号</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerId" type="text"
-                                            value="该输入框获得焦点...">
+                                        <input class="form-control" id="rp_requestbillsForm-customerId" type="text">
                                     </div>
 
 
@@ -236,16 +236,21 @@
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label">客户简称</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-shortName" type="text"
-                                            value="该输入框获得焦点...">
+                                    <div class="col-sm-4">
+                                        <select id="rp_requestbillsForm-customerShortName"
+                                            class="selectpicker form-control" data-live-search="true">
+                                        </select>
                                     </div>
+
+                                    <div class="col-sm-1">
+                                        <button id='btnFillCustomerInfo' type="button" class="btn btn-info">读取</button>
+                                    </div>
+
 
 
                                     <label class="col-sm-1 control-label">客户名称</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerName" type="text"
-                                            value="该输入框获得焦点...">
+                                        <input class="form-control" id="rp_requestbillsForm-customerName" type="text">
                                     </div>
 
 
@@ -253,31 +258,31 @@
 
                                 <div class="form-group">
 
-
                                     <label class="col-sm-1 control-label">客户区域</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerArea" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_requestbillsForm-customerArea" class="selectpicker form-control"
+                                            data-live-search="true">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">国内外</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-isInland" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_requestbillsForm-isInland" class="selectpicker">
+                                            <option>国内</option>
+                                            <option>国外</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">联系人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-contact" type="text"
-                                            value="该输入框获得焦点...">
+                                        <input class="form-control" id="rp_requestbillsForm-contact" type="text">
                                     </div>
 
                                     <label class="col-sm-1 control-label">移动电话</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-mobilePhone" type="text"
-                                            value="该输入框获得焦点...">
+                                        <input class="form-control" id="rp_requestbillsForm-mobilePhone" type="text">
                                     </div>
                                 </div>
 
@@ -285,27 +290,32 @@
                                     <label class="col-sm-1 control-label">归属公司简称</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_requestbillsForm-customerBelongShort"
-                                            type="text" value="该输入框获得焦点...">
+                                            type="text">
                                     </div>
 
                                     <label class="col-sm-1 control-label">归属公司全称</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_requestbillsForm-customerBelongFull"
-                                            type="text" value="该输入框获得焦点...">
+                                            type="text">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">送修方式</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-requestWay" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_requestbillsForm-requestWay" class="selectpicker">
+                                            <option>邮寄过来</option>
+                                            <option>客户送来</option>
+                                            <option>公司人员带回</option>
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">送修人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-requestStaff" type="text"
-                                            value="该输入框获得焦点...">
+                                        <!-- <input class="form-control" id="rp_requestbillsForm-requestStaff" type="text"> -->
+                                        <select id="rp_requestbillsForm-requestStaff" class="selectpicker"
+                                            data-live-search="true">
+                                        </select>
                                     </div>
                                 </div>
 
@@ -320,14 +330,12 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">制单人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-maker" type="text"
-                                            value="该输入框获得焦点...">
+                                        <p class="form-control-static" id="rp_requestbillsForm-maker"></p>
                                     </div>
 
                                     <label class="col-sm-1 control-label">制单时间</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-saveTimeStamp" type="text"
-                                            value="该输入框获得焦点...">
+                                        <p class="form-control-static" id="rp_requestbillsForm-makeDate"></p>
                                     </div>
                                 </div>
 
@@ -343,8 +351,11 @@
                                 <div class="col-md-12 column">
 
                                     <!-- 功能组按钮 -->
-                                    <div class="well"><button id='btnScan' type="button"
-                                            class="btn btn-info">扫描填单</button></div>
+                                    <div class="well">
+                                        <button id='btnScan' type="button" class="btn btn-info">扫描产品</button>
+                                        <button id='btnAddProduct' type="button" class="btn btn-info">新增产品</button>
+                                        <button id='btnDeleteProduct' type="button" class="btn btn-danger">删除产品</button>
+                                    </div>
 
                                     <!-- 扫描模态框（Modal） -->
                                     <div class="modal fade" id="scanModal">
@@ -375,13 +386,15 @@
                                         style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>申请单号</th>
+                                                <th>序号</th>
                                                 <th>产品编号</th>
                                                 <th>产品描述</th>
-                                                <th>故障描述</th>
+                                                <th>出厂编号</th>
+                                                <th>原产地</th>
                                                 <th>是否返修</th>
                                                 <th>是否紧急</th>
                                                 <th>质保期内</th>
+                                                <th>状态</th>
 
 
                                             </tr>
@@ -396,24 +409,39 @@
                                         <div class="panel-body">
 
 
+
+
                                             <form class="form-horizontal" role="form" id='rp_recordbillsForm'>
 
-                                                <input id="rp_recordbillsForm-DBID" type="hidden" value="">
+                                                <!-- <input id="rp_recordbillsForm-DBID" type="hidden" value=""> -->
                                                 <input id="rp_recordbillsForm-requestBillId" type="hidden" value="">
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">序号</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static" id="rp_recordbillsForm-rowId">
+                                                        </p>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">状态</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static" id="rp_recordbillsForm-status">
+                                                        </p>
+                                                    </div>
+                                                </div>
 
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
                                                         <input class="form-control" id="rp_recordbillsForm-productId"
-                                                            type="text" value="该输入框获得焦点...">
+                                                            type="text">
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">产品描述</label>
                                                     <div class="col-sm-5">
                                                         <input class="form-control"
-                                                            id="rp_recordbillsForm-productDescription" type="text"
-                                                            value="该输入框获得焦点...">
+                                                            id="rp_recordbillsForm-productDescription" type="text">
                                                     </div>
 
                                                 </div>
@@ -422,22 +450,94 @@
 
 
                                                 <div class="form-group">
-                                                    <label class="col-sm-1 control-label">故障描述</label>
+                                                    <label class="col-sm-1 control-label">出厂编号</label>
                                                     <div class="col-sm-5">
-                                                        <input class="form-control"
-                                                            id="rp_recordbillsForm-faultDescription" type="text"
-                                                            value="该输入框获得焦点...">
+                                                        <input class="form-control" id="rp_recordbillsForm-factoryNo"
+                                                            type="text">
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">是否返修</label>
+                                                    <label class="col-sm-1 control-label">原产地</label>
                                                     <div class="col-sm-5">
-                                                        <input class="form-control" id="rp_recordbillsForm-isRework"
-                                                            type="text" value="该输入框获得焦点...">
+                                                        <input class="form-control" id="rp_recordbillsForm-origin"
+                                                            type="text">
                                                     </div>
 
 
                                                 </div>
 
+                                                <div class="form-group">
+
+                                                    <label class="col-sm-1 control-label">故障描述</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control"
+                                                            id="rp_recordbillsForm-faultDescription" type="text">
+                                                    </div>
+
+
+                                                    <label class="col-sm-1 control-label">是否返修</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_recordbillsForm-isRework"
+                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            <option>是</option>
+                                                            <option>否</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+
+                                                    <label class="col-sm-1 control-label">产品来源</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_recordbillsForm-productFrom"
+                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            <option>弘讯厂内</option>
+                                                            <option>机器厂商</option>
+                                                            <option>终端客户</option>
+                                                        </select>
+                                                    </div>
+
+
+                                                    <label class="col-sm-1 control-label">产品归属</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_recordbillsForm-productBelong"
+                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            <option>客户</option>
+                                                            <option>维修部</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+
+
+                                                    <label class="col-sm-1 control-label">是否加急</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_recordbillsForm-urgent"
+                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            <option>是</option>
+                                                            <option>否</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">质保期内</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_recordbillsForm-inWarranty"
+                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            <option>是</option>
+                                                            <option>否</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label"></label>
+                                                    <div class="col-sm-5">
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="btnProductSave">
+                                                            保存
+                                                        </button>
+                                                    </div>
+                                                </div>
 
                                             </form>
 
@@ -445,25 +545,18 @@
                                         </div>
                                     </div>
 
-
-
                                 </div>
                             </div>
 
-
-
-
                         </div>
                     </div>
-
-
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_requestbillsModalClose">关闭
                     </button>
                     <button type="button" class="btn btn-primary" id="rp_requestbillsSave">
-                        保存
+                        保存单据
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -475,80 +568,77 @@
 
 
 
-
-
-
-
 <script type="text/javascript">
-    $(document).ready(function () {
+    //申请表主表dataTable column 数组
 
-        var sessionName = "<%-locals.session.yjUser.Name%>";
+    const mainColumnsArray = [{
+        data: 'requestBillId',
+        visable: 'false'
+    }, {
+        data: 'requestDate'
+    }, {
+        data: 'customerId'
+    }, {
+        data: 'customerShortName',
+    }, {
+        data: 'customerArea',
+    }, {
+        data: 'isInland',
+    }, {
+        data: 'requestStaff',
+    }, {
+        data: 'requestWay',
+    }];
+
+    //申请表子表dataTable column 数组
+    const subColumnsArray = [{
+        data: 'rowId',
+    }, {
+        data: 'productId',
+    }, {
+        data: 'productDescription',
+    }, {
+        data: 'factoryNo',
+    }, {
+        data: 'origin',
+    }, {
+        data: 'isRework',
+    }, {
+        data: 'urgent',
+    }, {
+        data: 'inWarranty',
+    }, {
+        data: 'status',
+    }]
 
 
-        // //加载表格
-        // loadDataTable({
-        //     elementId: 'rp_requestbills',
-        //     sqlParams: {
-        //         tableId: 'rp_requestbills',
-        //         filter: ''
-        //     },
-        //     dtParams: {
-        //         columns: [{
-        //                 data: 'requestBillId',
-        //                 visable: 'false'
-        //             },
-        //             {
-        //                 data: 'requestDate'
-        //             }, {
-        //                 data: 'customerId'
-        //             }, {
-        //                 data: 'shortName',
-        //             }, {
-        //                 data: 'customerArea',
-        //             }, {
-        //                 data: 'isInland',
-        //             }, {
-        //                 data: 'requestStaff',
-        //             }, {
-        //                 data: 'requestWay',
-        //             }
-        //         ],
-        //     }
-        // })
 
-        //加载表格
-        loadBillDataTable({
-            elementId: 'rp_requestbills',
-            sqlParams: {
-                sqlId: 'sqlRequestBills',
-                params: []
-            },
-            dtParams: {
-                columns: [{
-                        data: 'requestBillId',
-                        visable: 'false'
-                    },
-                    {
-                        data: 'requestDate'
-                    }, {
-                        data: 'customerId'
-                    }, {
-                        data: 'shortName',
-                    }, {
-                        data: 'customerArea',
-                    }, {
-                        data: 'isInland',
-                    }, {
-                        data: 'requestStaff',
-                    }, {
-                        data: 'requestWay',
-                    }
-                ],
+    //创建申请单新单号
+    const createRequestBillId = async () => {
+        let r1 = await getDataBySql({
+            sql: "getReqeustBillsNum",
+            params: {
+                filter: 'makeDate="' + currentDate() + '"'
             }
         })
+        // console.log('r1:' + r1);
+        let r2 = r1[0].billsNum
+        let r3 = parseInt(r2) + 1;
 
+        let r4 = PrefixInteger(r3, 3);
+        // console.log('r4:' + r4);
+        let r5 = dateFormat(currentDate(), 'yyyyMMdd');
+
+        let billId = 'AA-' + r5 + r4;
+        $("#rp_requestbillsForm-requestBillId").text(billId);
+    }
+
+
+
+    //添加主表监听器,定义双击打开事件
+
+    const addMainTableListener = () => {
         let table = $('#rp_requestbills').DataTable();
-
 
         //定义主表双击事件
         $('#rp_requestbills tbody').on('dblclick', 'tr', function () {
@@ -561,22 +651,189 @@
             //打开面板
             $('#rp_requestbillsModal').modal('show');
 
-            //初始化数据
-            initFormInputs({
-                formId: 'rp_requestbillsForm'
-            })
+            //打开关联信息
+            $("#accordion").show();
 
-
-
-            //填写div匹配数据
-            fillFormInputs({
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
                 formId: 'rp_requestbillsForm',
                 params: dataSelect
             })
 
+            //关闭子表panel
+            $('#rp_recordbillsPanel').hide();
+
+            //加载子表记录表数据
+
+            loadBillSubTable(dataSelect.requestBillId);
+
         });
 
+    }
 
+    //主表加载数据事件;
+
+    const loadBillMainTable = async () => {
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_requestbills',
+            sqlParams: {
+                sqlId: 'sqlRequestBills',
+                params: []
+            },
+            dtParams: {
+                columns: mainColumnsArray
+            }
+        })
+
+        addMainTableListener();
+    }
+
+    //添加子表监听器,定义双击展开事件
+    const addSubTableListener = () => {
+        let subTable = $('#rp_recordbills').DataTable();
+
+        //解绑原事件
+        $('#rp_recordbills tbody').unbind();
+
+        //定义子表双击事件
+        $('#rp_recordbills tbody').on('click', 'tr', function () {
+
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+
+                $('#rp_recordbillsPanel').hide();
+            } else {
+                subTable.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+
+                let rowSelect = subTable.row('.selected').data();
+                // console.log("rowSelect:"+JSON.stringify(rowSelect));
+
+
+                //初始化并填写form内inputs
+                initAndFillFormInputs({
+                    formId: 'rp_recordbillsForm',
+                    params: rowSelect
+                })
+
+                //打开面板
+                $('#rp_recordbillsPanel').show();
+            }
+
+        });
+    }
+
+
+
+
+
+    //用数组重载子表
+    const loadDataSubTable = async (dataArray) => {
+
+        //加载表格
+        loadBillDataTable({
+            elementId: 'rp_recordbills',
+            dtParams: {
+                dtConfig: 'dtConfigData',
+                data: dataArray,
+                columns: subColumnsArray
+            }
+        })
+
+        //添加子表双击事件
+        addSubTableListener();
+    }
+
+    //加载展开选定表子表关联数据
+
+    const loadBillSubTable = async (billId) => {
+        let dataArray = await getDataBySql({
+            sql: 'sqlRecordBills',
+            params: {
+                filter: 'requestBillId="' + billId + '"'
+            }
+        })
+        //将表数据同步到共用数组
+        subTableData = dataArray;
+
+        loadDataSubTable(subTableData);
+
+    }
+
+
+
+
+    //保存维修申请单函数
+    const saveRequestbill = async () => {
+
+        let mainFormData = getPostFormData({
+            formId: 'rp_requestbillsForm'
+        })
+
+        //给主表数据添加,maker 和makeDate时间;
+
+        if (!mainFormData.data[0].maker) {
+            mainFormData.data[0].maker = sessionName;
+        }
+
+        if (!mainFormData.data[0].makeDate) {
+            mainFormData.data[0].makeDate = currentDate();
+        }
+
+        console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: mainFormData
+        })
+
+        let r2 = await postDBData({
+            sql: 'replace',
+            params: {
+                tableId: 'rp_recordbills',
+                data: subTableData
+            }
+        })
+
+        // createSql({
+        //     sql: 'replace',
+        //     params: {
+        //         tableId: 'rp_recordbills',
+        //         data: subTableData
+        //     }
+        // })
+
+
+        console.log('saveRequestbill r1:' + JSON.stringify(r1));
+        console.log('saveRequestbill r2:' + JSON.stringify(r2));
+
+        if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+            alert('保存成功!')
+            $('#rp_requestbillsModal').modal('hide');
+            loadBillMainTable();
+        } else {
+            alert('出现错误!')
+        }
+
+
+    }
+
+
+
+    $(document).ready(function () {
+
+        // alert(parseInt(''))
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
+        //定义子表全局变量临时数据数组
+        subTableData = [];
+
+        //初始化主表
+        loadBillMainTable();
+
+        //初始化子表
+        loadDataSubTable(subTableData);
 
 
         //新增需求单按钮
@@ -584,70 +841,59 @@
 
             //打开面板
             $('#rp_requestbillsModal').modal('show');
-            //初始化数据
-            initFormInputs({
+
+            //关闭关联信息
+            $("#accordion").hide();
+
+            //清空form数据
+            clearFormInputs({
                 formId: 'rp_requestbillsForm'
             })
 
-            $("#rp_requestbillsForm-maker").val(sessionName);
+            //清空子表及全局变量
+            subTableData = [];
+            $('#rp_recordbills tbody').html("");
+
+
+            //打开面板
+            $('#rp_recordbillsPanel').hide();
+
+
+            //清空modal数据
+            clearFormInputs({
+                formId: 'rp_requestbillsForm'
+            })
+
+
+            createRequestBillId();
+            $("#rp_requestbillsForm-requestDate").val(currentDate());
+            $("#rp_requestbillsForm-isInland").selectpicker('val', '国内')
+            $("#rp_requestbillsForm-requestWay").selectpicker('val', '邮寄过来')
+
+            //在保存时赋值
+            // $("#rp_requestbillsForm-maker").text(sessionName);
+            // $("#rp_requestbillsForm-makeDate").text(currentDate());
 
         })
 
-        // //id选择器选中modal框
-        // $('#rp_requestbillsModal').on('show.bs.modal', function () {
+        // 读取按钮
+        $('#btnFillCustomerInfo').click(function () {
+            let customerShortName = $('#rp_requestbillsForm-customerShortName option:selected').val()
+            if (customerShortName) {
+                fillFormBySql({
+                    formId: 'rp_requestbillsForm',
+                    sqlParams: {
+                        sql: 'getCustomers',
+                        params: {
+                            filter: 'customerShortName="' + customerShortName + '"'
+                        }
+                    }
+                })
 
-        //     let dataSelect = table.row('.selected').data();
-
-        //     let filter = ''
-
-        //     let requestBillId = $('#rp_requestbillsForm-requestBillId').val();
-
-
-        //     if (dataSelect !== undefined) {
-        //         // console.log("dataSelect:" + JSON.stringify(dataSelect));
-
-        //         let requestBillId = dataSelect.requestBillId;
-        //         filter = 'requestBillId="' + requestBillId + '"';
-        //     } else {
-        //         filter = 'requestBillId=""';
-        //     }
-
-        //     loadSubDataTable({
-        //         elementId: 'rp_recordbills',
-        //         sqlParams: {
-        //             tableId: 'rp_recordbills',
-        //             filter: filter
-        //         },
-        //         dtParams: {
-        //             columns: [{
-        //                     data: 'requestBillId',
-        //                     visible: false
-        //                 }, {
-        //                     data: 'productId'
-        //                 },
-        //                 {
-        //                     data: 'productDescription'
-        //                 }, {
-        //                     data: 'faultDescription'
-        //                 }, {
-        //                     data: 'isRework',
-        //                 }, {
-        //                     data: 'urgent',
-        //                 }, {
-        //                     data: 'inWarranty',
-        //                 }
-        //             ],
-        //         },
-        //         params: {
-        //             fixInitValues: {
-        //                 requestBillId: requestBillId
-        //             }
-        //         }
-        //     })
+            }
+        })
 
 
-
-        // })
 
         // 扫描按钮
         $('#btnScan').click(function () {
@@ -659,12 +905,6 @@
                 console.log('content:' + content);
                 // alert('content:' + content);
                 $('#rp_recordbillsPanel').show();
-
-
-                fillDivInputs({
-                    elementId: 'rp_recordbills',
-                    params: JSON.parse(content)
-                })
 
 
                 scanner.stop().then(function () {
@@ -695,15 +935,154 @@
             $('#scanModal').modal('hide')
         })
 
+        // 新增填单按钮
+        $('#btnAddProduct').click(function () {
+            let subTable = $('#rp_recordbills').DataTable();
+            //删除子表选中状态
+            // subTable.$('tr.selected').removeClass('selected');
+
+            subTable.rows().deselect();
+
+            //清空panel数据
+            clearFormInputs({
+                formId: 'rp_recordbillsForm'
+            })
+            //打开面板
+            $('#rp_recordbillsPanel').show();
+
+            //设置默认值
+
+            $("#rp_recordbillsForm-status").text('新增')
+            $("#rp_recordbillsForm-productFrom").selectpicker('val', '终端客户')
+            $("#rp_recordbillsForm-productBelong").selectpicker('val', '客户')
+            $("#rp_recordbillsForm-isRework").selectpicker('val', '否')
+            $("#rp_recordbillsForm-urgent").selectpicker('val', '否')
+            $("#rp_recordbillsForm-inWarranty").selectpicker('val', '否')
+
+        })
+
+        //保存产品按钮
+
+        $('#btnProductSave').click(function () {
+
+            let requestBillId = $("#rp_requestbillsForm-requestBillId").text();
+
+            let rowNum = $("#rp_recordbills tbody tr").size();
+            // console.log('rowNum:' + rowNum);
+
+            let productData = getFormData({
+                formId: 'rp_recordbillsForm'
+            })
+            // console.log('productData:' + JSON.stringify(productData.data))
+            let rowData = formDataToRowData(productData.data)
+            rowData.requestBillId = requestBillId;
+            // console.log('rowData:' + JSON.stringify(rowData))
+
+            //检查是否存在序号,区分新增还是编辑
+            if (rowData.rowId) {
+                for (const n in subTableData) {
+                    // console.log("subTableData[n]:" + JSON.stringify(subTableData[n].rowId));
+                    // console.log("rowData:" + JSON.stringify(rowData.rowId));
+
+                    //此处不用===避免,字符类型不匹配导致相关问题
+                    if (subTableData[n].rowId == rowData.rowId) {
+                        console.log('match');
+
+                        subTableData[n] = rowData;
+                        break;
+                    }
+                }
+                // console.log("subTableData:" + JSON.stringify(subTableData));
+
+            } else {
+                // console.log("subTableData before:" + JSON.stringify(subTableData));
+                // console.log("rowData:" + JSON.stringify(rowData.status));
+                rowData.rowId = rowNum + 1;
+
+                subTableData.push(rowData);
+                // console.log("subTableData:" + JSON.stringify(subTableData));
+
+            }
+
+
+            //重新加载子表
+            loadDataSubTable(subTableData)
+
+        })
+
+        // 删除产品按钮
+        $('#btnDeleteProduct').click(function () {
+            let subTable = $('#rp_recordbills').DataTable();
+            let rowSelect = subTable.row('.selected').data();
+            // alert(JSON.stringify(rowSelect))
+
+            if (rowSelect) {
+                if (rowSelect.status !== '新增') {
+                    alert('非新增状态不允许删除!')
+                } else {
+                    //删除元素
+                    for (const n in subTableData) {
+                        if (subTableData[n].rowId === rowSelect.rowId) {
+                            subTableData.splice(n, 1);
+                        }
+                    }
+                    //重新排序rowId,避免空缺
+                    for (const n in subTableData) {
+                        subTableData[n].rowId = parseInt(n) + 1;
+                    }
+
+                    //重新加载子表
+                    loadDataSubTable(subTableData)
+
+                }
+
+            } else {
+                alert('请先点击表格选中需要删除的产品!')
+            }
+        })
+
+
+        //表单保存按钮
+        $('#rp_requestbillsSave').click(function () {
+            saveRequestbill();
+        })
+
+
+
         //初始化组件
         loadDatePicker({
             elementId: "rp_requestbillsForm-requestDate",
         })
 
+        loadBootStrapSelector({
+            elementId: 'rp_requestbillsForm-customerShortName',
+            sqlParams: {
+                sql: 'getCustomerSelector'
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_requestbillsForm-customerArea',
+            sqlParams: {
+                sql: 'getRegionSelector'
+            },
+            // initValue:'中国,北京'
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_requestbillsForm-requestStaff',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+            // initValue:'中国,北京'
+        })
 
 
-
-
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_requestbillsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_requestbills').DataTable();
+            table.$('tr.selected').removeClass('selected');
+        })
 
     });
 </script>

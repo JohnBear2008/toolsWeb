@@ -14,34 +14,34 @@ module.exports = function(sender) {
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");;
     //上周单   1118-1125
-    var sql_Page1HA1 = "Select  count(*) as times from `ppm_bills_task` tbb where     tbb.taskMakeDate < ?     "+
+    var sql_Page1HA1 = "Select  count(*) as times from `ppm_bills_task` tbb where     tbb.taskMakeDate <= ?     "+
     "  and (IPQCStatus is null or IPQCStatus='未填写') "; 
 
     //本周新单  1125~1202
-    var sql_Page1HA2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? ";
+    var sql_Page1HA2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >=? and  tbb.taskMakeDate < ? ";
  
     //按时完成 2参数  
-    var sql_Page1HB1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? "+
+    var sql_Page1HB1 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) "+
     " and  tbb.taskFinishDate <= tbb.IPQCAuditDate  and IPQCAuditResultText ='测试通过' "; 
   
     //延期已完成 2参数  
-    var sql_Page1HB2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ? "+
+    var sql_Page1HB2 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) "+
     " and  tbb.taskFinishDate > tbb.IPQCAuditDate  and IPQCAuditResultText ='测试通过' ";
 
     //客户取消
-    var sql_Page1HB3 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
+    var sql_Page1HB3 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
     " and IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') "; 
 
     //延期未完成  3参数
-    var sql_Page1HC1 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
+    var sql_Page1HC1 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
     " and  tbb.taskFinishDate > ? and IPQCAuditResultText is null "; 
 
     //期限未到 3参数 BTAcceptResult ='1'
-    var sql_Page1HC2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
+    var sql_Page1HC2 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
     " and tbb.taskFinishDate < ?   "; 
 
     //延误率
-    var sql_Page1HC3 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >? and  tbb.taskMakeDate < ?    "+
+    var sql_Page1HC3 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))   "+
     " and tbb.taskFinishDate >  tbb.IPQCAuditDate   "; 
 
     var dataArr=[]; 
@@ -49,8 +49,8 @@ module.exports = function(sender) {
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
     //labuse
-    LastWeekbeg = '2019-11-01';
-    LastWeekend = '2019-11-11';
+    // LastWeekbeg = '2019-11-01';
+    // LastWeekend = '2019-11-11';
     // duedate ='2019-11-20';
     LastWeekbeg = lastbeg;
     LastWeekend = lastend;
@@ -59,8 +59,8 @@ module.exports = function(sender) {
     let WeekThisbeg = DateRange[0].Format("yyyy-MM-dd");
     let WeekThisend = DateRange[1].Format("yyyy-MM-dd");
     //labuse
-    WeekThisbeg = '2019-11-12';
-    WeekThisend = '2019-11-20';
+    // WeekThisbeg = '2019-11-12';
+    // WeekThisend = '2019-11-20';
     WeekThisbeg = param1;
     WeekThisend = param2;
 
@@ -134,7 +134,7 @@ module.exports = function(sender) {
     function funPage2B1(cb){
         yjDBService.exec({
                     sql : sql_Page1HB1,
-                    parameters : [WeekThisbeg ,WeekThisend ], 
+                    parameters : [LastWeekend ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -154,7 +154,7 @@ module.exports = function(sender) {
     function funPage2B2(cb){
         yjDBService.exec({
                     sql : sql_Page1HB2,
-                    parameters : [WeekThisbeg ,WeekThisend ], 
+                    parameters : [LastWeekend ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -174,7 +174,7 @@ module.exports = function(sender) {
     function funPage2B3(cb){
         yjDBService.exec({
                     sql : sql_Page1HB3,
-                    parameters : [WeekThisbeg ,WeekThisend ], 
+                    parameters : [LastWeekend ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -194,7 +194,7 @@ module.exports = function(sender) {
     function funPage2C1(cb){
         yjDBService.exec({
                     sql : sql_Page1HC1,
-                    parameters : [WeekThisbeg ,WeekThisend ,duedate ], 
+                    parameters : [LastWeekend ,WeekThisbeg ,WeekThisend ,duedate ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -214,7 +214,7 @@ module.exports = function(sender) {
     function funPage2C2(cb){
         yjDBService.exec({
                     sql : sql_Page1HC2,
-                    parameters : [WeekThisbeg ,WeekThisend ,duedate], 
+                    parameters : [LastWeekend ,WeekThisbeg ,WeekThisend ,duedate], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -234,7 +234,7 @@ module.exports = function(sender) {
     function funPage2C3(cb){
         yjDBService.exec({
                     sql : sql_Page1HC3,
-                    parameters : [WeekThisbeg ,WeekThisend ], 
+                    parameters : [LastWeekend ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

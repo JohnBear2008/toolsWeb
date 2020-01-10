@@ -430,13 +430,12 @@
                     $(this).addClass('selected');
 
                     let rowSelect = subTable.row('.selected').data();
-                    //清空Form原有数据
                     initFormInputs({
-                        elementId: 'rp_recordbillsForm'
+                        formId: 'rp_recordbillsForm'
                     })
                     //填写div匹配数据
-                    fillDivInputs({
-                        elementId: 'rp_recordbills',
+                    fillFormInputs({
+                        formId: 'rp_recordbillsForm',
                         params: rowSelect
                     })
                     //打开面板

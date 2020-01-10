@@ -48,7 +48,41 @@ const currentDate = () => {
     return clock;
 }
 
+/**
+ *格式化日期函数
+ *
+ * @param {*} fmt
+ * @param {*} date
+ * @returns
+ */
+const dateFormat = (date, fmt) => {
+    //先格式化为日期,缺少此句 get函数无法执行
+    date = new Date(date);
+    let o = {
+        "M+": date.getMonth() + 1, //月份 
+        "d+": date.getDate(), //日 
+        "H+": date.getHours(), //小时 
+        "m+": date.getMinutes(), //分 
+        "s+": date.getSeconds(), //秒 
+        "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
+        "S": date.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (let k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
 
+/**
+ *位数不够前置自动补0函数
+ *
+ * @param {*} num  数值
+ * @param {*} length 长度
+ * @returns
+ */
+const PrefixInteger = (num, length) => {
+    return (Array(length).join('0') + num).slice(-length);
+}
 
 
 /**
@@ -238,16 +272,16 @@ const loadDataTable = async (i) => {
         }
 
         console.log('save i:' + JSON.stringify(i));
-
-
         updateDataTable(i);
 
     })
 
+    // 关闭事件重置选中datatable选中,避免显示错误
+    $('#' + r1.elementId + 'Modal').on('hidden.bs.modal', function () {
+        table.$('tr.selected').removeClass('selected');
+    })
+
 }
-
-
-
 
 
 /**
@@ -308,7 +342,7 @@ const divSubDataTableParams = (i) => {
                         }).data();
 
                         for (let n = 0; n < dataSelected.length; n++) {
-                            console.log(JSON.stringify(dataSelected[n]));
+                            // console.log(JSON.stringify(dataSelected[n]));
                             DBIDArray.push(dataSelected[n].DBID)
                         }
                         // console.log(DBIDArray);
@@ -422,7 +456,7 @@ const loadSubDataTable = async (i) => {
             sqlParams: sqlParams
         }
 
-        console.log('save i:' + JSON.stringify(i));
+        // console.log('save i:' + JSON.stringify(i));
         updateDataTable(i);
 
     })
@@ -476,7 +510,7 @@ const loadBootStrapSelector = async (i) => {
  * @param {*} i={elementId,params}
  */
 const loadDatePicker = async (i) => {
-    console.log(JSON.stringify(i))
+    // console.log(JSON.stringify(i))
 
     let defaultParams = {
         language: 'zh-CN',
@@ -508,9 +542,15 @@ const loadDatePicker = async (i) => {
  * @param {*} i={formId}
  */
 const clearFormInputs = (i) => {
-    $("#" + i.formId + " input").val("");
-    $('#' + i.formId + " select").selectpicker('val', '');
-    $("#" + i.formId + " textarea").val("");
+
+    $("#" + i.formId).find('p').text("");;
+    $("#" + i.formId).find('select').selectpicker('val', '');
+    $("#" + i.formId).find('input,textarea').val("");
+
+    // $("#" + i.formId + " p").text("");
+    // $("#" + i.formId + " input").val("");
+    // $('#' + i.formId + " select").selectpicker('val', '');
+    // $("#" + i.formId + " textarea").val("");
 }
 
 
@@ -520,21 +560,15 @@ const clearFormInputs = (i) => {
  * @param {*} i={formId,params}
  */
 const initFormInputs = (i) => {
+
+    //清空数据
     clearFormInputs(i);
 
-    //设置有效默认为是
-    $('#' + i.formId + "-effective").selectpicker('val', '是');
-    $("#" + i.formId + '-' + 'saveTimeStamp').val(currentDate);
-
-
-
-    if (i.params) {
-        for (const p in i.params) {
-            if (i.params.hasOwnProperty(p)) {
-                console.log("P:" + p + ',' + i.params[p]);
-                $('#' + i.formId + '-' + p).val(i.params[p]);
-            }
-        }
+    //设置select 选中第一个
+    let selectArr = $("#" + i.formId).find('select');
+    for (const n of selectArr) {
+        // n.options[0].selected = true;
+        $(n).selectpicker('val', n.options[0].value);
     }
 }
 
@@ -544,26 +578,28 @@ const initFormInputs = (i) => {
  *
  * @param {*} i={formId,params}
  */
-const fillFormInputs = async (i) => {
-
-    console.log('fillFormInputs i:' + JSON.stringify(i));
-
+const fillFormInputs = (i) => {
+    // console.log('fillFormInputs i:' + JSON.stringify(i));
     for (const p in i.params) {
         if (i.params.hasOwnProperty(p)) {
-
             // console.log('p:'+$("#" + i.formId + '-' + p).length)
-
-
             // 判断是否存在此元素
             if ($("#" + i.formId + '-' + p).length > 0) {
 
+                //根据元素不同类型选定不同赋值方式
 
-                // 判断此元素是否为select
-                if ($("#" + i.formId + '-' + p).is("select")) {
-                    $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
-                } else {
-                    $("#" + i.formId + '-' + p).val(i.params[p]);
+                switch (true) {
+                    case $("#" + i.formId + '-' + p).is("select") === true:
+                        $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
+                        break;
+                    case $("#" + i.formId + '-' + p).is("p") === true:
+                        $("#" + i.formId + '-' + p).text(i.params[p]);
+                        break;
+                    default:
+                        $("#" + i.formId + '-' + p).val(i.params[p]);
+                        break;
                 }
+
             }
         }
     }
@@ -572,35 +608,16 @@ const fillFormInputs = async (i) => {
 
 
 /**
- *根据fromid 获取form内所有元素值
+ *初始化并填写form 内inputs
  *
- * @param {*} i={formId}
+ * @param {*}  i={formId,params}
  */
-const getFormData = (i) => {
-
-
-    let tableId = i.formId.split('Form')[0];
-    let data = [];
-    //同时遍历3类form元素
-    $('#' + i.formId + " input,select,textarea").each(function () {
-        let id = this.id.split('-')[1];
-        let value = this.value;
-        if (id !== '' && id !== undefined) {
-            data.push({
-                [id]: value
-            })
-        }
-    })
-
-    o = {
-        tableId: tableId,
-        data: data
-    }
-
-    console.log('getFormData:' + JSON.stringify(data));
-    return o;
-
+const initAndFillFormInputs = async (i) => {
+    initFormInputs(i);
+    fillFormInputs(i);
 }
+
+
 
 
 /**
@@ -628,7 +645,7 @@ const getSubFormData = (i) => {
         data: data
     }
 
-    console.log('getFormData:' + JSON.stringify(data));
+    // console.log('getFormData:' + JSON.stringify(data));
     return o;
 
 }
@@ -639,8 +656,8 @@ const getSubFormData = (i) => {
  *
  * @param {*} i={sqlParams}
  */
-const replaceDBData = async (i) => {
-    console.log(i);
+const postDBData = async (i) => {
+    // console.log(i);
     let o = await $.ajax({
         method: 'post',
         url: '/app/RP/lib/ajaxPost',
@@ -666,12 +683,21 @@ const replaceDBData = async (i) => {
  */
 const updateDataTable = async (i) => {
 
-    console.log("updateDataTable runing");
+    // console.log("updateDataTable runing");
+
+    console.log('i old:' + JSON.stringify(i));
 
 
     let table = $('#' + i.elementId).DataTable();
 
-    let r1 = await replaceDBData(i.sqlParams);
+    //讲i.sqlParams中的data 调整为普通数组格式
+
+    if (i.sqlParams.sql === 'replace') {
+        i.sqlParams.params.data = [formDataToRowData(i.sqlParams.params.data)];
+        console.log('i new:' + JSON.stringify(i));
+    }
+
+    let r1 = await postDBData(i.sqlParams);
     console.log('r1:' + JSON.stringify(r1));
 
     if (r1.affectedRows > 0) {
@@ -703,8 +729,6 @@ const loadBillDataTable = async (i) => {
     // console.log('r1:' + JSON.stringify(r1));
     let table = $('#' + i.elementId).DataTable(r1);
 
-
-
 }
 
 
@@ -723,7 +747,7 @@ const getBillDataTableConfig = (i) => {
             url: '/app/RP/lib/ajaxGet',
             data: {
                 sql: 'sqlId',
-                params: []
+                params: {}
             },
             dataSrc: ''
         },
@@ -737,9 +761,23 @@ const getBillDataTableConfig = (i) => {
         language: languageCN
     }
 
+    //常用sql语句ajax 简单模版
+    let dtConfigSimple = {
+        ajax: {
+            url: '/app/RP/lib/ajaxGet',
+            data: {
+                sql: 'sqlId',
+                params: {}
+            },
+            dataSrc: ''
+        },
+        columns: [],
+        dom: "<'row'<'col-sm-12'tr>>",
+        language: languageCN
+    }
+
 
     //常用data直接赋值模版
-
     let dtConfigData = {
         data: [],
         columns: [],
@@ -754,29 +792,173 @@ const getBillDataTableConfig = (i) => {
     let o;
     let dtConfig;
 
-    //替换dtconfig中的参数
+    //替换定义参数模版
     switch (i.dtParams.dtConfig) {
         case 'dtConfigData':
             dtConfig = dtConfigData;
-
-            dtConfig.data = i.dtParams.data;
-            dtConfig.columns = i.dtParams.columns;
-            o = dtConfig;
-
             break;
-
+        case 'dtConfigSimple':
+            dtConfig = dtConfigSimple;
+            break;
         default:
             dtConfig = dtConfigNormal;
-
-            dtConfig.ajax.data.sql = i.sqlParams.sqlId;
-            dtConfig.ajax.data.params = i.sqlParams.params;
-            dtConfig.columns = i.dtParams.columns;
-
-            o = dtConfig;
             break;
     }
 
+    //修改参数
+
+    if (i.dtParams.data) {
+        dtConfig.data = i.dtParams.data;
+    }
+
+    if (i.sqlParams) {
+        if (i.sqlParams.sqlId) {
+            dtConfig.ajax.data.sql = i.sqlParams.sqlId;
+        }
+        if (i.sqlParams.params) {
+            dtConfig.ajax.data.params = i.sqlParams.params;
+        }
+    }
+
+    if (i.dtParams) {
+        if (i.dtParams.columns) {
+            dtConfig.columns = i.dtParams.columns;
+        }
+    }
+
     // console.log("dtConfig:" + JSON.stringify(dtConfig));
+
+    o = dtConfig;
+
+    return o;
+
+}
+
+
+/**
+ *根据sql获取需要的数据
+ *
+ * @param {*} i={sql,params}
+ */
+const getDataBySql = async (i) => {
+
+    let o;
+    o = await $.ajax({
+        method: 'get',
+        url: '/app/RP/lib/ajaxGet',
+        data: i,
+        success: function (data) {
+            // console.log("getDataBySql data:" + JSON.stringify(data));
+            return data;
+        },
+        error: function () {}
+    })
+    return o;
+}
+
+
+/**
+ *根据sql 填写指定form内容
+ *
+ * @param {*} i={formId,sqlParams}
+ */
+const fillFormBySql = async (i) => {
+    console.log('fillFormBySql i:' + JSON.stringify(i));
+    let r = await getDataBySql(i.sqlParams);
+    console.log('r:' + JSON.stringify(r));
+    //初始化并填写form内inputs
+    initAndFillFormInputs({
+        formId: i.formId,
+        params: r[0]
+    })
+}
+
+
+
+/**
+ *根据fromid 获取form内所有元素值
+ *
+ * @param {*} i={formId}
+ */
+const getFormData = (i) => {
+    let tableId = i.formId.split('Form')[0];
+    let data = [];
+    //同时遍历3类form元素
+    // $('#' + i.formId + ' p,input,select,textarea').each(function () {
+    $('#' + i.formId).find('p,input,select,textarea').each(function () {
+
+        // console.log("this:" + JSON.stringify(this));
+
+        let id = this.id.split('-')[1];
+        let value;
+
+        if ($(this).is('p')) {
+            value = $(this).text();
+        } else {
+            value = this.value;
+        }
+
+        // console.log("this id:" + id);
+        // console.log("this value:" + this.value);
+
+        if (id !== '' && id !== undefined) {
+            data.push({
+                [id]: value
+            })
+        }
+    })
+
+    o = {
+        tableId: tableId,
+        data: data
+    }
+
+    // console.log('getFormData:' + JSON.stringify(data));
+    return o;
+
+}
+
+/**
+ *转换数据格式,将form获取的数据格式转换成dataTable的row 数据格式
+ *
+ * @param {*} i
+ */
+const formDataToRowData = (i) => {
+
+    // console.log("formDataToRowData i:" + JSON.stringify(i));
+    let rowData = {}
+
+    for (let n of i) {
+        let paramName = Object.keys(n)[0];
+        console.log('paramName:' + paramName)
+        let paramValue = n[paramName];
+        console.log('paramValue:' + paramValue)
+        rowData[paramName] = paramValue
+    }
+
+    // console.log("rowData:" + JSON.stringify(rowData));
+
+
+    return rowData;
+
+}
+
+
+/**
+ *获取form内的数据格式,直接转换为可发送的数据格式
+ *
+ * @param {*} i={formId}
+ */
+const getPostFormData = (i) => {
+
+    let o;
+    let r1 = getFormData(i)
+    console.log('r1:' + JSON.stringify(r1));
+
+    r1.data = [formDataToRowData(r1.data)]
+    o = r1;
+
+    console.log("o:" + JSON.stringify(o));
 
     return o;
 
