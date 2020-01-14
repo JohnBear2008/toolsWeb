@@ -1,19 +1,25 @@
+const getRegionSelector = 'SELECT mername AS value,mername AS option,pinyin as token FROM `region`'
+const getCustomerSelector = 'SELECT customerShortName AS value,customerShortName AS option,CONCAT(customerId,mobilePhone)as token FROM `rp_customers`'
+const getStaffSelector = 'select staffName as value,staffName as option,staffId as token from `rp_staffs`'
+const getProductSelector = 'select productId as value,productId as option,productDescription as token from `rp_products`'
+const getTestItemSelector = 'select testItem as value,testItem as option,testFee as token from `rp_testitems`'
+const getOptionSelector = 'select optionValue as value,optionText as option,optionText as token from `rp_selectoroptions`';
+const getPartLocationSelector = 'select distinct partLocation as value,partLocation as option,partLocation as token from `rp_parts`';
+const getPartSelector = 'select partId as value,partId as option,partDescription as token from `rp_parts`';
+
 const getRegion = 'SELECT mername FROM `region`'
-const getRegionSelector = 'SELECT mername AS option,pinyin as token FROM `region`'
-const getCustomerSelector = 'SELECT customerShortName AS option,CONCAT(customerId,mobilePhone)as token FROM `rp_customers`'
-const getStaffSelector = 'select staffName as option,staffId as token from `rp_staffs`'
 const getCustomers = 'SELECT * FROM `rp_customers`'
+const getProduct = 'select * from `rp_products`'
+const getPart = 'select * from `rp_parts`'
 
 //获取申请单数量
-const getReqeustBillsNum = 'select count(1) as billsNum from `rp_requestbills`'
-
+const getReqeustBillsNum = 'select count(1) as billsNum from `rp_requestbills`';
 //维修申请单主表单sql
-const sqlRequestBills = 'select * from rp_requestbills '
+const sqlRequestBills = 'select * from rp_requestbills ';
 //维修单sql
 const sqlRecordBills = 'select * from rp_recordbills';
 //维修部件清单sql
-const  sqlChangeparts='select * from rp_changeParts'
-
+const sqlChangeparts = 'select * from rp_changeParts';
 //维修出货单主表单sql
 const sqlResponseBills = 'select * from rp_recordbills ta  left join rp_responsebills tb on ta.responseBillId=tb.responseBillId left join rp_requestbills tc on ta.requestBillId=tc.requestBillId'
 
@@ -29,8 +35,12 @@ const createSql = (i) => {
         case 'select':
             console.log("i:" + JSON.stringify(i));
             excuteSql = 'select * from `' + i.params.tableId + '`'
-            if (i.params.filter !== undefined && i.params.filter !== '') {
+            if (i.params.filter) {
                 excuteSql = excuteSql + ' where ' + i.params.filter
+            }
+
+            if (i.params.orderBy) {
+                excuteSql = excuteSql + ' order by ' + i.params.orderBy
             }
             break;
         case 'replace':
@@ -43,26 +53,20 @@ const createSql = (i) => {
             }
             titles = titles.substr(0, titles.length - 1);
             titles = '(' + titles + ')';
-
-
             let values = ''
 
             for (const n of i.params.data) {
-
                 // console.log('n:' + n);
-
                 let valueN = '';
 
                 for (const p in n) {
                     // console.log('v:' + n[p]);
-
                     //将空值转换为null避免不匹配保存
                     if (!n[p]) {
                         valueN = valueN + 'null,';
                     } else {
                         valueN = valueN + '"' + n[p] + '",';
                     }
-
                 }
 
                 valueN = valueN.substr(0, valueN.length - 1);
@@ -71,8 +75,6 @@ const createSql = (i) => {
             }
 
             values = values.substr(0, values.length - 1);
-
-
             // //DBID 为空则去掉titles,values DBID信息防止参数错误
             // if (i.params.data[0]['DBID'] === '') {
             //     titles = titles.substr(titles.indexOf(',') + 1, titles.length);
@@ -80,16 +82,11 @@ const createSql = (i) => {
             // }
 
             excuteSql = 'replace into `' + i.params.tableId + '` ' + titles + ' values ' + values;
-
             console.log("excuteSql:" + excuteSql);
-
             break;
         case 'delete':
-
             let DBIDS = '';
-
             if (i.params.data.length > 0) {
-
                 for (const n in i.params.data) {
                     if (i.params.data.hasOwnProperty(n)) {
                         DBIDS = DBIDS + i.params.data[n] + ',';
@@ -97,7 +94,6 @@ const createSql = (i) => {
                 }
             }
             DBIDS = DBIDS.substr(0, DBIDS.length - 1);
-
             DBIDS = '(' + DBIDS + ')';
             console.log("DBIDS:" + DBIDS);
             excuteSql = 'delete from `' + i.params.tableId + '` where DBID in ' + DBIDS;
@@ -107,14 +103,16 @@ const createSql = (i) => {
             if (i.params) {
                 if (i.params.filter) {
                     excuteSql = excuteSql + " where " + i.params.filter
-                    console.log('default excuteSql:' + excuteSql);
                 }
+                if (i.params.orderBy) {
+                    excuteSql = excuteSql + ' order by ' + i.params.orderBy
+                }
+                console.log('default excuteSql:' + excuteSql);
             }
             break;
     }
 
-    console.log('excuteSql:' + excuteSql);
-
+    console.log('excuteSql last:' + excuteSql);
     return excuteSql;
 }
 

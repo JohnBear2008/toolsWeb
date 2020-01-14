@@ -198,6 +198,22 @@
 
                                 <div class="form-group">
 
+                                    <label class="col-sm-1 control-label">产品类别</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_recordbillsForm-productClass"></p>
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label">系统分类</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_recordbillsForm-systemType"></p>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="form-group">
+
                                     <label class="col-sm-1 control-label">出厂编号</label>
                                     <div class="col-sm-3">
                                         <p class="form-control-static" id="rp_recordbillsForm-factoryNo"></p>
@@ -214,6 +230,7 @@
                                         <p class="form-control-static" id="rp_recordbillsForm-productionDate"></p>
                                     </div>
                                 </div>
+
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">是否返修</label>
@@ -246,8 +263,7 @@
                                     <label class="col-sm-1 control-label">故障原因</label>
                                     <div class="col-sm-5">
                                         <select id="rp_recordbillsForm-faultReason" class="selectpicker">
-                                            <option>使用原因</option>
-                                            <option>设备原因</option>
+
                                         </select>
                                     </div>
 
@@ -258,12 +274,7 @@
                                     <label class="col-sm-1 control-label">故障分类</label>
                                     <div class="col-sm-5">
                                         <select id="rp_recordbillsForm-faultClass" class="selectpicker">
-                                            <option>正常</option>
-                                            <option>按键</option>
-                                            <option>屏幕</option>
-                                            <option>IO</option>
-                                            <option>温度</option>
-                                            <option>其他</option>
+
                                         </select>
                                     </div>
                                 </div>
@@ -273,8 +284,8 @@
 
                                     <label class="col-sm-1 control-label">检测项目</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_recordbillsForm-testItems" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_recordbillsForm-testItem" class="selectpicker">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">检测费用</label>
@@ -309,8 +320,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">维修结果</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_recordbillsForm-repairResult" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_recordbillsForm-repairResult" class="selectpicker">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">总费用</label>
@@ -380,7 +391,7 @@
                                                 <th>部件名称</th>
                                                 <th>替换位置</th>
                                                 <th>单价</th>
-                                                <th>数量</th>
+                                                <th>用量</th>
                                                 <th>零件费</th>
                                             </tr>
                                         </thead>
@@ -392,9 +403,6 @@
                                             <h3 class="panel-title">替换部件</h3>
                                         </div>
                                         <div class="panel-body">
-
-
-
 
                                             <form class="form-horizontal" role="form" id='rp_changepartsForm'>
 
@@ -415,52 +423,59 @@
                                                     </div>
                                                 </div>
 
-
                                                 <div class="form-group">
-                                                    <label class="col-sm-1 control-label">部件编号</label>
+
+                                                    <label class="col-sm-1 control-label">部件位置</label>
                                                     <div class="col-sm-5">
-                                                        <input class="form-control" id="rp_changepartsForm-partId"
-                                                            type="text">
+                                                        <select id="rp_changepartsForm-partLocation"
+                                                            class="selectpicker">
+                                                        </select>
                                                     </div>
 
+                                                    <label class="col-sm-1 control-label">部件编号</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_changepartsForm-partId"
+                                                            class="form-control selectpicker" data-live-search="true"
+                                                            data-size="5" data-dropup-auto="false">
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="form-group">
                                                     <label class="col-sm-1 control-label">部件名称</label>
                                                     <div class="col-sm-5">
                                                         <input class="form-control" id="rp_changepartsForm-partName"
                                                             type="text">
                                                     </div>
 
+                                                    <label class="col-sm-1 control-label">部件描述</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control"
+                                                            id="rp_changepartsForm-partDescription" type="text">
+                                                    </div>
+
                                                 </div>
 
 
                                                 <div class="form-group">
 
-                                                    <label class="col-sm-1 control-label">部件位置</label>
-                                                    <div class="col-sm-5">
-                                                        <input class="form-control" id="rp_changepartsForm-partLocation"
-                                                            type="text">
-                                                    </div>
-
-
-                                                    <label class="col-sm-1 control-label">数量</label>
-                                                    <div class="col-sm-5">
+                                                    <label class="col-sm-1 control-label">用量</label>
+                                                    <div class="col-sm-3">
                                                         <input class="form-control" id="rp_changepartsForm-num"
                                                             type="text">
                                                     </div>
 
-                                                </div>
-
-                                                <div class="form-group">
-
-
                                                     <label class="col-sm-1 control-label">部件单价</label>
-                                                    <div class="col-sm-5">
+                                                    <div class="col-sm-3">
                                                         <input class="form-control" id="rp_changepartsForm-price"
                                                             type="text">
                                                     </div>
 
 
                                                     <label class="col-sm-1 control-label">部件费用</label>
-                                                    <div class="col-sm-5">
+                                                    <div class="col-sm-3">
                                                         <input class="form-control" id="rp_changepartsForm-partFee"
                                                             type="text">
                                                     </div>
@@ -557,6 +572,71 @@
     }]
 
 
+    //选中partId后,填写其他相关信息
+
+    const fillPartInfo = async (partId) => {
+        let r1 = await getDataBySql({
+            sql: 'getPart',
+            params: {
+                filter: 'partId="' + partId + '"'
+            }
+        })
+
+        // console.log('r1:' + JSON.stringify(r1));
+        let r2 = r1[0]
+        delete r2.partLocation;
+        delete r2.partId;
+        // console.log('r2:' + JSON.stringify(r2));
+        fillFormInputs({
+            formId: 'rp_changepartsForm',
+            params: r2
+        })
+        // $("#rp_requestbillsForm-customerArea").selectpicker('val', r2.customerArea)
+    }
+
+    //添加检测项目监听器
+    const addTestItemListener = () => {
+        $('#rp_recordbillsForm-testItem').unbind();
+        $('#rp_recordbillsForm-testItem').change(function () {
+            let testFee = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
+            if (testFee) {
+                $('#rp_recordbillsForm-testFee').val(testFee);
+            }
+        })
+    }
+
+    //添加替换位置监听器
+    const addPartLocationListener = () => {
+        $('#rp_changepartsForm-partLocation').unbind();
+        $('#rp_changepartsForm-partLocation').change(function () {
+            let partLocation = $('#rp_changepartsForm-partLocation option:selected').val();
+            if (partLocation) {
+
+                loadBootStrapSelector({
+                    elementId: 'rp_changepartsForm-partId',
+                    sqlParams: {
+                        sql: 'getPartSelector',
+                        params: {
+                            filter: 'partLocation="' + partLocation + '"'
+                        }
+                    },
+                })
+            }
+        })
+    }
+
+    //添加替换位置监听器
+    const addPartIdListener = () => {
+        $('#rp_changepartsForm-partId').unbind();
+        $('#rp_changepartsForm-partId').change(function () {
+            let partId = $('#rp_changepartsForm-partId option:selected').val();
+            if (partId) {
+                fillPartInfo(partId)
+            }
+        })
+    }
+
+
     //添加主表监听器,定义双击打开事件
 
     const addMainTableListener = () => {
@@ -582,13 +662,22 @@
                 params: dataSelect
             })
 
+            //按系统类型重新加载检测项目
+            loadBootStrapSelector({
+                elementId: 'rp_recordbillsForm-testItem',
+                sqlParams: {
+                    sql: 'getTestItemSelector',
+                    params: {
+                        filter: 'systemType="' + dataSelect.systemType + '" or systemType="其他"'
+                    }
+                },
+            })
+
             //关闭子表panel
             $('#rp_changepartsPanel').hide();
 
             //加载子表记录表数据
             loadBillSubTable(dataSelect.recordBillId);
-
-
 
         });
 
@@ -688,6 +777,62 @@
 
     }
 
+    //计算部件费用
+    const CalcPartFee = () => {
+        let num = $('#rp_changepartsForm-num').val();
+        let price = $('#rp_changepartsForm-price').val();
+        let partFee = parseInt(num) * parseInt(price);
+
+
+        $('#rp_changepartsForm-partFee').val(partFee);
+    }
+
+    //计算总费用
+    const CalcRepairTotalFee = () => {
+
+        let testFee = $('#rp_recordbillsForm-testFee').val();
+        let repairTotalFee = parseInt(testFee);
+
+
+        let rowNum = $("#rp_changeparts tbody tr").size();
+
+        if (rowNum > 0) {
+            let subTable = $('#rp_changeparts').DataTable();
+            let rows = subTable.rows();
+
+            let partFee = 0;
+            for (let n = 0; n < rows.length; n++) {
+                partFee = partFee + parseInt(rows[n].partFee);
+            }
+
+            repairTotalFee = repairTotalFee + partFee;
+
+        }
+
+        $('#rp_recordbillsForm-repairTotalFee').val(repairTotalFee);
+
+        console.log('repairTotalFee:' + repairTotalFee);
+    }
+    //部件费监听器
+    const addPartFeeListener = () => {
+        $("#rp_changepartsForm-num").on("input propertychange", function () {
+            CalcPartFee();
+        });
+
+        $("#rp_changepartsForm-price").on("input propertychange", function () {
+            CalcPartFee();
+        });
+    }
+
+    //总费用监听器
+    const addRepairTotalFeeListener = () => {
+        $("#rp_recordbillsForm-testFee").on("input propertychange", function () {
+            CalcRepairTotalFee();
+        });
+
+
+    }
+
 
 
 
@@ -772,14 +917,81 @@
 
             }
 
-
             //重新加载子表
             loadDataSubTable(subTableData)
 
         })
 
 
+        loadBootStrapSelector({
+            elementId: 'rp_recordbillsForm-testItem',
+            sqlParams: {
+                sql: 'getTestItemSelector',
+            },
+        })
 
+        //选定产品修改事件
+        addTestItemListener();
+
+        loadBootStrapSelector({
+            elementId: 'rp_recordbillsForm-faultReason',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="故障原因"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_recordbillsForm-faultClass',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="故障分类"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_recordbillsForm-repairResult',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="维修结果"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_changepartsForm-partLocation',
+            sqlParams: {
+                sql: 'getPartLocationSelector',
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_changepartsForm-partId',
+            sqlParams: {
+                sql: 'getPartSelector',
+            },
+        })
+
+        //添加位置选择监听器
+        addPartLocationListener()
+
+        addPartIdListener();
+
+        addPartFeeListener();
+
+        addRepairTotalFeeListener();
 
 
 

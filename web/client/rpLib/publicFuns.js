@@ -473,7 +473,8 @@ const loadSubDataTable = async (i) => {
  * @param {*} i={elementId,initValue,sqlParams}
  */
 const loadBootStrapSelector = async (i) => {
-    $('#' + i.elementId).empty(); //用select组件不用先清空
+    // $('#' + i.elementId).empty(); //用select组件不用先清空
+    $('#' + i.elementId).selectpicker('destroy'); //用select组件不用先清空
 
     $.ajax({
         method: 'get',
@@ -489,7 +490,7 @@ const loadBootStrapSelector = async (i) => {
 
             for (const n in data) {
                 if (data.hasOwnProperty(n)) {
-                    $('#' + i.elementId).append($('<option  data-tokens=' + data[n].token + ' value=' + data[n].option + '>' + data[n].option + '</option>'));
+                    $('#' + i.elementId).append($('<option  data-tokens=' + data[n].token + ' value=' + data[n].value + '>' + data[n].option + '</option>'));
                 }
             }
 
