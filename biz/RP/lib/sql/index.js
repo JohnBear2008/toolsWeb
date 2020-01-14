@@ -11,6 +11,8 @@ const getReqeustBillsNum = 'select count(1) as billsNum from `rp_requestbills`'
 const sqlRequestBills = 'select * from rp_requestbills '
 //维修单sql
 const sqlRecordBills = 'select * from rp_recordbills';
+//维修部件清单sql
+const  sqlChangeparts='select * from rp_changeParts'
 
 //维修出货单主表单sql
 const sqlResponseBills = 'select * from rp_recordbills ta  left join rp_responsebills tb on ta.responseBillId=tb.responseBillId left join rp_requestbills tc on ta.requestBillId=tc.requestBillId'

@@ -580,30 +580,28 @@ const initFormInputs = (i) => {
  */
 const fillFormInputs = (i) => {
     // console.log('fillFormInputs i:' + JSON.stringify(i));
-    for (const p in i.params) {
-        if (i.params.hasOwnProperty(p)) {
-            // console.log('p:'+$("#" + i.formId + '-' + p).length)
-            // 判断是否存在此元素
-            if ($("#" + i.formId + '-' + p).length > 0) {
+    for (let p in i.params) {
+        // 判断是否存在此元素
+        if ($("#" + i.formId + '-' + p).length > 0) {
+            //  console.log(p);
+            //根据元素不同类型选定不同赋值方式
+            switch (true) {
+                case $("#" + i.formId + '-' + p).is("select") === true:
+                    $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
+                    // console.log('c1');
 
-                //根据元素不同类型选定不同赋值方式
-
-                switch (true) {
-                    case $("#" + i.formId + '-' + p).is("select") === true:
-                        $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
-                        break;
-                    case $("#" + i.formId + '-' + p).is("p") === true:
-                        $("#" + i.formId + '-' + p).text(i.params[p]);
-                        break;
-                    default:
-                        $("#" + i.formId + '-' + p).val(i.params[p]);
-                        break;
-                }
-
+                    break;
+                case $("#" + i.formId + '-' + p).is("p") === true:
+                    $("#" + i.formId + '-' + p).text(i.params[p]);
+                    // console.log('c2');
+                    break;
+                default:
+                    $("#" + i.formId + '-' + p).val(i.params[p]);
+                    // console.log('cd');
+                    break;
             }
         }
     }
-
 }
 
 
@@ -938,9 +936,7 @@ const formDataToRowData = (i) => {
 
     // console.log("rowData:" + JSON.stringify(rowData));
 
-
     return rowData;
-
 }
 
 

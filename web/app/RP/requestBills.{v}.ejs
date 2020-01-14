@@ -232,15 +232,13 @@
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label">客户简称</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-5">
                                         <select id="rp_requestbillsForm-customerShortName"
-                                            class="selectpicker form-control" data-live-search="true">
+                                            class="selectpicker form-control" data-live-search="true" data-size="10">
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-1">
-                                        <button id='btnFillCustomerInfo' type="button" class="btn btn-info">读取</button>
-                                    </div>
+
 
 
 
@@ -257,7 +255,7 @@
                                     <label class="col-sm-1 control-label">客户区域</label>
                                     <div class="col-sm-5">
                                         <select id="rp_requestbillsForm-customerArea" class="selectpicker form-control"
-                                            data-live-search="true">
+                                            data-live-search="true" data-size="10">
                                         </select>
                                     </div>
 
@@ -607,6 +605,18 @@
         data: 'status',
     }]
 
+    //选定客户修改事件
+    const addCustomerListener = () => {
+        $('#rp_requestbillsForm-customerShortName').unbind();
+        $('#rp_requestbillsForm-customerShortName').change(function () {
+            let customerShortName = $('#rp_requestbillsForm-customerShortName option:selected')
+                .val()
+            if (customerShortName) {
+                fillCustomerInfo(customerShortName);
+            }
+        });
+    }
+
 
 
     //创建申请单新单号
@@ -634,7 +644,7 @@
     //添加主表监听器,定义双击打开事件
 
     const addMainTableListener = () => {
-       
+
 
         //定义主表双击事件
         $('#rp_requestbills tbody').on('dblclick', 'tr', function () {
@@ -664,14 +674,14 @@
 
             loadBillSubTable(dataSelect.requestBillId);
 
-            //将展开模式设为编辑
-            openMode = 'edit'
+            //客户选定监听事件
+            addCustomerListener();
 
         });
 
     }
 
-    //主表加载数据事件;
+    //主表加载数据函数;
 
     const loadBillMainTable = async () => {
         //初始化主表
@@ -741,6 +751,12 @@
             }
         })
 
+        //如数据为0,清空tbody 避免直接获取size =1;
+        if (dataArray.length === 0) {
+            $('#rp_recordbills tbody').html("");
+        }
+
+
         //添加子表双击事件
         addSubTableListener();
     }
@@ -754,9 +770,9 @@
                 filter: 'requestBillId="' + billId + '"'
             }
         })
+
         //将表数据同步到共用数组
         subTableData = dataArray;
-
         loadDataSubTable(subTableData);
 
     }
@@ -768,19 +784,19 @@
     const saveRequestbill = async () => {
 
 
-        //新增状态等待单号检测完成
-        if (openMode === 'new') {
-            await autoUpdateRequestBillId();
-        }
+
 
 
         let mainFormData = getPostFormData({
             formId: 'rp_requestbillsForm'
         })
 
-        //给主表数据添加,maker 和makeDate时间;
+
+
+        //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
 
         if (!mainFormData.data[0].maker) {
+            await autoUpdateRequestBillId();
             mainFormData.data[0].maker = sessionName;
         }
 
@@ -866,6 +882,38 @@
         }
     }
 
+    //选中客户后,填写其他相关信息
+
+    const fillCustomerInfo = async (customerShortName) => {
+
+
+
+        let r1 = await getDataBySql({
+            sql: 'getCustomers',
+            params: {
+                filter: 'customerShortName="' + customerShortName + '"'
+            }
+        })
+
+        // console.log('r1:' + JSON.stringify(r1));
+        let r2 = r1[0]
+        delete r2.customerShortName;
+
+
+        // console.log('r2:' + JSON.stringify(r2));
+
+        fillFormInputs({
+            formId: 'rp_requestbillsForm',
+            params: r2
+        })
+
+        // $("#rp_requestbillsForm-customerArea").selectpicker('val', r2.customerArea)
+
+
+
+
+    }
+
 
 
     $(document).ready(function () {
@@ -875,8 +923,7 @@
         sessionName = "<%-locals.session.yjUser.Name%>";
         //定义子表全局变量临时数据数组
         subTableData = [];
-        //展开模式,新增还是编辑,默认新增
-        openMode = 'new';
+
 
         //初始化主表
         loadBillMainTable();
@@ -899,9 +946,9 @@
                 formId: 'rp_requestbillsForm'
             })
 
-            //清空子表及全局变量
-            subTableData = [];
-            $('#rp_recordbills tbody').html("");
+            // //清空子表及全局变量
+            // subTableData = [];
+            // $('#rp_recordbills tbody').html("");
 
 
             //打开面板
@@ -923,27 +970,11 @@
             // $("#rp_requestbillsForm-maker").text(sessionName);
             // $("#rp_requestbillsForm-makeDate").text(currentDate());
 
-            //展开模式设为新增
-            openMode = 'new';
+             //客户选定监听事件
+             addCustomerListener();
 
         })
 
-        // 读取按钮
-        $('#btnFillCustomerInfo').click(function () {
-            let customerShortName = $('#rp_requestbillsForm-customerShortName option:selected').val()
-            if (customerShortName) {
-                fillFormBySql({
-                    formId: 'rp_requestbillsForm',
-                    sqlParams: {
-                        sql: 'getCustomers',
-                        params: {
-                            filter: 'customerShortName="' + customerShortName + '"'
-                        }
-                    }
-                })
-
-            }
-        })
 
 
 
@@ -1032,7 +1063,7 @@
 
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
-                for (const n in subTableData) {
+                for (let n in subTableData) {
                     // console.log("subTableData[n]:" + JSON.stringify(subTableData[n].rowId));
                     // console.log("rowData:" + JSON.stringify(rowData.rowId));
 
@@ -1113,10 +1144,21 @@
             },
         })
 
+
+
+        //         $('#mySelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        //   // do something...
+        // });
+
+
+
         loadBootStrapSelector({
             elementId: 'rp_requestbillsForm-customerArea',
             sqlParams: {
-                sql: 'getRegionSelector'
+                sql: 'getRegionSelector',
+                // params: {
+                //     filter: 'mername like "%宁波%"'
+                // }
             },
             // initValue:'中国,北京'
         })
