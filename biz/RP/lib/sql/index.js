@@ -11,17 +11,24 @@ const getRegion = 'SELECT mername FROM `region`'
 const getCustomers = 'SELECT * FROM `rp_customers`'
 const getProduct = 'select * from `rp_products`'
 const getPart = 'select * from `rp_parts`'
+const getStockNum = 'select stockNum from `rp_partswarehouse`'
 
 //获取申请单数量
 const getReqeustBillsNum = 'select count(1) as billsNum from `rp_requestbills`';
+//获取记录单数量
+const getRecordBillsNum = 'select count(1) as billsNum from `rp_recordbills`';
 //维修申请单主表单sql
 const sqlRequestBills = 'select * from rp_requestbills ';
 //维修单sql
 const sqlRecordBills = 'select * from rp_recordbills';
 //维修部件清单sql
-const sqlChangeparts = 'select * from rp_changeParts';
+const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql
 const sqlResponseBills = 'select * from rp_recordbills ta  left join rp_responsebills tb on ta.responseBillId=tb.responseBillId left join rp_requestbills tc on ta.requestBillId=tc.requestBillId'
+
+
+
+
 
 /**
  *更具传入参数创建执行sql语句
@@ -98,6 +105,53 @@ const createSql = (i) => {
             console.log("DBIDS:" + DBIDS);
             excuteSql = 'delete from `' + i.params.tableId + '` where DBID in ' + DBIDS;
             break;
+
+        case 'updateNum':
+            console.log('3333:' + JSON.stringify(i.params));
+
+            let tableId = i.params.tableId;
+
+            let numTitles = i.params.numTitles;
+            let data = i.params.data
+            let filterTitle = Object.keys(data[0])[0];
+            console.log('filterTitle:' + filterTitle);
+
+
+            let caseModels = '';
+            let range = '';
+
+            for (const n of numTitles) {
+                let caseModel = n + '= case ' + filterTitle;
+                let when = ''
+                for (const m of data) {
+                    let whenSub = ' when "' + m[filterTitle] + '" then ifnull(' + n + ',0)+ ' + m[n];
+                    when = when + whenSub;
+                    range = range + '"' + m[filterTitle] + '",'
+                }
+                when = when + ' end ';
+                caseModel = caseModel + when + ',';
+
+                caseModels = caseModels + caseModel;
+            }
+
+            caseModels = caseModels.substring(0, caseModels.length - 1);
+            range = range.substring(0, range.length - 1);
+            let filter = filterTitle + ' in (' + range + ')';
+
+
+            excuteSql = 'update ' + tableId + ' set ' + caseModels + ' where ' + filter;
+
+
+
+
+
+            // let caseModel = "stockNum = CASE partId WHEN '1ACC_HUNTER_JX_C' THEN ifnull(stockNum, 0) + 1 END"
+
+
+
+
+            break;
+
         default:
             excuteSql = eval(i.sql);
             if (i.params) {

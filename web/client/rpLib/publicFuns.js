@@ -473,10 +473,14 @@ const loadSubDataTable = async (i) => {
  * @param {*} i={elementId,initValue,sqlParams}
  */
 const loadBootStrapSelector = async (i) => {
-    // $('#' + i.elementId).empty(); //用select组件不用先清空
-    $('#' + i.elementId).selectpicker('destroy'); //用select组件不用先清空
 
-    $.ajax({
+
+    $('#' + i.elementId).empty(); //清空原有选项
+    $("#extraSelect1").selectpicker('refresh'); //刷新
+    $('#' + i.elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+
+
+    return $.ajax({
         method: 'get',
         url: '/app/RP/lib/ajaxGet',
         data: i.sqlParams,
