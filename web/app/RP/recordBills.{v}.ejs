@@ -720,11 +720,10 @@
 
 
     //添加主表监听器,定义双击打开事件
-
     const addMainTableListener = () => {
 
         //定义主表双击事件
-        $('#rp_recordbills tbody').on('dblclick', 'tr', function () {
+        $('#rp_recordbills tbody').on('dblclick', 'tr', async function () {
 
             //设定选中
             let table = $('#rp_recordbills').DataTable();
@@ -735,25 +734,12 @@
             //打开面板
             $('#rp_recordbillsModal').modal('show');
 
-            //不存在单号则创造记录单号
-            let recordBillId = $('#rp_recordbillsForm-recordBillId').text();
-            if (recordBillId) {
-                createRecordBillId()
-            }
-
-
-
             // //打开关联信息
             // $("#accordion").show();
 
-            //初始化并填写form内inputs
-            initAndFillFormInputs({
-                formId: 'rp_recordbillsForm',
-                params: dataSelect
-            })
 
             //按系统类型重新加载检测项目
-            loadBootStrapSelector({
+            await loadBootStrapSelector({
                 elementId: 'rp_recordbillsForm-testItem',
                 sqlParams: {
                     sql: 'getTestItemSelector',
@@ -762,6 +748,21 @@
                     }
                 },
             })
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_recordbillsForm',
+                params: dataSelect
+            })
+
+
+            //不存在单号则创造记录单号
+            let recordBillId = $('#rp_recordbillsForm-recordBillId').text();
+            if (!recordBillId) {
+                createRecordBillId()
+            }
+
+
 
             //关闭子表panel
             $('#rp_partsBillsPanel').hide();
@@ -1104,54 +1105,55 @@
 
             //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
 
-            // if (!mainFormData.data[0].maker) {
-            //     await autoUpdateRecordBillId();
-            //     mainFormData.data[0].maker = sessionName;
-            // }
+            if (!mainFormData.data[0].maker) {
+                await autoUpdateRecordBillId();
+                mainFormData.data[0].maker = sessionName;
+            }
 
-            // if (!mainFormData.data[0].makeDate) {
-            //     mainFormData.data[0].makeDate = currentDate();
-            // }
+            if (!mainFormData.data[0].makeDate) {
+                mainFormData.data[0].makeDate = currentDate();
+            }
 
             console.log('mainFormData:' + JSON.stringify(mainFormData));
 
-            // let r1 = await postDBData({
-            //     sql: 'replace',
-            //     params: mainFormData
-            // })
+            let r1 = await postDBData({
+                sql: 'replace',
+                params: mainFormData
+            })
 
             //扣减部件库存
 
             let r2 = await updateStock(subTableData);
 
 
-            //更新部件预领状态为已领
+            //更新部件预领状态为已领,去除stockNum
 
             for (let n = 0; n < subTableData.length; n++) {
                 if (subTableData[n].numStatus === '预领') {
                     subTableData[n].numStatus = '已领'
+                    delete subTableData[n].stockNum;
                 }
             }
 
-            // let r3 = await postDBData({
-            //     sql: 'replace',
-            //     params: {
-            //         tableId: 'rp_partsbills',
-            //         data: subTableData
-            //     }
-            // })
+            let r3 = await postDBData({
+                sql: 'replace',
+                params: {
+                    tableId: 'rp_partsbills',
+                    data: subTableData
+                }
+            })
 
-            // console.log('saveRecordBill r1:' + JSON.stringify(r1));
-            // console.log('saveRecordBill r2:' + JSON.stringify(r2));
-            // console.log('saveRecordBill r3:' + JSON.stringify(r3));
+            console.log('saveRecordBill r1:' + JSON.stringify(r1));
+            console.log('saveRecordBill r2:' + JSON.stringify(r2));
+            console.log('saveRecordBill r3:' + JSON.stringify(r3));
 
-            // if (r1.affectedRows > 0 && r3.affectedRows > 0) {
-            //     alert('保存成功!')
-            //     $('#rp_recordbillsModal').modal('hide');
-            //     loadBillMainTable();
-            // } else {
-            //     alert('出现错误!')
-            // }
+            if (r1.affectedRows && r2.affectedRows && r3.affectedRows) {
+                alert('保存成功!')
+                $('#rp_recordbillsModal').modal('hide');
+                loadBillMainTable();
+            } else {
+                alert('出现错误!')
+            }
 
         } else {
             alert('存在库存不足部件,请检查!')
