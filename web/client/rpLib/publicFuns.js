@@ -86,6 +86,20 @@ const PrefixInteger = (num, length) => {
 
 
 /**
+ *对字符串进行处理,替换其中特殊字符,避免后台生成sql执行出错 
+ *
+ * @param {*} text
+ */
+const replaceURI = (text) => {
+    if (text) {
+        text = text.replace(/'/g, '')
+        text = text.replace(/"/g, '')
+    }
+    return text
+}
+
+
+/**
  *根据传入参数调整dataTable表格创建参数
  *
  * @param {*} i={elementId,sqlParams,dtParams}
@@ -635,7 +649,7 @@ const getSubFormData = (i) => {
     //同时遍历3类form元素
     $('#' + i.formId + " input,select,textarea").each(function () {
         let id = this.id;
-        let value = this.value;
+        let value = replaceURI(this.value);
         if (id !== '') {
             data.push({
                 [id]: value
@@ -900,6 +914,8 @@ const getFormData = (i) => {
         } else {
             value = this.value;
         }
+
+        value = replaceURI(value);
 
         // console.log("this id:" + id);
         // console.log("this value:" + this.value);
