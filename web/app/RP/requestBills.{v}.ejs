@@ -349,6 +349,7 @@
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
+
                                     <div class="modal fade" id="scanModal">
                                         <div class="modal-dialog" style="width: 675px;">
                                             <div class="modal-content">
@@ -356,6 +357,7 @@
                                                 <div class="modal-body">请将产品二维码放置于摄像头内
                                                     <div><button id='btnScanStop' type="button"
                                                             class="btn btn-info">停止扫描</button></div>
+                                                    <button id='btnScanModalClose' data-dismiss="">关闭扫描框</button>
                                                     <div style="width:640;height:480px"><video id="preview"></video>
                                                     </div>
 
@@ -1026,10 +1028,47 @@
             let scanner = new Instascan.Scanner({
                 video: document.getElementById('preview')
             });
-            scanner.addListener('scan', function (content) {
-                console.log('content:' + content);
-                // alert('content:' + content);
-                $('#rp_recordbillsPanel').show();
+            scanner.addListener('scan', async function (productId) {
+                console.log('productId:' + productId);
+
+
+                let productData = await getDataBySql({
+                    sql: 'getProduct',
+                    params: {
+                        filter: 'productId="' + productId + '"'
+                    }
+                })
+
+                console.log("productData:" + JSON.stringify(productData));
+
+                let rowNum = $("#rp_recordbills tbody tr").size();
+
+                let rowData = {};
+
+                rowData.rowId = rowNum + 1;
+                rowData.status = '新增'
+                rowData.productId = productData[0].productId;
+                rowData.productName = productData[0].productName;
+                rowData.productDescription = productData[0].productDescription;
+                rowData.factoryNo = '11111'
+                rowData.origin = 'nb'
+                rowData.isRework = '否';
+                rowData.urgent = '否';
+                rowData.inWarranty = '否';
+                rowData.productFrom = '终端客户';
+                rowData.productBelong = '客户 ';
+
+                console.log("rowData:" + JSON.stringify(rowData));
+
+                subTableData.push(rowData);
+                //重新加载子表
+                loadDataSubTable(subTableData)
+
+
+
+
+                // alert('productId:' + productId);
+                // $('#rp_recordbillsPanel').show();
 
 
                 scanner.stop().then(function () {
@@ -1304,7 +1343,15 @@
         $('#rp_requestbillsModal').on('hidden.bs.modal', function () {
             let table = $('#rp_requestbills').DataTable();
             table.$('tr.selected').removeClass('selected');
+
+            //添加监听出来扫描modal关闭 表单modal失效问题
+            $(this).removeData('bs.modal');
+            $(document.body).addClass("modal-open");
         })
+
+
+
+
 
 
     });
