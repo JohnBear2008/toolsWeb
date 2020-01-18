@@ -187,6 +187,21 @@
 
 									</div>
 									<!-------------------------------------------------------------------------->
+
+
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label" for="name">类型:</label>
+										<div class="col-sm-3 ">
+											<select id="billClass" class="selectpicker" data-dropup-auto="false">
+												<option>量产</option>
+												<option>专案</option>
+												<option>项目</option>
+											</select>
+										</div>
+
+									</div>
+
 									<div class="form-group">
 
 										<label class="col-sm-1 control-label" for="name">需求方:</label>
@@ -868,7 +883,7 @@
 			filter: "belong='HMI' AND status=1"
 		}, "#modelH", dataSelect.modelH);
 
-
+		$('#billClass').selectpicker('val', dataSelect.billClass);
 
 
 		Fun_getSQLSelectDBData({
@@ -1464,6 +1479,8 @@
 			$("#CTRName").selectpicker('val', "");
 			$("#MHEName").selectpicker('val', "");
 			$("#modelD").selectpicker('val', "");
+			$("#billClass").selectpicker('val', "");
+
 			$("#modelH").selectpicker('val', "");
 			$("#PGEMaker").selectpicker('val', "");
 			$("#topic").val("");
@@ -1503,6 +1520,7 @@
 					"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
 					"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
 					"modelD": $('#modelD option:selected').text(),
+					"billClass": $('#billClass option:selected').text(),
 					"modelH": $('#modelH option:selected').text(),
 					"OGNSystemVersion": $('#OGNSystemVersion').val(),
 					"applyDate": $('#applyDate').val(),
@@ -1580,6 +1598,7 @@
 							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
 							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
 							"modelD": $('#modelD option:selected').text(),
+							"billClass": $('#billClass option:selected').text(),
 							"modelH": $('#modelH option:selected').text(),
 							"OGNSystemVersion": $('#OGNSystemVersion').val(),
 							"applyDate": $('#applyDate').val(),
@@ -1662,6 +1681,7 @@
 							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
 							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
 							"modelD": $('#modelD option:selected').text(),
+							"billClass": $('#billClass option:selected').text(),
 							"modelH": $('#modelH option:selected').text(),
 							"OGNSystemVersion": $('#OGNSystemVersion').val(),
 							"applyDate": $('#applyDate').val(),
@@ -1787,6 +1807,7 @@
 							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
 							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
 							"modelD": $('#modelD option:selected').text(),
+							"billClass": $('#billClass option:selected').text(),
 							"modelH": $('#modelH option:selected').text(),
 							"OGNSystemVersion": $('#OGNSystemVersion').val(),
 							"applyDate": $('#applyDate').val(),

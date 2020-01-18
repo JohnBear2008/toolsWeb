@@ -506,13 +506,11 @@ const loadBootStrapSelector = async (i) => {
 
             $('#' + i.elementId).append($('<option value="">未选择</option>'));
 
-            for (const n in data) {
-                if (data.hasOwnProperty(n)) {
-                    $('#' + i.elementId).append($('<option  data-tokens=' + data[n].token + ' value=' + data[n].value + '>' + data[n].option + '</option>'));
-                }
+            for (const n of data) {
+                $('#' + i.elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
             }
 
-            if (i.initValue !== undefined) {
+            if (i.initValue) {
                 $('#' + i.elementId).selectpicker('val', i.initValue);
             }
 

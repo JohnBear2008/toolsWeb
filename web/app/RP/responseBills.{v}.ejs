@@ -360,15 +360,23 @@
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
-            //清空Form原有数据
-            initFormInputs({
-                elementId: 'rp_responsebillsForm'
-            })
-            //填写div匹配数据
-            fillDivInputs({
-                elementId: 'rp_responsebills',
+            // //清空Form原有数据
+            // initFormInputs({
+            //     elementId: 'rp_responsebillsForm'
+            // })
+            // //填写div匹配数据
+            // fillDivInputs({
+            //     elementId: 'rp_responsebills',
+            //     params: dataSelect
+            // })
+
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_responsebillsForm',
                 params: dataSelect
             })
+
             //打开面板
             $('#btnSend').click();
 
@@ -401,13 +409,19 @@
             let rowsSelect = table.rows('.selected').data();
             console.log("rowsSelect:" + JSON.stringify(rowsSelect));
 
-            //清空Form原有数据
-            initFormInputs({
-                elementId: 'rp_responsebillsForm'
-            })
-            //填写div匹配数据
-            fillDivInputs({
-                elementId: 'rp_responsebillsForm',
+            // //清空Form原有数据
+            // initFormInputs({
+            //     elementId: 'rp_responsebillsForm'
+            // })
+            // //填写div匹配数据
+            // fillDivInputs({
+            //     elementId: 'rp_responsebillsForm',
+            //     params: rowsSelect[0]
+            // })
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_responsebillsForm',
                 params: rowsSelect[0]
             })
 
@@ -451,13 +465,19 @@
                     $(this).addClass('selected');
 
                     let rowSelect = subTable.row('.selected').data();
-                    //清空Form原有数据
-                    initFormInputs({
-                        elementId: 'rp_recordbillsForm'
-                    })
-                    //填写div匹配数据
-                    fillDivInputs({
-                        elementId: 'rp_recordbills',
+                    // //清空Form原有数据
+                    // initFormInputs({
+                    //     elementId: 'rp_recordbillsForm'
+                    // })
+                    // //填写div匹配数据
+                    // fillDivInputs({
+                    //     elementId: 'rp_recordbills',
+                    //     params: rowSelect
+                    // })
+
+                    //初始化并填写form内inputs
+                    initAndFillFormInputs({
+                        formId: 'rp_recordbillsForm',
                         params: rowSelect
                     })
                     //打开面板

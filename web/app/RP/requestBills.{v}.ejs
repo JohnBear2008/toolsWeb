@@ -496,7 +496,7 @@
                                                     <label class="col-sm-1 control-label">是否返修</label>
                                                     <div class="col-sm-5">
                                                         <select id="rp_recordbillsForm-isRework"
-                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            class="selectpicker" data-dropup-auto="false">
 
                                                         </select>
                                                     </div>
@@ -506,8 +506,8 @@
 
                                                     <label class="col-sm-1 control-label">产品来源</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_recordbillsForm-productFrom"
-                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                        <select id="rp_recordbillsForm-productFrom" class="selectpicker"
+                                                            data-dropup-auto="false">
 
                                                         </select>
                                                     </div>
@@ -516,27 +516,25 @@
                                                     <label class="col-sm-1 control-label">产品归属</label>
                                                     <div class="col-sm-5">
                                                         <select id="rp_recordbillsForm-productBelong"
-                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                            class="selectpicker" data-dropup-auto="false">
 
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
-
-
                                                     <label class="col-sm-1 control-label">是否加急</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_recordbillsForm-urgent"
-                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                        <select id="rp_recordbillsForm-urgent" class="selectpicker"
+                                                            data-dropup-auto="false">
 
                                                         </select>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">质保期内</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_recordbillsForm-inWarranty"
-                                                            class="selectpicker dropup" data-dropup-auto="false">
+                                                        <select id="rp_recordbillsForm-inWarranty" class="selectpicker"
+                                                            data-dropup-auto="false">
 
                                                         </select>
                                                     </div>
@@ -586,7 +584,7 @@
 
     const mainColumnsArray = [{
         data: 'requestBillId',
-        visable: 'false'
+        // visable: 'false'
     }, {
         data: 'requestDate'
     }, {
@@ -860,15 +858,9 @@
     //保存维修申请单函数
     const saveRequestbill = async () => {
 
-
-
-
-
         let mainFormData = getPostFormData({
             formId: 'rp_requestbillsForm'
         })
-
-
 
         //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
 
@@ -895,8 +887,6 @@
                 data: subTableData
             }
         })
-
-
 
         console.log('saveRequestbill r1:' + JSON.stringify(r1));
         console.log('saveRequestbill r2:' + JSON.stringify(r2));
@@ -1030,8 +1020,6 @@
             });
             scanner.addListener('scan', async function (productId) {
                 console.log('productId:' + productId);
-
-
                 let productData = await getDataBySql({
                     sql: 'getProduct',
                     params: {
@@ -1230,8 +1218,6 @@
             },
         })
 
-        //客户选定监听事件
-        addCustomerListener();
 
 
 
@@ -1262,15 +1248,14 @@
             },
         })
 
-        //选定产品修改事件
-        addProductListener();
+
 
         loadBootStrapSelector({
             elementId: 'rp_requestbillsForm-isInland',
             sqlParams: {
                 sql: 'getOptionSelector',
                 params: {
-                    filter: 'optionClass="国内外"'
+                    filter: 'optionClass="国内外"',
                 }
             },
         })
@@ -1338,15 +1323,22 @@
             },
         })
 
+        //客户选定监听事件
+        addCustomerListener();
+
+        //选定产品修改事件
+        addProductListener();
+
+
 
         // 关闭事件重置选中datatable选中,避免显示错误
         $('#rp_requestbillsModal').on('hidden.bs.modal', function () {
             let table = $('#rp_requestbills').DataTable();
             table.$('tr.selected').removeClass('selected');
 
-            //添加监听出来扫描modal关闭 表单modal失效问题
-            $(this).removeData('bs.modal');
-            $(document.body).addClass("modal-open");
+            // //添加监听出来扫描modal关闭 表单modal失效问题
+            // $(this).removeData('bs.modal');
+            // $(document.body).addClass("modal-open");
         })
 
 

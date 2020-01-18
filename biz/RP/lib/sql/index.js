@@ -141,14 +141,7 @@ const createSql = (i) => {
 
             excuteSql = 'update ' + tableId + ' set ' + caseModels + ' where ' + filter;
 
-
-
-
-
             // let caseModel = "stockNum = CASE partId WHEN '1ACC_HUNTER_JX_C' THEN ifnull(stockNum, 0) + 1 END"
-
-
-
 
             break;
 

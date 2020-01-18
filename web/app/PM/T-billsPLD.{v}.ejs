@@ -624,7 +624,7 @@
 		// console.log('ips:'+$('#modelD option:selected').val())
 		// console.log('ips:'+$('#modelH option:selected').val())
 
-		if (ips.modelD !== '未选择' && ips.modelD.indexOf('7HT') !== -1 ) {
+		if (ips.modelD !== '未选择' && ips.modelD.indexOf('7HT') !== -1) {
 			// Fun_getSQLSelectDBData({
 			// 	SQL: "SQLSRStaffs"
 			// }, "#auditor", '李斌');
@@ -1828,136 +1828,142 @@
 		//更新版本
 		$('#BTNFormUpdate').click(function () {
 
-			if (checkAuthority({
-					"SQL": "SQLGetAuthorities",
-					"filter": "StaffName='" + sessionName + "'"
-				}, "T-PLD03")) { //------检查权限
+			if (sessionName == $('#maker').text()) {
+
+				if (checkAuthority({
+						"SQL": "SQLGetAuthorities",
+						"filter": "StaffName='" + sessionName + "'"
+					}, "T-PLD03")) { //------检查权限
 
 
-				var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
-				if (msg1 === true) {
-					var msg2 = confirm("确认更新版本？");
-					if (msg2 === true) {
+					var msg1 = confirm("风险操作！已审核的单据更新版本,原单据将失效!");
+					if (msg1 === true) {
+						var msg2 = confirm("确认更新版本？");
+						if (msg2 === true) {
 
-						var newVersion = parseInt($('#version').text()) + 1;
+							var newVersion = parseInt($('#version').text()) + 1;
 
-						var files = [];
+							var files = [];
 
-						$('#divFilesUploaded a').each(function () {
-							var fileKey = $(this).attr('href').substring(23);
-							var fileName = $(this).attr('download');
+							$('#divFilesUploaded a').each(function () {
+								var fileKey = $(this).attr('href').substring(23);
+								var fileName = $(this).attr('download');
 
-							var fileInfo = {
-								"fileName": fileName,
-								"fileKey": fileKey
-							}
-
-							files.push(fileInfo);
-						});
-
-
-
-						var oldPLDData = {
-							"DBTable": "ppm_bills_plan_t",
-							"DBID": $('#DBID').val(),
-							"BPID": $('#BPID').val(),
-							"WFStatus": 0,
-							"effective": 0
-						}
-
-						let ajax1 = $.ajax({
-							method: 'post',
-							url: '/app/PM/updDBData',
-							data: oldPLDData,
-							success: function (data, textStatus) {
-
-							},
-							error: function (XMLHttpRequest, textStatus, errorThrown) {}
-						});
-
-
-
-						var newPLDData = {
-							"DBTable": "ppm_bills_plan_t",
-							"BTIDfrom": $('#BTIDfrom').text(),
-							"BPIDfrom": $('#BPIDfrom').text(),
-							"BPID": $('#BPID').val(),
-							"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
-							"topic": $('#topic').val(),
-							"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
-								'"'),
-							"PGEMaker": $('#PGEMaker option:selected').text(),
-							"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
-							"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
-							"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
-							"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
-							"modelD": $('#modelD option:selected').text(),
-							"modelH": $('#modelH option:selected').text(),
-							"OGNSystemVersion": $('#OGNSystemVersion').val(),
-							"applyDate": $('#applyDate').val(),
-							"limitDate": $('#limitDate').val(),
-							"maker": sessionName,
-							"makeDate": Ndate,
-							"auditor": $('#auditor option:selected').text(),
-							"version": newVersion,
-							"files": JSON.stringify(files),
-							"WFStatus": 1
-						}
-
-
-						let ajax2 = $.ajax({
-							method: 'post',
-							url: '/app/PM/addDBData',
-							data: newPLDData,
-							success: function (data) {
-
-							},
-							error: function (err) {
-
-								if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
-									swal("系统中已存在重复数据,请检查!");
-								} else {
-									swal("失败数据:" + JSON.stringify(err));
+								var fileInfo = {
+									"fileName": fileName,
+									"fileKey": fileKey
 								}
 
+								files.push(fileInfo);
+							});
 
+
+
+							var oldPLDData = {
+								"DBTable": "ppm_bills_plan_t",
+								"DBID": $('#DBID').val(),
+								"BPID": $('#BPID').val(),
+								"WFStatus": 0,
+								"effective": 0
 							}
-						});
+
+							let ajax1 = $.ajax({
+								method: 'post',
+								url: '/app/PM/updDBData',
+								data: oldPLDData,
+								success: function (data, textStatus) {
+
+								},
+								error: function (XMLHttpRequest, textStatus, errorThrown) {}
+							});
 
 
 
-						$.when(ajax1, ajax2).done(function () {
+							var newPLDData = {
+								"DBTable": "ppm_bills_plan_t",
+								"BTIDfrom": $('#BTIDfrom').text(),
+								"BPIDfrom": $('#BPIDfrom').text(),
+								"BPID": $('#BPID').val(),
+								"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
+								"topic": $('#topic').val(),
+								"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,
+									'"'),
+								"PGEMaker": $('#PGEMaker option:selected').text(),
+								"PLDArea": $('input:radio[name="PLDArea"]:checked').val(),
+								"orderFrom": $('input:radio[name="orderFrom"]:checked').val(),
+								"orderFromDep": $('input:radio[name="orderFromDep"]:checked').val(),
+								"MHEName": Fun_getSelectText($('#MHEName option:selected').text()),
+								"modelD": $('#modelD option:selected').text(),
+								"modelH": $('#modelH option:selected').text(),
+								"OGNSystemVersion": $('#OGNSystemVersion').val(),
+								"applyDate": $('#applyDate').val(),
+								"limitDate": $('#limitDate').val(),
+								"maker": sessionName,
+								"makeDate": Ndate,
+								"auditor": $('#auditor option:selected').text(),
+								"version": newVersion,
+								"files": JSON.stringify(files),
+								"WFStatus": 1
+							}
 
-							// let i = {
-							// 	alertMsg: "更新版本成功!"
-							// }
-							// swalAndRefresh(i)
 
-							$('#BillPLD').modal('hide');
+							let ajax2 = $.ajax({
+								method: 'post',
+								url: '/app/PM/addDBData',
+								data: newPLDData,
+								success: function (data) {
 
-							let i = {
-								msg: '更新版本成功,请填写更新原因!',
-								updateParams: {
-									"DBTable": "ppm_bills_plan_t",
-									"BillIDName": "BPID",
-									"BillID": $('#BPID').val(),
-									"updateReason": '',
-									"filter": "version =" + $('#version').text()
+								},
+								error: function (err) {
+
+									if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
+										swal("系统中已存在重复数据,请检查!");
+									} else {
+										swal("失败数据:" + JSON.stringify(err));
+									}
+
 
 								}
-							}
-
-							updateAndWriteReason(i);
+							});
 
 
-						});
+
+							$.when(ajax1, ajax2).done(function () {
+
+								// let i = {
+								// 	alertMsg: "更新版本成功!"
+								// }
+								// swalAndRefresh(i)
+
+								$('#BillPLD').modal('hide');
+
+								let i = {
+									msg: '更新版本成功,请填写更新原因!',
+									updateParams: {
+										"DBTable": "ppm_bills_plan_t",
+										"BillIDName": "BPID",
+										"BillID": $('#BPID').val(),
+										"updateReason": '',
+										"filter": "version =" + $('#version').text()
+
+									}
+								}
+
+								updateAndWriteReason(i);
 
 
+							});
+
+
+						}
 					}
-				}
-				//	    $('#BillPLD').modal('hide');
+					//	    $('#BillPLD').modal('hide');
 
-			} //------检查权限
+				} //------检查权限
+
+			} else {
+				swal('当前账号非制单人不允许更新版本!')
+			}
 
 		});
 
