@@ -840,7 +840,10 @@
                     params: rowSelect
                 })
 
-                $('#partInfoDiv input,select').attr("disabled", true);
+                // $('#partInfoDiv input,select').attr("disabled", true); 会影响到div外select
+
+                $('#partInfoDiv').find('input,textarea').attr("disabled", true);
+
 
                 //打开面板
                 $('#rp_partsBillsPanel').show();
@@ -1211,7 +1214,8 @@
             addPartFeeListener();
 
             //取消部件信息div禁用
-            $('#partInfoDiv input,select').attr("disabled", false);
+
+            $('#partInfoDiv').find('input,textarea').attr("disabled", false);
 
 
         })
