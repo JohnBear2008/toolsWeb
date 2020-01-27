@@ -495,8 +495,8 @@
 
                                                     <label class="col-sm-1 control-label">是否返修</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_recordbillsForm-isRework"
-                                                            class="selectpicker" data-dropup-auto="false">
+                                                        <select id="rp_recordbillsForm-isRework" class="selectpicker"
+                                                            data-dropup-auto="false">
 
                                                         </select>
                                                     </div>
@@ -880,6 +880,16 @@
             params: mainFormData
         })
 
+        console.log("subTableData:" + JSON.stringify(subTableData))
+
+        //添加申请单号到子表数据
+
+        for (let n of subTableData) {
+            n.requestBillId = $("#rp_requestbillsForm-requestBillId").text();
+        }
+
+
+
         let r2 = await postDBData({
             sql: 'replace',
             params: {
@@ -1032,6 +1042,7 @@
                 let rowNum = $("#rp_recordbills tbody tr").size();
 
                 let rowData = {};
+
 
                 rowData.rowId = rowNum + 1;
                 rowData.status = '新增'
@@ -1337,8 +1348,8 @@
             table.$('tr.selected').removeClass('selected');
 
             // //添加监听出来扫描modal关闭 表单modal失效问题
-            // $(this).removeData('bs.modal');
-            // $(document.body).addClass("modal-open");
+            $(this).removeData('bs.modal');
+            $(document.body).addClass("modal-open");
         })
 
 

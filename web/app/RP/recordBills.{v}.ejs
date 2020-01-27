@@ -1076,20 +1076,27 @@
         let partIdsArr = [];
         let nums = [];
         for (const n of subTableData) {
-            partIdsArr.push(n.partId);
-            nums.push(n.num);
-        }
-        let stockNums = await getStockNums(partIdsArr);
-
-        console.log('stockNums:' + JSON.stringify(stockNums));
-
-
-        for (let n = 0; n < stockNums.length; n++) {
-            if (stockNums[n].stockNum < nums[n]) {
-                checkResult = false;
-                break;
+            if (n.numStatus === '预领') {
+                partIdsArr.push(n.partId);
+                nums.push(n.num);
             }
         }
+
+        if (partIdsArr.length > 0) {
+            let stockNums = await getStockNums(partIdsArr);
+
+            console.log('stockNums:' + JSON.stringify(stockNums));
+
+
+            for (let n = 0; n < stockNums.length; n++) {
+                if (stockNums[n].stockNum < nums[n]) {
+                    checkResult = false;
+                    break;
+                }
+            }
+
+        }
+
         return checkResult
     }
 
@@ -1124,9 +1131,22 @@
                 params: mainFormData
             })
 
-            //扣减部件库存
+            //获取需要更新库存数据部件
+            let subTableDataNeedUpdate = [];
+            for (const n of subTableData) {
+                if (n.numStatus === '预领') {
+                    subTableDataNeedUpdate.push(n)
+                }
+            }
 
-            let r2 = await updateStock(subTableData);
+
+
+            //扣减部件库存
+            let r2;
+            if (subTableDataNeedUpdate.length > 0) {
+                r2 = await updateStock(subTableDataNeedUpdate);
+            }
+
 
 
             //更新部件预领状态为已领,去除stockNum
@@ -1150,7 +1170,11 @@
             console.log('saveRecordBill r2:' + JSON.stringify(r2));
             console.log('saveRecordBill r3:' + JSON.stringify(r3));
 
-            if (r1.affectedRows && r2.affectedRows && r3.affectedRows) {
+            if(r2){
+                alert('扣减库存成功！')
+            }
+
+            if (r1.affectedRows && r3.affectedRows) {
                 alert('保存成功!')
                 $('#rp_recordbillsModal').modal('hide');
                 loadBillMainTable();
