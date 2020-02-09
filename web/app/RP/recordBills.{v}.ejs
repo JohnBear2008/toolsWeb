@@ -975,7 +975,7 @@
         for (const n of stockData) {
             let arr = {
                 partId: n.partId,
-                stockNum: -n.stockNum
+                stockNum: -n.num
             }
             updateNumArr.push(arr);
             filterRange = filterRange + '"' + n.partId + '",';
@@ -1307,7 +1307,7 @@
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
                 for (const n in subTableData) {
-                    // console.log("subTableData[n]:" + JSON.stringify(subTableData[n].rowId));
+                    console.log("subTableData[n]:" + JSON.stringify(subTableData[n]));
                     // console.log("rowData:" + JSON.stringify(rowData.rowId));
 
                     //此处不用===避免,字符类型不匹配导致相关问题
