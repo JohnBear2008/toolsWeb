@@ -53,28 +53,33 @@ const createSql = (i) => {
         case 'replace':
             console.log('11111111:' + JSON.stringify(i.params));
             let titles = ''
+			let paramArr=[];
             for (const p in i.params.data[0]) {
                 //Object.keys(i)[0] 用于获取对象第一个属性名称
                 // titles = titles + Object.keys(i.params.data[0][p])[0] + ',';
                 titles = titles + p + ','
+				paramArr.push(p);
             }
             titles = titles.substr(0, titles.length - 1);
             titles = '(' + titles + ')';
+			
+			
             let values = ''
 
             for (const n of i.params.data) {
                 // console.log('n:' + n);
                 let valueN = '';
+				
+				for (let p of paramArr) {
+					if (!n[p]) {
+					    valueN = valueN + 'null,';
+					} else {
+					    valueN = valueN + '"' + n[p] + '",';
+					}
+					
+				}
 
-                for (const p in n) {
-                    // console.log('v:' + n[p]);
-                    //将空值转换为null避免不匹配保存
-                    if (!n[p]) {
-                        valueN = valueN + 'null,';
-                    } else {
-                        valueN = valueN + '"' + n[p] + '",';
-                    }
-                }
+
 
                 valueN = valueN.substr(0, valueN.length - 1);
                 valueN = '(' + valueN + ')';

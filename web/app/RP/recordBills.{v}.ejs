@@ -1139,8 +1139,6 @@
                 }
             }
 
-
-
             //扣减部件库存
             let r2;
             if (subTableDataNeedUpdate.length > 0) {
@@ -1221,7 +1219,6 @@
             $('#rp_partsBillsPanel').show();
 
             //设置默认值
-
             $("#rp_partsBillsForm-numStatus").text('预领')
 
 
@@ -1325,9 +1322,10 @@
                 rowData.rowId = rowNum + 1;
 
                 subTableData.push(rowData);
-                // console.log("subTableData:" + JSON.stringify(subTableData));
-
+                
             }
+			console.log("subTableData T:" + JSON.stringify(subTableData));
+			
 
             //重新加载子表
             loadDataSubTable(subTableData);
