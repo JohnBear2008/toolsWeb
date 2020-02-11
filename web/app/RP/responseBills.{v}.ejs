@@ -222,7 +222,6 @@
                                         </div>
                                         <div class="panel-body">
 
-
                                             <form class="form-horizontal" role="form" id='rp_recordbillsForm'>
 
                                                 <input id="rp_recordbillsForm-DBID" type="hidden" value="">
@@ -261,7 +260,6 @@
 
                                                 </div>
 
-
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">故障描述</label>
                                                     <div class="col-sm-5">
@@ -275,24 +273,12 @@
                                                         <input class="form-control" id="rp_recordbillsForm-isRework"
                                                             type="text" value="该输入框获得焦点...">
                                                     </div>
-
-
                                                 </div>
-
-
                                             </form>
-
-
                                         </div>
                                     </div>
-
-
-
                                 </div>
                             </div>
-
-
-
 
                         </div>
                     </div>
@@ -318,18 +304,10 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
 
+//申请表主表dataTable column 数组
 
-        //加载表格
-        loadBillDataTable({
-            elementId: 'rp_responsebills',
-            sqlParams: {
-                sqlId: 'sqlResponseBills',
-                params: []
-            },
-            dtParams: {
-                columns: [{
+    const mainColumnsArray =  [{
                         data: 'requestBillId',
                     },
                     {
@@ -337,7 +315,7 @@
                     }, {
                         data: 'responseBillId'
                     }, {
-                        data: 'shortName',
+                        data: 'customerShortName',
                     }, {
                         data: 'productId',
                     }, {
@@ -347,7 +325,37 @@
                     }, {
                         data: 'isFullPay',
                     },
-                ],
+                ]
+
+    //申请表子表dataTable column 数组
+    const subColumnsArray = [{
+                        data: 'recordBillId'
+                    }, {
+                        data: 'productId',
+                    }, {
+                        data: 'repairResult',
+                    }, {
+                        data: 'repairTotalFee',
+                    }]
+
+
+
+
+
+    $(document).ready(function () {
+
+
+        //加载表格
+        loadBillDataTable({
+            elementId: 'rp_responsebills',
+            sqlParams: {
+                sqlId: 'sqlResponseBills',
+                params: {
+					filter:'recordBillId is not null '
+				}
+            },
+            dtParams: {
+                columns:mainColumnsArray
             }
         })
 
@@ -360,16 +368,6 @@
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
-            // //清空Form原有数据
-            // initFormInputs({
-            //     elementId: 'rp_responsebillsForm'
-            // })
-            // //填写div匹配数据
-            // fillDivInputs({
-            //     elementId: 'rp_responsebills',
-            //     params: dataSelect
-            // })
-
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
@@ -382,42 +380,10 @@
 
         });
 
-
-        // //加载表格
-        // loadBillDataTable({
-        //     elementId: 'rp_recordbills',
-        //     dtParams: {
-        //         dtConfig: 'dtConfigData',
-        //         data: [],
-        //         columns: [{
-        //             data: 'recordBillId'
-        //         }, {
-        //             data: 'productId',
-        //         }, {
-        //             data: 'repairResult',
-        //         }, {
-        //             data: 'repairTotalFee',
-        //         }],
-        //     }
-        // })
-
-        // let subTable = $('#rp_recordbills').DataTable();
-
-
         $('#btnSend').click(function () {
 
             let rowsSelect = table.rows('.selected').data();
             console.log("rowsSelect:" + JSON.stringify(rowsSelect));
-
-            // //清空Form原有数据
-            // initFormInputs({
-            //     elementId: 'rp_responsebillsForm'
-            // })
-            // //填写div匹配数据
-            // fillDivInputs({
-            //     elementId: 'rp_responsebillsForm',
-            //     params: rowsSelect[0]
-            // })
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
@@ -436,15 +402,7 @@
                 dtParams: {
                     dtConfig: 'dtConfigData',
                     data: rowsSelect,
-                    columns: [{
-                        data: 'recordBillId'
-                    }, {
-                        data: 'productId',
-                    }, {
-                        data: 'repairResult',
-                    }, {
-                        data: 'repairTotalFee',
-                    }],
+                    columns: subColumnsArray,
                 }
             })
 
@@ -465,15 +423,7 @@
                     $(this).addClass('selected');
 
                     let rowSelect = subTable.row('.selected').data();
-                    // //清空Form原有数据
-                    // initFormInputs({
-                    //     elementId: 'rp_recordbillsForm'
-                    // })
-                    // //填写div匹配数据
-                    // fillDivInputs({
-                    //     elementId: 'rp_recordbills',
-                    //     params: rowSelect
-                    // })
+
 
                     //初始化并填写form内inputs
                     initAndFillFormInputs({
@@ -483,10 +433,7 @@
                     //打开面板
                     $('#rp_recordbillsPanel').show();
                 }
-
             });
-
-
         })
 
 
