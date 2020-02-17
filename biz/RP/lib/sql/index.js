@@ -21,6 +21,11 @@ const getStockNum = 'select stockNum from `rp_partswarehouse`'
 const getReqeustBillsNum = 'select count(1) as billsNum from `rp_requestbills`';
 //获取记录单数量
 const getRecordBillsNum = 'select count(1) as billsNum from `rp_recordbills`';
+//获取出货单数量
+const getResponseBillsNum = 'select count(1) as billsNum from `rp_responsebills`';
+
+
+
 //维修申请单主表单sql
 const sqlRequestBills = 'select * from rp_requestbills ';
 //维修单sql

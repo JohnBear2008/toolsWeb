@@ -147,8 +147,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">出货单号</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-responseBillId" type="text"
-                                            value="该输入框获得焦点...">
+                                        <p class="form-control-static" id="rp_responsebillsForm-responseBillId"></p>
                                     </div>
 
                                     <label class="col-sm-1 control-label">收款方式</label>
@@ -304,138 +303,218 @@
 
 
 <script type="text/javascript">
+    //申请表主表dataTable column 数组
 
-//申请表主表dataTable column 数组
-
-    const mainColumnsArray =  [{
-                        data: 'requestBillId',
-                    },
-                    {
-                        data: 'recordBillId'
-                    }, {
-                        data: 'responseBillId'
-                    }, {
-                        data: 'customerShortName',
-                    }, {
-                        data: 'productId',
-                    }, {
-                        data: 'repairResult',
-                    }, {
-                        data: 'isSended',
-                    }, {
-                        data: 'isFullPay',
-                    },
-                ]
+    const mainColumnsArray = [{
+            data: 'requestBillId',
+        },
+        {
+            data: 'recordBillId'
+        }, {
+            data: 'responseBillId'
+        }, {
+            data: 'customerShortName',
+        }, {
+            data: 'productId',
+        }, {
+            data: 'repairResult',
+        }, {
+            data: 'isSended',
+        }, {
+            data: 'isFullPay',
+        },
+    ]
 
     //申请表子表dataTable column 数组
     const subColumnsArray = [{
-                        data: 'recordBillId'
-                    }, {
-                        data: 'productId',
-                    }, {
-                        data: 'repairResult',
-                    }, {
-                        data: 'repairTotalFee',
-                    }]
+        data: 'recordBillId'
+    }, {
+        data: 'productId',
+    }, {
+        data: 'repairResult',
+    }, {
+        data: 'repairTotalFee',
+    }]
 
-
-
-
-
-    $(document).ready(function () {
-
-
+    //加载主表数据			
+    const loadBillMainTable = async () => {
         //加载表格
         loadBillDataTable({
             elementId: 'rp_responsebills',
             sqlParams: {
                 sqlId: 'sqlResponseBills',
                 params: {
-					filter:'recordBillId is not null '
-				}
+                    filter: 'recordBillId is not null '
+                }
             },
             dtParams: {
-                columns:mainColumnsArray
+                columns: mainColumnsArray
+            }
+        })
+    }
+
+
+    //用数组重载子表
+    const loadDataSubTable = async (dataArray) => {
+
+        console.log('dataArray:' + JSON.stringify(dataArray));
+
+
+        //加载表格
+        loadBillDataTable({
+            elementId: 'rp_recordbills',
+            dtParams: {
+                dtConfig: 'dtConfigData',
+                data: dataArray,
+                columns: subColumnsArray
             }
         })
 
-        let table = $('#rp_responsebills').DataTable();
+        //如数据为0,清空tbody 避免直接获取size =1;
+        if (dataArray.length === 0) {
+            $('#rp_recordbills tbody').html("");
+        }
+
+        // //添加子表双击事件
+        // addSubTableListener();
+    }
+
+    //检查需要出货的选中数据是否符合规范
+    const checkSendData = (arr) => {
+        switch (true) {
+            case !arr:
+                alert('未选中出货单据!')
+                return false
+                break;
+        }
+
+        return true;
+    }
 
 
-        //定义主表双击事件
-        $('#rp_responsebills tbody').on('dblclick', 'tr', function () {
+    //创建出货单单新单号
+    const createResponseBillId = async () => {
+        let r1 = await getDataBySql({
+            sql: "getResponseBillsNum",
+            params: {
+                filter: 'makeDate="' + currentDate() + '"'
+            }
+        })
+        // console.log('r1:' + r1);
+        let r2 = r1[0].billsNum
+        let r3 = parseInt(r2) + 1;
 
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            let dataSelect = table.row('.selected').data();
+        let r4 = PrefixInteger(r3, 3);
+        // console.log('r4:' + r4);
+        let r5 = dateFormat(currentDate(), 'yyyyMMdd');
 
-            //初始化并填写form内inputs
-            initAndFillFormInputs({
-                formId: 'rp_responsebillsForm',
-                params: dataSelect
-            })
+        let billId = 'S-' + r5 + r4;
+        $("#rp_responsebillsForm-responseBillId").text(billId);
+    }
 
-            //打开面板
-            $('#btnSend').click();
+
+    //添加子表监听器,定义双击展开事件
+    const addSubTableListener = () => {
+        let subTable = $('#rp_recordbills').DataTable();
+
+        //解绑原事件
+        $('#rp_recordbills tbody').unbind();
+
+        //定义子表双击事件
+        $('#rp_recordbills tbody').on('click', 'tr', async function () {
+
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                $('#rp_recordbillsPanel').hide();
+            } else {
+                subTable.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+
+                let rowSelect = subTable.row('.selected').data();
+                console.log("rowSelect:" + JSON.stringify(rowSelect));
+
+                //初始化并填写form内inputs
+                initAndFillFormInputs({
+                    formId: 'rp_recordbillsForm',
+                    params: rowSelect
+                })
+
+
+                //打开面板
+                $('#rp_recordbillsPanel').show();
+
+            }
 
         });
+    }
 
+
+
+    $(document).ready(function () {
+
+        //元素数据
+
+        //元素数据-全局变量-当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
+
+        //元素数据-主表
+        loadBillMainTable();
+
+
+
+        //定义功能
+        //定义功能-出货按钮
         $('#btnSend').click(function () {
 
-            let rowsSelect = table.rows('.selected').data();
-            console.log("rowsSelect:" + JSON.stringify(rowsSelect));
+            //定义变量
+            let table = $('#rp_responsebills').DataTable();
+            let dataSelect = table.rows('.selected').data();
 
-            //初始化并填写form内inputs
-            initAndFillFormInputs({
-                formId: 'rp_responsebillsForm',
-                params: rowsSelect[0]
-            })
+            //检查出货条件
+            let r = checkSendData(dataSelect);
+            if (!r) {
+                return;
+            }
 
-            //打开面板
+            //打开详情面板,关闭子面板
             $('#rp_responsebillsModal').modal('show');
             $('#rp_recordbillsPanel').hide();
 
+            //初始化面板元素,匹配出货表匹配数据
 
-            //加载表格
-            loadBillDataTable({
-                elementId: 'rp_recordbills',
-                dtParams: {
-                    dtConfig: 'dtConfigData',
-                    data: rowsSelect,
-                    columns: subColumnsArray,
-                }
+            initAndFillFormInputs({
+                formId: 'rp_responsebillsForm',
+                params: dataSelect[0]
             })
 
-            let subTable = $('#rp_recordbills').DataTable();
+            //生成出货单号
 
-            //解绑原事件
-            $('#rp_recordbills tbody').unbind();
+            //不存在单号则创造记录单号
+            let responseBillId = $('#rp_responsebillsForm-responseBillId').text();
+            if (!responseBillId) {
+                createResponseBillId()
+            }
 
-            //定义子表双击事件
-            $('#rp_recordbills tbody').on('click', 'tr', function () {
+            //加载子表数据
+            loadDataSubTable(dataSelect);
 
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-
-                    $('#rp_recordbillsPanel').hide();
-                } else {
-                    subTable.$('tr.selected').removeClass('selected');
-                    $(this).addClass('selected');
-
-                    let rowSelect = subTable.row('.selected').data();
+            //定义子表功能
+            addSubTableListener();
 
 
-                    //初始化并填写form内inputs
-                    initAndFillFormInputs({
-                        formId: 'rp_recordbillsForm',
-                        params: rowSelect
-                    })
-                    //打开面板
-                    $('#rp_recordbillsPanel').show();
-                }
-            });
+
         })
 
+        //定义函数-详情按钮
+
+        //定义函数-主表双击
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_responsebillsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_responsebills').DataTable();
+            table.$('tr.selected').removeClass('selected');
+        })
 
 
     });
