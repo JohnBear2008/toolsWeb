@@ -34,7 +34,7 @@ const sqlRecordBills = 'select * from rp_recordbills';
 const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql
 const sqlResponseBills =
-	'select * from (select ta.recordBillId,ta.productId,ta.productName,ta.productDescription,ta.repairResult,ta.repairTotalFee,tb.requestBillId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.customerId,tc.isSended,tc.isFullPay from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.recordBillId=tc.recordBillId ) tA  '
+	'select * from (select ta.recordBillId,ta.productId,ta.repairResult,ta.repairTotalFee,tb.requestBillId,tb.customerId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.isSended,tc.isFullPay from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.recordBillId=tc.recordBillId ) tA  '
 
 
 
