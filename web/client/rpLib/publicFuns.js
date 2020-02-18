@@ -978,3 +978,17 @@ const getPostFormData = (i) => {
     return o;
 
 }
+
+
+/**
+ *将dataTable的数据格式转化为普通的数组
+ *
+ * @param {*} i:dataTableObject
+ */
+const tableDataToArray = (i) => {
+    let arr = []
+    for (let n = 0; n < i.length; n++) {
+        arr.push(i[n]);
+    }
+    return arr;
+}

@@ -34,7 +34,7 @@ const sqlRecordBills = 'select * from rp_recordbills';
 const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql
 const sqlResponseBills =
-	'select * from (select ta.recordBillId,ta.productId,ta.repairResult,ta.repairTotalFee,tb.requestBillId,tb.customerId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.isSended,tc.isFullPay from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.recordBillId=tc.recordBillId ) tA  '
+	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,tb.requestBillId,tb.customerId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.expressId,tc.isSended,tc.isFullPay,tc.maker,tc.makeDate from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.responseBillId=tc.responseBillId ) tA '
 
 
 
@@ -105,18 +105,35 @@ const createSql = (i) => {
 			console.log("excuteSql:" + excuteSql);
 			break;
 		case 'delete':
-			let DBIDS = '';
+			let deleteDBIDS = '';
 			if (i.params.data.length > 0) {
 				for (const n in i.params.data) {
 					if (i.params.data.hasOwnProperty(n)) {
-						DBIDS = DBIDS + i.params.data[n] + ',';
+						deleteDBIDS = deleteDBIDS + i.params.data[n] + ',';
 					}
 				}
 			}
-			DBIDS = DBIDS.substr(0, DBIDS.length - 1);
-			DBIDS = '(' + DBIDS + ')';
-			console.log("DBIDS:" + DBIDS);
-			excuteSql = 'delete from `' + i.params.tableId + '` where DBID in ' + DBIDS;
+			deleteDBIDS = deleteDBIDS.substr(0, deleteDBIDS.length - 1);
+			deleteDBIDS = '(' + deleteDBIDS + ')';
+			console.log("deleteDBIDS:" + deleteDBIDS);
+			excuteSql = 'delete from `' + i.params.tableId + '` where DBID in ' + deleteDBIDS;
+			break;
+
+		case 'update':
+			let updateDBIDS = '';
+			if (i.params.data.length > 0) {
+				for (const n in i.params.data) {
+					if (i.params.data.hasOwnProperty(n)) {
+						updateDBIDS = updateDBIDS + i.params.data[n] + ',';
+					}
+				}
+			}
+			updateDBIDS = updateDBIDS.substr(0, updateDBIDS.length - 1);
+			updateDBIDS = '(' + updateDBIDS + ')';
+			console.log("updateDBIDS:" + updateDBIDS);
+
+			excuteSql = 'update `' + i.params.tableId + '` set ' + i.params.statement + ' where DBID in ' + updateDBIDS;
+
 			break;
 
 		case 'updateNum':

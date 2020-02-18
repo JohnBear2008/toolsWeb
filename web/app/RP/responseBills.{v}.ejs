@@ -46,6 +46,7 @@
             <!-- 功能组按钮 -->
             <div class="well">
                 <button id='btnSend' type="button" class="btn btn-info">出货</button>
+                <button id='btnDetail' type="button" class="btn btn-info">查看</button>
                 <button id='btnDelete' type="button" class="btn btn-danger">删除出货</button>
             </div>
 
@@ -150,12 +151,6 @@
                                         <p class="form-control-static" id="rp_responsebillsForm-responseBillId"></p>
                                     </div>
 
-                                    <label class="col-sm-1 control-label">收款方式</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-paymentWay" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
-
                                 </div>
 
 
@@ -175,6 +170,14 @@
                                 </div>
 
                                 <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">收款方式</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-paymentWay" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
                                     <label class="col-sm-1 control-label">总金额</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_responsebillsForm-payAmount" type="text"
@@ -184,14 +187,24 @@
                                 </div>
 
                                 <div class="form-group">
-
                                     <label class="col-sm-1 control-label">快递单号</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_responsebillsForm-expressId" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
+                                </div>
 
+                                <div class="form-group">
 
+                                    <label class="col-sm-1 control-label">制单人</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_responsebillsForm-maker"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">制单日期</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_responsebillsForm-makeDate"></p>
+                                    </div>
                                 </div>
 
 
@@ -226,8 +239,24 @@
 
                                             <form class="form-horizontal" role="form" id='rp_recordbillsForm'>
 
-                                                <input id="rp_recordbillsForm-DBID" type="hidden" value="">
-                                                <input id="rp_recordbillsForm-requestBillId" type="hidden" value="">
+                                                <!-- <input id="rp_recordbillsForm-DBID"  value=""> -->
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">记录单号</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_recordbillsForm-recordBillId"></p>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">申请单号</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_recordbillsForm-requestBillId"></p>
+                                                    </div>
+
+
+
+                                                </div>
 
 
                                                 <div class="form-group">
@@ -351,13 +380,15 @@
                 columns: mainColumnsArray
             }
         })
+
+
     }
 
 
     //用数组重载子表
     const loadDataSubTable = async (dataArray) => {
 
-        console.log('dataArray:' + JSON.stringify(dataArray));
+        // console.log('dataArray:' + JSON.stringify(dataArray));
 
 
         //加载表格
@@ -382,11 +413,28 @@
     //检查需要出货的选中数据是否符合规范
     const checkSendData = (arr) => {
         switch (true) {
-            case !arr:
+            case arr.length === 0:
                 alert('未选中出货单据!')
                 return false
                 break;
         }
+
+        return true;
+    }
+
+    //检查查看详情数据
+    const checkDetailData = (obj) => {
+        switch (true) {
+            case !obj:
+                alert('未选中数据行!')
+                return false;
+                break;
+            case !obj.responseBillId:
+                alert('不存在匹配出货单,请先出货!')
+                return false;
+                break;
+        }
+
 
         return true;
     }
@@ -448,6 +496,67 @@
         });
     }
 
+    //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
+
+    const checkResponseBillId = async () => {
+        let billId = $("#rp_responsebillsForm-responseBillId").text();
+
+        let r1 = await getDataBySql({
+            sql: 'getResponseBillsNum',
+            params: {
+                filter: 'responseBillId="' + billId + '"'
+            }
+        })
+
+        let r2 = r1[0].billsNum;
+        console.log("checkResponseBillId:" + r2);
+
+        let o = r2 > 0 ? false : true;
+        return o;
+
+    }
+
+
+    //更新出货单号加1
+    const updateResponseBillId = () => {
+        let billId = $("#rp_responsebillsForm-responseBillId").text();
+        if (billId) {
+            billIdArr = billId.split('-');
+            let newBillId = billIdArr[0] + '-' + (parseInt(billIdArr[1]) + 1);
+            $("#rp_responsebillsForm-responseBillId").text(newBillId);
+        }
+    }
+
+
+    //递归更新单号直到不存在冲突单号;
+
+    const autoUpdateResponseBillId = async () => {
+        let r = await checkResponseBillId();
+        if (r) {
+            return true
+        } else {
+            console.log('fail:' + $("#rp_responsebillsForm-responseBillId").text());
+            updateResponseBillId()
+            console.log('fail11:' + $("#responsebillsForm-responseBillId").text());
+            return await autoUpdateResponseBillId();
+        }
+    }
+
+
+    //添加主表监听器,定义双击打开事件
+    const addMainTableListener = () => {
+        //定义主表双击事件
+        $('#rp_responsebills tbody').on('dblclick', 'tr', async function () {
+            //设定选中
+            let table = $('#rp_responsebills').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+            $('#btnDetail').click();
+        });
+
+    }
+
 
 
     $(document).ready(function () {
@@ -456,6 +565,9 @@
 
         //元素数据-全局变量-当前用户名
         sessionName = "<%-locals.session.yjUser.Name%>";
+
+        //定义子表全局变量临时数据数组
+        subTableData = [];
 
         //元素数据-主表
         loadBillMainTable();
@@ -470,8 +582,11 @@
             let table = $('#rp_responsebills').DataTable();
             let dataSelect = table.rows('.selected').data();
 
+            subTableData = tableDataToArray(dataSelect);
+            console.log("subTableData:" + JSON.stringify(subTableData));
+
             //检查出货条件
-            let r = checkSendData(dataSelect);
+            let r = checkSendData(subTableData);
             if (!r) {
                 return;
             }
@@ -481,7 +596,6 @@
             $('#rp_recordbillsPanel').hide();
 
             //初始化面板元素,匹配出货表匹配数据
-
             initAndFillFormInputs({
                 formId: 'rp_responsebillsForm',
                 params: dataSelect[0]
@@ -496,7 +610,7 @@
             }
 
             //加载子表数据
-            loadDataSubTable(dataSelect);
+            loadDataSubTable(subTableData);
 
             //定义子表功能
             addSubTableListener();
@@ -504,8 +618,114 @@
         })
 
         //定义函数-详情按钮
+        $('#btnDetail').click(function () {
 
-        //定义函数-主表双击
+            //定义变量
+            let table = $('#rp_responsebills').DataTable();
+            let dataSelect = table.row('.selected').data();
+
+            console.log('dataSelect:' + JSON.stringify(dataSelect));
+
+            //检查数据
+            let r = checkDetailData(dataSelect);
+            if (!r) {
+                return;
+            }
+
+            //打开详情面板,关闭子面板
+            $('#rp_responsebillsModal').modal('show');
+            $('#rp_recordbillsPanel').hide();
+
+            //加载数据
+            //初始化面板元素,匹配出货表匹配数据
+            initAndFillFormInputs({
+                formId: 'rp_responsebillsForm',
+                params: dataSelect
+            })
+
+            //从主表中过滤相关子表数据行
+            subTableData = [];
+            let responseBillId = dataSelect.responseBillId;
+            let rowsData = table.rows().data();
+            for (let n = 0; n < rowsData.length; n++) {
+                if (rowsData[n].responseBillId === responseBillId) {
+                    subTableData.push(rowsData[n]);
+                }
+            }
+
+            //加载子表数据
+            loadDataSubTable(subTableData);
+            //定义子表功能
+            addSubTableListener();
+
+        })
+
+        //定义功能-主表双击
+
+
+        //定义功能-保存单据按钮
+        $('#rp_responsebillsSave').click(async function () {
+
+            let mainFormData = getPostFormData({
+                formId: 'rp_responsebillsForm'
+            })
+
+            //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
+            if (!mainFormData.data[0].maker) { //新增保存
+                await autoUpdateResponseBillId();
+                mainFormData.data[0].maker = sessionName;
+                mainFormData.data[0].makeDate = currentDate();
+
+                let r1 = await postDBData({
+                    sql: 'replace',
+                    params: mainFormData
+                })
+
+                let responseBillId = $('#rp_responsebillsForm-responseBillId').text();
+
+                let DBIDArr = [];
+
+                for (const n of subTableData) {
+                    DBIDArr.push(n.DBID)
+                }
+
+                let r2 = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'rp_recordbills',
+                        statement: 'responseBillId="' + responseBillId + '"',
+                        data: DBIDArr
+                    }
+                })
+
+                if (r1.affectedRows && r2.affectedRows) {
+                    alert('保存成功!')
+                    $('#rp_responsebillsModal').modal('hide');
+                    loadBillMainTable();
+                } else {
+                    alert('出现错误!')
+                }
+            } else { //普通保存
+
+                let r3 = await postDBData({
+                    sql: 'replace',
+                    params: mainFormData
+                })
+
+                if (r3.affectedRows) {
+                    alert('保存成功!')
+                    $('#rp_responsebillsModal').modal('hide');
+                    loadBillMainTable();
+                } else {
+                    alert('出现错误!')
+                }
+
+            }
+
+        })
+
+        //定义主表双击功能
+        addMainTableListener();
 
 
         // 关闭事件重置选中datatable选中,避免显示错误
