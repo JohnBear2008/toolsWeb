@@ -46,8 +46,8 @@
             <!-- 功能组按钮 -->
             <div class="well">
                 <button id='btnSend' type="button" class="btn btn-info">出货</button>
-                <button id='btnDetail' type="button" class="btn btn-info">查看</button>
-                <button id='btnDelete' type="button" class="btn btn-danger">删除出货</button>
+                <button id='btnDetail' type="button" class="btn btn-info" style="display: none;">查看</button>
+                <!-- <button id='btnDelete' type="button" class="btn btn-danger">删除出货</button> -->
             </div>
 
 
@@ -180,7 +180,7 @@
 
                                     <label class="col-sm-1 control-label">总金额</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-payAmount" type="text"
+                                        <input class="form-control" id="rp_responsebillsForm-amount" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -588,6 +588,7 @@
             //检查出货条件
             let r = checkSendData(subTableData);
             if (!r) {
+                table.$('tr.selected').removeClass('selected');
                 return;
             }
 
@@ -609,6 +610,15 @@
                 createResponseBillId()
             }
 
+            //自动计算总金额
+            let amount = 0;
+            for (const n of subTableData) {
+                let rowFee = n.repairTotalFee ? n.repairTotalFee : 0;
+                amount = parseInt(amount) + parseInt(rowFee);
+            }
+
+            $('#rp_responsebillsForm-amount').val(amount);
+
             //加载子表数据
             loadDataSubTable(subTableData);
 
@@ -629,6 +639,7 @@
             //检查数据
             let r = checkDetailData(dataSelect);
             if (!r) {
+                table.$('tr.selected').removeClass('selected');
                 return;
             }
 
