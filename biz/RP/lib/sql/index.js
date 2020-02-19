@@ -29,7 +29,7 @@ const getResponseBillsNum = 'select count(1) as billsNum from `rp_responsebills`
 //维修申请单主表单sql
 const sqlRequestBills = 'select * from rp_requestbills ';
 //维修单sql
-const sqlRecordBills = 'select * from rp_recordbills';
+const sqlRecordBills = 'select * from ( select ta.*,tb.customerShortName,tb.makeDate as requestDate from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) tA';
 //维修部件清单sql
 const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql

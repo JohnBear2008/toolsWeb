@@ -28,7 +28,7 @@
 
 
     <div class="row clearfix">
-        <div class="col-md-4 column">
+        <div class="col-md-6 column">
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">待维修</h3>
@@ -36,8 +36,9 @@
                 <div class="panel-body">
                     <table class="table" id='tableWait'>
                         <thead>
-                            <th>产品</th>
                             <th>申请单号 </th>
+                            <th>客户简称 </th>
+                            <th>产品ID</th>
                             <th>送修日期</th>
                         </thead>
                         <tbody></tbody>
@@ -49,7 +50,7 @@
         </div>
 
 
-        <div class="col-md-4 column">
+        <div class="col-md-6 column">
             <div class="panel panel-warning">
                 <div class="panel-heading">
                     <h3 class="panel-title">维修中</h3>
@@ -57,8 +58,9 @@
                 <div class="panel-body">
                     <table class="table" id='tableDoing'>
                         <thead>
-                            <th>产品</th>
-                            <th>维修单号</th>
+                            <th>申请单号 </th>
+                            <th>客户简称 </th>
+                            <th>产品ID</th>
                             <th>维修日期</th>
                         </thead>
                         <tbody></tbody>
@@ -68,8 +70,11 @@
             </div>
         </div>
 
+    </div>
 
-        <div class="col-md-4 column">
+    <div class="row clearfix">
+
+        <div class="col-md-6 column">
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <h3 class="panel-title">待出货</h3>
@@ -77,10 +82,10 @@
                 <div class="panel-body">
                     <table class="table" id='tableWaitSend'>
                         <thead>
-                            <th>产品</th>
-                            <th>客户 </th>
-                            <th>数量</th>
-                            <th>完成日期</th>
+                            <th>申请单号 </th>
+                            <th>客户简称 </th>
+                            <th>产品ID</th>
+                            <th>维修完成</th>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -100,36 +105,42 @@
 
 <script type="text/javascript">
     //申请表子表dataTable column 数组
-    const subColumnsArray = [{
+    const subColumnsWaitArray = [{
+        data: 'requestBillId',
+    }, {
+        data: 'customerShortName',
+    }, {
         data: 'productId',
     }, {
+        data: 'requestDate',
+    }]
+
+    //申请表子表dataTable column 数组
+    const subColumnsDoingArray = [{
         data: 'requestBillId',
+    }, {
+        data: 'customerShortName',
+    }, {
+        data: 'productId',
+    }, {
+        data: 'makeDate',
+    }]
+
+    //申请表子表dataTable column 数组
+    const subColumnsWaitSendArray = [{
+        data: 'requestBillId',
+    }, {
+        data: 'customerShortName',
+    }, {
+        data: 'productId',
     }, {
         data: 'billSaveTimeStamp',
     }]
 
 
 
-    //用数组重载子表
-    const loadDataSubTable = async (i) => {
-
-        //加载表格
-        loadBillDataTable({
-            elementId: i.elementId,
-            dtParams: {
-                dtConfig: 'dtConfigData',
-                data: dataArray,
-                columns: subColumnsArray
-            }
-        })
-
-        //如数据为0,清空tbody 避免直接获取size =1;
-        if (dataArray.length === 0) {
-            $('#rp_partsBills tbody').html("");
-        }
 
 
-    }
     //加载展开选定表子表关联数据
 
     const loadTrackTable = async (i) => {
@@ -139,7 +150,7 @@
             sqlParams: i.sqlParams,
             dtParams: {
                 dtConfig: 'dtConfigSimple',
-                columns: subColumnsArray
+                columns: i.columns
             }
         })
 
@@ -155,9 +166,10 @@
             sqlParams: {
                 sqlId: 'sqlRecordBills',
                 params: {
-                    filter: 'billSaveTimeStamp is not null'
+                    filter: 'status = "待维修"'
                 }
-            }
+            },
+            columns: subColumnsWaitArray
         })
 
 
@@ -166,9 +178,22 @@
             sqlParams: {
                 sqlId: 'sqlRecordBills',
                 params: {
-                    filter: 'makeDate is not null'
+                    filter: 'status = "维修中"'
                 }
-            }
+            },
+            columns: subColumnsDoingArray
+        })
+
+
+        loadTrackTable({
+            elementId: 'tableWaitSend',
+            sqlParams: {
+                sqlId: 'sqlRecordBills',
+                params: {
+                    filter: 'status = "维修完成"'
+                }
+            },
+            columns: subColumnsWaitSendArray
         })
 
 

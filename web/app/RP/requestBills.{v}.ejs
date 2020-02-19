@@ -790,7 +790,7 @@
                 $(this).addClass('selected');
 
                 let rowSelect = subTable.row('.selected').data();
-                console.log("rowSelect:"+JSON.stringify(rowSelect));
+                console.log("rowSelect:" + JSON.stringify(rowSelect));
 
 
                 //初始化并填写form内inputs
@@ -867,11 +867,9 @@
         if (!mainFormData.data[0].maker) {
             await autoUpdateRequestBillId();
             mainFormData.data[0].maker = sessionName;
-        }
-
-        if (!mainFormData.data[0].makeDate) {
             mainFormData.data[0].makeDate = currentDate();
         }
+
 
         console.log('mainFormData:' + JSON.stringify(mainFormData));
 
@@ -886,6 +884,9 @@
 
         for (let n of subTableData) {
             n.requestBillId = $("#rp_requestbillsForm-requestBillId").text();
+            if (n.status === '新增') {
+                n.status = '待维修'
+            }
         }
 
 

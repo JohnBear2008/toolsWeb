@@ -52,13 +52,14 @@
                 <thead>
                     <tr>
                         <th>申请单号</th>
+                        <th>客户简称</th>
                         <th>维修单号</th>
                         <th>产品编号</th>
                         <th>产品描述</th>
                         <th>是否返修</th>
                         <th>是否紧急</th>
                         <th>质保期内</th>
-                        <th>出厂编号</th>
+                        <th>流程状态</th>
 
                     </tr>
                 </thead>
@@ -559,6 +560,8 @@
 
     const mainColumnsArray = [{
             data: 'requestBillId',
+        },{
+            data: 'customerShortName'
         }, {
             data: 'recordBillId'
         },
@@ -573,7 +576,7 @@
         }, {
             data: 'inWarranty',
         }, {
-            data: 'factoryNo',
+            data: 'status',
         }
     ]
 
@@ -1121,67 +1124,88 @@
             if (!mainFormData.data[0].maker) {
                 await autoUpdateRecordBillId();
                 mainFormData.data[0].maker = sessionName;
+                mainFormData.data[0].makeDate = currentDate();
+                mainFormData.data[0].status = '维修中'
             }
 
-            if (!mainFormData.data[0].makeDate) {
-                mainFormData.data[0].makeDate = currentDate();
+            if (mainFormData.data[0].repairResult) {
+                mainFormData.data[0].status = '维修完成'
             }
+
 
             console.log('mainFormData:' + JSON.stringify(mainFormData));
 
-            let r1 = await postDBData({
-                sql: 'update',
-                params: mainFormData
-            })
+            if (subTableData.length > 0) {
+                let r1 = await postDBData({
+                    sql: 'update',
+                    params: mainFormData
+                })
 
-            //获取需要更新库存数据部件
-            let subTableDataNeedUpdate = [];
-            for (const n of subTableData) {
-                if (n.numStatus === '预领') {
-                    subTableDataNeedUpdate.push(n)
+                //获取需要更新库存数据部件
+                let subTableDataNeedUpdate = [];
+                for (const n of subTableData) {
+                    if (n.numStatus === '预领') {
+                        subTableDataNeedUpdate.push(n)
+                    }
                 }
-            }
 
-            //扣减部件库存
-            let r2;
-            if (subTableDataNeedUpdate.length > 0) {
-                r2 = await updateStock(subTableDataNeedUpdate);
-            }
-
-
-
-            //更新部件预领状态为已领,去除stockNum
-
-            for (let n = 0; n < subTableData.length; n++) {
-                if (subTableData[n].numStatus === '预领') {
-                    subTableData[n].numStatus = '已领'
-                    delete subTableData[n].stockNum;
+                //扣减部件库存
+                let r2;
+                if (subTableDataNeedUpdate.length > 0) {
+                    r2 = await updateStock(subTableDataNeedUpdate);
                 }
-            }
 
-            let r3 = await postDBData({
-                sql: 'replace',
-                params: {
-                    tableId: 'rp_partsbills',
-                    data: subTableData
+
+
+                //更新部件预领状态为已领,去除stockNum
+
+                for (let n = 0; n < subTableData.length; n++) {
+                    if (subTableData[n].numStatus === '预领') {
+                        subTableData[n].numStatus = '已领'
+                        delete subTableData[n].stockNum;
+                    }
                 }
-            })
 
-            console.log('saveRecordBill r1:' + JSON.stringify(r1));
-            console.log('saveRecordBill r2:' + JSON.stringify(r2));
-            console.log('saveRecordBill r3:' + JSON.stringify(r3));
+                let r3 = await postDBData({
+                    sql: 'replace',
+                    params: {
+                        tableId: 'rp_partsbills',
+                        data: subTableData
+                    }
+                })
 
-            if (r2) {
-                alert('扣减库存成功！')
-            }
+                console.log('saveRecordBill r1:' + JSON.stringify(r1));
+                console.log('saveRecordBill r2:' + JSON.stringify(r2));
+                console.log('saveRecordBill r3:' + JSON.stringify(r3));
 
-            if (r1.affectedRows && r3.affectedRows) {
-                alert('保存成功!')
-                $('#rp_recordbillsModal').modal('hide');
-                loadBillMainTable();
+                if (r2) {
+                    alert('扣减库存成功！')
+                }
+
+                if (r1.affectedRows && r3.affectedRows) {
+                    alert('保存成功!')
+                    $('#rp_recordbillsModal').modal('hide');
+                    loadBillMainTable();
+                } else {
+                    alert('出现错误!')
+                }
+
             } else {
-                alert('出现错误!')
+                let r4 = await postDBData({
+                    sql: 'update',
+                    params: mainFormData
+                })
+
+                if (r4.affectedRows) {
+                    alert('保存成功!')
+                    $('#rp_recordbillsModal').modal('hide');
+                    loadBillMainTable();
+                } else {
+                    alert('出现错误!')
+                }
             }
+
+
 
         } else {
             alert('存在库存不足部件,请检查!')
