@@ -722,6 +722,9 @@
     //添加主表监听器,定义双击打开事件
     const addMainTableListener = () => {
 
+        //解绑原事件,避免重复加载
+        $('#rp_recordbills tbody').unbind();
+
         //定义主表双击事件
         $('#rp_recordbills tbody').on('dblclick', 'tr', async function () {
 
@@ -1127,7 +1130,7 @@
             console.log('mainFormData:' + JSON.stringify(mainFormData));
 
             let r1 = await postDBData({
-                sql: 'replace',
+                sql: 'update',
                 params: mainFormData
             })
 
@@ -1168,7 +1171,7 @@
             console.log('saveRecordBill r2:' + JSON.stringify(r2));
             console.log('saveRecordBill r3:' + JSON.stringify(r3));
 
-            if(r2){
+            if (r2) {
                 alert('扣减库存成功！')
             }
 
@@ -1319,10 +1322,10 @@
                 rowData.rowId = rowNum + 1;
 
                 subTableData.push(rowData);
-                
+
             }
-			console.log("subTableData T:" + JSON.stringify(subTableData));
-			
+            console.log("subTableData T:" + JSON.stringify(subTableData));
+
 
             //重新加载子表
             loadDataSubTable(subTableData);

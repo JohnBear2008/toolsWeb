@@ -697,14 +697,16 @@
                 let DBIDArr = [];
 
                 for (const n of subTableData) {
-                    DBIDArr.push(n.DBID)
+                    DBIDArr.push({
+                        DBID: n.DBID,
+                        responseBillId: responseBillId
+                    })
                 }
 
                 let r2 = await postDBData({
                     sql: 'update',
                     params: {
                         tableId: 'rp_recordbills',
-                        statement: 'responseBillId="' + responseBillId + '"',
                         data: DBIDArr
                     }
                 })

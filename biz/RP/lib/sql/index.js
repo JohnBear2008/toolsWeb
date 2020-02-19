@@ -121,18 +121,35 @@ const createSql = (i) => {
 
 		case 'update':
 			let updateDBIDS = '';
+			let updateStatement = '';
 			if (i.params.data.length > 0) {
-				for (const n in i.params.data) {
-					if (i.params.data.hasOwnProperty(n)) {
-						updateDBIDS = updateDBIDS + i.params.data[n] + ',';
+				for (const n of i.params.data) {
+					updateDBIDS = updateDBIDS + n['DBID'] + ',';
+				}
+
+				let fieldsObj = i.params.data[0];
+
+				for (const p in fieldsObj) {
+					if (fieldsObj[p]) {
+						updateStatement = updateStatement + p + ' = "' + fieldsObj[p] + '",';
+					} else {
+						updateStatement = updateStatement + p + ' = null,';
 					}
 				}
+
+				// for (const n in i.params.data) {
+				// 	if (i.params.data.hasOwnProperty(n)) {
+				// 		updateDBIDS = updateDBIDS + i.params.data[n] + ',';
+				// 	}
+				// }
 			}
+			updateStatement = updateStatement.substr(0, updateStatement.length - 1);
+
 			updateDBIDS = updateDBIDS.substr(0, updateDBIDS.length - 1);
 			updateDBIDS = '(' + updateDBIDS + ')';
 			console.log("updateDBIDS:" + updateDBIDS);
 
-			excuteSql = 'update `' + i.params.tableId + '` set ' + i.params.statement + ' where DBID in ' + updateDBIDS;
+			excuteSql = 'update `' + i.params.tableId + '` set ' + updateStatement + ' where DBID in ' + updateDBIDS;
 
 			break;
 
