@@ -639,6 +639,9 @@
             //检查数据
             let r = checkDetailData(dataSelect);
             if (!r) {
+                if (confirm('立即填写出货单?')) {
+                    $('#btnSend').click()
+                }
                 table.$('tr.selected').removeClass('selected');
                 return;
             }

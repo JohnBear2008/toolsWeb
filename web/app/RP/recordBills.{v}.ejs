@@ -306,8 +306,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">替换部件清单</label>
                                     <div class="col-sm-11">
-                                        <input class="form-control" id="rp_recordbillsForm-changePartList" type="text"
-                                            value="该输入框获得焦点...">
+                                        <p class="form-control-static" id="rp_recordbillsForm-changePartList"></p>
                                     </div>
                                 </div>
 
@@ -560,7 +559,7 @@
 
     const mainColumnsArray = [{
             data: 'requestBillId',
-        },{
+        }, {
             data: 'customerShortName'
         }, {
             data: 'recordBillId'
@@ -1106,6 +1105,19 @@
         return checkResult
     }
 
+    //刷新部件清单
+    const refreshPartList = () => {
+        let partList = '';
+        for (const n of subTableData) {
+            partList = partList + n.partId + '*' + n.num + ','
+        }
+
+        partList = partList.substring(0, partList.length - 1);
+
+        $('#rp_recordbillsForm-changePartList').text(partList);
+
+    }
+
 
     //保存维修记录单函数
     const saveRecordBill = async () => {
@@ -1356,6 +1368,9 @@
 
             //重新计算总费用
             CalcRepairTotalFee();
+
+            //刷新部件清单
+            refreshPartList();
 
         })
 
