@@ -840,7 +840,7 @@
 
     const loadBillSubTable = async (billId) => {
         let dataArray = await getDataBySql({
-            sql: 'sqlRecordBills',
+            sql: 'sqlSubRecordBills',
             params: {
                 filter: 'requestBillId="' + billId + '"'
             }
@@ -884,6 +884,7 @@
 
         for (let n of subTableData) {
             n.requestBillId = $("#rp_requestbillsForm-requestBillId").text();
+
             if (n.status === '新增') {
                 n.status = '待维修'
             }
@@ -904,7 +905,10 @@
 
         if (r1.affectedRows > 0 && r2.affectedRows > 0) {
             alert('保存成功!')
-            $('#rp_requestbillsModal').modal('hide');
+
+            // $('#rp_requestbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
+            $('#rp_requestbillsModalClose').click()
+
             loadBillMainTable();
         } else {
             alert('出现错误!')
@@ -1199,6 +1203,9 @@
 
                     //重新加载子表
                     loadDataSubTable(subTableData)
+
+                    //自动点击新增按钮,防止遗留数据产生错误
+                    $('#btnAddProduct').click()
 
                 }
 

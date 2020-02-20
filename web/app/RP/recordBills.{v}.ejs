@@ -366,7 +366,7 @@
                                         <!-- <button id='btnScan' type="button" class="btn btn-info">扫描部件</button> -->
                                         <button id='btnAddPart' type="button" class="btn btn-info">添加部件</button>
                                         <button id='btnDeletePart' type="button" class="btn btn-info">删除部件</button>
-                                        <button id='btnReturnPart' type="button" class="btn btn-danger">退还部件</button>
+                                        <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还部件</button> -->
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
@@ -1302,6 +1302,13 @@
 
                     //重新加载子表
                     loadDataSubTable(subTableData)
+
+                    //自动点击添加按钮,清空遗留数据
+
+                    $('#btnAddPart').click();
+
+                    //重新计算总费用
+                    CalcRepairTotalFee();
 
                 }
 

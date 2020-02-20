@@ -34,10 +34,10 @@ const sqlRecordBills = 'select * from ( select ta.*,tb.customerShortName,tb.make
 const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql
 const sqlResponseBills =
-	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,tb.requestBillId,tb.customerId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.expressId,tc.amount,tc.isSended,tc.isFullPay,tc.maker,tc.makeDate from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.responseBillId=tc.responseBillId ) tA '
+	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.expressId,tc.amount,tc.isSended,tc.isFullPay,tc.maker,tc.makeDate from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.responseBillId=tc.responseBillId ) tA '
 
-
-
+//维修申请单单子表sql
+const sqlSubRecordBills = 'select * from `rp_recordbills`'
 
 
 /**
