@@ -363,26 +363,30 @@
 
                                     <!-- 功能组按钮 -->
                                     <div class="well">
-                                        <!-- <button id='btnScan' type="button" class="btn btn-info">扫描部件</button> -->
+                                        <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
                                         <button id='btnAddPart' type="button" class="btn btn-info">添加部件</button>
-                                        <button id='btnDeletePart' type="button" class="btn btn-info">删除部件</button>
+                                        <button id='btnDeletePart' type="button" class="btn btn-danger">删除部件</button>
                                         <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还部件</button> -->
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
-                                    <!-- <div class="modal fade" id="scanModal">
+
+                                    <div class="modal fade" id="scanModal">
                                         <div class="modal-dialog" style="width: 675px;">
                                             <div class="modal-content">
 
                                                 <div class="modal-body">请将产品二维码放置于摄像头内
                                                     <div><button id='btnScanStop' type="button"
                                                             class="btn btn-info">停止扫描</button></div>
+                                                    <button id='btnScanModalClose' data-dismiss="">关闭扫描框</button>
                                                     <div style="width:640;height:480px"><video id="preview"></video>
                                                     </div>
+
                                                 </div>
+
                                             </div>
                                         </div>
-                                    </div> -->
+                                    </div>
 
 
 
@@ -1237,6 +1241,94 @@
 
         //初始化子表
         loadDataSubTable(subTableData);
+
+
+
+        // 扫描按钮
+        $('#btnScan').click(function () {
+            $('#scanModal').modal('show');
+            let scanner = new Instascan.Scanner({
+                video: document.getElementById('preview')
+            });
+            scanner.addListener('scan', async function (partId) {
+                console.log('partId:' + partId);
+                let partData = await getDataBySql({
+                    sql: 'getPart',
+                    params: {
+                        filter: 'partId="' + partId + '"'
+                    }
+                })
+
+                console.log("partData:" + JSON.stringify(partData));
+
+                let rowNum = $("#rp_partsbills tbody tr").size();
+
+                let rowData = {};
+
+                // {"rowId":2,"stockNum":"0","numStatus":"预领","partLocation":"位置3","partId":"1BP_KS_HTA3563K","partName":"1BP_KS_HTA3563K","partDescription":"HTA3563K按键板","num":"17","price":"143","partFee":"2431","remark":"","recordBillId":"R-20200220001"}
+                rowData.rowId = rowNum + 1;
+                rowData.numStatus = "预领";
+                rowData.partLocation = partData[0].partLocation;
+                rowData.partId = partData[0].partId;
+                rowData.partName = partData[0].partName;
+                rowData.partDescription = partData[0].partDescription;
+                rowData.num = partData[0].num;
+                rowData.price = partData[0].price;
+                rowData.partFee = parseInt(partData[0].num) * parseInt(partData[0].price);
+
+
+
+                // rowData.status = '新增'
+                // rowData.partId = productData[0].partId;
+                // rowData.productName = productData[0].productName;
+                // rowData.productDescription = productData[0].productDescription;
+                // rowData.factoryNo = '11111'
+                // rowData.origin = 'nb'
+                // rowData.isRework = '否';
+                // rowData.urgent = '否';
+                // rowData.inWarranty = '否';
+                // rowData.productFrom = '终端客户';
+                // rowData.productBelong = '客户 ';
+
+                console.log("rowData:" + JSON.stringify(rowData));
+
+                subTableData.push(rowData);
+                //重新加载子表
+                loadDataSubTable(subTableData)
+
+
+
+
+                // alert('partId:' + partId);
+                // $('#rp_recordbillsPanel').show();
+
+
+                scanner.stop().then(function () {
+                    // alert('stoped');
+                    $('#scanModal').modal('hide')
+                });
+            });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]).then(function () {
+                        // alert('start');
+                    }).catch(function (err) {
+                        alert('err:' + err);
+                    });
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+                alert("系统错误,请检查摄像头设备!")
+
+            });
+        })
+
+        // 停止扫描
+        $('#btnScanStop').click(function () {
+            $('#scanModal').modal('hide')
+        })
 
 
         // 新增按钮
