@@ -39,7 +39,7 @@
     <!-- 功能组按钮 -->
     <div class="well">
         <button id='btnRequestBillNew' type="button" class="btn btn-info">新增</button>
-        <button id='btnRequestBillDelete' type="button" class="btn btn-info">删除</button>
+        <button id='btnRequestBillDelete' type="button" class="btn btn-danger">删除</button>
     </div>
 
 
@@ -313,7 +313,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">备注</label>
                                     <div class="col-sm-11">
-                                        <textarea id="rp_requestbillsForm-remark" class="form-control" rows="2"></textarea>
+                                        <textarea id="rp_requestbillsForm-remark" class="form-control"
+                                            rows="2"></textarea>
                                     </div>
                                 </div>
 
@@ -965,6 +966,59 @@
     }
 
 
+    //检查删除单据数据
+    const checkDeleteBills = async () => {
+        let table = $('#rp_requestbills').DataTable();
+        let dataSelect = table.rows('.selected').data();
+
+        let billsIdArr = [];
+
+        for (let n = 0; n < dataSelect.length; n++) {
+
+            billsIdArr.push(dataSelect[n].requestBillId);
+        }
+
+        switch (true) {
+            case billsIdArr.length === 0:
+                alert('请先选中需要删除的申请单!')
+                return false
+                break;
+            case billsIdArr.length > 0:
+                let billIdRange = getRangeString(billsIdArr);
+
+                console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+
+                let statusArr = await getDataBySql({
+                    sql: 'getRecordBillStatus',
+                    params: {
+                        filter: 'requestBillId in ' + billIdRange
+                    }
+                })
+
+                console.log("statusArr:" + JSON.stringify(statusArr));
+                for (const n of statusArr) {
+                    if (n.status !== '待维修') {
+                        alert('选中单据存在关联的维修单,不符合删除条件!')
+                        return false;
+                    }
+                }
+
+                break;
+        }
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
     $(document).ready(function () {
 
         // alert(parseInt(''))
@@ -1023,6 +1077,44 @@
             // addCustomerListener();
 
         })
+
+
+        //删除需求单
+        $('#btnRequestBillDelete').click(async function () {
+            //检查条件
+            let r = await checkDeleteBills();
+            if (!r) {
+                return;
+            }
+
+            //删除单据
+
+            let table = $('#rp_requestbills').DataTable();
+            let dataSelect = table.rows('.selected').data();
+            let DBIDArr = [];
+
+            for (let n = 0; n < dataSelect.length; n++) {
+                DBIDArr.push(dataSelect[n].DBID);
+            }
+
+            let r2 = await postDBData({
+                sql: 'delete',
+                params: {
+                    tableId: 'rp_requestbills',
+                    data: DBIDArr
+                }
+            })
+
+            if (r2.affectedRows) {
+                alert('删除成功!')
+                //重新加载表单
+                loadBillMainTable();
+            }
+
+
+        })
+
+
 
 
 
@@ -1138,7 +1230,8 @@
             let requestBillId = $("#rp_requestbillsForm-requestBillId").text();
 
             let rowNum = $("#rp_recordbills tbody tr").size();
-            // console.log('rowNum:' + rowNum);
+            console.log('rowNum:' + rowNum);
+
 
             let productData = getFormData({
                 formId: 'rp_recordbillsForm'
@@ -1217,6 +1310,14 @@
 
         //表单保存按钮
         $('#rp_requestbillsSave').click(function () {
+
+
+            //不存在子表项目则中断保存
+            if (subTableData.length === 0) {
+                alert('未添加需要维修的产品,无法保存单据,请检查!')
+                return;
+            }
+            
             saveRequestbill();
         })
 

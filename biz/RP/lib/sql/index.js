@@ -23,6 +23,8 @@ const getReqeustBillsNum = 'select count(1) as billsNum from `rp_requestbills`';
 const getRecordBillsNum = 'select count(1) as billsNum from `rp_recordbills`';
 //获取出货单数量
 const getResponseBillsNum = 'select count(1) as billsNum from `rp_responsebills`';
+//获取记录单状态
+const getRecordBillStatus = 'select status from `rp_recordbills`'
 
 
 

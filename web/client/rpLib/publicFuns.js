@@ -992,3 +992,19 @@ const tableDataToArray = (i) => {
     }
     return arr;
 }
+
+/**
+ *将数组转换为(a,b,c)字符串,用于sql语句范围
+ *
+ * @param {*} arr
+ */
+const getRangeString = (arr) => {
+    let range = ''
+    for (const n of arr) {
+        range = range + '"' + n + '",'
+    }
+    range = range.substring(0, range.length - 1);
+    range = '(' + range + ')';
+    return range;
+
+}

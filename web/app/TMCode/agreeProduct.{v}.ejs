@@ -1,0 +1,403 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+ 
+<!-- JS  -->
+
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<style media=print type="text/css">  
+    .noprint{visibility:visible}  
+    #oDiv2 div{width: 100px;height: 100px;border:1px solid #c50000;}
+</style>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>  
+
+<!-- <script type="text/javascript" src="/js/jquery.media.js"></script> -->
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+ 
+<div id ="noprint" class="noprint">
+  <div class="divcontent">
+  <div id="handout_wrap_inner" ></div>
+    <h1>弘讯科技编码审批</h1>  
+    <label  >审批号:</label>
+    <div class="layui-inline">
+		<input class="layui-input" name="billno" id="billno" value="202002171108" autocomplete="off">
+    </div>
+    <label  >编码号:</label>
+    <div class="layui-inline">
+    <input class="layui-input" name="codeno" id="codeno" value="" autocomplete="off">
+    </div>
+    <input type="button" id="SeaBtn" onclick="searchFile()" class="btn btn-info" value="查找" />
+    <button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
+    <button id="BTNFitSearch" type="button" class="btn btn-info"   >操作</button>
+    <input type="button" id="DelBtn" onclick="deleteFile()" class="btn btn-info" value="删除" />
+    <hr>
+     <br/>
+     <!-- 点击自定义过滤弹出的窗口 -->
+     <div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:800px;height:400px;">
+ 	<form style="padding:10px 50px;">
+
+ 		<div class="form-horizontal">
+ 			<div class="form-group">
+
+ 				<label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
+ 				<div class="col-sm-3 ">
+ 					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
+ 						data-link-field="taskMakeDateB" data-link-format="yyyy-mm-dd">
+ 						<input id="taskMakeDateB" class="form-control " size="16" type="text" value="" readonly>
+ 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+ 					</div>
+ 					<input type="hidden" id="taskMakeDateB" value="" />
+ 				</div>
+
+ 				<div class="col-sm-3 ">
+
+ 					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
+ 						data-link-field="taskMakeDateE" data-link-format="yyyy-mm-dd">
+ 						<input id="taskMakeDateE" class="form-control " size="16" type="text" value="" readonly>
+ 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+ 					</div>
+ 					<input type="hidden" id="taskMakeDateE" value="" />
+ 				</div>
+ 			</div>
+ 			</form>
+ 		</div>
+ 			<div class="form-group">
+ 				<label class="col-sm-2 control-label"></label>
+ 				<div class="col-sm-3 ">
+ 					<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
+ 					<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
+ 				</div>
+
+ 			</div>
+ 		</div>
+ 		<!-- fin 自定义过滤  -->
+    <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;" >
+        <!--数据呈现区-->
+        <table id="center_TB" class="table table-striped table-bordered"  >
+            <thead>
+                <tr>
+                    <th>分类</th>
+                    <th>年份</th>
+                    <th>属性原则</th>
+                    <th>物料类别</th>
+                    <th>文号</th>
+                    <th>编码</th>
+                    <th>品名</th>
+                    <th>属性</th> 
+                    <th>建立日</th>
+                    <th>审批</th>
+                    <th>供应商厂牌</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+   
+  </div>
+ </div>
+ <input type="button" id="AgreeBtn" onclick="agreeFile()" class="btn btn-info" value="审批通过" />
+ <input type="button" id="RejectBtn" onclick="rejectFile()" class="btn btn-info" value="审批驳回" />
+ <div id="root" style="height: 100%"></div>
+ 
+<script>
+  
+ 
+  var missAType ='';
+  var missBType ='';
+  var bill_choose ='';
+  var code_choose ='';
+//页面加载函数---------------
+$(document).ready( function () {
+		
+  	layui.use(['form','layedit', 'laydate'], function(){
+	    var form = layui.form
+	            ,layer = layui.layer
+	            ,layedit = layui.layedit
+	            ,laydate = layui.laydate;
+ 
+	        form.render();
+    var DataPara={
+			"tableID":"#center_TB",
+			"DBTable":"auto_parts"			
+	}
+ 	
+    missAType = getQueryString("missA");
+   console.log("将心"+missAType);
+    var missAencode= decodeURI(missAType);
+
+   console.log("初心"+missAencode);
+     bill_choose =missAencode;
+     missBType = getQueryString("missB");
+    console.log("将咖"+missBType);
+     var missBencode= decodeURI(missBType);
+
+//     console.log("初咖"+missBencode);
+      code_choose =missBencode;
+//    console.log("学生",bill_choose);
+  
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Parts_Year'},
+        { data: 'Parts_Rule'},
+        { data: 'Parts_Class'},
+        { data: 'BILL_ID'},
+        { data: 'Parts_Code' },
+        { data: 'Parts_Name' }, 
+        { data: 'Property'},
+        { data: 'Parts_Apply_Date'},
+        { data: 'Parts_status'},
+        { data: 'Supply_ID'},
+    ];
+ 
+          showDBDataByBill(DataPara,columnsData,bill_choose,code_choose);
+        var table = $('#center_TB').DataTable();
+        $('#center_TB tbody').on('click', 'tr', function() {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+	 });
+      
+  	
+}); 
+
+    var DataPara={
+			"tableID":"#center_TB",
+			"DBTable":"auto_parts"			
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+	    { data: 'Parts_Year'},
+        { data: 'Parts_Rule'},
+        { data: 'Parts_Class'},
+        { data: 'BILL_ID'},
+        { data: 'Parts_Code' },
+        { data: 'Parts_Name' }, 
+        { data: 'Property'},
+        { data: 'Parts_Apply_Date'},
+        { data: 'Parts_status'},
+        { data: 'Supply_ID'},
+    ];
+	$('#BTNFitler').click(function () {
+
+		$('#DivFilter').window('open');
+
+		$('.form_date').datetimepicker({
+			language: 'zh-CN',
+			weekStart: 1,
+			todayBtn: 1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0
+		});
+
+		$("#BTNGroupFilter").children().removeClass("active");
+		$("#BTNFitler").addClass("active")
+	 });    
+	
+	$('#BTNFitSearch').click(function () {
+		 $("#center_TB").dataTable().fnDestroy();
+		var MakeDateB=$("#taskMakeDateB").val();
+		var MakeDateE=$("#taskMakeDateE").val(); 
+		  console.log("科比43", columnsData );
+		  console.log("科比42", DataPara );
+		  console.log("科比41", MakeDateB );
+		   showDBDataSelf(DataPara,columnsData,MakeDateB,MakeDateE);
+	});
+  
+	//过滤功能组 自定义过滤确认按钮-----NNN
+	$('#FilterComfirmBtnN').click(function () {
+		$('#DivFilter').window('close');
+	});
+
+
+
+	//过滤功能组 自定义过滤确认按钮-----
+	$('#FilterCancelBtnN').click(function () {
+
+		$("#taskMakeDateB").val("")
+		$("#taskMakeDateE").val("")
+ 
+		 
+	});
+
+//删除按钮----------
+$('#DelBtn').click(function() {
+    var table = $('#center_TB').DataTable();
+    var dataSelect = table.row('.selected').data();
+     
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+        if (msg1 === true) {
+             	var billchoose = dataSelect.BILL_ID; 
+             	var codechoose =dataSelect.Parts_Code; 
+  
+//                  deleteRecord(delfn);
+              
+                 alert("机"+encodeURI(encodeURI(billchoose)));
+                var paramClearA = encodeURI(encodeURI(billchoose));
+                var paramClearB = encodeURI(encodeURI(codechoose));
+                window.location.href ="/app/TMCode/agreeProduct?missA="+paramClearA+"&missB="+paramClearB+" ";
+        }
+    }
+ 
+});
+function showDBDataByBill(DataPara, columnsData , bill_choose, code_choose) {
+ 
+    var SQL3 = {"SQL":"SQLPartsAgree","weekbeg":bill_choose ,"weekend":code_choose };
+     console.log("老爹", bill_choose );
+	$(DataPara.tableID).DataTable({
+		ajax: {
+            url: '/app/TMCode/getSQLDBData', 
+            data: SQL3,
+			dataSrc: ''
+		},
+		columns: columnsData,
+		aaSorting: [0, 'desc'], //默认排序
+
+		language: languageCN
+
+	});
+
+} 
+function showDBDataSelf(DataPara, columnsData , MakeDateB, MakeDateE) {
+	 
+    var SQL3 = {"SQL":"SQLPartsAgreeSelf","weekbeg":MakeDateB ,"weekend":MakeDateE };
+     console.log( bill_choose );
+	$(DataPara.tableID).DataTable({
+		ajax: {
+            url: '/app/TMCode/getSQLDBData', 
+            data: SQL3,
+			dataSrc: ''
+		},
+		columns: columnsData,
+		aaSorting: [0, 'desc'], //默认排序
+
+		language: languageCN
+
+	});
+
+} 
+function agreeFile( ) {
+	  var table = $('#center_TB').DataTable();
+	    var dataSelect = table.row('.selected').data();
+	     
+	    if (dataSelect == undefined) {
+	        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+	    } else {
+    
+         	var BILLID = dataSelect.BILL_ID; 
+         	var PartsYear = dataSelect.Parts_Year; 
+         	var PartsRule = dataSelect.Parts_Rule; 
+         	var PartsClass = dataSelect.Parts_Class; 
+//         	alert("同意此文号"+BILLID +"年份"+PartsYear +"类别"+PartsClass);
+         	
+         	var reportType='agreePcode';
+            var taskData ={"reportType":reportType, "BILLID": BILLID ,  "PartsYear": PartsYear,  "PartsRule": PartsRule,  "PartsClass": PartsClass }
+            alert("同意此笔审批号"+BILLID);
+               $.ajax({
+                    method:'post',
+                    data:taskData,
+                    url:"/app/TMCode/getRoute",
+                    success:function(result){
+                        console.log("无痕", JSON.stringify(result) );
+                    	alert( "新编码号"+result.partscode+"已"+(result.status) );
+                        // alert("机"+encodeURI(encodeURI(BILLID)));
+                        var paramClearA = encodeURI(encodeURI(BILLID));
+                        var paramClearB = encodeURI(encodeURI(PartsClass));
+                        console.log("玫瑰",paramClearA);
+                        console.log("蝴蝶",paramClearB);
+                        window.location.href ="/app/TMCode/agreeProduct?missA="+paramClearA+"&missB="+paramClearB+" ";
+
+                    },
+                    error:function(){
+        
+                    }
+                })
+   }
+        
+}
+function rejectFile( ) {
+	    var table = $('#center_TB').DataTable();
+	    var dataSelect = table.row('.selected').data();
+	     
+	    if (dataSelect == undefined) {
+	        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+	    } else {
+         	var BILLID = dataSelect.BILL_ID; 
+         	var PartsYear = dataSelect.Parts_Year; 
+         	var PartsRule = dataSelect.Parts_Rule; 
+        	var PartsClass = dataSelect.Parts_Class; 
+         	alert("拒绝此文号"+BILLID +"年份"+PartsYear);
+         	
+         	var reportType='rejectPcode';
+            var taskData ={"reportType":reportType, "BILLID": BILLID ,  "PartsYear": PartsYear,  "PartsRule": PartsRule,  "PartsClass": PartsClass }
+            alert("驳回此编码"+JSON.stringify(taskData));
+               $.ajax({
+                    method:'post',
+                    data:taskData,
+                    url:"/app/TMCode/getRoute",
+                    success:function(result){
+                        console.log("无封", JSON.stringify(result) );
+                    	alert(  "驳回已"+(result.status) );
+                    },
+                    error:function(){
+        
+                    }
+                })
+	   }
+}
+ 
+ 
+function deleteRecord(loadc) {
+	var reportType='delNouse';
+    var taskData ={"reportType":reportType,  "Load_code": loadc };
+           $.ajax({
+                method:'post',
+                data:taskData,
+                url:"/app/TMCode/getRoute",
+                success:function(data,textStatus){
+                	alert(JSON.stringify(data));
+                },
+                error:function(){
+    
+                }
+            })
+}
+function searchFile( ) {
+    $("#center_TB").dataTable().fnDestroy();
+    var choosebill = $('#billno').val(); 
+    var choosecode = $('#codeno').val(); 
+	  console.log("辑比43", columnsData );
+	  console.log("辑比42", DataPara );
+    showDBDataByBill(DataPara,columnsData,choosebill,choosecode);
+} 
+ 
+</script>

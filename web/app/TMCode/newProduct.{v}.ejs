@@ -1,0 +1,609 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
+<link rel="stylesheet" type="text/css" href="/css/TMCode/tmcode-font.css">
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+
+ 
+
+<script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
+<script src="/banq/eraA.js"></script> 
+<script src="/banq/eraB.js"></script>
+<script src="/banq/eraC.js"></script>
+<script src="/banq/eraD.js"></script>
+<script src="/banq/eraE.js"></script>
+<script src="/banq/eraEC.js"></script>
+<script src="/banq/eraF.js"></script>
+<script src="/banq/eraF9.js"></script>
+<script src="/banq/eraG.js"></script>
+<script src="/banq/eraH.js"></script>
+<script src="/banq/eraJ.js"></script>
+<script src="/banq/eraQ.js"></script>
+<script src="/banq/eraU.js"></script>
+<script src="/banq/eraR.js"></script>
+<script src="/banq/eraS.js"></script>
+<script src="/banq/eraR.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div>
+</div>
+<form class="layui-form" action="">
+<H1>弘讯科技新品编码提交</H1>
+<div class="layui-form-item">
+    <label class="green-label" >版本识别:</label>
+    <div class="layui-inline">
+		<input   name="main_class"  class="can-drop"  id="main_class" value="2019"  autocomplete="off">
+    </div>
+</div>
+<div class="btn-group">
+	<label class="layui-form-label">物料类别A~D</label>
+	     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		     物料类别
+		     <span class="caret"></span>
+	     </button>
+	     <ul class="dropdown-menu">
+     <li><a id="A1" href="#">A1控制器</a></li>
+     <li><a id="A2" href="#">A2人机界面</a></li>
+     <li><a id="A3" href="#">A3变频/驱动器</a></li>
+     <li><a id="A4" href="#">A4电机</a></li>
+     <li><a id="A5" href="#">A5油泵</a></li>
+	<li><a id="B1" href="#">B1电机+油泵</a></li>
+	<li><a id="B2" href="#">B2电机+减速机</a></li>
+	<li><a id="B3" href="#">B3组件盒</a></li>
+	<li><a id="B4" href="#">B4电控箱/柜</a></li>
+	<li><a id="B5" href="#">B5新能源柜</a></li>
+	<li><a id="C1" href="#">C1机械手</a></li>
+	<li><a id="C2" href="#">C2机器人</a></li>
+	<li><a id="C3" href="#">C3热流道</a></li> 
+	<li><a id="D1" href="#">D1代加工单板</a></li>
+	
+	    
+	</ul>
+     </div>
+     <div class="btn-group">
+	<label class="layui-form-label">物料类别E~F</label>
+	     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		     物料类别
+		     <span class="caret"></span>
+	     </button>
+	     <ul class="dropdown-menu">
+	<li><a id="E1" href="#">E1电控单板</a></li> 
+	<li><a id="E2" href="#">E2驱动器单板</a></li> 
+	<li><a id="E3" href="#">E3PCB光板</a></li> 
+	<li><a id="E4" href="#">E4电阻</a></li> 
+	<li><a id="E5" href="#">E5电容人</a></li> 
+	<li><a id="E6" href="#">E6电感</a></li> 
+	<li><a id="E7" href="#">E7磁珠</a></li> 
+	<li><a id="E8" href="#">E8二极管</a></li> 
+	<li><a id="E9" href="#">E9晶体管</a></li> 
+	<li><a id="EA" href="#">EA集成电路IC</a></li> 
+	<li><a id="EB" href="#">EB半导体模块</a></li> 
+	<li><a id="EC" href="#">EC发光器件</a></li> 
+	<li><a id="ED" href="#">ED电声器件</a></li> 
+	<li><a id="EE" href="#">EE晶振</a></li> 
+	<li><a id="EF" href="#">EF电池</a></li> 
+	<li><a id="EG" href="#">EG按钮</a></li> 
+	<li><a id="EH" href="#">EH继电器</a></li> 
+	<li><a id="EJ" href="#">EJ保险熔断</a></li> 
+	<li><a id="EK" href="#">EK板载变压器管</a></li> 
+	<li><a id="EM" href="#">EM连接器</a></li> 
+	<li><a id="EN" href="#">EN液晶</a></li> 
+	<li><a id="EP" href="#">EP触屏</a></li> 
+	<li><a id="EQ" href="#">EQ面膜</a></li> 
+	<li><a id="F1" href="#">F1电子尺</a></li> 
+	<li><a id="F2" href="#">F2编码器</a></li> 
+	<li><a id="F3" href="#">F3伺服阀</a></li> 
+	<li><a id="F4" href="#">F4压力传感器</a></li> 
+	<li><a id="F5" href="#">F5电抗器</a></li> 
+	<li><a id="F6" href="#">F6滤波器</a></li> 
+	<li><a id="F7" href="#">F7刹车电阻</a></li> 
+	<li><a id="F8" href="#">F8压电盘熔断</a></li> 
+	<li><a id="F9" href="#">F9开关电源</a></li> 
+	<li><a id="FA" href="#">FA隔离变压器器</a></li> 
+	<li><a id="FB" href="#">FB断路器</a></li> 
+	<li><a id="FC" href="#">FC接触器</a></li> 
+	<li><a id="FD" href="#">FD工业开关</a></li> 
+	<li><a id="FE" href="#">FE配电保护</a></li> 
+	<li><a id="FF" href="#">FF风扇</a></li> 
+	<li><a id="FG" href="#">FG互感器</a></li> 
+	<li><a id="FH" href="#">FH导轨端子</a></li> 
+	<li><a id="FI" href="#">FI工业连接器</a></li>
+	  
+	</ul>
+
+<div class="btn-group">
+	<label class="layui-form-label">物料类别G~S</label>
+	     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		     物料类别
+		     <span class="caret"></span>
+	     </button>
+	     <ul class="dropdown-menu">
+		<li><a id="G1" href="#">G1丝杆/导轨</a></li> 
+		<li><a id="G2" href="#">G2减速机</a></li> 
+		<li><a id="G3" href="#">G3皮带轮</a></li> 
+		<li><a id="G4" href="#">G4皮带</a></li> 
+		<li><a id="G5" href="#">G5机柜/机箱</a></li> 
+		<li><a id="G6" href="#">G6结构件</a></li> 
+		<li><a id="G7" href="#">G7紧固件</a></li> 
+		<li><a id="G8" href="#">G8连接支架熔断</a></li> 
+		<li><a id="G9" href="#">G9联轴器源</a></li> 
+		<li><a id="GA" href="#">GA轴套</a></li> 
+		<li><a id="GB" href="#">GB亚克力</a></li> 
+		<li><a id="GC" href="#">GC视窗玻璃</a></li>
+		<li><a id="H1" href="#">H1动力线</a></li> 
+		<li><a id="H2" href="#">H2编码器反馈线</a></li> 
+		<li><a id="H3" href="#">H3连接线</a></li> 
+		<li><a id="H4" href="#">H4通讯线</a></li> 
+		<li><a id="H5" href="#">H5线配件</a></li> 
+		<li><a id="H6" href="#">H6线原材</a></li> 
+		<li><a id="J1" href="#">J1配套类</a></li> 
+		<li><a id="J2" href="#">J2包装袋</a></li> 
+		<li><a id="J3" href="#">J3零件包</a></li> 
+		<li><a id="J4" href="#">J4缓冲材料</a></li> 
+		<li><a id="J5" href="#">J5说明书</a></li> 
+		<li><a id="J6" href="#">J6生产辅料</a></li> 
+		<li><a id="Q1" href="#">Q1挂账类</a></li> 
+		<li><a id="U1" href="#">U1电控成套</a></li> 
+		<li><a id="R1" href="#">R1电控成套</a></li> 
+		<li><a id="S1" href="#">S1管理系统软件</a></li>        
+	</ul> 
+     </div>
+  
+ <span id="pclass"  id="pclass" class="green-label"  >.</span>
+ <input name="pworld" id="pworld"   type="text"  size="50"  value=""  style="visibility:hidden"> </input>
+</div>	
+</form>	 
+	<span id="rule-label" class="green-label"> 品名   </span>
+	 <input name="specName" id="specName" class="can-drop"  type="text"  size="50"  value="伺服驱动器A"> </input>
+	<a class="btn btn-lg btn-info" id="bt_approvalhmi"  style="margin-left:30px"   onclick="approvalhmi();">提交审批</a>
+		<br></br>
+	 <span id="rule-label" class="green-label"> 布件原则   </span>
+	   <input name="rule" id="rule" class="can-drop" type="text"  size="10"  value="A" > </input>
+	 <span id="suppler-label" class="green-label"> 供应商产牌   </span> 
+	   <input name="suppler" id="suppler" class="can-drop" type="text"  size="15"  value="A01"> </input>
+	
+	 <br></br>
+	<span id="classA" class="blue-label"> 分类   </span> 
+	<select id="boat" name="boat" class="can-drop"></select>
+	<span id="classB" class="blue-label"> 系列   </span> 
+	<select id="yacht" name="yacht" class="can-drop"></select>
+	<br></br>  
+	<span id="classC" class="blue-label"> 型号   </span> 
+	<select id="sail" name="sail" class="can-drop"></select>
+	<span id="classD" class="blue-label"> 厂家   </span> 
+	<select id="vessel" name="vessel" class="can-drop"></select>
+	<br></br>   
+	<span id="classE" class="blue-label"> 定制规格  </span> 
+	<select id="tanker" name="tanker" class="can-drop"></select>
+	<span id="classF" class="blue-label"> 版本 </span> 
+	<select id="marine" name="marine" class="can-drop"></select>
+	<br></br>  
+	<span id="classG" class="blue-label"> 包装 </span> 
+	<select id="rocket" name="rocket" class="can-drop"></select>
+	<span id="classH" class="blue-label"> 联轴器/键轴</span> 
+	 <select id="zebra" name="zebra" class="can-drop"></select>
+	<br></br>
+	<span id="classI" class="blue-label"> 油泵分类</span> 
+	 <select id="eleph" name="eleph" class="can-drop"></select>
+	<span id="classJ" class="blue-label"> 油泵系列</span> 
+	 <select id="eagle" name="eagle" class="can-drop"></select>
+	<br></br>
+	<span id="classK" class="blue-label"> 油泵型号</span> 
+	 <select id="tiger" name="tiger" class="can-drop"></select>
+	<span id="classL" class="blue-label"> 油泵排量</span> 
+	 <select id="lion" name="lion" class="can-drop"></select>
+	<br></br>
+	<span id="classM" class="blue-label"> 进出油口方向</span> 
+	 <select id="horse" name="horse" class="can-drop"></select>
+	<span id="classO" class="blue-label"> 接线盒方向 </span> 
+	 <select id="worm" name="worm" class="can-drop"></select>
+	<br></br>
+	<span id="classP" class="blue-label"> 出线方向 </span> 
+	 <select id="hole" name="hole" class="can-drop"></select>
+	<span id="classQ" class="blue-label"> 版本 </span> 
+	 <select id="xman" name="xman" class="can-drop"></select>
+	<br></br>
+	<span id="classR" class="blue-label"> 包装 </span> 
+	 <select id="quita" name="quita" class="can-drop"></select>
+	 <br></br>
+
+<script>
+layui.use(['form','layedit', 'laydate'], function(){
+        	    var form = layui.form
+        	            ,layer = layui.layer
+        	            ,layedit = layui.layedit
+        	            ,laydate = layui.laydate;
+
+        	        
+        	        form.render();
+        	   
+
+       	 });
+	 	$('#bt_approval').click(function () {
+		   
+		})
+    function nulchk(txta){ 
+	 		var ret='';
+	 		if (txta==null){
+	 			
+	 		}else{
+	 			ret=txta;
+	 		}
+	 		return ret;
+	}
+	function approvalhmi(){ 
+	   var specName = $('#specName').val(); 
+	   var BILLID = '20200131_F11'; 
+	   var PartsYear = $('#main_class').val(); 
+	   var PartsRule = $('#rule').val(); 
+	   console.log("原则",PartsRule);
+	   var PartsClass = $('#pworld').val(); 
+	   var PartsApplyDate = '2020-01-31'; 
+	   var PartsLimitDate = '2020-07-31'; 
+	   var PartsName = $('#specName').val(); 
+	   var Partsstatus = '0'; 
+	   var Staff = 'RICH'; 
+	   var SupplyID = $('#suppler').val(); 
+	   var Property = ''; 
+	   var boat = $('#boat').val(); boat =nulchk(boat);
+	   var yacht = $('#yacht').val(); yacht =nulchk(yacht);
+	   var sail = $('#sail').val();  sail =nulchk(sail);
+	   var vessel = $('#vessel').val();  vessel =nulchk(vessel);
+	   var tanker = $('#tanker').val(); tanker =nulchk(tanker);
+	   var marine = $('#marine').val(); marine =nulchk(marine);
+	   var rocket = $('#rocket').val();rocket =nulchk(rocket);
+	   var zebra = $('#zebra').val();zebra =nulchk(zebra);
+	   var eleph = $('#eleph').val();eleph =nulchk(eleph);
+	   var eagle = $('#eagle').val();eagle =nulchk(eagle);
+	   var tiger = $('#tiger').val();tiger =nulchk(tiger);
+	   var lion = $('#lion').val();lion =nulchk(lion);
+	   var horse = $('#horse').val();horse =nulchk(horse);
+	   var worm = $('#worm').val();worm =nulchk(worm);
+	   var hole = $('#hole').val();hole =nulchk(hole);
+	   var xman = $('#xman').val();xman =nulchk(xman);
+	   var quita = $('#quita').val();quita =nulchk(quita);
+	   Property =boat+"-"+yacht+"-"+sail+"-"+vessel+"-"+tanker+"-"+marine+"-"+
+	   rocket+"-"+zebra+"-"+eleph+"-"+eagle+"-"+tiger+"-"+lion+"-"+horse+"-"+worm+"-"+hole+"-"+xman+"-"+quita; 
+	   var reportType='applyPcode';
+//	   BILLID, PartsYear, PartsRule, PartsClass, PartsApplyDate, PartsLimitDate, PartsName, Partsstatus, Staff, Property, PartsCode, SupplyID 
+       var taskData ={"reportType":reportType, "BILLID": BILLID ,  "PartsYear": PartsYear,  "PartsRule": PartsRule,  "PartsClass": PartsClass,  "PartsApplyDate": PartsApplyDate, 
+    		   "PartsLimitDate": PartsLimitDate ,  "PartsName": PartsName,  "Partsstatus": Partsstatus,  "Staff": Staff,  "Property": Property, "SupplyID": SupplyID   }
+       alert("提交此编码"+JSON.stringify(taskData));
+          $.ajax({
+               method:'post',
+               data:taskData,
+               url:"/app/TMCode/getRoute",
+               success:function(data,textStatus){
+			console.log("无珠", JSON.stringify(data) );
+               	alert("讯息 "+(data.status)+"审批文号："+data.billid);
+               },
+               error:function(){
+   
+               }
+           })
+	}
+	
+  $('#FInfo').on("select",function(){
+     alert('你 ');
+  
+   })
+ $('#A1').click(function() {
+//	 var dataArr=[]; 
+//	 var objA1={
+//             "pclass":"A1", 
+//             "Name1":"开关模插1", 
+//             "Name2":"开关模插2",  
+//             "Name3":"开关模插3",  
+//             "Name4":"开关模插4",  
+//             "Name5":"开关模插5", 
+//             "Name6":"开关模插6",
+//             "Name7":"开关模插7",
+//             "Name8":"开关模插8",
+//         };
+//	   dataArr.push(objA1);
+//		 var objB1={
+//	             "pclass":"B1", 
+//	             "Name1":"Sanal1", 
+//	             "Name2":"Sanal2",  
+//	             "Name3":"Sanal3",  
+//	             "Name4":"Sanal4",  
+//	             "Name5":"Sanal5", 
+//	             "Name6":"Sanal6",
+//	             "Name7":"Sanal7",
+//	             "Name8":"Sanal8",
+//	         };
+//		   dataArr.push(objB1);
+//			console.log("虹桥", dataArr[0].Name1 );
+//			console.log("虹模", dataArr[1].Name1 );
+
+		            
+	 GoldA("A1");    $("#pclass").html("A1");  $("#pworld").val("A1"); 
+ });
+  $('#A2').click(function() {
+	  GoldA("A2");   $("#pclass").html("A2");  $("#pworld").val("A2"); 
+ });
+  $('#A3').click(function() {
+	  GoldA("A3");    $("#pclass").html("A3");  $("#pworld").val("A3"); 
+ });
+  $('#A4').click(function() {
+	  GoldA("A4");    $("#pclass").html("A4");  $("#pworld").val("A4"); 
+ });
+  $('#A5').click(function() {
+	  GoldA("A5");    $("#pclass").html("A5");  $("#pworld").val("A5"); 
+ });
+  $('#B1').click(function() {
+	  GoldB("B1");    $("#pclass").html("B1");   $("#pworld").val("B1"); 
+ }); 
+ $('#B2').click(function() {
+	 GoldB("B2");    $("#pclass").html("B2");   $("#pworld").val("B2"); 
+ }); 
+ $('#B3').click(function() {
+      ChangeB("B3");    $("#pclass").html("B3");   $("#pworld").val("B3"); 
+ }); 
+ $('#B4').click(function() {
+	 GoldB("B4");    $("#pclass").html("B4");   $("#pworld").val("B4"); 
+ }); 
+ $('#B5').click(function() {
+	 GoldB("B5");    $("#pclass").html("B5");   $("#pworld").val("B5"); 
+ });
+  $('#C1').click(function() {
+	  GoldC("C1");    $("#pclass").html("C1");    $("#pworld").val("C1"); 
+ });
+  $('#C2').click(function() {
+	  GoldC("C2");    $("#pclass").html("C2");    $("#pworld").val("C2"); 
+ });  
+ $('#C3').click(function() {
+	 GoldC("C3");    $("#pclass").html("C3");    $("#pworld").val("C3");
+ });
+ $('#D1').click(function() {
+	 GoldD("D1");    $("#pclass").html("D1");    $("#pworld").val("D1");
+ });
+ 
+  $('#E1').click(function() {
+      GoldD("E1");    $("#pclass").html("E1");    $("#pworld").val("E1");
+ });
+  $('#E2').click(function() {
+      GoldD("E2");    $("#pclass").html("E2");    $("#pworld").val("E2");
+ });
+  $('#E3').click(function() {
+      GoldE("E3");    $("#pclass").html("E3");     $("#pworld").val("E3");
+ });
+  $('#E4').click(function() {
+      GoldE("E4");    $("#pclass").html("E4");      $("#pworld").val("E4");
+ });
+  $('#E5').click(function() {
+      GoldE("E5");    $("#pclass").html("E5");      $("#pworld").val("E5");
+ });
+  $('#E6').click(function() {
+      GoldE("E6");    $("#pclass").html("E6");       $("#pworld").val("E6");
+ });
+  $('#E7').click(function() {
+      GoldE("E7");    $("#pclass").html("E7");       $("#pworld").val("E7");
+ });
+  $('#E8').click(function() {
+      GoldE("E8");    $("#pclass").html("E8");       $("#pworld").val("E8");
+ });
+  $('#E9').click(function() {
+      GoldE("E9");    $("#pclass").html("E9");       $("#pworld").val("E9");
+ });
+ $('#EA').click(function() {
+      GoldE("EA");    $("#pclass").html("EA");       $("#pworld").val("EA");
+ });
+  $('#EB').click(function() {
+      GoldE("EB");    $("#pclass").html("EB");       $("#pworld").val("EB");
+ });
+  $('#EC').click(function() {
+      GoldEC("EC");    $("#pclass").html("EC");       $("#pworld").val("EC");
+ });
+  $('#ED').click(function() {
+      GoldEC("ED");    $("#pclass").html("ED");       $("#pworld").val("ED");
+ });
+  $('#EE').click(function() {
+      GoldEC("EE");    $("#pclass").html("EE");       $("#pworld").val("EE");
+ });
+  $('#EF').click(function() {
+      GoldEC("EF");    $("#pclass").html("EF");       $("#pworld").val("EF");
+ });
+  $('#EG').click(function() {
+      GoldEC("EG");    $("#pclass").html("EG");       $("#pworld").val("EG");
+ });
+  $('#EH').click(function() {
+      GoldEC("EH");    $("#pclass").html("EH");       $("#pworld").val("EH");
+ });
+  $('#EJ').click(function() {
+      GoldEC("EJ");    $("#pclass").html("EJ");       $("#pworld").val("EJ");
+ });
+  $('#EK').click(function() {
+      GoldEC("EK");    $("#pclass").html("EK");       $("#pworld").val("EK");
+ });
+  $('#EM').click(function() {
+      GoldEC("EM");    $("#pclass").html("EM");       $("#pworld").val("EM");
+ });
+  $('#EN').click(function() {
+      GoldEC("EN");    $("#pclass").html("EN");       $("#pworld").val("EN");
+ });
+  $('#EP').click(function() {
+      GoldEC("EP");    $("#pclass").html("EP");       $("#pworld").val("EP");
+ });
+   $('#EQ').click(function() {
+      GoldEC("EQ");    $("#pclass").html("EQ");       $("#pworld").val("EQ");
+ });
+  $('#F1').click(function() {
+      GoldF("F1");    $("#pclass").html("F1");       $("#pworld").val("F1");
+ }); 
+ $('#F2').click(function() {
+      GoldF("F2");    $("#pclass").html("F2");      $("#pworld").val("F2");
+ }); 
+ $('#F3').click(function() {
+      GoldF("F3");    $("#pclass").html("F3");      $("#pworld").val("F3");
+ }); 
+ $('#F4').click(function() {
+      GoldF("F4");    $("#pclass").html("F4");      $("#pworld").val("F4");
+ }); 
+ $('#F5').click(function() {
+      GoldF("F5");    $("#pclass").html("F5");      $("#pworld").val("F5");
+ }); 
+ $('#F6').click(function() {
+      GoldF("F6");    $("#pclass").html("F6");      $("#pworld").val("F6");
+ }); 
+ $('#F7').click(function() {
+      GoldF("F7");    $("#pclass").html("F7");      $("#pworld").val("F7");
+ }); 
+ $('#F8').click(function() {
+      GoldF("F8");    $("#pclass").html("F8");      $("#pworld").val("F8");
+ }); 
+ $('#F9').click(function() {
+      GoldF9("F9");    $("#pclass").html("F9");      $("#pworld").val("F9");
+ }); 
+ $('#FA').click(function() {
+      GoldF9("FA");    $("#pclass").html("FA");      $("#pworld").val("FA");
+ }); 
+ $('#FB').click(function() {
+      GoldF9("FB");    $("#pclass").html("FB");      $("#pworld").val("FB");
+ }); 
+ $('#FC').click(function() {
+      GoldF9("FC");    $("#pclass").html("FC");      $("#pworld").val("FC");
+ }); 
+ $('#FD').click(function() {
+      GoldF9("FD");    $("#pclass").html("FD");      $("#pworld").val("FD");
+ }); 
+  $('#FE').click(function() {
+      GoldF9("FE");    $("#pclass").html("FE");      $("#pworld").val("FE");
+ }); 
+ $('#FF').click(function() {
+      GoldF9("FF");    $("#pclass").html("FF");      $("#pworld").val("FF");
+ }); 
+ $('#FG').click(function() {
+      GoldF9("FG");    $("#pclass").html("FG");      $("#pworld").val("FG");
+ }); 
+ $('#FH').click(function() {
+      GoldF9("FH");    $("#pclass").html("FH");      $("#pworld").val("FH");
+ }); 
+ $('#FI').click(function() {
+      GoldF9("FI");    $("#pclass").html("FI");      $("#pworld").val("FI");
+ });  
+ $('#G1').click(function() {
+       GoldG("G1");    $("#pclass").html("G1");      $("#pworld").val("G1");
+ });  
+ $('#G2').click(function() {
+       GoldG("G2");    $("#pclass").html("G2");      $("#pworld").val("G2");
+ }); 
+ $('#G3').click(function() {
+       GoldG("G3");    $("#pclass").html("G3");      $("#pworld").val("G3");
+ }); 
+ $('#G4').click(function() {
+       GoldG("G4");    $("#pclass").html("G4");      $("#pworld").val("G4");
+ }); 
+ $('#G5').click(function() {
+       GoldG("G5");    $("#pclass").html("G5");      $("#pworld").val("G5");
+ }); 
+ $('#G6').click(function() {
+       GoldG("G6");    $("#pclass").html("G6");      $("#pworld").val("G6");
+ }); 
+ $('#G7').click(function() {
+       GoldG("G7");    $("#pclass").html("G7");      $("#pworld").val("G7");
+ }); 
+ $('#G8').click(function() {
+       GoldG("G8");    $("#pclass").html("G8");      $("#pworld").val("G8");
+ }); 
+ $('#G9').click(function() {
+       GoldG("G9");    $("#pclass").html("G9");      $("#pworld").val("G9");
+ }); 
+ $('#GA').click(function() {
+       GoldG("GA");    $("#pclass").html("GA");      $("#pworld").val("GA");
+ }); 
+ $('#GB').click(function() {
+       GoldG("GB");    $("#pclass").html("GB");      $("#pworld").val("GB");
+ }); 
+ $('#GC').click(function() {
+       GoldG("GC");    $("#pclass").html("GC");      $("#pworld").val("GC");
+ }); 
+  $('#H1').click(function() {
+      GoldH("H1");    $("#pclass").html("H1");      $("#pworld").val("H1");
+ });  
+ $('#H2').click(function() {
+      GoldH("H2");    $("#pclass").html("H2");      $("#pworld").val("H2");
+ }); 
+ $('#H3').click(function() {
+      GoldH("H3");    $("#pclass").html("H3");      $("#pworld").val("H3");
+ }); 
+ $('#H4').click(function() {
+      GoldH("H4");    $("#pclass").html("H4");      $("#pworld").val("H4");
+ }); 
+ $('#H5').click(function() {
+      GoldH("H5");    $("#pclass").html("H5");      $("#pworld").val("H5");
+ }); 
+ $('#H6').click(function() {
+      GoldH("H6");    $("#pclass").html("H6");      $("#pworld").val("H6");
+ }); 
+ $('#J1').click(function() {
+      GoldJ("J1");    $("#pclass").html("J1");      $("#pworld").val("J1");
+ });  
+ $('#J2').click(function() {
+      GoldJ("J2");    $("#pclass").html("J2");      $("#pworld").val("J2");
+ }); 
+ $('#J3').click(function() {
+      GoldJ("J3");    $("#pclass").html("J3");      $("#pworld").val("J3");
+ }); 
+ $('#J4').click(function() {
+      GoldJ("J4");    $("#pclass").html("J4");      $("#pworld").val("J4");
+ }); 
+ $('#J5').click(function() {
+      GoldJ("J5");    $("#pclass").html("J5");      $("#pworld").val("J5");
+ }); 
+ $('#J6').click(function() {
+      GoldJ("J6");    $("#pclass").html("J6");      $("#pworld").val("J6");
+ }); 
+  $('#Q1').click(function() {
+      GoldQ("Q1");    $("#pclass").html("Q1");      $("#pworld").val("Q1");
+ });  
+ $('#U1').click(function() {
+      GoldU("U1");    $("#pclass").html("U1");      $("#pworld").val("U1");
+ }); 
+ $('#R1').click(function() {
+      GoldR("R1");    $("#pclass").html("R1");      $("#pworld").val("R1");
+ }); 
+ $('#S1').click(function() {
+      GoldS("S1");    $("#pclass").html("S1");      $("#pworld").val("S1");
+ }); 
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

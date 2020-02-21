@@ -1,0 +1,232 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+ 
+<style media=print type="text/css">  
+    .noprint{visibility:visible}  
+    #oDiv2 div{width: 100px;height: 100px;border:1px solid #c50000;}
+</style>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script> 
+
+<!-- <script type="text/javascript" src="/js/jquery.media.js"></script> -->
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+ 
+<div id ="noprint" class="noprint">
+  <div class="divcontent">
+  <div id="handout_wrap_inner" ></div>
+    <h1>弘讯科技编码报废作业</h1>  
+    <label  >审批号:</label>
+    <div class="layui-inline">
+		<input class="layui-input" name="billno" id="billno" value="" autocomplete="off">
+    </div>
+    <label  >编码号:</label>
+    <div class="layui-inline">
+    <input class="layui-input" name="codeno" id="codeno" value="" autocomplete="off">
+    </div>
+    <input type="button" id="SeaBtn" onclick="searchFile()" class="btn btn-info" value="查找" />
+    <input type="button" id="DelBtn" onclick="deleteFile()" class="btn btn-info" value="删除" />
+    <hr>
+     <br/>
+    
+    <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;" >
+        <!--数据呈现区-->
+        <table id="center_TB" class="table table-striped table-bordered"  >
+            <thead>
+                <tr>
+                    <th>分类</th>
+                    <th>年份</th>
+                    <th>属性原则</th>
+                    <th>物料类别</th>
+                    <th>编码</th>
+                    <th>品名</th>
+                    <th>属性</th> 
+                    <th>建立日</th>
+                    <th>审批</th>
+                    <th>供应商厂牌</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+   
+  </div>
+ </div>
+ <input type="button" id="AbsoleteBtn" onclick="absoleteFile()" class="btn btn-info" value="报废" />
+<div id="root" style="height: 100%"></div>
+ 
+<script>
+  
+ 
+  var missAType ='';
+  var missBType ='';
+  var bill_choose ='';
+  var code_choose ='';
+//页面加载函数---------------
+$(document).ready( function () {
+		
+  	layui.use(['form','layedit', 'laydate'], function(){
+	    var form = layui.form
+	            ,layer = layui.layer
+	            ,layedit = layui.layedit
+	            ,laydate = layui.laydate;
+ 
+	        form.render();
+    var DataPara={
+			"tableID":"#center_TB",
+			"DBTable":"auto_parts"			
+	}
+ 	
+    missAType = getQueryString("missA");
+    console.log("将心"+missAType);
+    var missAencode= decodeURI(missAType);
+
+    console.log("初心"+missAencode);
+     bill_choose =missAencode;
+     missBType = getQueryString("missB");
+     console.log("将咖"+missBType);
+     var missBencode= decodeURI(missBType);
+
+     console.log("初咖"+missBencode);
+      code_choose =missBencode;
+    console.log("学生",bill_choose);
+  
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Parts_Year'},
+        { data: 'Parts_Rule'},
+        { data: 'Parts_Class'},
+        { data: 'Parts_Code' },
+        { data: 'Parts_Name' }, 
+        { data: 'Property'},
+        { data: 'Parts_Apply_Date'},
+        { data: 'Parts_status'},
+        { data: 'Supply_ID'},
+    ];
+ 
+        showDBDataSelf(DataPara,columnsData,bill_choose,code_choose);
+        var table = $('#center_TB').DataTable();
+        $('#center_TB tbody').on('click', 'tr', function() {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+	 });
+      
+  	
+}); 
+
+    var DataPara={
+			"tableID":"#center_TB",
+			"DBTable":"auto_parts"			
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+	    { data: 'Parts_Year'},
+        { data: 'Parts_Rule'},
+        { data: 'Parts_Class'},
+        { data: 'Parts_Code' },
+        { data: 'Parts_Name' }, 
+        { data: 'Property'},
+        { data: 'Parts_Apply_Date'},
+        { data: 'Parts_status'},
+        { data: 'Supply_ID'},
+    ];
+    
+//删除按钮----------
+$('#DelBtn').click(function() {
+    var table = $('#center_TB').DataTable();
+    var dataSelect = table.row('.selected').data();
+     
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要删除的数据行!");
+    } else {
+        var msg1 = confirm("风险操作！此行数据内容移除后无法还原，请确认操作是否无误！");
+        if (msg1 === true) {
+             	var billchoose = dataSelect.BILL_ID; 
+                var codechoose =dataSelect.Parts_Code; 
+                 
+ 
+              
+//                alert("机"+encodeURI(encodeURI(choose)));
+                var paramClearA = encodeURI(encodeURI(billchoose));
+                var paramClearB = encodeURI(encodeURI(codechoose));
+                window.location.href ="/app/TMCode/absoleteProduct?missA="+paramClearA+"&missB="+paramClearB+" ";
+        }
+    }
+ 
+});
+function showDBDataSelf(DataPara, columnsData , bill_choose, code_choose) {
+ 
+    var SQL3 = {"SQL":"SQLPartsAbsolete","weekbeg":bill_choose ,"weekend":code_choose };
+	$(DataPara.tableID).DataTable({
+		ajax: {
+            url: '/app/tmcode/getSQLDBData', 
+            data: SQL3,
+			dataSrc: ''
+		},
+		columns: columnsData,
+		aaSorting: [0, 'desc'], //默认排序
+
+		language: languageCN
+
+	});
+
+} 
+ 
+ 
+function absoleteFile( ) {
+	 $("#center_TB").dataTable().fnDestroy();
+	    var choosebill = $('#billno').val(); 
+	    var choosecode = $('#codeno').val(); 
+    	alert("报废此文号 "+choosebill+" 编码 "+choosecode);
+	var reportType='absoletePcode';
+    var taskData ={"reportType":reportType,  "BILLID": choosebill,  "PartsCode": choosecode };
+           $.ajax({
+                method:'post',
+                data:taskData,
+                url:"/app/TMCode/getRoute",
+                success:function(result){
+                    alert("此文号 "+result.billid+ " 料号 "+result.partscode+" 已报废"+(result.status) );
+                        var paramClearA = encodeURI(encodeURI(choosebill));
+                        var paramClearB = encodeURI(encodeURI(choosecode));
+                        console.log("憐星",paramClearA);
+                        console.log("邀月",paramClearB);
+                        window.location.href ="/app/TMCode/absoleteProduct?missA="+paramClearA+"&missB="+paramClearB+" ";
+
+                },
+                error:function(){
+    
+                }
+            })
+}
+ 
+ 
+function searchFile( ) {
+    $("#center_TB").dataTable().fnDestroy();
+    var choosebill = $('#billno').val(); 
+    var choosecode = $('#codeno').val(); 
+ 
+    showDBDataSelf(DataPara,columnsData,choosebill,choosecode);
+} 
+ 
+</script>

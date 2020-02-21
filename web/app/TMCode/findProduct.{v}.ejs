@@ -1,0 +1,252 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+ 
+<style media=print type="text/css">  
+    .noprint{visibility:visible}  
+    #oDiv2 div{width: 100px;height: 100px;border:1px solid #c50000;}
+</style>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script> 
+
+<!-- <script type="text/javascript" src="/js/jquery.media.js"></script> -->
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+<script src="/brev/helA.js"></script> 
+
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+ 
+<div id ="noprint" class="noprint">
+  <div class="divcontent">
+  <div id="handout_wrap_inner" ></div>
+    <h1>弘讯科技编码号查询</h1>  
+    <label class="layui-form-label">分类:</label>
+    <div class="layui-inline">
+		<input class="layui-input" name="mainclass" id="mainclass" value="" autocomplete="off">
+    </div>
+    <input type="button" id="SeaBtn" onclick="searchFile()" class="btn btn-info" value="查找" />
+    <input type="button" id="parseBtn" onclick="deleteFile()" class="btn btn-info" value="解析" />
+    <hr>
+     <br/>
+    
+    <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;" >
+        <!--数据呈现区-->
+        <table id="center_TB" class="table table-striped table-bordered"  >
+            <thead>
+                <tr>
+                    <th>分类</th>
+                    <th>年份</th>
+                    <th>属性原则</th>
+                    <th>物料类别</th>
+                    <th>编码</th>
+                    <th>品名</th>
+                    <th>属性</th> 
+                    <th>建立日</th>
+                    <th>审批</th>
+                    <th>供应商厂牌</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+   
+  </div>
+ </div>
+<div id="root" style="height: 100%"></div>
+ 
+<script>
+  
+ 
+  var missAType ='';
+  var glbchoose ='';
+//页面加载函数---------------
+$(document).ready( function () {
+		
+  	layui.use(['form','layedit', 'laydate'], function(){
+	    var form = layui.form
+	            ,layer = layui.layer
+	            ,layedit = layui.layedit
+	            ,laydate = layui.laydate;
+ 
+	        form.render();
+    var DataPara={
+			"tableID":"#center_TB",
+			"DBTable":"auto_parts"			
+	}
+ 	
+    missAType = getQueryString("missA");
+    console.log("将心"+missAType);
+    var missAencode= decodeURI(missAType);
+
+    console.log("初心"+missAencode);
+     glbchoose =missAencode;
+    if(glbchoose =="" || glbchoose =='null' || glbchoose == null || glbchoose.length<0  ){
+        glbchoos='%%';
+        
+    }
+    console.log("学生",glbchoose);
+  
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'Parts_Year'},
+        { data: 'Parts_Rule'},
+        { data: 'Parts_Class'},
+        { data: 'Parts_Code' },
+        { data: 'Parts_Name' }, 
+        { data: 'Property'},
+        { data: 'Parts_Apply_Date'},
+        { data: 'Parts_status'},
+        { data: 'Supply_ID'},
+    ];
+ 
+        showDBDataSelf(DataPara,columnsData,glbchoose);
+        var table = $('#center_TB').DataTable();
+        $('#center_TB tbody').on('click', 'tr', function() {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+	 });
+      
+  	
+
+  	
+}); 
+
+    var DataPara={
+			"tableID":"#center_TB",
+			"DBTable":"auto_parts"			
+	}
+		
+	
+	var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+	    { data: 'Parts_Year'},
+        { data: 'Parts_Rule'},
+        { data: 'Parts_Class'},
+        { data: 'Parts_Code' },
+        { data: 'Parts_Name' }, 
+        { data: 'Property'},
+        { data: 'Parts_Apply_Date'},
+        { data: 'Parts_status'},
+        { data: 'Supply_ID'},
+    ];
+    
+//删除按钮----------
+$('#parseBtn').click(function() {
+    var table = $('#center_TB').DataTable();
+    var dataSelect = table.row('.selected').data();
+     
+    if (dataSelect == undefined) {
+        alert("当前未选择任何数据,请先点击需要的数据行!");
+    } else {
+     
+                var pclass = dataSelect.Parts_Class; 
+                var pproperty =dataSelect.Property;
+                var choose =dataSelect.Parts_Class;
+//                alert("选分类"+pproperty);  
+                 parseRecord(pclass , pproperty);
+                  
+//                alert("机"+encodeURI(encodeURI(choose)));
+//                var paramClear = encodeURI(encodeURI(choose));
+//                window.location.href ="/app/TMCode/findProduct?missA="+paramClear+" ";
+         
+    }
+ 
+});
+function showDBDataSelf(DataPara, columnsData , choose) {
+   if(choose =="" || choose =='null' || choose == null || choose.length<0  ){
+       console.log("A房客",choose);
+        choose='%%';
+        console.log("A房客",choose); 
+    }
+    var SQL3 = {"SQL":"SQLAutoParts","weekbeg":choose };
+	$(DataPara.tableID).DataTable({
+		ajax: {
+            url: '/app/TMCode/getSQLDBData', 
+            data: SQL3,
+			dataSrc: ''
+		},
+		columns: columnsData,
+		aaSorting: [0, 'desc'], //默认排序
+
+		language: languageCN
+
+	});
+
+} 
+function deleteFile(loadFn) {
+        
+//            var xhr = new XMLHttpRequest();
+//            xhr.open("delete", "/system.files/"
+//                + loadFn); 
+//            xhr.send();
+        
+}
+function parseRecord(pclass, pproperty) {
+//	pproperty="a2-b1-c1-d3-e4-f5-g3";
+//	pclass ="A1";
+//	var result = parseA(pclass,pproperty);
+//    alert("解析后"+result );
+	
+    console.log("传入",pproperty );
+     
+	 
+    var reportType='parseRec';
+    var taskData ={"reportType":reportType,  "pclass": pclass ,"pproperty": pproperty };
+           $.ajax({
+                method:'post',
+                data:taskData,
+                url:"/app/TMCode/getRoute",
+                success:function(data){
+                	console.log((data.Name1));
+                	const json2 = JSON.stringify(data);
+//                	const json = '{"param1":"宁波PM记录","Name1":"开关模插","Name2":"马达12w","Name3":"感应器","Name4":"线材器","Name5":"包材","Name6":"尺长3","Name7":"电流2","Name8":"电容4"}';
+               	    const bjob = JSON.parse(json2);
+            	    alert("属性1： "+bjob.Name1+"\n"+"属性2： "+bjob.Name2+"\n"+"属性3： "+bjob.Name3+"\n"+"属性4： "+bjob.Name4+"\n"+"属性5： "+bjob.Name5+"\n"+"属性6： "+bjob.Name6+"\n" +"属性7： "+bjob.Name7+"\n" +"属性8： "+bjob.Name8+"\n" 
+            	    +"属性9： "+bjob.Name9+"\n"+"属性10： "+bjob.Name10+"\n"+"属性11： "+bjob.Name11+"\n"+"属性12： "+bjob.Name12+"\n"+"属性13： "+bjob.Name13+"\n"+"属性14： "+bjob.Name14+"\n" +"属性15： "+bjob.Name15+"\n" +"属性16： "+bjob.Name16+"\n" );
+                },
+                error:function(){ 
+                }
+            })
+} 
+function deleteRecord(loadc) {
+	var reportType='delNouse';
+    var taskData ={"reportType":reportType,  "Load_code": loadc };
+           $.ajax({
+                method:'post',
+                data:taskData,
+                url:"/app/TMCode/getRoute",
+                success:function(data,textStatus){
+                	alert(JSON.stringify(data));
+                },
+                error:function(){ 
+                }
+            })
+}
+function searchFile( ) {
+    $("#center_TB").dataTable().fnDestroy();
+    var choose = $('#mainclass').val(); 
+    if(choose ==""){
+        choose = '%%' ;
+    }
+    showDBDataSelf(DataPara,columnsData,choose);
+} 
+ 
+</script>
