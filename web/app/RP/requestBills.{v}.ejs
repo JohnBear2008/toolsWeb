@@ -968,20 +968,29 @@
 
     //检查删除单据数据
     const checkDeleteBills = async () => {
+
+        let resultData = {
+            result: null,
+            data: {}
+        }
+
         let table = $('#rp_requestbills').DataTable();
         let dataSelect = table.rows('.selected').data();
-
+        let mainDBIDArr = [];
+        let subDBIDArr = [];
         let billsIdArr = [];
 
         for (let n = 0; n < dataSelect.length; n++) {
-
+            mainDBIDArr.push(dataSelect[n].DBID);
             billsIdArr.push(dataSelect[n].requestBillId);
         }
 
         switch (true) {
             case billsIdArr.length === 0:
                 alert('请先选中需要删除的申请单!')
-                return false
+
+                resultData.result = false;
+                return resultData
                 break;
             case billsIdArr.length > 0:
                 let billIdRange = getRangeString(billsIdArr);
@@ -999,14 +1008,24 @@
                 for (const n of statusArr) {
                     if (n.status !== '待维修') {
                         alert('选中单据存在关联的维修单,不符合删除条件!')
-                        return false;
+                        resultData.result = false;
+                        return resultData
                     }
+                    subDBIDArr.push(n.DBID)
                 }
 
                 break;
         }
 
-        return true;
+        resultData = {
+            result: true,
+            data: {
+                mainDBIDArr: mainDBIDArr,
+                subDBIDArr: subDBIDArr
+            }
+        }
+
+        return resultData;
     }
 
 
@@ -1082,30 +1101,38 @@
         //删除需求单
         $('#btnRequestBillDelete').click(async function () {
             //检查条件
-            let r = await checkDeleteBills();
-            if (!r) {
+            let resultData = await checkDeleteBills();
+            if (!resultData.result) {
                 return;
             }
 
             //删除单据
 
-            let table = $('#rp_requestbills').DataTable();
-            let dataSelect = table.rows('.selected').data();
-            let DBIDArr = [];
+            // let table = $('#rp_requestbills').DataTable();
+            // let dataSelect = table.rows('.selected').data();
+            // let DBIDArr = [];
 
-            for (let n = 0; n < dataSelect.length; n++) {
-                DBIDArr.push(dataSelect[n].DBID);
-            }
+            // for (let n = 0; n < dataSelect.length; n++) {
+            //     DBIDArr.push(dataSelect[n].DBID);
+            // }
+
+            let r1 = await postDBData({
+                sql: 'delete',
+                params: {
+                    tableId: 'rp_requestbills',
+                    data: resultData.data.mainDBIDArr
+                }
+            })
 
             let r2 = await postDBData({
                 sql: 'delete',
                 params: {
-                    tableId: 'rp_requestbills',
-                    data: DBIDArr
+                    tableId: 'rp_recordbills',
+                    data: resultData.data.subDBIDArr
                 }
             })
 
-            if (r2.affectedRows) {
+            if (r1.affectedRows && r2.affectedRows) {
                 alert('删除成功!')
                 //重新加载表单
                 loadBillMainTable();
@@ -1317,7 +1344,7 @@
                 alert('未添加需要维修的产品,无法保存单据,请检查!')
                 return;
             }
-            
+
             saveRequestbill();
         })
 

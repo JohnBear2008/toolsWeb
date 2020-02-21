@@ -352,6 +352,19 @@
 
                                 <div class="form-group">
 
+                                    <label class="col-sm-1 control-label">发货状态</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_responsebillsForm-isSended"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">结款状态</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_responsebillsForm-isFullPay"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
                                     <label class="col-sm-1 control-label">制单人</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_responsebillsForm-maker"></p>
@@ -788,9 +801,9 @@
                 formId: 'rp_responsebillsForm',
                 params: {
                     // sendWay:'快递',
-                    paymentWay:'款到发货',
-                    payWay:'支付宝',
-                    currency:'RMB',
+                    paymentWay: '款到发货',
+                    payWay: '支付宝',
+                    currency: 'RMB',
                     responseDate: currentDate(),
                     payDate: currentDate()
                 }
@@ -875,6 +888,26 @@
             let mainFormData = getPostFormData({
                 formId: 'rp_responsebillsForm'
             })
+
+            //判断出货状态
+            if (mainFormData.data[0].sendWay) {
+                mainFormData.data[0].isSended = '已出货'
+                if (mainFormData.data[0].sendWay === '快递' && !mainFormData.data[0].expressId) {
+                    mainFormData.data[0].isSended = '待填单'
+                }
+            }
+
+            //判断结款状态
+
+            if (mainFormData.data[0].payAmount >= mainFormData.data[0].amount) {
+                mainFormData.data[0].isFullPay = '已结清'
+            } else {
+                mainFormData.data[0].isFullPay = '未结清'
+            }
+
+            // console.log('mainFormData111:'+JSON.stringify(mainFormData));
+
+
 
             //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
             if (!mainFormData.data[0].maker) { //新增保存

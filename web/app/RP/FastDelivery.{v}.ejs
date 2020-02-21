@@ -35,8 +35,6 @@
 <script src="/public/encrypt/md5.min.js"></script>
 <script src="/public/encrypt/fastcollect.js"></script>
 
-<script type="text/javascript" src="/js/jquery.media.js"></script>
-
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
 
@@ -52,7 +50,7 @@
     <br></br>
     <label class="layui-form-label">单号:</label>
     <div class="layui-inline">
-		<input class="layui-input" name="Logistic" id="Logistic" value="YT2030356243129"  placeholder="输入单号:2100123465"  autocomplete="off">
+		<input class="layui-input" name="Logistic" id="Logistic" value="YT2032322684046"  placeholder="输入单号:2100123465"  autocomplete="off">
     </div>
 
      <div class="lineitem">
@@ -62,7 +60,6 @@
       <div id="div_result" name="div_result" class="label-basic">基本
      </div> 
      <br/>
-    
       <div id="div_track" name="div_track" class="label-track">轨迹
      </div> 
   </div>
@@ -84,27 +81,16 @@ $(document).ready( function () {
 //判断是否选中数据-------
  
 function MD5demo(msg) {
-    var hash =md5('value');
-    alert('MD5效果'+hash); 
-}
+    //    var hash =md5('value');
+       var hash =  md5("123456");
+       console.log('MD5效果'+hash); 
+   }
 function MD5(msg) {
     var hash =md5(msg);
-    console.log('MD5效果'+hash); 
+    // console.log('MD5效果'+hash); 
     return hash ;
 }
-function base64demo() {
-    var base64 = new Base64();  
-        //加密
-        var needEncryPw='dankogai';
-        var encryPw=""
-        if(null!=needEncryPw&& needEncryPw!=""){
-            encryPw=base64.encode(needEncryPw);
-            alert('base64加密'+encryPw);
-        }
-        //解密
-       let badecod= base64.decode(encryPw);
-       alert('base64解密'+badecod);
-}
+
 function base64(msg) {
     var base64 = new Base64();  
         //加密
@@ -112,13 +98,12 @@ function base64(msg) {
         var encryPw=""
         if(null!=needEncryPw&& needEncryPw!=""){
             encryPw=base64.encode(needEncryPw);
-            console.log('base64加密'+encryPw);
+            // console.log('base64加密'+encryPw);
             return encryPw;
         }
       
 }
-
-//MD5-----
+ 
 $('#fastnoteBtn').click(function() {
   var input_ShipperShipper = "";
   var input_Logistic = "";
@@ -126,8 +111,8 @@ $('#fastnoteBtn').click(function() {
     input_Shipper = $("#Shipper").val();
     input_Logistic = $("#Logistic").val();
     let DataSignRaw = ""  ;
-    let AppKey="7611818b-6279-4398-8747-df2ca39e86b4";//"56da2cf8-c8a2-44b2-b6fa-476cd7d1ba17"; //
-    let EBusinessID = "1330422";// "1237100"  ;//
+    let AppKey="7611818b-6279-4398-8747-df2ca39e86b4"; 
+    let EBusinessID = "1330422"; 
     let RequestType = "1002"  ;
     let DataType = "2" ;
     let sjson0 =  {'OrderCode':'','ShipperCode':'SF','LogisticCode':'118954907573'} ; 
@@ -135,27 +120,29 @@ $('#fastnoteBtn').click(function() {
     let RequestData='';             
     var sjson3= {"OrderCode":"", "ShipperCode":"ANE", "LogisticCode":"210001633605"}
     var ReqData=  JSON.stringify(sjson2);   
-    console.log('请前'+ReqData);          
+    MD5demo("123456");
     RequestData= ( encodeURIComponent(ReqData)) ;
     //  var RequestDataOK='%7B%22OrderCode%22%3A%22%22%2C%22ShipperCode%22%3A%22ANE%22%2C%22LogisticCode%22%3A%22210001633605%22%7D';
     DataSignRaw =base64(MD5(JSON.stringify(sjson2)+AppKey));
-    // console.log('签前'+DataSignRaw);
     let DataSign = encodeURI(encodeURI(DataSignRaw));
     // DataSignOK ='NmUwMWIzOWU1ODg0ZTcwYjhlNTA0MDFmNzU2YzRmZWQ%3D'; 
-    console.log('请求'+RequestData); 
     // console.log('请求签档'+DataSign);
     var param ={RequestData, EBusinessID, RequestType, DataSign, DataType};         
+    getOrderHandle(param);
+});
+
+}); 
+async function getOrderHandle(param){ 
     console.log("字串数据:" +  JSON.stringify(param));
     let ary3=[];
-    const json000 = '{\n  \"LogisticCode\" : \"210001633605\",\n  \"ShipperCode\" : \"ANE\",\n  \"Traces\" : [ ],\n  \"State\" : \"0\",\n  \"EBusinessID\" : \"1330422\",\n  \"Reason\" : \"暂无轨迹信息\",\n  \"Success\" : true\n}\n';
     const json = '{\n  \"LogisticCode\" : \"YT2030356243129\",\n  \"ShipperCode\" : \"YTO\",\n  \"Traces\" : [ {\n    \"AcceptStation\" : \"【浙江省宁波市北仑公司】 已收件 取件人: 李堂 (18668595916)\",\n    \"AcceptTime\" : \"2019-12-15 22:05:15\"\n  }, {\n    \"AcceptStation\" : \"【浙江省宁波市北仑公司】 已打包\",\n    \"AcceptTime\" : \"2019-12-16 20:06:44\"\n  }, {\n    \"AcceptStation\" : \"【宁波转运中心公司】 已收入\",\n    \"AcceptTime\" : \"2019-12-16 22:40:06\"\n  }, {\n    \"AcceptStation\" : \"【宁波转运中心】 已发出 下一站 【上虞转运中心】\",\n    \"AcceptTime\" : \"2019-12-16 22:41:25\"\n  }, {\n    \"AcceptStation\" : \"【上虞转运中心公司】 已收入\",\n    \"AcceptTime\" : \"2019-12-17 02:32:46\"\n  }, {\n    \"AcceptStation\" : \"【上虞转运中心】 已发出 下一站 【福州转运中心】\",\n    \"AcceptTime\" : \"2019-12-17 02:33:58\"\n  }, {\n    \"AcceptStation\" : \"【福州转运中心公司】 已收入\",\n    \"AcceptTime\" : \"2019-12-17 15:46:19\"\n  }, {\n    \"AcceptStation\" : \"【福建省莆田市公司】 已收入\",\n    \"AcceptTime\" : \"2019-12-17 23:32:30\"\n  }, {\n    \"AcceptStation\" : \"【福建省莆田市公司】 派件中  派件人: 肖东海 电话 18850920865  如有疑问，请联系：0594-6392288\",\n    \"AcceptTime\" : \"2019-12-18 09:07:50\"\n  }, {\n    \"AcceptStation\" : \"客户签收人: 连钰卓 已签收  感谢使用圆通速递，期待再次为您服务 如有疑问请联系：18850920865，投诉电话：0594-6392288\",\n    \"AcceptTime\" : \"2019-12-18 14:22:21\"\n  } ],\n  \"State\" : \"3\",\n  \"EBusinessID\" : \"1330422\",\n  \"Success\" : true\n}';
     const job = JSON.parse(json);
-    const trac = job.Traces;
-    console.log( trac ); 
+    const trac = job.Traces; 
     $('#div_result').html('    单号:   '+job.LogisticCode+'<br>    公司:   '+job.ShipperCode +'<br>   状态:   '+job.State+'<br>    成功:   '+job.Success   );
     for ( var i = 0; i < trac.length; i++) {
         $('#div_track').append('  收货人:   '+trac[i].AcceptStation +'                   时间:   '+trac[i].AcceptTime   +'<br></br>'  );
     }
+
     // $.ajax({
     //     method: 'post',
     //     url: url,
@@ -165,20 +152,37 @@ $('#fastnoteBtn').click(function() {
     //         console.log("字串数据:" + JSON.stringify(data));
     //         const job = JSON.parse(data);
     //         const trac = job.Traces;
-    //         console.log( trac ); 
-    //         $('#div_result').html('    单号:   '+job.LogisticCode+'<br>    公司:   '+job.ShipperCode +'<br>   状态:   '+job.State+'<br>    成功:   '+job.Success   );
-    //         for ( var i = 0; i < trac.length; i++) {
-    //             $('#div_track').append('  收货人:   '+trac[i].AcceptStation +'                   时间:   '+trac[i].AcceptTime   +'<br></br>'  );
+    //         var status = job.State;
+    //         $('#div_result').html('');
+    //         $('#div_track').html('');
+    //             $('#div_result').html('    单号:   '+job.LogisticCode+'<br>    公司:   '+job.ShipperCode +'<br>   状态:   '+job.State+'<br>    成功:   '+job.Success   );
+    //          if(status==0){
+    //             console.log( "status000" ); 
+    //             $('#div_result').append('<br>   理由:   '+job.Reason   );
+    //         }if(status==1){
+    //             console.log( "status111" ); 
+    //             for ( var i = 0; i < trac.length; i++) {
+    //               $('#div_track').append('  收货人:   '+trac[i].AcceptStation +'                   时间:   '+trac[i].AcceptTime   +'<br></br>'  );
+    //             }
+    //         }else if(status==2){
+    //             console.log( "status222" ); 
+    //             for ( var i = 0; i < trac.length; i++) {
+    //               $('#div_track').append('  收货人:   '+trac[i].AcceptStation +'                   时间:   '+trac[i].AcceptTime   +'<br></br>'  );
+    //             }
+    //         }else if(status==3){
+    //             console.log( "status333" ); 
+    //             for ( var i = 0; i < trac.length; i++) {
+    //               $('#div_track').append('  收货人:   '+trac[i].AcceptStation +'                   时间:   '+trac[i].AcceptTime   +'<br></br>'  );
+    //             }
+    //         }else{
+    //             console.log( "status???" ); 
     //         }
     // 	},
     //     error:function(err){
     //         alert("失败数据:"+JSON.stringify(err));
     //     }
     // }); 
-});
-// "{\n  \"LogisticCode\" : \"210001633605\",\n  \"ShipperCode\" : \"ANE\",\n  \"Traces\" : [ ],\n  \"State\" : \"0\",\n  \"EBusinessID\" : \"1330422\",\n  \"Reason\" : \"暂无轨迹信息\",\n  \"Success\" : true\n}\n"
-// 字串数据:"{\n  \"Success\" : false,\n  \"Reason\" : \"非法参数[DataSign[NzM3ZjQ1NDllM2E0ZjkyZjFkMTNmZTNkN2JkOWJhZDg=]不合法.]\"\n}\n"
+}
 // 顺丰、天天、百世、申通
-}); 
- 
+// const json000 = '{\n  \"LogisticCode\" : \"210001633605\",\n  \"ShipperCode\" : \"ANE\",\n  \"Traces\" : [ ],\n  \"State\" : \"0\",\n  \"EBusinessID\" : \"1330422\",\n  \"Reason\" : \"暂无轨迹信息\",\n  \"Success\" : true\n}\n';
 </script>
