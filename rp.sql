@@ -6119,16 +6119,13 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
 
 -- 正在导出表  toolsweb.rp_recordbills 的数据：~5 rows (大约)
 /*!40000 ALTER TABLE `rp_recordbills` DISABLE KEYS */;
 REPLACE INTO `rp_recordbills` (`DBID`, `recordBillId`, `requestBillId`, `rowId`, `responseBillId`, `productId`, `productName`, `productDescription`, `factoryNo`, `origin`, `systemType`, `productClass`, `productYear`, `productMonth`, `productionDate`, `orginFactoryNo`, `isRework`, `urgent`, `inWarranty`, `productFrom`, `productBelong`, `testResult`, `testItem`, `testFee`, `faultDescription`, `faultReason`, `faultClass`, `changePartList`, `repairResult`, `repairTotalFee`, `remark`, `maker`, `makeDate`, `status`, `billSaveTimeStamp`) VALUES
 	(1, 'R-20200220002', 'AA-20200220001', '1', NULL, '1ACC_HUNTER_JX_C', '1ACC_HUNTER_JX_C', '机箱套料iDriver600_37-55KW', NULL, NULL, '其他', '鐵板', NULL, NULL, NULL, NULL, '否', '否', '否', '终端客户', '客户', NULL, '温控板-检测', 100.00, NULL, '使用原因', '正常', '1BP_KE60*1,1BP_KS_HTPM43360S*1', NULL, 244.00, NULL, '熊奇龙', '2020-02-20', '维修中', '2020-02-20 00:00:00'),
-	(2, 'R-20200220001', 'AA-20200220002', '1', NULL, '1BP_HMI3354M2_Q8', '1BP_HMI3354M2_Q8', 'HMI3354M2 Q8铝壳用', NULL, NULL, 'Q8-3354', '顯示器', NULL, NULL, NULL, NULL, '否', '否', '否', '终端客户', '客户', NULL, '温控板-检测', 100.00, NULL, '使用原因', '按键', '1BP_KS_TMM42647B*1', '维修后正常', 246.00, NULL, '熊奇龙', '2020-02-20', '维修完成', '2020-02-20 00:00:00'),
-	(3, NULL, 'AA-20200220002', '2', NULL, '1BP_HMI3354M2_Q8F', '1BP_HMI3354M2_Q8F', 'HMI3354M2_Q8F', NULL, NULL, 'Q8-3354', '面板', NULL, NULL, NULL, NULL, '否', '否', '否', '终端客户', '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-02-20 00:00:00'),
-	(4, NULL, 'AA-20200221001', '1', NULL, '1ACC_HUNTER_JX_D', '1ACC_HUNTER_JX_D', '机箱套料iDriver600_75-90KW TI60090KW-T', NULL, NULL, '其他', '鐵板', NULL, NULL, NULL, NULL, '否', '否', '否', '终端客户', '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-02-21 10:44:21'),
-	(5, NULL, 'AA-20200221002', '1', NULL, '1ACC_HUNTER_JX_D', '1ACC_HUNTER_JX_D', '机箱套料iDriver600_75-90KW TI60090KW-T', NULL, NULL, '其他', '鐵板', NULL, NULL, NULL, NULL, '否', '否', '否', '终端客户', '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-02-21 10:46:51');
+	(2, 'R-20200220001', 'AA-20200220002', '1', 'S-20200221001', '1BP_HMI3354M2_Q8', '1BP_HMI3354M2_Q8', 'HMI3354M2 Q8铝壳用', NULL, NULL, 'Q8-3354', '顯示器', NULL, NULL, NULL, NULL, '否', '否', '否', '终端客户', '客户', NULL, '温控板-检测', 100.00, NULL, '使用原因', '按键', '1BP_KS_TMM42647B*1', '维修后正常', 246.00, NULL, '熊奇龙', '2020-02-20', '维修完成', '2020-02-20 00:00:00');
 /*!40000 ALTER TABLE `rp_recordbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_requestbills 结构
@@ -6155,7 +6152,7 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
 
 -- 正在导出表  toolsweb.rp_requestbills 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `rp_requestbills` DISABLE KEYS */;
@@ -6196,11 +6193,14 @@ CREATE TABLE IF NOT EXISTS `rp_responsebills` (
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
   `remark` char(50) DEFAULT NULL COMMENT '备注',
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() COMMENT '时间戳',
-  PRIMARY KEY (`DBID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修出货单';
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `responseBillId` (`responseBillId`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修出货单';
 
 -- 正在导出表  toolsweb.rp_responsebills 的数据：~0 rows (大约)
 /*!40000 ALTER TABLE `rp_responsebills` DISABLE KEYS */;
+REPLACE INTO `rp_responsebills` (`DBID`, `responseBillId`, `customerId`, `customerShortName`, `customerName`, `customerBelong`, `invoiceName`, `fax`, `contact`, `mobilePhone`, `responseDate`, `paymentWay`, `sendWay`, `expressCompany`, `expressId`, `responseStaff`, `currency`, `amount`, `discount`, `discountAmount`, `payAmount`, `payWay`, `payDate`, `isFullPay`, `isSended`, `maker`, `makeDate`, `remark`, `billSaveTimeStamp`) VALUES
+	(2, 'S-20200221001', 'CS_BL_MY', '北仑_茂源', '北仑茂源塑料制品制造有限公司', NULL, '北仑茂源塑料制品制造有限公司', NULL, '周贤波', '18906690858', '2020-02-21', '款到发货', '快递', 'SF', '111', '岑建军', 'RMB', 246.00, NULL, NULL, 246.00, '支付宝', '2020-02-21', '已结清', '已出货', '熊奇龙', '2020-02-21', NULL, '2020-02-21 15:40:59');
 /*!40000 ALTER TABLE `rp_responsebills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_selectoroptions 结构
@@ -6215,9 +6215,9 @@ CREATE TABLE IF NOT EXISTS `rp_selectoroptions` (
   `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `optionClass_optionValue` (`optionClass`,`optionValue`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础资料_选项清单\r\n\r\n\r\n用于统一管理较少的 option选项';
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础资料_选项清单\r\n\r\n\r\n用于统一管理较少的 option选项';
 
--- 正在导出表  toolsweb.rp_selectoroptions 的数据：~26 rows (大约)
+-- 正在导出表  toolsweb.rp_selectoroptions 的数据：~39 rows (大约)
 /*!40000 ALTER TABLE `rp_selectoroptions` DISABLE KEYS */;
 REPLACE INTO `rp_selectoroptions` (`DBID`, `optionClass`, `optionValue`, `optionText`, `orderId`, `effective`, `saveTimeStamp`) VALUES
 	(1, '故障原因', '使用原因', '使用原因', '1', '是', '2020-01-14 14:31:53'),
@@ -6245,7 +6245,20 @@ REPLACE INTO `rp_selectoroptions` (`DBID`, `optionClass`, `optionValue`, `option
 	(25, '维修结果', '维修后正常', '维修后正常', '3', '是', '2020-01-14 14:31:53'),
 	(26, '维修结果', '报废', '报废', '4', '是', '2020-01-14 14:31:53'),
 	(27, '维修结果', '退大港', '退大港', '5', '是', '2020-01-14 14:31:53'),
-	(29, '维修结果', '退客户', '退客户', '6', '是', '2020-01-14 14:31:53');
+	(29, '维修结果', '退客户', '退客户', '6', '是', '2020-01-14 14:31:53'),
+	(30, '收款方式', '款到发货', '款到发货', '1', '是', '2020-02-21 13:34:31'),
+	(31, '收款方式', '月结', '月结', '2', '是', '2020-02-21 13:34:49'),
+	(32, '出货方式', '快递', '快递', '1', '是', '2020-02-21 13:39:11'),
+	(33, '出货方式', '员工带走', '员工带走', '2', '是', '2020-02-21 13:39:55'),
+	(34, '出货方式', '客户带走', '客户带走', '3', '是', '2020-02-21 13:40:17'),
+	(35, '快递公司', 'SF', '顺丰', '1', '是', '2020-02-21 13:45:56'),
+	(36, '快递公司', 'YT', '圆通', '2', '是', '2020-02-21 13:45:34'),
+	(37, '付款方式', '支付宝', '支付宝', '1', '是', '2020-02-21 13:50:14'),
+	(38, '付款方式', '微信', '微信', '2', '是', '2020-02-21 13:50:30'),
+	(39, '付款方式', '现金', '现金', '3', '是', '2020-02-21 13:50:46'),
+	(40, '付款方式', '电汇', '电汇', '4', '是', '2020-02-21 13:51:03'),
+	(41, '币别', 'RMB', 'RMB', '1', '是', '2020-02-21 13:56:43'),
+	(42, '币别', 'USD', 'USD', '2', '是', '2020-02-21 13:56:57');
 /*!40000 ALTER TABLE `rp_selectoroptions` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_staffs 结构
