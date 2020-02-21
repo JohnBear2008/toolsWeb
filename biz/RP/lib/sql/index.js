@@ -1,7 +1,8 @@
+//selector sql
 const getRegionSelector = 'SELECT mername AS value,mername AS option,pinyin as token FROM `region`'
 const getCustomerSelector =
 	'SELECT customerShortName AS value,customerShortName AS option,CONCAT(customerId,mobilePhone)as token FROM `rp_customers`'
-const getStaffSelector = 'select staffName as value,staffName as option,staffId as token from `rp_staffs`'
+const getStaffSelector = 'select staffName as value,staffName as option,pinyin as token from `rp_staffs`'
 const getProductSelector =
 	'select productId as value,productId as option,productDescription as token from `rp_products`'
 const getTestItemSelector = 'select testItem as value,testItem as option,testFee as token from `rp_testitems`'
@@ -10,6 +11,8 @@ const getOptionSelector =
 const getPartLocationSelector =
 	'select distinct partLocation as value,partLocation as option,partLocation as token from `rp_parts`';
 const getPartSelector = 'select partId as value,partId as option,partDescription as token from `rp_parts`';
+
+
 
 const getRegion = 'SELECT mername FROM `region`'
 const getCustomers = 'SELECT * FROM `rp_customers`'
@@ -36,7 +39,7 @@ const sqlRecordBills = 'select * from ( select ta.*,tb.customerShortName,tb.make
 const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql
 const sqlResponseBills =
-	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.mobilePhone,tb.contact,tb.requestDate,tc.responseBillId,tc.expressId,tc.amount,tc.isSended,tc.isFullPay,tc.maker,tc.makeDate from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId=tb.requestBillId left join rp_responsebills tc on ta.responseBillId=tc.responseBillId ) tA '
+	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.status,tb.requestBillId,tb.customerId,tb.requestDate,tc.responseBillId,tc.customerShortName,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA '
 
 //维修申请单单子表sql
 const sqlSubRecordBills = 'select * from `rp_recordbills`'

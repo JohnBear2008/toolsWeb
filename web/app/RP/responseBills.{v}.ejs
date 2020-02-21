@@ -217,7 +217,8 @@
 
                                     <label class="col-sm-1 control-label">出货方式</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_responsebillsForm-contact"></p>
+                                        <select id="rp_responsebillsForm-sendWay" class="selectpicker">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">出货日期</label>
@@ -227,8 +228,8 @@
                                             data-date-format="yyyy-mm-dd"
                                             data-link-field="rp_responsebillsForm-responseDate"
                                             data-link-format="yyyy-mm-dd">
-                                            <input id="rp_responsebillsForm-responseDate" class="form-control " size="16"
-                                                type="text" value="" readonly>
+                                            <input id="rp_responsebillsForm-responseDate" class="form-control "
+                                                size="16" type="text" value="" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
@@ -250,16 +251,32 @@
 
                                 <div class="form-group">
 
+                                    <label class="col-sm-1 control-label">快递公司</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_responsebillsForm-expressCompany" class="selectpicker">
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">快递单号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_responsebillsForm-expressId" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+
                                     <label class="col-sm-1 control-label">收款方式</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-paymentWay" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_responsebillsForm-paymentWay" class="selectpicker">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">币别</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-currency" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_responsebillsForm-currency" class="selectpicker">
+                                        </select>
                                     </div>
 
 
@@ -307,14 +324,20 @@
 
                                     <label class="col-sm-1 control-label">付款方式</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-payWay" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_responsebillsForm-payWay" class="selectpicker">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">付款日期</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_responsebillsForm-payDate" type="text"
-                                            value="该输入框获得焦点...">
+                                        <div id="payDatePicker" class="input-group date form_date " data-date=""
+                                            data-date-format="yyyy-mm-dd" data-link-field="rp_responsebillsForm-payDate"
+                                            data-link-format="yyyy-mm-dd">
+                                            <input id="rp_responsebillsForm-payDate" class="form-control " size="16"
+                                                type="text" value="" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -761,7 +784,19 @@
 
             //设置部分组件默认值
 
-            $("#rp_responsebillsForm-responseDate").val(currentDate());
+            fillFormInputs({
+                formId: 'rp_responsebillsForm',
+                params: {
+                    // sendWay:'快递',
+                    paymentWay:'款到发货',
+                    payWay:'支付宝',
+                    currency:'RMB',
+                    responseDate: currentDate(),
+                    payDate: currentDate()
+                }
+            })
+
+            // $("#rp_responsebillsForm-responseDate").val(currentDate());
 
             //生成出货单号
             createResponseBillId()
@@ -902,6 +937,11 @@
             elementId: "rp_responsebillsForm-responseDate",
         })
 
+        //初始化组件
+        loadDatePicker({
+            elementId: "rp_responsebillsForm-payDate",
+        })
+
 
         loadBootStrapSelector({
             elementId: 'rp_responsebillsForm-responseStaff',
@@ -910,6 +950,64 @@
             },
             // initValue:'中国,北京'
         })
+
+        loadBootStrapSelector({
+            elementId: 'rp_responsebillsForm-currency',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="币别"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_responsebillsForm-paymentWay',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="收款方式"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_responsebillsForm-sendWay',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="出货方式"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_responsebillsForm-expressCompany',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="快递公司"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_responsebillsForm-payWay',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="付款方式"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+
 
         //定义主表双击功能
         addMainTableListener();
