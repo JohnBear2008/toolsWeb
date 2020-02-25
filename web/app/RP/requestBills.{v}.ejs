@@ -221,7 +221,7 @@
 
                                     <label class="col-sm-1 control-label">客户编号</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerId" type="text">
+                                        <p class="form-control-static" id="rp_requestbillsForm-customerId"></p>
                                     </div>
 
 
@@ -634,6 +634,9 @@
         })
 
         // console.log('r1:' + JSON.stringify(r1));
+
+        customerData = r1[0]; //将查询结果赋给全局变量
+
         let r2 = r1[0]
         delete r2.customerShortName;
         // console.log('r2:' + JSON.stringify(r2));
@@ -731,6 +734,12 @@
 
             //打开关联信息
             $("#accordion").show();
+
+            //解除客户监听事件
+            // $('#rp_requestbillsForm-customerShortName').unbind();
+
+
+
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
@@ -872,7 +881,57 @@
         }
 
 
+        console.log('customerData:' + JSON.stringify(customerData));
         console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        //定义当前表内实际填写客户数据
+        let billCustomerData = {
+            customerId: mainFormData.data[0].customerId,
+            customerShortName: mainFormData.data[0].customerShortName,
+            customerArea: mainFormData.data[0].customerArea,
+            customerName: mainFormData.data[0].customerName,
+            contact: mainFormData.data[0].contact,
+            mobilePhone: mainFormData.data[0].mobilePhone,
+            customerBelongShort: mainFormData.data[0].customerBelongShort,
+            customerBelongFull: mainFormData.data[0].customerBelongFull,
+            isInland: mainFormData.data[0].isInland
+        }
+
+        //判断当前表内客户数据是否存在更新;
+        let compareResult = true;
+        for (const p in billCustomerData) {
+            if (billCustomerData[p] !== customerData[p]) {
+                compareResult = false;
+                break;
+            }
+        }
+
+        //存在不同则更新客户信息
+        if (!compareResult) {
+
+            // let updateArr = [];
+            // for (const p in billCustomerData) {
+            //     updateArr.push({
+            //         [p]: billCustomerData[p]
+            //     })
+            // }
+
+            // console.log('updateArr:' + JSON.stringify(updateArr));
+
+
+            let rc = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_customers',
+                    data: [billCustomerData],
+                    key: 'customerId'
+                }
+            })
+
+            if (rc.affectedRows > 0) {
+                alert('更新客户信息成功!')
+            }
+        }
 
         let r1 = await postDBData({
             sql: 'replace',
@@ -1045,6 +1104,9 @@
         sessionName = "<%-locals.session.yjUser.Name%>";
         //定义子表全局变量临时数据数组
         subTableData = [];
+
+        //存储当前客户信息
+        customerData = {}
 
 
         //初始化主表

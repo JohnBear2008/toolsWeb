@@ -1106,10 +1106,11 @@
 
             if (mainFormData.data[0].repairResult) {
                 mainFormData.data[0].status = '维修完成'
+                mainFormData.data[0].finishDate = currentDate();
             }
 
             //添加update key
-            mainFormData.key = 'recordBillId';
+            mainFormData.key = 'DBID';
 
 
             console.log('mainFormData:' + JSON.stringify(mainFormData));
