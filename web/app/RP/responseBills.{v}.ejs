@@ -586,6 +586,15 @@
                 alert('未选中出货单据!')
                 return false
                 break;
+            case arr.length > 0:
+                for (const n of arr) {
+                    if (n.responseBillId) {
+                        alert('选中数据中存在已出货单据,不可重复出货,请检查!')
+                        return false
+                        break;
+                    }
+                }
+                break;
         }
 
         return true;
@@ -735,6 +744,8 @@
             }
         })
 
+        //去掉customerData中的DBID 避免重复错误;
+        delete customerData[0].DBID;
         console.log("customerData:" + JSON.stringify(customerData));
 
         if (customerData.length > 0) {
@@ -911,6 +922,9 @@
             let requestBillId = subTableData[0].requestBillId;
             mainFormData.data[0].requestBillId = requestBillId;
 
+            // let recordBillId=subTableData[0].recordBillId;
+            // mainFormData.data[0].recordBillId = recordBillId;
+
 
 
             //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
@@ -928,11 +942,11 @@
 
                 let responseBillId = $('#rp_responsebillsForm-responseBillId').text();
 
-                let DBIDArr = [];
+                let updateArr = [];
 
                 for (const n of subTableData) {
-                    DBIDArr.push({
-                        DBID: n.DBID,
+                    updateArr.push({
+                        recordBillId: n.recordBillId,
                         responseBillId: responseBillId
                     })
                 }
@@ -941,7 +955,8 @@
                     sql: 'update',
                     params: {
                         tableId: 'rp_recordbills',
-                        data: DBIDArr
+                        data: updateArr,
+                        key:'recordBillId'
                     }
                 })
 

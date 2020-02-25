@@ -312,7 +312,8 @@
                                         <div class="form-group">
                                             <label class="col-sm-1 control-label">出货单号</label>
                                             <div class="col-sm-5">
-                                                <p class="form-control-static" id="rp_responsebillsForm-responseBillId"></p>
+                                                <p class="form-control-static" id="rp_responsebillsForm-responseBillId">
+                                                </p>
                                             </div>
 
                                         </div>
@@ -326,8 +327,8 @@
 
                                             <label class="col-sm-1 control-label">出货人</label>
                                             <div class="col-sm-5">
-                                                <p class="form-control-static"
-                                                    id="rp_responsebillsForm-responseStaff"></p>
+                                                <p class="form-control-static" id="rp_responsebillsForm-responseStaff">
+                                                </p>
                                             </div>
 
                                         </div>
@@ -335,7 +336,8 @@
                                         <div class="form-group">
                                             <label class="col-sm-1 control-label">折扣金额</label>
                                             <div class="col-sm-5">
-                                                <p class="form-control-static" id="rp_responsebillsForm-discountAmount"></p>
+                                                <p class="form-control-static" id="rp_responsebillsForm-discountAmount">
+                                                </p>
                                             </div>
 
                                             <label class="col-sm-1 control-label">付款金额</label>
@@ -588,8 +590,6 @@
     }]
 
 
-
-
     //加载主表数据			
     const loadBillMainTable = async () => {
         //加载表格
@@ -605,8 +605,6 @@
                 columns: mainColumnsArray
             }
         })
-
-
     }
 
     //添加主表监听器,定义双击打开事件
@@ -637,8 +635,8 @@
 
             //检查条件
 
-            if (rowSelect.length === 0) {
-                alert('未选定单据!')
+            if (!rowSelect) {
+                alert('请先点击表格中的记录,选定单据!')
                 return;
             }
 
@@ -697,49 +695,6 @@
             })
 
 
-
-            // loadBillDataTable({
-            //     elementId: 'rp_recordbills',
-            //     dtParams: {
-            //         dtConfig: 'dtConfigData',
-            //         data: rowSelect,
-            //         columns: rcColumnsArray
-            //     }
-            // })
-
-            // let subTable = $('#rp_recordbills').DataTable();
-
-            // //解绑原事件
-            // $('#rp_recordbills tbody').unbind();
-
-            // //定义子表双击事件
-            // $('#rp_recordbills tbody').on('click', 'tr', function () {
-
-            //     if ($(this).hasClass('selected')) {
-            //         $(this).removeClass('selected');
-
-            //         $('#rp_recordbillsPanel').hide();
-            //     } else {
-            //         subTable.$('tr.selected').removeClass('selected');
-            //         $(this).addClass('selected');
-
-            //         let rowSelect = subTable.row('.selected').data();
-            //         //清空Form原有数据
-            //         initFormInputs({
-            //             elementId: 'rp_recordbillsForm'
-            //         })
-            //         //填写div匹配数据
-            //         fillDivInputs({
-            //             elementId: 'rp_recordbills',
-            //             params: rowSelect
-            //         })
-            //         //打开面板
-            //         $('#rp_recordbillsPanel').show();
-            //     }
-
-            // });
-
-
         })
 
     }
@@ -766,7 +721,7 @@
 
 
         //定义子表双击事件
-
+        $('#' + i.elementId + ' tbody').unbind(); //解绑原有事件
         $('#' + i.elementId + ' tbody').on('click', 'tr', function () {
 
             // let table = $('#' + i.elementId).DataTable();
@@ -816,21 +771,26 @@
         addBtnTrackListener();
 
 
-
-
         //过滤器
         $('#btnFilter').click(function () {
-
             //打开面板
             $('#filterModal').modal('show');
         })
 
         //报表
         $('#btnReports').click(function () {
-
             //打开面板
             $('#reportsModal').modal('show');
         })
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_billsDBModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_billsDB').DataTable();
+            table.$('tr.selected').removeClass('selected');
+        })
+
+
 
 
 

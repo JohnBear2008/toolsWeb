@@ -733,53 +733,15 @@
         $('#rp_recordbills tbody').unbind();
 
         //定义主表双击事件
-        $('#rp_recordbills tbody').on('dblclick', 'tr', async function () {
+        $('#rp_recordbills tbody').on('dblclick', 'tr', function () {
 
             //设定选中
             let table = $('#rp_recordbills').DataTable();
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
-            let dataSelect = table.row('.selected').data();
-
-            //打开面板
-            $('#rp_recordbillsModal').modal('show');
-
-            // //打开关联信息
-            // $("#accordion").show();
 
 
-            //按系统类型重新加载检测项目
-            await loadBootStrapSelector({
-                elementId: 'rp_recordbillsForm-testItem',
-                sqlParams: {
-                    sql: 'getTestItemSelector',
-                    params: {
-                        filter: 'systemType="' + dataSelect.systemType + '" or systemType="其他"'
-                    }
-                },
-            })
-
-            //初始化并填写form内inputs
-            initAndFillFormInputs({
-                formId: 'rp_recordbillsForm',
-                params: dataSelect
-            })
-
-
-            //不存在单号则创造记录单号
-            let recordBillId = $('#rp_recordbillsForm-recordBillId').text();
-            if (!recordBillId) {
-                createRecordBillId()
-            }
-
-
-
-            //关闭子表panel
-            $('#rp_partsbillsPanel').hide();
-
-            //加载子表记录表数据
-            loadBillSubTable(dataSelect.recordBillId);
-
+            $('#btnRecordBillNew').click()
         });
 
     }
@@ -1146,6 +1108,9 @@
                 mainFormData.data[0].status = '维修完成'
             }
 
+            //添加update key
+            mainFormData.key = 'recordBillId';
+
 
             console.log('mainFormData:' + JSON.stringify(mainFormData));
 
@@ -1278,19 +1243,6 @@
                 rowData.partFee = parseInt(partData[0].num) * parseInt(partData[0].price);
                 rowData.recordBillId = $("#rp_recordbillsForm-recordBillId").text();
 
-
-
-                // rowData.status = '新增'
-                // rowData.partId = productData[0].partId;
-                // rowData.productName = productData[0].productName;
-                // rowData.productDescription = productData[0].productDescription;
-                // rowData.factoryNo = '11111'
-                // rowData.origin = 'nb'
-                // rowData.isRework = '否';
-                // rowData.urgent = '否';
-                // rowData.inWarranty = '否';
-                // rowData.productFrom = '终端客户';
-                // rowData.productBelong = '客户 ';
 
                 console.log("rowData:" + JSON.stringify(rowData));
 
@@ -1479,6 +1431,60 @@
 
         })
 
+        //维修登记按钮
+        $('#btnRecordBillNew').click(async function () {
+
+            let table = $('#rp_recordbills').DataTable();
+            let dataSelect = table.row('.selected').data();
+
+            //检测选定数据 
+
+            if (!dataSelect) {
+                alert('未选定单据!')
+                return
+            }
+
+            //打开面板
+            $('#rp_recordbillsModal').modal('show');
+
+            // //打开关联信息
+            // $("#accordion").show();
+
+
+            //按系统类型重新加载检测项目
+            await loadBootStrapSelector({
+                elementId: 'rp_recordbillsForm-testItem',
+                sqlParams: {
+                    sql: 'getTestItemSelector',
+                    params: {
+                        filter: 'systemType="' + dataSelect.systemType +
+                            '" or systemType="其他"'
+                    }
+                },
+            })
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_recordbillsForm',
+                params: dataSelect
+            })
+
+
+            //不存在单号则创造记录单号
+            let recordBillId = $('#rp_recordbillsForm-recordBillId').text();
+            if (!recordBillId) {
+                createRecordBillId()
+            }
+
+
+
+            //关闭子表panel
+            $('#rp_partsbillsPanel').hide();
+
+            //加载子表记录表数据
+            loadBillSubTable(dataSelect.recordBillId);
+        })
+
 
         //表单保存按钮
         $('#rp_recordbillsSave').click(function () {
@@ -1563,7 +1569,7 @@
             // //添加监听出来扫描modal关闭 表单modal失效问题
             $(this).removeData('bs.modal');
             $(document.body).addClass("modal-open");
-            
+
         })
 
 

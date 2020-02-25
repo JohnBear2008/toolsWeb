@@ -39,7 +39,7 @@ const sqlRecordBills = 'select * from ( select ta.*,tb.customerShortName,tb.make
 const sqlChangeparts = 'select * from rp_partsBills';
 //维修出货单主表单sql
 const sqlResponseBills =
-	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA '
+	'select * from (select ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA '
 
 
 
@@ -132,17 +132,18 @@ const createSql = (i) => {
 			break;
 
 		case 'update':
-			let updateDBIDS = '';
+			let key = i.params.key;
+			let updateKeys = '';
 			let updateStatement = '';
 			if (i.params.data.length > 0) {
 				for (const n of i.params.data) {
-					updateDBIDS = updateDBIDS + n['DBID'] + ',';
+					updateKeys = updateKeys + '"' + n[key] + '",';
 				}
 
 				let fieldsObj = i.params.data[0];
 
 				for (const p in fieldsObj) {
-					if (p !== 'DBID') {//过滤DBID,防止更新DBID错误
+					if (p !== key) { //过滤key,防止更新key错误
 						if (fieldsObj[p]) {
 							updateStatement = updateStatement + p + ' = "' + fieldsObj[p] + '",';
 						} else {
@@ -159,11 +160,11 @@ const createSql = (i) => {
 			}
 			updateStatement = updateStatement.substr(0, updateStatement.length - 1);
 
-			updateDBIDS = updateDBIDS.substr(0, updateDBIDS.length - 1);
-			updateDBIDS = '(' + updateDBIDS + ')';
-			console.log("updateDBIDS:" + updateDBIDS);
+			updateKeys = updateKeys.substr(0, updateKeys.length - 1);
+			updateKeys = '(' + updateKeys + ')';
+			console.log("updateKeys:" + updateKeys);
 
-			excuteSql = 'update `' + i.params.tableId + '` set ' + updateStatement + ' where DBID in ' + updateDBIDS;
+			excuteSql = 'update `' + i.params.tableId + '` set ' + updateStatement + ' where ' + key + ' in ' + updateKeys;
 
 			break;
 
