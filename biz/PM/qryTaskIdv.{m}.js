@@ -18,8 +18,9 @@ module.exports = function(sender) {
     "  and (IPQCStatus is null or IPQCStatus='未填写') "; 
 
     //本周新单  1125~1202
-    var sql_Page1HA2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >=? and  tbb.taskMakeDate < ? ";
- 
+    var sql_Page1HA2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+   " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+ 
+   " where A.taskMakeDate >=? and  A.taskMakeDate <= ? ";
     //按时完成 2参数  
     var sql_Page1HB1 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) "+
     " and  tbb.taskFinishDate <= tbb.IPQCAuditDate  and IPQCAuditResultText ='测试通过' "; 
@@ -123,9 +124,9 @@ module.exports = function(sender) {
                             var temp = {
                                 "Times" : data[i].times , 
                             }
-    					    
                             datas.push(temp)
                         }
+                        console.log("机里瓜拉", temp);
                         cb(null, datas);
                     },
                     error : sender.error
@@ -288,3 +289,4 @@ module.exports = function(sender) {
     }
 
 };
+//((WFStatus=0 OR WFStatus=100) OR (WFStatus<>0 AND WFStatus<>10/0 )) 

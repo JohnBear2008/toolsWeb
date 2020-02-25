@@ -30,16 +30,17 @@ module.exports = function (sender) {
 	//	     var mailData=sender.req.query;
 	var pbhBPID = sender.req.query.pbhBPID;
 	var emailResult = sender.req.query.emailResult;
+	var emailDate=sender.req.query.emailDate;
 
 
-	var SQLUpdate = " update `ppm_bills_pbh` set emailResult =? where pbhBPID=?";
+	var SQLUpdate = " update `ppm_bills_pbh` set emailResult =?,emailDate=? where pbhBPID=?";
 
 	if (emailResult == "2") {
 		console.log("111emailResult:" + emailResult)
 
 		yjDBService.exec({
 			sql: SQLUpdate,
-			parameters: [emailResult, pbhBPID],
+			parameters: [emailResult,emailDate,pbhBPID],
 			success: sender.success,
 			error: sender.error
 		});
@@ -175,7 +176,7 @@ module.exports = function (sender) {
 
 				yjDBService.exec({
 					sql: SQLUpdate,
-					parameters: [emailResult, pbhBPID],
+					parameters: [emailResult,emailDate,pbhBPID],
 					success: sender.success,
 					error: sender.error
 				});

@@ -907,6 +907,10 @@
 
             // console.log('mainFormData111:'+JSON.stringify(mainFormData));
 
+            //添加申请单id,方便历史单据模块索引
+            let requestBillId = subTableData[0].requestBillId;
+            mainFormData.data[0].requestBillId = requestBillId;
+
 
 
             //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
@@ -914,6 +918,8 @@
                 await autoUpdateResponseBillId();
                 mainFormData.data[0].maker = sessionName;
                 mainFormData.data[0].makeDate = currentDate();
+
+
 
                 let r1 = await postDBData({
                     sql: 'replace',

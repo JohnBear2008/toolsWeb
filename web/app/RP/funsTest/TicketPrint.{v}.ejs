@@ -1,0 +1,255 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+
+<style media=print type="text/css">  
+    .noprint{visibility:visible}  
+    #oDiv2 div{width: 100px;height: 100px;border:1px solid #c50000;}
+</style>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+  
+ 
+<script src="/public/report/js/html2canvas.js"></script>
+<script src="/public/report/js/jspdf.debug.js"></script>
+<script src="/public/report/js/FileSaver.js"></script>
+<script src="/public/report/js/jquery.wordexport.js"></script>
+
+ 
+<script type="text/javascript" src="/js/jquery.media.js"></script>
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+ 
+<div id ="noprint" class="noprint">
+  <div class="divcontent">
+        <div id="handout_wrap_inner" ></div>
+    <h1>打印小票</h1>
+    <hr>
+     <div class="lineitem">
+        <button id="pdfBtn" class="btn btn-info">pdf文档</button>
+        <button id="winBtn" class="btn btn-info">开小窗打印</button>
+    </div>
+    <br/>
+ 
+    <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;" >
+        <!--数据呈现区-->
+        <table id="machine_TB" class="table table-striped table-bordered"  >
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>分类</th>
+                    <th>机型</th>
+                    <th>標记</th>
+                    <th>FQC</th>
+                    <th>要求</th>
+                    <th>状态</th>
+                    <th>描述</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+ 
+  <!-- 打印窗口 -->
+  <div id="smallsize" class="easyui-window" title="打印预览" closed="true" style="width:400px;height:560px;">
+        <form  style="padding:10px 50px;">
+            <p>单号 : <input id="xMHEType" size="30" type="text" class="required"></p>
+            <p>客户 : <input id="xMHEName" size="30" type="text" class="required"></p>
+            
+            <p> 来源:
+                    <div id="div_money" name="div_money">
+                            打印的内容部分
+                    </div> 
+            </p>
+             <a id="prtBtn"　href="#" class="easyui-linkbutton" icon="icon-ok" >打印</a>
+             <a id="canBtn"　href="#" class="easyui-linkbutton" icon="icon-ok" >取消</a>
+        </form>
+    </div>
+  </div>
+ </div>
+<div id="root" style="height: 100%"></div>
+ 
+<script>
+//数据库回传值---------------
+let prtval="";
+ 
+function addDataInfo(DBTable,MHEType,MHEName,remark,FQCRequest,FQCRequestText,status,statusText){
+	this.DBTable=DBTable;
+	this.MHEType=MHEType;
+	this.MHEName=MHEName;
+	this.remark=remark;
+	this.FQCRequest=FQCRequest;
+	this.FQCRequestText=FQCRequestText;
+	this.status=status;
+	this.statusText=statusText;
+}
+function getOptionDBData(selectPara,selectorID,InitValue) {
+	
+	$(selectorID).empty();//用select组件不用先清空
+	  
+	  $.ajax({
+          method:'get',
+          data:selectPara,
+          url:"/app/PM/getSelectDBData",
+          success:function(data){
+        	   
+              for(i=0;i<data.length;i++)
+          	{
+ 
+              	  $(selectorID).append($('<option value='+data[i].DBID+'>'+data[i][selectPara.selectTitle]+'</option>'));	
+          	}
+              $(selectorID).selectpicker('val','');//留空不设置默认选项
+              $(selectorID).selectpicker('refresh');
+
+              
+          },
+          error:function(){}
+      })
+}
+ 
+//页面加载函数---------------
+$(document).ready( function () {
+		
+  	layui.use(['form','layedit', 'laydate'], function(){
+	    var form = layui.form
+	            ,layer = layui.layer
+	            ,layedit = layui.layedit
+	            ,laydate = layui.laydate;
+ 
+	        form.render();
+	   
+
+	 });
+  	
+	var DataPara={
+			"tableID":"#machine_TB",
+			"DBTable":"ppm_machines"			
+	}
+ 
+    var columnsData=[
+		{ data: 'DBID' ,"visible": false},
+        { data: 'MHEType' },
+        { data: 'MHEName'},
+        { data: 'remark'},
+        { data: 'FQCRequest'},
+        { data: 'FQCRequestText'},
+        { data: 'status'},
+        { data: 'statusText'}
+    ];
+
+//	alert(JSON.stringify(DataPara));
+	showDBData(DataPara,columnsData);
+	
+//判断是否选中数据-------
+var table = $('#machine_TB').DataTable();
+$('#machine_TB tbody').on('click', 'tr', function() {
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+});
+ 
+
+//PDF产生-----
+$('#pdfBtn').click(function() {
+ 
+    var pdf = new jsPDF('p','pt','a4');
+        pdf.internal.scaleFactor = 1;
+        var options = {
+            pagesplit: true
+        };
+        var content = document.getElementById("pdf-wrapper") ;
+        pdf.addHTML(content,options,function() {
+        pdf.save('pdf-machine.pdf');
+        });
+ 
+});
+ 
+//关闭-----
+$('#canBtn').click(function() { 
+    $('#smallsize').window('close');
+});
+ 
+//打印-----
+$('#prtBtn').click(function() { 
+    var oPop = window.open('','oPop'); 
+		var str = '<!DOCTYPE html>'
+			str +='<html>'
+			str +='<head>'
+			str +='<meta charset="utf-8">'
+			str +='<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">'
+			str+='<style>';
+			str+='#oDiv2 div{width: 800px;height: 500px;border:1px solid #c50000;}';
+			str+='</style>';
+			str +='</head>'
+			str +='<body>'
+			str +="<div id='oDiv2'><div>"+prtval+"</div></div>";
+			str +='</body>'
+			str +='</html>'
+ 
+		oPop.document.write(str);
+        oPop.print();
+});
+ 
+//开小窗预览-----
+$('#winBtn').click(function() {
+   
+    $('#smallsize').window('open');
+    let ary3=[];
+    var SQL3 = {"SQL":"SQLDBMachines" };
+    $.ajax({
+        url: '/app/PM/getSQLDBData', 
+		data: SQL3,
+		success: function(data) { 
+            ary3=JSON.stringify(data);
+            ary3=ary3.substring(0,200);
+            // prtval =ary3;
+            // 字串数据:[{"DBID":1,"MHEType":"卧式注塑机","MHEName":"普通机","remark":"","FQCRequest":0,"FQCRequestText":"无","status":1,"statusText":"正常","statustext":"正常"},
+            // {"DBID":2,"MHEType":"卧式注塑机","MHEName":"卧式多色机","remark":null,"FQCRequest":0,"FQCRequestText":"无","status":1,"statusText":"正常","statustext":"正常"},
+            // {"DBID":3,"MHEType":"卧式注塑机","MHEName":"二板机","remark":"","FQCRequest":0,"FQCRequestText":"无","status":1,"statusText":"正常","statustext":"正常"},
+            // {"DBID":4,"MHEType":"立式注塑机","MHEName":"普通立式机","remark":"","FQCRequest":0,"FQCRequestText":"无","status":1,"statusText":"正常","statustext":"正常"},
+           console.log("字串数据:" + JSON.stringify(data));
+           var host = document.getElementById("div_money");
+            // for(var i =0; i < 3; i++){
+            //     host.innerHTML =host.innerHTML+  JSON.stringify(data[i]);
+            // }
+            var tmp = ' <table class="tblRestmnt">';
+                          $.each(data,function(key, value){
+                                tmp += '<tr>';
+                                tmp += '<td>'+value.MHEType+'</td>';
+                                tmp += '<td>'+value.MHEName+'</td>';
+                                tmp += '<td>'+value.remark+'</td>';
+                                tmp += '<td>'+value.FQCRequest+'</td>';
+                                tmp += '</tr>';
+                          }),
+                          tmp +=   ' </table>';
+                          prtval =tmp;
+                          $('#div_money').append(tmp);
+        //    $('#div_money').html(ary3);
+	   },
+        error:function(err){
+            alert("失败数据:"+JSON.stringify(err));
+        }
+    }); 
+
+});
+  
+	
+}); 
+ 
+</script>

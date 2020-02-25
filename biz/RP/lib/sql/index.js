@@ -41,9 +41,16 @@ const sqlChangeparts = 'select * from rp_partsBills';
 const sqlResponseBills =
 	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA '
 
-//维修申请单单子表sql
-const sqlSubRecordBills = 'select * from `rp_recordbills`'
 
+
+//历史单据主表sql
+const sqlHistoryBills =
+	'select * from (select ta.DBID,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA '
+
+//维修申请单作为子表sql
+const sqlSubRecordBills = 'select * from `rp_recordbills`'
+//出货单作为子表sql
+const sqlSubResponseBills = 'select * from `rp_responsebills`'
 
 /**
  *更具传入参数创建执行sql语句
@@ -135,10 +142,12 @@ const createSql = (i) => {
 				let fieldsObj = i.params.data[0];
 
 				for (const p in fieldsObj) {
-					if (fieldsObj[p]) {
-						updateStatement = updateStatement + p + ' = "' + fieldsObj[p] + '",';
-					} else {
-						updateStatement = updateStatement + p + ' = null,';
+					if (p !== 'DBID') {//过滤DBID,防止更新DBID错误
+						if (fieldsObj[p]) {
+							updateStatement = updateStatement + p + ' = "' + fieldsObj[p] + '",';
+						} else {
+							updateStatement = updateStatement + p + ' = null,';
+						}
 					}
 				}
 
