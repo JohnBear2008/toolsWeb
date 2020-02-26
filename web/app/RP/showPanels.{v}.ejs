@@ -159,8 +159,8 @@
     }]
 
 
-     //申请表子表dataTable column 数组
-     const subColumnsWaitPayArray = [{
+    //申请表子表dataTable column 数组
+    const subColumnsWaitPayArray = [{
         data: 'responseBillId',
     }, {
         data: 'customerShortName',
@@ -186,12 +186,12 @@
             }
         })
 
-
     }
 
+    //重载所有表格数据函数
+    const loadAllTrackTable = async () => {
 
-    $(document).ready(function () {
-
+        console.log('run');
 
         loadTrackTable({
             elementId: 'tableWait',
@@ -239,8 +239,18 @@
             },
             columns: subColumnsWaitPayArray
         })
+    }
 
 
+    $(document).ready(function () {
+
+        //先执行一次,防止第一次进入等待无数据
+        loadAllTrackTable()
+
+        //定时重载数据
+        setInterval(function () {
+            loadAllTrackTable()
+        }, 60000);
 
 
 
