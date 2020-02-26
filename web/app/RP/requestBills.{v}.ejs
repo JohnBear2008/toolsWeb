@@ -192,20 +192,13 @@
 
                                     <label class="col-sm-1 control-label">送修时间:</label>
                                     <div class="col-sm-5 ">
-                                        <div id="requestDatePicker" class="input-group date form_date " data-date=""
-                                            data-date-format="yyyy-mm-dd"
-                                            data-link-field="rp_requestbillsForm-requestDate"
-                                            data-link-format="yyyy-mm-dd">
+                                        <div class="input-group date form_date ">
                                             <input id="rp_requestbillsForm-requestDate" class="form-control " size="16"
                                                 type="text" value="" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
-                                        <!-- <input type="hidden" id="rp_requestbillsForm-requestDate" value="" /> -->
                                     </div>
-
-
-
                                 </div>
 
 
@@ -887,7 +880,6 @@
         //定义当前表内实际填写客户数据
         let billCustomerData = {
             customerId: mainFormData.data[0].customerId,
-            customerShortName: mainFormData.data[0].customerShortName,
             customerArea: mainFormData.data[0].customerArea,
             customerName: mainFormData.data[0].customerName,
             contact: mainFormData.data[0].contact,
@@ -901,6 +893,9 @@
         let compareResult = true;
         for (const p in billCustomerData) {
             if (billCustomerData[p] !== customerData[p]) {
+
+                console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
+
                 compareResult = false;
                 break;
             }
@@ -908,16 +903,6 @@
 
         //存在不同则更新客户信息
         if (!compareResult) {
-
-            // let updateArr = [];
-            // for (const p in billCustomerData) {
-            //     updateArr.push({
-            //         [p]: billCustomerData[p]
-            //     })
-            // }
-
-            // console.log('updateArr:' + JSON.stringify(updateArr));
-
 
             let rc = await postDBData({
                 sql: 'update',
@@ -1086,13 +1071,6 @@
 
         return resultData;
     }
-
-
-
-
-
-
-
 
 
 
@@ -1340,6 +1318,11 @@
                     if (subTableData[n].rowId == rowData.rowId) {
                         console.log('match');
 
+                        if (subTableData[n].status !== '待维修') {
+                            alert('已存在下游单据,不符合修改条件!')
+                            return;
+                        }
+
                         subTableData[n] = rowData;
                         break;
                     }
@@ -1405,6 +1388,13 @@
             if (subTableData.length === 0) {
                 alert('未添加需要维修的产品,无法保存单据,请检查!')
                 return;
+            } else {
+                for (const n of subTableData) {
+                    if (n.status !== '待维修') {
+                        alert('存在相关下游单据,不符合修改条件')
+                        return;
+                    }
+                }
             }
 
             saveRequestbill();

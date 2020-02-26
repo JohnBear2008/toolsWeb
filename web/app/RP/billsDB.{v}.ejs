@@ -20,6 +20,9 @@
 <!-- 导入instascan 二维码扫描库 -->
 <script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
 
+<!-- 导入echarts-->
+<script type="text/javascript" src="/rpLib/echarts/echarts.min.js"></script>
+
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -188,7 +191,7 @@
                             <table id="rp_recordbills" class=" table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>申请单号</th>
+                                        <th>记录单号</th>
                                         <th>产品编号</th>
                                         <th>产品描述</th>
                                         <th>是否返修</th>
@@ -222,9 +225,6 @@
                                                 <p class="form-control-static" id="rp_recordbillsForm-requestBillId">
                                                 </p>
                                             </div>
-
-
-
                                         </div>
 
 
@@ -382,7 +382,6 @@
 
         <div class="modal-dialog" style="width: 65%;">
 
-
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -395,50 +394,52 @@
                 <div class="modal-body">
 
                     <div class="panel panel-info">
-                        <div class="panel-body">
-                            <form class="form-horizontal" role="form" id='rp_requestbillsForm'>
-
-                                <input id="rp_requestbillsForm-DBID" type="hidden" value="">
+                        <div class="panel-body" style="height:500px">
+                            <form class="form-horizontal" role="form" id='filterForm'>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">申请单号</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-requestBillId" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
-
-                                    <label class="col-sm-1 control-label">送修时间</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-requestDate" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
-
-                                </div>
-
-
-
-
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label">客户编号</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerId" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
-
                                     <label class="col-sm-1 control-label">客户简称</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerShortName"
-                                            type="text" value="该输入框获得焦点...">
+                                        <select class="selectpicker" id="filterForm-customerShortName" multiple
+                                            data-live-search="true" data-size="10"
+                                            data-selected-text-format="count > 3">
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">送修日期</label>
+                                    <div class="col-sm-3">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-requestDateB" class="form-control " size="16"
+                                                type="text" value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
                                     </div>
 
 
+
+                                    <div class="col-sm-3">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-requestDateE" class="form-control " size="16"
+                                                type="text" value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
                                 </div>
+
+
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label"></label>
 
                                     <div class="col-sm-5">
-                                        <button type="button" class="btn btn-default">关闭
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            id="closeFilter">关闭
                                         </button>
                                         <button type="button" class="btn btn-primary" id="confirmFilter">
                                             确定
@@ -491,11 +492,14 @@
                             </ul>
                             <div id="myTabContent" class="tab-content">
                                 <div class="tab-pane fade in active" id="home">
-                                    <p>报表1内容
+                                    <p>
+                                        <div id="echartDemo1" style="width: 600px;height:400px;"></div>
                                     </p>
                                 </div>
                                 <div class="tab-pane fade" id="ios">
-                                    <p>报表2内容</p>
+                                    <p>
+                                        <div id="echartDemo2" style="width: 600px;height:400px;"></div>
+                                    </p>
                                 </div>
 
                             </div>
@@ -591,20 +595,24 @@
 
 
     //加载主表数据			
-    const loadBillMainTable = async () => {
+    const loadBillMainTable = async (filter) => {
         //加载表格
-        loadBillDataTable({
+
+        let mainTableParams = {
             elementId: 'rp_billsDB',
             sqlParams: {
                 sqlId: 'sqlHistoryBills',
-                // params: {
-                //     filter: 'status ="维修完成" '
-                // }
+                params: {}
             },
             dtParams: {
                 columns: mainColumnsArray
             }
-        })
+        }
+
+        if (filter) {
+            mainTableParams.sqlParams.params.filter = filter;
+        }
+        loadBillDataTable(mainTableParams)
     }
 
     //添加主表监听器,定义双击打开事件
@@ -751,8 +759,13 @@
     }
 
 
-
-
+    //画图
+    const echartCreate = (elementId, option) => {
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById(elementId));
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
 
 
 
@@ -763,6 +776,24 @@
         //元素数据-主表
         loadBillMainTable();
 
+        //初始化selector
+
+        loadBootStrapSelector({
+            elementId: 'filterForm-customerShortName',
+            sqlParams: {
+                sql: 'getCustomerSelector'
+            },
+        })
+
+        //初始化日期组件
+        loadDatePicker({
+            elementId: "filterForm-requestDateB",
+        })
+
+        loadDatePicker({
+            elementId: "filterForm-requestDateE",
+        })
+
         //加载主表功能
         addMainTableListener();
 
@@ -771,17 +802,113 @@
         addBtnTrackListener();
 
 
+
+
+
         //过滤器
         $('#btnFilter').click(function () {
             //打开面板
             $('#filterModal').modal('show');
+            clearFormInputs({
+                formId: 'filterForm'
+            })
+        })
+
+        //过滤器确认按钮
+
+        $('#confirmFilter').click(function () {
+            //获取filterform内数据
+            let filter = '';
+
+            //客户简称过滤
+            let customerSelectedValues = [];
+            $("#filterForm-customerShortName option:selected ").each(function () {
+                customerSelectedValues.push($(this).val());
+            });
+
+
+
+            if (customerSelectedValues.length > 0) {
+                let customerRange = getRangeString(customerSelectedValues);
+                filter = ' and customerShortName in ' + customerRange;
+            }
+            //申请日期过滤
+            let requestDateB = $('#filterForm-requestDateB').val();
+            let requestDateE = $('#filterForm-requestDateE').val();
+
+            if (requestDateB) {
+                filter = filter + ' and requestDate>="' + requestDateB + '"'
+            }
+
+            if (requestDateE) {
+                filter = filter + ' and requestDate<="' + requestDateE + '"'
+            }
+
+
+
+            //去除filter中开始的and关键字避免sql错误;
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            $('#closeFilter').click();
+            loadBillMainTable(filter)
+
         })
 
         //报表
         $('#btnReports').click(function () {
             //打开面板
             $('#reportsModal').modal('show');
+
+            // demo1指定图表的配置项和数据
+            let option1 = {
+                title: {
+                    text: '图表示例'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['销量']
+                },
+                xAxis: {
+                    data: ["产品A", "产品B", "产品C", "产品D", "产品E", "产品F"]
+                },
+                yAxis: {},
+                series: [{
+                    name: '销量',
+                    type: 'bar',
+                    data: [5, 20, 36, 10, 10, 20]
+                }]
+            };
+
+            echartCreate('echartDemo1', option1);
+
+            // demo2指定图表的配置项和数据
+
+            option2 = {
+                series: {
+                    type: 'pie',
+                    data: [{
+                            name: 'A',
+                            value: 1212
+                        },
+                        {
+                            name: 'B',
+                            value: 2323
+                        },
+                        {
+                            name: 'C',
+                            value: 1919
+                        }
+                    ]
+                }
+            }
+
+            echartCreate('echartDemo2', option2);
         })
+
+
 
 
         // 关闭事件重置选中datatable选中,避免显示错误

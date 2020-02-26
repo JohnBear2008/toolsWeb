@@ -508,7 +508,7 @@ const loadBootStrapSelector = async (i) => {
                 noneSelectedText: "未选择" //默认显示内容
             });
 
-            $('#' + i.elementId).append($('<option value="">未选择</option>'));
+            // $('#' + i.elementId).append($('<option value="">未选择</option>'));
 
             for (const n of data) {
                 $('#' + i.elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
