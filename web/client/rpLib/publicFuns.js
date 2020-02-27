@@ -627,6 +627,42 @@ const fillFormInputs = (i) => {
 
 
 /**
+ *用数据填写table内匹配input 值,主要用于打印预览
+ *
+ * @param {*} i={tableId,params}
+ */
+const fillTableInputs = (i) => {
+    // console.log('fillFormInputs i:' + JSON.stringify(i));
+    for (let p in i.params) {
+        // 判断是否存在此元素
+        if ($("#" + i.tableId + '-' + p).length > 0) {
+            $("#" + i.tableId + '-' + p).text(i.params[p]);
+        }
+    }
+}
+
+/**
+ *用数据填写table 数据行,用于打印预览
+ *
+ * @param {*} i={tableId,cols,data}
+ */
+const fillTableRows = (i) => {
+    // console.log('fillFormInputs i:' + JSON.stringify(i));
+    let tr = '';
+    for (const n of i.data) {
+
+        let td = ''
+        for (const p of i.cols) {
+
+            td = td + '<td>' + n[p] + '</td>'
+        }
+        tr = tr + '<tr>' + td + '</tr>'
+    }
+    $("#" + i.tableId + ' tbody').html(tr);
+
+}
+
+/**
  *初始化并填写form 内inputs
  *
  * @param {*}  i={formId,params}
@@ -1011,4 +1047,75 @@ const getRangeString = (arr) => {
     range = '(' + range + ')';
     return range;
 
+}
+
+
+// /**
+//  *从表单中获取打印数据
+//  *
+//  * @param {*} obj={formId,tableId}
+//  */
+// const getPrintData = (obj) => {
+
+//     let printData = {
+//         formData: [],
+//         tableData: {}
+//     }
+//     let formData = [];
+//     //同时遍历3类form元素
+//     $('#' + obj.formId).find('p,input,select,textarea').each(function () {
+//         let id = this.id;
+//         let label = $('label[for="' + id + '"]').text();
+
+//         if ($(this).is('p')) {
+//             value = replaceURI($(this).text());
+//         } else {
+//             value = replaceURI(this.value);
+//         }
+
+//         if (id !== '') {
+//             formData.push({
+//                 [label]: value
+//             })
+//         }
+//     })
+//     printData.formData = formData;
+//     return printData;
+
+// }
+
+
+/**
+ *上传附件功能
+ *
+ * @param {*} obj
+ */
+const uploadFiles = (obj) => {
+
+    let filesData = new FormData();
+
+    console.log('files:' + JSON.stringify(filesData))
+    filesData.append("file", files[0]);
+    //添加目录放置到指定文件夹
+    filesData.append("desDir", "/test");
+
+    $.ajax({
+        data: filesData,
+        type: "POST",
+        url: "/system.files.upload/",
+        cache: false,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function (data) {
+            console.log("file data:" + JSON.stringify(data));
+
+            // //[服务器所在文件所在目录位置]一般为"http://119.23.216.181/RoboBlogs/Upload_File/default_show.png"
+            // $('#summernote').summernote('insertImage',
+            // "http://127.0.0.1:2019/system.files.upload/1.png");
+        },
+        error: function () {
+            alert("上传失败");
+        }
+    });
 }
