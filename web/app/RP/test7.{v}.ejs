@@ -1,0 +1,41 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<input type="file" name="myHead" multiple="multiple" id="fileToUpload" onchange="fileSelected();"
+    style="display: none;" />
+<a class="btn btn-info" onclick="$('#fileToUpload').click()">上传附件</a>
+<input type="button" class="btn btn-warning" onclick="deleteFiles()" value="清空附件">
+
+<div class="progress progress-striped active" id='progressbarDiv'>
+    <div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60"
+        aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+    </div>
+
+</div>
+<p id="filesUploaded"></p>
+
+
+
+
+<script>
+    const fileSelected = () => {
+        // var files = document.getElementById('fileToUpload').files;
+        let files = $('#fileToUpload')[0].files;
+        uploadFiles(files)
+    }
+
+    $(document).ready(function () {
+        $("#progressbarDiv").hide();
+    })
+</script>

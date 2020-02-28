@@ -28,9 +28,21 @@
         <button id="btn1">显示书写的内容</button><br /><br />
         <div id="html" style="width: 800px;height: 300px;background-color: lavender;border: 1px solid;"></div>
     </div>
+
+    <input type="file" name="myHead" multiple="multiple" id="fileToUpload" onchange="fileSelected();" />
+
 </div>
 
 <script type="text/javascript">
+    const fileSelected = () => {
+        // var files = document.getElementById('fileToUpload').files;
+
+        let files=$('#fileToUpload')[0].files;
+        uploadFiles(files)
+
+
+    }
+
     $(document).ready(function () {
         $('#summernote').summernote({
             //功能图标改为中文
@@ -51,27 +63,42 @@
                 },
                 //图片文件上传
                 onImageUpload: function (files, editor, $editable) {
-                    data = new FormData();
+                    let formData = new FormData();
 
-                    console.log('files:'+JSON.stringify(files))
-                    data.append("file", files[0]);
+                    // console.log('files:' + files)
+
+                    // for (const n of files) {
+                    //     console.log('file n:' + n);
+                    // }
+
+                    // files.forEach((value, key) => console.log('files:'+key + ':' + value));
+
+
+                    formData.append("file1", files[0]);
+                    formData.append("file2", files[1]);
                     //添加目录放置到指定文件夹
-                    data.append("desDir","/test");
+                    formData.append("desDir", "/test");
+
+                    console.log('data:' + formData);
+
+                    formData.forEach((value, key) => console.log('formData:' + key + ':' + value));
+
 
                     $.ajax({
-                        data: data,
+                        data: formData,
                         type: "POST",
                         url: "/system.files.upload/",
                         cache: false,
                         contentType: false,
                         processData: false,
                         dataType: "json",
-                        success: function (data) {
-                            console.log("file data:"+JSON.stringify(data));
-                            
+                        success: function (data, evt) {
+                            console.log("file data:" + JSON.stringify(data));
+                            console.log("file evt:" + JSON.stringify(evt));
+
                             //[服务器所在文件所在目录位置]一般为"http://119.23.216.181/RoboBlogs/Upload_File/default_show.png"
-                            $('#summernote').summernote('insertImage',
-                                "http://127.0.0.1:2019/system.files.upload/1.png");
+                            // $('#summernote').summernote('insertImage',
+                            //     "http://127.0.0.1:2019/system.files.upload/1.png");
                         },
                         error: function () {
                             alert("上传失败");

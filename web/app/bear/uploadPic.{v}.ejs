@@ -40,6 +40,7 @@
 					img.src = files.value; */
 			}
 		}
+		
 		function uploadFile() {
 			var fd = new FormData();
 			var files = document.getElementById('fileToUpload').files;
@@ -51,9 +52,10 @@
 			xhr.addEventListener("load", uploadComplete, false);
 			xhr.addEventListener("error", uploadFailed, false);
 			xhr.addEventListener("abort", uploadCanceled, false);
-			xhr.open("POST", "/system.files.upload");
+			xhr.open("POST", "/system.files.upload/test/");
 			xhr.send(fd);
 		}
+
 		function uploadProgress(evt) {
 			if (evt.lengthComputable) {
 				var percentComplete = Math.round(evt.loaded * 100 / evt.total);
@@ -88,7 +90,7 @@
 				for (var i=0;i<file.length;i++){
 					if (file[i].status == "success") {
 						var span = document.createElement("span");
-						var url = "/system.files.download/" + file[i].key;
+						var url = "/system.files.download/test/" + file[i].key;
 						span.innerHTML = url;
 						div.appendChild(span);
 						div.appendChild(document.createElement("br"));
@@ -113,10 +115,8 @@
 //		alert(JSON.stringify(g_uploaded.files));
 			for ( var name in g_uploaded.files) {
 				var xhr = new XMLHttpRequest();
-				
 //				alert(JSON.stringify(g_uploaded.files[0][0].key));
-
-				xhr.open("delete", "/system.files/"
+				xhr.open("delete", "/system.files/test/"
 					+ g_uploaded.files[name][0].key);//修改成自己的接口
 				xhr.send();
 			}

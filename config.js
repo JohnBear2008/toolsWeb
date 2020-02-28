@@ -9,7 +9,6 @@ var g_dbConenctions = {
     //        port:'3308',
     //        insecureAuth: true
     //    },
-
     engine: "mysql",
     connection: {
         server: '127.0.0.1',
@@ -19,7 +18,6 @@ var g_dbConenctions = {
         insecureAuth: true
 //       timezone:'GMT' //时区
     },
-
     "erp_Connection": {
         engine: "sqlserver",
         package: "msnodesqlv8",
@@ -31,7 +29,6 @@ var g_dbConenctions = {
             password: 'techDG2218',
         }
     }
-
 };
 var config = {
     port: 2019,
@@ -68,7 +65,6 @@ var config = {
         loginBackgroundImage: "/images/login/background.jpg",
         userImg: ''
     },
-    
     processTree: {
         isNeedAuthorityCheck: true,
         style: "mes_accordion"

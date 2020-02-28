@@ -1090,32 +1090,117 @@ const getRangeString = (arr) => {
  *
  * @param {*} obj
  */
-const uploadFiles = (obj) => {
 
-    let filesData = new FormData();
+const uploadFiles = (files) => {
+    let formData = new FormData();
 
-    console.log('files:' + JSON.stringify(filesData))
-    filesData.append("file", files[0]);
+    for (let n = 0; n < files.length; n++) {
+        formData.append(n, files[n]);
+    }
+
     //添加目录放置到指定文件夹
-    filesData.append("desDir", "/test");
+    formData.append("desDir", "rp");
 
+    console.log('data:' + formData);
+    formData.forEach((value, key) => console.log('formData:' + key + ':' + value));
     $.ajax({
-        data: filesData,
+        data: formData,
         type: "POST",
         url: "/system.files.upload/",
         cache: false,
         contentType: false,
         processData: false,
         dataType: "json",
-        success: function (data) {
+        xhr: function () { //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+            let myXhr = $.ajaxSettings.xhr();
+            if (myXhr.upload) { //检查upload属性是否存在
+                //绑定progress事件的回调函数
+                myXhr.upload.addEventListener('progress', progressHandlingFunction, false);
+            }
+            return myXhr; //xhr对象返回给jQuery使用
+        },
+        success: function (data, evt) {
             console.log("file data:" + JSON.stringify(data));
+            console.log("file evt:" + JSON.stringify(evt));
 
-            // //[服务器所在文件所在目录位置]一般为"http://119.23.216.181/RoboBlogs/Upload_File/default_show.png"
+            let filesLink = getFilesUrl(data);
+            $('#filesUploaded').html(filesLink)
+
+            //[服务器所在文件所在目录位置]一般为"http://119.23.216.181/RoboBlogs/Upload_File/default_show.png"
             // $('#summernote').summernote('insertImage',
-            // "http://127.0.0.1:2019/system.files.upload/1.png");
+            //     "http://127.0.0.1:2019/system.files.upload/1.png");
         },
         error: function () {
             alert("上传失败");
         }
     });
+}
+
+
+/**
+ *获取已上传文件的可下载链接,用于前端展示
+ *
+ * @param {*} obj={fields,files}
+ */
+const getFilesUrl = (obj) => {
+
+    let filesLink = ''
+    let files = obj.files
+
+    for (const n in files) {
+        console.log('files n:' + JSON.stringify(files[n][0]));
+        let file = files[n][0];
+        if (file.status === 'success') {
+            filesLink = filesLink + '<a  href=' + "/system.files.download/" + obj.fields.desDir + "/" + file.key + ' download=' +
+                file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
+        }
+    }
+
+    console.log('filesLink:' + filesLink);
+    return filesLink;
+
+}
+
+
+
+/**
+ *删除已上传文件
+ *
+ * @param {*} filesLink
+ */
+const deleteFiles = () => {
+    //		alert(JSON.stringify(g_uploaded.files));
+    $('#filesUploaded').find('a').each(function () {
+        let key = this.href
+      
+        key = key.split('system.files.download')[1];
+        alert(key)
+        let xhr = new XMLHttpRequest();
+        xhr.open("delete", "/system.files" + key); //修改成自己的接口
+        xhr.send();
+    })
+
+
+
+    // for (var name in g_uploaded.files) {
+    //     var xhr = new XMLHttpRequest();
+    //     alert(JSON.stringify(g_uploaded.files[0][0].key));
+    //     xhr.open("delete", "/system.files/test/" +
+    //         g_uploaded.files[name][0].key); //修改成自己的接口
+    //     xhr.send();
+    // }
+}
+
+//进度条控制
+const progressHandlingFunction = (e) => {
+    let curr = e.loaded;
+    let total = e.total;
+    let process = curr / total * 100;
+
+    if (process > 0 && process < 100) {
+        $("#progressbarDiv").show();
+        $("#progressbar")[0].style.width = process + "%";
+    } else {
+        $("#progressbarDiv").hide();
+    }
 }
