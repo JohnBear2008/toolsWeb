@@ -1098,8 +1098,8 @@ const uploadFiles = (files) => {
         formData.append(n, files[n]);
     }
 
-    //添加目录放置到指定文件夹
-    formData.append("desDir", "rp");
+    // //添加目录放置到指定文件夹
+    // formData.append("desDir", "rp");
 
     console.log('data:' + formData);
     formData.forEach((value, key) => console.log('formData:' + key + ':' + value));
@@ -1123,8 +1123,8 @@ const uploadFiles = (files) => {
             console.log("file data:" + JSON.stringify(data));
             console.log("file evt:" + JSON.stringify(evt));
 
-            let filesLink = getFilesUrl(data);
-            $('#filesUploaded').html(filesLink)
+            let filesLink = getSuccessFilesUrl(data);
+            $('#files').html(filesLink)
 
             //[服务器所在文件所在目录位置]一般为"http://119.23.216.181/RoboBlogs/Upload_File/default_show.png"
             // $('#summernote').summernote('insertImage',
@@ -1136,13 +1136,21 @@ const uploadFiles = (files) => {
     });
 }
 
+/**
+ *选择文件函数
+ *
+ */
+const fileSelected = () => {
+    let files = $('#fileToUpload')[0].files;
+    uploadFiles(files)
+}
 
 /**
  *获取已上传文件的可下载链接,用于前端展示
  *
  * @param {*} obj={fields,files}
  */
-const getFilesUrl = (obj) => {
+const getSuccessFilesUrl = (obj) => {
 
     let filesLink = ''
     let files = obj.files
@@ -1151,14 +1159,59 @@ const getFilesUrl = (obj) => {
         console.log('files n:' + JSON.stringify(files[n][0]));
         let file = files[n][0];
         if (file.status === 'success') {
-            filesLink = filesLink + '<a  href=' + "/system.files.download/" + obj.fields.desDir + "/" + file.key + ' download=' +
-                file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
+            if (obj.fields.desDir) {
+                filesLink = filesLink + '<a  href=' + "/system.files.download/" + obj.fields.desDir + "/" + file.key + ' download=' +
+                    file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
+            } else {
+                filesLink = filesLink + '<a  href=' + "/system.files.download/" + file.key + ' download=' +
+                    file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
+            }
+
         }
+
     }
 
     console.log('filesLink:' + filesLink);
     return filesLink;
 
+}
+
+/**
+ *根据url 获取,file类型存储至数据库的json格式
+ *
+ * @param {*} 
+ */
+const getFilesJson = () => {
+    let jsonArr = []
+    $('#files').find('a').each(function () {
+        let key = this.href
+        let name = this.download
+        key = key.split('/system.files.download/')[1];
+        jsonArr.push({
+            name: name,
+            key: key
+        })
+    })
+    let dbJson = JSON.stringify(jsonArr)
+    return dbJson
+}
+
+/**
+ *将数据库中的fileJSON 转换成前端url展示
+ *
+ * @param {*} json
+ */
+const getFilesUrl = (json) => {
+    let fileArr = JSON.parse(json);
+    // alert(fileArr.length)
+    let filesLink = ''
+    if (fileArr.length > 0) {
+        for (const n of fileArr) {
+            filesLink = filesLink + '<a  href=' + "/system.files.download/" + n.key + ' download=' +
+                n.name + '>' + '<span>' + n.name + '</span></a>' + ' ; ';
+        }
+    }
+    return filesLink;
 }
 
 
@@ -1170,17 +1223,15 @@ const getFilesUrl = (obj) => {
  */
 const deleteFiles = () => {
     //		alert(JSON.stringify(g_uploaded.files));
-    $('#filesUploaded').find('a').each(function () {
+    $('#files').find('a').each(function () {
         let key = this.href
-      
-        key = key.split('system.files.download')[1];
-        alert(key)
-        let xhr = new XMLHttpRequest();
-        xhr.open("delete", "/system.files" + key); //修改成自己的接口
+        key = key.split('/system.files.download/')[1];
+        // alert(key)
+        var xhr = new XMLHttpRequest();
+        xhr.open("delete", "/system.files/" + key); //修改成自己的接口
         xhr.send();
     })
-
-
+    $('#files').html('')
 
     // for (var name in g_uploaded.files) {
     //     var xhr = new XMLHttpRequest();

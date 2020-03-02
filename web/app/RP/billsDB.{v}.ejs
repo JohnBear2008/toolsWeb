@@ -269,6 +269,14 @@
                                                 </p>
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">附件</label>
+                                            <div class="col-sm-5">
+                                                <p class="form-control-static" id="rp_recordbillsForm-files">
+                                                </p>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -751,6 +759,16 @@
                     formId: i.elementId + 'Form',
                     params: rowSelect
                 })
+
+
+                //如存在file属性,对其单独处理生成下载链接
+                // alert(JSON.stringify(dataSelect))
+                if (rowSelect.files) {
+                    let filesLink = getFilesUrl(rowSelect.files)
+                    $('#' + i.elementId + 'Form-files').html(filesLink);
+                }
+
+
 
                 //打开面板
                 $('#' + i.elementId + 'Panel').show();

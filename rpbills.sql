@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `rp_partsbills` (
   `recordBillId` char(50) DEFAULT NULL COMMENT '维修单号',
   `rowId` char(50) DEFAULT NULL COMMENT '序号',
   `partId` char(50) DEFAULT NULL COMMENT '部件编号',
-  `partName` char(50) DEFAULT NULL COMMENT '部件名称',
+  `partName` char(255) DEFAULT NULL COMMENT '部件名称',
   `partDescription` varchar(255) DEFAULT NULL COMMENT '部件描述',
   `partLocation` char(50) DEFAULT NULL COMMENT '部件位置',
   `num` int(3) DEFAULT NULL COMMENT '数量',
@@ -69,15 +69,17 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   `repairResult` char(50) DEFAULT NULL COMMENT '维修结果',
   `repairTotalFee` decimal(10,2) DEFAULT NULL COMMENT '总费用',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `files` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '附件',
   `maker` varchar(255) DEFAULT NULL COMMENT '制单人',
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
+  `finishDate` date DEFAULT NULL COMMENT '完成日期',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
 
--- 正在导出表  toolsweb.rp_recordbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_recordbills 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `rp_recordbills` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rp_recordbills` ENABLE KEYS */;
 
@@ -105,9 +107,9 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
 
--- 正在导出表  toolsweb.rp_requestbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_requestbills 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `rp_requestbills` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rp_requestbills` ENABLE KEYS */;
 
@@ -116,9 +118,10 @@ DROP TABLE IF EXISTS `rp_responsebills`;
 CREATE TABLE IF NOT EXISTS `rp_responsebills` (
   `DBID` int(11) NOT NULL AUTO_INCREMENT,
   `responseBillId` char(50) DEFAULT NULL COMMENT '出货单号',
+  `requestBillId` char(50) DEFAULT NULL COMMENT '申请单号',
   `customerId` char(50) DEFAULT NULL COMMENT '客户编号',
   `customerShortName` char(50) DEFAULT NULL COMMENT '简称',
-  `fullName` varchar(255) DEFAULT NULL COMMENT '全称',
+  `customerName` varchar(255) DEFAULT NULL COMMENT '全称',
   `customerBelong` char(50) DEFAULT NULL COMMENT '客户归属',
   `invoiceName` char(50) DEFAULT NULL COMMENT '开票名称',
   `fax` char(50) DEFAULT NULL COMMENT '传真号',
@@ -127,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `rp_responsebills` (
   `responseDate` date DEFAULT NULL COMMENT '出货日期',
   `paymentWay` char(50) DEFAULT NULL COMMENT '收款方式',
   `sendWay` char(50) DEFAULT NULL COMMENT '出货方式',
+  `expressCompany` char(50) DEFAULT NULL COMMENT '快递公司',
   `expressId` char(50) DEFAULT NULL COMMENT '运输单号',
   `responseStaff` char(50) DEFAULT NULL COMMENT '出货人',
   `currency` char(50) DEFAULT NULL COMMENT '币别编号',
@@ -142,7 +146,8 @@ CREATE TABLE IF NOT EXISTS `rp_responsebills` (
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
   `remark` char(50) DEFAULT NULL COMMENT '备注',
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() COMMENT '时间戳',
-  PRIMARY KEY (`DBID`)
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `responseBillId` (`responseBillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修出货单';
 
 -- 正在导出表  toolsweb.rp_responsebills 的数据：~0 rows (大约)

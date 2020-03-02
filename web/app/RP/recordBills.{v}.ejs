@@ -340,6 +340,26 @@
 
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">附件</label>
+                                    <div class="col-sm-11">
+                                        <input type="file" multiple="multiple" id="fileToUpload"
+                                            onchange="fileSelected();" style="display: none;" />
+                                        <a class="btn btn-info" onclick="$('#fileToUpload').click()">上传附件</a>
+                                        <button type="button" type="button" class="btn btn-warning"
+                                            onclick="deleteFiles()">清空附件</button>
+
+                                        <div class="progress progress-striped active" id='progressbarDiv'
+                                            style="display: none;">
+                                            <div id="progressbar" class="progress-bar progress-bar-success"
+                                                role="progressbar" aria-valuenow="60" aria-valuemin="0"
+                                                aria-valuemax="100" style="width: 0%;">
+                                            </div>
+                                        </div>
+                                        <p id="files"></p>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
 
@@ -1109,9 +1129,15 @@
                 mainFormData.data[0].finishDate = currentDate();
             }
 
+            //添加附件信息
+
+            let filesArr = getFilesJson();
+            mainFormData.data[0].files = filesArr;
+
             //添加update key
             mainFormData.key = 'DBID';
 
+            // alert(JSON.stringify(mainFormData))
 
             console.log('mainFormData:' + JSON.stringify(mainFormData));
 
@@ -1464,11 +1490,24 @@
                 },
             })
 
+
+
             //初始化并填写form内inputs
             initAndFillFormInputs({
                 formId: 'rp_recordbillsForm',
                 params: dataSelect
             })
+
+
+
+            //如存在file属性,对其单独处理生成下载链接
+            // alert(JSON.stringify(dataSelect))
+            if (dataSelect.files) {
+                let filesLink = getFilesUrl(dataSelect.files)
+                $('#files').html(filesLink);
+            }
+
+
 
 
             //不存在单号则创造记录单号
