@@ -298,6 +298,7 @@
 				"PBHAuditor",
 				"PBHAuditDate",
 				"emailADRS",
+				"emailDate",
 				"files"
 			],
 			"filter": "pbhBPID='" + dataSelect.BPID + "'"
@@ -334,7 +335,7 @@
 					$("#BTNFilterAll").addClass("active");
 					break;
 				case "delay":
-					var tableSQL = { "SQL": "SQLTableBillsTrack", "filter": "limitDate < '" + Ndate + " '" };
+					var tableSQL = { "SQL": "SQLTableBillsTrack", "filter": "limitDate < emailDate" };
 					$("#BTNFilterDelay").addClass("active");
 
 					break;
