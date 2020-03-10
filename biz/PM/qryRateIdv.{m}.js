@@ -7,10 +7,10 @@ module.exports = function(sender) {
     var obj = sender.req.query;
  
     var param1=sender.req.query.weekbeg;  
-    var param2=sender.req.query.weekend; 
-    // console.log("后台个人统计表格开始日:"+param1+"到期日:"+param2);  
+    var param2=sender.req.query.weekend;  
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
+    console.log("后台个人统计表格开始日:"+param1+"日期:"+param2+"遗起"+lastbeg+"遗止"+lastend); 
     var DBTable=sender.req.query.DBTable; 
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");;
@@ -25,28 +25,28 @@ module.exports = function(sender) {
      //表头 主管审核的时间，若超出任务单中的需求完成日期，则算为延误
     var sql_Page1Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where tb1.staffRole='程序员' and staffName NOT IN ('周筱龙','单霖霖','张胜勇') order by groupLabel,staffID  limit 21"; 
     //上周单   1118-1125
-    var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where   tbb.taskMakeDate <= ?     "+
+    var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where   tbb.taskMakeDate >= ?  and tbb.taskMakeDate <= ?      "+
     " and taskStaff =? and (IPQCStatus is null or IPQCStatus='未填写')"; 
-    //本周新单  1125~1202
-    var sql_Page1A2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate <=? and  tbb.taskMakeDate <= ?    "+
+    //本周新单  1125~1202 bigbug 大於颠倒
+    var sql_Page1A2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?    "+
     " and taskStaff =?  ";  
     //按时完成
-    var sql_Page1B1 = "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate <= tbb.IPQCAuditDate  "+
+    var sql_Page1B1 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate <= tbb.IPQCAuditDate  "+
     " and taskStaff =?  and IPQCAuditResultText ='测试通过' "; 
     //延期已完成
-    var sql_Page1B2 = "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
+    var sql_Page1B2 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
     " and taskStaff =?  and IPQCAuditResultText ='测试通过'  "; 
     //客户取消
-    var sql_Page1B3 = "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
+    var sql_Page1B3 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
     "  and taskStaff =? and IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') "; 
     //延期未完成  4参数
-    var sql_Page1C1 = "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
-    " and  taskStaff =? and tbb.taskFinishDate > ? and IPQCAuditResultText is null "; 
+    var sql_Page1C1 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
+    " and  taskStaff =? and ? > tbb.taskLimitDate and IPQCAuditResultText is null "; 
     //期限未到  4参数
-    var sql_Page1C2 = "Select  count(*) as times from `ppm_bills_task` tbb where  (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
-    " and  taskStaff =? and tbb.taskFinishDate < ?"; 
+    var sql_Page1C2 = "Select  count(*) as times from `ppm_bills_task` tbb where  (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
+    " and  taskStaff =? and ? <=tbb.taskLimitDate "; 
     //延误率
-    var sql_Page1C3 = "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate <=? OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
+    var sql_Page1C3 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
     " and tbb.taskFinishDate >  tbb.IPQCAuditDate and taskStaff =? "; 
 
     var dataArr=[]; 
@@ -54,7 +54,7 @@ module.exports = function(sender) {
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
     let LastWeekend = LastDateRange[1].Format("yyyy-MM-dd");
     //labuse
-    // duedate ='2019-10-30';
+    // duedate ='2019-11-18';
     // LastWeekbeg = '2019-11-01';
     // LastWeekend = '2019-11-11';
     // console.log("金像", LastWeekbeg);
@@ -116,7 +116,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1A1,
-                parameters : [LastWeekend ,stf], 
+                parameters : [LastWeekbeg ,LastWeekend ,stf], 
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -243,13 +243,14 @@ module.exports = function(sender) {
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                    for (var i = 0; i < data.length; i++) {
+                    // for (var i = 0; i < data.length; i++) {
                         var temp = {
-                            "Times" : data[i].times , 
+                            "Times" : data[0].times , 
                         }
                        dataav.push(temp);
-                    }
-                    //  console.log("本新单", temp,stf);
+                    // }
+                    //   console.log("本新单", WeekThisbeg,WeekThisend ,"笔：", temp,stf);
+                    //   console.log("本新单",  temp,stf);
                     (cb2(null, temp ));  
                 },
                 error : sender.error
@@ -349,7 +350,6 @@ module.exports = function(sender) {
                     dataav=[];
                     for (var i = 0; i < staff.length; i++) {
                         dataav.push({"Times" : result[i].Times });
-                        // console.log( "绿:"+result[i].Times);  
                     }
                     cb(null, dataav);
                 }
@@ -362,7 +362,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1B1,
-                parameters : [LastWeekend ,WeekThisbeg,WeekThisend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -500,7 +500,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1B2,
-                parameters : [LastWeekend ,WeekThisbeg,WeekThisend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -639,7 +639,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1B3,
-                parameters : [LastWeekend ,WeekThisbeg,WeekThisend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -770,7 +770,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C1,
-                parameters : [LastWeekend ,WeekThisbeg,WeekThisend , stf, duedate],   
+                parameters : [WeekThisbeg,WeekThisend , stf, duedate],   
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -902,7 +902,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C2,
-                parameters : [LastWeekend ,WeekThisbeg,WeekThisend , stf, duedate],
+                parameters : [WeekThisbeg,WeekThisend , stf, duedate],
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -915,7 +915,7 @@ module.exports = function(sender) {
                        datagod.push(temp2);
                     }
                     (cb2(null, temp2));  
-                    //  console.log("期限未到", temp,stf );
+                    //   console.log("期限未到", temp2,stf );
                 },
                 error : sender.error
             })
@@ -1035,12 +1035,11 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C3,
-                parameters : [LastWeekend ,WeekThisbeg,WeekThisend , stf],  
+                parameters : [WeekThisbeg,WeekThisend , stf],  
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                    for (var i = 0; i < data.length; i++) {
-                      
+                    for (var i = 0; i < data.length; i++) {                      
                         var temp2 = {
                             "Staff" : stf , 
                             "Times" : data[i].times , 
@@ -1250,7 +1249,6 @@ module.exports = function(sender) {
                             rate =rate+"%";
                         }else{
                         }
-                       
                         var obj={
                             "SHIPTYPE":result[0][i].groupLabel,
                             "Staff":result[0][i].staffName,
@@ -1274,7 +1272,15 @@ module.exports = function(sender) {
                         sub[6] =sub[6] + parseInt(result[7][i].Times); 
                         sub[7] =sub[7] + parseInt(result[8][i].Times); 
                         dataArr.push(obj);
-                    }                   
+                    }          
+                    // console.log("page0 : " + sub[0] + "");
+                    // console.log("page1 : " + sub[1] + ""); 
+                    // console.log("page2 : " + sub[2] + ""); 
+                    // console.log("page3 : " + sub[3] + "");
+                    // console.log("page4 : " + sub[4] + "");
+                    // console.log("page5 : " + sub[5] + "");
+                    // console.log("page6 : " + sub[6] + "");
+                    // console.log("page7 : " + sub[7] + "");         
                         var obj2={
                         "SHIPTYPE":"",
                         "Staff":"总计",

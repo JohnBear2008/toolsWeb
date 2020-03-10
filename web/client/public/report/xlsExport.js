@@ -20,7 +20,7 @@ function enterShip() {
     let ary2a=[];
     let ary2b=[];
     let ary3=[];
-    let LastDateRange = getLastWeekRange();
+    let LastDateRange = getDefaulLastWeek();
     var lastbeg = DateMakB;
     var lastend = DateMakE; 
     if (DateMakB =='' || (DateMakE =='')){
@@ -28,9 +28,9 @@ function enterShip() {
         lastend = LastDateRange[1].format("yyyy-MM-dd");
         console.log("预设上周:" +lastend);
     }
-    let DateRange =getWeekRange();
+    let DateRange =getDefaultWeek();
     var weekbeg = DateFinB;
-    var weekend = DateFinE; 
+    var weekend = DateFinE; //建议默认为上月26~本月25，但需可选
     if (DateFinB =='' || (DateFinE =='')){
           weekbeg = DateRange[0].format("yyyy-MM-dd");
           weekend = DateRange[1].format("yyyy-MM-dd");
@@ -606,6 +606,43 @@ function exportExcel(csv) {
     var sheet = csv2sheet(csv);
     var blob = sheet2blob(sheet);
     openDownloadDialog(blob, '导出.xlsx');
+}
+function getDefaulLastWeek() {
+    var now = new Date();
+    var lastMonthDate = new Date();    
+    lastMonthDate.setDate(1);
+    lastMonthDate.setMonth(lastMonthDate.getMonth()-1);
+    var lastMonth = lastMonthDate.getMonth();
+    
+    var prevMonthDate = new Date();    
+    prevMonthDate.setDate(1);
+    prevMonthDate.setMonth(prevMonthDate.getMonth()-2);
+    var prevMonth = prevMonthDate.getMonth();
+
+    var nowYear = now.getYear();nowYear += (nowYear < 2000) ? 1900 : 0; 
+ 
+    let monday  = new Date(nowYear, prevMonth, 26);;
+    let sunday  = new Date(nowYear, lastMonth, 25);
+    // console.log("预设遗起",monday,"预设遗止",sunday);
+    let weekRange = [monday, sunday];
+
+    return weekRange;
+}
+function getDefaultWeek() {
+    var now = new Date();
+    var lastMonthDate = new Date();
+    lastMonthDate.setDate(1);
+    lastMonthDate.setMonth(lastMonthDate.getMonth()-1);
+    var lastMonth = lastMonthDate.getMonth();
+    var nowMonth = now.getMonth();
+    var nowYear = now.getYear();nowYear += (nowYear < 2000) ? 1900 : 0; 
+ 
+    let monday  = new Date(nowYear, lastMonth, 26);;
+    let sunday  = new Date(nowYear, nowMonth, 25);
+  
+    let weekRange = [monday, sunday];
+
+    return weekRange;
 }
 function getWeekRange() {
     let oneDayLong = 24 * 60 * 60 * 1000;
