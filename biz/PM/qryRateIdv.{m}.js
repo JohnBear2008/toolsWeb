@@ -18,35 +18,70 @@ module.exports = function(sender) {
     " `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut" +
     " from `ppm_bills_plan` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and taskStaff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID)  ";
 
- 
     // var staff =[ "梅迪凡","王涛","王浩宇","沈航凯","虞晔文","俞洋","裘凯迪", "王锋","陈浩天","张铖","单霖霖","孙维泽","方林杰","柳张成", "谷永亮","赵韦","杨金鑫","谢涛","戎桂"];
     var staff =[];
-
+    let limitcnt =33;
      //表头 主管审核的时间，若超出任务单中的需求完成日期，则算为延误
-    var sql_Page1Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where tb1.staffRole='程序员' and staffName NOT IN ('周筱龙','单霖霖','张胜勇') order by groupLabel,staffID  limit 21"; 
+
+    // var sql_Page1Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where (tb1.staffRole='程序员' OR tb1.staffRole='T程序员' OR tb1.staffRole='T程序员+T开单')  and staffName NOT IN ('周筱龙','单霖霖','张胜勇','孙凌财','李源','林盛') order by groupLabel,staffID  limit 33"; 
+    //用单子去找人
+    var sql_Page1Head =  "Select distinct taskStaff as staffName, groupLabel,staffWorkType    FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, "+
+        " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb   "+
+        " LEFT JOIN ppm_staffs tps on tps.staffName=tbb.taskStaff "+
+        " where ((tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) OR (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))  order by groupLabel,staffID limit 33"; 
     //上周单   1118-1125
-    var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where   tbb.taskMakeDate >= ?  and tbb.taskMakeDate <= ?      "+
-    " and taskStaff =? and (IPQCStatus is null or IPQCStatus='未填写')"; 
-    //本周新单  1125~1202 bigbug 大於颠倒
-    var sql_Page1A2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?    "+
-    " and taskStaff =?  ";  
+    // var sql_Page1A1 = "Select  count(*) as times from `ppm_bills_task` tbb where SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.taskMakeDate >= ?  and tbb.taskMakeDate <= ?      "+
+    // " and taskStaff =? and (IPQCStatus is null or IPQCStatus='未填写')"; 
+    var sql_Page1A1 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?  and taskStaff =? and IPQCAuditResultText is null"; 
+    //本周新单  0226~0325  104
+    // var sql_Page1A2 = "Select  count(*) as times from `ppm_bills_task` tbb where  tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?    "+
+    // " and taskStaff =?  ";  
+    var sql_Page1A2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?  and taskStaff =? ";
+ 
     //按时完成
-    var sql_Page1B1 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate <= tbb.IPQCAuditDate  "+
-    " and taskStaff =?  and IPQCAuditResultText ='测试通过' "; 
+    // var sql_Page1B1 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate <= tbb.IPQCAuditDate  "+
+    // " and taskStaff =?  and IPQCAuditResultText ='测试通过' "; 
+
+    var sql_Page1B1 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where   tbb.taskFinishDate <= tbb.taskLimitDate  and IPQCAuditResultText ='测试通过' and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and taskStaff =?  ";
+
     //延期已完成
-    var sql_Page1B2 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)) and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
-    " and taskStaff =?  and IPQCAuditResultText ='测试通过'  "; 
+    // var sql_Page1B2 = "Select  count(*) as times from `ppm_bills_task` tbb where SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  and  tbb.taskFinishDate > tbb.IPQCAuditDate  "+
+    // " and taskStaff =?  and IPQCAuditResultText ='测试通过'  "; 
+    var sql_Page1B2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where tbb.taskFinishDate > tbb.taskLimitDate and IPQCAuditResultText ='测试通过' and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and taskStaff =?  ";
     //客户取消
-    var sql_Page1B3 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
-    "  and taskStaff =? and IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') "; 
+    // var sql_Page1B3 = "Select  count(*) as times from `ppm_bills_task` tbb where SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)    "+
+    // "  and taskStaff =? and IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') "; 
+    var sql_Page1B3 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where IPQCAuditResultText is null and (BTStatusText='任务终止' OR BTStatusText='废弃') and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and taskStaff =?  ";
+
     //延期未完成  4参数
-    var sql_Page1C1 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
-    " and  taskStaff =? and ? > tbb.taskLimitDate and IPQCAuditResultText is null "; 
+    // var sql_Page1C1 = "Select  count(*) as times from `ppm_bills_task` tbb where  SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)   "+
+    // " and  taskStaff =? and ? > tbb.taskLimitDate and IPQCAuditResultText is null "; 
+    var sql_Page1C1 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and taskStaff =? and ? > tbb.taskLimitDate and IPQCAuditResultText is null ";
+
     //期限未到  4参数
-    var sql_Page1C2 = "Select  count(*) as times from `ppm_bills_task` tbb where  (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
-    " and  taskStaff =? and ? <=tbb.taskLimitDate "; 
+    // var sql_Page1C2 = "Select  count(*) as times from `ppm_bills_task` tbb where SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) "+
+    // " and  taskStaff =? and ? <=tbb.taskLimitDate "; 
+    var sql_Page1C2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+    " where  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and taskStaff =? and ? <=tbb.taskLimitDate  and IPQCAuditResultText is null";
+
+ 
+
+
     //延误率
-    var sql_Page1C3 = "Select  count(*) as times from `ppm_bills_task` tbb where (  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?))    "+
+    var sql_Page1C3 = "Select  count(*) as times from `ppm_bills_task` tbb where  SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)    "+
     " and tbb.taskFinishDate >  tbb.IPQCAuditDate and taskStaff =? "; 
 
     var dataArr=[]; 
@@ -73,7 +108,7 @@ module.exports = function(sender) {
 
     yjDBService.exec({
         sql : sql_Page1Head,
-        parameters : [],
+        parameters : [WeekThisbeg,WeekThisend,LastWeekbeg ,LastWeekend ],
         rowsAsArray : true,
         success : function(r) {
            
@@ -84,7 +119,7 @@ module.exports = function(sender) {
                 }
                 staff.push(data[i].staffName);
             }
-            // console.log("头", staff);
+            //   console.log("头", staff);
             findHead();
         },
         // error : sender.error
@@ -93,16 +128,16 @@ module.exports = function(sender) {
     function funPage1Head(cb){
         yjDBService.exec({
             sql : sql_Page1Head,
-            parameters : [],
+            parameters : [WeekThisbeg,WeekThisend,LastWeekbeg ,LastWeekend],
             rowsAsArray : true,
             success : function(r) {
                 var datas = []
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                 for (var i = 0; i < data.length; i++) {
                     var temp = {
-                        "groupLabel" : data[i].groupLabel ,
+                        "groupLabel" :  data[i].groupLabel ,
                         "staffName" : data[i].staffName,
-                        "staffWorkType" : data[i].staffWorkType,
+                        "staffWorkType" :  data[i].staffWorkType,
                     }
                     datas.push(temp)
                 }
@@ -195,6 +230,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }        
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -218,6 +289,18 @@ module.exports = function(sender) {
             if(i==18){ funblock.push(A19); }               
             if(i==19){ funblock.push(A20); }     
             if(i==20){ funblock.push(A21); }            
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); } 
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); } 
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
             function(err, result) {
@@ -319,6 +402,51 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -341,7 +469,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); } 
             if(i==19){ funblock.push(A20); }        
-            if(i==20){ funblock.push(A21); }          
+            if(i==20){ funblock.push(A21); }   
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); } 
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }        
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
             function(err, result) {
@@ -444,6 +584,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -466,7 +642,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }  
             if(i==19){ funblock.push(A20); }    
-            if(i==20){ funblock.push(A21); }             
+            if(i==20){ funblock.push(A21); }   
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); } 
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }           
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
             function(err, result) {
@@ -580,6 +768,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -602,7 +826,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }
             if(i==19){ funblock.push(A20); }    
-            if(i==20){ funblock.push(A21); }               
+            if(i==20){ funblock.push(A21); }
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); }
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }                 
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
                function(err, result) {
@@ -719,6 +955,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -741,7 +1013,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }  
             if(i==19){ funblock.push(A20); }    
-            if(i==20){ funblock.push(A21); }             
+            if(i==20){ funblock.push(A21); }  
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); }  
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }           
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
                function(err, result) {
@@ -850,6 +1134,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -872,7 +1192,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }  
             if(i==19){ funblock.push(A20); }  
-            if(i==20){ funblock.push(A21); }               
+            if(i==20){ funblock.push(A21); }  
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); }  
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }             
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
                function(err, result) {
@@ -983,6 +1315,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -1005,7 +1373,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }      
             if(i==19){ funblock.push(A20); }     
-            if(i==20){ funblock.push(A21); }        
+            if(i==20){ funblock.push(A21); } 
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); }  
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }       
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
                function(err, result) {
@@ -1115,6 +1495,42 @@ module.exports = function(sender) {
         function  A21(cb2 ){
             allAA(cb2,staff[20] );
         }
+        function  A22(cb2 ){
+            allAA(cb2,staff[21] );
+        }
+        function  A23(cb2 ){
+            allAA(cb2,staff[22] );
+        }
+        function  A24(cb2 ){
+            allAA(cb2,staff[23] );
+        }
+        function  A25(cb2 ){
+            allAA(cb2,staff[24] );
+        }
+        function  A26(cb2 ){
+            allAA(cb2,staff[25] );
+        }        
+		function  A27(cb2 ){
+            allAA(cb2,staff[26] );
+        }
+		function  A28(cb2 ){
+            allAA(cb2,staff[27] );
+        }
+		function  A29(cb2 ){
+            allAA(cb2,staff[28] );
+        }
+		function  A30(cb2 ){
+            allAA(cb2,staff[29] );
+        }
+		function  A31(cb2 ){
+            allAA(cb2,staff[30] );
+        }
+		function  A32(cb2 ){
+            allAA(cb2,staff[31] );
+        }
+		function  A33(cb2 ){
+            allAA(cb2,staff[32] );
+        }
         let funblock =[];
         for (var i = 0; i < staff.length; i++) {
             if(i==0 ){ funblock.push(A1 ); }
@@ -1137,7 +1553,19 @@ module.exports = function(sender) {
             if(i==17){ funblock.push(A18); }
             if(i==18){ funblock.push(A19); }    
             if(i==19){ funblock.push(A20); }       
-            if(i==20){ funblock.push(A21); }        
+            if(i==20){ funblock.push(A21); } 
+            if(i==21){ funblock.push(A22); }            
+            if(i==22){ funblock.push(A23); }            
+            if(i==23){ funblock.push(A24); }    
+            if(i==24){ funblock.push(A25); } 
+            if(i==25){ funblock.push(A26); } 
+            if(i==26){ funblock.push(A27); } 
+            if(i==27){ funblock.push(A28); } 
+            if(i==28){ funblock.push(A29); } 
+            if(i==29){ funblock.push(A30); }     
+            if(i==30){ funblock.push(A31); } 
+            if(i==31){ funblock.push(A32); } 
+            if(i==32){ funblock.push(A33); } 
         }
         async.parallel( funblock, 
                function(err, result) {
@@ -1238,7 +1666,7 @@ module.exports = function(sender) {
                 try {
                     let sub=[]; 
                     sub[0] = 0,sub[1] = 0, sub[2] = 0,sub[3] = 0, sub[4] = 0,sub[5] = 0, sub[6] = 0 , sub[7] = 0;
-                    for (var i = 0; i < staff.length && i<21 ; i++) {
+                    for (var i = 0; i < staff.length && i<limitcnt ; i++) {
                         var delytot =result[4][i].Times+result[6][i].Times;  
                         var thistot =result[3][i].Times+result[4][i].Times+result[5][i].Times+result[6][i].Times;   
                         var rate = (delytot/thistot)*100;
@@ -1248,6 +1676,7 @@ module.exports = function(sender) {
                         if(   rate!='NaN' && rate!="NaN" &&   rate!=0){
                             rate =rate+"%";
                         }else{
+                            rate = "0";
                         }
                         var obj={
                             "SHIPTYPE":result[0][i].groupLabel,
@@ -1258,7 +1687,7 @@ module.exports = function(sender) {
                             "Bill_STAT3":result[3][i].Times, 
                             "Bill_STAT4":result[4][i].Times,
                             "Bill_STAT5":result[5][i].Times,
-                            "Bill_STAT6":result[6][i].Times,
+                            "Bill_STAT6":result[6][i].Times+result[1][i].Times,
                             "Bill_STAT7":result[7][i].Times,  
                             "Bill_STAT8":rate
                         };
@@ -1268,7 +1697,7 @@ module.exports = function(sender) {
                         sub[2] =sub[2] + parseInt(result[3][i].Times); 
                         sub[3] =sub[3] + parseInt(result[4][i].Times); 
                         sub[4] =sub[4] + parseInt(result[5][i].Times); 
-                        sub[5] =sub[5] + parseInt(result[6][i].Times); 
+                        sub[5] =sub[5] + parseInt(result[6][i].Times+result[1][i].Times); 
                         sub[6] =sub[6] + parseInt(result[7][i].Times); 
                         sub[7] =sub[7] + parseInt(result[8][i].Times); 
                         dataArr.push(obj);

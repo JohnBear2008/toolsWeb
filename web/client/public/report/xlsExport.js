@@ -48,6 +48,7 @@ function enterShip() {
     var SQL3 = {"SQL":"SQLNotDone","weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
     var SQL2A ={"reportType":'RateDpt',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
     var SQL2B ={"SQL":"SQLLateList","weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
+   //SQLLateList  是用 ppm_bills_plan 做的
     let ajax1h = $.ajax({
         url: '/app/PM/getRoute',
 		data: SQL1H,
@@ -79,7 +80,7 @@ function enterShip() {
         }
     }); 
     let ajax2b = $.ajax({
-        url: '/app/PM/getSQLDBData', 
+        url: '/app/PM/getSQLDBRate', 
 		data: SQL2B, 
 		success: function(data) {
             ary2b=(data); 
@@ -89,7 +90,7 @@ function enterShip() {
         }
     }); 
     let ajax3 = $.ajax({
-        url: '/app/PM/getSQLDBData', 
+        url: '/app/PM/getSQLDBRate', 
 		data: SQL3,
 		success: function(data) { 
             ary3=data;
@@ -100,7 +101,7 @@ function enterShip() {
         }
     }); 
     $.when(ajax1h, ajax1,  ajax2a, ajax2b, ajax3 ).done(function () {
-        // console.log("软体出货延误率--延期单数:" + JSON.stringify(ary2b));
+            //  console.log("软体出货延误率--延期单数:" + JSON.stringify(ary3));
            ShipStat((ary1h),(ary1),(ary2a),(ary2b),(ary3));
     });	
 }
@@ -322,7 +323,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     finary.push( sub3Btitle );
 
  
-    console.log("web分页2延期表单 "+ kdataB.length ); 
+    // console.log("web分页2延期表单 "+ kdataB.length ); 
     var latecnt =  kdataB.length ;
     for (var i=0; i<kdataB.length; i++) {
         let speebook = []; 
@@ -493,9 +494,25 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
                 c: 8,   r: (12+i)
             }});
        }
-      //sheet3   
-    var sheet3 = XLSX.utils.json_to_sheet(ydata,{ skipHeader:true });
-    XLSX.utils.sheet_add_aoa(sheet3,[
+      //sheet3  
+      let camary =[];
+      console.log("分页3未完成表单 "+ ydata.length );   
+      let sub3NOTtitle =[ '单号','任务人','客户','型态','申请日期','完成期限','备注',''	];
+      camary.push( sub3NOTtitle );  
+      for (var i=0; i<ydata.length; i++) {
+            let speebook = []; 
+            speebook.push(ydata[i].BTID);
+            speebook.push(ydata[i].taskStaff); 
+            speebook.push(ydata[i].taskCTRName);
+            speebook.push(ydata[i].taskSortTypeText); 
+            speebook.push(ydata[i].taskMakeDate);
+            speebook.push(ydata[i].taskLimitDate);    
+            speebook.push(ydata[i].taskDBE_cut);    
+            speebook.push('');    
+            camary.push(speebook); 
+      }
+    var sheet3 = XLSX.utils.json_to_sheet(camary,{ skipHeader:true });
+      XLSX.utils.sheet_add_aoa(sheet3,[
         ['单号','客户','任务人','型态','申请日期','完成期限','备注','']
     ],{
         origin:'A1' // 从A1开始增加内容
@@ -507,6 +524,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     for (var i=0; i<ydata.length+2; i++) {
         sheet3['!rows'].push({hpx: 25});
     } 
+
     /* create a new blank workbook */
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet1,"个人出货状态" );

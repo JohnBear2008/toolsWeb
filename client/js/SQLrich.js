@@ -16,8 +16,12 @@ SQLShipment="SELECT *  FROM `pm_Shipment` ";
 SQLNeworder="SELECT *  FROM `pm_neworder` ";
 
 //SQLNotDone="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`, `limitDate`,  LEFT(tbb.`topic`, 50) as topic_cut from `ppm_bills_plan` tbb where tbb.LimitDate >? and tbb.LimitDate < ? ";
-SQLNotDone="Select `BTID`, `TaskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate , LEFT(tbb.`taskDBE`, 50) as taskDBE_cut  from `ppm_bills_task` tbb  where tbb.taskLimitDate >? and tbb.taskLimitDate < ? ";
-//SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`, `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.auditDate is null ";
+//SQLNotDone="Select `BTID`, `TaskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate , LEFT(tbb.`taskDBE`, 50) as taskDBE_cut  from `ppm_bills_task` tbb  where tbb.taskLimitDate >? and tbb.taskLimitDate < ? and IPQCAuditResultText is null";
+SQLNotDone="SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
+ " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba  "+
+ " WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb   "+
+ " where  ((tbb.taskMakeDate >=? and tbb.taskMakeDate <=?) OR  (tbb.taskMakeDate >=? and tbb.taskMakeDate <=?)) and IPQCAuditResultText is null ";
+
 
 //  `updateReason` 有问题
 //J1220 SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`   from `ppm_bills_plan` tbb where tbb.applyDate >? and tbb.applyDate < ? and tbb.LimitDate > tbb.auditDate ";
@@ -27,3 +31,4 @@ SQLNotDone="Select `BTID`, `TaskCTRName`, `taskStaff`, `taskSortTypeText` ,`task
 SQLLateList="Select (CASE taskSortTypeText WHEN 'DSP任务单' THEN taskFinishDate  END ) as  DSPFinishDate ,(CASE taskSortTypeText WHEN 'HMI任务单' THEN taskFinishDate  END ) as  HMIFinishDate , `BPID`,`CTRName`, BTID, taskFinishDate,taskSortTypeText, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate` from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, BTID,taskMakeDate,taskBPID,taskSortTypeText from ppm_bills_task  GROUP by BTID ) tbk   ON tbb.BPID=tbk.taskBPID  where  (taskFinishDate > tbb.limitDate ) and tbb.applyDate >? and tbb.applyDate <? order by BPID";
 
 SQLPartsUp= "SELECT `DBID`, `Bill_ID`, `Customer_ID`, `Operate`, `Apply_Date`, `Limit_Date`,   `PaUp_ProdNo`,PaDown_ProdNo, `Parts_Name`, `Location`  FROM `ma_parts_detail` ";
+ 
