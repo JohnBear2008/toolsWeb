@@ -1423,9 +1423,8 @@
 
                     //此处不用===避免,字符类型不匹配导致相关问题
                     if (subTableData[n].rowId == rowData.rowId) {
-                        console.log('match');
-
-                        if (subTableData[n].status !== '待维修') {
+                        // console.log('match');
+                        if (subTableData[n].status !== '待维修'&&subTableData[n].status !== '新增') {
                             alert('已存在下游单据,不符合修改条件!')
                             return;
                         }
