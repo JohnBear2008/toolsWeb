@@ -888,9 +888,7 @@
         })
         //将表数据同步到共用数组
         subTableData = dataArray;
-
         loadDataSubTable(subTableData);
-
     }
 
     //计算部件费用
@@ -898,8 +896,6 @@
         let num = $('#rp_partsbillsForm-num').val();
         let price = $('#rp_partsbillsForm-price').val();
         let partFee = parseInt(num) * parseInt(price);
-
-
         $('#rp_partsbillsForm-partFee').val(partFee);
     }
 
@@ -907,9 +903,7 @@
     const CalcRepairTotalFee = () => {
 
         let repairTotalFee = 0;
-
         let testFee = $('#rp_recordbillsForm-testFee').val();
-
         if (testFee) {
             repairTotalFee = parseInt(testFee);
         }
@@ -956,62 +950,7 @@
 
     }
 
-    //更新库存数据{stockData:[{partId,stockNum}],rpBillId,actType}
-    const updateStock = async (i) => {
-        console.log("updateStock stockData:" + JSON.stringify(i.stockData));
-        let updateNumArr = [];
-
-        for (const n of i.stockData) {
-            let arr = {
-                partId: n.partId,
-                stockNum: n.num
-            }
-            updateNumArr.push(arr);
-        }
-
-        let historyRecord = []
-
-        for (const n of i.stockData) {
-            historyRecord.push({
-                partId: n.partId,
-                preNum: n.preNum,
-                actNum: n.num,
-                nowNum: parseInt(n.preNum) + parseInt(n.num),
-                actType: i.actType,
-                rpBillId: i.rpBillId
-
-            })
-            //写到这里 ,加入表单信息
-        }
-
-
-
-        let r1 = await postDBData({
-            sql: 'updateNum',
-            params: {
-                tableId: 'rp_partswarehouse',
-                numTitles: ['stockNum'],
-                data: updateNumArr
-            }
-        })
-        console.log('r1:' + JSON.stringify(r1));
-
-        let r2 = await postDBData({
-            sql: 'insert',
-            params: {
-                tableId: 'rp_partswarehousehistory',
-                // numTitles: ['stockNum'],
-                data: historyRecord
-            }
-        })
-        console.log('r2:' + JSON.stringify(r2));
-
-        let o
-        if (r1 && r2) {
-            o = true
-        }
-        return o;
-    }
+    
 
 
     //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
@@ -1226,7 +1165,7 @@
 
                         for (const m of checkResultData.JITStock) {
                             if (n.partId === m.partId) {
-                                n.preNum = m.stockNum;
+                                n.stockNum = m.stockNum;
                             }
                         }
 
@@ -1234,7 +1173,7 @@
                     console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
 
                     r2 = await updateStock({
-                        stockData: partsNeedUpdateStockArr,
+                        updateStock: partsNeedUpdateStockArr,
                         actType: '领料',
                         rpBillId: mainFormData.data[0].recordBillId
                     });

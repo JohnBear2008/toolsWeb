@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
 
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
@@ -17,7 +18,8 @@
 <script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
-
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
 
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -38,9 +40,19 @@
     <!-- 功能组按钮 -->
     <div class="well">
         <div class="btn-group">
+            <button type='text' class="btn btn-info" disabled>查看模式</button>
             <button id="JITStoreBtn" class="btn btn-default">当前库存</button>
             <button id="storeHistoryBtn" class="btn btn-default">历史记录</button>
         </div>
+
+        <div class="btn-group">
+            <button type='text' class="btn btn-info" disabled>excel</button>
+            <button id="store2ExcelBtn" class="btn btn-default">导出模板</button>
+            <button id="excel2StoreBtn" class="btn btn-default">导入库存</button>
+            <input type="file" id="file" style="display:none;"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </div>
+
     </div>
 
     <div class="row clearfix" id='JITDiv'>
@@ -118,6 +130,10 @@
         }
     ]
 
+    function selectFile() {
+        $("#file")[0].click();
+    }
+
     //切换模式函数
     const changeModel = ({
         model
@@ -138,6 +154,109 @@
                 break;
         }
 
+    }
+    //去除excel生成json中的中文属性
+    const excelJsonArr2DivJsonArr = (excelJsonArr, rules) => {
+        for (let n of excelJsonArr) {
+            n = replaceObjParamsName(n, rules)
+        }
+        return excelJsonArr;
+    }
+
+    const addFileReaderListener = () => {
+        $("#file")[0].addEventListener('change', function (e) {
+            var files = e.target.files;
+            if (files.length == 0) return;
+            var f = files[0];
+            if (!/\.xlsx$/g.test(f.name)) {
+                alert('仅支持读取xlsx格式！');
+                return;
+            }
+
+            readWorkbookFromLocalFile(f, function (workbook) {
+                let excelData = readWorkbook(workbook);
+                let storeData = excelJsonArr2DivJsonArr(excelData, {
+                    partId: '部件编号',
+                    num: '数量'
+                })
+                importAddParts(storeData)
+
+            });
+        });
+    }
+
+
+    //导入新增功能
+
+    const importAddParts = async (storeData) => {
+        console.log('storeData111', storeData);
+        if (storeData.length > 0) {
+            let partIdsArr = [];
+            for (const n of storeData) {
+                partIdsArr.push(n.partId)
+            }
+            let partIdsRange = getRangeString(partIdsArr);
+            // console.log('partIdsRange', partIdsRange);
+
+            //查找当前数据内已存在的同partId 库存
+            let nowPartStore = await getDataBySql({
+                sql: 'getStockNum',
+                params: {
+                    filter: 'partId in ' + partIdsRange
+                }
+            })
+
+            console.log('nowPartStore', nowPartStore);
+
+            let updateStoreArr = [];
+            let insertStoreArr = [];
+
+            for (let n of storeData) {
+                let find = false
+                for (const m of nowPartStore) {
+                    if (n.partId === m.partId) {
+                        find = true
+                        updateStoreArr.push({
+                            partId: n.partId,
+                            stockNum: m.stockNum,
+                            num: n.num
+                        })
+                        // n.stockNum = m.stockNum;
+                    }
+                }
+                if (!find) {
+                    insertStoreArr.push({
+                        partId: n.partId,
+                        stockNum: 0,
+                        num: n.num
+                    })
+                }
+            }
+
+            // updateStoreData = {
+            //     stockData: storeData,
+            //     rpBillId: '',
+            //     actType: '导入新增'
+            // }
+            // console.log('updateStoreData', updateStoreData);
+
+
+            let rUpdate = await updateStock({
+                updateStock: updateStoreArr,
+                rpBillId: '',
+                actType: '导入新增'
+            });
+
+            let rInsert = await insertStock({
+                insertStock: insertStoreArr,
+                rpBillId: '',
+                actType: '导入新增'
+            });
+
+            if (rUpdate && rInsert) {
+                alert('导入成功!')
+            }
+        }
     }
 
 
@@ -187,6 +306,26 @@
                 model: 'History'
             })
         })
+
+
+        $('#store2ExcelBtn').click(function () {
+            var aoa = [
+                ['部件编号', '数量'],
+                ['AAA', 10]
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '库存模板.xlsx');
+        })
+
+
+        $('#excel2StoreBtn').click(function () {
+            selectFile()
+        })
+
+        //添加文件监听事件
+        addFileReaderListener()
+
+
 
 
 

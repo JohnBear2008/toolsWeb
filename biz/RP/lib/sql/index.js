@@ -41,9 +41,9 @@ const sqlChangeparts = "select * from rp_partsBills";
 const sqlResponseBills =
 	"select * from (select ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA "
 //部件即时库存sql
-const rp_partStore = "select * from `rp_partswarehouse` ta left join `rp_parts` tb on ta.partId=tb.partId"
+const rp_partStore = "select ta.partId,ta.stockNum,tb.partDescription,tb.partBelong,tb.partLocation from `rp_partswarehouse` ta left join `rp_parts` tb on ta.partId=tb.partId"
 //库存记录sql
-const rp_partStoreHistory = "select * from `rp_partswarehousehistory` ta left join `rp_parts` tb on ta.partId=tb.partId"
+const rp_partStoreHistory = "select ta.partId,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_partswarehousehistory` ta left join `rp_parts` tb on ta.partId=tb.partId"
 
 //历史单据主表sql
 const sqlHistoryBills =

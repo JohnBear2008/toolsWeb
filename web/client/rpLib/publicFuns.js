@@ -1255,3 +1255,133 @@ const progressHandlingFunction = (e) => {
         $("#progressbarDiv").hide();
     }
 }
+
+/**
+ *替换属性名称
+ *
+ * @param {*} obj
+ * @param {*} rule
+ */
+const replaceObjParamsName = (obj, rules) => {
+    for (const p in rules) {
+        obj[p] = obj[rules[p]];
+        delete obj[rules[p]];
+    }
+    return obj
+}
+
+
+
+/**
+ *更新库存数据
+ *
+ * @param {*} i{updateStock:[{partId,stockNum,num}],rpBillId,actType}
+ * @returns
+ */
+const updateStock = async (i) => {
+    console.log("updateStock updateStock:" + JSON.stringify(i.updateStock));
+    let updateNumArr = [];
+
+    for (const n of i.updateStock) {
+        let arr = {
+            partId: n.partId,
+            stockNum: n.num
+        }
+        updateNumArr.push(arr);
+    }
+
+    let historyRecord = []
+
+    for (const n of i.updateStock) {
+        historyRecord.push({
+            partId: n.partId,
+            preNum: n.stockNum,
+            actNum: n.num,
+            nowNum: parseInt(n.stockNum) + parseInt(n.num),
+            actType: i.actType,
+            rpBillId: i.rpBillId
+        })
+    }
+    let r1 = await postDBData({
+        sql: 'updateNum',
+        params: {
+            tableId: 'rp_partswarehouse',
+            numTitles: ['stockNum'],
+            data: updateNumArr
+        }
+    })
+    console.log('r1:' + JSON.stringify(r1));
+
+    let r2 = await postDBData({
+        sql: 'insert',
+        params: {
+            tableId: 'rp_partswarehousehistory',
+            // numTitles: ['stockNum'],
+            data: historyRecord
+        }
+    })
+    console.log('r2:' + JSON.stringify(r2));
+
+    let o
+    if (r1 && r2) {
+        o = true
+    }
+    return o;
+}
+
+
+/**
+ *插入库存数据
+ *
+ * @param {*} i{insertStock:[{partId,stockNum,num}],rpBillId,actType}
+ * @returns
+ */
+const insertStock = async (i) => {
+    console.log("insertStock insertStock:" + JSON.stringify(i.insertStock));
+    let insertNumArr = [];
+
+    for (const n of i.insertStock) {
+        let arr = {
+            partId: n.partId,
+            stockNum: n.num
+        }
+        insertNumArr.push(arr);
+    }
+
+    let historyRecord = []
+
+    for (const n of i.insertStock) {
+        historyRecord.push({
+            partId: n.partId,
+            preNum: 0,
+            actNum: n.num,
+            nowNum: n.num,
+            actType: i.actType,
+            rpBillId: i.rpBillId
+        })
+    }
+    let r1 = await postDBData({
+        sql: 'insert',
+        params: {
+            tableId: 'rp_partswarehouse',
+            data: insertNumArr
+        }
+    })
+    console.log('r1:' + JSON.stringify(r1));
+
+    let r2 = await postDBData({
+        sql: 'insert',
+        params: {
+            tableId: 'rp_partswarehousehistory',
+            // numTitles: ['stockNum'],
+            data: historyRecord
+        }
+    })
+    console.log('r2:' + JSON.stringify(r2));
+
+    let o
+    if (r1 && r2) {
+        o = true
+    }
+    return o;
+}
