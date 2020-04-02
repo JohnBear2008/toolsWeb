@@ -233,40 +233,61 @@
                 }
             }
 
-            // updateStoreData = {
-            //     stockData: storeData,
-            //     rpBillId: '',
-            //     actType: '导入新增'
-            // }
-            // console.log('updateStoreData', updateStoreData);
+            let rUpdate, rInsert
 
+            switch (true) {
+                case updateStoreArr.length > 0 && insertStoreArr.length > 0:
+                    rUpdate = await updateStock({
+                        updateStock: updateStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
 
-            let rUpdate = await updateStock({
-                updateStock: updateStoreArr,
-                rpBillId: '',
-                actType: '导入新增'
-            });
+                    rInsert = await insertStock({
+                        insertStock: insertStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
 
-            let rInsert = await insertStock({
-                insertStock: insertStoreArr,
-                rpBillId: '',
-                actType: '导入新增'
-            });
+                    if (rUpdate && rInsert) {
 
-            if (rUpdate && rInsert) {
-                alert('导入成功!')
+                        alert('导入成功!')
+                    }
+                    break;
+                case updateStoreArr.length > 0 && insertStoreArr.length === 0:
+                    rUpdate = await updateStock({
+                        updateStock: updateStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
+                    if (rUpdate) {
+
+                        alert('导入成功!')
+                    }
+                    break;
+                case updateStoreArr.length === 0 && insertStoreArr.length > 0:
+                    rInsert = await insertStock({
+                        insertStock: insertStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
+                    if (rInsert) {
+
+                        alert('导入成功!')
+                    }
+
+                    break;
             }
+
+            //重新加载库存
+            loadStoreTable();
+
+
+
         }
     }
 
-
-    $(document).ready(function () {
-
-        //默认即时库存模式
-        changeModel({
-            model: 'JIT'
-        })
-
+    const loadStoreTable = async () => {
         //加载库存表
         loadBillDataTable({
             elementId: 'rp_partStore',
@@ -294,6 +315,20 @@
                 columns: rp_partStoreHistoryColumns
             }
         })
+
+    }
+
+
+    $(document).ready(function () {
+
+        //默认即时库存模式
+        changeModel({
+            model: 'JIT'
+        })
+
+        //加载库存
+        loadStoreTable();
+
 
         $('#JITStoreBtn').click(function () {
             changeModel({
