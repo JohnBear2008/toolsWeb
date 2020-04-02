@@ -1424,7 +1424,7 @@
                     //此处不用===避免,字符类型不匹配导致相关问题
                     if (subTableData[n].rowId == rowData.rowId) {
                         // console.log('match');
-                        if (subTableData[n].status !== '待维修'&&subTableData[n].status !== '新增') {
+                        if (subTableData[n].status !== '待维修' && subTableData[n].status !== '新增') {
                             alert('已存在下游单据,不符合修改条件!')
                             return;
                         }
@@ -1457,7 +1457,7 @@
             // alert(JSON.stringify(rowSelect))
 
             if (rowSelect) {
-                if (rowSelect.status !== '新增') {
+                if (rowSelect.status !== '待维修' && rowSelect.status !== '新增') {
                     alert('非新增状态不允许删除!')
                 } else {
                     //删除元素
@@ -1499,8 +1499,8 @@
 
             fillTableRows({
                 tableId: 'printViewSubTable',
-                cols: ['rowId','productId','productName','factoryNo'],
-                data:subTableData
+                cols: ['rowId', 'productId', 'productName', 'factoryNo'],
+                data: subTableData
             })
         })
 
@@ -1521,8 +1521,6 @@
         $('#printCloseBtn').click(function () {
             $('#printViewModal').modal('hide')
         })
-
-
 
         //表单保存按钮
         $('#rp_requestbillsSave').click(function () {

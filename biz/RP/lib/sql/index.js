@@ -18,7 +18,7 @@ const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"
 const getProduct = "select * from `rp_products`"
 const getPart = "select * from `rp_parts`"
-const getStockNum = "select stockNum from `rp_partswarehouse`"
+const getStockNum = "select partId,stockNum from `rp_partswarehouse`"
 
 //获取申请单数量
 const getReqeustBillsNum = "select count(1) as billsNum from `rp_requestbills`";
@@ -40,8 +40,10 @@ const sqlChangeparts = "select * from rp_partsBills";
 //维修出货单主表单sql
 const sqlResponseBills =
 	"select * from (select ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) tA "
-
-
+//部件即时库存sql
+const rp_partStore = "select * from `rp_partswarehouse` ta left join `rp_parts` tb on ta.partId=tb.partId"
+//库存记录sql
+const rp_partStoreHistory = "select * from `rp_partswarehousehistory` ta left join `rp_parts` tb on ta.partId=tb.partId"
 
 //历史单据主表sql
 const sqlHistoryBills =
@@ -72,48 +74,90 @@ const createSql = (i) => {
 				excuteSql = excuteSql + " order by " + i.params.orderBy
 			}
 			break;
-		case "replace":
-			console.log("11111111:" + JSON.stringify(i.params));
-			let titles = ""
-			let paramArr = [];
+		case "insert":
+			console.log("insert:" + JSON.stringify(i.params));
+			let insertTitles = ""
+			let insertParamArr = [];
 			for (const p in i.params.data[0]) {
 				//Object.keys(i)[0] 用于获取对象第一个属性名称
 				// titles = titles + Object.keys(i.params.data[0][p])[0] + ",";
-				titles = titles + p + ","
-				paramArr.push(p);
+				insertTitles = insertTitles + p + ","
+				insertParamArr.push(p);
 			}
-			titles = titles.substr(0, titles.length - 1);
-			titles = "(" + titles + ")";
+			insertTitles = insertTitles.substr(0, insertTitles.length - 1);
+			insertTitles = "(" + insertTitles + ")";
 
-
-			let values = ""
+			let insertValues = ""
 
 			for (const n of i.params.data) {
 				// console.log("n:" + n);
-				let valueN = "";
+				let insertValueN = "";
 				//按 属性顺序排序取值,为空值设为null避免sql语句报错
-				for (let p of paramArr) {
+				for (let p of insertParamArr) {
 					if (!n[p]) {
-						valueN = valueN + "null,";
+						insertValueN = insertValueN + "null,";
 					} else {
-						valueN = valueN + "'" + n[p] + "',";
+						insertValueN = insertValueN + "'" + n[p] + "',";
 					}
 				}
 
 
-				valueN = valueN.substr(0, valueN.length - 1);
-				valueN = "(" + valueN + ")";
-				values = values + valueN + ","
+				insertValueN = insertValueN.substr(0, insertValueN.length - 1);
+				insertValueN = "(" + insertValueN + ")";
+				insertValues = insertValues + insertValueN + ","
 			}
 
-			values = values.substr(0, values.length - 1);
+			insertValues = insertValues.substr(0, insertValues.length - 1);
 			// //DBID 为空则去掉titles,values DBID信息防止参数错误
 			// if (i.params.data[0]["DBID"] === "") {
 			//     titles = titles.substr(titles.indexOf(",") + 1, titles.length);
 			//     values = values.substr(values.indexOf(",") + 1, values.length);
 			// }
 
-			excuteSql = "replace into `" + i.params.tableId + "` " + titles + " values " + values;
+			excuteSql = "insert into `" + i.params.tableId + "` " + insertTitles + " values " + insertValues;
+			console.log('excuteSql:' + excuteSql);
+			break;
+		case "replace":
+			console.log("11111111:" + JSON.stringify(i.params));
+			let replaceTitles = ""
+			let replaceParamArr = [];
+			for (const p in i.params.data[0]) {
+				//Object.keys(i)[0] 用于获取对象第一个属性名称
+				// titles = titles + Object.keys(i.params.data[0][p])[0] + ",";
+				replaceTitles = replaceTitles + p + ","
+				replaceParamArr.push(p);
+			}
+			replaceTitles = replaceTitles.substr(0, replaceTitles.length - 1);
+			replaceTitles = "(" + replaceTitles + ")";
+
+			let replaceValues = ""
+
+			for (const n of i.params.data) {
+				// console.log("n:" + n);
+				let replaceValueN = "";
+				//按 属性顺序排序取值,为空值设为null避免sql语句报错
+				for (let p of replaceParamArr) {
+					if (!n[p]) {
+						replaceValueN = replaceValueN + "null,";
+					} else {
+						replaceValueN = replaceValueN + "'" + n[p] + "',";
+					}
+				}
+
+
+				replaceValueN = replaceValueN.substr(0, replaceValueN.length - 1);
+				replaceValueN = "(" + replaceValueN + ")";
+				replaceValues = replaceValues + replaceValueN + ","
+			}
+
+			replaceValues = replaceValues.substr(0, replaceValues.length - 1);
+			// //DBID 为空则去掉replaceTitles,replaceValues DBID信息防止参数错误
+			// if (i.params.data[0]["DBID"] === "") {
+			//     replaceTitles = replaceTitles.substr(replaceTitles.indexOf(",") + 1, replaceTitles.length);
+			//     replaceValues = replaceValues.substr(replaceValues.indexOf(",") + 1, replaceValues.length);
+			// }
+
+			excuteSql = "replace into `" + i.params.tableId + "` " + replaceTitles + " values " + replaceValues;
 			console.log('excuteSql:' + excuteSql);
 			break;
 		case "delete":

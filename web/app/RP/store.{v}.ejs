@@ -1,0 +1,203 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>数据接口-库存接口</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能组按钮 -->
+    <div class="well">
+        <div class="btn-group">
+            <button id="JITStoreBtn" class="btn btn-default">当前库存</button>
+            <button id="storeHistoryBtn" class="btn btn-default">历史记录</button>
+        </div>
+    </div>
+
+    <div class="row clearfix" id='JITDiv'>
+        <div class="col-md-12 column">
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_partStore" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>部件编号</th>
+                        <th>部件描述</th>
+                        <th>部件类型</th>
+                        <th>位置</th>
+                        <th>库存数量</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row clearfix" id='historyDiv'>
+        <div class="col-md-12 column">
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_partStoreHistory" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>部件编号</th>
+                        <th>初始数量</th>
+                        <th>操作数量</th>
+                        <th>即时数量</th>
+                        <th>内修单号</th>
+                        <th>操作类型</th>
+                        <th>操作时间</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script type="text/javascript">
+    const rp_partStoreColumns = [{
+            data: 'partId'
+        },
+        {
+            data: 'partDescription'
+        }, {
+            data: 'partBelong',
+        }, {
+            data: 'partLocation',
+        }, {
+            data: 'stockNum',
+        }
+    ]
+
+    const rp_partStoreHistoryColumns = [{
+            data: 'partId'
+        },
+        {
+            data: 'preNum'
+        }, {
+            data: 'actNum',
+        }, {
+            data: 'nowNum',
+        }, {
+            data: 'rpBillId',
+        }, {
+            data: 'actType',
+        }, {
+            data: 'dateTimeStamp',
+        }
+    ]
+
+    //切换模式函数
+    const changeModel = ({
+        model
+    }) => {
+        console.log('model', model);
+        switch (model) {
+            case 'JIT':
+                $("#historyDiv").hide();
+                $("#JITDiv").show();
+                $("#storeHistoryBtn").removeClass("active");
+                $("#JITStoreBtn").addClass("active");
+                break;
+            case 'History':
+                $("#JITDiv").hide();
+                $("#historyDiv").show();
+                $("#JITStoreBtn").removeClass("active");
+                $("#storeHistoryBtn").addClass("active");
+                break;
+        }
+
+    }
+
+
+    $(document).ready(function () {
+
+        //默认即时库存模式
+        changeModel({
+            model: 'JIT'
+        })
+
+        //加载库存表
+        loadBillDataTable({
+            elementId: 'rp_partStore',
+            sqlParams: {
+                sqlId: 'rp_partStore',
+                // params: {
+                //     orderBy: 'billSaveTimeStamp desc'
+                // }
+            },
+            dtParams: {
+                columns: rp_partStoreColumns
+            }
+        })
+
+        //加载库存历史记录表
+        loadBillDataTable({
+            elementId: 'rp_partStoreHistory',
+            sqlParams: {
+                sqlId: 'rp_partStoreHistory',
+                params: {
+                    orderBy: 'dateTimeStamp desc'
+                }
+            },
+            dtParams: {
+                columns: rp_partStoreHistoryColumns
+            }
+        })
+
+        $('#JITStoreBtn').click(function () {
+            changeModel({
+                model: 'JIT'
+            })
+        })
+
+        $('#storeHistoryBtn').click(function () {
+            changeModel({
+                model: 'History'
+            })
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+</script>

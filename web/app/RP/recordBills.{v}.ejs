@@ -956,33 +956,60 @@
 
     }
 
-    //更新库存数据stockData:[{partId,stockNum}]
-    const updateStock = async (stockData) => {
-        console.log("stockData:" + JSON.stringify(stockData));
+    //更新库存数据{stockData:[{partId,stockNum}],rpBillId,actType}
+    const updateStock = async (i) => {
+        console.log("updateStock stockData:" + JSON.stringify(i.stockData));
         let updateNumArr = [];
-        let filterRange = ''
-        for (const n of stockData) {
+
+        for (const n of i.stockData) {
             let arr = {
                 partId: n.partId,
-                stockNum: -n.num
+                stockNum: n.num
             }
             updateNumArr.push(arr);
-            filterRange = filterRange + '"' + n.partId + '",';
         }
 
-        filterRange = filterRange.substring(0, filterRange.length - 1);
+        let historyRecord = []
 
-        let r = await postDBData({
+        for (const n of i.stockData) {
+            historyRecord.push({
+                partId: n.partId,
+                preNum: n.preNum,
+                actNum: n.num,
+                nowNum: parseInt(n.preNum) + parseInt(n.num),
+                actType: i.actType,
+                rpBillId: i.rpBillId
+
+            })
+            //写到这里 ,加入表单信息
+        }
+
+
+
+        let r1 = await postDBData({
             sql: 'updateNum',
             params: {
                 tableId: 'rp_partswarehouse',
                 numTitles: ['stockNum'],
                 data: updateNumArr
-
             }
         })
-        console.log('r:' + JSON.stringify(r));
-        let o = r;
+        console.log('r1:' + JSON.stringify(r1));
+
+        let r2 = await postDBData({
+            sql: 'insert',
+            params: {
+                tableId: 'rp_partswarehousehistory',
+                // numTitles: ['stockNum'],
+                data: historyRecord
+            }
+        })
+        console.log('r2:' + JSON.stringify(r2));
+
+        let o
+        if (r1 && r2) {
+            o = true
+        }
         return o;
     }
 
@@ -1056,37 +1083,74 @@
 
     }
 
+    //合并subTableData有效同类项 
+    const getNeedUpdatePartsArr = (subTableData) => {
+
+        let partsArr = []
+
+        for (const n of subTableData) {
+
+            if (n.numStatus === '预领') {
+
+                let findSamePartId = false;
+                for (let m of partsArr) {
+                    if (n.partId === m.partId) {
+                        findSamePartId = true
+                        m.num = parseInt(m.num) + parseInt(n.num);
+                    }
+                }
+
+                if (!findSamePartId) {
+                    partsArr.push({
+                        partId: n.partId,
+                        num: n.num
+                    });
+                }
+            }
+        }
+
+        return partsArr
+
+    }
+
 
 
     //检测库存状态subTableData=[{partId,num,numStatus}]
     const checkPartsStock = async (subTableData) => {
 
         let checkResult = true;
+        let partsArr = getNeedUpdatePartsArr(subTableData);
         let partIdsArr = [];
-        let nums = [];
-        for (const n of subTableData) {
-            if (n.numStatus === '预领') {
-                partIdsArr.push(n.partId);
-                nums.push(n.num);
-            }
+        // let nums = [];
+        for (const n of partsArr) {
+            partIdsArr.push(n.partId)
+        }
+
+        let o = {
+            result: true
         }
 
         if (partIdsArr.length > 0) {
-            let stockNums = await getStockNums(partIdsArr);
 
-            console.log('stockNums:' + JSON.stringify(stockNums));
+            //获取即时库存
+            let JITStock = await getStockNums(partIdsArr);
 
+            console.log('JITStock:', JITStock);
 
-            for (let n = 0; n < stockNums.length; n++) {
-                if (stockNums[n].stockNum < nums[n]) {
-                    checkResult = false;
-                    break;
+            for (const n of JITStock) {
+                for (const m of partsArr) {
+                    if (n.partId === m.partId && n.num < m.num) {
+                        checkResult = false;
+                    }
                 }
             }
-
+            o = {
+                result: checkResult,
+                JITStock: JITStock
+            }
         }
 
-        return checkResult
+        return o
     }
 
     //刷新部件清单
@@ -1106,10 +1170,11 @@
     //保存维修记录单函数
     const saveRecordBill = async () => {
 
-        let checkResult = await checkPartsStock(subTableData);
+        //合并相同
+        let checkResultData = await checkPartsStock(subTableData);
         // alert('checkResult:' + checkResult)
 
-        if (checkResult) {
+        if (checkResultData.result) {
 
             let mainFormData = getPostFormData({
                 formId: 'rp_recordbillsForm'
@@ -1148,28 +1213,46 @@
                 })
 
                 //获取需要更新库存数据部件
-                let subTableDataNeedUpdate = [];
-                for (const n of subTableData) {
-                    if (n.numStatus === '预领') {
-                        subTableDataNeedUpdate.push(n)
-                    }
-                }
+                let partsNeedUpdateStockArr = getNeedUpdatePartsArr(subTableData);
 
                 //扣减部件库存
                 let r2;
-                if (subTableDataNeedUpdate.length > 0) {
-                    r2 = await updateStock(subTableDataNeedUpdate);
+                if (partsNeedUpdateStockArr.length > 0) {
+                    console.log('checkResultData.JITStock', checkResultData.JITStock);
+
+                    for (let n of partsNeedUpdateStockArr) {
+                        //扣减库存转为负数
+                        n.num = -n.num;
+
+                        for (const m of checkResultData.JITStock) {
+                            if (n.partId === m.partId) {
+                                n.preNum = m.stockNum;
+                            }
+                        }
+
+                    }
+                    console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
+
+                    r2 = await updateStock({
+                        stockData: partsNeedUpdateStockArr,
+                        actType: '领料',
+                        rpBillId: mainFormData.data[0].recordBillId
+                    });
                 }
 
 
 
-                //更新部件预领状态为已领,去除stockNum
 
-                for (let n = 0; n < subTableData.length; n++) {
-                    if (subTableData[n].numStatus === '预领') {
-                        subTableData[n].numStatus = '已领'
-                        delete subTableData[n].stockNum;
+
+
+                if (r2) {
+                    for (let n = 0; n < subTableData.length; n++) {
+                        if (subTableData[n].numStatus === '预领') {
+                            subTableData[n].numStatus = '已领'
+                            delete subTableData[n].stockNum;
+                        }
                     }
+                    alert('扣减库存成功！')
                 }
 
                 let r3 = await postDBData({
@@ -1180,13 +1263,9 @@
                     }
                 })
 
-                console.log('saveRecordBill r1:' + JSON.stringify(r1));
-                console.log('saveRecordBill r2:' + JSON.stringify(r2));
-                console.log('saveRecordBill r3:' + JSON.stringify(r3));
-
-                if (r2) {
-                    alert('扣减库存成功！')
-                }
+                // console.log('saveRecordBill r1:' + JSON.stringify(r1));
+                // console.log('saveRecordBill r2:' + JSON.stringify(r2));
+                // console.log('saveRecordBill r3:' + JSON.stringify(r3));
 
                 if (r1.affectedRows && r3.affectedRows) {
                     alert('保存成功!')
@@ -1412,6 +1491,10 @@
             })
             // console.log('partData:' + JSON.stringify(partData.data))
             let rowData = formDataToRowData(partData.data)
+            //删除stockNum 属性
+            delete rowData.stockNum;
+
+
             rowData.recordBillId = recordBillId;
             console.log('rowData:' + JSON.stringify(rowData))
 
@@ -1429,7 +1512,6 @@
 
                     //此处不用===避免,字符类型不匹配导致相关问题
                     if (subTableData[n].rowId == rowData.rowId) {
-
                         subTableData[n] = rowData;
                         break;
                     }
@@ -1440,7 +1522,6 @@
                 // console.log("subTableData before:" + JSON.stringify(subTableData));
                 // console.log("rowData:" + JSON.stringify(rowData.status));
                 rowData.rowId = rowNum + 1;
-
                 subTableData.push(rowData);
 
             }
