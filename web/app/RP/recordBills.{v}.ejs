@@ -656,7 +656,10 @@
             }
         })
 
-        stockNum = r[0].stockNum;
+        let stockNum = 0
+        if (r.length > 0) {
+            stockNum = r[0].stockNum
+        }
         return stockNum
 
     }
@@ -715,9 +718,13 @@
         $('#rp_partsbillsForm-partLocation').change(function () {
             let partLocation = $('#rp_partsbillsForm-partLocation option:selected').val();
             if (partLocation) {
+                // console.log('partLocation11111', partLocation);
 
-                //获取partId当前值
-                let partId = $('#rp_partsbillsForm-partId option:selected').val();
+                //重新刷新显示
+                $('#rp_partsbillsForm-partLocation').selectpicker('refresh');
+
+                // //获取partId当前值
+                // let partId = $('#rp_partsbillsForm-partId option:selected').val();
 
                 loadBootStrapSelector({
                     elementId: 'rp_partsbillsForm-partId',
@@ -737,10 +744,11 @@
         $('#rp_partsbillsForm-partId').unbind();
         $('#rp_partsbillsForm-partId').change(function () {
             let partId = $('#rp_partsbillsForm-partId option:selected').val();
+            console.log('partId', partId);
             if (partId) {
+                $('#rp_partsbillsForm-partId').selectpicker('refresh');
                 fillPartInfo(partId);
                 showStockNum();
-
             }
         })
     }
@@ -834,7 +842,7 @@
 
                 // $('#partInfoDiv input,select').attr("disabled", true); 会影响到div外select
 
-                $('#partInfoDiv').find('input,textarea').attr("disabled", true);
+                $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
 
 
                 //打开面板
@@ -844,8 +852,8 @@
                 showStockNum()
 
                 //重新添加监听器
-                addPartLocationListener()
-                addPartIdListener();
+                // addPartLocationListener()
+                // addPartIdListener();
                 addPartFeeListener();
 
             }
@@ -1180,11 +1188,6 @@
                     });
                 }
 
-
-
-
-
-
                 if (r2) {
                     for (let n = 0; n < subTableData.length; n++) {
                         if (subTableData[n].numStatus === '预领') {
@@ -1336,11 +1339,10 @@
 
 
         // 新增按钮
-        $('#btnAddPart').click(function () {
+        $('#btnAddPart').click(async function () {
             let subTable = $('#rp_partsbills').DataTable();
-            //删除子表选中状态
-            // subTable.$('tr.selected').removeClass('selected');
 
+            //删除子表选中状态
             subTable.rows().deselect();
 
             //清空panel数据
@@ -1353,22 +1355,35 @@
             //设置默认值
             $("#rp_partsbillsForm-numStatus").text('预领')
 
+            //解绑监听器
+            $('#rp_partsbillsForm-partLocation').unbind();
+            $('#rp_partsbillsForm-partId').unbind();
 
-            loadBootStrapSelector({
+            await loadBootStrapSelector({
                 elementId: 'rp_partsbillsForm-partLocation',
                 sqlParams: {
                     sql: 'getPartLocationSelector',
                 },
             })
 
+            await loadBootStrapSelector({
+                elementId: 'rp_partsbillsForm-partId',
+                sqlParams: {
+                    sql: 'getPartSelector',
+                },
+            })
+
+
+
             //添加监听器
             addPartLocationListener()
             addPartIdListener();
             addPartFeeListener();
 
-            //取消部件信息div禁用
 
-            $('#partInfoDiv').find('input,textarea').attr("disabled", false);
+
+            //取消部件信息div禁用
+            $('#partInfoDiv').find('select,input,textarea').attr("disabled", false);
 
 
         })
@@ -1411,6 +1426,9 @@
             } else {
                 alert('请先点击表格选中需要删除的部件!')
             }
+
+            //   //关闭面板
+            //   $('#rp_partsbillsPanel').hide();
 
 
         })
@@ -1618,7 +1636,8 @@
         })
 
         //添加监听器
-
+        // addPartLocationListener()
+        // addPartIdListener();
         addRepairTotalFeeListener();
 
 
