@@ -109,8 +109,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
 	 
     let kiss =[];
     let head =[  '个人出货情况统计（数据源：PM登记&MAIL信息）' ];
-    let subhead =[  '类别','','本周总单','','已完成总单','','','待修改总单',''  ];
-    let divhead =[  '', '','上周遗留','本周新单','按时完成','延期已完成','客户取消','延期未完成','期限未到' ];
+    let subhead =[  '类别','',' 总  单','','已完成总单','','','待修改总单',''  ];
+    let divhead =[  '', '',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ];
     // let datahead =[  '宁波PPM记录','', '16','20','15','20','15','20','31'  ];
     let spacehead =[  ' ' ];
     kiss.push( head );
@@ -133,8 +133,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     kiss.push( spacehead );
 
     let title =[  '个人出货情况统计（数据源：PM登记&MAIL信息）' ];
-    let subtitle =[  '组别','姓名','本周总单','','已完成总单','','','待修改总单','','延误率' ];
-    let divtitle =[  '','','上周遗留','本周新单','按时完成','延期已完成','客户取消','延期未完成','期限未到' ];
+    let subtitle =[  '组别','姓名',' 总  单','','已完成总单','','','待修改总单','','延误率' ];
+    let divtitle =[  '','',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ];
     
     kiss.push( title );
     kiss.push( subtitle );
@@ -268,8 +268,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
        let title2 =[  '软件部出货总况（数据源：PM登记&MAIL信息）' ];
        let finary =[]; 
     finary.push( title2 );
-    let sub2title =[  '类别','本周总单','','已完成总单','','','待修改总单','','' ];
-    let div2title =[  '','上周遗留','本周新单','按时完成','延期已完成','客户取消','延期未完成','期限未到','其他' ];
+    let sub2title =[  '类别',' 总  单','','已完成总单','','','待修改总单','','' ];
+    let div2title =[  '',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到','其他' ];
     finary.push( sub2title );
     finary.push( div2title );
  

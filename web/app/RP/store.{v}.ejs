@@ -192,10 +192,16 @@
         console.log('storeData111', storeData);
         if (storeData.length > 0) {
             let partIdsArr = [];
-            for (const n of storeData) {
+            for (let n of storeData) {
+
+                //转换为大写
+                n.partId = n.partId.toUpperCase();
+                
                 partIdsArr.push(n.partId)
             }
             let partIdsRange = getRangeString(partIdsArr);
+
+
             // console.log('partIdsRange', partIdsRange);
 
             //查找当前数据内已存在的同partId 库存

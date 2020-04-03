@@ -15,14 +15,13 @@ module.exports = function(sender) {
     var filter=sender.req.query.filter; 
     var orderBy=sender.req.query.orderBy; 
     var limit=sender.req.query.limit; 
-  
-
    console.log("SQL:"+SQL);
 
    var param1="";  
    var param2="";  
    var param3="";  
    var param4=""; 
+   var param5=""; 
     
    
  
@@ -37,9 +36,10 @@ module.exports = function(sender) {
 	case "SQLNotDone":
 		var SQLExecute=SQLNotDone;
 		  param1=sender.req.query.weekbeg;  
-		  param2=sender.req.query.weekend;  
-		  param3=sender.req.query.lastbeg;  
-		  param4=sender.req.query.lastend;  
+		  param2=sender.req.query.weekbeg;  
+		  param3=sender.req.query.weekend;  
+		  param4=sender.req.query.weekbeg;  
+		  param5=sender.req.query.weekend;  
 		break;	
 	case "SQLLateList":
 		var SQLExecute=SQLLateList;
@@ -85,7 +85,7 @@ module.exports = function(sender) {
     	
     	 yjDBService.exec({
     	        sql: SQLExecute,
-    	        parameters: [param1,param2,param3,param4],
+    	        parameters: [param1,param2,param3,param4,param5],
     	        rowsAsArray: false, // Chenly 2018-10-19 返回obj arr
     	        success: function(result) {
     	        	
