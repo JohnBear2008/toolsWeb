@@ -78,7 +78,7 @@
     <!-- 模态框（Modal） -->
     <div class="modal fade" id="rp_recordbillsModal" tabindex="-1" role="dialog" aria-hidden="true">
 
-        <div class="modal-dialog" style="width: 65%;">
+        <div class="modal-dialog" style="width: 75%;">
 
             <!-- 按钮触发模态框 -->
             <button class="btn btn-primary" data-toggle="modal" data-target="#rp_recordbillsModal"
@@ -402,16 +402,10 @@
                                                     <!-- <button id='btnScanModalClose' data-dismiss="">关闭扫描框</button> -->
                                                     <div style="width:640;height:480px"><video id="preview"></video>
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
-
-
-
-
 
 
                                     <!-- 定义基础模块数据表 -->
@@ -845,9 +839,7 @@
                 //设置禁止修改
                 if (rowSelect.numStatus === '预领') {
                     $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
-                }
-
-                if (rowSelect.numStatus === '已领') {
+                } else if (rowSelect.numStatus === '已领') {
                     $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
                 }
 
@@ -1358,6 +1350,9 @@
             //删除子表选中状态
             subTable.rows().deselect();
 
+            //取消部件信息div禁用
+            $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
+
             //清空panel数据
             clearFormInputs({
                 formId: 'rp_partsbillsForm'
@@ -1370,6 +1365,8 @@
             //解绑监听器
             $('#rp_partsbillsForm-partLocation').unbind();
             $('#rp_partsbillsForm-partId').unbind();
+
+
 
             await loadBootStrapSelector({
                 elementId: 'rp_partsbillsForm-partLocation',
@@ -1393,8 +1390,7 @@
             addPartFeeListener();
 
 
-            //取消部件信息div禁用
-            $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
+
 
             //打开面板
             $('#rp_partsbillsPanel').show();
