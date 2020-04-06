@@ -386,8 +386,8 @@
                                     <div class="well">
                                         <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
                                         <button id='btnAddPart' type="button" class="btn btn-info">添加部件</button>
-                                        <button id='btnDeletePart' type="button" class="btn btn-danger">删除部件</button>
-                                        <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还部件</button> -->
+                                        <button id='btnDeletePart' type="button" class="btn btn-warning">删除部件</button>
+                                        <button id='btnReturnPart' type="button" class="btn btn-danger">退还部件</button>
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
@@ -399,7 +399,7 @@
                                                 <div class="modal-body">请将产品二维码放置于摄像头内
                                                     <div><button id='btnScanStop' type="button"
                                                             class="btn btn-info">停止扫描</button></div>
-                                                    <button id='btnScanModalClose' data-dismiss="">关闭扫描框</button>
+                                                    <!-- <button id='btnScanModalClose' data-dismiss="">关闭扫描框</button> -->
                                                     <div style="width:640;height:480px"><video id="preview"></video>
                                                     </div>
 
@@ -842,11 +842,14 @@
 
                 // $('#partInfoDiv input,select').attr("disabled", true); 会影响到div外select
 
-                $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
+                //设置禁止修改
+                if (rowSelect.numStatus === '预领') {
+                    $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
+                }
 
-
-                //打开面板
-                $('#rp_partsbillsPanel').show();
+                if (rowSelect.numStatus === '已领') {
+                    $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
+                }
 
                 //加载库存
                 showStockNum()
@@ -855,6 +858,9 @@
                 // addPartLocationListener()
                 // addPartIdListener();
                 addPartFeeListener();
+
+                //打开面板
+                $('#rp_partsbillsPanel').show();
 
             }
 
@@ -1120,7 +1126,7 @@
 
         //合并相同
         let checkResultData = await checkPartsStock(subTableData);
-        alert('checkResultData:' + JSON.stringify(checkResultData))
+        // alert('checkResultData:' + JSON.stringify(checkResultData))
 
         if (checkResultData.result) {
 
@@ -1258,7 +1264,7 @@
 
         // 扫描按钮
         $('#btnScan').click(function () {
-            $('#scanModal').modal('show');
+
             let scanner = new Instascan.Scanner({
                 video: document.getElementById('preview')
             });
@@ -1330,12 +1336,19 @@
                 alert("系统错误,请检查摄像头设备!")
 
             });
+
+            // 停止扫描按钮功能定义
+            $('#btnScanStop').unbind();
+            $('#btnScanStop').click(function () {
+                scanner.stop()
+                $('#scanModal').modal('hide')
+            })
+
+
+            $('#scanModal').modal('show');
         })
 
-        // 停止扫描
-        $('#btnScanStop').click(function () {
-            $('#scanModal').modal('hide')
-        })
+
 
 
         // 新增按钮
@@ -1349,8 +1362,7 @@
             clearFormInputs({
                 formId: 'rp_partsbillsForm'
             })
-            //打开面板
-            $('#rp_partsbillsPanel').show();
+
 
             //设置默认值
             $("#rp_partsbillsForm-numStatus").text('预领')
@@ -1381,9 +1393,11 @@
             addPartFeeListener();
 
 
-
             //取消部件信息div禁用
-            $('#partInfoDiv').find('select,input,textarea').attr("disabled", false);
+            $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
+
+            //打开面板
+            $('#rp_partsbillsPanel').show();
 
 
         })
@@ -1396,40 +1410,58 @@
             let rowSelect = subTable.row('.selected').data();
             // alert(JSON.stringify(rowSelect))
 
-            if (rowSelect) {
-                if (rowSelect.numStatus !== '预领') {
-                    alert('非预领状态不允许删除!')
-                } else {
-                    //删除元素
-                    for (const n in subTableData) {
-                        if (subTableData[n].rowId === rowSelect.rowId) {
-                            subTableData.splice(n, 1);
-                        }
-                    }
-                    //重新排序rowId,避免空缺
-                    for (const n in subTableData) {
-                        subTableData[n].rowId = parseInt(n) + 1;
-                    }
-
-                    //重新加载子表
-                    loadDataSubTable(subTableData)
-
-                    //自动点击添加按钮,清空遗留数据
-
-                    $('#btnAddPart').click();
-
-                    //重新计算总费用
-                    CalcRepairTotalFee();
-
-                }
-
-            } else {
+            //检查删除部件条件
+            if (!rowSelect) {
                 alert('请先点击表格选中需要删除的部件!')
+                return;
+            }
+            if (rowSelect.numStatus !== '预领') {
+                alert('非预领状态不允许删除!')
+                return
             }
 
-            //   //关闭面板
-            //   $('#rp_partsbillsPanel').hide();
+            //删除元素
+            for (const n in subTableData) {
+                if (subTableData[n].rowId === rowSelect.rowId) {
+                    subTableData.splice(n, 1);
+                }
+            }
+            //重新排序rowId,避免空缺
+            for (const n in subTableData) {
+                subTableData[n].rowId = parseInt(n) + 1;
+            }
 
+            //重新加载子表
+            loadDataSubTable(subTableData)
+
+            //重新计算总费用
+            CalcRepairTotalFee();
+
+            //关闭面板
+            $('#rp_partsbillsPanel').hide();
+            // //自动点击添加按钮,清空遗留数据
+            // $('#btnAddPart').click();
+
+
+        })
+
+
+        //退还部件按钮
+        $('#btnReturnPart').click(function () {
+
+            let subTable = $('#rp_partsbills').DataTable();
+            let rowSelect = subTable.row('.selected').data();
+            // alert(JSON.stringify(rowSelect))
+
+            //检查退还部件条件
+            if (!rowSelect) {
+                alert('请先点击表格选中需要退还的部件!')
+                return;
+            }
+            if (rowSelect.numStatus !== '已领') {
+                alert('非已领状态不允许退还!')
+                return
+            }
 
         })
 

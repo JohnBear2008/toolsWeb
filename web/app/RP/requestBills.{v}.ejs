@@ -835,17 +835,21 @@
         //定义主表双击事件
         $('#rp_requestbills tbody').on('dblclick', 'tr', function () {
 
+            //打开关联信息,打印功能
+            $("#accordion").show();
+            $("#rp_requestbillsPrint").show();
+
             //设定选中
             let table = $('#rp_requestbills').DataTable();
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
 
-            //打开面板
-            $('#rp_requestbillsModal').modal('show');
 
-            //打开关联信息
-            $("#accordion").show();
+
+
+
+
 
             //解除客户监听事件
             // $('#rp_requestbillsForm-customerShortName').unbind();
@@ -868,6 +872,9 @@
 
             // //客户选定监听事件
             // addCustomerListener();
+
+            //打开面板
+            $('#rp_requestbillsModal').modal('show');
 
         });
 
@@ -1216,11 +1223,8 @@
         //新增需求单按钮
         $('#btnRequestBillNew').click(function () {
 
-            //打开面板
-            $('#rp_requestbillsModal').modal('show');
 
-            //关闭关联信息
-            $("#accordion").hide();
+
 
             //清空form数据
             clearFormInputs({
@@ -1253,6 +1257,15 @@
 
             // //客户选定监听事件
             // addCustomerListener();
+
+
+            //显示/隐藏
+            //关闭关联信息,打印按钮
+            $("#accordion").hide();
+            $("#rp_requestbillsPrint").hide();
+
+            //打开面板
+            $('#rp_requestbillsModal').modal('show');
 
         })
 
@@ -1307,7 +1320,7 @@
 
         // 扫描按钮
         $('#btnScan').click(function () {
-            $('#scanModal').modal('show');
+
             let scanner = new Instascan.Scanner({
                 video: document.getElementById('preview')
             });
@@ -1366,12 +1379,18 @@
                 alert("系统错误,请检查摄像头设备!")
 
             });
+
+            // 停止扫描按钮功能定义
+            $('#btnScanStop').unbind();
+            $('#btnScanStop').click(function () {
+                scanner.stop()
+                $('#scanModal').modal('hide')
+            })
+
+            $('#scanModal').modal('show');
         })
 
-        // 停止扫描
-        $('#btnScanStop').click(function () {
-            $('#scanModal').modal('hide')
-        })
+
 
         // 新增填单按钮
         $('#btnAddProduct').click(function () {
@@ -1487,7 +1506,7 @@
         //表单打印按钮
         $('#rp_requestbillsPrint').click(function () {
 
-            $('#printViewModal').modal('show')
+
             let formData = getFormData({
                 formId: 'rp_requestbillsForm',
             })
@@ -1502,6 +1521,8 @@
                 cols: ['rowId', 'productId', 'productName', 'factoryNo'],
                 data: subTableData
             })
+
+            $('#printViewModal').modal('show')
         })
 
         //确认打印按钮
