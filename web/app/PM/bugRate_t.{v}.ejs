@@ -1,0 +1,292 @@
+<!-- CSS -->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css"> -->
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+
+<!-- <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" /> -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+<link href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
+
+
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Bootstrap-3.3.7/js/bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/JSZip-2.5.0/jszip.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/dataTables.buttons.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.html5.js"></script>
+
+<!-- CSS -->
+ 
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<script src="/js/PM/PMfunny.js"></script>
+
+<!-- 导出报告EXCEL -->  
+<script  type=text/javascript src="/public/report/xlsExport_t.js" ></script>
+<script src="/public/report/js/xlsx.core.min.js"></script> 
+<script src="/public/report/js/xlsx.full.min.js"></script> 
+
+<script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+ 
+<div class="divcontent">
+	<h1>内核延误率分析</h1>
+	<hr>
+
+	<!-- 操作区（按钮等） -->
+	<div class="lineitem">
+		<!-- 按钮触发模态框 -->
+ 		<div class="btn-group" id='BTNGroupFilter'>
+			<button type="text" class="btn btn-info" disabled="disabled">过滤</button>
+ 
+			<button id="BTNFitlerDiv" type="button" class="btn btn-default">自定义日期</button>
+		</div>
+ 
+		<div class="btn-group">
+			<button type="text" class="btn btn-info" disabled="disabled">操作</button>
+			<button id="BTNExportExcel" class="btn btn-default">导出内核延误率</button>
+		</div>
+		<a href="/app/PM/workCenter"><button id="BTNWorkCenter" class="btn btn-success"
+				style="float:right">个人中心</button></a>
+	</div>
+	<br />
+</div>
+
+<!-- 点击自定义过滤弹出的窗口 -->
+<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:60%;height:50%;">
+	<form style="padding:10px 50px;">
+
+		<!----newfilter----------------------->
+		<!-------------------------------------------------------------------------->
+
+		<div class="form-horizontal">
+
+  
+			<!-------------------------------------------------------------------------->
+			
+			<div class="form-group">
+				<label for="taskMakeDate" class="col-sm-2 control-label">本周日期范围:</label>
+				<div class="col-sm-3 ">
+					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
+						data-link-field="taskFinishDateB" data-link-format="yyyy-mm-dd">
+						<input id="taskFinishDateB" class="form-control " size="16" type="text" value="" readonly>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					</div>
+					<input type="hidden" id="taskFinishDateB" value="" />
+				</div>
+				<div class="col-sm-3 ">
+
+					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
+						data-link-field="taskFinishDateE" data-link-format="yyyy-mm-dd">
+						<input id="taskFinishDateE" class="form-control " size="16" type="text" value="" readonly>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					</div>
+					<input type="hidden" id="taskFinishDateE" value="" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label"></label>
+				<div class="col-sm-3 ">
+					<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
+					<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
+				</div>
+
+			</div>
+		</div>
+		<!----newfilter----------------------->
+ 
+	</form>
+</div>
+ 
+
+<script>
+	 
+	//根据获得的DBID 详情加载
+	function getDBIDInfo(tableName, DBID) {
+
+ 
+		$('#winDetail').window('open');
+
+	}
+ 
+	//函数:详情按钮详情页自动填写内容------------------------
+	function Fun_winDetailInit(dataSelect) {
+
+
+	}
+
+
+	//函数 创建table 参数模版
+
+	function createParams(filter) {
+  
+	}
+
+ 
+ 
+	/**
+	 * 获得本周的开始日期和结束日期
+	 */
+	function getWeekStartDateAndEndDateRange() {
+		let oneDayLong = 24 * 60 * 60 * 1000;
+		let now = new Date();
+		let mondayTime = now.getTime() - (now.getDay() - 1) * oneDayLong;
+		let sundayTime = now.getTime() + (7 - now.getDay()) * oneDayLong;
+		let monday = new Date(mondayTime);
+		let sunday = new Date(sundayTime);
+		let weekRange = [monday, sunday];
+
+		return weekRange;
+	}
+
+
+	function getMonthStartDateAndDateRange() {
+		let oneDayLong = 24 * 60 * 60 * 1000;
+		let now = new Date();
+		let year = now.getFullYear();
+
+		let monthStartDate = new Date(year, now.getMonth(), 1); //当前月1号
+		let nextMonthStartDate = new Date(year, now.getMonth() + 1, 1); //下个月1号
+		let days = (nextMonthStartDate.getTime() -
+			monthStartDate.getTime()) / oneDayLong; //计算当前月份的天数
+		let monthEndDate = new Date(year, now.getMonth(), days);
+		let monthRange = [monthStartDate, monthEndDate];
+
+		return monthRange;
+	}
+
+	function getYearStartDateAndDateRange() {
+		let oneDayLong = 24 * 60 * 60 * 1000;
+		let now = new Date();
+		let year = now.getFullYear();
+		let yearStartDate = new Date(year, 0, 1); //当前月1号
+		let yearEndDate = new Date(year, 11, 31);
+		let yearRange = [yearStartDate, yearEndDate];
+
+		return yearRange;
+	}
+
+	//函数重新绑定事件
+
+	function tableClickBind() {
+
+		$('#tasksTrackTable tbody').unbind();
+		//判断是否选中数据-------
+		var table = $('#tasksTrackTable').DataTable();
+		$('#tasksTrackTable tbody').on('click', 'tr', function () {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
+
+			var dataSelect = table.row('.selected').data();
+
+		});
+
+
+		//dbclick 测试判断是否选中数据-------
+
+		$('#tasksTrackTable tbody').on('dblclick', 'tr', function () {
+			table.$('tr.selected').removeClass('selected');
+			$(this).addClass('selected');
+
+			// console.log("this:"+this)
+			$('#BTNInfo').click();
+
+		});
+	}
+
+
+	//页面加载函数---------------
+	$(document).ready(function () {
+
+		var sessionName = "<%-locals.session.yjUser.Name%>";
+
+		btnFilterActive = ""
+	      divFilterActive = "" 
+		staffFilter = ""
+ 
+
+		//按钮:过滤本周
+		$('#BTNFitlerWeek').click(function () {
+
+		})
+
+		//页面加载后默认按周过滤
+		$('#BTNFitlerWeek').click();
+ 
+		//过滤功能组 自定义按钮-----
+		$('#BTNFitlerDiv').click(function () {
+
+			$('#DivFilter').window('open');
+ 
+			$('.form_date').datetimepicker({
+				language: 'zh-CN',
+				weekStart: 1,
+				todayBtn: 1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+			});
+
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerDiv").addClass("active")
+ 		});
+ 
+		//过滤功能组 自定义过滤确认按钮-----NNN
+		$('#FilterComfirmBtnN').click(function () {
+			$('#DivFilter').window('close');
+		});
+
+ 
+
+		//过滤功能组 自定义过滤确认按钮-----
+		$('#FilterCancelBtnN').click(function () {
+ 
+ 
+
+			$("#taskFinishDateB").val("")
+			$("#taskFinishDateE").val("")
+ 
+		});
+
+	function rateReload1(flag ) {
+			
+	}
+      function rateReload2(flag ) {
+ 
+      }
+	     
+
+		// tableExcelExport
+
+		$('#BTNExportExcel').click(function () {
+			var MakeDateB=$("#taskFinishDateB").val();
+			var MakeDateE=$("#taskFinishDateE").val();
+			var FinsDateB=$("#taskFinishDateB").val();
+			var FinsDateE=$("#taskFinishDateE").val();
+		      enterParamShip(MakeDateB,MakeDateE,FinsDateB,FinsDateE);
+
+		});
+	  
+
+
+	});
+</script>

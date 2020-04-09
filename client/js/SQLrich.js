@@ -31,18 +31,21 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
     "   OR ( taskMakeDate>=? and taskMakeDate<=? and taskType='A'  and  ( BTStatus !=4 AND WFStatus!=0 ) and "+
     "     ? > taskLimitDate and IPQCAuditResultText is null ) ";
 
-//     SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText  
-//     FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, 
-//     (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb   
-//     where ( taskMakeDate<='2020-03-13' and taskType='A' and
-//   ( (taskFinishDate>='2020-03-14' and taskFinishDate<='2020-03-20')  or (WFEndText is null and taskFinishDate is null) )
-//   and (  IPQCAuditResultText is null  )	 )  
-//   OR ( taskMakeDate>='2020-03-14' and taskMakeDate<='2020-03-20' and taskType='A'  and (  BTStatusText!='任务终止' AND BTStatusText!='废弃' AND WFEndText!='终止归档') and 
-//     '2020-04-01' > taskLimitDate and IPQCAuditResultText is null ) 
+    SQLNotDone_t=
+      "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
+        " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
+        " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+        "     where ( taskMakeDate<=? and taskType='A' and "+
+        "   ( (taskFinishDate>=? and taskFinishDate<=?)  or (WFEndText is null and taskFinishDate is null) )"+
+        "   and (  IPQCAuditResultText is null  )	 )  "+
+        "   OR ( taskMakeDate>=? and taskMakeDate<=? and taskType='A'  and  ( BTStatus !=4 AND WFStatus!=0 ) and "+
+        "     ? > taskLimitDate and IPQCAuditResultText is null ) ";
+ 
  
 // SQLLateList="Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate`,"+
 // " tbc.emailDate from `ppm_bills_plan` tbb   LEFT JOIN (SELECT * FROM `ppm_bills_pbh`  ) tbc ON tbb.BPID=tbc.pbhBPID where tbc.emailDate > tbb.limitDate and tbb.applyDate >? and tbb.applyDate < ?  ";
 SQLLateList="Select (CASE taskSortTypeText WHEN 'DSP任务单' THEN taskFinishDate  END ) as  DSPFinishDate ,(CASE taskSortTypeText WHEN 'HMI任务单' THEN taskFinishDate  END ) as  HMIFinishDate , `BPID`,`CTRName`, BTID, taskFinishDate,taskSortTypeText, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate` from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, BTID,taskMakeDate,taskBPID,taskSortTypeText from ppm_bills_task  GROUP by BTID ) tbk   ON tbb.BPID=tbk.taskBPID  where  (taskFinishDate > tbb.limitDate ) and tbb.applyDate >? and tbb.applyDate <? order by BPID";
+SQLLateList_t="Select (CASE taskSortTypeText WHEN 'DSP任务单' THEN taskFinishDate  END ) as  DSPFinishDate ,(CASE taskSortTypeText WHEN 'HMI任务单' THEN taskFinishDate  END ) as  HMIFinishDate , `BPID`,`CTRName`, BTID, taskFinishDate,taskSortTypeText, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate` from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, BTID,taskMakeDate,taskBPID,taskSortTypeText from ppm_bills_task_t  GROUP by BTID ) tbk   ON tbb.BPID=tbk.taskBPID  where  (taskFinishDate > tbb.limitDate ) and tbb.applyDate >? and tbb.applyDate <? order by BPID";
 
 SQLPartsUp= "SELECT `DBID`, `Bill_ID`, `Customer_ID`, `Operate`, `Apply_Date`, `Limit_Date`,   `PaUp_ProdNo`,PaDown_ProdNo, `Parts_Name`, `Location`  FROM `ma_parts_detail` ";
  

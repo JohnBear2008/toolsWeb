@@ -43,8 +43,24 @@ module.exports = function(sender) {
 		  param5=sender.req.query.weekend;  
 		  param6=sender.req.query.duedate;  
 		break;	
+	case "SQLNotDone_t":
+		var SQLExecute=SQLNotDone_t;
+		  param1=sender.req.query.yester;  
+		  param2=sender.req.query.weekbeg;  
+		  param3=sender.req.query.weekend;  
+		  param4=sender.req.query.weekbeg;  
+		  param5=sender.req.query.weekend;  
+		  param6=sender.req.query.duedate;  
+		break;	
 	case "SQLLateList":
 		var SQLExecute=SQLLateList;
+		  param1=sender.req.query.weekbeg;  
+		  param2=sender.req.query.weekend;  
+		// console.log("weekbeg:"+param1);
+		// console.log("weekend:"+param2);
+		break;	
+	case "SQLLateList_t":
+		var SQLExecute=SQLLateList_t;
 		  param1=sender.req.query.weekbeg;  
 		  param2=sender.req.query.weekend;  
 		// console.log("weekbeg:"+param1);

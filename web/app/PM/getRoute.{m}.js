@@ -8,6 +8,9 @@ module.exports = function (sender) {
     // console.log("路由  "+reportType); 
     let url = [];
     switch (reportType) {
+        case "TaskIdv_t":
+            url = ["PM", "qryTaskIdv_t"];
+            break;
         case "TaskIdv":
             url = ["PM", "qryTaskIdv"];
             break;
@@ -16,6 +19,9 @@ module.exports = function (sender) {
             break;
         case "RateIdv":
             url = ["PM", "qryRateIdv"];
+            break;
+        case "RateIdv_t":
+            url = ["PM", "qryRateIdv_t"];
             break;
         case "RateDpt":
             url = ["PM", "qryRateDpt"];

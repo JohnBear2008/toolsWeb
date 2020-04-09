@@ -280,6 +280,9 @@ function datatableReload(Params) {
 		"language": languageCN
 	});
 
+	// //清空已填的搜索信息
+	// table.search('').draw();
+
 
 
 }
