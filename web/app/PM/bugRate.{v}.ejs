@@ -21,12 +21,7 @@
 <script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.html5.js"></script>
 
 <!-- CSS -->
-
-<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css"> -->
-
  
-<!-- JS  -->
-
 <script src="/css/PM/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
@@ -36,12 +31,10 @@
 <script src="/js/PM/PMfuns.js"></script>
 <script src="/js/PM/PMfunny.js"></script>
 
-  <!-- 导出报告EXCEL -->  
-
-  <script src="/public/report/xlsExport.js"></script> 
-  <script src="/public/report/js/xlsx.core.min.js"></script> 
-  <script src="/public/report/js/xlsx.full.min.js"></script> 
- 
+<!-- 导出报告EXCEL -->  
+<script  type=text/javascript src="/public/report/xlsExport.js" ></script>
+<script src="/public/report/js/xlsx.core.min.js"></script> 
+<script src="/public/report/js/xlsx.full.min.js"></script> 
 
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
@@ -67,11 +60,8 @@
 		</div>
 		<a href="/app/PM/workCenter"><button id="BTNWorkCenter" class="btn btn-success"
 				style="float:right">个人中心</button></a>
- 
 	</div>
- 
 	<br />
- 
 </div>
 
 <!-- 点击自定义过滤弹出的窗口 -->
@@ -85,28 +75,7 @@
 
   
 			<!-------------------------------------------------------------------------->
-			<div class="form-group">
-
-				<label for="taskMakeDate" class="col-sm-2 control-label">遗留单子范围:</label>
-				<div class="col-sm-3 ">
-					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
-						data-link-field="taskMakeDateB" data-link-format="yyyy-mm-dd">
-						<input id="taskMakeDateB" class="form-control " size="16" type="text" value="" readonly>
-						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-					</div>
-					<input type="hidden" id="taskMakeDateB" value="" />
-				</div>
-
-				<div class="col-sm-3 ">
-
-					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
-						data-link-field="taskMakeDateE" data-link-format="yyyy-mm-dd">
-						<input id="taskMakeDateE" class="form-control " size="16" type="text" value="" readonly>
-						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-					</div>
-					<input type="hidden" id="taskMakeDateE" value="" />
-				</div>
-			</div>
+			
 			<div class="form-group">
 				<label for="taskMakeDate" class="col-sm-2 control-label">本周日期范围:</label>
 				<div class="col-sm-3 ">
@@ -291,8 +260,7 @@
 		//过滤功能组 自定义过滤确认按钮-----
 		$('#FilterCancelBtnN').click(function () {
  
-			$("#taskMakeDateB").val("")
-			$("#taskMakeDateE").val("")
+ 
 
 			$("#taskFinishDateB").val("")
 			$("#taskFinishDateE").val("")
@@ -310,8 +278,8 @@
 		// tableExcelExport
 
 		$('#BTNExportExcel').click(function () {
-			var MakeDateB=$("#taskMakeDateB").val();
-			var MakeDateE=$("#taskMakeDateE").val();
+			var MakeDateB=$("#taskFinishDateB").val();
+			var MakeDateE=$("#taskFinishDateE").val();
 			var FinsDateB=$("#taskFinishDateB").val();
 			var FinsDateE=$("#taskFinishDateE").val();
 		      enterParamShip(MakeDateB,MakeDateE,FinsDateB,FinsDateE);

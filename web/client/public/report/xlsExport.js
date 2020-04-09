@@ -43,9 +43,12 @@ function enterShip() {
     console.log("lastend:"+lastend);
     console.log("weekbeg:"+weekbeg);
     console.log("weekend:"+weekend);
+    let yester = getPrevDay(weekbeg);
+    let now  = new Date();
+    var duedate = now.Format("yyyy-MM-dd");
     var SQL1 ={"reportType":'RateIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
     var SQL1H ={"reportType":'TaskIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL3 = {"SQL":"SQLNotDone","weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
+    var SQL3 = {"SQL":"SQLNotDone","yester":yester,"weekbeg":weekbeg,"weekend":weekend, "duedate":duedate};
     var SQL2A ={"reportType":'RateDpt',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
     var SQL2B ={"SQL":"SQLLateList","weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
    //SQLLateList  是用 ppm_bills_plan 做的
@@ -690,4 +693,12 @@ function getLastWeekRange() {
     let weekRange = [monday, sunday];
 
     return weekRange;
+}
+function getPrevDay(ThisDay) {
+    let oneDayLong = 24 * 60 * 60 * 1000;
+    let now = new Date(ThisDay);
+    let mondayTime = now.getTime() - (1) * oneDayLong; 
+    let monday = new Date(mondayTime);  
+    var dateFormat = monday.Format("yyyy-MM-dd");
+    return dateFormat;
 }

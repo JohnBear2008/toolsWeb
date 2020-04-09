@@ -22,6 +22,7 @@ module.exports = function(sender) {
    var param3="";  
    var param4=""; 
    var param5=""; 
+   var param6=""; 
     
    
  
@@ -35,11 +36,12 @@ module.exports = function(sender) {
 		break;	
 	case "SQLNotDone":
 		var SQLExecute=SQLNotDone;
-		  param1=sender.req.query.weekbeg;  
+		  param1=sender.req.query.yester;  
 		  param2=sender.req.query.weekbeg;  
 		  param3=sender.req.query.weekend;  
 		  param4=sender.req.query.weekbeg;  
 		  param5=sender.req.query.weekend;  
+		  param6=sender.req.query.duedate;  
 		break;	
 	case "SQLLateList":
 		var SQLExecute=SQLLateList;
@@ -85,7 +87,7 @@ module.exports = function(sender) {
     	
     	 yjDBService.exec({
     	        sql: SQLExecute,
-    	        parameters: [param1,param2,param3,param4,param5],
+    	        parameters: [param1,param2,param3,param4,param5,param6],
     	        rowsAsArray: false, // Chenly 2018-10-19 返回obj arr
     	        success: function(result) {
     	        	
