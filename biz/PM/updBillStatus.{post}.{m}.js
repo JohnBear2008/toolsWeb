@@ -3,14 +3,12 @@ module.exports = function (sender) {
     var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 
     // console.log("get:"+JSON.stringify(sender.req.query));
-
     ////   console.log("PM2333 test");
     //       
     var obj = sender.req.query;
     //    
     var updateContent = "";
     var filter = "";
-
 
     for (var key in obj) {
 
@@ -56,9 +54,6 @@ module.exports = function (sender) {
         var SQLUpdate = " update " + DBTable + " set " + updateContent + " where  " + BillIDName + "='" + BillID + "' and " + filter;
     }
 
-
-
-
     ////var SQLInsert="insert into PM_customer (cust_FID,cust_Name) values(110,110)";
 
     console.log("SQLUpdate:" + SQLUpdate);
@@ -69,6 +64,4 @@ module.exports = function (sender) {
         success: sender.success,
         error: sender.error
     });
-
-
 };
