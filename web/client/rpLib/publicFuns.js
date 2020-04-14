@@ -1099,7 +1099,7 @@ const uploadFiles = (files) => {
     }
 
     // //添加目录放置到指定文件夹
-    // formData.append("desDir", "rp");
+    formData.append("desDir", "rp");
 
     console.log('data:' + formData);
     formData.forEach((value, key) => console.log('formData:' + key + ':' + value));
@@ -1166,14 +1166,11 @@ const getSuccessFilesUrl = (obj) => {
                 filesLink = filesLink + '<a  href=' + "/system.files.download/" + file.key + ' download=' +
                     file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
             }
-
         }
-
     }
 
     console.log('filesLink:' + filesLink);
     return filesLink;
-
 }
 
 /**

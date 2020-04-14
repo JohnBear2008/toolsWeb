@@ -35,10 +35,10 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
       "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
         " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
         " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-        "     where ( taskMakeDate<=? and taskType='A' and "+
+        "     where ( taskMakeDate<=?  and "+
         "   ( (taskFinishDate>=? and taskFinishDate<=?)  or (WFEndText is null and taskFinishDate is null) )"+
         "   and (  IPQCAuditResultText is null  )	 )  "+
-        "   OR ( taskMakeDate>=? and taskMakeDate<=? and taskType='A'  and  ( BTStatus !=4 AND WFStatus!=0 ) and "+
+        "   OR ( taskMakeDate>=? and taskMakeDate<=?  and  ( BTStatus !=4 AND WFStatus!=0 ) and "+
         "     ? > taskLimitDate and IPQCAuditResultText is null ) ";
  
  

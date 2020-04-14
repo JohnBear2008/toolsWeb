@@ -274,7 +274,7 @@ function datatableReload(Params) {
 			dataSrc: ''
 		},
 		columns: Params.columnsData,
-		bStateSave:true,//刷新保留当前页
+		bStateSave: true, //刷新保留当前页
 		aaSorting: [0, 'desc'], //默认排序
 		lengthMenu: [10, 30, 50],
 		"language": languageCN
@@ -301,7 +301,7 @@ function datatableReloadWithExcel(Params) {
 			dataSrc: ''
 		},
 		columns: Params.columnsData,
-		bStateSave:true,//刷新保留当前页
+		bStateSave: true, //刷新保留当前页
 		aaSorting: [0, 'desc'], //默认排序
 		dom: 'Bfrtip',
 		buttons: [{
@@ -314,9 +314,6 @@ function datatableReloadWithExcel(Params) {
 		}],
 		"language": languageCN
 	});
-
-
-
 }
 
 
@@ -338,7 +335,7 @@ function divDatatableReloadWithExcel(Params) {
 			dataSrc: ''
 		},
 		columns: Params.columnsData,
-		bStateSave:true,//刷新保留当前页
+		bStateSave: true, //刷新保留当前页
 		aaSorting: [0, 'desc'], //默认排序
 		dom: 'Bfrtip',
 		buttons: [{
@@ -1487,7 +1484,7 @@ function Fun_showSQLTable(SQL, tableInfo) {
 			dataSrc: ''
 		},
 		columns: tableInfo.columnsData,
-		bStateSave:true,//刷新保留当前页
+		bStateSave: true, //刷新保留当前页
 		//		    bAutoWidth: true,//自动宽度，默认的属性为true。
 		//		    'ordering'  :false,//禁止排序,按数据库返回数据排序
 		aaSorting: [0, 'desc'], //默认排序,按第一列时间戳排序
@@ -1876,6 +1873,8 @@ function Fun_fillTrackTable(tableID, SQLParam) {
 
 
 function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
+	console.log('SQLParam',SQLParam);
+	
 
 
 	$(tableID + " thead").html("");
@@ -1910,6 +1909,8 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 		success: function (data) {
 
 			let dataR = NulltoEmpty(data);
+			console.log(data);
+			
 
 			if (dataR.length != 0) {
 
@@ -1962,7 +1963,7 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 
 					}
 
-					//       		  console.log("1111:"+dataR[i].DBID);
+					      		  console.log("1111:"+dataR[i].DBID);
 					trtd = trtd + "<td><a href='javascript:getDBIDInfo(\"" + SQLParam.tableName + "\"," + dataR[i].DBID + ")'>查看</a></td></tr>";
 					$(tableID + " tbody").append(trtd);
 
@@ -2048,8 +2049,6 @@ function getDBIDInfo(tableName, DBID) {
 					"modelH",
 					"applyDate",
 					"limitDate",
-					"FQCRequestText",
-					"FQCStaff",
 					"maker",
 					"makeDate",
 					"auditOpinion",
@@ -2140,7 +2139,7 @@ function getDBIDInfo(tableName, DBID) {
 					"updateReason",
 					"IPQCContent",
 					"IPQCTestResult",
-					
+
 
 
 				],
@@ -2176,7 +2175,7 @@ function getDBIDInfo(tableName, DBID) {
 					"updateReason",
 					"IPQCContent",
 					"IPQCTestResult",
-					
+
 				],
 				"filter": "DBID='" + DBID + "'"
 			};
@@ -2199,7 +2198,7 @@ function getDBIDInfo(tableName, DBID) {
 					"FQCResultText",
 					"FQCRemark",
 					"FQCTestResult",
-					
+
 				],
 				"filter": "DBID='" + DBID + "'"
 			};
@@ -2221,7 +2220,7 @@ function getDBIDInfo(tableName, DBID) {
 					"FQCResultText",
 					"FQCRemark",
 					"FQCTestResult",
-					
+
 				],
 				"filter": "DBID='" + DBID + "'"
 			};
@@ -2286,7 +2285,7 @@ function showDBIDInfo(tableID, SQLParam) {
 
 	$(tableID).html("");
 
-	// console.log("SQLParam:"+JSON.stringify(SQLParam));
+	console.log("SQLParam:"+JSON.stringify(SQLParam));
 
 	for (let i = 0; i < SQLParam.titles.length + 1; i++) {
 		$(tableID).append("<tr></tr>");
@@ -2325,7 +2324,7 @@ function showDBIDInfo(tableID, SQLParam) {
 		success: function (data) {
 
 			let dataR = NulltoEmpty(data);
-			//      	 swal(JSON.stringify(dataR));
+			     	//  swal(JSON.stringify(dataR));
 
 			if (dataR.length != 0) {
 				let trtd = "";
