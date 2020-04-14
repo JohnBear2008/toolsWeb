@@ -1224,11 +1224,19 @@ const deleteFiles = () => {
         let key = this.href
         key = key.split('/system.files.download/')[1];
 
-        key = key.replace(/%2F/g, '/')//替换/字符
-        alert(key)
-        var xhr = new XMLHttpRequest();
-        xhr.open("delete", "/system.files/" + key); //修改成自己的接口
-        xhr.send();
+        // // key = key.replace(/%2F/g, '/')//替换/字符
+        // console.log("")
+        // console.log(key)
+        // var xhr = new XMLHttpRequest();
+        // xhr.open("delete", "/system.files/"+key ); //修改成自己的接口
+        // xhr.send();
+        yjClient.ajax({
+            method:"delete",
+            url:"/system.files/"+key,
+            success:function(data){ 
+                console.log("delete ok!",data)
+            }
+        })
     })
     $('#files').html('')
 
