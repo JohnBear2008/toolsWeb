@@ -1160,7 +1160,7 @@ const getSuccessFilesUrl = (obj) => {
         let file = files[n][0];
         if (file.status === 'success') {
             if (obj.fields.desDir) {
-                filesLink = filesLink + '<a  href=' + "/system.files.download/" + obj.fields.desDir + "/" + file.key + ' download=' +
+                filesLink = filesLink + '<a  href=' + "/system.files.download/" + obj.fields.desDir + "%2F" + file.key + ' download=' +
                     file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
             } else {
                 filesLink = filesLink + '<a  href=' + "/system.files.download/" + file.key + ' download=' +
@@ -1223,7 +1223,9 @@ const deleteFiles = () => {
     $('#files').find('a').each(function () {
         let key = this.href
         key = key.split('/system.files.download/')[1];
-        // alert(key)
+
+        key = key.replace(/%2F/g, '/')//替换/字符
+        alert(key)
         var xhr = new XMLHttpRequest();
         xhr.open("delete", "/system.files/" + key); //修改成自己的接口
         xhr.send();
