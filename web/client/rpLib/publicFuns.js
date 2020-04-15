@@ -152,19 +152,20 @@ const divDataTableParams = (i) => {
                         // console.log(this.rows());
                     }
                 },
-                {
-                    text: '读取选中',
-                    action: function () {
-                        let dataSelected = this.rows({
-                            selected: true
-                        }).data();
+                // {
+                //     text: '读取选中',
+                //     action: function () {
+                //         let dataSelected = this.rows({
+                //             selected: true
+                //         }).data();
 
-                        for (let n = 0; n < dataSelected.length; n++) {
-                            // console.log(JSON.stringify(dataSelected[n]));
-                            alert(JSON.stringify(dataSelected[n]));
-                        }
-                    }
-                }, {
+                //         for (let n = 0; n < dataSelected.length; n++) {
+                //             // console.log(JSON.stringify(dataSelected[n]));
+                //             alert(JSON.stringify(dataSelected[n]));
+                //         }
+                //     }
+                // },
+                {
                     text: '新增',
                     action: function () {
 
@@ -1231,10 +1232,10 @@ const deleteFiles = () => {
         // xhr.open("delete", "/system.files/"+key ); //修改成自己的接口
         // xhr.send();
         yjClient.ajax({
-            method:"delete",
-            url:"/system.files/"+key,
-            success:function(data){ 
-                console.log("delete ok!",data)
+            method: "delete",
+            url: "/system.files/" + key,
+            success: function (data) {
+                console.log("delete ok!", data)
             }
         })
     })
