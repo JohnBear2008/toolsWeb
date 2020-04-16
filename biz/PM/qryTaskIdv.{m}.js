@@ -154,7 +154,7 @@ module.exports = function(sender) {
                 dataArr.push(obj);
             }
             sender.success(dataArr);
-             console.log("表头出货1总计",obj); 
+            //  console.log("表头出货1总计",obj); 
         }
     });     
   

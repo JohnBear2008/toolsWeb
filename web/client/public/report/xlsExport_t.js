@@ -49,8 +49,8 @@ function enterShip() {
     var SQL1 ={"reportType":'RateIdv_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
     var SQL1H ={"reportType":'TaskIdv_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
     var SQL3 = {"SQL":"SQLNotDone_t","yester":yester,"weekbeg":weekbeg,"weekend":weekend, "duedate":duedate};
-    var SQL2A ={"reportType":'RateDpt',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL2B ={"SQL":"SQLLateList_t","weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
+    var SQL2A ={"reportType":'RateDpt_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
+    var SQL2B ={"SQL":"SQLLateList_t","weekbeg":weekbeg,"weekend":weekend,  "duedate":duedate};
    //SQLLateList  是用 ppm_bills_plan 做的
     let ajax1h = $.ajax({
         url: '/app/PM/getRoute',
@@ -296,8 +296,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
    
     let space2B =[  ' ' ];
     let title2B =[  '软件出货情况分析' ];
-    let sub2Btitle =[ '软体出货延误率（目标值2%）','','','','','完成率','','','' 	];
-    let div2Btitle =[ '延期单数/本周总出货数','','','','','已完成总单/本周总单','','','' 	];		
+    let sub2Btitle =[ '软体出货延误率（目标值2%）','','','','','','','','' 	];
+    let div2Btitle =[ '延期单数/本周总出货数','','','','','','','','' 	];		
     // let sheet2Bdata = [  '0.0%','','','','', '97.4%' ,'','','' ];
     let sheet2Bdata=[];
     for (var i=0; i<kdataA.length; i++) {
@@ -306,7 +306,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         sheet2Bdata.push(''); 
         sheet2Bdata.push(''); 
         sheet2Bdata.push(''); 
-        sheet2Bdata.push(kdataA[i].PERC_DONE);  
+        sheet2Bdata.push(''); //        sheet2Bdata.push(kdataA[i].PERC_DONE);  
         sheet2Bdata.push(''); 
         sheet2Bdata.push(''); 
         sheet2Bdata.push(''); 
@@ -320,8 +320,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
 
     let space3B =[  ' ' ];
     let title3B =[  '软体出货延误率--延期单数' ];
-    let sub3Btitle =[ '单号','完成期限','面板修改人','主机修改人','厂商','修改内容','','','','延期时间','延期原因','DSP完成日期' ,'HMI完成日期',	];
-    finary.push( space3B );
+    let sub3Btitle =[ '单号','完成期限','修改人','测试人','厂商','修改内容','','','','申请日期','完成期限','邮件日期' ,	];    finary.push( space3B );
     finary.push( title3B );
     finary.push( sub3Btitle );
 
@@ -337,12 +336,11 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         speebook.push(kdataB[i].CTRName);
         speebook.push(kdataB[i].topic_cut);  
         speebook.push('');  
-        speebook.push('');  
-        speebook.push('');  
-        speebook.push('');  
-        speebook.push('');  
-        speebook.push(kdataB[i].DSPFinishDate);  
-        speebook.push(kdataB[i].HMIFinishDate);  
+        speebook.push(''); 
+        speebook.push(''); 
+        speebook.push(kdataB[i].applyDate); 
+        speebook.push(kdataB[i].limitDate);  
+        speebook.push(kdataB[i].emailDate);  
         finary.push(speebook); 
    }
 
@@ -531,7 +529,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     /* create a new blank workbook */
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet1,"个人出货状态" );
-    // XLSX.utils.book_append_sheet(wb, sheet2,"软体出货统计" );
+    XLSX.utils.book_append_sheet(wb, sheet2,"软体出货统计" );
     XLSX.utils.book_append_sheet(wb, sheet3, "未完成单数"); 
     const workbookBlob = workbook2blob(wb);
     let now = new Date();

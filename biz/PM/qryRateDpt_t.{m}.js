@@ -15,13 +15,13 @@ module.exports = function(sender) {
     sqlGetTableData = "SELECT * FROM ms_agent where FID=?  ";
     var sql_SoftDep1 = " Select `BPID`,`CTRName`, `PGEMaker`,`taskStaffs`,  `applyDate`," +
     " `limitDate`,  `makeDate`, auditDate,`PLDArea`,LEFT(tbb.`topic`, 256) as topic_cut" +
-    " from `ppm_bills_plan` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and PGEMaker in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID)  ";
+    " from `ppm_bills_plan_t` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and PGEMaker in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID)  ";
 
     var sql_SoftDep2 = "SELECT *  FROM `pm_Shipment` where staff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID) " ;
 
     var sql_SoftDep3 = " SELECT *  FROM `pm_neworder` where staff in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID)  " ;
    
-    var sql_Page2Num = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and tbb.LimitDate > tbb.WFEndDate  "+
+    var sql_Page2Num = "Select  count(*) as times from `ppm_bills_plan_t` tbb where tbb.LimitDate >'2019-11-20' and tbb.LimitDate < '2019-11-24' and tbb.LimitDate > tbb.WFEndDate  "+
                        " and PGEMaker in (Select staffName from ppm_staffs tb1 where tb1.staffRole='程序员' order by staffID) "; 
 
     var staff =[ "梅迪凡","王涛","王浩宇","沈航凯","虞晔文","俞洋","裘凯迪", "王锋","陈浩天","张铖","单霖霖","孙维泽","方林杰","柳张成", "谷永亮","赵韦","杨金鑫","谢涛","戎桂"];
@@ -34,63 +34,63 @@ module.exports = function(sender) {
     //上周单   1118-1125
     var sql_Page2A1 = 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? ";
     //本周新单  1125~1202
     var sql_Page2A2 = 
 " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-" AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+" AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
 " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-" (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+" (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
 " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate >? and ApplyDate < ? ";
 
       //按时完成 
     var sql_Page2B1 =
-    //  " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    //  " Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     // " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate > tbb.limitdate and tbb.applyDate >? and tbb.applyDate <?    "; 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where emaildate <= limitdate and ApplyDate >? and ApplyDate < ? and WFEndText is not null ";
         
    //延期已完成 ok
     var sql_Page2B2 =
-    //  " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    //  " Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     // " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate <= tbb.limitdate and tbb.applyDate >? and tbb.applyDate <?    "; 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where emaildate > limitdate and ApplyDate >? and ApplyDate < ? and WFEndText is not null";
     //客户取消
     var sql_Page2B3 = 
-    // " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    // " Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     // " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate is null and tbb.applyDate >? and tbb.applyDate <?    ";               
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where WFEndText='终止归档'  and ApplyDate >? and ApplyDate < ?   ";
   
     //延期未完成 3参数   
     var sql_Page2C1 = 
-    // "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    // "Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     // " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and (tbb.LimitDate > ? and tbb.LimitDate <> '') and tbk.taskFinishDate is null   "; 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >? and ApplyDate < ?  and ? > LimitDate  and WFEndDate is NUll  and WFEndText is NULL ";
 
     //期限未到  // (tbb.LimitDate <= dueDate and tbb.LimitDate <> '' ) and tbk.taskFinishDate is null
     var sql_Page2C2 =
-    //  "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    //  "Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     // " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and (tbb.LimitDate <= ? and tbb.LimitDate <> '') and tbk.taskFinishDate is null   "; 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >? and ApplyDate < ?  and ? <= LimitDate  and WFEndDate is NUll  and WFEndText is NULL ";
@@ -98,7 +98,7 @@ module.exports = function(sender) {
    //上周遗留按时通过
     var sql_RemainDone = 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and emaildate <= limitdate  and WFEndText is not null";
@@ -106,7 +106,7 @@ module.exports = function(sender) {
     //上周遗留延时通过 
     var sql_RemainLateDone = 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and emaildate > limitdate  and WFEndText is not null";
@@ -114,20 +114,20 @@ module.exports = function(sender) {
    //上周遗留未完成
     var sql_RemainNotDo = 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and WFEndDate is NUll  and WFEndText is NULL ";
 
     //其他  notdone
-    var sql_Page2C3 = "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    var sql_Page2C3 = "Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and tbb.LimitDate is null and tbk.taskFinishDate is null   "; 
     //tbb.LimitDate is null and tbk.taskFinishDate is null
     //延期单数/本周总出货数  
-    var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan_t` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
     "  and  tbb.LimitDate > tbb.auditDate  ";   // B2/(B1)
     //已完成总单/本周总单  
-    var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan_t` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
     "  and tbb.auditDate <> '' ";        //  B-all/A2
 
     var dataArr=[]; 

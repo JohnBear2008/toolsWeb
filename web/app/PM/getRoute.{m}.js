@@ -23,8 +23,8 @@ module.exports = function (sender) {
         case "RateIdv_t":
             url = ["PM", "qryRateIdv_t"];
             break;
-        case "RateDpt":
-            url = ["PM", "qryRateDpt"];
+        case "RateDpt_t":
+            url = ["PM", "qryRateDpt_t"];
             break;
         default:
             console.log(" 不良率找不到路由");
