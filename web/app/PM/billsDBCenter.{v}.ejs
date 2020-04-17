@@ -200,7 +200,7 @@
 				<th>计划单号</th>
 				<th>最大版本号</th>
 				<th>客户简称</th>
-				<th>开始时间</th>
+				<th>申请时间</th>
 				<th>完成期限</th>
 				<th>结束时间</th>
 				<th>分配任务数量</th>
@@ -795,7 +795,7 @@
 					data: 'CTRName'
 				},
 				{
-					data: 'makeDate'
+					data: 'applyDate'
 				},
 				{
 					data: 'limitDate'
@@ -851,10 +851,11 @@
 			case 'all':
 
 				if (filterResult !== "") {
-					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult + " ) OR WFEndDate IS NULL";
+					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult +
+						" ) OR (WFStatus<>0 AND WFStatus<>100 ) ";
 
 				} else {
-					filterResult = "(WFStatus=0 OR WFStatus=100) OR WFEndDate IS NULL"
+					filterResult = "(WFStatus=0 OR WFStatus=100) OR (WFStatus<>0 AND WFStatus<>100 )"
 				}
 
 				if (filter.divFilter !== "") {
@@ -904,7 +905,7 @@
 					data: 'topic'
 				},
 				{
-					data: 'makeDate'
+					data: 'applyDate'
 				},
 				{
 					data: 'limitDate'
