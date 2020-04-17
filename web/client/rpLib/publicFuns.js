@@ -844,12 +844,104 @@ const getBillDataTableConfig = (i) => {
         language: languageCN
     }
 
+    let dtConfigFull = {
+        ajax: {
+            url: '/app/RP/lib/ajaxGet',
+            data: {
+                sql: 'sqlId',
+                params: {}
+            },
+            dataSrc: ''
+        },
+        columns: [],
+        select: true, //允许多选操作
+        bStateSave: true, //刷新保存当前页码
+        // dom: 'Bfrtlip',
+        dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+        buttons: [
+            'copy',
+            'excel',
+            // 'csv', 
+            'print',
+            'colvis',
+            {
+                text: '全选',
+                action: function () {
+                    this.rows({
+                        page: 'current'
+                    }).select();
+                }
+            }, {
+                text: '取消全选',
+                action: function () {
+                    this.rows({
+                        page: 'current'
+                    }).deselect();
+                }
+            },
+            {
+                text: '新增',
+                action: function () {
+                    // 取消选择
+                    this.rows().deselect();
+                    //清空div
+                    initFormInputs({
+                        formId: i.elementId + 'Form'
+                    })
+                    //打开面板
+                    $('#' + i.elementId + 'ModalOpen').click();
+                }
+            },
+            {
+                text: '删除',
+                action: function () {
+                    let DBIDArray = []
+                    let dataSelected = this.rows({
+                        selected: true
+                    }).data();
+                    for (let n = 0; n < dataSelected.length; n++) {
+                        console.log(JSON.stringify(dataSelected[n]));
+                        DBIDArray.push(dataSelected[n].DBID)
+                    }
+                    // console.log(DBIDArray);
+
+                    if (DBIDArray.length > 0) {
+                        if (confirm('删除后无法恢复,请再次确认!')) {
+                            let sqlParams = {
+                                sql: 'delete',
+                                params: {
+                                    tableId: i.sqlParams.params.tableId,
+                                    data: DBIDArray
+                                }
+                            }
+                            let updateDataTableI = {
+                                elementId: i.elementId,
+                                sqlParams: sqlParams
+                            }
+                            updateDataTable(updateDataTableI);
+                        }
+                    } else {
+                        alert('请点击表格,至少选中一条数据!')
+                    }
+
+                }
+            },
+        ],
+        language: languageCN
+
+    }
+
 
     let o;
     let dtConfig;
 
     //替换定义参数模版
     switch (i.dtParams.dtConfig) {
+        case 'dtConfigFull':
+            dtConfig = dtConfigFull;
+            break;
         case 'dtConfigData':
             dtConfig = dtConfigData;
             break;

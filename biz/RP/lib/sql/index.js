@@ -54,6 +54,9 @@ const sqlSubRecordBills = "select * from `rp_recordbills`"
 //出货单作为子表sql
 const sqlSubResponseBills = "select * from `rp_responsebills`"
 
+//查找指定表名中所有数据
+const sqlTableSelect = "select * from `tableId`";
+
 /**
  *更具传入参数创建执行sql语句
  *
@@ -254,6 +257,10 @@ const createSql = (i) => {
 		default:
 			excuteSql = eval(i.sql);
 			if (i.params) {
+
+				if (i.params.tableId) {
+					excuteSql = excuteSql.replace(/tableId/, i.params.tableId)
+				}
 				if (i.params.filter) {
 					excuteSql = excuteSql + ' where ' + i.params.filter
 				}
