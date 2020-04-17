@@ -41,6 +41,12 @@
         </div>
     </div>
 
+    <div>
+        <button type="button" style="display: none;" id="rp_customersNew">
+            新增
+        </button>
+    </div>
+
 
     <div class="row clearfix">
         <div class="col-md-12 column">
@@ -55,6 +61,7 @@
                         <th>客户类型</th>
                         <th>联系人</th>
                         <th>手机号</th>
+                        <th>保存时间</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -176,6 +183,14 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label class="col-sm-1 control-label">多联系人</label>
+                                    <div class="col-sm-11">
+                                        <textarea id="rp_customersForm-contacts" placeholder='范例:  张三,13512345678;'
+                                            class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <label class="col-sm-1 control-label">工作电话</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_customersForm-workPhone" type="text"
@@ -203,8 +218,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">信用等级</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_customersForm-creditRank" type="text"
-                                            value="">
+                                        <select id="rp_customersForm-creditRank" class="selectpicker form-control">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">纳税号</label>
@@ -214,10 +229,16 @@
                                 </div>
 
 
+
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">备注</label>
-                                    <div class="col-sm-11">
-                                        <textarea id="rp_customersForm-remark" class="form-control" rows="3"></textarea>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_customersForm-remark" type="text" value="">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">备注人</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_customersForm-remarker"></p>
                                     </div>
                                 </div>
 
@@ -230,7 +251,14 @@
                                             <option>否</option>
                                         </select>
                                     </div>
+
+                                    <label class="col-sm-1 control-label">保存人</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_customersForm-creater"></p>
+                                    </div>
                                 </div>
+
+
 
                             </form>
                         </div>
@@ -273,6 +301,8 @@
             data: 'contact',
         }, {
             data: 'mobilePhone',
+        }, {
+            data: 'saveTimeStamp',
         }
     ]
 
@@ -280,6 +310,8 @@
     const mainDtParams = {
         dtConfig: 'dtConfigFull',
         columns: mainColumnsArray
+
+
     }
 
     //添加主表监听器,定义双击打开事件
@@ -314,12 +346,33 @@
                 sqlId: 'sqlTableSelect',
                 params: {
                     tableId: 'rp_customers',
-                    orderBy: 'saveTimeStamp desc'
+                    orderBy: 'saveTimeStamp asc'
                 }
             },
             dtParams: mainDtParams
         })
     }
+
+
+    //新增客户 
+    const addCustomer = async () => {
+        clearFormInputs({
+            formId: 'rp_customersForm'
+        })
+
+        //设置初始值
+        $('#rp_customersForm-customerType').selectpicker('val', '客户');
+        $('#rp_customersForm-paymentType').selectpicker('val', '款到发货');
+        $('#rp_customersForm-creditRank').selectpicker('val', '正常');
+        $('#rp_customersForm-effective').selectpicker('val', '是');
+
+        
+        
+        //打开面板
+        $('#rp_customersModalOpen').click();
+
+    }
+
 
     //保存客户
     const saveCustomer = async () => {
@@ -373,6 +426,13 @@
 
 
 
+
+
+        //客户新增按钮
+        $('#rp_customersNew').click(function () {
+            addCustomer();
+        })
+
         //表单保存按钮
         $('#rp_customersSave').click(function () {
 
@@ -384,8 +444,10 @@
             elementId: 'rp_customersForm-customerType',
             sqlParams: {
                 sql: 'getOptionSelector',
+                initValue: '客户',
                 params: {
-                    filter: 'optionClass="客户类型"'
+                    filter: 'optionClass="客户类型"',
+                    orderBy: 'orderId'
                 }
             },
         })
@@ -395,15 +457,30 @@
             sqlParams: {
                 sql: 'getOptionSelector',
                 params: {
-                    filter: 'optionClass="收款方式"'
+                    filter: 'optionClass="收款方式"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_customersForm-creditRank',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="信用等级"',
+                    orderBy: 'orderId'
                 }
             },
         })
 
 
 
+
         loadBootStrapSelector({
             elementId: 'rp_customersForm-customerBelongShort',
+            // initValue:'',
             sqlParams: {
                 sql: 'getCustomerSelector',
                 params: {
@@ -423,6 +500,16 @@
 
 
         addCustomerAreaListener()
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_customersModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_customers').DataTable();
+            table.$('tr.selected').removeClass('selected');
+
+
+        })
+
 
 
 

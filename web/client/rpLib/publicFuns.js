@@ -856,6 +856,8 @@ const getBillDataTableConfig = (i) => {
         columns: [],
         select: true, //允许多选操作
         bStateSave: true, //刷新保存当前页码
+        // ordering:false,//禁止排序
+        order: [], //禁止初始排序
         // dom: 'Bfrtlip',
         dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -884,14 +886,22 @@ const getBillDataTableConfig = (i) => {
             {
                 text: '新增',
                 action: function () {
+
                     // 取消选择
                     this.rows().deselect();
-                    //清空div
-                    initFormInputs({
-                        formId: i.elementId + 'Form'
-                    })
-                    //打开面板
-                    $('#' + i.elementId + 'ModalOpen').click();
+                    //自动按下隐藏的自定义新增按钮
+                    $('#' + i.elementId + 'New').click();
+
+                    
+                    // //清空div
+
+                    // //
+
+                    // initFormInputs({
+                    //     formId: i.elementId + 'Form'
+                    // })
+                    // //打开面板
+                    // $('#' + i.elementId + 'ModalOpen').click();
                 }
             },
             {
