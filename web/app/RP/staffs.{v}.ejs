@@ -4,13 +4,18 @@
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
 
+
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
 
+
 <!-- 导入bootstrapSelect -->
 <link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
 <script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+
+<!-- 导入ChinesePY -->
+<script type="text/javascript" src="/rpLib/ChinesePY/ChinesePY.js"></script>
 
 <!-- 导入datatimepicker -->
 <link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
@@ -21,6 +26,7 @@
 
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
 
 <!-- 定义html元素 -->
 <div class="rpContent">
@@ -36,7 +42,11 @@
     </div>
 
 
-
+    <div>
+        <button type="button" style="display: none;" id="rp_staffsNew">
+            新增
+        </button>
+    </div>
 
 
     <div class="row clearfix">
@@ -52,6 +62,7 @@
                         <th>职位</th>
                         <th>手机号</th>
                         <th>入职日期</th>
+                        <th>保存日期</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -68,7 +79,7 @@
     <!-- 模态框（Modal） -->
     <div class="modal fade" id="rp_staffsModal" tabindex="-1" role="dialog" aria-hidden="true">
 
-        <div class="modal-dialog" style="width: 65%;">
+        <div class="modal-dialog" style="width: 70%; ">
 
             <!-- 按钮触发模态框 -->
             <button class="btn btn-primary" data-toggle="modal" data-target="#rp_staffsModal" id="rp_staffsModalOpen"
@@ -93,7 +104,7 @@
 
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
-                        <div class="panel-body">
+                        <div class="panel-body" style="min-height: 500px;">
 
 
                             <form class="form-horizontal" role="form" id='rp_staffsForm'>
@@ -104,6 +115,12 @@
                                     <label class="col-sm-1 control-label">人员编号</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_staffsForm-staffId" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">身份证号</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_staffsForm-identity" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -133,44 +150,40 @@
 
                                     <label class="col-sm-1 control-label">职位</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-position" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_staffsForm-position" class="selectpicker"
+                                            data-dropup-auto="true">
+                                        </select>
                                     </div>
 
 
 
                                     <label class="col-sm-1 control-label">学历</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-education" type="text"
-                                            value="该输入框获得焦点...">
+
+                                        <select id="rp_staffsForm-education" class="selectpicker"
+                                            data-dropup-auto="true">
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">身份证号</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-identity" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
 
-                                    <label class="col-sm-1 control-label">区域</label>
+
+                                    <label class="col-sm-1 control-label">国家地区</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-region" type="text"
-                                            value="该输入框获得焦点...">
+
+                                        <select id="rp_staffsForm-region" class="selectpicker form-control"
+                                            data-live-search="true" data-size="5">
+                                        </select>
                                     </div>
 
 
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">城市</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-city" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
 
                                     <label class="col-sm-1 control-label">地址</label>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-11">
                                         <input class="form-control" id="rp_staffsForm-address" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
@@ -178,15 +191,16 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">邮编</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-zipcode" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
 
                                     <label class="col-sm-1 control-label">移动电话</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_staffsForm-mobilePhone" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">工作电话</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_staffsForm-workPhone" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -195,22 +209,36 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">生日</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-birthday" type="text"
-                                            value="该输入框获得焦点...">
+                                        <div class="input-group date form_date ">
+                                            <input id="rp_staffsForm-birthday" class="form-control " size="16"
+                                                type="text" value="" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
                                     </div>
 
                                     <label class="col-sm-1 control-label">入职日期</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_staffsForm-entryDate" type="text"
-                                            value="该输入框获得焦点...">
+                                        <div class="input-group date form_date ">
+                                            <input id="rp_staffsForm-entryDate" class="form-control " size="16"
+                                                type="text" value="" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
                                     </div>
 
                                 </div>
 
 
-
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">是否有效</label>
+                                    <label class="col-sm-1 control-label">在职状态</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_staffsForm-inservice" class="selectpicker"
+                                            data-dropup-auto="true">
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">有效性</label>
                                     <div class="col-sm-5">
                                         <select id="rp_staffsForm-effective" class="selectpicker"
                                             data-dropup-auto="true">
@@ -244,47 +272,221 @@
 
 
 
-
-
-
 <script type="text/javascript">
+    const mainColumnsArray = [{
+            data: 'staffId'
+        },
+        {
+            data: 'staffName'
+        }, {
+            data: 'position'
+        }, {
+            data: 'mobilePhone',
+        }, {
+            data: 'entryDate',
+        }, {
+            data: 'saveTimeStamp',
+        }
+    ]
+
+    //表dt参数
+    const mainDtParams = {
+        dtConfig: 'dtConfigFull',
+        columns: mainColumnsArray
+    }
+
+
+    //添加主表监听器,定义双击打开事件
+
+    const addMainTableListener = () => {
+        //定义主表双击事件
+        $('#rp_staffs tbody').on('dblclick', 'tr', function () {
+
+            //设定选中
+            let table = $('#rp_staffs').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_staffsForm',
+                params: dataSelect
+            })
+
+            //打开面板
+            $('#rp_staffsModal').modal('show');
+
+        });
+    }
+    //主表加载数据函数;
+    const loadBillMainTable = async () => {
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_staffs',
+            sqlParams: {
+                sqlId: 'sqlTableSelect',
+                params: {
+                    tableId: 'rp_staffs',
+                    orderBy: 'saveTimeStamp asc'
+                }
+            },
+            dtParams: mainDtParams
+        })
+    }
+
+    //新增人员 
+    const addStaff = async () => {
+        clearFormInputs({
+            formId: 'rp_staffsForm'
+        })
+
+        //设置初始值
+
+        $('#rp_staffsForm-inservice').selectpicker('val', '在职');
+        $('#rp_staffsForm-effective').selectpicker('val', '是');
+
+        //打开面板
+        $('#rp_staffsModalOpen').click();
+
+    }
+
+
+
+    //保存人员
+    const saveStaff = async () => {
+        console.log('saveStaff run');
+
+        let mainFormData = getPostFormData({
+            formId: 'rp_staffsForm'
+        })
+
+        console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: mainFormData
+        })
+
+        if (r1.affectedRows > 0) {
+            alert('保存成功!')
+
+            // $('#rp_staffsModal').modal('hide');多层modal存在失效问题,改用click关闭
+            $('#rp_staffsModalClose').click()
+
+            loadBillMainTable();
+        } else {
+            alert('出现错误!')
+        }
+
+    }
+
+    //姓名监听器
+    const addStaffNameListener = () => {
+        $('#rp_staffsForm-staffName').unbind();
+        $('#rp_staffsForm-staffName').change(function () {
+            let staffName = $('#rp_staffsForm-staffName').val();
+            if (staffName) {
+                let pinyin = Pinyin.GetJP(staffName).toUpperCase()
+                $('#rp_staffsForm-pinyin').val(pinyin);
+            }
+        });
+    }
+
+
+    //区域监听器
+    const addRegionListener = () => {
+        $('#rp_staffsForm-region').unbind();
+        $('#rp_staffsForm-region').change(function () {
+            let region = $('#rp_staffsForm-region option:selected').val();
+            if (region) {
+                let regionText = region.replace(/-/g, '')
+                let address = $('#rp_staffsForm-address').val()
+                if (address.indexOf('regionText') === -1) {
+                    $('#rp_staffsForm-address').val(regionText + address);
+                }
+            }
+        });
+    }
+
+
+
+
     $(document).ready(function () {
 
 
-        //加载表格
-        loadDataTable({
-            elementId: 'rp_staffs',
+        //初始化主表
+        loadBillMainTable();
+
+        //添加主表监听
+        addMainTableListener();
+
+
+        //客户新增按钮
+        $('#rp_staffsNew').click(function () {
+            addStaff();
+        })
+
+        //表单保存按钮
+        $('#rp_staffsSave').click(function () {
+
+            saveStaff();
+        })
+
+
+        //初始化组件
+        loadDatePicker({
+            elementId: "rp_staffsForm-birthday",
+        })
+
+        loadDatePicker({
+            elementId: "rp_staffsForm-entryDate",
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_staffsForm-region',
             sqlParams: {
-                tableId: 'rp_staffs',
-                filter: ''
+                sql: 'getRegionSelector'
             },
-            dtParams: {
-                columns: [{
-                        data: 'staffId'
-                    },
-                    {
-                        data: 'staffName'
-                    }, {
-                        data: 'position'
-                    }, {
-                        data: 'mobilePhone',
-                    }, {
-                        data: 'entryDate',
-                    }
-                ],
-            }
+            // initValue:'中国,北京'
         })
 
 
 
+        loadBootStrapSelector({
+            elementId: 'rp_staffsForm-position',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="职位"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
-        // loadBootStrapSelector({
-        //     elementId: 'customerArea',
-        //     sqlParams: {
-        //         sql: 'getRegionSelector'
-        //     },
-        //     // initValue:'中国,北京'
-        // })
+        loadBootStrapSelector({
+            elementId: 'rp_staffsForm-education',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="学历"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_staffsForm-inservice',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="在职状态"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
         // loadDatePicker({
         //     elementId: 'saveTimeStamp',
@@ -292,6 +494,20 @@
         //         endDate: '2019-12-30'
         //     }
         // })
+
+
+        addStaffNameListener()
+
+        addRegionListener()
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_staffsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_staffs').DataTable();
+            table.$('tr.selected').removeClass('selected');
+
+
+        })
 
 
 
