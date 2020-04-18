@@ -369,11 +369,37 @@
     }
 
 
+
+
+
     //保存客户
     const saveCustomer = async () => {
+
+        //检查保存条件
+        if (!$('#rp_customersForm-customerId').val()) {
+            alert('客户编号未填!')
+            return
+        }
+
+
+        //检查保存条件
+        if ($('#rp_customersForm-creditRank option:selected').val() === '黑名单' &&
+            $('#rp_customersForm-remark').val() === '') {
+            alert('顾客设为黑名单,必须在备注中注明原因!')
+            return
+        }
+
         let mainFormData = getPostFormData({
             formId: 'rp_customersForm'
         })
+
+
+        
+
+        //有备注时记录备注人
+        if (mainFormData.data[0].remark) {
+            mainFormData.data[0].remarker = sessionName
+        }
 
         console.log('mainFormData:' + JSON.stringify(mainFormData));
 
@@ -412,6 +438,9 @@
 
 
     $(document).ready(function () {
+
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
 
         //初始化主表
         loadBillMainTable();

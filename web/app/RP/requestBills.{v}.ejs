@@ -268,7 +268,9 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label" for="rp_requestbillsForm-contact">联系人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-contact" type="text">
+                                        <!-- <input class="form-control" id="rp_requestbillsForm-contact" type="text"> -->
+                                        <select id="rp_requestbillsForm-contact" class="selectpicker">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label"
@@ -345,9 +347,9 @@
 
                                     <!-- 功能组按钮 -->
                                     <div class="well">
-                                        <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
                                         <button id='btnAddProduct' type="button" class="btn btn-info">新增产品</button>
                                         <button id='btnDeleteProduct' type="button" class="btn btn-danger">删除产品</button>
+                                        <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
@@ -748,6 +750,43 @@
         // console.log('r1:' + JSON.stringify(r1));
 
         customerData = r1[0]; //将查询结果赋给全局变量
+        console.log('customerData:' + JSON.stringify(customerData));
+
+        //黑名单警告
+        if (customerData.creditRank === '黑名单') {
+            alert('当前客户为黑名单客户!备注:' + customerData.remark + ',备注人:' + customerData.remarker)
+        }
+
+        //补齐联系人待选项
+        let contacts = [];
+        if (customerData.contact) {
+            contacts.push({
+                name: customerData.contact,
+                phone: customerData.mobilePhone
+            })
+        }
+
+
+        if (customerData.contacts) {
+
+
+            let contactsStr = customerData.contacts;
+
+            console.log('contactsStr', contactsStr);
+            let contactsArr = contactsStr.split(';')
+            console.log('contactsArr', contactsArr);
+            for (const n of contactsArr) {
+                let name = n.split(',')[0];
+                let phone = n.split(',')[1];
+                contacts.push({
+                    name: name,
+                    phone: phone
+                })
+            }
+        }
+
+        loadContacts(contacts)
+
 
         let r2 = r1[0]
         delete r2.customerShortName;
@@ -1196,6 +1235,35 @@
         }
 
         return resultData;
+    }
+
+
+    //加载多联系人数据
+    const loadContacts = (contacts) => {
+        console.log('contacts', contacts);
+
+        $("#rp_requestbillsForm-contact").empty(); //清空原有
+        for (const contact of contacts) {
+            $("#rp_requestbillsForm-contact").append(
+                "<option data-tokens='" + contact.phone + " ' value='" + contact.name + "'>" + contact.name +
+                "</option>"
+            );
+        }
+
+        $("#rp_requestbillsForm-contact").selectpicker('refresh');
+
+        //添加监听事件
+
+        $('#rp_requestbillsForm-contact').unbind();
+        $('#rp_requestbillsForm-contact').change(function () {
+            let contact = $('#rp_requestbillsForm-contact option:selected').val();
+            if (contact) {
+                $('#rp_requestbillsForm-mobilePhone').val($('#rp_requestbillsForm-contact option:selected')
+                    .data("tokens"));
+            }
+        });
+
+
     }
 
 
