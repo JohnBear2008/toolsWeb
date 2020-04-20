@@ -248,6 +248,12 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_requestbillsForm-isInland">国内外</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_requestbillsForm-isInland" class="selectpicker">
+
+                                        </select>
+                                    </div>
 
                                     <label class="col-sm-1 control-label"
                                         for="rp_requestbillsForm-customerArea">客户区域</label>
@@ -256,11 +262,13 @@
                                             data-live-search="true" data-size="10">
                                         </select>
                                     </div>
+                                </div>
 
-                                    <label class="col-sm-1 control-label" for="rp_requestbillsForm-isInland">国内外</label>
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="customerContacts">可选联系人</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_requestbillsForm-isInland" class="selectpicker">
-
+                                        <!-- <input class="form-control" id="rp_requestbillsForm-contact" type="text"> -->
+                                        <select id="customerContacts" class="selectpicker">
                                         </select>
                                     </div>
                                 </div>
@@ -268,9 +276,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label" for="rp_requestbillsForm-contact">联系人</label>
                                     <div class="col-sm-5">
-                                        <!-- <input class="form-control" id="rp_requestbillsForm-contact" type="text"> -->
-                                        <select id="rp_requestbillsForm-contact" class="selectpicker">
-                                        </select>
+                                        <input class="form-control" id="rp_requestbillsForm-contact" type="text">
                                     </div>
 
                                     <label class="col-sm-1 control-label"
@@ -885,16 +891,8 @@
             let dataSelect = table.row('.selected').data();
 
 
-
-
-
-
-
             //解除客户监听事件
             // $('#rp_requestbillsForm-customerShortName').unbind();
-
-
-
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
@@ -1039,49 +1037,7 @@
         }
 
 
-        console.log('customerData:' + JSON.stringify(customerData));
-        console.log('mainFormData:' + JSON.stringify(mainFormData));
 
-        //定义当前表内实际填写客户数据
-        let billCustomerData = {
-            customerId: mainFormData.data[0].customerId,
-            customerArea: mainFormData.data[0].customerArea,
-            customerName: mainFormData.data[0].customerName,
-            contact: mainFormData.data[0].contact,
-            mobilePhone: mainFormData.data[0].mobilePhone,
-            customerBelongShort: mainFormData.data[0].customerBelongShort,
-            customerBelongFull: mainFormData.data[0].customerBelongFull,
-            isInland: mainFormData.data[0].isInland
-        }
-
-        //判断当前表内客户数据是否存在更新;
-        let compareResult = true;
-        for (const p in billCustomerData) {
-            if (billCustomerData[p] !== customerData[p]) {
-
-                console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
-
-                compareResult = false;
-                break;
-            }
-        }
-
-        //存在不同则更新客户信息
-        if (!compareResult) {
-
-            let rc = await postDBData({
-                sql: 'update',
-                params: {
-                    tableId: 'rp_customers',
-                    data: [billCustomerData],
-                    key: 'customerId'
-                }
-            })
-
-            if (rc.affectedRows > 0) {
-                alert('更新客户信息成功!')
-            }
-        }
 
         let r1 = await postDBData({
             sql: 'replace',
@@ -1116,13 +1072,63 @@
         if (r1.affectedRows > 0 && r2.affectedRows > 0) {
             alert('保存成功!')
 
-            // $('#rp_requestbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
-            $('#rp_requestbillsModalClose').click()
 
-            loadBillMainTable();
         } else {
             alert('出现错误!')
         }
+
+        //更新客户信息功能
+
+        console.log('customerData:' + JSON.stringify(customerData));
+        console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        //定义当前表内实际填写客户数据
+        let billCustomerData = {
+            customerId: mainFormData.data[0].customerId,
+            customerArea: mainFormData.data[0].customerArea,
+            customerName: mainFormData.data[0].customerName,
+            contact: mainFormData.data[0].contact,
+            mobilePhone: mainFormData.data[0].mobilePhone,
+            customerBelongShort: mainFormData.data[0].customerBelongShort,
+            customerBelongFull: mainFormData.data[0].customerBelongFull,
+            isInland: mainFormData.data[0].isInland
+        }
+
+        //判断当前表内客户数据是否存在更新;
+        let compareResult = true;
+        for (const p in billCustomerData) {
+            if (billCustomerData[p] !== customerData[p]) {
+
+                console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
+
+                compareResult = false;
+                break;
+            }
+        }
+
+        //存在不同则更新客户信息
+        if (!compareResult) {
+
+            if (confirm('是否更新该客户基础信息?')) {
+                let rc = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'rp_customers',
+                        data: [billCustomerData],
+                        key: 'customerId'
+                    }
+                })
+                if (rc.affectedRows > 0) {
+                    alert('更新客户信息成功!')
+                }
+
+            }
+        }
+
+        // $('#rp_requestbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
+        $('#rp_requestbillsModalClose').click()
+
+        loadBillMainTable();
 
 
     }
@@ -1242,31 +1248,35 @@
     const loadContacts = (contacts) => {
         console.log('contacts', contacts);
 
-        $("#rp_requestbillsForm-contact").empty(); //清空原有
-        for (const contact of contacts) {
-            $("#rp_requestbillsForm-contact").append(
-                "<option data-tokens='" + contact.phone + " ' value='" + contact.name + "'>" + contact.name +
-                "</option>"
-            );
+        $("#customerContacts").empty(); //清空原有
+
+        if (contacts.length > 0) {
+            for (const contact of contacts) {
+                $("#customerContacts").append(
+                    "<option data-tokens='" + contact.phone + " ' value='" + contact.name + "'>" + contact
+                    .name +
+                    "</option>"
+                );
+            }
+            $("#customerContacts").selectpicker('refresh');
         }
 
-        $("#rp_requestbillsForm-contact").selectpicker('refresh');
 
         //添加监听事件
 
-        $('#rp_requestbillsForm-contact').unbind();
-        $('#rp_requestbillsForm-contact').change(function () {
-            let contact = $('#rp_requestbillsForm-contact option:selected').val();
+        $('#customerContacts').unbind();
+        $('#customerContacts').change(function () {
+            let contact = $('#customerContacts option:selected').val();
             if (contact) {
-                $('#rp_requestbillsForm-mobilePhone').val($('#rp_requestbillsForm-contact option:selected')
+                $('#rp_requestbillsForm-contact').val($('#customerContacts option:selected')
+                    .val());
+                $('#rp_requestbillsForm-mobilePhone').val($('#customerContacts option:selected')
                     .data("tokens"));
             }
         });
 
 
     }
-
-
 
 
     $(document).ready(function () {

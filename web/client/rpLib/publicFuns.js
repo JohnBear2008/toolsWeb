@@ -590,7 +590,11 @@ const initFormInputs = (i) => {
     let selectArr = $("#" + i.formId).find('select');
     for (const n of selectArr) {
         // n.options[0].selected = true;
-        $(n).selectpicker('val', n.options[0].value);
+        // console.log('n options:', n.options);
+        //无待选项则不更新,避免报错导致整个页面加载失败
+        if (n.options.length > 0) {
+            $(n).selectpicker('val', n.options[0].value);
+        }
     }
 }
 
@@ -776,14 +780,14 @@ const updateDataTable = async (i) => {
  *
  * @param {*} i={elementId,sqlParams,dtParams}
  */
-const loadBillDataTable = async (i) => {
+const loadBillDataTable = (i) => {
     // console.log("loadBillDataTable i:" + JSON.stringify(i));
     $('#' + i.elementId).DataTable().destroy(); //销毁原数据表格,防止加载错误
 
     //获得r1={dataTable 参数}
     let r1 = getBillDataTableConfig(i);
     // console.log('r1:' + JSON.stringify(r1));
-    let table = $('#' + i.elementId).DataTable(r1);
+    $('#' + i.elementId).DataTable(r1);
 
 }
 
@@ -892,7 +896,7 @@ const getBillDataTableConfig = (i) => {
                     //自动按下隐藏的自定义新增按钮
                     $('#' + i.elementId + 'New').click();
 
-                    
+
                     // //清空div
 
                     // //
