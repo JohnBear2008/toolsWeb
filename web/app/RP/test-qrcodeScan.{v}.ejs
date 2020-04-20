@@ -1,0 +1,57 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入扫描库 -->
+<script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+    <video id="preview"></video>
+    <button type="button" id="btnScan">扫描</button>
+
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // 扫描按钮
+        $('#btnScan').click(function () {
+            let scanner = new Instascan.Scanner({
+                video: document.getElementById('preview')
+            });
+            scanner.addListener('scan', function (content) {
+                console.log('content:' + content);
+                alert('content:' + content);
+                scanner.stop().then(function () {
+                    alert('stoped');
+                });
+            });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]).then(function () {
+                        alert('start');
+                    }).catch(function (err) {
+                        alert('err:' + err);
+                    });
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+            });
+
+
+        })
+
+
+
+    });
+</script>

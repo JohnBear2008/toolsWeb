@@ -358,25 +358,7 @@
                                         <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
                                     </div>
 
-                                    <!-- 扫描模态框（Modal） -->
 
-                                    <div class="modal fade" id="scanModal">
-                                        <div class="modal-dialog" style="width: 675px;">
-                                            <div class="modal-content">
-
-                                                <div class="modal-body">请将产品二维码放置于摄像头内
-                                                    <div><button id='btnScanStop' type="button"
-                                                            class="btn btn-info">停止扫描</button></div>
-                                                    <div style="width:640;height:480px"><video id="preview"></video>
-                                                    </div>
-
-                                                </div>
-
-
-
-                                            </div>
-                                        </div>
-                                    </div>
 
 
 
@@ -556,6 +538,9 @@
                                                             id="btnProductSave">
                                                             保存
                                                         </button>
+                                                        <button type="button" class="btn btn-info" id="listPrintBtn">
+                                                            打印维修码
+                                                        </button>
                                                     </div>
                                                 </div>
 
@@ -565,6 +550,24 @@
                                         </div>
                                     </div>
 
+                                </div>
+                            </div>
+
+                            <!-- 扫描模态框（Modal） -->
+
+                            <div class="modal fade" id="scanModal">
+                                <div class="modal-dialog" style="width: 675px;">
+                                    <div class="modal-content">
+
+                                        <div class="modal-body">请将产品二维码放置于摄像头内
+                                            <div><button id='btnScanStop' type="button"
+                                                    class="btn btn-info">停止扫描</button></div>
+                                            <div style="width:640;height:480px"><video id="preview"></video>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
 
@@ -673,6 +676,42 @@
                                 </div>
                             </div>
 
+
+                            <!-- 打印预览模态框（Modal） -->
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+
+                                    <div class="modal fade" id="listPrintViewModal">
+                                        <div class="modal-dialog" style="width: 80%;left: 50%;
+                                        top: 50%;transform: translate(-50%,-50%)">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+
+                                                    <h2>弘讯科技股份有限公司维修清单</h2>
+                                                    <hr>
+
+                                                    <div id="listPrintViewDiv">
+
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default"
+                                                        id="listPrintCloseBtn">关闭
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        id="listPrintConfirmBtn">
+                                                        确认打印
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -680,8 +719,9 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_requestbillsModalClose">关闭
                     </button>
+
                     <button type="button" class="btn btn-primary" id="rp_requestbillsPrint">
-                        打印单据
+                        打印申请单
                     </button>
                     <button type="button" class="btn btn-primary" id="rp_requestbillsSave">
                         保存单据
@@ -756,7 +796,7 @@
         // console.log('r1:' + JSON.stringify(r1));
 
         customerData = r1[0]; //将查询结果赋给全局变量
-        console.log('customerData:' + JSON.stringify(customerData));
+        // console.log('customerData:' + JSON.stringify(customerData));
 
         //黑名单警告
         if (customerData.creditRank === '黑名单') {
@@ -778,9 +818,9 @@
 
             let contactsStr = customerData.contacts;
 
-            console.log('contactsStr', contactsStr);
+            // console.log('contactsStr', contactsStr);
             let contactsArr = contactsStr.split(';')
-            console.log('contactsArr', contactsArr);
+            // console.log('contactsArr', contactsArr);
             for (const n of contactsArr) {
                 let name = n.split(',')[0];
                 let phone = n.split(',')[1];
@@ -827,7 +867,7 @@
         // console.log('r1:' + JSON.stringify(r1));
         let r2 = r1[0]
         delete r2.productId;
-        console.log('r2:' + JSON.stringify(r2));
+        // console.log('r2:' + JSON.stringify(r2));
         fillFormInputs({
             formId: 'rp_recordbillsForm',
             params: r2
@@ -956,7 +996,7 @@
                 $(this).addClass('selected');
 
                 let rowSelect = subTable.row('.selected').data();
-                console.log("rowSelect:" + JSON.stringify(rowSelect));
+                // console.log("rowSelect:" + JSON.stringify(rowSelect));
 
 
                 //初始化并填写form内inputs
@@ -1044,7 +1084,7 @@
             params: mainFormData
         })
 
-        console.log("subTableData:" + JSON.stringify(subTableData))
+        // console.log("subTableData:" + JSON.stringify(subTableData))
 
         //添加申请单号到子表数据
 
@@ -1066,8 +1106,8 @@
             }
         })
 
-        console.log('saveRequestbill r1:' + JSON.stringify(r1));
-        console.log('saveRequestbill r2:' + JSON.stringify(r2));
+        // console.log('saveRequestbill r1:' + JSON.stringify(r1));
+        // console.log('saveRequestbill r2:' + JSON.stringify(r2));
 
         if (r1.affectedRows > 0 && r2.affectedRows > 0) {
             alert('保存成功!')
@@ -1079,8 +1119,8 @@
 
         //更新客户信息功能
 
-        console.log('customerData:' + JSON.stringify(customerData));
-        console.log('mainFormData:' + JSON.stringify(mainFormData));
+        // console.log('customerData:' + JSON.stringify(customerData));
+        // console.log('mainFormData:' + JSON.stringify(mainFormData));
 
         //定义当前表内实际填写客户数据
         let billCustomerData = {
@@ -1099,7 +1139,7 @@
         for (const p in billCustomerData) {
             if (billCustomerData[p] !== customerData[p]) {
 
-                console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
+                // console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
 
                 compareResult = false;
                 break;
@@ -1149,7 +1189,7 @@
         })
 
         let r2 = r1[0].billsNum;
-        console.log("checkRequestBillId:" + r2);
+        // console.log("checkRequestBillId:" + r2);
 
         let o = r2 > 0 ? false : true;
         return o;
@@ -1173,9 +1213,9 @@
         if (r) {
             return true
         } else {
-            console.log('fail:' + $("#rp_requestbillsForm-requestBillId").text());
+            // console.log('fail:' + $("#rp_requestbillsForm-requestBillId").text());
             updateRequestBillId()
-            console.log('fail11:' + $("#rp_requestbillsForm-requestBillId").text());
+            // console.log('fail11:' + $("#rp_requestbillsForm-requestBillId").text());
             return await autoUpdateRequestBillId();
         }
     }
@@ -1210,7 +1250,7 @@
             case billsIdArr.length > 0:
                 let billIdRange = getRangeString(billsIdArr);
 
-                console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
                 let statusArr = await getDataBySql({
                     sql: 'getRecordBillStatus',
@@ -1219,7 +1259,7 @@
                     }
                 })
 
-                console.log("statusArr:" + JSON.stringify(statusArr));
+                // console.log("statusArr:" + JSON.stringify(statusArr));
                 for (const n of statusArr) {
                     if (n.status !== '待维修') {
                         alert('选中单据存在关联的维修单,不符合删除条件!')
@@ -1246,7 +1286,7 @@
 
     //加载多联系人数据
     const loadContacts = (contacts) => {
-        console.log('contacts', contacts);
+        // console.log('contacts', contacts);
 
         $("#customerContacts").empty(); //清空原有
 
@@ -1268,14 +1308,13 @@
         $('#customerContacts').change(function () {
             let contact = $('#customerContacts option:selected').val();
             if (contact) {
+                $("#customerContacts").selectpicker('refresh'); //刷新显示
                 $('#rp_requestbillsForm-contact').val($('#customerContacts option:selected')
                     .val());
                 $('#rp_requestbillsForm-mobilePhone').val($('#customerContacts option:selected')
                     .data("tokens"));
             }
         });
-
-
     }
 
 
@@ -1301,13 +1340,15 @@
         //新增需求单按钮
         $('#btnRequestBillNew').click(function () {
 
-
-
-
             //清空form数据
             clearFormInputs({
                 formId: 'rp_requestbillsForm'
             })
+
+            //清空原有选项
+            $('#customerContacts').empty();
+            $('#customerContacts').selectpicker('destroy');
+
 
             //清空子表及全局变量
             subTableData = [];
@@ -1356,12 +1397,16 @@
                 return;
             }
 
+            //提醒删除风险
+            if (!confirm('删除后无法恢复,确认删除?')) {
+                return;
+            }
+
             //删除单据
 
             // let table = $('#rp_requestbills').DataTable();
             // let dataSelect = table.rows('.selected').data();
             // let DBIDArr = [];
-
             // for (let n = 0; n < dataSelect.length; n++) {
             //     DBIDArr.push(dataSelect[n].DBID);
             // }
@@ -1393,9 +1438,6 @@
 
 
 
-
-
-
         // 扫描按钮
         $('#btnScan').click(function () {
 
@@ -1403,14 +1445,14 @@
                 video: document.getElementById('preview')
             });
             scanner.addListener('scan', async function (productId) {
-                console.log('productId:' + productId);
+                // console.log('productId:' + productId);
                 let productData = await getDataBySql({
                     sql: 'getProduct',
                     params: {
                         filter: 'productId="' + productId + '"'
                     }
                 })
-                console.log("productData:" + JSON.stringify(productData));
+                // console.log("productData:" + JSON.stringify(productData));
                 let rowNum = $("#rp_recordbills tbody tr").size();
                 let rowData = {};
 
@@ -1427,7 +1469,7 @@
                 rowData.productFrom = '终端客户';
                 rowData.productBelong = '客户 ';
 
-                console.log("rowData:" + JSON.stringify(rowData));
+                // console.log("rowData:" + JSON.stringify(rowData));
 
                 subTableData.push(rowData);
                 //重新加载子表
@@ -1503,7 +1545,7 @@
             let requestBillId = $("#rp_requestbillsForm-requestBillId").text();
 
             let rowNum = $("#rp_recordbills tbody tr").size();
-            console.log('rowNum:' + rowNum);
+            // console.log('rowNum:' + rowNum);
             let productData = getFormData({
                 formId: 'rp_recordbillsForm'
             })
@@ -1579,6 +1621,84 @@
             } else {
                 alert('请先点击表格选中需要删除的产品!')
             }
+        })
+
+
+        //表单产品清单打印按钮
+        $('#listPrintBtn').click(function () {
+
+            console.log('print subTable', subTableData);
+
+            let htmlModel = '<table width="800" border="1">' +
+                '<tr>' +
+                '<td width="100">客户名称</td>' +
+                '<td colspan="2">&nbsp;</td>' +
+                '<td width="100">移动电话</td>' +
+                '<td colspan="2">&nbsp;</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>产品编号</td>' +
+                '<td colspan="2">&nbsp;</td>' +
+                '<td>出厂编号</td>' +
+                '<td colspan="2">&nbsp;</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>生产日期</td>' +
+                '<td width="100">&nbsp;</td>' +
+                '<td width="100">送修人</td>' +
+                '<td>&nbsp;</td>' +
+                '<td width="100">客户归属</td>' +
+                '<td width="100">&nbsp;</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td height="50">故障状况</td>' +
+                '<td colspan="5">&nbsp;</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>是否加急</td>' +
+                '<td>&nbsp;</td>' +
+                '<td>是否返修</td>' +
+                '<td>&nbsp;</td>' +
+                '<td>产品归属</td>' +
+                '<td>&nbsp;</td>' +
+                '</tr>' +
+                '</table>';
+            $('#listPrintViewDiv').html(htmlModel)
+
+            // let formData = getFormData({
+            //     formId: 'rp_requestbillsForm',
+            // })
+
+            // fillTableInputs({
+            //     tableId: 'printViewMainTable',
+            //     params: formDataToRowData(formData.data)
+            // })
+
+            // fillTableRows({
+            //     tableId: 'printViewSubTable',
+            //     cols: ['rowId', 'productId', 'productName', 'factoryNo'],
+            //     data: subTableData
+            // })
+
+            $('#listPrintViewModal').modal('show')
+        })
+
+        //确认打印按钮
+        $('#listPrintConfirmBtn').click(function () {
+            Print('#listPrintViewDiv', {
+                onStart: function () {
+                    console.log('onStart', new Date())
+                },
+                onEnd: function () {
+                    console.log('onEnd', new Date())
+                }
+            })
+        })
+
+
+        //打印关闭按钮
+        $('#listPrintCloseBtn').click(function () {
+            $('#listPrintViewModal').modal('hide')
         })
 
         //表单打印按钮
@@ -1780,6 +1900,18 @@
             $(this).removeData('bs.modal');
             $(document.body).addClass("modal-open");
         })
+
+        //自动调整modal显示位置
+        $('#scanModal,#listPrintViewModal,#printViewModal').on('shown.bs.modal', function (e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
+            $(this).css('display', 'block');
+            // var modalHeight = $(window).height() / 2;
+            let modalHeight = 300;
+
+            $(this).find('.modal-dialog').css({
+                'margin-top': modalHeight
+            });
+        });
 
 
 

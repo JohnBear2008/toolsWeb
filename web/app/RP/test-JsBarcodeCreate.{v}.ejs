@@ -1,0 +1,49 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入JsBarcode 条形码库 -->
+<script type="text/javascript" src="/rpLib/JsBarcode/JsBarcode.all.min.js"></script>
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+
+    <input id="codeId" type="text" value="billID" style="width:80%" /><br />
+    <img id="barcode" />
+
+</div>
+
+<script type="text/javascript">
+    function makeCode() {
+        var codeid = $("#codeId").val();
+
+        if (!codeid) {
+            alert("Input a text");
+            return;
+        }
+
+        // JsBarcode("#barcode", elText);
+
+        $("#barcode").JsBarcode(codeid)
+
+    }
+
+    makeCode();
+
+    $("#codeId").
+    on("blur", function () {
+        makeCode();
+    }).
+    on("keydown", function (e) {
+        if (e.keyCode == 13) {
+            makeCode();
+        }
+    });
+</script>
