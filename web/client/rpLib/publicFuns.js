@@ -613,9 +613,12 @@ const fillFormInputs = (i) => {
             //根据元素不同类型选定不同赋值方式
             switch (true) {
                 case $("#" + i.formId + '-' + p).is("select") === true:
-                    $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
-                    // console.log('c1');
 
+                    // if ($("#" + i.formId + '-' + p)[0].options.length > 0) {
+                        $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
+                        $("#" + i.formId + '-' + p).selectpicker('refresh')
+                        // console.log('c1');
+                    
                     break;
                 case $("#" + i.formId + '-' + p).is("p") === true:
                     $("#" + i.formId + '-' + p).text(i.params[p]);
