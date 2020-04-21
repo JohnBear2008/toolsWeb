@@ -17,6 +17,10 @@
 <script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
+
+<!-- 导入qrcode 二维码库 -->
+<script type="text/javascript" src="/rpLib/qrcode/qrcode.min.js"></script>
+
 <!-- 导入instascan 二维码扫描库 -->
 <script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
 
@@ -538,9 +542,7 @@
                                                             id="btnProductSave">
                                                             保存
                                                         </button>
-                                                        <button type="button" class="btn btn-info" id="listPrintBtn">
-                                                            打印维修码
-                                                        </button>
+
                                                     </div>
                                                 </div>
 
@@ -574,143 +576,136 @@
 
                             <!-- 打印预览模态框（Modal） -->
 
-                            <div class="row clearfix">
-                                <div class="col-md-12 column">
-
-                                    <div class="modal fade" id="printViewModal">
-                                        <div class="modal-dialog" style="width: 80%;">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <div id="printViewDiv">
-
-                                                        <h2>弘讯科技股份有限公司维修申请单</h2>
-                                                        <hr>
-
-                                                        <table id='printViewMainTable'
-                                                            style="border: 0ch; width: 100%;table-layout:fixed;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td width='80px'>申请单号:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-requestBillId"></p>
-                                                                    </td>
-                                                                    <td width='80px'>客户编号:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-customerId"></p>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td width='80px'>客户简称:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-customerShortName">
-                                                                        </p>
-                                                                    </td>
-                                                                    <td width='80px'>客户名称:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-customerName"></p>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td width='80px'>联系人:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-contact"></p>
-                                                                    </td>
-                                                                    <td width='80px'>移动电话:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-mobilePhone"></p>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td width='80px'>送修方式:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-requestWay"></p>
-                                                                    </td>
-                                                                    <td width='80px'>送修人:</td>
-                                                                    <td>
-                                                                        <p class="form-control-static"
-                                                                            id="printViewMainTable-requestStaff"></p>
-                                                                    </td>
-                                                                </tr>
-
-                                                            </tbody>
-                                                        </table>
 
 
+                            <div class="modal fade" id="printViewModal">
+                                <div class="modal-dialog" style="width: 80%;">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div id="printViewDiv">
 
-                                                        <hr>
-                                                        <table id='printViewSubTable' class="table table-condensed">
+                                                <h2>弘讯科技股份有限公司维修申请单</h2>
+                                                <hr>
 
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>序号</th>
-                                                                    <th>产品编号</th>
-                                                                    <th>产品名称</th>
-                                                                    <th>出厂编号</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
+                                                <table id='printViewMainTable'
+                                                    style="border: 0ch; width: 100%;table-layout:fixed;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width='80px'>申请单号:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-requestBillId"></p>
+                                                            </td>
+                                                            <td width='80px'>客户编号:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-customerId"></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width='80px'>客户简称:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-customerShortName">
+                                                                </p>
+                                                            </td>
+                                                            <td width='80px'>客户名称:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-customerName"></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width='80px'>联系人:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-contact"></p>
+                                                            </td>
+                                                            <td width='80px'>移动电话:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-mobilePhone"></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width='80px'>送修方式:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-requestWay"></p>
+                                                            </td>
+                                                            <td width='80px'>送修人:</td>
+                                                            <td>
+                                                                <p class="form-control-static"
+                                                                    id="printViewMainTable-requestStaff"></p>
+                                                            </td>
+                                                        </tr>
 
-                                                            </tbody>
-                                                        </table>
+                                                    </tbody>
+                                                </table>
 
-                                                    </div>
-                                                </div>
 
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" id="printCloseBtn">关闭
-                                                    </button>
-                                                    <button type="button" class="btn btn-primary" id="confirmPrintBtn">
-                                                        确认打印
-                                                    </button>
-                                                </div>
+
+                                                <hr>
+                                                <table id='printViewSubTable' class="table table-condensed">
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th>序号</th>
+                                                            <th>产品编号</th>
+                                                            <th>产品名称</th>
+                                                            <th>出厂编号</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+
                                             </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" id="printCloseBtn">关闭
+                                            </button>
+                                            <button type="button" class="btn btn-primary" id="confirmPrintBtn">
+                                                确认打印
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
 
 
                             <!-- 打印预览模态框（Modal） -->
 
-                            <div class="row clearfix">
-                                <div class="col-md-12 column">
-
-                                    <div class="modal fade" id="listPrintViewModal">
-                                        <div class="modal-dialog" style="width: 80%;left: 50%;
-                                        top: 50%;transform: translate(-50%,-50%)">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-
-                                                    <h2>弘讯科技股份有限公司维修清单</h2>
-                                                    <hr>
-
-                                                    <div id="listPrintViewDiv">
 
 
-                                                    </div>
-                                                </div>
+                            <div class="modal fade" id="listPrintViewModal">
+                                <div class="modal-dialog" style="width: 80%">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
 
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default"
-                                                        id="listPrintCloseBtn">关闭
-                                                    </button>
-                                                    <button type="button" class="btn btn-primary"
-                                                        id="listPrintConfirmBtn">
-                                                        确认打印
-                                                    </button>
-                                                </div>
+                                            <h2>弘讯科技股份有限公司维修清单</h2>
+                                            <hr>
+
+                                            <div id="listPrintViewDiv">
+
+
                                             </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" id="listPrintCloseBtn">关闭
+                                            </button>
+                                            <button type="button" class="btn btn-primary" id="listPrintConfirmBtn">
+                                                确认打印
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
 
                         </div>
                     </div>
@@ -718,6 +713,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_requestbillsModalClose">关闭
+                    </button>
+                    <button type="button" class="btn btn-info" id="listPrintBtn">
+                        打印维修码
                     </button>
 
                     <button type="button" class="btn btn-primary" id="rp_requestbillsPrint">
@@ -922,6 +920,8 @@
 
             //打开关联信息,打印功能
             $("#accordion").show();
+            
+            $("#listPrintBtn").show();
             $("#rp_requestbillsPrint").show();
 
             //设定选中
@@ -929,6 +929,11 @@
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
+
+            mainTableData = dataSelect; //刷新全局主表对象数据
+
+            console.log('mainTableData', mainTableData);
+
 
 
             //解除客户监听事件
@@ -1323,6 +1328,8 @@
         // alert(parseInt(''))
         //定义全局变量,当前用户名
         sessionName = "<%-locals.session.yjUser.Name%>";
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
         //定义子表全局变量临时数据数组
         subTableData = [];
 
@@ -1381,6 +1388,8 @@
             //显示/隐藏
             //关闭关联信息,打印按钮
             $("#accordion").hide();
+            
+            $("#listPrintBtn").hide();
             $("#rp_requestbillsPrint").hide();
 
             //打开面板
@@ -1629,41 +1638,151 @@
 
             console.log('print subTable', subTableData);
 
-            let htmlModel = '<table width="800" border="1">' +
+            let htmlModel = '　<DIV STYLE="page-break-before:always">' +
+                '<table width="800" border="0">' +
+                '<tr>' +
+                '<td width="150"><img src="/images/techmation.png" /></td>' +
+                '<td width="500" align="center"><h3>宁波弘讯维修码</h3>' +
+                '<p><h4>repairId</h4></p></td>' +
+                '<td width="150" align="right"><div id="qrcode" style="width:100px; height:100px;"></div></td>' +
+                '</tr>' +
+                '</table>' +
+                '<table width="800" border="1" class="table table-bordered">' +
                 '<tr>' +
                 '<td width="100">客户名称</td>' +
-                '<td colspan="2">&nbsp;</td>' +
+                '<td colspan="2">customerShortName</td>' +
                 '<td width="100">移动电话</td>' +
-                '<td colspan="2">&nbsp;</td>' +
+                '<td colspan="2">mobilePhone</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td>产品编号</td>' +
-                '<td colspan="2">&nbsp;</td>' +
+                '<td colspan="2">productId</td>' +
                 '<td>出厂编号</td>' +
-                '<td colspan="2">&nbsp;</td>' +
+                '<td colspan="2">factoryNo</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td>生产日期</td>' +
-                '<td width="100">&nbsp;</td>' +
+                '<td width="100">productionDate</td>' +
                 '<td width="100">送修人</td>' +
-                '<td>&nbsp;</td>' +
+                '<td>requestStaff</td>' +
                 '<td width="100">客户归属</td>' +
-                '<td width="100">&nbsp;</td>' +
+                '<td width="100">customerBelongShort</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td height="50">故障状况</td>' +
-                '<td colspan="5">&nbsp;</td>' +
+                '<td colspan="5">faultDescription</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td>是否加急</td>' +
-                '<td>&nbsp;</td>' +
+                '<td>urgent</td>' +
                 '<td>是否返修</td>' +
-                '<td>&nbsp;</td>' +
+                '<td>isRework</td>' +
                 '<td>产品归属</td>' +
-                '<td>&nbsp;</td>' +
+                '<td>productBelong</td>' +
                 '</tr>' +
-                '</table>';
-            $('#listPrintViewDiv').html(htmlModel)
+                '</table>' +
+                '</DIV>';
+
+            //创建模板函数
+            const fillPrintModel = ({
+                htmlModel,
+                repairId,
+                customerShortName,
+                mobilePhone,
+                productId,
+                factoryNo,
+                productionDate,
+                requestStaff,
+                customerBelongShort,
+                faultDescription,
+                urgent,
+                isRework,
+                productBelong
+            }) => {
+                let newHtml = htmlModel
+                    .replace(/repairId/, repairId)
+                    .replace(/qrcode/, 'qrcode-' + repairId)
+                    .replace(/customerShortName/, customerShortName)
+                    .replace(/mobilePhone/, mobilePhone)
+                    .replace(/productId/, productId)
+                    .replace(/factoryNo/, factoryNo)
+                    .replace(/productionDate/, productionDate)
+                    .replace(/requestStaff/, requestStaff)
+                    .replace(/customerBelongShort/, customerBelongShort)
+                    .replace(/faultDescription/, faultDescription)
+                    .replace(/urgent/, urgent)
+                    .replace(/isRework/, isRework)
+                    .replace(/productBelong/, productBelong)
+
+                return newHtml;
+            }
+            //创建二维码函数
+            const createQrcode = ({
+                repairId
+            }) => {
+                var qrcode = new QRCode(document.getElementById("qrcode" + '-' + repairId), {
+                    width: 100,
+                    height: 100
+                });
+                qrcode.makeCode(repairId);
+            }
+
+            //创建信息表函数
+            const createRpHtml = (subTableData) => {
+                if (subTableData.length > 0) {
+                    let divHtml = ''
+                    for (let i = 0; i < subTableData.length; i++) {
+                        const element = subTableData[i];
+                        let newHtml = fillPrintModel({
+                            htmlModel: htmlModel,
+                            repairId: subTableData[i].requestBillId + '-' + subTableData[i].rowId,
+                            customerShortName: mainTableData.customerShortName,
+                            mobilePhone: mainTableData.mobilePhone,
+                            productId: subTableData[i].productId,
+                            factoryNo: subTableData[i].factoryNo,
+                            productionDate: subTableData[i].productionDate,
+                            requestStaff: mainTableData.requestStaff,
+                            customerBelongShort: mainTableData.customerBelongShort,
+                            faultDescription: subTableData[i].faultDescription,
+                            urgent: subTableData[i].urgent,
+                            isRework: subTableData[i].isRework,
+                            productBelong: subTableData[i].productBelong
+
+                        })
+                        //删除第一页换页
+                        if (i === 0) {
+                            newHtml = newHtml.replace(/STYLE="page-break-before:always"/, '');
+                        }
+                        divHtml = divHtml + newHtml
+                    }
+                    $('#listPrintViewDiv').html(divHtml)
+                }
+            }
+
+            createRpHtml(subTableData);
+
+            //生成维修二维码
+            const createQrcodes = (subTableData) => {
+                if (subTableData.length > 0) {
+                    for (const n of subTableData) {
+                        createQrcode({
+                            repairId: n.requestBillId + '-' + n.rowId
+                        })
+                    }
+                }
+            }
+
+
+            createQrcodes(subTableData);
+
+
+
+
+
+
+
+
+            // fillPrintModel()
 
             // let formData = getFormData({
             //     formId: 'rp_requestbillsForm',
@@ -1902,12 +2021,11 @@
         })
 
         //自动调整modal显示位置
-        $('#scanModal,#listPrintViewModal,#printViewModal').on('shown.bs.modal', function (e) {
+        $('#scanModal,#listPrintViewModal,#printViewModal').on('show.bs.modal', function (e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
             $(this).css('display', 'block');
             // var modalHeight = $(window).height() / 2;
-            let modalHeight = 300;
-
+            let modalHeight = $(window).height() / 3;
             $(this).find('.modal-dialog').css({
                 'margin-top': modalHeight
             });
