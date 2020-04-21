@@ -12,6 +12,10 @@
 <link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
 <script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
 
+<!-- 导入bootstrapSwitch -->
+<link rel="stylesheet" href="/rpLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
+
 <!-- 导入datatimepicker -->
 <link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 <script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
@@ -332,6 +336,13 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="msgSwitch">短信提醒</label>
+                                    <div class="col-sm-11">
+                                        <input id="msgSwitch" type="checkbox" checked>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label" for="rp_requestbillsForm-maker">制单人</label>
@@ -359,6 +370,7 @@
                                         <button id='btnAddProduct' type="button" class="btn btn-info">新增产品</button>
                                         <button id='btnDeleteProduct' type="button" class="btn btn-danger">删除产品</button>
                                         <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
+                                        <button id='btnHistory' type="button" class="btn btn-success">维修记录</button>
                                     </div>
 
 
@@ -710,9 +722,6 @@
 
 
                             <!-- 打印预览模态框（Modal） -->
-
-
-
                             <div class="modal fade" id="listPrintViewModal">
                                 <div class="modal-dialog" style="width: 80%">
                                     <div class="modal-content">
@@ -732,6 +741,27 @@
                                             </button>
                                             <button type="button" class="btn btn-primary" id="listPrintConfirmBtn">
                                                 确认打印
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- 维修记录模态框（Modal） -->
+                            <div class="modal fade" id="recordHistoryModal">
+                                <div class="modal-dialog" style="width: 95%">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+
+                                            <h2>维修历史</h2>
+                                            <hr>
+
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" id="recordHistoryCloseBtn">关闭
                                             </button>
                                         </div>
                                     </div>
@@ -1923,12 +1953,23 @@
             saveRequestbill();
         })
 
+        //维修记录
+        $('#btnHistory').click(function () {
+            $('#recordHistoryModal').modal('show')
+        })
+
+        $('#recordHistoryCloseBtn').click(function () {
+            $('#recordHistoryModal').modal('hide')
+        })
 
 
         //初始化组件
         loadDatePicker({
             elementId: "rp_requestbillsForm-requestDate",
         })
+
+
+        $("#msgSwitch").bootstrapSwitch();
 
 
         //初始化selector
@@ -2080,7 +2121,7 @@
         })
 
         //自动调整modal显示位置
-        $('#scanModal,#listPrintViewModal,#printViewModal').on('show.bs.modal', function (e) {
+        $('#scanModal,#listPrintViewModal,#printViewModal,#recordHistoryModal').on('show.bs.modal', function (e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
             $(this).css('display', 'block');
             // var modalHeight = $(window).height() / 2;
