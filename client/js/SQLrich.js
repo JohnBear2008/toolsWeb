@@ -53,8 +53,15 @@ SQLLateList=
  " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` "+
  " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
  " tb on ta.BPID=tb.pbhBPID ) A "+
- " where ApplyDate >? and ApplyDate < ? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL order by BPID  ";
+//  " where ApplyDate >? and ApplyDate < ? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL order by BPID  ";
+ " where ( applyDate>=? and applyDate<=?  and ? > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL ) "+
+ " OR (( applyDate<? and emailDate>=? and emailDate<=? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL ) "+
+ " OR (applyDate<? and emailDate is null and WFEndText is null  and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )) ";
 
+// where ( applyDate>='2020-03-01' and applyDate<='2020-03-31'  and '2020-04-20' > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL )
+//  OR (( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )
+//  OR (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  ))
+// ppm_bills_pbh 不可改為ppm_bills_pbh_t  ,没有tbc.emailDate
 SQLLateList_t=
 " SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`emailDate` ,limitDate "+
 " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END  "+
@@ -65,7 +72,9 @@ SQLLateList_t=
 " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` "+
 " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
 " tb on ta.BPID=tb.pbhBPID ) A "+
-" where ApplyDate >? and ApplyDate < ? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL order by BPID  ";
-
+" where ( applyDate>=? and applyDate<=?  and ? > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL ) "+
+" OR (( applyDate<? and emailDate>=? and emailDate<=? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL ) "+
+" OR (applyDate<? and emailDate is null and WFEndText is null  and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )) ";
+ 
 SQLPartsUp= "SELECT `DBID`, `Bill_ID`, `Customer_ID`, `Operate`, `Apply_Date`, `Limit_Date`,   `PaUp_ProdNo`,PaDown_ProdNo, `Parts_Name`, `Location`  FROM `ma_parts_detail` ";
  

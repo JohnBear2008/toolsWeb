@@ -29,22 +29,34 @@ module.exports = function(sender) {
     var dptB = "B";
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");;
-     //表头 FQC测试完成时间，若超出任务单中的需求完成日期（当多个任务单需求日期不一致时，抓取期限最长的日期），则算为延误
     var sql_Page2Head =  " Select groupLabel,staffName,staffWorkType from ppm_staffs tb1 where tb1.staffRole='程序员' and staffName<>'周筱龙' order by staffID "; 
-    //上周单   1118-1125
+    //上周单   where ApplyDate <=? and emaildate >=? and emaildate <=? 
+    // where ( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31')
+    // or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null)
     var sql_Page2A1 = 
-    " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
-    " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? ";
-    //本周新单  1125~1202
+    // " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
+    // " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    // " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
+    // " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+    // " tb on ta.BPID=tb.pbhBPID ) A   "+
+    // " where ( applyDate<? and emailDate>=? and emailDate<=?) "+
+    // " or (applyDate<? and emailDate is null and WFEndText is null) ";
+    " SELECT  count(*) as times "+
+    " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    " where ( applyDate<? and emailDate>=? and emailDate<=?) "+
+    " or (applyDate<? and emailDate is null and WFEndText is null) ";
+    console.log("chinhba",sql_Page2A1);
+    //本周新单   
     var sql_Page2A2 = 
-" SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-" AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
-" WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-" (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-" tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate >? and ApplyDate < ? ";
+// " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
+// " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+// " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
+// " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+// " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate >=? and ApplyDate <= ? ";
+    " SELECT  count(*) as times  FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    " where applyDate>=? and applyDate<=? ";
 
       //按时完成 
     var sql_Page2B1 =
@@ -54,80 +66,113 @@ module.exports = function(sender) {
     " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where emaildate <= limitdate and ApplyDate >? and ApplyDate < ? and WFEndText is not null ";
+    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ? and emaildate <= limitdate  ";
         
    //延期已完成 ok
     var sql_Page2B2 =
-    //  " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
-    // " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate <= tbb.limitdate and tbb.applyDate >? and tbb.applyDate <?    "; 
+    //  " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
+    // " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    // " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
+    // " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+    // " tb on ta.BPID=tb.pbhBPID ) A  where emaildate > limitdate and ApplyDate >=? and ApplyDate <= ? and WFEndText is not null";
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where emaildate > limitdate and ApplyDate >? and ApplyDate < ? and WFEndText is not null";
-    //客户取消
+    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ?  and emaildate > limitdate ";
+   //客户取消
     var sql_Page2B3 = 
-    // " Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
-    // " ON tbb.BPID=tbk.taskBPID where tbk.taskFinishDate is null and tbb.applyDate >? and tbb.applyDate <?    ";               
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where WFEndText='终止归档'  and ApplyDate >? and ApplyDate < ?   ";
+    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ?   and  WFEndText= '终止归档' ";
   
-    //延期未完成 3参数   
+    //延期未完成 3参数   and emailDate is null
     var sql_Page2C1 = 
-    // "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
-    // " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and (tbb.LimitDate > ? and tbb.LimitDate <> '') and tbk.taskFinishDate is null   "; 
+    //   " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
+    // " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    // " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
+    // " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+    // " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ?  and ? > LimitDate and emailDate is null and WFEndDate is NUll  and WFEndText is NULL ";
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >? and ApplyDate < ?  and ? > LimitDate  and WFEndDate is NUll  and WFEndText is NULL ";
+    " tb on ta.BPID=tb.pbhBPID ) A  where   applyDate>=? and applyDate<=? "+
+    " and ? > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL   ";
 
     //期限未到  // (tbb.LimitDate <= dueDate and tbb.LimitDate <> '' ) and tbk.taskFinishDate is null
     var sql_Page2C2 =
-    //  "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
-    // " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and (tbb.LimitDate <= ? and tbb.LimitDate <> '') and tbk.taskFinishDate is null   "; 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >? and ApplyDate < ?  and ? <= LimitDate  and WFEndDate is NUll  and WFEndText is NULL ";
-
+    " tb on ta.BPID=tb.pbhBPID ) A  where   applyDate>=? and applyDate<=? "+
+    " and ? <= LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL   ";
    //上周遗留按时通过
     var sql_RemainDone = 
-    " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
-    " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and emaildate <= limitdate  and WFEndText is not null";
+    // " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
+    // " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
+    // " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
+    // " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+    // " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and emaildate <= limitdate  and WFEndText is not null";
+    " SELECT  count(*) as times "+
+    " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    " where  ( applyDate<? and emailDate>=? and emailDate<=? and emaildate <= limitdate and emailDate is not null ) "+
+    " or (applyDate<? and emailDate is null and WFEndText is null  and emaildate <= limitdate and emailDate is not null )";
+    // " where  ( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and emaildate <= limitdate and emailDate is not null ) "+
+    // " or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and emaildate <= limitdate and emailDate is not null )";
 
-    //上周遗留延时通过 
+    //上周遗留-延时通过 
     var sql_RemainLateDone = 
-    " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
-    " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and emaildate > limitdate  and WFEndText is not null";
+    " SELECT  count(*) as times "+
+    " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    "   where ( applyDate<? and emailDate>=? and emailDate<=? and emaildate > limitdate and emailDate is not null )"+
+    " or (applyDate<? and emailDate is null and WFEndText is null  and emaildate > limitdate and emailDate is not null ) ";
+    // where ( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and emaildate > limitdate and emailDate is not null ) 
+    // or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and emaildate > limitdate and emailDate is not null )
+ 
+    //  上周遗留-终止    
+    var sql_RemainCancel = 
+    " SELECT  count(*) as times "+
+    " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    " (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    " where ( applyDate<? and emailDate>=? and emailDate<=? and  WFEndText= '终止归档')  "+
+    " or (applyDate<? and emailDate is null and WFEndText is null and  WFEndText= '终止归档') ";
+    // where ( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and  WFEndText= '终止归档')
+    // or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null and  WFEndText= '终止归档')
 
-   //上周遗留未完成
+   //上周遗留-延期未完成
     var sql_RemainNotDo = 
-    " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
-    " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
-    " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
-    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where ApplyDate <=? and emaildate >=? and emaildate <=? and WFEndDate is NUll  and WFEndText is NULL ";
+    " SELECT  count(*) as times "+
+    " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    "  where ( applyDate<? and emailDate>=? and emailDate<=? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )"+
+    "  or (applyDate<? and emailDate is null and WFEndText is null  and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )";
+    // where ( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )
+    // or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )
+//  上周遗留-期限未到 
+    var sql_RemainPend = 
+    " SELECT  count(*) as times "+
+    " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
+    " where ( applyDate<? and emailDate>=? and emailDate<=? and ? < LimitDate   ) "+
+    " or (applyDate<? and emailDate is null and WFEndText is null  and ? < LimitDate   ) ";
+    // where ( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and '2020-04-20' < LimitDate   )
+    // or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and '2020-04-20' < LimitDate   )
 
     //其他  notdone
     var sql_Page2C3 = "Select count(distinct BPID) as times from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
-    " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >? and tbb.applyDate <? and tbb.LimitDate is null and tbk.taskFinishDate is null   "; 
+    " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >=? and tbb.applyDate <=? and tbb.LimitDate is null and tbk.taskFinishDate is null   "; 
     //tbb.LimitDate is null and tbk.taskFinishDate is null
     //延期单数/本周总出货数  
-    var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    var sql_Page2Late = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >=? and tbb.ApplyDate <= ?    "+
     "  and  tbb.LimitDate > tbb.auditDate  ";   // B2/(B1)
     //已完成总单/本周总单  
-    var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >? and tbb.ApplyDate < ?    "+
+    var sql_Page2Done = "Select  count(*) as times from `ppm_bills_plan` tbb where tbb.ApplyDate >=? and tbb.ApplyDate <= ?    "+
     "  and tbb.auditDate <> '' ";        //  B-all/A2
 
     var dataArr=[]; 
@@ -152,7 +197,7 @@ module.exports = function(sender) {
     let YesterThis = '';
     YesterThis = getPrevDay(WeekThisbeg);
     console.log("部門统计表格开始日:","昨日",YesterThis,"开始",WeekThisbeg ,"到期日:",WeekThisend);  
-    async.parallel([ funPage2Head, funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3, funPage2Late, funPage2Done ,  funRemainDone , funRemainLateDone, funRemainNotDo ], 
+    async.parallel([ funPage2Head, funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3, funPage2Late, funPage2Done,  funRemainDone, funRemainLateDone, funRemainCancel, funRemainNotDo, funRemainPend ], 
     function(err, result) {
 		if (err) {
 
@@ -172,12 +217,14 @@ module.exports = function(sender) {
             //中间两个pass
             sub[11] = result[11][0].Times;  //RemainDone
             sub[12] = result[12][0].Times;  //RemainLateDone
-            sub[13] = result[13][0].Times;  //RemainNotDo
+            sub[13] = result[13][0].Times;  //RemainCancel
+            sub[14] = result[14][0].Times;  //RemainNotDo
+            sub[15] = result[15][0].Times;  //RemainPend
  
                         
            // var rate = sub[4]/(sub[3]+sub[4]+sub[5])*100;  //延期已完成+延期未完成=延期的单数/总单
-           console.log("延误率",sub[4],sub[6],sub[12],sub[13],"总单",sub[1],sub[2]);
-            var rate = (sub[4]+sub[6]+sub[12]+sub[13])/(sub[1]+sub[2])*100;  
+           console.log("延误率",sub[4],sub[6],sub[12],sub[14],"总单",sub[1],sub[2]);
+            var rate = (sub[4]+sub[6]+sub[12]+sub[14])/(sub[1]+sub[2])*100;  
             if(rate!=null && typeof rate!="undefined" && rate!=0){
                 rate = rate.toFixed(1);  
             }
@@ -201,9 +248,9 @@ module.exports = function(sender) {
                     "Bill_STAT2":result[2][i].Times, 
                     "Bill_STAT3":result[3][i].Times+result[11][i].Times,  
                     "Bill_STAT4":result[4][i].Times+result[12][i].Times, 
-                    "Bill_STAT5":result[5][i].Times ,
-                    "Bill_STAT6":result[6][i].Times+result[13][i].Times, 
-                    "Bill_STAT7":result[7][i].Times,  
+                    "Bill_STAT5":result[5][i].Times+result[13][i].Times,
+                    "Bill_STAT6":result[6][i].Times+result[14][i].Times, 
+                    "Bill_STAT7":result[7][i].Times+result[15][i].Times,   
                     "Bill_STAT8":result[8][i].Times,  
                     "PERC_LATE": rate,  
                     "PERC_DONE": perc,  
@@ -242,7 +289,7 @@ module.exports = function(sender) {
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page2A1,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -255,7 +302,7 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        //    console.log("页2-遗留", temp );
+                             console.log("页2-遗留13:", temp );
                     },
                     error : sender.error
                 })
@@ -297,7 +344,7 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        // console.log("页2-按时完成39：", temp );
+                        console.log("页2-按时完成205：", temp );
                     },
                     error : sender.error
                 })
@@ -318,7 +365,7 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        // console.log("页2-延期已完成 3：", temp );
+                        console.log("页2-延期已完成28：", temp );
                     },
                     error : sender.error
                 })
@@ -338,7 +385,7 @@ module.exports = function(sender) {
     					    
                             datas.push(temp)
                         }
-                        // console.log("页2-终止3：", temp );
+                        console.log("页2-终止18：", temp );
 
                         cb(null, datas);
                     },
@@ -360,7 +407,7 @@ module.exports = function(sender) {
     					    
                             datas.push(temp)
                         }
-                        // console.log("页2-延期未完成 2：", temp );
+                        console.log("页2-延期未完成 30：", temp );
  
                         cb(null, datas);
                     },
@@ -382,7 +429,7 @@ module.exports = function(sender) {
     					   
                             datas.push(temp)
                         }
-                        // console.log("页2-期限未到 0：", temp );
+                        console.log("页2-期限未到 0：", temp );
                         cb(null, datas);
                     },
                     error : sender.error
@@ -452,7 +499,7 @@ module.exports = function(sender) {
     function funRemainDone(cb){
         yjDBService.exec({
                     sql : sql_RemainDone,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -465,7 +512,7 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗按时9：", temp);
+                        console.log("遗按时2：", temp);
                     },
                     error : sender.error
                 })
@@ -473,7 +520,7 @@ module.exports = function(sender) {
     function funRemainLateDone(cb){
         yjDBService.exec({
                     sql : sql_RemainLateDone,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -486,7 +533,28 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗@@@@@@@延时4：", temp);
+                        console.log("遗延时5：", temp);
+                    },
+                    error : sender.error
+                })
+    }
+    function funRemainCancel(cb){
+        yjDBService.exec({
+                    sql : sql_RemainCancel,
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    rowsAsArray : true,
+                    success : function(r) {
+                        var datas = []
+                        var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                        for (var i = 0; i < data.length; i++) {
+                            var temp = {
+                                "Times" : data[i].times , 
+                            }
+    					    
+                            datas.push(temp)
+                        }
+                        cb(null, datas);
+                        console.log("遗终止0：", temp);
                     },
                     error : sender.error
                 })
@@ -494,7 +562,7 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,duedate,WeekThisbeg,duedate ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -507,7 +575,28 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗未完0：", temp);
+                        console.log("遗未完5：", temp);
+                    },
+                    error : sender.error
+                })
+    }
+    function funRemainPend(cb){
+        yjDBService.exec({
+                    sql : sql_RemainPend,
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,duedate,WeekThisbeg,duedate ], 
+                    rowsAsArray : true,
+                    success : function(r) {
+                        var datas = []
+                        var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                        for (var i = 0; i < data.length; i++) {
+                            var temp = {
+                                "Times" : data[i].times , 
+                            }
+    					    
+                            datas.push(temp)
+                        }
+                        cb(null, datas);
+                        console.log("遗未到 1：", temp);
                     },
                     error : sender.error
                 })
