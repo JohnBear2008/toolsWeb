@@ -1354,14 +1354,16 @@
 
             // console.log('contactsStr', contactsStr);
             let contactsArr = contactsStr.split(';')
-            // console.log('contactsArr', contactsArr);
+            console.log('contactsArr', contactsArr);
             for (const n of contactsArr) {
-                let name = n.split(',')[0];
-                let phone = n.split(',')[1];
-                contacts.push({
-                    name: name,
-                    phone: phone
-                })
+                if (n) {
+                    let name = n.split(',')[0];
+                    let phone = n.split(',')[1];
+                    contacts.push({
+                        name: name,
+                        phone: phone
+                    })
+                }
             }
         }
 
@@ -2121,7 +2123,8 @@
         })
 
         //自动调整modal显示位置
-        $('#scanModal,#listPrintViewModal,#printViewModal,#recordHistoryModal').on('show.bs.modal', function (e) {
+        $('#scanModal,#listPrintViewModal,#printViewModal,#recordHistoryModal').on('show.bs.modal', function (
+        e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
             $(this).css('display', 'block');
             // var modalHeight = $(window).height() / 2;
