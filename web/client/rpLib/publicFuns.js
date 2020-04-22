@@ -505,21 +505,28 @@ const loadBootStrapSelector = async (i) => {
         data: i.sqlParams,
         success: function (data) {
 
-            $('#' + i.elementId).selectpicker({
-                noneSelectedText: "未选择" //默认显示内容
-            });
+            try {
 
-            // $('#' + i.elementId).append($('<option value="">未选择</option>'));
+                $('#' + i.elementId).selectpicker({
+                    noneSelectedText: "未选择" //默认显示内容
+                });
 
-            for (const n of data) {
-                $('#' + i.elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+                // $('#' + i.elementId).append($('<option value="">未选择</option>'));
+
+                for (const n of data) {
+                    $('#' + i.elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+                }
+
+                if (i.initValue) {
+                    $('#' + i.elementId).selectpicker('val', i.initValue);
+                }
+
+                $('#' + i.elementId).selectpicker('refresh');
+            } catch (error) {
+                console.log('#' + i.elementId, '刷新失败',error);
             }
 
-            if (i.initValue) {
-                $('#' + i.elementId).selectpicker('val', i.initValue);
-            }
 
-            $('#' + i.elementId).selectpicker('refresh');
         },
         error: function () {}
     })
@@ -613,12 +620,19 @@ const fillFormInputs = (i) => {
             //根据元素不同类型选定不同赋值方式
             switch (true) {
                 case $("#" + i.formId + '-' + p).is("select") === true:
+                    // console.log($("#" + i.formId + '-' + p)[0]);
 
-                    // if ($("#" + i.formId + '-' + p)[0].options.length > 0) {
-                        $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
-                        $("#" + i.formId + '-' + p).selectpicker('refresh')
-                        // console.log('c1');
-                    
+                    try {
+                        if ($("#" + i.formId + '-' + p)[0].options.length > 0) {
+                            $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
+                            $("#" + i.formId + '-' + p).selectpicker('refresh')
+                        }
+                    } catch (error) {
+                        console.log("#" + i.formId + '-' + p, i.params[p], '赋值失败');
+                    }
+
+                    // console.log('c1');
+
                     break;
                 case $("#" + i.formId + '-' + p).is("p") === true:
                     $("#" + i.formId + '-' + p).text(i.params[p]);
@@ -1501,4 +1515,21 @@ const insertStock = async (i) => {
         o = true
     }
     return o;
+}
+
+
+/**
+ *替换中文标点符号至英文
+ *
+ * @param {*} str
+ */
+const cn2enPunctuation = (str) => {
+    let newStr = str.replace(/，/g, ',')
+        .replace(/，/g, ',')
+        .replace(/；/g, ';')
+        .replace(/。/g, '.')
+
+    console.log('nestr', newStr);
+
+    return newStr;
 }

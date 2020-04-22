@@ -150,7 +150,7 @@
 
                                     <label class="col-sm-1 control-label">职位</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_staffsForm-position" class="selectpicker"
+                                        <select id="rp_staffsForm-position" class="selectpicker form-control"
                                             data-dropup-auto="true">
                                         </select>
                                     </div>
@@ -160,7 +160,7 @@
                                     <label class="col-sm-1 control-label">学历</label>
                                     <div class="col-sm-5">
 
-                                        <select id="rp_staffsForm-education" class="selectpicker"
+                                        <select id="rp_staffsForm-education" class="selectpicker form-control"
                                             data-dropup-auto="true">
                                         </select>
                                     </div>
@@ -233,17 +233,16 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">在职状态</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_staffsForm-inservice" class="selectpicker"
+                                        <select id="rp_staffsForm-inservice" class="selectpicker form-control"
                                             data-dropup-auto="true">
                                         </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">有效性</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_staffsForm-effective" class="selectpicker"
-                                            data-dropup-auto="true">
-                                            <option>是</option>
-                                            <option>否</option>
+                             
+
+                                        <select id="rp_staffsForm-effective" class="selectpicker form-control">
                                         </select>
                                     </div>
                                 </div>
@@ -488,12 +487,16 @@
             },
         })
 
-        // loadDatePicker({
-        //     elementId: 'saveTimeStamp',
-        //     params: {
-        //         endDate: '2019-12-30'
-        //     }
-        // })
+        loadBootStrapSelector({
+            elementId: 'rp_staffsForm-effective',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="是或否"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
 
         addStaffNameListener()

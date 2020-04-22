@@ -91,7 +91,7 @@
 
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
-                        <div class="panel-body">
+                        <div class="panel-body" style="min-height: 700px;">
 
 
                             <form class="form-horizontal" role="form" id='rp_customersForm'>
@@ -242,11 +242,14 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">有效性</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_customersForm-effective" class="selectpicker dropup"
-                                            data-dropup-auto="false">
-                                            <option>是</option>
-                                            <option>否</option>
+                                        <!-- <select id="rp_customersForm-effective" class="selectpicker dropup"
+                                            data-dropup-auto="false"> -->
+
+                                            <select id="rp_customersForm-effective" class="selectpicker form-control">
+                                            </select>
                                         </select>
+
+                                        
                                     </div>
 
                                     <label class="col-sm-1 control-label">保存人</label>
@@ -391,6 +394,11 @@
             formId: 'rp_customersForm'
         })
 
+        //调整contacts内的标点符号
+        if (mainFormData.contacts) {
+            mainFormData.contacts = cn2enPunctuation(mainFormData.contacts)
+        }
+
 
         //有备注时记录备注人
         if (mainFormData.data[0].remark) {
@@ -486,6 +494,18 @@
                 sql: 'getOptionSelector',
                 params: {
                     filter: 'optionClass="信用等级"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_customersForm-effective',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="是或否"',
                     orderBy: 'orderId'
                 }
             },
