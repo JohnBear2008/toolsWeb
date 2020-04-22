@@ -91,7 +91,7 @@
 
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
-                        <div class="panel-body" style="min-height: 700px;">
+                        <div class="panel-body" style="min-height: 750px;">
 
 
                             <form class="form-horizontal" role="form" id='rp_customersForm'>
@@ -145,6 +145,15 @@
                                     <div class="col-sm-5">
 
                                         <select id="rp_customersForm-paymentType" class="selectpicker form-control">
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">国内外</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_customersForm-island" class="selectpicker form-control">
                                         </select>
                                     </div>
 
@@ -245,11 +254,11 @@
                                         <!-- <select id="rp_customersForm-effective" class="selectpicker dropup"
                                             data-dropup-auto="false"> -->
 
-                                            <select id="rp_customersForm-effective" class="selectpicker form-control">
-                                            </select>
+                                        <select id="rp_customersForm-effective" class="selectpicker form-control">
+                                        </select>
                                         </select>
 
-                                        
+
                                     </div>
 
                                     <label class="col-sm-1 control-label">保存人</label>
@@ -486,6 +495,19 @@
                 }
             },
         })
+
+        loadBootStrapSelector({
+            elementId: 'rp_customersForm-island',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="国内外"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+       
 
 
         loadBootStrapSelector({

@@ -298,15 +298,11 @@
                                     <label class="col-sm-1 control-label"
                                         for="rp_requestbillsForm-customerBelongShort">归属公司简称</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerBelongShort"
-                                            type="text">
-                                    </div>
-
-                                    <label class="col-sm-1 control-label"
-                                        for="rp_requestbillsForm-customerBelongFull">归属公司全称</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_requestbillsForm-customerBelongFull"
-                                            type="text">
+                                        <!-- <input class="form-control" id="rp_requestbillsForm-customerBelongShort"
+                                            type="text"> -->
+                                        <select id="rp_requestbillsForm-customerBelongShort"
+                                            class="selectpicker form-control" data-live-search="true" data-size="10">
+                                        </select>
                                     </div>
                                 </div>
 
@@ -481,25 +477,27 @@
 
                                                 <div class="form-group">
 
-                                                    <label class="col-sm-1 control-label">原厂编号</label>
-                                                    <div class="col-sm-3">
-                                                        <input class="form-control"
-                                                            id="rp_recordbillsForm-orginFactoryNo" type="text">
-                                                    </div>
-
-                                                    <label class="col-sm-1 control-label">生产日期</label>
-                                                    <div class="col-sm-3">
-                                                        <input class="form-control"
-                                                            id="rp_recordbillsForm-productionDate" type="text">
-                                                    </div>
-
                                                     <label class="col-sm-1 control-label">出厂编号</label>
                                                     <div class="col-sm-3">
                                                         <input class="form-control" id="rp_recordbillsForm-factoryNo"
                                                             type="text">
                                                     </div>
 
+                                                    <label class="col-sm-1 control-label">生产年月</label>
+                                                    <div class="col-sm-3">
+                                                        <!-- <input class="form-control"
+                                                            id="rp_recordbillsForm-productionDate" type="text"> -->
 
+                                                        <input id="rp_recordbillsForm-productionDate"
+                                                            class="form-control " type="text" value="" readonly>
+                                                      
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">原厂编号</label>
+                                                    <div class="col-sm-3">
+                                                        <input class="form-control"
+                                                            id="rp_recordbillsForm-orginFactoryNo" type="text">
+                                                    </div>
 
                                                 </div>
 
@@ -1182,7 +1180,6 @@
             contact: mainFormData.data[0].contact,
             mobilePhone: mainFormData.data[0].mobilePhone,
             customerBelongShort: mainFormData.data[0].customerBelongShort,
-            customerBelongFull: mainFormData.data[0].customerBelongFull,
             isInland: mainFormData.data[0].isInland
         }
 
@@ -1970,6 +1967,16 @@
             elementId: "rp_requestbillsForm-requestDate",
         })
 
+        //初始化组件
+        loadDatePicker({
+            elementId: "rp_recordbillsForm-productionDate",
+            params:{
+                startView:3,
+                minView:3,
+                format:'yyyy-mm'
+            }
+        })
+
 
         $("#msgSwitch").bootstrapSwitch();
 
@@ -2024,6 +2031,18 @@
                     orderBy: 'orderId'
                 }
             },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_requestbillsForm-customerBelongShort',
+            // initValue:'',
+            sqlParams: {
+                sql: 'getCustomerSelector',
+                params: {
+                    filter: 'customerType="客户"'
+                }
+            },
+            // initValue:'中国,北京'
         })
 
 
@@ -2104,6 +2123,8 @@
             },
         })
 
+
+
         //客户选定监听事件
         addCustomerListener();
 
@@ -2124,7 +2145,7 @@
 
         //自动调整modal显示位置
         $('#scanModal,#listPrintViewModal,#printViewModal,#recordHistoryModal').on('show.bs.modal', function (
-        e) {
+            e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
             $(this).css('display', 'block');
             // var modalHeight = $(window).height() / 2;

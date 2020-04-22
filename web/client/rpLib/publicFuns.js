@@ -547,8 +547,8 @@ const loadDatePicker = async (i) => {
         todayBtn: 1,
         autoclose: 1,
         todayHighlight: 1,
-        startView: 2,
-        minView: 2,
+        startView: 2,//4年,3月,2日,1时,0 分
+        minView: 2,//4年,3月,2日,1时,0 分
         forceParse: 0,
         // startDate: currentDate(), //设置最小日期
         // endDate: $('#limitDate').val() //设置最大日期
