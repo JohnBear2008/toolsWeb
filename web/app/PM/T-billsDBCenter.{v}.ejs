@@ -192,20 +192,20 @@
 	<br />
 
 	<!--数据呈现区-->
-	<table id="tasksTrackTable" class="table table-striped table-bordered">
+	<table id="billsTrackTable" class="table table-striped table-bordered">
 		<thead>
 			<tr>
 				<th>数据库ID</th>
-				<th>任务单号</th>
-				<th>最大版本号</th>
 				<th>计划单号</th>
+				<th>最大版本号</th>
 				<th>客户简称</th>
-				<th>任务类型</th>
-				<th>任务负责人</th>
-				<th>任务期限</th>
-				<th>开始时间</th>
-				<th>完成时间</th>
-				<th>程序版本号</th>
+				<th>申请时间</th>
+				<th>完成期限</th>
+				<th>审核发布日期</th>
+				<th>流程完结时间</th>
+				<th>分配任务数量</th>
+				<th>完成任务数量</th>
+				<th>FQC申请</th>
 				<th>归档类型</th>
 			</tr>
 		</thead>
@@ -324,62 +324,75 @@
 
 				</div>
 
+				<label class="col-sm-2 control-label" for="name">机型:</label>
+				<div class="col-sm-3 ">
+					<select id="MHEName" class="selectpicker" data-live-search="true" data-dropup-auto="false">
+					</select>
+				</div>
+
+
+
+
+			</div>
+
+
+
+			<!-------------------------------------------------------------------------->
+			<div class="form-group">
+
+				<label class="col-sm-2 control-label" for="name">系统DSP:</label>
+				<div class="col-sm-3 ">
+					<select id="modelD" class="selectpicker" data-live-search="true" data-dropup-auto="false">
+					</select>
+				</div>
+
+				<label class="col-sm-2 control-label" for="name">系统HMI:</label>
+				<div class="col-sm-3 ">
+					<select id="modelH" class="selectpicker" data-live-search="true" data-dropup-auto="false">
+					</select>
+				</div>
+
+			</div>
+
+			<!-------------------------------------------------------------------------->
+
+			<!-------------------------------------------------------------------------->
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="name">方案负责人:</label>
+				<div class="col-sm-3 ">
+					<select id="PGEMaker" class="selectpicker" data-live-search="true" data-dropup-auto="false">
+					</select>
+				</div>
+
 				<label class="col-sm-2 control-label" for="name">任务人:</label>
 				<div class="col-sm-3 ">
 					<select id="taskStaff" class="selectpicker" data-live-search="true" data-dropup-auto="false">
 					</select>
 				</div>
 
-
-
-
 			</div>
-
-
 
 			<!-------------------------------------------------------------------------->
 			<div class="form-group">
 
-				<label class="col-sm-2 control-label" for="name">机型:</label>
-				<div class="col-sm-3 ">
-					<select id="taskMHEName" class="selectpicker" data-live-search="true" data-dropup-auto="false">
-					</select>
-				</div>
-
-
-				<label class="col-sm-2 control-label" for="name">系统:</label>
-				<div class="col-sm-3 ">
-					<select id="taskModel" class="selectpicker" data-live-search="true" data-dropup-auto="false">
-					</select>
-				</div>
-
-			</div>
-
-			<!-------------------------------------------------------------------------->
-
-
-
-			<!-------------------------------------------------------------------------->
-			<div class="form-group">
-
-				<label for="taskMakeDate" class="col-sm-2 control-label">开始日期范围:</label>
+				<label for="applyDate" class="col-sm-2 control-label">申请日期范围:</label>
 				<div class="col-sm-3 ">
 					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
-						data-link-field="taskMakeDateB" data-link-format="yyyy-mm-dd">
-						<input id="taskMakeDateB" class="form-control " size="16" type="text" value="" readonly>
+						data-link-field="applyDateB" data-link-format="yyyy-mm-dd">
+						<input id="applyDateB" class="form-control " size="16" type="text" value="" readonly>
 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 					</div>
-					<input type="hidden" id="taskMakeDateB" value="" />
+					<input type="hidden" id="applyDateB" value="" />
 				</div>
 
 				<div class="col-sm-3 ">
 
 					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
-						data-link-field="taskMakeDateE" data-link-format="yyyy-mm-dd">
-						<input id="taskMakeDateE" class="form-control " size="16" type="text" value="" readonly>
+						data-link-field="applyDateE" data-link-format="yyyy-mm-dd">
+						<input id="applyDateE" class="form-control " size="16" type="text" value="" readonly>
 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 					</div>
-					<input type="hidden" id="taskMakeDateE" value="" />
+					<input type="hidden" id="applyDateE" value="" />
 				</div>
 
 
@@ -388,24 +401,24 @@
 			<!-------------------------------------------------------------------------->
 			<div class="form-group">
 
-				<label for="taskMakeDate" class="col-sm-2 control-label">完成日期范围:</label>
+				<label for="applyDate" class="col-sm-2 control-label">完成日期范围:</label>
 				<div class="col-sm-3 ">
 					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
-						data-link-field="taskFinishDateB" data-link-format="yyyy-mm-dd">
-						<input id="taskFinishDateB" class="form-control " size="16" type="text" value="" readonly>
+						data-link-field="WFEndDateB" data-link-format="yyyy-mm-dd">
+						<input id="WFEndDateB" class="form-control " size="16" type="text" value="" readonly>
 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 					</div>
-					<input type="hidden" id="taskFinishDateB" value="" />
+					<input type="hidden" id="WFEndDateB" value="" />
 				</div>
 
 				<div class="col-sm-3 ">
 
 					<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
-						data-link-field="taskFinishDateE" data-link-format="yyyy-mm-dd">
-						<input id="taskFinishDateE" class="form-control " size="16" type="text" value="" readonly>
+						data-link-field="WFEndDateE" data-link-format="yyyy-mm-dd">
+						<input id="WFEndDateE" class="form-control " size="16" type="text" value="" readonly>
 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 					</div>
-					<input type="hidden" id="taskFinishDateE" value="" />
+					<input type="hidden" id="WFEndDateE" value="" />
 				</div>
 
 
@@ -430,30 +443,25 @@
 	</form>
 </div>
 
+
 <!-- 点击导出excel弹出的窗口 -->
-<div id="winExprotExcel" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;overflow-x: auto;">
+<div id="winExprotExcel" class="easyui-window" title="表单详情" closed="true" style="width:90%;height:800px;">
 
 	<table id="tableExcelExport" class="table table-bordered">
 		<thead>
 			<tr>
 				<th>数据库ID</th>
-				<th>任务单号</th>
-				<th>最大版本号</th>
 				<th>计划单号</th>
+				<th>最大版本号</th>
 				<th>客户简称</th>
-				<th>任务类型</th>
-				<th>任务负责人</th>
-				<th>任务期限</th>
+				<th>修改主题</th>
 				<th>开始时间</th>
-				<th>完成时间</th>
-				<th>终止时间</th>
-				<th>任务说明</th>
-				<th>修改内容</th>
-				<th>功能说明</th>
-				<th>IPQC制单人</th>
-				<th>IPQC结果</th>
-				<th>程序版本号</th>
-				<th>任务状态</th>
+				<th>完成期限</th>
+				<th>审核发布日期</th>
+				<th>流程完结时间</th>
+				<th>分配任务数量</th>
+				<th>完成任务数量</th>
+				<th>任务人</th>
 				<th>归档类型</th>
 			</tr>
 		</thead>
@@ -497,6 +505,8 @@
 					"tableName": "ppm_bills_plan_t",
 					"titles": [
 						"DBID",
+						"BPIDfrom",
+						"BTIDfrom",
 						"BPID",
 						"version",
 						"CTRName",
@@ -511,7 +521,9 @@
 						"limitDate",
 						"maker",
 						"makeDate",
-						"files"
+						"files",
+						"updateReason",
+						"stopReason"
 					],
 					"filter": "DBID='" + DBID + "'"
 				};
@@ -650,7 +662,7 @@
 				"limitDate",
 				"files"
 			],
-			"filter": "BPID='" + dataSelect.taskBPID + "'"
+			"filter": "BPID='" + dataSelect.BPID + "'"
 		};
 
 
@@ -665,13 +677,13 @@
 				"CTRName",
 				"PGEMaker",
 				"auditDate",
-				//				"taskModel",
+				//				"modelD",
 				//				"modelH",
 				"limitDate",
 				"makeDate",
 				"files"
 			],
-			"filter": "BPTID='" + dataSelect.taskBPID + "'"
+			"filter": "BPTID='" + dataSelect.BPID + "'"
 		};
 
 
@@ -688,11 +700,12 @@
 				"taskStaff",
 				"taskLimitDate",
 				"BTAcceptDate",
-				"taskFinishDate",
+				"IPQCMakeDate",
 				"BTStatusText",
 				"taskFiles"
 			],
-			"filter": "taskBPID='" + dataSelect.taskBPID + "'"
+			"filter": "taskBPID='" + dataSelect.BPID + "'",
+			"orderBy": "BTID,BTVersion"
 		};
 
 
@@ -710,7 +723,8 @@
 				"FQCAuditDate",
 				"FQCResultText"
 			],
-			"filter": "fqcBPID='" + dataSelect.taskBPID + "'"
+			"filter": "fqcBPID='" + dataSelect.BPID + "'"
+
 		};
 
 
@@ -729,7 +743,7 @@
 				"emailADRS",
 				"files"
 			],
-			"filter": "pbhBPID='" + dataSelect.taskBPID + "'"
+			"filter": "pbhBPID='" + dataSelect.BPID + "'"
 		};
 
 
@@ -743,13 +757,7 @@
 
 	function createParams(filter) {
 
-		// let filterResult = ""
-
-		// if (filter !== undefined) {
-		// 	filterResult = filter
-		// }
-
-		console.log("filter:" + JSON.stringify(filter))
+		// console.log("filter:" + JSON.stringify(filter))
 
 		btnFilterActive = filter.btnFilter
 		divFilterActive = filter.divFilter
@@ -760,25 +768,18 @@
 
 		if (filter.btnFilter !== "") {
 
-			console.log("filter.btnFilter:" + filter.btnFilter)
+			// console.log("filter.btnFilter:" + filter.btnFilter)
 			filterResult = filter.btnFilter
 		} else {
 			filterResult = ""
 		}
 
-		console.log("filterResult111:" + JSON.stringify(filterResult))
+		// console.log("filterResult:" + JSON.stringify(filterResult))
 
 		var trackType = getQueryString("trackType");
 
 		switch (trackType) {
 			case 'all':
-
-				// if (filterResult !== "") {
-				// 	filterResult = "(" + filterResult + " ) OR taskFinishDate IS NULL";
-
-				// } 
-
-				// $("#BTNFilterAll").addClass("active");
 
 				if (filterResult !== "") {
 					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult +
@@ -809,13 +810,13 @@
 				$("#BTNFilterHistory").addClass("active");
 		}
 
-		console.log("filterResult222:" + filterResult)
+		// console.log("filterResult:" + filterResult)
 
 
 		let Params = {
-			tableID: "#tasksTrackTable",
+			tableID: "#billsTrackTable",
 			SQLParam: {
-				SQL: "SQLTableTasksDBCenter_T",
+				SQL: "SQLTableBillsDBCenter_T",
 				filter: filterResult
 			},
 			columnsData: [{
@@ -823,35 +824,34 @@
 					"visible": false
 				},
 				{
-					data: 'BTID'
+					data: 'BPID'
 				},
 				{
-					data: 'BTVersion'
+					data: 'version'
 				},
 				{
-					data: 'taskBPID'
+					data: 'CTRName'
 				},
 				{
-					data: 'taskCTRName'
+					data: 'applyDate'
 				},
 				{
-					data: 'taskSortTypeText'
+					data: 'limitDate'
 				},
 				{
-					data: 'taskStaff'
+					data: 'PBHAuditDate'
 				},
 				{
-					data: 'taskLimitDate'
+					data: 'WFEndDate'
 				},
 				{
-					data: 'taskMakeDate'
+					data: 'taskNum'
 				},
 				{
-					data: 'taskFinishDate'
+					data: 'taskNumDone'
 				},
 				{
-					data: 'taskFiles',
-					"visible": false
+					data: 'FQCRequestText'
 				},
 				{
 					data: 'WFEndText'
@@ -864,17 +864,10 @@
 
 	}
 
-	//函数 创建excel table 参数模版
 
 	function createExportParams(filter) {
 
-		// let filterResult = ""
-
-		// if (filter !== undefined) {
-		// 	filterResult = filter
-		// }
-
-		console.log("filter:" + JSON.stringify(filter))
+		// console.log("filter:" + JSON.stringify(filter))
 
 		btnFilterActive = filter.btnFilter
 		divFilterActive = filter.divFilter
@@ -885,24 +878,18 @@
 
 		if (filter.btnFilter !== "") {
 
-			console.log("filter.btnFilter:" + filter.btnFilter)
+			// console.log("filter.btnFilter:" + filter.btnFilter)
 			filterResult = filter.btnFilter
 		} else {
 			filterResult = ""
 		}
 
-		console.log("filterResult111:" + JSON.stringify(filterResult))
+		// console.log("filterResult:" + JSON.stringify(filterResult))
 
 		var trackType = getQueryString("trackType");
 
 		switch (trackType) {
 			case 'all':
-
-				// if (filterResult !== "") {
-				// 	filterResult = "(" + filterResult + " ) OR taskFinishDate IS NULL";
-				// } 
-
-				// $("#BTNFilterAll").addClass("active");
 
 				if (filterResult !== "") {
 					filterResult = "((WFStatus=0 OR WFStatus=100 )  AND " + filterResult +
@@ -933,13 +920,13 @@
 				$("#BTNFilterHistory").addClass("active");
 		}
 
-		console.log("filterResult222:" + filterResult)
+		// console.log("filterResult:" + filterResult)
 
 
 		let Params = {
 			tableID: "#tableExcelExport",
 			SQLParam: {
-				SQL: "SQLTableTasksDBCenter",
+				SQL: "SQLTableBillsDBCenter_T",
 				filter: filterResult
 			},
 			columnsData: [{
@@ -947,58 +934,38 @@
 					"visible": false
 				},
 				{
-					data: 'BTID'
+					data: 'BPID'
 				},
 				{
-					data: 'BTVersion'
+					data: 'version'
 				},
 				{
-					data: 'taskBPID'
+					data: 'CTRName'
 				},
 				{
-					data: 'taskCTRName'
+					data: 'topic'
 				},
 				{
-					data: 'taskSortTypeText'
+					data: 'applyDate'
 				},
 				{
-					data: 'taskStaff'
+					data: 'limitDate'
 				},
 				{
-					data: 'taskLimitDate'
+					data: 'PBHAuditDate'
 				},
 				{
-					data: 'taskMakeDate'
+					data: 'WFEndDate'
 				},
 				{
-					data: 'taskFinishDate'
+					data: 'taskNum'
 				},
 				{
-					data: 'taskStopDate'
+					data: 'taskNumDone'
 				},
 				{
-					data: 'taskDBE'
-				},
-				{
-					data: 'modifyContent'
-				},
-				{
-					data: 'functionsDBE'
-				},
-				{
-					data: 'IPQCMaker'
-				},
-				{
-					data: 'IPQCAuditResultText'
-				},
-				{
-					data: 'BTStatusText'
-				},
-				{
-					data: 'taskFiles',
-					"visible": false
-				},
-				{
+					data: 'taskStaffs'
+				}, {
 					data: 'WFEndText'
 				}
 
@@ -1055,10 +1022,10 @@
 
 	function tableClickBind() {
 
-		$('#tasksTrackTable tbody').unbind();
+		$('#billsTrackTable tbody').unbind();
 		//判断是否选中数据-------
-		var table = $('#tasksTrackTable').DataTable();
-		$('#tasksTrackTable tbody').on('click', 'tr', function () {
+		var table = $('#billsTrackTable').DataTable();
+		$('#billsTrackTable tbody').on('click', 'tr', function () {
 			if ($(this).hasClass('selected')) {
 				$(this).removeClass('selected');
 			} else {
@@ -1073,7 +1040,7 @@
 
 		//dbclick 测试判断是否选中数据-------
 
-		$('#tasksTrackTable tbody').on('dblclick', 'tr', function () {
+		$('#billsTrackTable tbody').on('dblclick', 'tr', function () {
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
 
@@ -1092,6 +1059,30 @@
 		divFilterActive = ""
 
 
+
+
+
+		//过滤按钮组
+
+		$('#BTNFilterHistory').click(function () {
+
+			window.location.href = '/app/PM/T-billsDBCenter';
+
+
+		});
+
+		$('#BTNFilterAll').click(function () {
+
+			window.location.href = '/app/PM/T-billsDBCenter?trackType=all';
+
+		});
+
+		// //加载自动切换至全部模式
+		// $('#BTNFilterAll').click();
+
+
+
+
 		//详情按钮---------
 		$('#BTNInfo').click(function () {
 
@@ -1101,14 +1092,13 @@
 				}, "T-BillCenter02")) {
 				//    console.log("seclet: "+JSON.stringify(table.row('.selected').data()));
 				// table.row('.selected').remove().draw( false );
-				var table = $('#tasksTrackTable').DataTable();
+				var table = $('#billsTrackTable').DataTable();
 				var dataSelect = table.row('.selected').data();
 				if (dataSelect == undefined) {
 					alert("请先点击表格中的表单!");
 				} else {
 
 					$('#BillPLD').modal('show')
-					console.log("dataSelect:" + JSON.stringify(dataSelect))
 					Fun_winDetailInit(dataSelect);
 				}
 			}
@@ -1122,7 +1112,7 @@
 					"SQL": "SQLGetAuthorities",
 					"filter": "StaffName='" + sessionName + "'"
 				}, "T-BillCenter03")) {
-				var table = $('#tasksTrackTable').DataTable();
+				var table = $('#billsTrackTable').DataTable();
 				var dataSelect = table.row('.selected').data();
 
 				//   alert(JSON.stringify(dataSelect));
@@ -1137,7 +1127,7 @@
 							"DBTable": "ppm_bills_plan_t",
 							"BillIDName": "BPID",
 							"BillID": dataSelect.BPID,
-							"WFEndDate":"",//删除已存在的终止时间
+							"WFEndDate": "", //删除已存在的终止时间
 							"WFStatus": 90
 						}
 
@@ -1191,7 +1181,7 @@
 
 
 			datatableReload(createParams({
-				btnFilter: "YEARWEEK(date_format(taskFinishDate,'%Y-%m-%d')) = YEARWEEK(now())",
+				btnFilter: "YEARWEEK(date_format(WFEndDate,'%Y-%m-%d')) = YEARWEEK(now())",
 				divFilter: ""
 			}));
 
@@ -1201,8 +1191,8 @@
 			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
 				"yyyy/MM/dd"));
 
-				$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerWeek").addClass("active")
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerWeek").addClass("active")
 
 
 
@@ -1216,7 +1206,7 @@
 		//按钮:过滤本周
 		$('#BTNFitlerMonth').click(function () {
 			datatableReload(createParams({
-				btnFilter: "DATE_FORMAT( taskFinishDate, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )",
+				btnFilter: "DATE_FORMAT( WFEndDate, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )",
 				divFilter: ""
 			}));
 			tableClickBind();
@@ -1224,15 +1214,15 @@
 			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
 				"yyyy/MM/dd"));
 
-				$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerMonth").addClass("active")
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerMonth").addClass("active")
 
 		})
 
 		//按钮:过滤本周
 		$('#BTNFitlerYear').click(function () {
 			datatableReload(createParams({
-				btnFilter: "YEAR(taskFinishDate)=YEAR(NOW())",
+				btnFilter: "YEAR(WFEndDate)=YEAR(NOW())",
 				divFilter: ""
 			}));
 			tableClickBind();
@@ -1240,8 +1230,8 @@
 			$("#spanDateRange").text(DateRange[0].format("yyyy/MM/dd") + "至" + DateRange[1].format(
 				"yyyy/MM/dd"));
 
-				$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerYear").addClass("active")
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitlerYear").addClass("active")
 
 
 		})
@@ -1256,7 +1246,7 @@
 			$("#spanDateRange").text("ALL");
 
 			$("#BTNGroupFilter").children().removeClass("active");
-				$("#BTNFitlerAll").addClass("active")
+			$("#BTNFitlerAll").addClass("active")
 
 		})
 
@@ -1270,17 +1260,26 @@
 			}, "#CTRName");
 
 			Fun_getSQLSelectDBData({
-				SQL: "SQLSRStaffs"
-			}, "#taskStaff");
-
-			Fun_getSQLSelectDBData({
 				SQL: "SQLSRMachines"
-			}, "#taskMHEName");
+			}, "#MHEName");
 
 			Fun_getSQLFullSelectDBData({
-				SQL: "SQLSRSystems"
-			}, "#taskModel");
+				SQL: "SQLSRSystems",
+				filter: "belong='DSP' "
+			}, "#modelD");
 
+			Fun_getSQLFullSelectDBData({
+				SQL: "SQLSRSystems",
+				filter: "belong='HMI' "
+			}, "#modelH");
+
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#PGEMaker");
+
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#taskStaff");
 
 			$('.form_date').datetimepicker({
 				language: 'zh-CN',
@@ -1302,41 +1301,51 @@
 
 			let filter = "";
 			if (Fun_getSelectText($('#CTRName option:selected').text()) !== "未选择") {
-				filter = filter + "AND taskCTRName = '" + Fun_getSelectText($('#CTRName option:selected')
+				filter = filter + "AND CTRName = '" + Fun_getSelectText($('#CTRName option:selected')
 					.text()) + "'"
 			}
 
-			if (Fun_getSelectText($('#taskStaff option:selected').text()) !== "未选择") {
-				filter = filter + "AND taskStaff like  '%" + Fun_getSelectText($(
-					'#taskStaff option:selected').text()) + "%'"
+			if (Fun_getSelectText($('#MHEName option:selected').text()) !== "未选择") {
+				filter = filter + "AND MHEName = '" + Fun_getSelectText($('#MHEName option:selected')
+					.text()) + "'"
 			}
 
-			if (Fun_getSelectText($('#taskMHEName option:selected').text()) !== "未选择") {
-				filter = filter + "AND taskMHEName = '" + Fun_getSelectText($(
-					'#taskMHEName option:selected').text()) + "'"
-			}
-
-			if ($('#taskModel option:selected').text() !== "未选择") {
-				filter = filter + "AND taskModel = '" + $('#taskModel option:selected')
+			if ($('#modelD option:selected').text() !== "未选择") {
+				filter = filter + "AND modelD = '" + $('#modelD option:selected')
 					.text() + "'"
 			}
 
-
-
-			if ($("#taskMakeDateB").val() !== "") {
-				filter = filter + "AND taskMakeDate >='" + $("#taskMakeDateB").val() + "'";
+			if ($('#modelH option:selected').text() !== "未选择") {
+				filter = filter + "AND modelH = '" + $('#modelH option:selected')
+					.text() + "'"
 			}
 
-			if ($("#taskMakeDateE").val() !== "") {
-				filter = filter + "AND taskMakeDate <='" + $("#taskMakeDateE").val() + "'";
+			if ($('#PGEMaker option:selected').text() !== "未选择") {
+				filter = filter + "AND PGEMaker = '" + $('#PGEMaker option:selected')
+					.text() + "'"
 			}
 
-			if ($("#taskFinishDateB").val() !== "") {
-				filter = filter + "AND taskFinishDate >='" + $("#taskFinishDateB").val() + "'";
+			if ($('#taskStaff option:selected').text() !== "未选择") {
+				filter = filter + "AND taskStaffs like  '%" + $(
+					'#taskStaff option:selected').text() + "%'"
 			}
 
-			if ($("#taskFinishDateE").val() !== "") {
-				filter = filter + "AND taskFinishDate <='" + $("#taskFinishDateE").val() + "'";
+
+
+			if ($("#applyDateB").val() !== "") {
+				filter = filter + "AND applyDate >='" + $("#applyDateB").val() + "'";
+			}
+
+			if ($("#applyDateE").val() !== "") {
+				filter = filter + "AND applyDate <='" + $("#applyDateE").val() + "'";
+			}
+
+			if ($("#WFEndDateB").val() !== "") {
+				filter = filter + "AND WFEndDate >='" + $("#WFEndDateB").val() + "'";
+			}
+
+			if ($("#WFEndDateE").val() !== "") {
+				filter = filter + "AND WFEndDate <='" + $("#WFEndDateE").val() + "'";
 			}
 
 			// console.log("filter:"+filter);
@@ -1348,35 +1357,29 @@
 				btnFilter: "",
 				divFilter: filter
 			}));
-
-			// datatableReload(createParams(filter));
 			tableClickBind();
 
 			$('#DivFilter').window('close');
 
 		});
 
-		// //过滤功能组 自定义过滤确认按钮-----
-		// $('#FilterCancelBtn').click(function () {
 
-		// 	$('#DivFilter').window('close');
-
-		// });
 
 		//过滤功能组 自定义过滤确认按钮-----
 		$('#FilterCancelBtnN').click(function () {
 
 			$("#CTRName").selectpicker('val', "");
-			$("#taskMHEName").selectpicker('val', "");
-			$("#taskModel").selectpicker('val', "");
-
+			$("#MHEName").selectpicker('val', "");
+			$("#modelD").selectpicker('val', "");
+			$("#modelH").selectpicker('val', "");
+			$("#PGEMaker").selectpicker('val', "");
 			$("#taskStaff").selectpicker('val', "");
 
-			$("#taskMakeDateB").val("")
-			$("#taskMakeDateE").val("")
+			$("#applyDateB").val("")
+			$("#applyDateE").val("")
 
-			$("#taskFinishDateB").val("")
-			$("#taskFinishDateE").val("")
+			$("#WFEndDateB").val("")
+			$("#WFEndDateE").val("")
 
 
 
@@ -1392,127 +1395,50 @@
 				}, "T-BillCenter01")) {
 				$('#reportDetail').window('open');
 
-				var table = $('#tasksTrackTable').DataTable();
+				var table = $('#billsTrackTable').DataTable();
 
 				var totalNum = (table.page.info()).recordsTotal;
 
-
-				let staffs = [];
-				let staffsData = [];
-
-				let delayBills = [];
+				let delayNum = 0;
 
 
 				for (let i = 0; i < totalNum; i++) {
+
 					let rowData = table.row(i).data();
 
-					rowData = NulltoEmpty(rowData)
+					// console.log("rowData.limitDate:"+rowData.limitDate)
+					// console.log("rowData.WFEndDate:"+rowData.WFEndDate)
+					// console.log("Ndate:"+Ndate)
 
-					if (staffs.indexOf(rowData.taskStaff) === -1) {
+					if (rowData.WFEndDate === null && rowData.limitDate < Ndate) {
+						delayNum = delayNum + 1;
 
-						let staffData = {
-							name: rowData.taskStaff,
-							delayNum: 0,
-							totalNum: 0,
-							delayRate: 0
-						}
+					}
 
-						staffData.totalNum = staffData.totalNum + 1;
-						if ((rowData.limitDate < rowData.taskFinishDate) || (rowData.taskFinishDate ===
-								'' && rowData.taskLimitDate < Ndate && rowData.WFEndText !== '终止归档')) {
-							staffData.delayNum = staffData.delayNum + 1;
-
-							delayBills.push(rowData)
-						}
-						staffData.delayRate = (staffData.delayNum / staffData.totalNum * 100).toFixed(2) +
-							"%"
-
-						staffs.push(rowData.taskStaff);
-
-						staffsData.push(staffData)
-
-
-					} else {
-						for (let i = 0; i < staffsData.length; i++) {
-							if (staffsData[i].name === rowData.taskStaff) {
-								staffsData[i].totalNum = staffsData[i].totalNum + 1;
-
-								if ((rowData.taskLimitDate < rowData.taskFinishDate) || (rowData
-										.taskFinishDate === '' && rowData.taskLimitDate < Ndate && rowData
-										.WFEndText !== '终止归档')) {
-									staffsData[i].delayNum = staffsData[i].delayNum + 1;
-									delayBills.push(rowData)
-								}
-								staffsData[i].delayRate = (staffsData[i].delayNum / staffsData[i]
-									.totalNum * 100).toFixed(2) + "%"
-							}
-						}
+					if (rowData.limitDate < rowData.WFEndDate) {
+						delayNum = delayNum + 1;
 					}
 				}
 
-				// console.log("staffs:" + JSON.stringify(staffs));
-				// console.log("staffsData:" + JSON.stringify(staffsData));
-				// console.log("delayBills:" + JSON.stringify(delayBills));
+				$('#spanTotalBillNum').text(totalNum);
+				$('#spanDelayBillNum').text(delayNum);
 
-				$("#tableDelayRate tbody").html("")
-
-
-				for (let i = 0; i < staffsData.length; i++) {
-
-
-					let tr = "<tr>" +
-						"<td>" + staffsData[i].name + "</td>" +
-						"<td>" + staffsData[i].delayNum + "</td>" +
-						"<td>" + staffsData[i].totalNum + "</td>" +
-						"<td>" + staffsData[i].delayRate + "</td>" +
-						"</tr>"
-
-					$("#tableDelayRate tbody").append(tr)
-				}
-
-				$("#tableDelayBills tbody").html("")
-
-				for (let i = 0; i < delayBills.length; i++) {
-
-
-					let tr = "<tr>" +
-						"<td>" + delayBills[i].BTID + "</td>" +
-						"<td>" + delayBills[i].taskCTRName + "</td>" +
-						"<td>" + delayBills[i].taskSortTypeText + "</td>" +
-						"<td>" + delayBills[i].taskStaff + "</td>" +
-						"<td>" + delayBills[i].taskDBE + "</td>" +
-						"<td>" + delayBills[i].taskLimitDate + "</td>" +
-						"<td>" + delayBills[i].taskFinishDate + "</td>" +
-						"<td>" + delayBills[i].WFEndText + "</td>" +
-						"</tr>"
-
-					$("#tableDelayBills tbody").append(tr)
-				}
-
-
-				// $('#spanTotalBillNum').text(totalNum);
-				// $('#spanDelayBillNum').text(delayNum);
-
-				// $('#spanDelayRate').text((delayNum / totalNum * 100).toFixed(2) + "%");
+				$('#spanDelayRate').text((delayNum / totalNum * 100).toFixed(2) + "%");
 
 
 
 
 			}
 
-		});
-
-		// tableExcelExport
-
-		$('#BTNExportExcel').click(function () {
-
-			$('#winExprotExcel').window('open');
-			datatableReloadWithExcel(createExportParams({
-				btnFilter: btnFilterActive,
-				divFilter: divFilterActive
-			}));
 
 		});
+
+		////报表 按钮 报表2----
+		//$('#BTNReport2').click(function() {
+		//	 $('#reportDetail').window('open');
+		//});
+		//	
+		//发送email 按钮------------
 
 		$('#sendMailBtn').click(function () {
 			alert("发送模板邮件!");
@@ -1524,17 +1450,19 @@
 		});
 
 
-		//过滤按钮组
+		$('#BTNExportExcel').click(function () {
 
-		$('#BTNFilterHistory').click(function () {
+			$('#winExprotExcel').window('open');
 
-			window.location.href = '/app/PM/tasksDBCenter';
+			// tableExcelExport
 
-		});
+			datatableReloadWithExcel(createExportParams({
+				btnFilter: btnFilterActive,
+				divFilter: divFilterActive
+			}));
 
-		$('#BTNFilterAll').click(function () {
 
-			window.location.href = '/app/PM/T-tasksDBCenter?trackType=all';
+
 
 		});
 
