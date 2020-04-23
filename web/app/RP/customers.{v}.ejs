@@ -148,6 +148,13 @@
                                         </select>
                                     </div>
 
+                                    <label class="col-sm-1 control-label">保固期</label>
+                                    <div class="col-sm-5">
+
+                                        <select id="rp_customersForm-warrantyPeriod" class="selectpicker form-control">
+                                        </select>
+                                    </div>
+
                                 </div>
 
                                 <div class="form-group">
@@ -516,6 +523,17 @@
                 sql: 'getOptionSelector',
                 params: {
                     filter: 'optionClass="信用等级"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_customersForm-warrantyPeriod',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="保固期"',
                     orderBy: 'orderId'
                 }
             },

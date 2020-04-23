@@ -279,6 +279,12 @@
                                         <select id="customerContacts" class="selectpicker">
                                         </select>
                                     </div>
+
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_requestbillsForm-customerId">保固期</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_requestbillsForm-warrantyPeriod"></p>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -919,6 +925,43 @@
             if (productId) {
                 fillProductInfo(productId);
             }
+        });
+
+    }
+
+    //保固期自动计算事件
+    const addInWarrantyListener = () => {
+        $('#rp_recordbillsForm-productYear,#rp_recordbillsForm-productMonth').unbind('change'); //仅解绑change事件
+        $('#rp_recordbillsForm-productYear,#rp_recordbillsForm-productMonth').change(function () {
+            let warrantyPeriod = parseInt($('#rp_requestbillsForm-warrantyPeriod').text());
+            let year = $('#rp_recordbillsForm-productYear').val() || '2000'
+            let month = $('#rp_recordbillsForm-productMonth').val() || '01'
+            console.log(warrantyPeriod, year, month);
+
+            //计算月份差函数
+            const getIntervalMonth = (startDate, endDate) => {
+                var startMonth = startDate.getMonth();
+                var endMonth = endDate.getMonth();
+                var intervalMonth = (startDate.getFullYear() * 12 + startMonth) - (endDate
+                    .getFullYear() *
+                    12 + endMonth);
+                return intervalMonth;
+            }
+
+            let nowDate = new Date()
+            let productDate = new Date(year + '-' + month + '-01');
+            let intervalMonth = getIntervalMonth(productDate, nowDate)
+
+            if (warrantyPeriod + intervalMonth >= 0) {
+                console.log('保内');
+                $("#rp_recordbillsForm-inWarranty").selectpicker('val', '是')
+                // $("#rp_recordbillsForm-inWarranty").selectpicker('refresh')
+            } else {
+                $("#rp_recordbillsForm-inWarranty").selectpicker('val', '否')
+            }
+
+
+
         });
 
     }
@@ -2142,6 +2185,9 @@
 
         //选定产品修改事件
         addProductListener();
+
+        //保固期计算事件
+        addInWarrantyListener();
 
 
 
