@@ -483,14 +483,25 @@
                                                             type="text">
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">生产年月</label>
+                                                    <label class="col-sm-1 control-label">生产年份</label>
                                                     <div class="col-sm-3">
-                                                        <!-- <input class="form-control"
-                                                            id="rp_recordbillsForm-productionDate" type="text"> -->
+                                                        <input id="rp_recordbillsForm-productYear" class="form-control "
+                                                            type="text" value="" readonly>
+                                                    </div>
 
-                                                        <input id="rp_recordbillsForm-productionDate"
+                                                    <label class="col-sm-1 control-label">生产月份</label>
+                                                    <div class="col-sm-3">
+                                                        <input id="rp_recordbillsForm-productMonth"
                                                             class="form-control " type="text" value="" readonly>
-                                                      
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">原产地</label>
+                                                    <div class="col-sm-3">
+                                                        <select id="rp_recordbillsForm-origin" class="selectpicker"
+                                                            data-dropup-auto="false">
+                                                        </select>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">原厂编号</label>
@@ -498,18 +509,8 @@
                                                         <input class="form-control"
                                                             id="rp_recordbillsForm-orginFactoryNo" type="text">
                                                     </div>
-
                                                 </div>
-
                                                 <div class="form-group">
-                                                    <label class="col-sm-1 control-label">原产地</label>
-                                                    <div class="col-sm-3">
-
-                                                        <select id="rp_recordbillsForm-origin" class="selectpicker"
-                                                            data-dropup-auto="false">
-
-                                                        </select>
-                                                    </div>
 
                                                     <label class="col-sm-1 control-label">产品来源</label>
                                                     <div class="col-sm-3">
@@ -1969,13 +1970,24 @@
 
         //初始化组件
         loadDatePicker({
-            elementId: "rp_recordbillsForm-productionDate",
-            params:{
-                startView:3,
-                minView:3,
-                format:'yyyy-mm'
+            elementId: "rp_recordbillsForm-productYear",
+            params: {
+                startView: 4,
+                minView: 4,
+                format: 'yyyy'
             }
         })
+
+        //初始化组件
+        loadDatePicker({
+            elementId: "rp_recordbillsForm-productMonth",
+            params: {
+                startView: 3,
+                minView: 3,
+                format: 'mm'
+            }
+        })
+
 
 
         $("#msgSwitch").bootstrapSwitch();

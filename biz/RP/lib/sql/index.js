@@ -1,7 +1,7 @@
 //selector sql
 const getRegionSelector = "SELECT mername AS value,mername AS option,pinyin as token FROM `region`"
 const getCustomerSelector =
-	"SELECT customerShortName AS value,customerShortName AS option,CONCAT(customerId,mobilePhone)as token FROM `rp_customers`"
+	"SELECT customerShortName AS value,customerShortName AS option,CONCAT(customerId,customerShortName,contact,mobilePhone,address)as token FROM `rp_customers`"
 const getStaffSelector = "select staffName as value,staffName as option,pinyin as token from `rp_staffs`"
 const getProductSelector =
 	"select productId as value,productId as option,productDescription as token from `rp_products`"
