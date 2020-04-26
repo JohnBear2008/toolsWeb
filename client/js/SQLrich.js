@@ -63,18 +63,18 @@ SQLLateList=
 //  OR (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  ))
 // ppm_bills_pbh 不可改為ppm_bills_pbh_t  ,没有tbc.emailDate
 SQLLateList_t=
-" SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`emailDate` ,limitDate "+
+" SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`PBHAuditDate` ,limitDate "+
 " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END  "+
 " AS WFEndText  FROM `ppm_bills_plan_t` tbb,  "+
 " (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+
 " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
-" (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+
-" (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` "+
+" (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+
+" (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` "+
 " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
 " tb on ta.BPID=tb.pbhBPID ) A "+
-" where ( applyDate>=? and applyDate<=?  and ? > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL ) "+
-" OR (( applyDate<? and emailDate>=? and emailDate<=? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL ) "+
-" OR (applyDate<? and emailDate is null and WFEndText is null  and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )) ";
+" where ( applyDate>=? and applyDate<=?  and ? > LimitDate and PBHAuditDate is  null and  WFEndDate is NUll  and WFEndText is NULL ) "+
+" OR (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL ) "+
+" OR (applyDate<? and PBHAuditDate is null and WFEndText is null  and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )) ";
  
 SQLPartsUp= "SELECT `DBID`, `Bill_ID`, `Customer_ID`, `Operate`, `Apply_Date`, `Limit_Date`,   `PaUp_ProdNo`,PaDown_ProdNo, `Parts_Name`, `Location`  FROM `ma_parts_detail` ";
  

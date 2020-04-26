@@ -44,8 +44,8 @@ module.exports = function(sender) {
     // " where (taskMakeDate<? and taskFinishDate>= ? and taskFinishDate<= ? and taskStaff =? and taskType='A' ) ";
     " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, "+
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
-    " where  taskMakeDate <=? and taskType='A' and ((taskFinishDate >=? and taskFinishDate <=?  and taskStaff =?) "+
-    " or (WFEndText is null and taskFinishDate is null)) ";
+    " where  taskMakeDate <=? and taskType='A' and ((taskFinishDate >=? and taskFinishDate <=? ) "+
+    " or (WFEndText is null and taskFinishDate is null  and taskStaff =?)) ";
     //本周新单  
     // var sql_Page1A2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
     // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
@@ -202,7 +202,7 @@ module.exports = function(sender) {
                        dataav.push(temp);
                     }
                     (cb2(null, temp ));  
-                    // console.log("混", temp);
+                    console.log("上周个人遗留", temp,"姓", stf );
                 },
                 error : sender.error
             })
