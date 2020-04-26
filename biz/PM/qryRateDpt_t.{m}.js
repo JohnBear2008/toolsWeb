@@ -145,22 +145,33 @@ module.exports = function(sender) {
     // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and  WFEndText= '终止归档')
     // or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null and  WFEndText= '终止归档')
 
-   //上周遗留-延期未完成
+   //上周遗留-延期未完成 好奇怪 and PBHAuditDate<='2020-04-24' and PBHAuditDate>='2020-01-01' 是24 
+   // and PBHAuditDate<='2020-01-01' and PBHAuditDate>='2020-04-24'  是19正确
     var sql_RemainNotDo = 
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    "  where ( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=? and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )"+
-    "  or (applyDate<? and PBHAuditDate is null and WFEndText is null  and ? > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )";
-    // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )
-    // or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null  and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )
-//  上周遗留-期限未到 
+    " where (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
+    " or (applyDate<? and PBHAuditDate is null and WFEndText is null)) and PBHAuditDate is null and ? >limitDate";
+    // " SELECT  count(*) as times   "+
+    // " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join   "+ 
+    // "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A   "+
+    // "  where ( applyDate<'2020-01-01'  and PBHAuditDate<='2020-01-01' and PBHAuditDate>='2020-04-24' and '2020-04-24' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )  "+
+    // "  or (applyDate<'2020-01-01' and PBHAuditDate is null and WFEndText is null  and '2020-04-24' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  )  ";
+//熊 
+// SELECT * FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join 
+//  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A
+//   where (( applyDate<'2020-01-01' and PBHAuditDate>='2020-01-01' and PBHAuditDate<='2020-04-24') 
+// or (applyDate<'2020-01-01' and PBHAuditDate is null and WFEndText is null)) and PBHAuditDate is null
+  
+  
+  //  上周遗留-期限未到 
     var sql_RemainPend = 
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=? and ? < LimitDate   ) "+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null  and ? < LimitDate   ) ";
+    " where (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
+    " or (applyDate<? and PBHAuditDate is null and WFEndText is null)) and PBHAuditDate is null and ? <= limitDate";
     // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and '2020-04-20' < LimitDate   )
     // or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null  and '2020-04-20' < LimitDate   )
 
@@ -562,7 +573,7 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,duedate,WeekThisbeg,duedate ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg,duedate ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -575,7 +586,8 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗未完5：", temp);
+                        console.log("问题 遗未完@@ ",WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg,duedate);
+                        console.log("问题 遗未完24：应该19 ", temp);
                     },
                     error : sender.error
                 })
@@ -583,7 +595,7 @@ module.exports = function(sender) {
     function funRemainPend(cb){
         yjDBService.exec({
                     sql : sql_RemainPend,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,duedate,WeekThisbeg,duedate ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg,duedate ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

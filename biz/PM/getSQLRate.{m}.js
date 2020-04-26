@@ -66,6 +66,14 @@ module.exports = function(sender) {
 		param7=sender.req.query.duedate; 
 		param8=sender.req.query.weekbeg; 
 		param9=sender.req.query.duedate; 
+
+		
+ 
+
+// " where (( applyDate<'2020-01-01' and PBHAuditDate>='2020-01-01' and PBHAuditDate<='2020-04-24') "+
+// " or (applyDate<'2020-01-01' and PBHAuditDate is null and WFEndText is null)) "+
+// " and PBHAuditDate is null  OR (applyDate>='2020-01-01' and applyDate<='2020-04-24' and PBHAuditDAte is null and WFEndText is null) ";
+
 // where ( applyDate>='2020-03-01' and applyDate<='2020-03-31'  and '2020-04-20' > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL )
 //  OR (( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )
 //  OR (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and '2020-04-20' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL  ))
@@ -74,14 +82,11 @@ module.exports = function(sender) {
 	case "SQLLateList_t":
 		var SQLExecute=SQLLateList_t;
 		param1=sender.req.query.weekbeg;  
-		param2=sender.req.query.weekend;  
-		param3=sender.req.query.duedate; 
+		param2=sender.req.query.weekbeg;  
+		param3=sender.req.query.weekend; 
 		param4=sender.req.query.weekbeg; 
 		param5=sender.req.query.weekbeg; 
 		param6=sender.req.query.weekend; 
-		param7=sender.req.query.duedate; 
-		param8=sender.req.query.weekbeg; 
-		param9=sender.req.query.duedate; 
 		// console.log("weekbeg:"+param1);
 		// console.log("weekend:"+param2);
 		break;	
