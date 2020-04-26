@@ -523,7 +523,7 @@ const loadBootStrapSelector = async (i) => {
 
                 $('#' + i.elementId).selectpicker('refresh');
             } catch (error) {
-                console.log('#' + i.elementId, '刷新失败',error);
+                console.log('#' + i.elementId, '刷新失败', error);
             }
 
 
@@ -547,8 +547,8 @@ const loadDatePicker = async (i) => {
         todayBtn: 1,
         autoclose: 1,
         todayHighlight: 1,
-        startView: 2,//4年,3月,2日,1时,0 分
-        minView: 2,//4年,3月,2日,1时,0 分
+        startView: 2, //4年,3月,2日,1时,0 分
+        minView: 2, //4年,3月,2日,1时,0 分
         forceParse: 0,
         // startDate: currentDate(), //设置最小日期
         // endDate: $('#limitDate').val() //设置最大日期
@@ -829,12 +829,17 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
+        aLengthMenu: [
+            [5, 10, 25],
+            [5, 10, 25]
+        ], //设置每页显示数据条数的下拉选项
+        iDisplayLength: 5, //每页初始显示5条记录
         select: true, //允许多选操作
         bStateSave: true, //刷新保存当前页码
         // dom: 'Bfrtlip',
         dom: "<'row'<'col-sm-6'><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+            "<'row'<'col-sm-3'i><'col-sm-2'><'col-sm-7'p>>", //定义datatable组件位置
         language: languageCN
     }
 
@@ -877,6 +882,11 @@ const getBillDataTableConfig = (i) => {
         columns: [],
         select: true, //允许多选操作
         bStateSave: true, //刷新保存当前页码
+        aLengthMenu: [
+            [5, 10, 25],
+            [5, 10, 25]
+        ], //设置每页显示数据条数的下拉选项
+        iDisplayLength: 5, //每页初始显示5条记录
         // ordering:false,//禁止排序
         order: [], //禁止初始排序
         // dom: 'Bfrtlip',

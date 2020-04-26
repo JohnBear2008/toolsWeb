@@ -1,7 +1,7 @@
 //selector sql
 const getRegionSelector = "SELECT mername AS value,mername AS option,pinyin as token FROM `region`"
 const getCustomerSelector =
-	"SELECT customerShortName AS value,customerShortName AS option,CONCAT(customerId,customerShortName,contact,mobilePhone,address)as token FROM `rp_customers`"
+	"SELECT customerShortName AS value,customerShortName AS option, CONCAT_WS(',',customerId,customerShortName,contact,mobilePhone,address)as token FROM `rp_customers`"
 const getStaffSelector = "select staffName as value,staffName as option,pinyin as token from `rp_staffs`"
 const getProductSelector =
 	"select productId as value,productId as option,productDescription as token from `rp_products`"
@@ -32,7 +32,7 @@ const getRecordBillStatus = "select DBID,status from `rp_recordbills`"
 
 
 //维修申请单主表单sql
-const sqlRequestBills = "select * from rp_requestbills ";
+const sqlRequestBills = "select * , CONCAT_WS(',',address,factoryNos) as searchText from rp_requestbills ";
 //维修单sql
 const sqlRecordBills = "select * from ( select ta.*,tb.customerShortName,tb.makeDate as requestDate from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) tA";
 //维修部件清单sql
