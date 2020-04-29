@@ -69,7 +69,7 @@
                         <th>客户简称</th>
                         <th>联系人</th>
                         <th>电话</th>
-                        <th>地址</th>
+                        <th width='300'>地址</th>
                         <th>客户归属</th>
                         <th>送修方式</th>
                         <th>送修人</th>
@@ -92,7 +92,7 @@
                         <th>生产年份</th>
                         <th>生产月份</th>
                         <th>原厂编号</th>
-                        <th>故障描述</th>
+                        <th width='300'>故障描述</th>
                         <th>产品归属</th>
                         <th>是否返修</th>
                         <th>是否加急</th>
@@ -1139,13 +1139,29 @@
                 }
             },
             dtParams: {
+                // bAutoWidth: false,//取消自动宽度
                 columns: mainColumnsArray
             }
         })
 
         //自定义样式调整
-        $('.dataTables_filter input').attr({'name':'search','size': 45});
-        $('.dataTables_filter input').attr({'name':'search','placeholder': '可用表属性,出厂编号,地址过滤'});
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'size': 45
+        });
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'placeholder': '可用表属性,出厂编号,地址过滤'
+        });
+
+
+
+        // //添加搜索框监听事件,值变动自动隐藏主页附表
+        // $('#rp_requestbills').on('search.dt', function () {
+        //     console.log(1111);
+        //     $('#rp_requestbillsSub').hide();
+        // })
+
 
         //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
         let table = $('#rp_requestbills').DataTable();

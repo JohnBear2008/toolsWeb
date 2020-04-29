@@ -835,6 +835,7 @@ const getBillDataTableConfig = (i) => {
         ], //设置每页显示数据条数的下拉选项
         iDisplayLength: 5, //每页初始显示5条记录
         select: true, //允许多选操作
+        bAutoWidth:true,//自动列宽
         bStateSave: true, //刷新保存当前页码
         // dom: 'Bfrtlip',
         dom: "<'row'<'col-sm-6'><'col-sm-6'f>>" +
@@ -854,6 +855,7 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
+        bAutoWidth:true,//自动列宽
         dom: "<'row'<'col-sm-12'tr>>",
         language: languageCN
     }
@@ -866,6 +868,7 @@ const getBillDataTableConfig = (i) => {
         // select: false, //不允许多选操作
         // bStateSave: true, //刷新保存当前页码
         // dom: 'Bfrtlip',
+        bAutoWidth:true,//自动列宽
         dom: "<'row'<'col-sm-12'tr>>", //定义datatable组件位置
         language: languageCN
     }
@@ -881,6 +884,7 @@ const getBillDataTableConfig = (i) => {
         },
         columns: [],
         select: true, //允许多选操作
+        bAutoWidth:true,//自动列宽
         bStateSave: true, //刷新保存当前页码
         aLengthMenu: [
             [5, 10, 25],
