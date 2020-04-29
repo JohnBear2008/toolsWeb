@@ -202,7 +202,7 @@ module.exports = function(sender) {
                        dataav.push(temp);
                     }
                     (cb2(null, temp ));  
-                    console.log("上周个人遗留", temp,"姓", stf );
+                    // console.log("上周个人遗留", temp,"姓", stf );
                 },
                 error : sender.error
             })
