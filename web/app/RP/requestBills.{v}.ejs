@@ -69,6 +69,7 @@
                         <th>客户简称</th>
                         <th>联系人</th>
                         <th>电话</th>
+                        <th>地址</th>
                         <th>客户归属</th>
                         <th>送修方式</th>
                         <th>送修人</th>
@@ -853,6 +854,8 @@
     }, {
         data: 'mobilePhone',
     }, {
+        data: 'address',
+    }, {
         data: 'customerBelongShort',
     }, {
         data: 'requestWay',
@@ -1140,6 +1143,10 @@
             }
         })
 
+        //自定义样式调整
+        $('.dataTables_filter input').attr({'name':'search','size': 45});
+        $('.dataTables_filter input').attr({'name':'search','placeholder': '可用表属性,出厂编号,地址过滤'});
+
         //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
         let table = $('#rp_requestbills').DataTable();
         table.column(9).visible(false)
@@ -1337,7 +1344,7 @@
         for (const p in billCustomerData) {
             if (billCustomerData[p] !== customerData[p]) {
 
-                // console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
+                console.log(p + ':' + billCustomerData[p] + ',' + customerData[p] + '不同');
 
                 compareResult = false;
                 break;

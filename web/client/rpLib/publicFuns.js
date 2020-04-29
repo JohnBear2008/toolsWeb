@@ -922,11 +922,7 @@ const getBillDataTableConfig = (i) => {
                     this.rows().deselect();
                     //自动按下隐藏的自定义新增按钮
                     $('#' + i.elementId + 'New').click();
-
-
                     // //清空div
-
-                    // //
 
                     // initFormInputs({
                     //     formId: i.elementId + 'Form'
