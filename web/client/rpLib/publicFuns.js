@@ -829,6 +829,7 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
+        order: [] ,//初始排序
         aLengthMenu: [
             [5, 10, 25],
             [5, 10, 25]
@@ -836,7 +837,7 @@ const getBillDataTableConfig = (i) => {
         iDisplayLength: 5, //每页初始显示5条记录
         select: true, //允许多选操作
         bAutoWidth:true,//自动列宽
-        bStateSave: true, //刷新保存当前页码
+        bStateSave: false, //true刷新保存当前页码,搜索信息
         // dom: 'Bfrtlip',
         dom: "<'row'<'col-sm-6'><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -883,9 +884,10 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
+        order: [] ,//初始排序
         select: true, //允许多选操作
         bAutoWidth:true,//自动列宽
-        bStateSave: true, //刷新保存当前页码
+        bStateSave: false, //true刷新保存当前页码,搜索信息
         aLengthMenu: [
             [5, 10, 25],
             [5, 10, 25]
