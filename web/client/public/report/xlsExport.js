@@ -113,7 +113,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     let kiss =[];
     let head =[  '个人出货情况统计（数据源：PM登记&MAIL信息）' ];
     let subhead =[  '类别','',' 总  单','','已完成总单','','','待修改总单',''  ];
-    let divhead =[  '', '',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ];
+    let divhead =[  '', '',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ,'其他'];
     // let datahead =[  '宁波PPM记录','', '16','20','15','20','15','20','31'  ];
     let spacehead =[  ' ' ];
     kiss.push( head );
@@ -131,13 +131,15 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         sheet1data.push(mdataH[i].Bill_STAT5);  
         sheet1data.push(mdataH[i].Bill_STAT6);  
         sheet1data.push(mdataH[i].Bill_STAT7);  
+        sheet1data.push(mdataH[i].Bill_STAT8);  
+        sheet1data.push(mdataH[i].Bill_STAT9);  
    }
     kiss.push( sheet1data );
     kiss.push( spacehead );
 
     let title =[  '个人出货情况统计（数据源：PM登记&MAIL信息）' ];
-    let subtitle =[  '组别','姓名',' 总  单','','已完成总单','','','待修改总单','','延误率' ];
-    let divtitle =[  '','',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ];
+    let subtitle =[  '组别','姓名',' 总  单','','已完成总单','','','待修改总单','', '' , '延误率' ];
+    let divtitle =[  '','',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到', '其他' ];
     
     kiss.push( title );
     kiss.push( subtitle );
@@ -157,13 +159,14 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
          speebook.push(mdata[i].Bill_STAT6);  
          speebook.push(mdata[i].Bill_STAT7);  
          speebook.push(mdata[i].Bill_STAT8);  
+         speebook.push(mdata[i].Bill_STAT9);  
          kiss.push(speebook); 
     }
     var sheet1 = XLSX.utils.aoa_to_sheet(kiss);   
  
     // var sheet =  XLSX.utils.json_to_sheet(sheetdata);
 
-    sheet1['!cols'] = [{wch: 8}, {wch: 10},  {wch: 10}, {wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10}];
+    sheet1['!cols'] = [{wch: 8}, {wch: 10},  {wch: 10}, {wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10}];
     sheet1['!rows'] = [{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 30} ];
     for (var i=0; i<mdata.length+1; i++) {
         sheet1['!rows'].push({hpx: 25});
@@ -260,10 +263,10 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         } , 
         {  //合并第2列 第6行到第7行 延误率 
             s: {
-                c: 9,                r: 6
+                c: 10,                r: 6
             },
             e: {
-                c: 9,                r: 7
+                c: 10,                r: 7
             }
         }
        ]
@@ -532,8 +535,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     /* create a new blank workbook */
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet1,"个人出货状态" );
-    XLSX.utils.book_append_sheet(wb, sheet2,"软体出货统计" );
     XLSX.utils.book_append_sheet(wb, sheet3, "未完成单数"); 
+    XLSX.utils.book_append_sheet(wb, sheet2,"软体出货统计" );
     const workbookBlob = workbook2blob(wb);
     let now = new Date();
     var fname = new Date(now).Format("yyyy-MM-dd");
