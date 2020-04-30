@@ -54,11 +54,27 @@
                     <tr>
                         <th>编号</th>
                         <th>简称</th>
-                        <th width='350px'>地址</th>
+                        <th>公司名称</th>
                         <th>客户类型</th>
+                        <th>客户归属</th>
+                        <th>收款方式</th>
+                        <th>保固期</th>
+                        <th>国内外</th>
+                        <th>客户区域</th>
+                        <th width='350px'>地址</th>
                         <th>联系人</th>
                         <th>手机号</th>
-
+                        <th>多联系人</th>
+                        <th>工作电话</th>
+                        <th>传真号</th>
+                        <th>邮政编码</th>
+                        <th>电子邮箱</th>
+                        <th>信用等级</th>
+                        <th>纳税号</th>
+                        <th>备注</th>
+                        <th>备注人</th>
+                        <th>有效性</th>
+                        <th>保存人</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -92,7 +108,6 @@
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
                         <div class="panel-body" style="min-height: 750px;">
-
 
                             <form class="form-horizontal" role="form" id='rp_customersForm'>
 
@@ -198,8 +213,10 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">多联系人</label>
                                     <div class="col-sm-11">
-                                        <textarea id="rp_customersForm-contacts" placeholder='范例:  张三,13512345678;'
-                                            class="form-control" rows="3"></textarea>
+                                        <span class="form-control-static">注意:请按格式填写,
+                                            示例:张三,13512345678;李四,13587654321</span>
+                                        <textarea id="rp_customersForm-contacts" class="form-control"
+                                            rows="3"></textarea>
                                     </div>
                                 </div>
 
@@ -305,28 +322,75 @@
 
 <script type="text/javascript">
     const mainColumnsArray = [{
-            data: 'customerId'
-        }, {
-            data: 'customerShortName'
-        },
-        {
-            data: 'address'
-        }, {
-            data: 'customerType',
-        }, {
-            data: 'contact',
-        }, {
-            data: 'mobilePhone',
-        }
-    ]
+        data: 'customerId'
+    }, {
+        data: 'customerShortName'
+    }, {
+        data: 'customerName',
+        visible: false
+    }, {
+        data: 'customerType',
+        visible: false
+    }, {
+        data: 'customerBelongShort'
+    }, {
+        data: 'paymentType',
+        visible: false
+    }, {
+        data: 'warrantyPeriod',
+        visible: false
+    }, {
+        data: 'isInland',
+        visible: false
+    }, {
+        data: 'customerArea',
+        visible: false
+    }, {
+        data: 'address'
+    }, {
+        data: 'contact'
+    }, {
+        data: 'mobilePhone'
+    }, {
+        data: 'contacts',
+        visible: false
+    }, {
+        data: 'workPhone',
+        visible: false
+    }, {
+        data: 'fax',
+        visible: false
+    }, {
+        data: 'zipCode',
+        visible: false
+    }, {
+        data: 'email',
+        visible: false
+    }, {
+        data: 'creditRank',
+        visible: false
+    }, {
+        data: 'taxId',
+        visible: false
+    }, {
+        data: 'remark',
+        visible: false
+    }, {
+        data: 'remarker',
+        visible: false
+    }, {
+        data: 'effective',
+        visible: false
+    }, {
+        data: 'creater',
+        visible: false
+    }]
 
     //表dt参数
     const mainDtParams = {
         dtConfig: 'dtConfigFull',
-        iDisplayLength:10, //每页初始显示5条记录
+        // bStateSave: true, //true刷新保存当前页码,搜索信息
         columns: mainColumnsArray
-
-
     }
 
     //添加主表监听器,定义双击打开事件
@@ -513,7 +577,7 @@
             },
         })
 
-       
+
 
 
         loadBootStrapSelector({

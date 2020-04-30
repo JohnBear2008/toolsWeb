@@ -20,9 +20,10 @@ const languageCN = {
     },
     "buttons": {
         "copy": "复制",
+        "colvis": "隐藏列",
         "excel": "导出excel",
         "print": "打印",
-        "colvis": "隐藏列"
+
     }
 }
 
@@ -129,43 +130,7 @@ const divDataTableParams = (i) => {
             dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
-            buttons: [
-                'copy',
-                'excel',
-                // 'csv', 
-                'print',
-                'colvis',
-                {
-                    text: '全选',
-                    action: function () {
-                        this.rows({
-                            page: 'current'
-                        }).select();
-                        // console.log(this.rows());
-                    }
-                }, {
-                    text: '取消全选',
-                    action: function () {
-                        this.rows({
-                            page: 'current'
-                        }).deselect();
-                        // console.log(this.rows());
-                    }
-                },
-                // {
-                //     text: '读取选中',
-                //     action: function () {
-                //         let dataSelected = this.rows({
-                //             selected: true
-                //         }).data();
-
-                //         for (let n = 0; n < dataSelected.length; n++) {
-                //             // console.log(JSON.stringify(dataSelected[n]));
-                //             alert(JSON.stringify(dataSelected[n]));
-                //         }
-                //     }
-                // },
-                {
+            buttons: [{
                     text: '新增',
                     action: function () {
 
@@ -216,6 +181,30 @@ const divDataTableParams = (i) => {
 
                     }
                 },
+                'colvis',
+                'excel',
+                // 'csv', 
+                'print',
+                'copy',
+
+                {
+                    text: '全选',
+                    action: function () {
+                        this.rows({
+                            page: 'current'
+                        }).select();
+                        // console.log(this.rows());
+                    }
+                }, {
+                    text: '取消全选',
+                    action: function () {
+                        this.rows({
+                            page: 'current'
+                        }).deselect();
+                        // console.log(this.rows());
+                    }
+                },
+
             ],
             language: languageCN
         }
@@ -829,14 +818,14 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
-        order: [] ,//初始排序
+        order: [], //初始排序
         aLengthMenu: [
             [5, 10, 25],
             [5, 10, 25]
         ], //设置每页显示数据条数的下拉选项
         iDisplayLength: 5, //每页初始显示5条记录
         select: true, //允许多选操作
-        bAutoWidth:true,//自动列宽
+        bAutoWidth: true, //自动列宽
         bStateSave: false, //true刷新保存当前页码,搜索信息
         // dom: 'Bfrtlip',
         dom: "<'row'<'col-sm-6'><'col-sm-6'f>>" +
@@ -856,7 +845,7 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
-        bAutoWidth:true,//自动列宽
+        bAutoWidth: true, //自动列宽
         dom: "<'row'<'col-sm-12'tr>>",
         language: languageCN
     }
@@ -869,7 +858,7 @@ const getBillDataTableConfig = (i) => {
         // select: false, //不允许多选操作
         // bStateSave: true, //刷新保存当前页码
         // dom: 'Bfrtlip',
-        bAutoWidth:true,//自动列宽
+        bAutoWidth: true, //自动列宽
         dom: "<'row'<'col-sm-12'tr>>", //定义datatable组件位置
         language: languageCN
     }
@@ -884,43 +873,22 @@ const getBillDataTableConfig = (i) => {
             dataSrc: ''
         },
         columns: [],
-        order: [] ,//初始排序
+        order: [], //初始排序
         select: true, //允许多选操作
-        bAutoWidth:true,//自动列宽
+        bAutoWidth: true, //自动列宽
         bStateSave: false, //true刷新保存当前页码,搜索信息
         aLengthMenu: [
             [5, 10, 25],
             [5, 10, 25]
         ], //设置每页显示数据条数的下拉选项
-        iDisplayLength: 5, //每页初始显示5条记录
+        iDisplayLength: 10, //每页初始显示5条记录
         // ordering:false,//禁止排序
         order: [], //禁止初始排序
         // dom: 'Bfrtlip',
         dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
-        buttons: [
-            'copy',
-            'excel',
-            // 'csv', 
-            'print',
-            'colvis',
-            {
-                text: '全选',
-                action: function () {
-                    this.rows({
-                        page: 'current'
-                    }).select();
-                }
-            }, {
-                text: '取消全选',
-                action: function () {
-                    this.rows({
-                        page: 'current'
-                    }).deselect();
-                }
-            },
-            {
+        buttons: [{
                 text: '新增',
                 action: function () {
 
@@ -971,6 +939,27 @@ const getBillDataTableConfig = (i) => {
 
                 }
             },
+            'colvis',
+            'excel',
+            // 'csv', 
+            'print',
+            'copy',
+            {
+                text: '全选',
+                action: function () {
+                    this.rows({
+                        page: 'current'
+                    }).select();
+                }
+            }, {
+                text: '取消全选',
+                action: function () {
+                    this.rows({
+                        page: 'current'
+                    }).deselect();
+                }
+            },
+
         ],
         language: languageCN
 
@@ -1012,9 +1001,12 @@ const getBillDataTableConfig = (i) => {
     }
 
     if (i.dtParams) {
-        if (i.dtParams.columns) {
-            dtConfig.columns = i.dtParams.columns;
+        for (const p in i.dtParams) {
+            dtConfig[p] = i.dtParams[p];
         }
+        // if (i.dtParams.columns) {
+        //     dtConfig.columns = i.dtParams.columns;
+        // }
     }
 
     // console.log("dtConfig:" + JSON.stringify(dtConfig));

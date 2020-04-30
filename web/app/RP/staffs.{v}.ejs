@@ -58,11 +58,23 @@
                 <thead>
                     <tr>
                         <th>人员编号</th>
+                        <th>身份证号</th>
                         <th>姓名</th>
+                        <th>拼音</th>
                         <th>职位</th>
-                        <th>手机号</th>
+                        <th>学历</th>
+                        <th>国家地区</th>
+                        <th>地址</th>
+                        <th>移动电话</th>
+                        <th>工作电话</th>
+                        <th>生日</th>
                         <th>入职日期</th>
-                       
+                        <th>联系人</th>
+                        <th>联系人电话</th>
+                        <th>在职状态</th>
+                        <th>备注</th>
+                        <th>有效性</th>
+
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -104,7 +116,7 @@
 
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
-                        <div class="panel-body" style="min-height: 500px;">
+                        <div class="panel-body" style="min-height: 580px;">
 
 
                             <form class="form-horizontal" role="form" id='rp_staffsForm'>
@@ -254,9 +266,17 @@
                                         </select>
                                     </div>
 
+                                    <label class="col-sm-1 control-label">备注</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_customersForm-remark" type="text" value="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
                                     <label class="col-sm-1 control-label">有效性</label>
                                     <div class="col-sm-5">
-                             
+
 
                                         <select id="rp_staffsForm-effective" class="selectpicker form-control">
                                         </select>
@@ -289,18 +309,52 @@
 
 <script type="text/javascript">
     const mainColumnsArray = [{
-            data: 'staffId'
-        },
-        {
-            data: 'staffName'
-        }, {
-            data: 'position'
-        }, {
-            data: 'mobilePhone',
-        }, {
-            data: 'entryDate',
-        }
-    ]
+        data: 'staffId'
+    }, {
+        data: 'identity',
+        visible: false
+    }, {
+        data: 'staffName'
+    }, {
+        data: 'pinyin',
+        visible: false
+    }, {
+        data: 'position'
+    }, {
+        data: 'education',
+        visible: false
+    }, {
+        data: 'region',
+        visible: false
+    }, {
+        data: 'address',
+        visible: false
+    }, {
+        data: 'mobilePhone'
+    }, {
+        data: 'workPhone'
+    }, {
+        data: 'birthday',
+        visible: false
+    }, {
+        data: 'entryDate',
+        visible: false
+    }, {
+        data: 'contact',
+        visible: false
+    }, {
+        data: 'contactPhone',
+        visible: false
+    }, {
+        data: 'inservice',
+        visible: false
+    }, {
+        data: 'remark',
+        visible: false
+    }, {
+        data: 'effective',
+        visible: false
+    }]
 
     //表dt参数
     const mainDtParams = {
