@@ -9,6 +9,7 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend;  
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
+    var adjend=sender.req.query.adjend;  
     // console.log("get后台个人表头汇总:"+param1+"日期:"+param2+"遗起"+lastbeg+"遗止"+lastend); 
     var DBTable=sender.req.query.DBTable; 
     let now  = new Date();
@@ -67,8 +68,6 @@ module.exports = function(sender) {
     " where  taskType='A' and taskMakeDate>=? and taskMakeDate<=? "+
     "   and taskStopDate is not null ";
     //延期未完成  3参数 已超出【完成期限】，但完成日期还是空白
-    // var sql_Page1HC1 = "Select  count(*) as times from `ppm_bills_task` tbb where  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and   (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
-    // " and  ? > tbb.taskLimitDate and IPQCAuditResultText is null "; 
     var sql_Page1HC1 =
     //  "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
     // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
@@ -79,8 +78,6 @@ module.exports = function(sender) {
     " where  taskType='A' and taskMakeDate>=? and taskMakeDate<=? "+
     "  and taskStopDate is null and taskFinishDate is null and taskLimitDate<?  and WFEndText is null ";
     //期限未到 3参数 BTAcceptResult ='1' 完成日期为空白，但在【完成期限】
-    // var sql_Page1HC2 = "Select  count(*) as times from `ppm_bills_task` tbb where  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)    "+
-    // " and ? <=tbb.taskLimitDate    "; 
     var sql_Page1HC2 = 
     // "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
     // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
@@ -91,7 +88,6 @@ module.exports = function(sender) {
     " where  taskType='A' and taskMakeDate>=? and taskMakeDate<=? "+
     "  and taskStopDate is null  and taskFinishDate is null and taskLimitDate>=? and WFEndText is null ";
     //其他
- 
     var sql_Page1HC3 = 
     // "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
     // " and tbb.taskFinishDate >  tbb.IPQCAuditDate  and taskType='A' "; 
@@ -255,7 +251,7 @@ module.exports = function(sender) {
                             }
                             datas.push(temp)
                         }
-                        console.log("机里瓜拉", temp);
+                        // console.log("机里瓜拉", temp);
                         cb(null, datas);
                     },
                     error : sender.error
@@ -323,7 +319,7 @@ module.exports = function(sender) {
     function funPage2C1(cb){
         yjDBService.exec({
                     sql : sql_Page1HC1,
-                    parameters : [WeekThisbeg ,WeekThisend , LastWeekend ], 
+                    parameters : [WeekThisbeg ,WeekThisend , adjend ],   //LastWeekend
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -343,7 +339,7 @@ module.exports = function(sender) {
     function funPage2C2(cb){
         yjDBService.exec({
                     sql : sql_Page1HC2,
-                    parameters : [WeekThisbeg ,WeekThisend ,  LastWeekend], 
+                    parameters : [WeekThisbeg ,WeekThisend , adjend], //LastWeekend
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -443,7 +439,7 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend , adjend ], //WeekThisend
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -463,7 +459,7 @@ module.exports = function(sender) {
     function funRemainPend(cb){
         yjDBService.exec({
                     sql : sql_RemainPend,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend , adjend ], //WeekThisend
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

@@ -38,14 +38,15 @@ module.exports = function(sender) {
 		var SQLExecute=SQLNeworder;
 		break;	
 	case "SQLNotDone":
+		//    taskLimitDate< ? 须改良
 		var SQLExecute=SQLNotDone;
 		  param1=sender.req.query.weekbeg;  
 		  param2=sender.req.query.weekend;  
 		  param3=sender.req.query.weekbeg;  
 		  param4=sender.req.query.weekbeg;  
 		  param5=sender.req.query.weekend;  
-		  param6=sender.req.query.weekend;  
-		  param7=sender.req.query.weekend;  //nouse
+		  param6=sender.req.query.adjend;  
+		  param7=sender.req.query.adjend;  //nouse 
 	// 	  where  (( taskType='A' and taskMakeDate>='2020-03-01' and taskMakeDate<='2020-03-31') OR
 	// 	  ( ( taskMakeDate<'2020-03-01' and taskType='A' 
 	// 	    and ((taskFinishDate>='2020-03-01' and taskFinishDate<='2020-03-31') 
@@ -70,7 +71,7 @@ module.exports = function(sender) {
 		param5=sender.req.query.weekend; 
 		param6=sender.req.query.weekbeg;  
 		param7=sender.req.query.weekend;  
-		param8=sender.req.query.weekend;  
+		param8=sender.req.query.adjend;  
 
 // " where ( ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
 // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) and limitDate<'2020-04-24' and emailDate is null and WFEndText is null ) "+

@@ -10,8 +10,8 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend;  
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
-
-    console.log("后台个人统计表格开始日:"+param1+"日期:"+param2+"遗起"+lastbeg+"遗止"+lastend  ); 
+    var adjend=sender.req.query.adjend;  
+    console.log("后台个人统计表格开始日:"+param1+"日期:"+param2+"调整"+adjend   ); 
     var DBTable=sender.req.query.DBTable; 
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");;
@@ -95,19 +95,22 @@ module.exports = function(sender) {
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
     " where  taskType='A' and taskMakeDate>=? and taskMakeDate<=? "+
     "  and taskStopDate is not null   and taskStaff =? ";
-    //延期未完成  4参数
-    //  "Select  count(*) as times from `ppm_bills_task` tbb where  SUBSTRing(BTID, 14,1) NOT IN('K','L','O','B','R') and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)   "+
-    // " and  taskStaff =? and ? > tbb.taskLimitDate and IPQCAuditResultText is null "; 
+    //延期未完成   
     var sql_Page1C1 = 
     // "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
     // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
     // " where ( BTStatus !=4 AND WFStatus!=0)  and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and taskStaff =? and ? > tbb.taskLimitDate and IPQCAuditResultText is null ";
+  
     " SELECT count(*) as times   FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, "+
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
     " where  taskType='A' and taskMakeDate>=? and taskMakeDate<=? "+
-    "  and taskFinishDate is null  and taskFinishDate is null and taskLimitDate<?  and WFEndText is null and taskStaff =? ";
-    //期限未到  4参数
+    "  and taskStopDate is null  and taskFinishDate is null and taskLimitDate<?  and WFEndText is null and taskStaff =? ";
  
+    // " SELECT count(*) as times   FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, "+
+    // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
+    // " where  taskType='A' and taskMakeDate>='2020-03-01' and taskMakeDate<='2020-04-30' "+
+    // "  and taskStopDate is null  and taskFinishDate is null and taskLimitDate<'2020-05-01'  and WFEndText is null and taskStaff =? ";
+    //期限未到  4参数
     var sql_Page1C2 = 
     // "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
     // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
@@ -115,7 +118,7 @@ module.exports = function(sender) {
     " SELECT count(*) as times   FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, "+
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
     " where  taskType='A' and taskMakeDate>=? and taskMakeDate<=? "+
-    "  and taskFinishDate is null  and taskFinishDate is null and taskLimitDate>=? and WFEndText is null  and taskStaff =? ";
+    "  and taskStopDate is null  and taskFinishDate is null and taskLimitDate>=? and WFEndText is null  and taskStaff =? ";
     //其他
 
      var sql_Page1C3 =
@@ -1151,12 +1154,11 @@ module.exports = function(sender) {
         );
     }
     function funPage1C1(cb){
-        var  dataav = [];
-        var  datagod = [];
+        var  dataav = []; 
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C1,
-                parameters : [WeekThisbeg ,WeekThisend , LastWeekend , stf],   
+                parameters : [WeekThisbeg ,WeekThisend , adjend , stf],  //LastWeekend 
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -1165,8 +1167,8 @@ module.exports = function(sender) {
                             "Staff" : stf , 
                             "Times" : data[i].times , 
                         }
-                       datagod.push(temp2);
                     }
+                    // console.log("延期未完成：10：",temp2 ,  "调 ",adjend,"次 ",temp2.Times ); 
                     (cb2(null, temp2));  
                 },
                 error : sender.error
@@ -1335,7 +1337,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_Page1C2,
-                parameters : [WeekThisbeg ,WeekThisend ,  LastWeekend, stf],
+                parameters : [WeekThisbeg ,WeekThisend ,  adjend, stf], //LastWeekend
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -2209,7 +2211,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_RemainNotDo,
-                parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ,WeekThisend   ,stf], 
+                parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ,adjend   ,stf],  //WeekThisend
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -2220,7 +2222,6 @@ module.exports = function(sender) {
                        dataav.push(temp);
                     }
                     (cb2(null, temp ));  
-                    // console.log("混", temp);
                 },
                 error : sender.error
             })
@@ -2380,7 +2381,7 @@ module.exports = function(sender) {
         function  allAA( cb2 ,stf){
             yjDBService.exec({
                 sql : sql_RemainPend,
-                parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ,WeekThisend ,stf], 
+                parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend , adjend ,stf],  //WeekThisend
                 rowsAsArray : true,
                 success : function(r) {
                     var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -2391,7 +2392,7 @@ module.exports = function(sender) {
                        dataav.push(temp);
                     }
                     (cb2(null, temp ));  
-                    // console.log("混", temp);
+                    // console.log("祝期限未到:", temp );
                 },
                 error : sender.error
             })

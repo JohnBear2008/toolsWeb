@@ -17,12 +17,7 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
 //上周遗留未完成  + 延期未完成  (扣客户取消)
  
  SQLNotDone=
-//  "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
-//     " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
-//     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-//     " where   (tbb.taskMakeDate <= ? and  (tbb.taskFinishDate >=? and tbb.taskFinishDate <=? ) and IPQCAuditResultText is null and taskType='A' ) "+
-//     " OR ( (  BTStatusText!='任务终止' AND BTStatusText!='废弃' AND WFEndText!='终止归档' ) and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and  IPQCAuditResultText is null  and taskType='A')";
-//  "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
+ //  "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
 //     " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb,"+ 
 //     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
 //     "     where ( taskMakeDate<=? and taskType='A' and "+
@@ -37,10 +32,17 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
    " where  (( taskType='A' and taskMakeDate>=? and taskMakeDate<=?) OR  "+
    " ( ( taskMakeDate<? and taskType='A'  "+
    " and ((taskFinishDate>=? and taskFinishDate<=?)  "+
-   " or (WFEndText is null and taskFinishDate is null)) ) ) ) "+
-   " and ((taskLimitDate<taskFinishDate  and taskStopDate is null) OR  (taskStopDate is null  and taskFinishDate is null and taskLimitDate< ? and WFEndText is null ) )	 ";
+   " or ( WFEndText is null and taskFinishDate is null )) ) ) ) "+
+   " and (( taskStopDate is null and taskLimitDate<taskFinishDate ) OR  (taskStopDate is null  and taskFinishDate is null and taskLimitDate< ? and WFEndText is null ) )	 ";
+ 
+//  " where  (( taskType='A' and taskMakeDate>='2020-03-01' and taskMakeDate<='2020-04-30') OR  "+
+//  " ( ( taskMakeDate<'2020-03-01' and taskType='A'     and "+
+//  "((taskFinishDate>='2020-03-01' and taskFinishDate<='2020-04-30')    "+
+//  "  or (  WFEndText is null and taskFinishDate is null)) ) ) )    "+
+//  "  and ((taskStopDate is null  and taskLimitDate<taskFinishDate) OR    "+
+//  " ( taskStopDate is null  and taskFinishDate is null and taskLimitDate<'2020-05-01' and WFEndText is null ) ) ";
 
-
+ 
     SQLNotDone_t=
       "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
         " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 

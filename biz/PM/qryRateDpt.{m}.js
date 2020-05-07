@@ -9,7 +9,7 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend; 
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
- 
+    var adjend=sender.req.query.adjend;
     var DBTable=sender.req.query.DBTable; 
     var sqlGetTableData = "SELECT * FROM "+DBTable;
     sqlGetTableData = "SELECT * FROM ms_agent where FID=?  ";
@@ -446,7 +446,7 @@ module.exports = function(sender) {
     function funPage2C1(cb){
         yjDBService.exec({
                     sql : sql_Page2C1,
-                    parameters : [WeekThisbeg ,WeekThisend ,WeekThisend], 
+                    parameters : [WeekThisbeg ,WeekThisend ,adjend], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -468,7 +468,7 @@ module.exports = function(sender) {
     function funPage2C2(cb){
         yjDBService.exec({
                     sql : sql_Page2C2,
-                    parameters : [WeekThisbeg ,WeekThisend ,WeekThisend], 
+                    parameters : [WeekThisbeg ,WeekThisend ,adjend], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -614,7 +614,7 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ,WeekThisend ], 
+                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ,adjend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -635,7 +635,7 @@ module.exports = function(sender) {
     function funRemainPend(cb){
         yjDBService.exec({
                     sql : sql_RemainPend,
-                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ,WeekThisend], 
+                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ,adjend], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

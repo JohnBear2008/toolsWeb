@@ -43,14 +43,23 @@ function enterShip() {
     console.log("lastend:"+lastend);
     console.log("weekbeg:"+weekbeg);
     console.log("weekend:"+weekend);
-    let yester = getPrevDay(weekbeg);
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");
-    var SQL1 ={"reportType":'RateIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL1H ={"reportType":'TaskIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL3 = {"SQL":"SQLNotDone","yester":yester,"weekbeg":weekbeg,"weekend":weekend, "duedate":duedate};
-    var SQL2A ={"reportType":'RateDpt',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL2B ={"SQL":"SQLLateList","weekbeg":weekbeg,"weekend":weekend,  "duedate":duedate};
+    let yester = getPrevDay(weekbeg);
+    let nexter = getNextDay(weekend);
+    let adjend = '';
+    if(duedate > DateFinE){  //改良的条件
+        adjend = nexter;
+    }else{
+        adjend = weekend;
+    }
+    console.log("昨日:",yester ,"今日:",nexter);
+   
+    var SQL1 ={"reportType":'RateIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};
+    var SQL1H ={"reportType":'TaskIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};
+    var SQL3 = {"SQL":"SQLNotDone","yester":yester,"weekbeg":weekbeg,"weekend":weekend, "duedate":duedate,"adjend":adjend};
+    var SQL2A ={"reportType":'RateDpt',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};
+    var SQL2B ={"SQL":"SQLLateList","weekbeg":weekbeg,"weekend":weekend,  "duedate":duedate,"adjend":adjend};
    //SQLLateList  是用 ppm_bills_plan 做的
     let ajax1h = $.ajax({
         url: '/app/PM/getRoute',
@@ -702,6 +711,14 @@ function getPrevDay(ThisDay) {
     let oneDayLong = 24 * 60 * 60 * 1000;
     let now = new Date(ThisDay);
     let mondayTime = now.getTime() - (1) * oneDayLong; 
+    let monday = new Date(mondayTime);  
+    var dateFormat = monday.Format("yyyy-MM-dd");
+    return dateFormat;
+}
+function getNextDay(ThisDay) {
+    let oneDayLong = 24 * 60 * 60 * 1000;
+    let now = new Date(ThisDay);
+    let mondayTime = now.getTime() + (1) * oneDayLong; 
     let monday = new Date(mondayTime);  
     var dateFormat = monday.Format("yyyy-MM-dd");
     return dateFormat;
