@@ -504,7 +504,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
       //sheet3  
       let camary =[];
       console.log("分页3未完成表单 "+ ydata.length );   
-      let sub3NOTtitle =[ '单号','任务人','客户','型态','申请日期','完成期限','备注',''	];
+      let sub3NOTtitle =[ '单号','任务人','客户','型态','申请日期','完成期限','完成日期','备注',''	];
       camary.push( sub3NOTtitle );  
       for (var i=0; i<ydata.length; i++) {
             let speebook = []; 
@@ -514,28 +514,28 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
             speebook.push(ydata[i].taskSortTypeText); 
             speebook.push(ydata[i].taskMakeDate);
             speebook.push(ydata[i].taskLimitDate);    
+            speebook.push(ydata[i].taskFinishDate);    
             speebook.push(ydata[i].taskDBE_cut);    
             speebook.push('');    
             camary.push(speebook); 
       }
     var sheet3 = XLSX.utils.json_to_sheet(camary,{ skipHeader:true });
       XLSX.utils.sheet_add_aoa(sheet3,[
-        ['单号','客户','任务人','型态','申请日期','完成期限','备注','']
+        ['单号','客户','任务人','型态','申请日期','完成期限','完成日期','备注','']
     ],{
         origin:'A1' // 从A1开始增加内容
     });
     sheet3['!cols'] = [{wch: 20}, {wch: 15},{wch: 15},{wch: 15},{wch: 15}
-                      ,{wch: 15},{wch: 60}];
+                      ,{wch: 15},{wch: 15},{wch: 60}];
      var range = XLSX.utils.decode_range(sheet3['!ref']); 
      sheet3['!rows'] = [{hpx: 40}];
     for (var i=0; i<ydata.length+2; i++) {
         sheet3['!rows'].push({hpx: 25});
     } 
-
     /* create a new blank workbook */
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet1,"个人出货状态" );
-    XLSX.utils.book_append_sheet(wb, sheet3, "未完成单数"); 
+    XLSX.utils.book_append_sheet(wb, sheet3, "个人延期单数"); 
     XLSX.utils.book_append_sheet(wb, sheet2,"软体出货统计" );
     const workbookBlob = workbook2blob(wb);
     let now = new Date();

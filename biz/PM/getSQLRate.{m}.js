@@ -39,17 +39,18 @@ module.exports = function(sender) {
 		break;	
 	case "SQLNotDone":
 		var SQLExecute=SQLNotDone;
-		  param1=sender.req.query.yester;  
-		  param2=sender.req.query.weekbeg;  
-		  param3=sender.req.query.weekend;  
+		  param1=sender.req.query.weekbeg;  
+		  param2=sender.req.query.weekend;  
+		  param3=sender.req.query.weekbeg;  
 		  param4=sender.req.query.weekbeg;  
-		  param5=sender.req.query.weekbeg;  
+		  param5=sender.req.query.weekend;  
 		  param6=sender.req.query.weekend;  
-		  param7=sender.req.query.weekend;  
-		//   " where  (( taskType='A' and taskMakeDate>='2020-03-01' and taskMakeDate<='2020-03-31') OR  "+
-		//   " ( ( taskMakeDate<'2020-03-01' and taskType='A'  "+
-		//   " and ((taskFinishDate>='2020-03-01' and taskFinishDate<='2020-03-31')  "+
-		//   " or (WFEndText is null and taskFinishDate is null)) ) ) ) and taskFinishDate is null and taskLimitDate<'2020-03-31' and WFEndText is null	 ";
+		  param7=sender.req.query.weekend;  //nouse
+	// 	  where  (( taskType='A' and taskMakeDate>='2020-03-01' and taskMakeDate<='2020-03-31') OR
+	// 	  ( ( taskMakeDate<'2020-03-01' and taskType='A' 
+	// 	    and ((taskFinishDate>='2020-03-01' and taskFinishDate<='2020-03-31') 
+	// 	    or (WFEndText is null and taskFinishDate is null)) ) ) )
+	//      and ((taskLimitDate<taskFinishDate) OR  ( taskFinishDate is null and taskLimitDate>='2020-03-31' and WFEndText is null ) )
 		break;	
 	case "SQLNotDone_t":
 		var SQLExecute=SQLNotDone_t;
