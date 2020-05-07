@@ -37,7 +37,8 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
    " where  (( taskType='A' and taskMakeDate>=? and taskMakeDate<=?) OR  "+
    " ( ( taskMakeDate<? and taskType='A'  "+
    " and ((taskFinishDate>=? and taskFinishDate<=?)  "+
-   " or (WFEndText is null and taskFinishDate is null)) ) ) ) and taskFinishDate is null and taskLimitDate<? and WFEndText is null	 ";
+   " or (WFEndText is null and taskFinishDate is null)) ) ) ) "+
+   " and ((taskLimitDate<taskFinishDate  and taskStopDate is null) OR  (taskStopDate is null  and taskFinishDate is null and taskLimitDate< ? and WFEndText is null ) )	 ";
 
 
     SQLNotDone_t=

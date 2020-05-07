@@ -529,8 +529,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     /* create a new blank workbook */
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet1,"个人出货状态" );
+    XLSX.utils.book_append_sheet(wb, sheet3, "个人延期单数"); 
     XLSX.utils.book_append_sheet(wb, sheet2,"软体出货统计" );
-    XLSX.utils.book_append_sheet(wb, sheet3, "未完成单数"); 
     const workbookBlob = workbook2blob(wb);
     let now = new Date();
     var fname = new Date(now).Format("yyyy-MM-dd");
