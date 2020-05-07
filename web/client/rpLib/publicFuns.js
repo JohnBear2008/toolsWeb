@@ -23,7 +23,6 @@ const languageCN = {
         "colvis": "隐藏列",
         "excel": "导出excel",
         "print": "打印",
-
     }
 }
 
@@ -184,7 +183,7 @@ const divDataTableParams = (i) => {
                 'colvis',
                 'excel',
                 // 'csv', 
-                'print',
+                // 'print',
                 'copy',
 
                 {
@@ -942,7 +941,7 @@ const getBillDataTableConfig = (i) => {
             'colvis',
             'excel',
             // 'csv', 
-            'print',
+            // 'print',
             'copy',
             {
                 text: '全选',
