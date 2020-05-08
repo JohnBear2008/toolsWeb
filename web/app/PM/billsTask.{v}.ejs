@@ -1771,7 +1771,7 @@
 
 
 		//按钮-任务审核通过按钮
-		$('#BTNTaskAcceptYes').click(function () {
+		$('#BTNTaskAcceptYes').click(async function () {
 
 			if (checkAuthority({
 					"SQL": "SQLGetAuthorities",
@@ -1779,6 +1779,35 @@
 				}, "Task01")) {
 
 				if (sessionName == $('#taskStaff option:selected').text()) {
+
+					//增加完成期限提醒功能
+					if ($('#BTVersion').text() !== '0') {
+						let rsOldLimitDate = await $.ajax({
+							method: 'get',
+							data: {
+								"SQL": "select taskLimitDate from ppm_bills_task",
+								"filter": "BTID='" + $('#BTID').text() + "' and BTVersion='" +
+									parseInt($('#BTVersion').text() - 1) + "'"
+							},
+							url: "/app/PM/getSQLDBData",
+							success: function (data) {
+								// console.log("oldLimitDate:" + JSON.stringify(data));
+								// // return data[0].taskLimitDate
+							},
+							error: function () {}
+						})
+
+
+						let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
+						console.log('oldTaskLimitDate', oldTaskLimitDate);
+
+						if ($('#taskLimitDate').val() === oldTaskLimitDate) {
+							if (confirm('系统识别到,新版本任务完成期限未修改,可能会影响您的延误率,是否返回修改?')) {
+								return;
+							}
+						}
+					}
+
 
 
 					if (checkAcceptInput()) {
