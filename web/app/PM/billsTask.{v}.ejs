@@ -1802,7 +1802,7 @@
 						console.log('oldTaskLimitDate', oldTaskLimitDate);
 
 						if ($('#taskLimitDate').val() === oldTaskLimitDate) {
-							if (confirm('系统识别到,新版本任务完成期限未修改,可能会影响您的延误率,是否返回修改?')) {
+							if (confirm('是否需调整完成期限?')) {
 								return;
 							}
 						}
@@ -1894,6 +1894,7 @@
 								var acceptData = {
 									"DBTable": "ppm_bills_task",
 									"DBID": $('#DBID').text(),
+									"taskLimitDate": $('#taskLimitDate').val(),
 									"BTAcceptOpinion": $('#BTAcceptOpinion').val()
 										.replace(/\n|\r\n/g,
 											'<br/>').replace(/'/g, '"'),
