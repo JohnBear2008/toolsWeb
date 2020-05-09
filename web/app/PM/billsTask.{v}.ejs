@@ -1720,6 +1720,11 @@
 
 				if (checkTaskInput()) {
 
+					let taskMakeDate = $("#taskMakeDate").text();
+					if (!taskMakeDate) {
+						taskMakeDate = Ndate;
+					}
+
 					var taskData = {
 						"DBTable": "ppm_bills_task",
 						"DBID": $('#DBID').text(),
@@ -1743,7 +1748,7 @@
 							.replace(/'/g, '"'),
 						"taskLimitDate": $('#taskLimitDate').val(),
 						"taskMaker": sessionName,
-						"taskMakeDate": Ndate
+						"taskMakeDate": taskMakeDate
 					}
 
 					if ($('#BTVersion').text() !== '0') {
@@ -2531,7 +2536,7 @@
 										"taskDBE": dataSelect.taskDBE,
 										"taskLimitDate": dataSelect.taskLimitDate,
 										"taskMaker": sessionName,
-										"taskMakeDate": Ndate,
+										"taskMakeDate": dataSelect.taskMakeDate,
 										"IPQCMaker": dataSelect.IPQCMaker,
 										"FQCMaker": dataSelect.FQCMaker,
 										"BTAcceptResult": 0,
