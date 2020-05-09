@@ -2476,7 +2476,7 @@
 
 				//保存任务执行函数
 
-				let saveTaskFun = () => {
+				let saveTaskFun = async () => {
 					//--------------------------
 
 
@@ -2542,34 +2542,34 @@
 							if (dataSelectTask.BTStatus == 1) {
 
 
-								//增加完成期限提醒功能
-								if ($('#BTVersion').text() !== '0') {
-									let rsOldLimitDate = await $.ajax({
-										method: 'get',
-										data: {
-											"SQL": "select taskLimitDate from ppm_bills_task",
-											"filter": "BTID='" + $('#BTID').text() +
-												"' and BTVersion='" +
-												parseInt($('#BTVersion').text() - 1) + "'"
-										},
-										url: "/app/PM/getSQLDBData",
-										success: function (data) {
-											// console.log("oldLimitDate:" + JSON.stringify(data));
-											// // return data[0].taskLimitDate
-										},
-										error: function () {}
-									})
+								// //增加完成期限提醒功能
+								// if ($('#BTVersion').text() !== '0') {
+								// 	let rsOldLimitDate = await $.ajax({
+								// 		method: 'get',
+								// 		data: {
+								// 			"SQL": "select taskLimitDate from ppm_bills_task",
+								// 			"filter": "BTID='" + $('#BTID').text() +
+								// 				"' and BTVersion='" +
+								// 				parseInt($('#BTVersion').text() - 1) + "'"
+								// 		},
+								// 		url: "/app/PM/getSQLDBData",
+								// 		success: function (data) {
+								// 			// console.log("oldLimitDate:" + JSON.stringify(data));
+								// 			// // return data[0].taskLimitDate
+								// 		},
+								// 		error: function () {}
+								// 	})
 
-									let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
-									console.log('oldTaskLimitDate', oldTaskLimitDate);
+								// 	let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
+								// 	console.log('oldTaskLimitDate', oldTaskLimitDate);
 
-									if ($('#taskLimitDate').val() === oldTaskLimitDate) {
-										if (confirm('是否需调整完成期限?')) {
-											return;
-										}
-									}
-								}
-								
+								// 	if ($('#taskLimitDate').val() === oldTaskLimitDate) {
+								// 		if (confirm('是否需调整完成期限?')) {
+								// 			return;
+								// 		}
+								// 	}
+								// }
+
 
 								var taskData = {
 									"DBTable": "ppm_bills_task",
@@ -2760,6 +2760,12 @@
 				if (sessionName != $("#PGEMaker").val()) {
 					swal("当前账号非指定方案人,不允许保存方案!");
 				} else {
+					//完成期限提醒
+					if ($('#BPTVersion').text() !== '0') {
+						if (!confirm('注意调整方案单及相关任务单完成期限,调整完成?')) {
+							return
+						}
+					}
 
 					if (checkBPTInput()) {
 
