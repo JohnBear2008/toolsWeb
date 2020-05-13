@@ -44,8 +44,12 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ";
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? ) )) ";
+    // where (applyDate<'2020-04-01' and ((emailDate>='2020-04-01' and emailDate<='2020-04-30') 
+    // or ( emailDate is null and WFEndText is null) 
+    // or (emailDate is null and WFEndDate>='2020-04-01' ) ))
     //本周新单   
     var sql_Page2A2 = 
 // " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
@@ -128,7 +132,7 @@ module.exports = function(sender) {
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A "+
     " where applyDate>=? and applyDate<=? "+
-    " and limitDate>=? and emailDate is null and WFEndText is null ";
+    " and emailDate is null and limitDate>=? and WFEndText is null ";
     // " where applyDate>='2020-04-20' and applyDate<='2020-04-24' "+
     // " and limitDate>='2020-04-24' and emailDate is null and WFEndText is null ";
     //本周其他  OTHER
@@ -146,12 +150,12 @@ module.exports = function(sender) {
     // "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
     // " where  ( applyDate<? and emailDate>=? and emailDate<=? and emaildate <= limitdate and emailDate is not null ) "+
     // " or (applyDate<? and emailDate is null and WFEndText is null  and emaildate <= limitdate and emailDate is not null )";
-
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ) "+
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate>=emailDate ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
@@ -162,8 +166,9 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ) "+
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate<emailDate  ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
@@ -174,8 +179,9 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ) "+
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? )	)) "+
     "   and emailDate is null and WFEndText ='终止归档' ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
@@ -186,8 +192,9 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ) "+
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate< ? and emailDate is null and WFEndText is null ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
@@ -197,8 +204,9 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ) "+
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate>= ? and emailDate is null and WFEndText is null ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
@@ -209,8 +217,9 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
-    " or (applyDate<? and emailDate is null and WFEndText is null) ) "+
+    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " or ( emailDate is null and WFEndText is null)  "+
+    " or (emailDate is null and WFEndDate>=? )	)) "+
     " and WFEndText='完结归档' and emailDate is null ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+

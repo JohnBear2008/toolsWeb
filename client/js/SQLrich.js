@@ -65,10 +65,23 @@ SQLLateList=
  " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh` "+
  " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
  " tb on ta.BPID=tb.pbhBPID ) A "+
+ "     where ( (applyDate>=? and applyDate<=?)  OR "+
+ "	   (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+ "		or ( emailDate is null and WFEndText is null)  "+
+ "		or (emailDate is null and WFEndDate>=? )	)) ) "+
+ "		and (( emailDate is null and limitDate <? and WFEndText is null) "+
+ "		or (limitDate<emailDate)) ";
 
- " where ( ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
- " or (applyDate<? and emailDate is null and WFEndText is null) ) and limitDate<? and emailDate is null and WFEndText is null ) "+
- " OR (applyDate>=? and applyDate<=? and limitDate<? and emailDate is null and WFEndText is null )";
+//      where ( (applyDate>='2020-04-01' and applyDate<='2020-04-30')  OR
+// 	   (applyDate<'2020-04-01' and ((emailDate>='2020-04-01' and emailDate<='2020-04-30') 
+// 		or ( emailDate is null and WFEndText is null) 
+// 		or (emailDate is null and WFEndDate>='2020-04-01' )	)) )
+// 		and (( emailDate is null and limitDate<'2020-04-30' and WFEndText is null)
+// 		or (limitDate<emailDate))
+
+//  " where ( ( ( applyDate<? and emailDate>=? and emailDate<=?) "+
+//  " or (applyDate<? and emailDate is null and WFEndText is null) ) and limitDate<? and emailDate is null and WFEndText is null ) "+
+//  " OR (applyDate>=? and applyDate<=? and limitDate<? and emailDate is null and WFEndText is null )";
  
 
 // " where ( ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
@@ -76,14 +89,7 @@ SQLLateList=
 // " OR (applyDate>='2020-04-20' and applyDate<='2020-04-24' and limitDate<'2020-04-24' and emailDate is null and WFEndText is null )";
 
 
-//  where (( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24')
-//  or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) )  and emailDate is null   and WFEndText is null)
-//  OR (applyDate>='2020-04-20' and applyDate<='2020-04-24' and emailDate is null   and WFEndText is null)
-
-//  where  ( applyDate>='2020-03-01' and applyDate <='2020-03-31'   and  '2020-04-26' > LimitDate and emailDate is  null and  WFEndDate is NUll  and WFEndText is NULL )
-//  OR (( applyDate<'2020-03-01' and emailDate>='2020-03-01' and emailDate<='2020-03-31' and '2020-04-26' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )
-//  or (applyDate<'2020-03-01' and emailDate is null and WFEndText is null  and '2020-04-26' > LimitDate and  WFEndDate is NUll  and WFEndText is NULL )
-//  )
+ 
 SQLLateList_t=
 " SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`PBHAuditDate` ,limitDate "+
 " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END  "+
