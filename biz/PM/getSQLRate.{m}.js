@@ -68,10 +68,11 @@ module.exports = function(sender) {
 		param2=sender.req.query.weekend;  
 		param3=sender.req.query.weekbeg; 
 		param4=sender.req.query.weekbeg; 
-		param5=sender.req.query.weekend; 
-		param6=sender.req.query.weekbeg;  
-		param7=sender.req.query.adjend;  
-		param8=sender.req.query.adjend;  //nouse
+		                               //param5=sender.req.query.weekend; 
+		param5=sender.req.query.weekbeg;  
+		param6=sender.req.query.adjend;  
+		param7=sender.req.query.adjend;  //nouse
+	 
 //      where ( (applyDate>='2020-04-01' and applyDate<='2020-04-30')  OR
 // 	   (applyDate<'2020-04-01' and ((emailDate>='2020-04-01' and emailDate<='2020-04-30') 
 // 		or ( emailDate is null and WFEndText is null) 

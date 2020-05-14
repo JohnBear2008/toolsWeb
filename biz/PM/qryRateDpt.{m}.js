@@ -44,7 +44,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=? )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? ) )) ";
     // where (applyDate<'2020-04-01' and ((emailDate>='2020-04-01' and emailDate<='2020-04-30') 
@@ -153,7 +153,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate>=emailDate ";
@@ -166,7 +166,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=? )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate<emailDate  ";
@@ -179,7 +179,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
     "   and emailDate is null and WFEndText ='终止归档' ";
@@ -192,7 +192,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate< ? and emailDate is null and WFEndText is null ";
@@ -204,7 +204,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
     "  and limitDate>= ? and emailDate is null and WFEndText is null ";
@@ -217,7 +217,7 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+    " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
     " and WFEndText='完结归档' and emailDate is null ";
@@ -349,7 +349,7 @@ module.exports = function(sender) {
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page2A1,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg , WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -560,7 +560,7 @@ module.exports = function(sender) {
     function funRemainDone(cb){
         yjDBService.exec({
                     sql : sql_RemainDone,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -581,7 +581,7 @@ module.exports = function(sender) {
     function funRemainLateDone(cb){
         yjDBService.exec({
                     sql : sql_RemainLateDone,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -602,7 +602,7 @@ module.exports = function(sender) {
     function funRemainCancel(cb){
         yjDBService.exec({
                     sql : sql_RemainCancel,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -623,7 +623,7 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ,adjend ], 
+                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisbeg ,adjend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -644,7 +644,7 @@ module.exports = function(sender) {
     function funRemainPend(cb){
         yjDBService.exec({
                     sql : sql_RemainPend,
-                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ,adjend], 
+                    parameters : [  WeekThisbeg ,WeekThisbeg ,WeekThisbeg ,adjend], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -665,7 +665,7 @@ module.exports = function(sender) {
     function funRemainOther(cb){
         yjDBService.exec({
                     sql : sql_RemainOther,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg  ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg  ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []

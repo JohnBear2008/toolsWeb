@@ -66,14 +66,14 @@ SQLLateList=
  " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
  " tb on ta.BPID=tb.pbhBPID ) A "+
  "     where ( (applyDate>=? and applyDate<=?)  OR "+
- "	   (applyDate<? and ((emailDate>=? and emailDate<=?)  "+
+ "	   (applyDate<? and ((emailDate>=?  )  "+
  "		or ( emailDate is null and WFEndText is null)  "+
  "		or (emailDate is null and WFEndDate>=? )	)) ) "+
  "		and (( emailDate is null and limitDate <? and WFEndText is null) "+
  "		or (limitDate<emailDate)) ";
 
 //      where ( (applyDate>='2020-04-01' and applyDate<='2020-04-30')  OR
-// 	   (applyDate<'2020-04-01' and ((emailDate>='2020-04-01' and emailDate<='2020-04-30') 
+// 	   (applyDate<'2020-04-01' and ((emailDate>='2020-04-01'  ) 
 // 		or ( emailDate is null and WFEndText is null) 
 // 		or (emailDate is null and WFEndDate>='2020-04-01' )	)) )
 // 		and (( emailDate is null and limitDate<'2020-04-30' and WFEndText is null)
