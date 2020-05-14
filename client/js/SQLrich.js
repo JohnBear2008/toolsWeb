@@ -33,7 +33,8 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
    " ( ( taskMakeDate<? and taskType='A'  "+
    " and ((taskFinishDate>=? and taskFinishDate<=?)  "+
    " or ( WFEndText is null and taskFinishDate is null )) ) ) ) "+
-   " and (( taskStopDate is null and taskLimitDate<taskFinishDate ) OR  (taskStopDate is null  and taskFinishDate is null and taskLimitDate< ? and WFEndText is null ) )	 ";
+   " and (( taskStopDate is null and taskLimitDate<taskFinishDate ) OR"+
+   "  (taskStopDate is null  and taskFinishDate is null and taskLimitDate<CURDATE() and WFEndText is null ) )	 ";
  
 //  " where  (( taskType='A' and taskMakeDate>='2020-03-01' and taskMakeDate<='2020-04-30') OR  "+
 //  " ( ( taskMakeDate<'2020-03-01' and taskType='A'     and "+
@@ -69,7 +70,7 @@ SQLLateList=
  "	   (applyDate<? and ((emailDate>=?  )  "+
  "		or ( emailDate is null and WFEndText is null)  "+
  "		or (emailDate is null and WFEndDate>=? )	)) ) "+
- "		and (( emailDate is null and limitDate <? and WFEndText is null) "+
+ "		and (( emailDate is null and limitDate <CURDATE() and WFEndText is null) "+
  "		or (limitDate<emailDate)) ";
 
 //      where ( (applyDate>='2020-04-01' and applyDate<='2020-04-30')  OR

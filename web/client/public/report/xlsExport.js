@@ -53,6 +53,7 @@ function enterShip() {
     }else{
         adjend = weekend;
     }
+    adjend = weekend;
     console.log("昨日:",yester ,"次日:",nexter,"日光节约",adjend);
    
     var SQL1 ={"reportType":'RateIdv',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};

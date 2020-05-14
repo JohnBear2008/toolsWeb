@@ -120,7 +120,7 @@ module.exports = function(sender) {
     // " and limitDate<? and emailDate is null and WFEndText is null ";
    " SELECT count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
    "  (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A  "+
-   " where applyDate>=? and applyDate<=? and emailDate is null and limitDate<? and WFEndText is null ";
+   " where applyDate>=? and applyDate<=? and emailDate is null and limitDate<CURDATE() and WFEndText is null ";
  
     // " where applyDate>='2020-04-20' and applyDate<='2020-04-24' "+
     // " and limitDate<'2020-04-24' and emailDate is null and WFEndText is null ";
@@ -132,7 +132,7 @@ module.exports = function(sender) {
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
     " tb on ta.BPID=tb.pbhBPID ) A "+
     " where applyDate>=? and applyDate<=? "+
-    " and emailDate is null and limitDate>=? and WFEndText is null ";
+    " and emailDate is null and limitDate>=CURDATE() and WFEndText is null ";
     // " where applyDate>='2020-04-20' and applyDate<='2020-04-24' "+
     // " and limitDate>='2020-04-24' and emailDate is null and WFEndText is null ";
     //本周其他  OTHER
@@ -195,7 +195,7 @@ module.exports = function(sender) {
     " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
-    "  and limitDate< ? and emailDate is null and WFEndText is null ";
+    "  and limitDate< CURDATE() and emailDate is null and WFEndText is null ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
     // "  and limitDate<'2020-04-24' and emailDate is null and WFEndText is null ";
@@ -207,7 +207,7 @@ module.exports = function(sender) {
     " where (applyDate<? and ((emailDate>=?  )  "+
     " or ( emailDate is null and WFEndText is null)  "+
     " or (emailDate is null and WFEndDate>=? )	)) "+
-    "  and limitDate>= ? and emailDate is null and WFEndText is null ";
+    "  and limitDate>= CURDATE() and emailDate is null and WFEndText is null ";
     // " where ( ( applyDate<'2020-04-20' and emailDate>='2020-04-20' and emailDate<='2020-04-24') "+
     // " or (applyDate<'2020-04-20' and emailDate is null and WFEndText is null) ) "+
     // " and limitDate>='2020-04-24' and emailDate is null and WFEndText is null ";
@@ -344,8 +344,6 @@ module.exports = function(sender) {
             error : sender.error
         })
     }
- 
- 
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page2A1,
