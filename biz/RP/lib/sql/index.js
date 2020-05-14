@@ -34,7 +34,7 @@ const getRecordBillStatus = "select DBID,status from `rp_recordbills`"
 //维修申请单主表单sql
 const sqlRequestBills = "select * , CONCAT_WS(',',address,factoryNos) as searchText from rp_requestbills ";
 //维修单sql
-const sqlRecordBills = "select * from ( select ta.*,tb.customerShortName,tb.makeDate as requestDate from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) tA";
+const sqlRecordBills = "select * ,concat( requestBillId,'-',rowId ) as repairId from ( select ta.*,tb.customerShortName,tb.makeDate as requestDate from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) tA";
 //维修部件清单sql
 const sqlChangeparts = "select * from rp_partsBills";
 //维修出货单主表单sql
@@ -51,6 +51,10 @@ const sqlHistoryBills =
 
 //维修申请单作为子表sql
 const sqlSubRecordBills = "select * from `rp_recordbills`"
+
+//部件清单作为子表sql
+const sqlSubPartBills = "select * from `rp_partsbills`"
+
 //出货单作为子表sql
 const sqlSubResponseBills = "select * from `rp_responsebills`"
 
