@@ -1,0 +1,119 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"  src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+
+<style media=print type="text/css">  
+    .noprint{visibility:visible}  
+    #oDiv2 div{width: 100px;height: 100px;border:1px solid #c50000;}
+    </style>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script> 
+<script src="/js/PM/PMfuns.js"></script>
+  <!-- 导出报告EXCEL -->  
+
+ 
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+   
+<script type="text/javascript" src="/js/jquery.media.js"></script>
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript"  src="/css/MSTools/layui/layui.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+ 
+<div id ="noprint" class="noprint">
+  <div class="divcontent">
+ 
+    <br></br>
+    <div class="lineitem">
+        <button id="PopBtn" class="btn btn-info">预览</button> 
+ 
+    </div>
+    
+<script>
+
+ let prtval="";
+  
+//页面加载函数---------------
+$(document).ready( function () {
+		
+  	layui.use(['form','layedit', 'laydate'], function(){
+	    var form = layui.form
+	            ,layer = layui.layer
+	            ,layedit = layui.layedit
+	            ,laydate = layui.laydate;
+
+
+//	        var laydate = layui.laydate;
+	        var DivDate= laydate.render({
+	            elem: '#Bill_Apply_Date',//选择器结束时间
+	            type: 'date',
+//	            min:Ndate,//设置min默认最小值
+//	            max:VidDate,
+	        });
+	        
+ 	        var DivDate2= laydate.render({
+	            elem: '#Bill_Limit_Date',//选择器结束时间
+	            type: 'date',
+//            min:Ndate,//设置min默认最小值
+//            max:VidDate,
+            });
+//	        form.render('radio');
+	        
+	        form.render();
+	 });
+}); 
+$('#PopBtn').click(function () { 
+	layer.alert('内容');
+	layer.msg('的确很重要', {icon: 1});
+ });
+
+ $(function () {
+            var data = [
+            { id: 1, name: "办公管理", pid: 0 },
+            { id: 2, name: "请假申请", pid: 1 },
+            { id: 3, name: "出差申请", pid: 1 },
+            { id: 4, name: "请假记录", pid: 2 },
+            { id: 5, name: "系统设置", pid: 0 },
+            { id: 6, name: "权限管理", pid: 5 },
+            { id: 7, name: "用户角色", pid: 6 },
+            { id: 8, name: "菜单设置", pid: 6 },
+            ];
+ 
+            GetData(0, data);
+            $("body").append(menus);
+        });
+  
+        var menus = ''; 
+        function GetData(id, arry) {
+            var childArry = GetParentArry(id, arry);
+            if (childArry.length > 0) {
+                menus += '<ul>';
+                for (var i in childArry) {
+                    menus += '<li>' + childArry[i].name;
+                    GetData(childArry[i].id, arry);
+                    menus += '</li>';
+                }
+                menus += '</ul>';
+            }
+        }
+        function GetParentArry(id, arry) {
+            var newArry = new Array();
+            for (var i in arry) {
+                if (arry[i].pid == id)
+                    newArry.push(arry[i]);
+            }
+            return newArry;
+        }
+
+</script>

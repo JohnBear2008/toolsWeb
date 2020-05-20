@@ -42,19 +42,26 @@ SQLNeworder="SELECT *  FROM `pm_neworder` ";
 //  "  or (  WFEndText is null and taskFinishDate is null)) ) ) )    "+
 //  "  and ((taskStopDate is null  and taskLimitDate<taskFinishDate) OR    "+
 //  " ( taskStopDate is null  and taskFinishDate is null and taskLimitDate<'2020-05-01' and WFEndText is null ) ) ";
-
  
     SQLNotDone_t=
-      "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
-        " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
-        " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-        "     where ( taskMakeDate<=?  and "+
-        "   ( (taskFinishDate>=? and taskFinishDate<=?)  or (WFEndText is null and taskFinishDate is null) )"+
-        "   and (  IPQCAuditResultText is null  )	 )  "+
-        "   OR ( taskMakeDate>=? and taskMakeDate<=?  and  ( BTStatus !=4 AND WFStatus!=0 ) and "+
-        "     ? > taskLimitDate and IPQCAuditResultText is null ) ";
- 
- 
+      // "SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,taskLimitDate ,LEFT(tbb.`taskDBE`, 50) as taskDBE_cut ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText "+
+      //   " FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
+      //   " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
+      //   "     where ( taskMakeDate<=?  and "+
+      //   "   ( (taskFinishDate>=? and taskFinishDate<=?)  or (WFEndText is null and taskFinishDate is null) )"+
+      //   "   and (  IPQCAuditResultText is null  )	 )  "+
+      //   "   OR ( taskMakeDate>=? and taskMakeDate<=?  and  ( BTStatus !=4 AND WFStatus!=0 ) and "+
+      //   "     ? > taskLimitDate and IPQCAuditResultText is null ) ";
+      " SELECT `BTID`, `BTversion` ,`taskCTRName`, `taskStaff`, `taskSortTypeText` ,`taskMakeDate` ,LEFT(`taskDBE`, 50) as taskDBE_cut ,taskLimitDate ,taskFinishDate,IPQCAuditDate,IPQCAuditResultText  "+
+      " FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+      " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba  "+
+      " WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
+      " where  ((  taskMakeDate>=? and taskMakeDate<=?) OR  "+
+      " ( ( taskMakeDate<?   "+
+      " and ((taskFinishDate>=? and taskFinishDate<=?)  "+
+      " or ( WFEndText is null and taskFinishDate is null )) ) ) ) "+
+      " and (( taskStopDate is null and taskLimitDate<taskFinishDate ) OR"+
+      "  (taskStopDate is null  and taskFinishDate is null and taskLimitDate<CURDATE() and WFEndText is null ) )	 ";
 SQLLateList=
 // "Select (CASE taskSortTypeText WHEN 'DSP任务单' THEN taskFinishDate  END ) as  DSPFinishDate ,(CASE taskSortTypeText WHEN 'HMI任务单' THEN taskFinishDate  END ) as  HMIFinishDate , `BPID`,`CTRName`, BTID, taskFinishDate,taskSortTypeText, `PGEMaker`,`taskStaffs` ,`applyDate`,  `limitDate`,LEFT(tbb.`topic`, 25) as topic_cut , `WFEndDate`, `auditOpinion` ,`stopReason` ,`auditDate` from `ppm_bills_plan` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, BTID,taskMakeDate,taskBPID,taskSortTypeText from ppm_bills_task  GROUP by BTID ) tbk   ON tbb.BPID=tbk.taskBPID  where  (taskFinishDate > tbb.limitDate ) and tbb.applyDate >? and tbb.applyDate <? order by BPID";
  " SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`emailDate` ,limitDate "+
@@ -92,18 +99,33 @@ SQLLateList=
 
  
 SQLLateList_t=
-" SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`PBHAuditDate` ,limitDate "+
+" SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`emailDate` ,limitDate "+
 " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END  "+
 " AS WFEndText  FROM `ppm_bills_plan_t` tbb,  "+
 " (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+
 " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
-" (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+
+" (SELECT tbc.pbhBPID,tbc.PBHAuditDate as emailDate,tbc.PBHAuditDate FROM `ppm_bills_pbh_t` tbc, "+
 " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` "+
 " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
 " tb on ta.BPID=tb.pbhBPID ) A "+
-" where (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
-" or (applyDate<? and PBHAuditDate is null and WFEndText is null)) "+
-" and PBHAuditDate is null  OR (applyDate>=? and applyDate<=? and PBHAuditDAte is null and WFEndText is null) ";
+"     where ( (applyDate>=? and applyDate<=?)  OR "+
+"	   (applyDate<? and ((PBHAuditDate>=?  )  "+
+"		or ( PBHAuditDate is null and WFEndText is null)  "+
+"		or (PBHAuditDate is null and WFEndDate>=? )	)) ) "+
+"		and (( PBHAuditDate is null and limitDate <CURDATE() and WFEndText is null) "+
+"		or (limitDate<PBHAuditDate)) ";
+// " SELECT  BPID, limitDate,`taskStaffs` ,`applyDate`,`PGEMaker`,`CTRName`,LEFT(`topic`, 25) as topic_cut , `WFEndDate`, `stopReason` ,`PBHAuditDate` ,limitDate "+
+// " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END  "+
+// " AS WFEndText  FROM `ppm_bills_plan_t` tbb,  "+
+// " (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+
+// " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
+// " (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+
+// " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t` "+
+// " GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+
+// " tb on ta.BPID=tb.pbhBPID ) A "+
+// " where (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
+// " or (applyDate<? and PBHAuditDate is null and WFEndText is null)) "+
+// " and PBHAuditDate is null  OR (applyDate>=? and applyDate<=? and PBHAuditDAte is null and WFEndText is null) ";
 
 
 

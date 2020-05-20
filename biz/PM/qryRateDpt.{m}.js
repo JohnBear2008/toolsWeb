@@ -102,7 +102,6 @@ module.exports = function(sender) {
     " tb on ta.BPID=tb.pbhBPID ) A "+
     " where applyDate>=? and applyDate<=? "+
     " and emailDate is null and WFEndText ='终止归档' ";
-
     //延期未完成 3参数   and emailDate is null
     var sql_Page2C1 = 
     //  " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
@@ -141,7 +140,8 @@ module.exports = function(sender) {
     " AS WFEndText  FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.emailDate  FROM `ppm_bills_pbh` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A   where  applyDate>=? and applyDate<=? "+
+    " tb on ta.BPID=tb.pbhBPID ) A  "+
+    " where  applyDate>=? and applyDate<=? "+
     " and WFEndText='完结归档' and emailDate is null ";
    //上周遗留按时通过
     var sql_RemainDone = 

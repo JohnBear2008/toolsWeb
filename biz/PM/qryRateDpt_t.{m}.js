@@ -9,7 +9,7 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend; 
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
- 
+    var adjend=sender.req.query.adjend;
     var DBTable=sender.req.query.DBTable; 
     var sqlGetTableData = "SELECT * FROM "+DBTable;
     sqlGetTableData = "SELECT * FROM ms_agent where FID=?  ";
@@ -44,10 +44,10 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null) ";
-    console.log("chinhba",sql_Page2A1);
-    //本周新单   
+    " where (applyDate<? and ((PBHAuditDate>=? )  "+
+    " or ( PBHAuditDate is null and WFEndText is null)  "+
+    " or (PBHAuditDate is null and WFEndDate>=? ) )) ";
+//本周新单   
     var sql_Page2A2 = 
 // " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
 // " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
@@ -66,8 +66,9 @@ module.exports = function(sender) {
     " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ? and PBHAuditDate <= limitdate  ";
-        
+    " tb on ta.BPID=tb.pbhBPID ) A "+
+    " where applyDate>=? and applyDate<=? "+
+    "  and limitDate>=PBHAuditDate ";         
    //延期已完成 ok
     var sql_Page2B2 =
     //  " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
@@ -79,15 +80,18 @@ module.exports = function(sender) {
     " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ?  and PBHAuditDate > limitdate ";
-   //客户取消
+    " tb on ta.BPID=tb.pbhBPID ) A "+
+    " where applyDate>=? and applyDate<=? "+
+    "  and limitDate<PBHAuditDate ";  
+ //客户取消
     var sql_Page2B3 = 
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where  ApplyDate >=? and ApplyDate <= ?   and  WFEndText= '终止归档' ";
-  
+    " tb on ta.BPID=tb.pbhBPID ) A "+
+    " where applyDate>=? and applyDate<=? "+
+    " and PBHAuditDate is null and WFEndText ='终止归档' ";
     //延期未完成 3参数   and PBHAuditDate is null
     var sql_Page2C1 = 
     //   " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
@@ -99,18 +103,30 @@ module.exports = function(sender) {
     " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where   applyDate>=? and applyDate<=? "+
-    " and ? > LimitDate and PBHAuditDate is  null and  WFEndDate is NUll  and WFEndText is NULL   ";
+    " tb on ta.BPID=tb.pbhBPID ) A  "+
+    " where applyDate>=? and applyDate<=? and PBHAuditDate is null "+
+    " and limitDate<CURDATE() and WFEndText is null ";
 
+ 
     //期限未到  // (tbb.LimitDate <= dueDate and tbb.LimitDate <> '' ) and tbk.taskFinishDate is null
     var sql_Page2C2 =
     " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
     " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+ 
     " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
-    " tb on ta.BPID=tb.pbhBPID ) A  where   applyDate>=? and applyDate<=? "+
-    " and ? <= LimitDate and PBHAuditDate is  null and  WFEndDate is NUll  and WFEndText is NULL   ";
-   //上周遗留按时通过
+    " tb on ta.BPID=tb.pbhBPID ) A "+
+    " where applyDate>=? and applyDate<=? "+
+    " and PBHAuditDate is null and limitDate>=CURDATE() and WFEndText is null ";
+    //本周其他  OTHER
+    var sql_Page2C3 = 
+    " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
+    " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
+    " WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, "+ 
+    " (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) "+ 
+    " tb on ta.BPID=tb.pbhBPID ) A "+
+    " where  applyDate>=? and applyDate<=? "+
+    " and WFEndText='完结归档' and PBHAuditDate is null ";
+  //上周遗留按时通过
     var sql_RemainDone = 
     // " SELECT  count(*) as times FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END "+ 
     // " AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  "+ 
@@ -120,8 +136,10 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where  ( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=? and PBHAuditDate <= limitdate and PBHAuditDate is not null ) "+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null  and PBHAuditDate <= limitdate and PBHAuditDate is not null )";
+    " where (applyDate<? and ((PBHAuditDate>=?  )  "+
+    " or ( PBHAuditDate is null and WFEndText is null)  "+
+    " or (PBHAuditDate is null and WFEndDate>=? )	)) "+
+    "  and limitDate>=PBHAuditDate ";
     // " where  ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and PBHAuditDate <= limitdate and PBHAuditDate is not null ) "+
     // " or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null  and PBHAuditDate <= limitdate and PBHAuditDate is not null )";
 
@@ -130,8 +148,10 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    "   where ( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=? and PBHAuditDate > limitdate and PBHAuditDate is not null )"+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null  and PBHAuditDate > limitdate and PBHAuditDate is not null ) ";
+    " where (applyDate<? and ((PBHAuditDate>=? )  "+
+    " or ( PBHAuditDate is null and WFEndText is null)  "+
+    " or (PBHAuditDate is null and WFEndDate>=? )	)) "+
+    "  and limitDate<PBHAuditDate  ";
     // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and PBHAuditDate > limitdate and PBHAuditDate is not null ) 
     // or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null  and PBHAuditDate > limitdate and PBHAuditDate is not null )
  
@@ -140,9 +160,10 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     " (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where ( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=? and  WFEndText= '终止归档')  "+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null and  WFEndText= '终止归档') ";
-    // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and  WFEndText= '终止归档')
+    " where (applyDate<? and ((PBHAuditDate>=?  )  "+
+    " or ( PBHAuditDate is null and WFEndText is null)  "+
+    " or (PBHAuditDate is null and WFEndDate>=? )	)) "+
+    "   and PBHAuditDate is null and WFEndText ='终止归档' ";    // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and  WFEndText= '终止归档')
     // or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null and  WFEndText= '终止归档')
 
    //上周遗留-延期未完成 好奇怪 and PBHAuditDate<='2020-04-24' and PBHAuditDate>='2020-01-01' 是24 
@@ -151,8 +172,10 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null)) and PBHAuditDate is null and ? >limitDate";
+    " where (applyDate<? and ((PBHAuditDate>=?  )  "+
+    " or ( PBHAuditDate is null and WFEndText is null)  "+
+    " or (PBHAuditDate is null and WFEndDate>=? )	)) "+
+    "  and limitDate< CURDATE() and PBHAuditDate is null and WFEndText is null ";
     // " SELECT  count(*) as times   "+
     // " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join   "+ 
     // "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A   "+
@@ -170,13 +193,15 @@ module.exports = function(sender) {
     " SELECT  count(*) as times "+
     " FROM (SELECT * FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText  FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t`  GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) ta Left join  "+
     "  (SELECT tbc.pbhBPID,tbc.PBHAuditDate  FROM `ppm_bills_pbh_t` tbc, (SELECT pbhBPID,MAX(PBHVersion) AS maxPBHVersion FROM `ppm_bills_pbh_t`  GROUP BY pbhBPID) tbd  WHERE tbc.pbhBPID=tbd.pbhBPID AND tbc.PBHVersion=tbd.maxPBHVersion ) tb on ta.BPID=tb.pbhBPID ) A "+
-    " where (( applyDate<? and PBHAuditDate>=? and PBHAuditDate<=?) "+
-    " or (applyDate<? and PBHAuditDate is null and WFEndText is null)) and PBHAuditDate is null and ? <= limitDate";
+    " where (applyDate<? and ((PBHAuditDate>=?  )  "+
+    " or ( PBHAuditDate is null and WFEndText is null)  "+
+    " or (PBHAuditDate is null and WFEndDate>=? )	)) "+
+    "  and limitDate>= CURDATE() and PBHAuditDate is null and WFEndText is null ";
     // where ( applyDate<'2020-03-01' and PBHAuditDate>='2020-03-01' and PBHAuditDate<='2020-03-31' and '2020-04-20' < LimitDate   )
     // or (applyDate<'2020-03-01' and PBHAuditDate is null and WFEndText is null  and '2020-04-20' < LimitDate   )
 
     //其他  notdone
-    var sql_Page2C3 = "Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
+    var sql_RemainOther = "Select count(distinct BPID) as times from `ppm_bills_plan_t` tbb LEFT JOIN (select  MAX(taskFinishDate) AS taskFinishDate, taskBPID  from ppm_bills_task  GROUP by BTID ) tbk "+ 
     " ON tbb.BPID=tbk.taskBPID where tbb.applyDate >=? and tbb.applyDate <=? and tbb.LimitDate is null and tbk.taskFinishDate is null   "; 
     //tbb.LimitDate is null and tbk.taskFinishDate is null
     //延期单数/本周总出货数  
@@ -208,7 +233,7 @@ module.exports = function(sender) {
     let YesterThis = '';
     YesterThis = getPrevDay(WeekThisbeg);
     console.log("部門统计表格开始日:","昨日",YesterThis,"开始",WeekThisbeg ,"到期日:",WeekThisend);  
-    async.parallel([ funPage2Head, funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3, funPage2Late, funPage2Done,  funRemainDone, funRemainLateDone, funRemainCancel, funRemainNotDo, funRemainPend ], 
+    async.parallel([ funPage2Head, funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3, funPage2Late, funPage2Done,  funRemainDone, funRemainLateDone, funRemainCancel, funRemainNotDo, funRemainPend , funRemainOther], 
     function(err, result) {
 		if (err) {
 
@@ -231,26 +256,26 @@ module.exports = function(sender) {
             sub[13] = result[13][0].Times;  //RemainCancel
             sub[14] = result[14][0].Times;  //RemainNotDo
             sub[15] = result[15][0].Times;  //RemainPend
- 
+            sub[16] = result[16][0].Times;  //RemainOther
                         
            // var rate = sub[4]/(sub[3]+sub[4]+sub[5])*100;  //延期已完成+延期未完成=延期的单数/总单
            console.log("延误率",sub[4],sub[6],sub[12],sub[14],"总单",sub[1],sub[2]);
-            var rate = (sub[4]+sub[6]+sub[12]+sub[14])/(sub[1]+sub[2])*100;  
-            if(rate!=null && typeof rate!="undefined" && rate!=0){
-                rate = rate.toFixed(1);  
-            }
-            if(   rate!='NaN' && rate!="NaN" &&   rate!=0){
-                rate =rate+"%";
-            }else{
-            }
-            var perc = (sub[3]+sub[4]+sub[5])/(sub[2] )*100;
-            if(perc!=null && typeof perc!="undefined" && perc!=0){
-                perc = perc.toFixed(1);  
-            }
-            if(   perc!='NaN' && perc!="NaN" &&   perc!=0){
-                perc =perc+"%";
-            }else{
-            }
+           var rate = (sub[4]+sub[6]+sub[12]+sub[14])/(sub[1]+sub[2])*100;  
+           if(rate!=null && typeof rate!="undefined" && rate!=0){
+               rate = rate.toFixed(1);  
+           }
+           if(   rate!='NaN' && rate!="NaN" &&   rate!=0){
+               rate =rate+"%";
+           }else{
+           }
+           var perc = (sub[3]+sub[4]+sub[5])/(sub[2] )*100;
+           if(perc!=null && typeof perc!="undefined" && perc!=0){
+               perc = perc.toFixed(1);  
+           }
+           if(   perc!='NaN' && perc!="NaN" &&   perc!=0){
+               perc =perc+"%";
+           }else{
+           }
             for (var i = 0; i < 1 ; i++) {
                 var obj={
                     "SHIPTYPE":"宁波PM记录",
@@ -262,7 +287,7 @@ module.exports = function(sender) {
                     "Bill_STAT5":result[5][i].Times+result[13][i].Times,
                     "Bill_STAT6":result[6][i].Times+result[14][i].Times, 
                     "Bill_STAT7":result[7][i].Times+result[15][i].Times,   
-                    "Bill_STAT8":result[8][i].Times,  
+                    "Bill_STAT8":result[8][i].Times+result[16][i].Times ,  
                     "PERC_LATE": rate,  
                     "PERC_DONE": perc,  
                 };
@@ -300,7 +325,7 @@ module.exports = function(sender) {
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page2A1,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg ], 
+                    parameters :[WeekThisbeg ,WeekThisbeg , WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -406,7 +431,7 @@ module.exports = function(sender) {
     function funPage2C1(cb){
         yjDBService.exec({
                     sql : sql_Page2C1,
-                    parameters : [WeekThisbeg ,WeekThisend ,duedate], 
+                    parameters : [WeekThisbeg ,WeekThisend ,adjend], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -428,7 +453,7 @@ module.exports = function(sender) {
     function funPage2C2(cb){
         yjDBService.exec({
                     sql : sql_Page2C2,
-                    parameters : [WeekThisbeg ,WeekThisend ,duedate], 
+                    parameters : [WeekThisbeg ,WeekThisend ,adjend], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -449,7 +474,7 @@ module.exports = function(sender) {
     function funPage2C3(cb){
         yjDBService.exec({
                     sql : sql_Page2C3,
-                    parameters : [WeekThisbeg ,WeekThisend ,dpt], 
+                    parameters : [WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -510,7 +535,7 @@ module.exports = function(sender) {
     function funRemainDone(cb){
         yjDBService.exec({
                     sql : sql_RemainDone,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -523,7 +548,6 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗按时2：", temp);
                     },
                     error : sender.error
                 })
@@ -531,7 +555,7 @@ module.exports = function(sender) {
     function funRemainLateDone(cb){
         yjDBService.exec({
                     sql : sql_RemainLateDone,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -544,7 +568,6 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗延时5：", temp);
                     },
                     error : sender.error
                 })
@@ -552,7 +575,7 @@ module.exports = function(sender) {
     function funRemainCancel(cb){
         yjDBService.exec({
                     sql : sql_RemainCancel,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -565,7 +588,6 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗终止0：", temp);
                     },
                     error : sender.error
                 })
@@ -573,7 +595,7 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg,duedate ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg , WeekThisbeg,duedate ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -586,8 +608,6 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("问题 遗未完@@ ",WeekThisbeg ,WeekThisbeg ,WeekThisend, WeekThisbeg,duedate);
-                        console.log("问题 遗未完24：应该19 ", temp);
                     },
                     error : sender.error
                 })
@@ -595,7 +615,7 @@ module.exports = function(sender) {
     function funRemainPend(cb){
         yjDBService.exec({
                     sql : sql_RemainPend,
-                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend,WeekThisbeg,duedate ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg,adjend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -608,7 +628,27 @@ module.exports = function(sender) {
                             datas.push(temp)
                         }
                         cb(null, datas);
-                        console.log("遗未到 1：", temp);
+                    },
+                    error : sender.error
+                })
+    }
+    function funRemainOther(cb){
+        yjDBService.exec({
+                    sql : sql_RemainOther,
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisbeg  ], 
+                    rowsAsArray : true,
+                    success : function(r) {
+                        var datas = []
+                        var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                        for (var i = 0; i < data.length; i++) {
+                            var temp = {
+                                "Times" : data[i].times , 
+                            }
+    					    
+                            datas.push(temp)
+                        }
+                        cb(null, datas);
+                        console.log("遗其他 0：", temp);
                     },
                     error : sender.error
                 })

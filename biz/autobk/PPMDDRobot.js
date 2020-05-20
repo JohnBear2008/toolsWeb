@@ -16,7 +16,7 @@ function DDRobotMsgSender(divMsg) {
 
 	// var token ="43e278d8d451875e8be1b5eec0ce66b5d8d51dcb527013cc3e6c2630b612cc30";//软体部
 
-	var token ="3e8814ee63d4a930c45020bafdd0aaedcfff3a4ed4d26c28390a60347767a0f0";//PPM工具群
+	var token = "3e8814ee63d4a930c45020bafdd0aaedcfff3a4ed4d26c28390a60347767a0f0"; //PPM工具群
 
 	var url = 'oapi.dingtalk.com';
 	var req = https.request({
@@ -56,12 +56,10 @@ const CreateDDMsgText = (I, O) => {
 			"text": "以下单据未完成，请跟进！\n\n" + DDText,
 			"hideAvatar": "0",
 			"btnOrientation": "0",
-			"btns": [
-				{
-					"title": "登陆PPM系统",
-					"actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
-				}
-			]
+			"btns": [{
+				"title": "登陆PPM系统",
+				"actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
+			}]
 		},
 		"msgtype": "actionCard",
 		"at": {
@@ -97,15 +95,22 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 			let R2
 
-			console.log("R1.length:"+R1.length)
+			console.log("R1.length:" + R1.length)
 
 			switch (R1.length) {
 				case 0:
-					R2 = { DDMsg: [] }
+					R2 = {
+						DDMsg: []
+					}
 					break;
 				case 1:
 
-					R2 = { DDMsg: [{ msg: R1[0].billText, at: R1[0].billStaffs }] }
+					R2 = {
+						DDMsg: [{
+							msg: R1[0].billText,
+							at: R1[0].billStaffs
+						}]
+					}
 					break;
 
 				default:
@@ -121,25 +126,26 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 					for (let i = 1; i < R1.length; i++) {
 
-						console.log("msgI:"+msgI)
+						console.log("msgI:" + msgI)
 
-						console.log("atI:"+atI)
+						console.log("atI:" + atI)
 
-						if (R1[i].billText === R1[i-1].billText) {
-
-							
-
+						if (R1[i].billText === R1[i - 1].billText) {
 							// console.log(atI.indexOf(R1[i].billStaffs) === -1)
 
-							if(atI.indexOf(R1[i].billStaffs) === -1){
+							console.log('R1[i].billStaffs', R1[i].billStaffs);
 
-								
-								atI = atI + "," + R1[i].billStaffs;
+
+							if (R1[i].billStaffs && atI) {
+								if (atI.indexOf(R1[i].billStaffs) === -1) {
+									atI = atI + "," + R1[i].billStaffs;
+								}
 							}
-
-							
 						} else {
-							DDMsgArray.push({ msg: msgI, at: atI })
+							DDMsgArray.push({
+								msg: msgI,
+								at: atI
+							})
 							msgI = R1[i].billText;
 							atI = R1[i].billStaffs;
 						}
@@ -149,10 +155,15 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 
 
-						DDMsgArray.push({ msg: msgI, at: atI })
+					DDMsgArray.push({
+						msg: msgI,
+						at: atI
+					})
 
 
-					R2 = { DDMsg: DDMsgArray }
+					R2 = {
+						DDMsg: DDMsgArray
+					}
 					break;
 			}
 
@@ -178,29 +189,33 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 
 let I = {
-	sql: "SELECT '计划单未审核' as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 AND C.effective=1 AND C.auditResult=0) A "+ " union " +
+	sql: "SELECT '计划单未审核' as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 AND C.effective=1 AND C.auditResult=0) A " + " union " +
 		" SELECT '方案单未完成'  as billText, A.PLDPGEMaker as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
-		" SELECT '方案单未审核'  as billText, A.auditor as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
+		" SELECT '方案单未审核'  as billText, A.auditor as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where BPTStatusText ='未审核'" + " union " +
 		" SELECT '任务单未完成'  as billText,A.taskStaff as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A where BTStatus <> 3 AND taskType='A' AND WFStatus<>0 AND WFStatus<>100 " + " union " +
+		" SELECT '任务单未审核'  as billText,A.recordAuditor as billStaffs FROM ( select recordAuditor,recordStatus,BTStatus,taskType,WFStatus from (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba  WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) tbc left join ppm_bills_taskrecord tbd on tbc.BTID=tbd.BTID and tbc.BTVersion=tbd.BTVersion) A where BTStatus <> 3 AND taskType='A' AND WFStatus<>0 AND WFStatus<>100 AND recordStatus='已登记,已审核' " + " union " +
 		" SELECT 'IPQC单未完成'  as billText,A.IPQCMaker as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordNum>0 AND tbb.WFStatus<>0 AND tbb.WFStatus<>100 ) A where IPQCAuditResult<>1 OR IPQCAuditResult IS NULL" + " union " +
-		" SELECT 'FQC单未完结'  as billText, A.FQCStaff as billStaffs FROM (SELECT tbc.FQCStaff,tbd.* FROM (SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd ON tbc.BPID=tbd.fqcBPID) A WHERE ( FQCStatus <>0 AND FQCStatus <>1)"+ " union " +
+		" SELECT 'FQC单未完结'  as billText, A.FQCStaff as billStaffs FROM (SELECT tbc.FQCStaff,tbd.* FROM (SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd ON tbc.BPID=tbd.fqcBPID) A WHERE ( FQCStatus <>0 AND FQCStatus <>1)" + " union " +
+		" SELECT 'FQC单未审核'  as billText, A.FQCAuditor as billStaffs FROM (SELECT tbc.FQCStaff,tbd.* FROM (SELECT tbb.* FROM `ppm_bills_plan` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) tba WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd ON tbc.BPID=tbd.fqcBPID) A WHERE ( FQCStatus <>0 AND FQCStatus <>1)" + " union " +
 		" SELECT 'T计划单未填写'  as billText, CASE taskSortType WHEN 'D' THEN '许静静' ELSE '蒋伟贞' END AS billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.BTAcceptResult=1 ) A WHERE A.WFStatus <> 0 AND A.WFStatus<>100 AND A.taskType<>'A' AND A.T_BPID IS NULL" + " union " +
-		" SELECT 'T计划单未审核' as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan_t` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 AND C.effective=1 AND C.auditResult=0) A "+ " union " +
-		" SELECT 'T方案单未完成'  as billText, A.PLDPGEMaker as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.BPIDfrom AS PLDBPIDfrom,tbb.BTIDfrom AS PLDBTIDfrom,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion,tbb.auditor AS PLDAuditor FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint_t` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint_t` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1 ) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL"+ " union " +
-		" SELECT 'T任务单未完成'  as billText,A.taskStaff as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A where BTStatus <> 3 AND WFStatus<>0 AND WFStatus<>100 "+ " union " +
-		" SELECT 'T-IPQC单未完成'  as billText,A.IPQCMaker as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordNum>0 AND tbb.WFStatus<>0 AND tbb.WFStatus<>100 ) A where IPQCAuditResult<>1 OR IPQCAuditResult IS NULL"+ " union " +
-		" SELECT 'T-FQC单未完成'  as billText,A.FQCStaff as billStaffs FROM (SELECT tbc.FQCStaff,tbc.BPID,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,tbd.* FROM (SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc_t` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc_t` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd ON tbc.BPID=tbd.fqcBPID) A WHERE FQCAuditResult<>1 AND FQCAuditResult<>2 OR FQCAuditResult IS NULL"
+		" SELECT 'T计划单未审核' as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan_t` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 AND C.effective=1 AND C.auditResult=0) A " + " union " +
+		" SELECT 'T方案单未完成'  as billText, A.PLDPGEMaker as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.BPIDfrom AS PLDBPIDfrom,tbb.BTIDfrom AS PLDBTIDfrom,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion,tbb.auditor AS PLDAuditor FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint_t` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint_t` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1 ) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
+		" SELECT 'T方案单未审核'  as billText, A.auditor as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.BPIDfrom AS PLDBPIDfrom,tbb.BTIDfrom AS PLDBTIDfrom,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion,tbb.auditor AS PLDAuditor FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint_t` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint_t` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1 ) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
+		" SELECT 'T任务单未完成'  as billText,A.taskStaff as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A where BTStatus <> 3 AND WFStatus<>0 AND WFStatus<>100 " + " union " +
+		" SELECT 'T任务单未审核'  as billText,A.recordAuditor as billStaffs FROM ( select recordAuditor,recordStatus,BTStatus,taskType,WFStatus from (SELECT tbb.* FROM `ppm_bills_task_t` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba  WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) tbc left join ppm_bills_taskrecord_t tbd on tbc.BTID=tbd.BTID and tbc.BTVersion=tbd.BTVersion) A where BTStatus <> 3 AND taskType='A' AND WFStatus<>0 AND WFStatus<>100 AND recordStatus='已登记,已审核' " + " union " +
+		" SELECT 'T-IPQC单未完成'  as billText,A.IPQCMaker as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task_t` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion AND tbb.recordNum>0 AND tbb.WFStatus<>0 AND tbb.WFStatus<>100 ) A where IPQCAuditResult<>1 OR IPQCAuditResult IS NULL" + " union " +
+		" SELECT 'T-FQC单未完成'  as billText,A.FQCStaff as billStaffs FROM (SELECT tbc.FQCStaff,tbc.BPID,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,tbd.* FROM (SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc_t` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc_t` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd ON tbc.BPID=tbd.fqcBPID) A WHERE FQCAuditResult<>1 AND FQCAuditResult<>2 OR FQCAuditResult IS NULL" + " union " +
+		" SELECT 'T-FQC单未审核'  as billText,A.FQCAuditor as billStaffs FROM (SELECT tbc.FQCStaff,tbc.BPID,tbc.DBID AS PLDDBID,tbc.CTRName AS PLDCTRName,tbd.* FROM (SELECT tbb.* FROM `ppm_bills_plan_t` tbb, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan_t` GROUP BY billBPID) tba WHERE tbb.BPID = tba.billBPID AND tbb.version = tba.billVersion AND tbb.taskNumDone>=tbb.taskNum AND tbb.taskNumDone<>0 AND tbb.WFStatus <> 0 AND tbb.WFStatus<>100 AND tbb.FQCRequest=1 ) tbc LEFT JOIN (SELECT tbf.* FROM `ppm_bills_fqc_t` tbf,(SELECT fqcBPID,MAX(FQCVersion) AS maxFQCVersion FROM `ppm_bills_fqc_t` GROUP BY fqcBPID) tbe WHERE tbf.fqcBPID=tbe.fqcBPID AND tbf.FQCVersion=tbe.maxFQCVersion) tbd ON tbc.BPID=tbd.fqcBPID) A WHERE FQCAuditResult<>1 AND FQCAuditResult<>2 OR FQCAuditResult IS NULL AND FQCAuditor is not null"
 }
 let O;
 
-// sendBillsUndoneDDMsg(I, O)
+sendBillsUndoneDDMsg(I, O)
 
 // 通知任务---------
 var j1 = schedule
-	.scheduleJob(
-		{
-			hour: 08,
-			minute: 30,
+	.scheduleJob({
+			hour: 09,
+			minute: 08,
 			dayOfWeek: [1, 2, 3, 4, 5]
 		},
 		function () {
@@ -211,8 +226,7 @@ var j1 = schedule
 
 
 var j2 = schedule
-	.scheduleJob(
-		{
+	.scheduleJob({
 			hour: 13,
 			minute: 30,
 			dayOfWeek: [1, 2, 3, 4, 5]

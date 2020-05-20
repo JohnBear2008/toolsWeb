@@ -36,21 +36,28 @@ function enterShip() {
           weekend = DateRange[1].format("yyyy-MM-dd");
           console.log("预设本周:" +weekend);
     }
-    //labuse
-    // weekbeg = '2019-11-01';
-    // weekend = '2019-11-14'; 
+
     console.log("lastbeg:"+lastbeg);
     console.log("lastend:"+lastend);
     console.log("weekbeg:"+weekbeg);
     console.log("weekend:"+weekend);
-    let yester = getPrevDay(weekbeg);
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");
-    var SQL1 ={"reportType":'RateIdv_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL1H ={"reportType":'TaskIdv_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL3 = {"SQL":"SQLNotDone_t","yester":yester,"weekbeg":weekbeg,"weekend":weekend, "duedate":duedate};
-    var SQL2A ={"reportType":'RateDpt_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend};
-    var SQL2B ={"SQL":"SQLLateList_t","weekbeg":weekbeg,"weekend":weekend,  "duedate":duedate};
+    let yester = getPrevDay(weekbeg);
+    let nexter = getNextDay(weekend);
+    let adjend = '';
+    if(duedate > DateFinE){  //改良的条件
+        adjend = nexter;
+    }else{
+        adjend = weekend;
+    }
+    adjend = weekend;
+    var SQL1 ={"reportType":'RateIdv_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};
+    var SQL1H ={"reportType":'TaskIdv_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};
+    var SQL3 = {"SQL":"SQLNotDone_t","yester":yester,"weekbeg":weekbeg,"weekend":weekend, "duedate":duedate,"adjend":adjend};
+    var SQL2A ={"reportType":'RateDpt_t',"weekbeg":weekbeg,"weekend":weekend,"lastbeg":lastbeg,"lastend":lastend,"adjend":adjend};
+    var SQL2B ={"SQL":"SQLLateList_t","weekbeg":weekbeg,"weekend":weekend,  "duedate":duedate,"adjend":adjend};
+
    //SQLLateList  是用 ppm_bills_plan 做的
     let ajax1h = $.ajax({
         url: '/app/PM/getRoute',
@@ -113,7 +120,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
     let kiss =[];
     let head =[  '个人出货情况统计（数据源：PM登记&MAIL信息）' ];
     let subhead =[  '类别','',' 总  单','','已完成总单','','','待修改总单',''  ];
-    let divhead =[  '', '',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ];
+    let divhead =[  '', '',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ,'其他'];
     // let datahead =[  '宁波PPM记录','', '16','20','15','20','15','20','31'  ];
     let spacehead =[  ' ' ];
     kiss.push( head );
@@ -131,13 +138,15 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         sheet1data.push(mdataH[i].Bill_STAT5);  
         sheet1data.push(mdataH[i].Bill_STAT6);  
         sheet1data.push(mdataH[i].Bill_STAT7);  
+        sheet1data.push(mdataH[i].Bill_STAT8);  
+        sheet1data.push(mdataH[i].Bill_STAT9);  
    }
     kiss.push( sheet1data );
     kiss.push( spacehead );
 
     let title =[  '个人出货情况统计（数据源：PM登记&MAIL信息）' ];
-    let subtitle =[  '组别','姓名',' 总  单','','已完成总单','','','待修改总单','','延误率' ];
-    let divtitle =[  '','',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到' ];
+    let subtitle =[  '组别','姓名',' 总  单','','已完成总单','','','待修改总单','', '' , '延误率' ];
+    let divtitle =[  '','',' 遗  留',' 新  单','按时完成','延期已完成','  终  止','延期未完成','期限未到', '其他' ];
     
     kiss.push( title );
     kiss.push( subtitle );
@@ -157,13 +166,14 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
          speebook.push(mdata[i].Bill_STAT6);  
          speebook.push(mdata[i].Bill_STAT7);  
          speebook.push(mdata[i].Bill_STAT8);  
+         speebook.push(mdata[i].Bill_STAT9);  
          kiss.push(speebook); 
     }
     var sheet1 = XLSX.utils.aoa_to_sheet(kiss);   
  
     // var sheet =  XLSX.utils.json_to_sheet(sheetdata);
 
-    sheet1['!cols'] = [{wch: 8}, {wch: 10},  {wch: 10}, {wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10}];
+    sheet1['!cols'] = [{wch: 8}, {wch: 10},  {wch: 10}, {wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10},{wch: 10}];
     sheet1['!rows'] = [{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 40} ,{hpx: 30} ];
     for (var i=0; i<mdata.length+1; i++) {
         sheet1['!rows'].push({hpx: 25});
@@ -260,10 +270,10 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
         } , 
         {  //合并第2列 第6行到第7行 延误率 
             s: {
-                c: 9,                r: 6
+                c: 10,                r: 6
             },
             e: {
-                c: 9,                r: 7
+                c: 10,                r: 7
             }
         }
        ]
@@ -296,6 +306,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
    
     let space2B =[  ' ' ];
     let title2B =[  '软件出货情况分析' ];
+    // let sub2Btitle =[ '软体出货延误率（目标值2%）','','','','','完成率','','','' 	];
+    // let div2Btitle =[ '延期单数/本周总出货数','','','','','已完成总单/本周总单','','','' 	];		
     let sub2Btitle =[ '软体出货延误率（目标值2%）','','','','','','','','' 	];
     let div2Btitle =[ '延期单数/本周总出货数','','','','','','','','' 	];		
     // let sheet2Bdata = [  '0.0%','','','','', '97.4%' ,'','','' ];
@@ -320,7 +332,8 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
 
     let space3B =[  ' ' ];
     let title3B =[  '软体出货延误率--延期单数' ];
-    let sub3Btitle =[ '单号','完成期限','修改人','测试人','厂商','修改内容','','','','申请日期','完成期限','邮件日期' ,	];    finary.push( space3B );
+    let sub3Btitle =[ '单号','完成期限','修改人','测试人','厂商','修改内容','','','','申请日期','完成期限','邮件日期' ,	];
+    finary.push( space3B );
     finary.push( title3B );
     finary.push( sub3Btitle );
 
@@ -498,7 +511,7 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
       //sheet3  
       let camary =[];
       console.log("分页3未完成表单 "+ ydata.length );   
-      let sub3NOTtitle =[ '单号','任务人','客户','型态','申请日期','完成期限','备注',''	];
+      let sub3NOTtitle =[ '单号','任务人','客户','型态','申请日期','完成期限','完成日期','备注',''	];
       camary.push( sub3NOTtitle );  
       for (var i=0; i<ydata.length; i++) {
             let speebook = []; 
@@ -508,24 +521,24 @@ function ShipStat(mdataH, mdata, kdataA, kdataB, ydata) {
             speebook.push(ydata[i].taskSortTypeText); 
             speebook.push(ydata[i].taskMakeDate);
             speebook.push(ydata[i].taskLimitDate);    
+            speebook.push(ydata[i].taskFinishDate);    
             speebook.push(ydata[i].taskDBE_cut);    
             speebook.push('');    
             camary.push(speebook); 
       }
     var sheet3 = XLSX.utils.json_to_sheet(camary,{ skipHeader:true });
       XLSX.utils.sheet_add_aoa(sheet3,[
-        ['单号','客户','任务人','型态','申请日期','完成期限','备注','']
+        ['单号','客户','任务人','型态','申请日期','完成期限','完成日期','备注','']
     ],{
         origin:'A1' // 从A1开始增加内容
     });
     sheet3['!cols'] = [{wch: 20}, {wch: 15},{wch: 15},{wch: 15},{wch: 15}
-                      ,{wch: 15},{wch: 60}];
+                      ,{wch: 15},{wch: 15},{wch: 60}];
      var range = XLSX.utils.decode_range(sheet3['!ref']); 
      sheet3['!rows'] = [{hpx: 40}];
     for (var i=0; i<ydata.length+2; i++) {
         sheet3['!rows'].push({hpx: 25});
     } 
-
     /* create a new blank workbook */
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet1,"个人出货状态" );
@@ -696,6 +709,14 @@ function getPrevDay(ThisDay) {
     let oneDayLong = 24 * 60 * 60 * 1000;
     let now = new Date(ThisDay);
     let mondayTime = now.getTime() - (1) * oneDayLong; 
+    let monday = new Date(mondayTime);  
+    var dateFormat = monday.Format("yyyy-MM-dd");
+    return dateFormat;
+}
+function getNextDay(ThisDay) {
+    let oneDayLong = 24 * 60 * 60 * 1000;
+    let now = new Date(ThisDay);
+    let mondayTime = now.getTime() + (1) * oneDayLong; 
     let monday = new Date(mondayTime);  
     var dateFormat = monday.Format("yyyy-MM-dd");
     return dateFormat;

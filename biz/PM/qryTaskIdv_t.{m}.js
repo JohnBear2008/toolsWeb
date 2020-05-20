@@ -9,20 +9,25 @@ module.exports = function(sender) {
     var param2=sender.req.query.weekend;  
     var lastbeg=sender.req.query.lastbeg;  
     var lastend=sender.req.query.lastend;  
+    var adjend=sender.req.query.adjend;  
     // console.log("get后台个人表头汇总:"+param1+"日期:"+param2+"遗起"+lastbeg+"遗止"+lastend); 
     var DBTable=sender.req.query.DBTable; 
     let now  = new Date();
     var duedate = now.Format("yyyy-MM-dd");
     // 遗留单    a)	开单日期非新单范围，但【完成日期】在【新单范围内】 参一=参二减1日 
-    // var sql_Page1HA1 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
-    // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-    // " where  tbb.taskMakeDate <= ? and (tbb.taskFinishDate >=? and  tbb.taskFinishDate <= ?) "; 
     var sql_Page1HA1 = 
-     " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
-     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
-     " where  taskMakeDate <=?   and ((taskFinishDate >=? and taskFinishDate <=?) "+
-     " or (WFEndText is null and taskFinishDate is null)) ";
-
+    //  " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+    //  " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
+    //  " where ( taskMakeDate<?    "+
+    //  " and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+    //  " or (WFEndText is null and taskFinishDate is null)) ) ";
+     " SELECT count(*) as times   FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba "+
+     " WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
+     " where ( taskMakeDate<?    "+
+     " and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+     " or (WFEndText is null and taskFinishDate is null)) ) ";
+ 
     //本周新单  
 //     var sql_Page1HA2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
 //    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
@@ -37,16 +42,16 @@ module.exports = function(sender) {
     // " where  (    (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)   and  tbb.taskFinishDate <= tbb.taskLimitDate  and IPQCAuditResultText ='测试通过' ) ";
     var sql_Page1HB1 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE  tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-    " where  (    (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)   and  tbb.taskFinishDate <= tbb.taskLimitDate  and IPQCAuditResultText ='测试通过' ) "+
-    "   ";
-  
+    " where taskMakeDate>=? and taskMakeDate<=? "+
+    " and taskLimitDate>=taskFinishDate and taskStopDate is null";
     //延期完成 2参数  【完成日期】超出【完成期限，且新单范围内】
     // var sql_Page1HB2 = "Select  count(*) as times from `ppm_bills_task_t` tbb where  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
     // " and  tbb.taskFinishDate > tbb.IPQCAuditDate  and IPQCAuditResultText ='测试通过' ";
     var sql_Page1HB2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE  tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-    " where tbb.taskFinishDate > tbb.taskLimitDate and IPQCAuditResultText ='测试通过' and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)    "+
-    "    ";
+    " where taskMakeDate>=? and taskMakeDate<=? "+
+    " and taskLimitDate<taskFinishDate and taskStopDate is null";
+
     //客户取消  and (taskStopDate >=? and taskStopDate <=? )
     var sql_Page1HB3 =
     // "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
@@ -55,29 +60,32 @@ module.exports = function(sender) {
     // "  and taskType='A' ";
     "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE  tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-    " where ( BTStatus =4 or WFStatus=0) and (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) "+
-    "    ";
+    " where  taskMakeDate>=? and taskMakeDate<=? "+
+    "   and taskStopDate is not null ";
     //延期未完成  3参数 已超出【完成期限】，但完成日期还是空白
     // var sql_Page1HC1 = "Select  count(*) as times from `ppm_bills_task_t` tbb where  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and   (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
     // " and  ? > tbb.taskLimitDate and IPQCAuditResultText is null "; 
     var sql_Page1HC1 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-    " where  ( BTStatus !=4 AND WFStatus!=0) and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?) and ? > tbb.taskLimitDate and IPQCAuditResultText is null "+
-    "    ";
+    " where  taskMakeDate>=? and taskMakeDate<=? "+
+    "  and taskStopDate is null and taskFinishDate is null and taskLimitDate<CURDATE()  and WFEndText is null ";
     //期限未到 3参数 BTAcceptResult ='1' 完成日期为空白，但在【完成期限】
     // var sql_Page1HC2 = "Select  count(*) as times from `ppm_bills_task_t` tbb where  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)    "+
     // " and ? <=tbb.taskLimitDate    "; 
     var sql_Page1HC2 = "SELECT count(*) as times FROM ( SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb,"+ 
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) tbb "+ 
-    " where ( BTStatus !=4 AND WFStatus!=0) and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)   and ? <=tbb.taskLimitDate  and IPQCAuditResultText is null "+
-    "    ";
-    //延误率
-    // var sql_Page1HC3 = "Select  count(*) as times from `ppm_bills_task_t` tbb where  SUBSTRing(tbb.BTID, 14,1) NOT IN('K','L','O','B','R') and  (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
-    // " and tbb.taskFinishDate >  tbb.IPQCAuditDate "; 
-    var sql_Page1HC3 = "Select  count(*) as times from `ppm_bills_task_t` tbb where (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
-    " and tbb.taskFinishDate >  tbb.IPQCAuditDate    "; 
-    //上周遗留按时通过
+    " where  taskMakeDate>=? and taskMakeDate<=? "+
+    "  and taskStopDate is null  and taskFinishDate is null and taskLimitDate>=CURDATE() and WFEndText is null ";
+   //其他
+   var sql_Page1HC3 = 
+   // "Select  count(*) as times from `ppm_bills_task` tbb where (tbb.taskMakeDate >=? and  tbb.taskMakeDate <= ?)  "+
+   // " and tbb.taskFinishDate >  tbb.IPQCAuditDate  and taskType='A' "; 
+   " SELECT count(*) as times   FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+   " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
+   " where   taskMakeDate>=? and taskMakeDate<=? "+
+   "  and taskStopDate is null and taskFinishDate is null and WFEndText='完结归档'  ";
  
+    //上周遗留按时通过
     var sql_RemainDone = 
     // "SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
     // "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
@@ -85,30 +93,56 @@ module.exports = function(sender) {
     // "and IPQCAuditResultText ='测试通过' ";
     "SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
     "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
-    "where taskMakeDate <=?   and "+
-	" ((taskFinishDate >=? and taskFinishDate <=? )  or (WFEndText is null and taskFinishDate is null) )"+
-	" and (  IPQCAuditResultText ='测试通过' and taskFinishDate <= taskLimitDate ) ";
-
- 
-       //上周遗留延时通过 
+    " where ( taskMakeDate<?  "+
+	" and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+    " or (WFEndText is null and taskFinishDate is null)) ) "+
+    "  and taskStopDate is null and taskLimitDate>=taskFinishDate ";
+    //上周遗留延时通过 
     var sql_RemainLateDone = 
     "SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
     "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
-    "where taskMakeDate <=?   and "+
-	" ((taskFinishDate >=? and taskFinishDate <=? )  or (WFEndText is null and taskFinishDate is null) )"+
-	" and (  IPQCAuditResultText ='测试通过' and taskFinishDate > taskLimitDate ) ";
-    //上周遗留未完成
- 
+    " where ( taskMakeDate<?    "+
+	" and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+    " or (WFEndText is null and taskFinishDate is null)) ) "+
+    "  and taskStopDate is null and taskLimitDate<taskFinishDate";
+     //上周遗留终止
+     sql_RemainCancel =
+     // "SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task` tbb, "+
+     // "(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
+     // "where taskMakeDate <=? and taskType='A' and "+
+     // " ((taskFinishDate >=? and taskFinishDate <=? )  or (WFEndText is null and taskFinishDate is null) )"+
+     // " and ( and taskFinishDate is null and WFEndText ='终止归档' ) ";
+     " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba  WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A  "+
+     " where ( taskMakeDate<?  "+
+     " and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+     " or (WFEndText is null and taskFinishDate is null)) ) "+
+     "  and taskStopDate is not null  ";
+    //上周遗留延期未完成 
     var sql_RemainNotDo =
-    // " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
-    // " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
-    // " where( taskMakeDate<? and taskFinishDate>=? and taskFinishDate<=?  and taskType='A' )   "+
-	// " and IPQCAuditResultText is null ";
     " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
     " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A "+
-    "where taskMakeDate <=?   and "+
-	" ((taskFinishDate >=? and taskFinishDate <=? )  or (WFEndText is null and taskFinishDate is null) )"+
-	" 	and (  IPQCAuditResultText is null  )	";
+    " where ( taskMakeDate<?   "+
+	" and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+    " or (WFEndText is null and taskFinishDate is null)) ) "+
+    "  and taskStopDate is null and taskFinishDate is null and taskLimitDate<CURDATE()  and WFEndText is null ";
+//上周遗留期限未到
+    var sql_RemainPend = 
+    " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba  WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A  "+
+    " where ( taskMakeDate<?    "+
+    " and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+    " or (WFEndText is null and taskFinishDate is null)) ) "+
+    "  and taskStopDate is null and taskFinishDate is null and taskLimitDate>=CURDATE()  and WFEndText is null ";
+//上周遗留其他
+    var sql_RemainOther =
+    " SELECT count(*) as times  FROM  (SELECT tbb.*,CASE tbb.WFStatus WHEN 0 THEN '终止归档' WHEN 100 THEN '完结归档' END AS WFEndText FROM `ppm_bills_task_t` tbb, "+
+    " (SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task_t` GROUP BY BTID) tba  WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion ) A  "+
+    " where ( taskMakeDate<?    "+
+	" and ((taskFinishDate>=? and taskFinishDate<=? )  "+
+    " or (WFEndText is null and taskFinishDate is null)) ) "+
+    " and taskStopDate is null and taskFinishDate is null and WFEndText='完结归档'   ";
+
     var dataArr=[]; 
     let LastDateRange = getLastWeekRange();
     let LastWeekbeg = LastDateRange[0].Format("yyyy-MM-dd");
@@ -132,7 +166,8 @@ module.exports = function(sender) {
     console.log("武当 ",YesterThis);
     WeekThisend = param2;
 
-    async.parallel([  funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3 ,  funRemainDone , funRemainLateDone, funRemainNotDo   ], 
+    async.parallel([  funPage2A1 , funPage2A2 , funPage2B1 , funPage2B2 , funPage2B3 , funPage2C1 , funPage2C2 , funPage2C3 , 
+        funRemainDone, funRemainLateDone, funRemainCancel, funRemainNotDo, funRemainPend, funRemainOther], 
     function(err, result) {
 		if (err) {
 
@@ -143,14 +178,14 @@ module.exports = function(sender) {
                 var obj={
                     "SHIPTYPE":"宁波PM记录",
                     "Staff":"", 
-                    "Bill_STAT1":result[0][i].Times, 
+                    "Bill_STAT1":result[0][i].Times,
                     "Bill_STAT2":result[1][i].Times, 
-                    "Bill_STAT3":result[2][i].Times+result[8][i].Times, //+result[8][i].Times,
+                    "Bill_STAT3":result[2][i].Times+result[8][i].Times,  
                     "Bill_STAT4":result[3][i].Times+result[9][i].Times,
-                    "Bill_STAT5":result[4][i].Times,
-                    "Bill_STAT6":result[5][i].Times+result[10][i].Times, //+result[9][i].Times,
-                    "Bill_STAT7":result[6][i].Times,  
-                    "Bill_STAT8":result[7][i].Times, 
+                    "Bill_STAT5":result[4][i].Times+result[10][i].Times,
+                    "Bill_STAT6":result[5][i].Times+result[11][i].Times,  
+                    "Bill_STAT7":result[6][i].Times+result[12][i].Times,  
+                    "Bill_STAT8":result[7][i].Times+result[13][i].Times, 
                 };
                 dataArr.push(obj);
             }
@@ -162,7 +197,7 @@ module.exports = function(sender) {
     function funPage2A1(cb){
         yjDBService.exec({
                     sql : sql_Page1HA1,
-                    parameters : [YesterThis , WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg , WeekThisbeg ,WeekThisend  ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -321,7 +356,7 @@ module.exports = function(sender) {
     function funRemainDone(cb){
         yjDBService.exec({
                     sql : sql_RemainDone,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -338,10 +373,31 @@ module.exports = function(sender) {
                     error : sender.error
                 })
     }
+    
     function funRemainLateDone(cb){
         yjDBService.exec({
                     sql : sql_RemainLateDone,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ], 
+                    rowsAsArray : true,
+                    success : function(r) {
+                        var datas = []
+                        var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                        for (var i = 0; i < data.length; i++) {
+                            var temp = {
+                                "Times" : data[i].times , 
+                            }
+    					    
+                            datas.push(temp)
+                        }
+                        cb(null, datas);
+                    },
+                    error : sender.error
+                })
+    }
+    function funRemainCancel(cb){
+        yjDBService.exec({
+                    sql : sql_RemainCancel,
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
@@ -361,7 +417,46 @@ module.exports = function(sender) {
     function funRemainNotDo(cb){
         yjDBService.exec({
                     sql : sql_RemainNotDo,
-                    parameters : [YesterThis ,WeekThisbeg ,WeekThisend ], 
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ], 
+                    rowsAsArray : true,
+                    success : function(r) {
+                        var datas = []
+                        var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                        for (var i = 0; i < data.length; i++) {
+                            var temp = {
+                                "Times" : data[i].times , 
+                            }
+    					    
+                            datas.push(temp)
+                        }
+                        cb(null, datas);
+                    },
+                    error : sender.error
+                })
+    }
+    function funRemainPend(cb){
+        yjDBService.exec({
+                    sql : sql_RemainPend,
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend , adjend ], //WeekThisend
+                    rowsAsArray : true,
+                    success : function(r) {
+                        var datas = []
+                        var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                        for (var i = 0; i < data.length; i++) {
+                            var temp = {
+                                "Times" : data[i].times , 
+                            }
+                            datas.push(temp)
+                        }
+                        cb(null, datas);
+                    },
+                    error : sender.error
+                })
+    }
+    function funRemainOther(cb){
+        yjDBService.exec({
+                    sql : sql_RemainOther,
+                    parameters : [WeekThisbeg ,WeekThisbeg ,WeekThisend ], 
                     rowsAsArray : true,
                     success : function(r) {
                         var datas = []
