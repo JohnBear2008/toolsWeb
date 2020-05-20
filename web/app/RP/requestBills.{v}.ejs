@@ -9,8 +9,9 @@
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
 
 <!-- 导入bootstrapSelect -->
-<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
-<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
 
 <!-- 导入bootstrapSwitch -->
 <link rel="stylesheet" href="/rpLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
@@ -940,6 +941,7 @@
         $('#rp_requestbillsForm-customerShortName').change(function () {
             let customerShortName = $('#rp_requestbillsForm-customerShortName option:selected').val();
             if (customerShortName) {
+                $('#rp_requestbillsForm-customerShortName').selectpicker('refresh');
                 fillCustomerInfo(customerShortName);
             }
         });
@@ -974,6 +976,7 @@
             let productId = $('#rp_recordbillsForm-productId option:selected')
                 .val()
             if (productId) {
+                $('#rp_recordbillsForm-productId').selectpicker('refresh');
                 fillProductInfo(productId);
             }
         });

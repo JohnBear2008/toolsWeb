@@ -486,38 +486,76 @@ const loadBootStrapSelector = async (i) => {
     // $("#extraSelect1").selectpicker('refresh'); //刷新
     $('#' + i.elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
 
+    $('#' + i.elementId).selectpicker({
+        noneSelectedText: "未选择" //默认显示内容
+    });
+
+
+    if (!i.sqlParams) {
+        $('#' + i.elementId).append($('<option value="">未选择</option>'));
+        return
+    }
+
 
     return $.ajax({
         method: 'get',
         url: '/app/RP/lib/ajaxGet',
         data: i.sqlParams,
         success: function (data) {
-
             try {
-
-                $('#' + i.elementId).selectpicker({
-                    noneSelectedText: "未选择" //默认显示内容
-                });
-
-                // $('#' + i.elementId).append($('<option value="">未选择</option>'));
-
                 for (const n of data) {
                     $('#' + i.elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
                 }
-
                 if (i.initValue) {
                     $('#' + i.elementId).selectpicker('val', i.initValue);
+                } else {
+                    $('#' + i.elementId).selectpicker('val', '');
                 }
 
                 $('#' + i.elementId).selectpicker('refresh');
             } catch (error) {
                 console.log('#' + i.elementId, '刷新失败', error);
             }
-
-
         },
         error: function () {}
     })
+}
+
+/**
+ *根据选项数组构建selector
+ *
+ * @param {*} {elementId,options,initValue}
+ */
+const loadDataSelector = ({
+    elementId,
+    options,
+    initValue
+}) => {
+    $('#' + elementId).empty(); //清空原有选项
+    // $("#extraSelect1").selectpicker('refresh'); //刷新
+    $('#' + elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+
+    $('#' + elementId).selectpicker({
+        noneSelectedText: "未选择" //默认显示内容
+    });
+    if (!options) {
+        $('#' + elementId).append($('<option value="">未选择</option>'));
+        return
+    }
+    for (option of options) {
+        $('#' + elementId).append($('<option  data-tokens=' + option.token + ' value=' + option.value + '>' + option.option + '</option>'));
+    }
+
+    let defaultValue = initValue || '';
+    console.log('default', defaultValue);
+
+    $('#' + elementId).selectpicker('val', defaultValue);
+
+    console.log($('#' + elementId+' option:selected').val());
+    
+    $('#' + elementId).selectpicker('refresh');
+    // $('#' + elementId).selectpicker('render');
+
 }
 
 

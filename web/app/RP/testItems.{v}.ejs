@@ -9,8 +9,9 @@
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
 
 <!-- 导入bootstrapSelect -->
-<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
-<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
 
 <!-- 导入datatimepicker -->
 <link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
@@ -45,9 +46,11 @@
                 <thead>
                     <tr>
                         <th>系统分类</th>
+                        <th>产品类别</th>
                         <th>检测项目</th>
                         <th>检测费用</th>
                         <th>开始日期</th>
+                        <th>结束日期</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -103,11 +106,13 @@
                                             value="该输入框获得焦点...">
                                     </div>
 
-                                    <label class="col-sm-1 control-label">检测项目</label>
+                                    <label class="col-sm-1 control-label">产品类别</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_testitemsForm-testItem" type="text"
+                                        <input class="form-control" id="rp_testitemsForm-productClass" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
+
+
 
                                 </div>
 
@@ -115,15 +120,30 @@
 
                                 <div class="form-group">
 
+                                    <label class="col-sm-1 control-label">检测项目</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_testitemsForm-testItem" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
                                     <label class="col-sm-1 control-label">检测费用</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_testitemsForm-testFee" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
+                                </div>
+
+                                <div class="form-group">
 
                                     <label class="col-sm-1 control-label">开始日期</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_testitemsForm-beginDate" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">结束日期</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_testitemsForm-endDate" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -186,6 +206,8 @@
             dtParams: {
                 columns: [{
                         data: 'systemType'
+                    }, {
+                        data: 'productClass'
                     },
                     {
                         data: 'testItem'
@@ -193,6 +215,8 @@
                         data: 'testFee'
                     }, {
                         data: 'beginDate',
+                    }, {
+                        data: 'endDate',
                     }
                 ],
             }

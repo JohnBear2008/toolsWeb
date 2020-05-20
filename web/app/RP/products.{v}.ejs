@@ -9,8 +9,9 @@
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
 
 <!-- 导入bootstrapSelect -->
-<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
-<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
 
 <!-- 导入datatimepicker -->
 <link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
@@ -49,10 +50,11 @@
                     <tr>
                         <th>产品编号</th>
                         <th>产品名称</th>
-                        <th>产品描述</th>
                         <th>系统类别</th>
+                        <th>产品类别</th>
+                        <th>系统分类</th>
                         <th>所属部件</th>
-                        <th>创建人</th>
+
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -108,9 +110,9 @@
                                             value="该输入框获得焦点...">
                                     </div>
 
-                                    <label class="col-sm-1 control-label">产品类型</label>
+                                    <label class="col-sm-1 control-label">产品名称</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_productsForm-productClass" type="text"
+                                        <input class="form-control" id="rp_productsForm-productName" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -120,9 +122,9 @@
 
                                 <div class="form-group">
 
-                                    <label class="col-sm-1 control-label">产品名称</label>
+                                    <label class="col-sm-1 control-label">产品描述</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_productsForm-productName" type="text"
+                                        <input class="form-control" id="rp_productsForm-productDescription" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -134,11 +136,43 @@
                                 </div>
 
                                 <div class="form-group">
+
+
                                     <label class="col-sm-1 control-label">所属部件</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_productsForm-partBelong" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
+
+                                    <label class="col-sm-1 control-label">系统分类</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-systemType" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">产品类别</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-productClass" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label">单位</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-unit" type="text"
+                                            value="该输入框获得焦点...">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
 
                                     <label class="col-sm-1 control-label">创建人</label>
                                     <div class="col-sm-5">
@@ -147,11 +181,6 @@
                                     </div>
 
 
-                                </div>
-
-
-
-                                <div class="form-group">
                                     <label class="col-sm-1 control-label">有效性</label>
                                     <div class="col-sm-5">
                                         <select id="rp_productsForm-effective" class="selectpicker"
@@ -159,7 +188,7 @@
                                             <option>是</option>
                                             <option>否</option>
                                         </select>
-                                        
+
                                     </div>
                                 </div>
 
@@ -206,15 +235,15 @@
                         data: 'productId'
                     },
                     {
-                        data: 'productClass'
-                    }, {
                         data: 'productName'
-                    }, {
-                        data: 'partBelong',
                     }, {
                         data: 'systemClass',
                     }, {
-                        data: 'creater',
+                        data: 'partBelong',
+                    }, {
+                        data: 'systemType',
+                    }, {
+                        data: 'productClass',
                     }
                 ],
             }

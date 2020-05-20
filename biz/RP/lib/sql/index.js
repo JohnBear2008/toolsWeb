@@ -10,15 +10,17 @@ const getOptionSelector =
 	"select optionValue as value,optionText as option,optionText as token from `rp_selectoroptions`";
 const getPartLocationSelector =
 	"select distinct partLocation as value,partLocation as option,partLocation as token from `rp_parts`";
-const getPartSelector = "select partId as value,partId as option,partDescription as token from `rp_parts`";
+const getPartSelector = "select partId as value,partId as option,partName as token from `rp_partlocations`";
 
 
 
 const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"
 const getProduct = "select * from `rp_products`"
-const getPart = "select * from `rp_parts`"
+const getPartInfo = "select * from ( select ta.productId,ta.partId,ta.partName,ta.num,tb.price,tc.productDescription as partDescription from `rp_partlocations` ta left join `rp_partsfee` tb on ta.partId=tb.partId left join `rp_products` tc on ta.partId=tc.productId) A"
 const getStockNum = "select partId,stockNum from `rp_partswarehouse`"
+
+const getPartLocations = "select locations from `rp_partlocations`"
 
 //获取申请单数量
 const getReqeustBillsNum = "select count(1) as billsNum from `rp_requestbills`";

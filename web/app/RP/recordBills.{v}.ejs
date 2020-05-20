@@ -9,8 +9,10 @@
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
 
 <!-- 导入bootstrapSelect -->
-<link rel="stylesheet" href="/rpLib/bootstrapSelect/bootstrap-select.min.css" />
-<script type="text/javascript" src="/rpLib/bootstrapSelect/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
 
 <!-- 导入datatimepicker -->
 <link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
@@ -40,6 +42,7 @@
     <div class="well">
         <button id='btnRecordBillNew' type="button" class="btn btn-info">维修登记</button>
         <button id='btnScanRecord' type="button" class="btn btn-success">扫描登记</button>
+        <button id='btnScanStaff' type="button" class="btn btn-success">扫描领单</button>
     </div>
 
     <!-- 记录扫描模态框（Modal） -->
@@ -52,6 +55,50 @@
                     <div><button id='btnScanRecordStop' type="button" class="btn btn-info">停止扫描</button></div>
                     <div style="width:640;height:480px"><video id="recordVideo"></video>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 记录扫描模态框（Modal） -->
+
+    <div class="modal fade" id="scanStaffModal">
+        <div class="modal-dialog" style="width: 900px;">
+            <div class="modal-content">
+
+                <div class="modal-body">
+
+                    <div>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">维修码</label>
+                                <div class="col-sm-4">
+                                    <input class="form-control" id="scanModel-repairId" type="text"
+                                        value="将维修码置于摄像头内自动识别"">
+                                </div>
+
+                                <label class=" col-sm-1 control-label">维修人</label>
+                                    <div class="col-sm-4">
+                                        <select id="scanModel-repairStaff" class="selectpicker" data-live-search="true"
+                                            data-size="5">
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <button id='btnBindStaff' type="button" class="btn btn-info">领单</button>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+
+                    <div style="text-align:center;">
+                        <video id="staffVideo"></video>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div><button id='btnScanStaffStop' type="button" class="btn btn-info">停止扫描</button></div>
                 </div>
             </div>
         </div>
@@ -75,6 +122,7 @@
                         <th>是否返修</th>
                         <th>是否紧急</th>
                         <th>质保期内</th>
+                        <th>维修人</th>
                         <th>流程状态</th>
 
                     </tr>
@@ -87,8 +135,8 @@
                 <thead>
                     <tr>
                         <th>序号</th>
-                        <th>部件编号</th>
-                        <th>部件描述</th>
+                        <th>零件编号</th>
+                        <th>零件描述</th>
                         <th>位置</th>
                         <th>用量</th>
                         <th>单价</th>
@@ -336,7 +384,7 @@
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">替换部件清单</label>
+                                    <label class="col-sm-1 control-label">替换零件清单</label>
                                     <div class="col-sm-11">
                                         <p class="form-control-static" id="rp_recordbillsForm-changePartList"></p>
                                     </div>
@@ -416,9 +464,9 @@
                                     <!-- 功能组按钮 -->
                                     <div class="well">
                                         <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
-                                        <button id='btnAddPart' type="button" class="btn btn-info">添加部件</button>
-                                        <button id='btnDeletePart' type="button" class="btn btn-warning">删除部件</button>
-                                        <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还部件</button> -->
+                                        <button id='btnAddPart' type="button" class="btn btn-info">添加零件</button>
+                                        <button id='btnDeletePart' type="button" class="btn btn-warning">删除零件</button>
+                                        <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还零件</button> -->
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
@@ -445,8 +493,8 @@
                                         <thead>
                                             <tr>
                                                 <th>序号</th>
-                                                <th>部件编号</th>
-                                                <th>部件名称</th>
+                                                <th>零件编号</th>
+                                                <th>零件名称</th>
                                                 <th>替换位置</th>
                                                 <th>用量</th>
                                                 <th>单价</th>
@@ -459,7 +507,7 @@
 
                                     <div class="panel panel-default" id='rp_partsbillsPanel'>
                                         <div class="panel-heading">
-                                            <h3 class="panel-title">替换部件</h3>
+                                            <h3 class="panel-title">替换零件</h3>
                                         </div>
                                         <div class="panel-body">
 
@@ -468,7 +516,7 @@
                                                 <!-- <input id="rp_partsbillsForm-DBID" type="hidden" value=""> -->
                                                 <!-- <input id="rp_partsbillsForm-requestBillId" type="hidden" value=""> -->
 
-                                                <!-- 部件信息div 双击打开时不可编辑 -->
+                                                <!-- 零件信息div 双击打开时不可编辑 -->
                                                 <div id='partInfoDiv'>
 
                                                     <div class="form-group">
@@ -495,14 +543,7 @@
 
                                                     <div class="form-group">
 
-                                                        <label class="col-sm-1 control-label">部件位置</label>
-                                                        <div class="col-sm-5">
-                                                            <select id="rp_partsbillsForm-partLocation"
-                                                                class="selectpicker">
-                                                            </select>
-                                                        </div>
-
-                                                        <label class="col-sm-1 control-label">部件编号</label>
+                                                        <label class="col-sm-1 control-label">零件编号</label>
                                                         <div class="col-sm-5">
                                                             <select id="rp_partsbillsForm-partId"
                                                                 class="form-control selectpicker"
@@ -511,17 +552,25 @@
                                                             </select>
                                                         </div>
 
+                                                        <label class="col-sm-1 control-label">零件位置</label>
+                                                        <div class="col-sm-5">
+                                                            <select id="rp_partsbillsForm-partLocation"
+                                                                class="selectpicker" data-live-search="true"
+                                                                data-size="5" data-dropup-auto="false">
+                                                            </select>
+                                                        </div>
+
                                                     </div>
 
 
                                                     <div class="form-group">
-                                                        <label class="col-sm-1 control-label">部件名称</label>
+                                                        <label class="col-sm-1 control-label">零件名称</label>
                                                         <div class="col-sm-5">
                                                             <input class="form-control" id="rp_partsbillsForm-partName"
                                                                 type="text">
                                                         </div>
 
-                                                        <label class="col-sm-1 control-label">部件描述</label>
+                                                        <label class="col-sm-1 control-label">零件描述</label>
                                                         <div class="col-sm-5">
                                                             <input class="form-control"
                                                                 id="rp_partsbillsForm-partDescription" type="text">
@@ -540,14 +589,14 @@
                                                             type="text">
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">部件单价</label>
+                                                    <label class="col-sm-1 control-label">零件单价</label>
                                                     <div class="col-sm-3">
                                                         <input class="form-control" id="rp_partsbillsForm-price"
                                                             type="text">
                                                     </div>
 
 
-                                                    <label class="col-sm-1 control-label">部件费用</label>
+                                                    <label class="col-sm-1 control-label">零件费用</label>
                                                     <div class="col-sm-3">
                                                         <input class="form-control" id="rp_partsbillsForm-partFee"
                                                             type="text">
@@ -624,6 +673,8 @@
             data: 'urgent',
         }, {
             data: 'inWarranty',
+        }, {
+            data: 'repairStaff',
         }, {
             data: 'status',
         }
@@ -704,14 +755,20 @@
     //选中partId后,填写其他相关信息
 
     const fillPartInfo = async (partId) => {
+        console.log('fillPartInfo partId:' + partId);
         let r1 = await getDataBySql({
-            sql: 'getPart',
+            sql: 'getPartInfo',
             params: {
-                filter: 'partId="' + partId + '"'
+                filter: 'partId="' + partId + '" and productId="' + $('#rp_recordbillsForm-productId')
+                    .text() + '"'
             }
         })
 
-        // console.log('r1:' + JSON.stringify(r1));
+        console.log('r1:' + JSON.stringify(r1));
+
+        if (r1.length === 0) {
+            return;
+        }
         let r2 = r1[0]
         delete r2.partLocation;
         delete r2.partId;
@@ -737,43 +794,105 @@
         })
     }
 
-    //添加替换位置监听器
-    const addPartLocationListener = () => {
-        $('#rp_partsbillsForm-partLocation').unbind();
-        $('#rp_partsbillsForm-partLocation').change(function () {
-            let partLocation = $('#rp_partsbillsForm-partLocation option:selected').val();
-            if (partLocation) {
-                // console.log('partLocation11111', partLocation);
+    // //添加替换位置监听器
+    // const addPartLocationListener = () => {
+    //     $('#rp_partsbillsForm-partLocation').unbind();
+    //     $('#rp_partsbillsForm-partLocation').change(function () {
+    //         let partLocation = $('#rp_partsbillsForm-partLocation option:selected').val();
+    //         if (partLocation) {
+    //             // console.log('partLocation11111', partLocation);
 
-                //重新刷新显示
-                $('#rp_partsbillsForm-partLocation').selectpicker('refresh');
+    //             //重新刷新显示
+    //             $('#rp_partsbillsForm-partLocation').selectpicker('refresh');
 
-                // //获取partId当前值
-                // let partId = $('#rp_partsbillsForm-partId option:selected').val();
+    //             // //获取partId当前值
+    //             // let partId = $('#rp_partsbillsForm-partId option:selected').val();
 
-                loadBootStrapSelector({
-                    elementId: 'rp_partsbillsForm-partId',
-                    sqlParams: {
-                        sql: 'getPartSelector',
-                        params: {
-                            filter: 'partLocation="' + partLocation + '"'
-                        }
-                    },
-                })
+    //             loadBootStrapSelector({
+    //                 elementId: 'rp_partsbillsForm-partId',
+    //                 sqlParams: {
+    //                     sql: 'getPartSelector',
+    //                     params: {
+    //                         filter: 'partLocation="' + partLocation + '"'
+    //                     }
+    //                 },
+    //             })
+    //         }
+    //     })
+    // }
+
+
+    //加载位置信息selector
+    const loadLocationsSelector = async (i) => {
+        $('#' + i.elementId).empty(); //清空原有选项
+        $('#' + i.elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+
+        $('#' + i.elementId).selectpicker({
+            noneSelectedText: "未选择" //默认显示内容
+        });
+
+        // if (!i.sqlParams) {
+        //     $('#' + i.elementId).append($('<option value="">未选择</option>'));
+        //     return
+        // }
+
+        let locationsRS = await getDataBySql(i.sqlParams);
+        if (locationsRS.length === 0) {
+            return
+        }
+
+        let locationsStr = locationsRS[0].locations;
+        let locationsArr = locationsStr.split(',');
+
+        for (const n of locationsArr) {
+            // console.log('n', n);
+            if (n) {
+                $('#' + i.elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
+                    '</option>'));
             }
-        })
+        }
+
+        let defaultValue = '';
+        console.log('len', $('#' + i.elementId + ' option').length);
+
+        if ($('#' + i.elementId + ' option').length === 1) {
+            defaultValue = locationsArr[0];
+            console.log('defaultValueArr', defaultValue);
+        }
+
+        if (i.initValue) {
+            defaultValue = i.initValue;
+        }
+
+        console.log('defaultValue', defaultValue);
+
+
+        $('#' + i.elementId).selectpicker('val', defaultValue);
+        $('#' + i.elementId).selectpicker('refresh');
+
     }
 
     //添加替换位置监听器
     const addPartIdListener = () => {
         $('#rp_partsbillsForm-partId').unbind();
-        $('#rp_partsbillsForm-partId').change(function () {
+        $('#rp_partsbillsForm-partId').change(async function () {
             let partId = $('#rp_partsbillsForm-partId option:selected').val();
-            console.log('partId', partId);
+            // console.log('partId', partId);
             if (partId) {
                 $('#rp_partsbillsForm-partId').selectpicker('refresh');
                 fillPartInfo(partId);
                 showStockNum();
+
+                loadLocationsSelector({
+                    elementId: 'rp_partsbillsForm-partLocation',
+                    sqlParams: {
+                        sql: 'getPartLocations',
+                        params: {
+                            filter: 'partId="' + partId + '" and productId="' +
+                                $('#rp_recordbillsForm-productId').text() + '"'
+                        }
+                    },
+                })
             }
         })
     }
@@ -832,16 +951,25 @@
             }
         })
 
-        console.log('dataArray', dataArray);
+        // console.log('dataArray', dataArray);
 
         //将表数据同步到共用数组
         subTableData = dataArray;
 
 
-        loadDataSubTable({
+        // loadDataSubTable({
+        //     elementId: 'rp_recordbillsSub',
+        //     dataArray: subTableData
+        // });
+
+        loadBillDataTable({
             elementId: 'rp_recordbillsSub',
-            dataArray: subTableData
-        });
+            dtParams: {
+                dtConfig: 'dtConfigData',
+                data: subTableData,
+                columns: subColumnsArray
+            }
+        })
     }
 
 
@@ -854,7 +982,9 @@
             elementId: 'rp_recordbills',
             sqlParams: {
                 sqlId: 'sqlRecordBills',
-                params: []
+                params: {
+                    orderBy: 'billSaveTimeStamp desc'
+                }
             },
             dtParams: {
                 columns: mainColumnsArray
@@ -885,23 +1015,40 @@
                 console.log("rowSelect:" + JSON.stringify(rowSelect));
 
                 //解绑监听器
-                $('#rp_partsbillsForm-partLocation').unbind();
+                // $('#rp_partsbillsForm-partLocation').unbind();
                 $('#rp_partsbillsForm-partId').unbind();
 
 
-                //重新加载位置,部件id selector,避免赋值不上
-                await loadBootStrapSelector({
-                    elementId: 'rp_partsbillsForm-partLocation',
-                    sqlParams: {
-                        sql: 'getPartLocationSelector',
-                    },
-                })
+                //设置禁止修改
+                if (rowSelect.numStatus === '预领') {
+                    $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
+                }
+
+                if (rowSelect.numStatus === '已领') {
+                    $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
+                }
+
 
 
                 await loadBootStrapSelector({
                     elementId: 'rp_partsbillsForm-partId',
                     sqlParams: {
                         sql: 'getPartSelector',
+                        params: {
+                            filter: 'productId="' + $('#rp_recordbillsForm-productId').text() +
+                                '"'
+                        }
+                    },
+                })
+
+                await loadLocationsSelector({
+                    elementId: 'rp_partsbillsForm-partLocation',
+                    sqlParams: {
+                        sql: 'getPartLocations',
+                        params: {
+                            filter: 'partId="' + rowSelect.partId + '" and productId="' +
+                                $('#rp_recordbillsForm-productId').text() + '"'
+                        }
                     },
                 })
 
@@ -913,19 +1060,11 @@
 
                 // $('#partInfoDiv input,select').attr("disabled", true); 会影响到div外select
 
-                //设置禁止修改
-                if (rowSelect.numStatus === '预领') {
-                    $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
-                } else if (rowSelect.numStatus === '已领') {
-                    $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
-                }
 
                 //加载库存
                 showStockNum()
 
                 //重新添加监听器
-                // addPartLocationListener()
-                // addPartIdListener();
                 addPartFeeListener();
 
                 //打开面板
@@ -980,7 +1119,7 @@
         });
     }
 
-    //计算部件费用
+    //计算零件费用
     const CalcPartFee = () => {
         let num = $('#rp_partsbillsForm-num').val();
         let price = $('#rp_partsbillsForm-price').val();
@@ -1017,9 +1156,9 @@
 
         $('#rp_recordbillsForm-repairTotalFee').val(repairTotalFee);
 
-        console.log('repairTotalFee:' + repairTotalFee);
+        // console.log('repairTotalFee:' + repairTotalFee);
     }
-    //部件费监听器
+    //零件费监听器
     const addPartFeeListener = () => {
         $("#rp_partsbillsForm-num").on("input propertychange", function () {
             CalcPartFee();
@@ -1055,7 +1194,7 @@
         })
 
         let r2 = r1[0].billsNum;
-        console.log("checkRecordBillId:" + r2);
+        // console.log("checkRecordBillId:" + r2);
 
         let o = r2 > 0 ? false : true;
         return o;
@@ -1081,14 +1220,14 @@
         if (r) {
             return true
         } else {
-            console.log('fail:' + $("#rp_recordbillsForm-recordBillId").text());
+            // console.log('fail:' + $("#rp_recordbillsForm-recordBillId").text());
             updateRecordBillId()
-            console.log('fail11:' + $("#rp_recordbillsForm-recordBillId").text());
+            // console.log('fail11:' + $("#rp_recordbillsForm-recordBillId").text());
             return await autoUpdateRecordBillId();
         }
     }
 
-    //获取partIds 多部件实时库存数组,以数组返回,减少数据库交互次数 提高效率;
+    //获取partIds 多零件实时库存数组,以数组返回,减少数据库交互次数 提高效率;
 
     const getStockNums = async (partIdsArr) => {
         let partIdsRange = '';
@@ -1182,7 +1321,7 @@
         return o
     }
 
-    //刷新部件清单
+    //刷新零件清单
     const refreshPartList = () => {
         let partList = '';
         for (const n of subTableData) {
@@ -1233,7 +1372,7 @@
 
             // alert(JSON.stringify(mainFormData))
 
-            console.log('mainFormData:' + JSON.stringify(mainFormData));
+            // console.log('mainFormData:' + JSON.stringify(mainFormData));
 
             if (subTableData.length > 0) {
                 let r1 = await postDBData({
@@ -1241,13 +1380,13 @@
                     params: mainFormData
                 })
 
-                //获取需要更新库存数据部件
+                //获取需要更新库存数据零件
                 let partsNeedUpdateStockArr = getNeedUpdatePartsArr(subTableData);
 
-                //扣减部件库存
+                //扣减零件库存
                 let r2;
                 if (partsNeedUpdateStockArr.length > 0) {
-                    console.log('checkResultData.JITStock', checkResultData.JITStock);
+                    // console.log('checkResultData.JITStock', checkResultData.JITStock);
 
                     for (let n of partsNeedUpdateStockArr) {
                         //扣减库存转为负数
@@ -1260,7 +1399,7 @@
                         }
 
                     }
-                    console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
+                    // console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
 
                     r2 = await updateStock({
                         updateStock: partsNeedUpdateStockArr,
@@ -1317,7 +1456,7 @@
 
 
         } else {
-            alert('存在库存不足部件,请检查!')
+            alert('存在库存不足零件,请检查!')
         }
 
     }
@@ -1346,13 +1485,13 @@
                 video: document.getElementById('recordVideo')
             });
             scanner.addListener('scan', async function (repairId) {
-                console.log('repairId:' + repairId);
+                // console.log('repairId:' + repairId);
 
                 //设定选中
                 let table = $('#rp_recordbills').DataTable();
                 table.$('tr.selected').removeClass('selected');
                 let rows = table.rows().data();
-                console.log('rows', rows);
+                // console.log('rows', rows);
 
                 for (let i = 0; i < rows.length; i++) {
 
@@ -1365,10 +1504,6 @@
 
                 // $(this).addClass('selected');
                 // $('#btnRecordBillNew').click()
-
-
-
-
 
                 scanner.stop().then(function () {
                     // alert('stoped');
@@ -1402,6 +1537,121 @@
 
 
             $('#scanRecordModal').modal('show');
+        })
+
+
+        //扫描领单按钮
+        $('#btnScanStaff').click(function () {
+
+            //清空信息
+            $('#scanModel-repairId').val('');
+
+            loadBootStrapSelector({
+                elementId: 'scanModel-repairStaff',
+                sqlParams: {
+                    sql: 'getStaffSelector'
+                },
+                // initValue:'中国,北京'
+            })
+
+            //领单按钮
+            $('#btnBindStaff').unbind();
+            $('#btnBindStaff').click(async function () {
+                let repairId = $('#scanModel-repairId').val();
+                let repairStaff = $('#scanModel-repairStaff option:selected').val();
+                // console.log(repairId, repairStaff);
+
+                if (!repairId || !repairStaff) {
+                    alert('维修码与维修人不能为空,请检查!')
+                    return;
+                }
+
+                //设定选中
+                let table = $('#rp_recordbills').DataTable();
+                table.$('tr.selected').removeClass('selected');
+                let rows = table.rows().data();
+
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].repairId === repairId) {
+                        // console.log('rows[i]', rows[i]);
+                        let DBID = rows[i].DBID;
+                        if (rows[i].repairStaff && rows[i].repairStaff !== repairStaff) {
+                            if (!confirm('该维修码已存在维修人,是否覆盖?')) {
+                                return
+                            }
+                        }
+
+                        //绑定维修人
+
+                        let updateData = {
+                            tableId: 'rp_recordbills',
+                            key: ['DBID'],
+                            data: [{
+                                DBID: DBID,
+                                repairStaff: repairStaff,
+                                status: '维修中'
+                            }]
+                        }
+
+                        let rs = await postDBData({
+                            sql: 'update',
+                            params: updateData
+                        })
+
+                        // console.log('rs', rs);
+
+                        if (rs.affectedRows > 0) {
+                            alert('成功绑定维修人!')
+                            loadBillMainTable();
+                        }
+
+                        break;
+                    }
+                }
+
+            })
+
+
+
+
+            let scanner = new Instascan.Scanner({
+                video: document.getElementById('staffVideo')
+            });
+            scanner.addListener('scan', async function (repairId) {
+                console.log('repairId:' + repairId);
+
+                $('#scanModel-repairId').val(repairId);
+                alert('扫描成功,请选择维修人!')
+
+
+                // scanner.stop().then(function () {
+                //     // alert('stoped');
+                //     $('#scanStaffModal').modal('hide')
+                // });
+            });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]).then(function () {
+                        // alert('start');
+                    }).catch(function (err) {
+                        alert('err:' + err);
+                    });
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+                alert("系统错误,请检查摄像头设备!")
+
+            });
+
+            // 停止扫描按钮功能定义
+            $('#btnScanStaffStop').unbind();
+            $('#btnScanStaffStop').click(function () {
+                scanner.stop()
+                $('#scanStaffModal').modal('hide')
+            })
+            $('#scanStaffModal').modal('show');
         })
 
 
@@ -1504,7 +1754,7 @@
             //删除子表选中状态
             subTable.rows().deselect();
 
-            //取消部件信息div禁用
+            //取消零件信息div禁用
             $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
 
             //清空panel数据
@@ -1512,39 +1762,35 @@
                 formId: 'rp_partsbillsForm'
             })
 
-
             //设置默认值
             $("#rp_partsbillsForm-numStatus").text('预领')
 
             //解绑监听器
-            $('#rp_partsbillsForm-partLocation').unbind();
+            // $('#rp_partsbillsForm-partLocation').unbind();
             $('#rp_partsbillsForm-partId').unbind();
-
-
-
-            await loadBootStrapSelector({
-                elementId: 'rp_partsbillsForm-partLocation',
-                sqlParams: {
-                    sql: 'getPartLocationSelector',
-                },
-            })
 
             await loadBootStrapSelector({
                 elementId: 'rp_partsbillsForm-partId',
                 sqlParams: {
                     sql: 'getPartSelector',
+                    params: {
+                        filter: 'productId="' + $('#rp_recordbillsForm-productId').text() +
+                            '"'
+                    }
                 },
             })
 
-
+            await loadBootStrapSelector({
+                elementId: 'rp_partsbillsForm-partLocation',
+                // sqlParams: {
+                //     sql: 'getPartLocationSelector',
+                // },
+            })
 
             //添加监听器
-            addPartLocationListener()
+            // addPartLocationListener()
             addPartIdListener();
             addPartFeeListener();
-
-
-
 
             //打开面板
             $('#rp_partsbillsPanel').show();
@@ -1553,16 +1799,16 @@
         })
 
 
-        //删除部件按钮
+        //删除零件按钮
         $('#btnDeletePart').click(function () {
 
             let subTable = $('#rp_partsbills').DataTable();
             let rowSelect = subTable.row('.selected').data();
             // alert(JSON.stringify(rowSelect))
 
-            //检查删除部件条件
+            //检查删除零件条件
             if (!rowSelect) {
-                alert('请先点击表格选中需要删除的部件!')
+                alert('请先点击表格选中需要删除的零件!')
                 return;
             }
             if (rowSelect.numStatus !== '预领') {
@@ -1599,16 +1845,16 @@
         })
 
 
-        //退还部件按钮
+        //退还零件按钮
         $('#btnReturnPart').click(function () {
 
             let subTable = $('#rp_partsbills').DataTable();
             let rowSelect = subTable.row('.selected').data();
             // alert(JSON.stringify(rowSelect))
 
-            //检查退还部件条件
+            //检查退还零件条件
             if (!rowSelect) {
-                alert('请先点击表格选中需要退还的部件!')
+                alert('请先点击表格选中需要退还的零件!')
                 return;
             }
             if (rowSelect.numStatus !== '已领') {
@@ -1680,7 +1926,7 @@
             //重新计算总费用
             CalcRepairTotalFee();
 
-            //刷新部件清单
+            //刷新零件清单
             refreshPartList();
 
         })
@@ -1704,18 +1950,24 @@
             // //打开关联信息
             // $("#accordion").show();
 
+            let options = await getDataBySql({
+                sql: 'getTestItemSelector',
+                params: {
+                    filter: 'systemType="' + dataSelect.systemType +
+                        '" and productClass="' + dataSelect.productClass + '"'
+                }
+            })
+
+            console.log('options', options);
+
 
             //按系统类型重新加载检测项目
-            await loadBootStrapSelector({
+
+            loadDataSelector({
                 elementId: 'rp_recordbillsForm-testItem',
-                sqlParams: {
-                    sql: 'getTestItemSelector',
-                    params: {
-                        filter: 'systemType="' + dataSelect.systemType +
-                            '" or systemType="其他"'
-                    }
-                },
+                options: options,
             })
+
 
 
 
@@ -1724,6 +1976,16 @@
                 formId: 'rp_recordbillsForm',
                 params: dataSelect
             })
+
+
+            //检测项目为空则加载默认值,必须在赋值完成后检查
+            if (!$('#rp_recordbillsForm-testItem option:selected').val() && options.length === 1) {
+                $('#rp_recordbillsForm-testItem').selectpicker('val', options[0].value);
+                $('#rp_recordbillsForm-testItem').selectpicker('refresh');
+                //手动触发change事件
+                $('#rp_recordbillsForm-testItem').change()
+            }
+
 
 
 
@@ -1747,6 +2009,7 @@
 
             //关闭子表panel
             $('#rp_partsbillsPanel').hide();
+
 
             //加载子表记录表数据
             loadBillSubTable(dataSelect.recordBillId);
@@ -1808,24 +2071,22 @@
         })
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_partsbillsForm-partLocation',
-            sqlParams: {
-                sql: 'getPartLocationSelector',
-            },
-        })
+        // loadBootStrapSelector({
+        //     elementId: 'rp_partsbillsForm-partLocation',
+        //     sqlParams: {
+        //         sql: 'getPartLocationSelector',
+        //     },
+        // })
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_partsbillsForm-partId',
-            sqlParams: {
-                sql: 'getPartSelector',
-            },
-        })
+        // loadBootStrapSelector({
+        //     elementId: 'rp_partsbillsForm-partId',
+        //     sqlParams: {
+        //         sql: 'getPartSelector',
+        //     },
+        // })
 
         //添加监听器
-        // addPartLocationListener()
-        // addPartIdListener();
         addRepairTotalFeeListener();
 
 
