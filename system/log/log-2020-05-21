@@ -1,0 +1,214 @@
+[2020-05-21T11:06:38.863] [ERROR] dateFileLog - { Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect decimal value: 'NaN' for column `toolsweb`.`rp_recordbills`.`repairTotalFee` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:198:13)
+    at Socket.EventEmitter.emit (domain.js:466:23)
+    at addChunk (_stream_readable.js:288:12)
+    at readableAddChunk (_stream_readable.js:269:11)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:402:14)
+    at Ping.runBound [as _callback] (domain.js:415:12)
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql:
+   'update `rp_recordbills` set recordBillId = \'R-20200521002\',requestBillId = \'AA-20200520001\',productId = \'2BP_AHBOP\',productDescription = \'2BP_AHBOP\',productClass = null,systemType = null,factoryNo = \'11\',orginFactoryNo = null,productionDate = null,isRework = \'否\',urgent = \'否\',inWarranty = \'是\',faultDescription = \'234234234234\',faultReason = null,faultClass = null,testItem = null,testResult = null,changePartList = \'3MSLED3_3B*100\',testFee = null,repairTotalFee = \'NaN\',repairResult = null,status = \'维修中\',maker = \'熊奇龙\',makeDate = \'2020-05-21\',files = \'[]\' where DBID in (\'2\')' }
+[2020-05-21T11:06:38.933] [ERROR] dateFileLog - { Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect decimal value: 'NaN' for column `toolsweb`.`rp_recordbills`.`repairTotalFee` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:203:15)
+    at IncomingMessage.EventEmitter.emit (domain.js:466:23)
+    at endReadableNT (_stream_readable.js:1145:12)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+  original: null,
+  response:
+   Response {
+     domain:
+      Domain {
+        domain: null,
+        _events: [Object],
+        _eventsCount: 3,
+        _maxListeners: undefined,
+        members: [Array],
+        yjRequest: [IncomingMessage],
+        yjResponse: [ServerResponse],
+        [Symbol(kWeak)]: WeakReference {} },
+     _events: [Object: null prototype] {},
+     _eventsCount: 0,
+     _maxListeners: undefined,
+     res:
+      IncomingMessage {
+        _readableState: [ReadableState],
+        readable: false,
+        domain: [Domain],
+        _events: [Object],
+        _eventsCount: 4,
+        _maxListeners: undefined,
+        socket: [Socket],
+        connection: [Socket],
+        httpVersionMajor: 1,
+        httpVersionMinor: 1,
+        httpVersion: '1.1',
+        complete: true,
+        headers: [Object],
+        rawHeaders: [Array],
+        trailers: {},
+        rawTrailers: [],
+        aborted: false,
+        upgrade: false,
+        url: '',
+        method: null,
+        statusCode: 500,
+        statusMessage: 'Internal Server Error',
+        client: [Socket],
+        _consuming: false,
+        _dumped: false,
+        req: [ClientRequest],
+        text:
+         '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect decimal value: \'NaN\' for column `toolsweb`.`rp_recordbills`.`repairTotalFee` at row 1"}',
+        body: undefined },
+     request:
+      Request {
+        domain: [Domain],
+        _events: [Object],
+        _eventsCount: 1,
+        _maxListeners: undefined,
+        _agent: false,
+        _formData: null,
+        method: 'POST',
+        url:
+         'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_recordbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=2&params%5Bdata%5D%5B0%5D%5BrecordBillId%5D=R-20200521002&params%5Bdata%5D%5B0%5D%5BrequestBillId%5D=AA-20200520001&params%5Bdata%5D%5B0%5D%5BproductId%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductClass%5D=&params%5Bdata%5D%5B0%5D%5BsystemType%5D=&params%5Bdata%5D%5B0%5D%5BfactoryNo%5D=11&params%5Bdata%5D%5B0%5D%5BorginFactoryNo%5D=&params%5Bdata%5D%5B0%5D%5BproductionDate%5D=&params%5Bdata%5D%5B0%5D%5BisRework%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5Burgent%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5BinWarranty%5D=%E6%98%AF&params%5Bdata%5D%5B0%5D%5BfaultDescription%5D=234234234234&params%5Bdata%5D%5B0%5D%5BfaultReason%5D=&params%5Bdata%5D%5B0%5D%5BfaultClass%5D=&params%5Bdata%5D%5B0%5D%5BtestItem%5D=&params%5Bdata%5D%5B0%5D%5BtestResult%5D=&params%5Bdata%5D%5B0%5D%5BchangePartList%5D=3MSLED3_3B*100&params%5Bdata%5D%5B0%5D%5BtestFee%5D=&params%5Bdata%5D%5B0%5D%5BrepairTotalFee%5D=NaN&params%5Bdata%5D%5B0%5D%5BrepairResult%5D=&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E7%BB%B4%E4%BF%AE%E4%B8%AD&params%5Bdata%5D%5B0%5D%5Bmaker%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BmakeDate%5D=2020-05-21&params%5Bdata%5D%5B0%5D%5Bfiles%5D=%5B%5D&params%5Bkey%5D=DBID',
+        header: {},
+        writable: true,
+        _redirects: 0,
+        _maxRedirects: 5,
+        cookies: '',
+        qs: [Object],
+        qsRaw: [],
+        _redirectList: [],
+        req: [ClientRequest],
+        protocol: 'http:',
+        host: '127.0.0.1:2019',
+        _data: undefined,
+        _callback: [Function],
+        res: [IncomingMessage],
+        response: [Circular],
+        _timeout: 0,
+        called: true },
+     req:
+      ClientRequest {
+        domain: [Domain],
+        _events: [Object],
+        _eventsCount: 4,
+        _maxListeners: undefined,
+        output: [],
+        outputEncodings: [],
+        outputCallbacks: [],
+        outputSize: 0,
+        writable: true,
+        _last: true,
+        chunkedEncoding: false,
+        shouldKeepAlive: false,
+        useChunkedEncodingByDefault: true,
+        sendDate: false,
+        _removedConnection: false,
+        _removedContLen: false,
+        _removedTE: false,
+        _contentLength: 0,
+        _hasBody: true,
+        _trailer: '',
+        finished: true,
+        _headerSent: true,
+        socket: [Socket],
+        connection: [Socket],
+        _header:
+         'POST /biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_recordbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=2&params%5Bdata%5D%5B0%5D%5BrecordBillId%5D=R-20200521002&params%5Bdata%5D%5B0%5D%5BrequestBillId%5D=AA-20200520001&params%5Bdata%5D%5B0%5D%5BproductId%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductClass%5D=&params%5Bdata%5D%5B0%5D%5BsystemType%5D=&params%5Bdata%5D%5B0%5D%5BfactoryNo%5D=11&params%5Bdata%5D%5B0%5D%5BorginFactoryNo%5D=&params%5Bdata%5D%5B0%5D%5BproductionDate%5D=&params%5Bdata%5D%5B0%5D%5BisRework%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5Burgent%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5BinWarranty%5D=%E6%98%AF&params%5Bdata%5D%5B0%5D%5BfaultDescription%5D=234234234234&params%5Bdata%5D%5B0%5D%5BfaultReason%5D=&params%5Bdata%5D%5B0%5D%5BfaultClass%5D=&params%5Bdata%5D%5B0%5D%5BtestItem%5D=&params%5Bdata%5D%5B0%5D%5BtestResult%5D=&params%5Bdata%5D%5B0%5D%5BchangePartList%5D=3MSLED3_3B*100&params%5Bdata%5D%5B0%5D%5BtestFee%5D=&params%5Bdata%5D%5B0%5D%5BrepairTotalFee%5D=NaN&params%5Bdata%5D%5B0%5D%5BrepairResult%5D=&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E7%BB%B4%E4%BF%AE%E4%B8%AD&params%5Bdata%5D%5B0%5D%5Bmaker%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BmakeDate%5D=2020-05-21&params%5Bdata%5D%5B0%5D%5Bfiles%5D=%5B%5D&params%5Bkey%5D=DBID HTTP/1.1\r\nHost: 127.0.0.1:2019\r\nAccept-Encoding: gzip, deflate\r\nUser-Agent: node-superagent/1.2.0\r\nyujiang-from-server: true\r\nx-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MDAyNjU5MywiZXhwIjoxNTkwMDU1MzkzfQ.NA09V3r4Mm-s5jjNKDkihplTsj4tpyJlDqOVYHgQs2k\r\nConnection: close\r\nContent-Length: 0\r\n\r\n',
+        _onPendingData: [Function: noopPendingOutput],
+        agent: [Agent],
+        socketPath: undefined,
+        timeout: undefined,
+        method: 'POST',
+        insecureHTTPParser: undefined,
+        path:
+         '/biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_recordbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=2&params%5Bdata%5D%5B0%5D%5BrecordBillId%5D=R-20200521002&params%5Bdata%5D%5B0%5D%5BrequestBillId%5D=AA-20200520001&params%5Bdata%5D%5B0%5D%5BproductId%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductClass%5D=&params%5Bdata%5D%5B0%5D%5BsystemType%5D=&params%5Bdata%5D%5B0%5D%5BfactoryNo%5D=11&params%5Bdata%5D%5B0%5D%5BorginFactoryNo%5D=&params%5Bdata%5D%5B0%5D%5BproductionDate%5D=&params%5Bdata%5D%5B0%5D%5BisRework%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5Burgent%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5BinWarranty%5D=%E6%98%AF&params%5Bdata%5D%5B0%5D%5BfaultDescription%5D=234234234234&params%5Bdata%5D%5B0%5D%5BfaultReason%5D=&params%5Bdata%5D%5B0%5D%5BfaultClass%5D=&params%5Bdata%5D%5B0%5D%5BtestItem%5D=&params%5Bdata%5D%5B0%5D%5BtestResult%5D=&params%5Bdata%5D%5B0%5D%5BchangePartList%5D=3MSLED3_3B*100&params%5Bdata%5D%5B0%5D%5BtestFee%5D=&params%5Bdata%5D%5B0%5D%5BrepairTotalFee%5D=NaN&params%5Bdata%5D%5B0%5D%5BrepairResult%5D=&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E7%BB%B4%E4%BF%AE%E4%B8%AD&params%5Bdata%5D%5B0%5D%5Bmaker%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BmakeDate%5D=2020-05-21&params%5Bdata%5D%5B0%5D%5Bfiles%5D=%5B%5D&params%5Bkey%5D=DBID',
+        _ended: true,
+        res: [IncomingMessage],
+        aborted: undefined,
+        timeoutCb: null,
+        upgradeOrConnect: false,
+        parser: null,
+        maxHeadersCount: null,
+        [Symbol(isCorked)]: false,
+        [Symbol(outHeadersKey)]: [Object] },
+     links: {},
+     text:
+      '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect decimal value: \'NaN\' for column `toolsweb`.`rp_recordbills`.`repairTotalFee` at row 1"}',
+     body: {},
+     files: {},
+     buffered: true,
+     headers:
+      { 'x-powered-by': 'Express',
+        'content-type': 'text/html; charset=utf-8',
+        'content-length': '189',
+        etag: 'W/"bd-41QPxet2fmOETV4jWsJikw"',
+        vary: 'Accept-Encoding',
+        date: 'Thu, 21 May 2020 03:06:38 GMT',
+        connection: 'close' },
+     header:
+      { 'x-powered-by': 'Express',
+        'content-type': 'text/html; charset=utf-8',
+        'content-length': '189',
+        etag: 'W/"bd-41QPxet2fmOETV4jWsJikw"',
+        vary: 'Accept-Encoding',
+        date: 'Thu, 21 May 2020 03:06:38 GMT',
+        connection: 'close' },
+     statusCode: 500,
+     status: 500,
+     statusType: 5,
+     info: false,
+     ok: false,
+     redirect: false,
+     clientError: false,
+     serverError: true,
+     error:
+      { Error: cannot POST /biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_recordbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=2&params%5Bdata%5D%5B0%5D%5BrecordBillId%5D=R-20200521002&params%5Bdata%5D%5B0%5D%5BrequestBillId%5D=AA-20200520001&params%5Bdata%5D%5B0%5D%5BproductId%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductClass%5D=&params%5Bdata%5D%5B0%5D%5BsystemType%5D=&params%5Bdata%5D%5B0%5D%5BfactoryNo%5D=11&params%5Bdata%5D%5B0%5D%5BorginFactoryNo%5D=&params%5Bdata%5D%5B0%5D%5BproductionDate%5D=&params%5Bdata%5D%5B0%5D%5BisRework%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5Burgent%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5BinWarranty%5D=%E6%98%AF&params%5Bdata%5D%5B0%5D%5BfaultDescription%5D=234234234234&params%5Bdata%5D%5B0%5D%5BfaultReason%5D=&params%5Bdata%5D%5B0%5D%5BfaultClass%5D=&params%5Bdata%5D%5B0%5D%5BtestItem%5D=&params%5Bdata%5D%5B0%5D%5BtestResult%5D=&params%5Bdata%5D%5B0%5D%5BchangePartList%5D=3MSLED3_3B*100&params%5Bdata%5D%5B0%5D%5BtestFee%5D=&params%5Bdata%5D%5B0%5D%5BrepairTotalFee%5D=NaN&params%5Bdata%5D%5B0%5D%5BrepairResult%5D=&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E7%BB%B4%E4%BF%AE%E4%B8%AD&params%5Bdata%5D%5B0%5D%5Bmaker%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BmakeDate%5D=2020-05-21&params%5Bdata%5D%5B0%5D%5Bfiles%5D=%5B%5D&params%5Bkey%5D=DBID (500)
+          at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+          at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+          at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+          at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+          at IncomingMessage.emit (events.js:203:15)
+          at IncomingMessage.EventEmitter.emit (domain.js:466:23)
+          at endReadableNT (_stream_readable.js:1145:12)
+          at process._tickCallback (internal/process/next_tick.js:63:19)
+        status: 500,
+        text:
+         '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect decimal value: \'NaN\' for column `toolsweb`.`rp_recordbills`.`repairTotalFee` at row 1"}',
+        method: 'POST',
+        path:
+         '/biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_recordbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=2&params%5Bdata%5D%5B0%5D%5BrecordBillId%5D=R-20200521002&params%5Bdata%5D%5B0%5D%5BrequestBillId%5D=AA-20200520001&params%5Bdata%5D%5B0%5D%5BproductId%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=2BP_AHBOP&params%5Bdata%5D%5B0%5D%5BproductClass%5D=&params%5Bdata%5D%5B0%5D%5BsystemType%5D=&params%5Bdata%5D%5B0%5D%5BfactoryNo%5D=11&params%5Bdata%5D%5B0%5D%5BorginFactoryNo%5D=&params%5Bdata%5D%5B0%5D%5BproductionDate%5D=&params%5Bdata%5D%5B0%5D%5BisRework%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5Burgent%5D=%E5%90%A6&params%5Bdata%5D%5B0%5D%5BinWarranty%5D=%E6%98%AF&params%5Bdata%5D%5B0%5D%5BfaultDescription%5D=234234234234&params%5Bdata%5D%5B0%5D%5BfaultReason%5D=&params%5Bdata%5D%5B0%5D%5BfaultClass%5D=&params%5Bdata%5D%5B0%5D%5BtestItem%5D=&params%5Bdata%5D%5B0%5D%5BtestResult%5D=&params%5Bdata%5D%5B0%5D%5BchangePartList%5D=3MSLED3_3B*100&params%5Bdata%5D%5B0%5D%5BtestFee%5D=&params%5Bdata%5D%5B0%5D%5BrepairTotalFee%5D=NaN&params%5Bdata%5D%5B0%5D%5BrepairResult%5D=&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E7%BB%B4%E4%BF%AE%E4%B8%AD&params%5Bdata%5D%5B0%5D%5Bmaker%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BmakeDate%5D=2020-05-21&params%5Bdata%5D%5B0%5D%5Bfiles%5D=%5B%5D&params%5Bkey%5D=DBID' },
+     accepted: false,
+     noContent: false,
+     badRequest: false,
+     unauthorized: false,
+     notAcceptable: false,
+     forbidden: false,
+     notFound: false,
+     charset: 'utf-8',
+     type: 'text/html',
+     setEncoding: [Function: bound ],
+     redirects: [] },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD' }
