@@ -273,7 +273,6 @@
                                         <p class="form-control-static" id="rp_recordbillsForm-productId"></p>
                                     </div>
 
-
                                     <label class="col-sm-1 control-label">产品描述</label>
                                     <div class="col-sm-3">
                                         <p class="form-control-static" id="rp_recordbillsForm-productDescription"></p>
@@ -284,23 +283,14 @@
                                         <p class="form-control-static" id="rp_recordbillsForm-productClass"></p>
                                     </div>
 
-
                                 </div>
 
                                 <div class="form-group">
-
-
-
 
                                     <label class="col-sm-1 control-label">系统分类</label>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-3">
                                         <p class="form-control-static" id="rp_recordbillsForm-systemType"></p>
                                     </div>
-
-
-                                </div>
-
-                                <div class="form-group">
 
                                     <label class="col-sm-1 control-label">出厂编号</label>
                                     <div class="col-sm-3">
@@ -313,6 +303,21 @@
                                         <p class="form-control-static" id="rp_recordbillsForm-orginFactoryNo"></p>
                                     </div>
 
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">生产年份</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-productYear"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">生产月份</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-productMonth"></p>
+                                    </div>
+
                                     <label class="col-sm-1 control-label">生产日期</label>
                                     <div class="col-sm-3">
                                         <p class="form-control-static" id="rp_recordbillsForm-productionDate"></p>
@@ -320,25 +325,7 @@
                                 </div>
 
 
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label">是否返修</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" id="rp_recordbillsForm-isRework"></p>
-                                    </div>
 
-
-                                    <label class="col-sm-1 control-label">是否加急</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" id="rp_recordbillsForm-urgent"></p>
-                                    </div>
-
-                                    <label class="col-sm-1 control-label">质保期内</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" id="rp_recordbillsForm-inWarranty"></p>
-                                    </div>
-
-
-                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">故障描述</label>
@@ -353,29 +340,36 @@
 
                                     <label class="col-sm-1 control-label">故障现象</label>
                                     <div class="col-sm-3">
-                                        <select id="rp_recordbillsForm-faultClass" class="selectpicker">
+                                        <select id="rp_recordbillsForm-faultShow" data-live-search="true" data-size="5"
+                                            class="selectpicker" multiple>
                                         </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">故障部件</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" id="rp_recordbillsForm-faultPart" type="text"
-                                            value="该输入框获得焦点...">
+                                        <select id="rp_recordbillsForm-faultPart" data-live-search="true" data-size="5"
+                                            class="selectpicker" multiple>
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">故障原因</label>
                                     <div class="col-sm-3">
-                                        <select id="rp_recordbillsForm-faultReason" class="selectpicker">
-
+                                        <select id="rp_recordbillsForm-faultReason" data-live-search="true"
+                                            data-size="5" class="selectpicker" multiple>
                                         </select>
                                     </div>
-
-
 
                                 </div>
 
 
                                 <div class="form-group">
+                                    <!---添加成色后无法保存单据此处有问题-->
+                                    <label class="col-sm-1 control-label">成色</label>
+                                    <div class="col-sm-3">
+                                        <select id="rp_recordbillsForm-conditionStatus" class="selectpicker">
+                                        </select>
+                                    </div>
+
 
                                     <label class="col-sm-1 control-label">检测项目</label>
                                     <div class="col-sm-3">
@@ -389,11 +383,7 @@
                                             value="该输入框获得焦点...">
                                     </div>
 
-                                    <label class="col-sm-1 control-label">检测费用</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" id="rp_recordbillsForm-testFee" type="text"
-                                            value="该输入框获得焦点...">
-                                    </div>
+
                                 </div>
 
 
@@ -440,21 +430,79 @@
                                         </select>
                                     </div>
 
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">是否返修</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-isRework"></p>
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label">是否加急</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-urgent"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">质保期内</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-inWarranty"></p>
+                                    </div>
 
 
                                 </div>
 
 
-
-
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">总费用</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control" id="rp_recordbillsForm-repairTotalFee" type="text"
-                                            value="该输入框获得焦点...">
+
+
+                                    <label class="col-sm-1 control-label">检测费用</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-testFee"></p>
                                     </div>
 
+                                    <label class="col-sm-1 control-label">零件费用</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-partsFee"></p>
+                                    </div>
 
+                                    <label class="col-sm-1 control-label">年份费用</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-yearsFee"></p>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">成色费用</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-conditionFee"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">加急费用</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-urgentFee"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">总费用</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-repairTotalFee"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">免费维修</label>
+                                    <div class="col-sm-3">
+                                        <p class="form-control-static" id="rp_recordbillsForm-forFree"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">最终费用</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" id="rp_recordbillsForm-repairLastFee" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
 
                                 </div>
 
@@ -804,7 +852,7 @@
         $('#rp_recordbillsForm-testItem').change(function () {
             let testFee = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
             if (testFee) {
-                $('#rp_recordbillsForm-testFee').val(testFee);
+                $('#rp_recordbillsForm-testFee').text(testFee);
                 CalcRepairTotalFee();
             }
         })
@@ -1143,35 +1191,101 @@
 
     //计算总费用
     const CalcRepairTotalFee = () => {
+        //初始话费用
+        let [testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee] = [0, 0, 0, 0, 0,
+            0, 0
+        ]
 
-        let repairTotalFee = 0;
-        let testFee = $('#rp_recordbillsForm-testFee').val();
-        if (testFee) {
-            repairTotalFee = parseInt(testFee);
+        //检测费
+        if ($('#rp_recordbillsForm-testFee').text()) {
+            testFee = parseInt($('#rp_recordbillsForm-testFee').text());
         }
 
-
+        //配件费
         let rowNum = $("#rp_partsbills tbody tr").size();
-
         if (rowNum > 0) {
             let subTable = $('#rp_partsbills').DataTable();
             let rowsData = subTable.rows().data();
             // console.log('rows:' + JSON.stringify(rowsData));
-
-
-            let partFee = 0;
             for (let n = 0; n < rowNum; n++) {
-                partFee = partFee + parseInt(rowsData[n].partFee);
+                partsFee = partsFee + parseInt(rowsData[n].partFee);
             }
+        }
+        $('#rp_recordbillsForm-partsFee').text(partsFee);
 
-            repairTotalFee = repairTotalFee + partFee;
+        //A部分费用
+        let partAFee = testFee + partsFee;
+
+
+        if (partAFee > 0) {
+            //年份费用
+            let productDate = $('#rp_recordbillsForm-productYear').text() + '-' +
+                $('#rp_recordbillsForm-productMonth').text() + '-01';
+            let months = getMonths(productDate, currentDate())
+            console.log('months', months);
+            switch (true) {
+                case months > 120:
+                    yearsFee = partAFee * 0.15;
+                    break;
+                case months <= 120 && months > 60:
+                    yearsFee = partAFee * 0.1;
+                    break;
+                case months <= 60 && months > 36:
+                    yearsFee = partAFee * 0.05;
+                    break;
+                case months <= 36:
+                    break;
+            }
+            $('#rp_recordbillsForm-yearsFee').text(yearsFee);
+
+            //成色费用
+            let conditionStatus = $('#rp_recordbillsForm-conditionStatus option:selected').val();
+            switch (conditionStatus) {
+                case '好':
+                    break;
+                case '一般':
+                    conditionFee = partAFee * 0.05;
+                    break;
+                case '差':
+                    conditionFee = partAFee * 0.1;
+                    break;
+            }
+            $('#rp_recordbillsForm-conditionFee').text(conditionFee);
 
         }
 
-        $('#rp_recordbillsForm-repairTotalFee').val(repairTotalFee);
+        //加急费
+        if ($('#rp_recordbillsForm-urgent').text() === '是') {
+            urgentFee = 20;
+        }
+        $('#rp_recordbillsForm-urgentFee').text(urgentFee);
+
+
+        //总费用<--------有问题,写到此处
+        console.log(testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee);
+
+        repairTotalFee = partAFee + yearsFee + conditionFee + urgentFee;
+        $('#rp_recordbillsForm-repairTotalFee').text(repairTotalFee);
+
+        //是否免费
+        let forFree = '否';
+        if ($('#rp_recordbillsForm-inWarranty').text() === '是') { //质保期内免费
+            forFree = '是'
+        }
+        $('#rp_recordbillsForm-forFree').text(forFree);
+
+        //最终费用
+
+        if (forFree === '是') {
+            $('#rp_recordbillsForm-repairLastFee').val(0);
+        } else {
+            $('#rp_recordbillsForm-repairLastFee').val(formatInt(repairTotalFee, 1));
+        }
 
         // console.log('repairTotalFee:' + repairTotalFee);
     }
+
+
     //零件费监听器
     const addPartFeeListener = () => {
         $("#rp_partsbillsForm-num").on("input propertychange", function () {
@@ -1386,7 +1500,7 @@
 
             // alert(JSON.stringify(mainFormData))
 
-            // console.log('mainFormData:' + JSON.stringify(mainFormData));
+            console.log('mainFormData:' + JSON.stringify(mainFormData));
 
             if (subTableData.length > 0) {
                 let r1 = await postDBData({
@@ -2054,27 +2168,56 @@
         //选定产品修改事件
         addTestItemListener();
 
+
+
+
         loadBootStrapSelector({
-            elementId: 'rp_recordbillsForm-faultReason',
+            elementId: 'rp_recordbillsForm-faultShow',
             sqlParams: {
-                sql: 'getOptionSelector',
+                sql: 'getFaultSelector',
                 params: {
-                    filter: 'optionClass="故障原因"',
+                    filter: 'faultClass="故障现象"',
+                    orderBy: 'orderId'
+                }
+            }
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_recordbillsForm-faultPart',
+            sqlParams: {
+                sql: 'getFaultSelector',
+                params: {
+                    filter: 'faultClass="故障部件"',
                     orderBy: 'orderId'
                 }
             },
         })
 
 
+
         loadBootStrapSelector({
-            elementId: 'rp_recordbillsForm-faultClass',
+            elementId: 'rp_recordbillsForm-faultReason',
             sqlParams: {
-                sql: 'getOptionSelector',
+                sql: 'getFaultSelector',
                 params: {
-                    filter: 'optionClass="故障分类"',
+                    filter: 'faultClass="故障原因"',
                     orderBy: 'orderId'
                 }
             },
+        })
+
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_recordbillsForm-conditionStatus',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="成色"',
+                    orderBy: 'orderId'
+                }
+            },
+            // initValue:'好'
         })
 
 
@@ -2131,6 +2274,8 @@
 
 
 
+        // let [x, y, z] = [0];
+        // console.log(x, y, z);
 
 
 

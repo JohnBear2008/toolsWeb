@@ -91,7 +91,7 @@ const PrefixInteger = (num, length) => {
  * @param {*} text
  */
 const replaceURI = (text) => {
-    if (text) {
+    if (text && typeof text == 'string') {
         text = text.replace(/'/g, '')
         text = text.replace(/"/g, '')
     }
@@ -477,22 +477,27 @@ const loadSubDataTable = async (i) => {
 /**
  *加载bootStrapSelect 数据
  *
- * @param {*} i={elementId,initValue,sqlParams}
+ * @param {*} i={elementId,sqlParams,initValue}
  */
-const loadBootStrapSelector = async (i) => {
+const loadBootStrapSelector = async ({
+    elementId,
+    sqlParams,
+    initValue
+}) => {
 
 
-    $('#' + i.elementId).empty(); //清空原有选项
+    $('#' + elementId).empty(); //清空原有选项
     // $("#extraSelect1").selectpicker('refresh'); //刷新
-    $('#' + i.elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+    $('#' + elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
 
-    $('#' + i.elementId).selectpicker({
+
+    $('#' + elementId).selectpicker({
         noneSelectedText: "未选择" //默认显示内容
     });
 
 
-    if (!i.sqlParams) {
-        $('#' + i.elementId).append($('<option value="">未选择</option>'));
+    if (!sqlParams) {
+        $('#' + elementId).append($('<option value="">未选择</option>'));
         return
     }
 
@@ -500,21 +505,21 @@ const loadBootStrapSelector = async (i) => {
     return $.ajax({
         method: 'get',
         url: '/app/RP/lib/ajaxGet',
-        data: i.sqlParams,
+        data: sqlParams,
         success: function (data) {
             try {
                 for (const n of data) {
-                    $('#' + i.elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+                    $('#' + elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
                 }
-                if (i.initValue) {
-                    $('#' + i.elementId).selectpicker('val', i.initValue);
+                if (initValue) {
+                    $('#' + elementId).selectpicker('val', initValue);
                 } else {
-                    $('#' + i.elementId).selectpicker('val', '');
+                    $('#' + elementId).selectpicker('val', '');
                 }
 
-                $('#' + i.elementId).selectpicker('refresh');
+                $('#' + elementId).selectpicker('refresh');
             } catch (error) {
-                console.log('#' + i.elementId, '刷新失败', error);
+                console.log('#' + elementId, '刷新失败', error);
             }
         },
         error: function () {}
@@ -551,8 +556,8 @@ const loadDataSelector = ({
 
     $('#' + elementId).selectpicker('val', defaultValue);
 
-    console.log($('#' + elementId+' option:selected').val());
-    
+    console.log($('#' + elementId + ' option:selected').val());
+
     $('#' + elementId).selectpicker('refresh');
     // $('#' + elementId).selectpicker('render');
 
@@ -650,7 +655,15 @@ const fillFormInputs = (i) => {
 
                     try {
                         if ($("#" + i.formId + '-' + p)[0].options.length > 0) {
-                            $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
+                            // console.log('multiple', $("#" + i.formId + '-' + p).attr("multiple"));
+
+                            //多选
+                            if ($("#" + i.formId + '-' + p).attr("multiple")) {
+                                let arr = i.params[p].split(',');
+                                $("#" + i.formId + '-' + p).selectpicker('val', arr);
+                            } else {
+                                $("#" + i.formId + '-' + p).selectpicker('val', i.params[p])
+                            }
                             $("#" + i.formId + '-' + p).selectpicker('refresh')
                         }
                     } catch (error) {
@@ -1115,15 +1128,38 @@ const getFormData = (i) => {
         if ($(this).is('p')) {
             value = $(this).text();
         } else {
-            value = this.value;
+            // value = this.value;
+            value = $(this).val();
         }
+
+        // switch (true) {
+        //     case $(this).is('p'):
+        //         value = $(this).text();
+        //         break;
+        //     case $(this).is('select'):
+        //         let val = "",
+        //             value = [];
+        //         //循环的取出插件选择的元素(通过是否添加了selected类名判断)
+        //         for (let i = 0; i < $("li.selected").length; i++) {
+        //             val = $("li.selected").eq(i).find(".text").text();
+        //             if (val != '') {
+        //                 value.push(val);
+        //             }
+        //         }
+        //         break;
+        //     default:
+        //         value = $(this).value;
+        //         break;
+        // }
+
+        console.log("this id:" + id);
+        console.log("this value:" + this.value);
 
         value = replaceURI(value);
 
-        // console.log("this id:" + id);
-        // console.log("this value:" + this.value);
 
-        if (id !== '' && id !== undefined) {
+
+        if (id) {
             data.push({
                 [id]: value
             })
@@ -1135,7 +1171,7 @@ const getFormData = (i) => {
         data: data
     }
 
-    // console.log('getFormData:' + JSON.stringify(data));
+    console.log('getFormData:' + JSON.stringify(data));
     return o;
 
 }
@@ -1574,3 +1610,67 @@ const cn2enPunctuation = (str) => {
 
     return newStr;
 }
+
+
+/**
+ * 获取两个时间月份差 
+ */
+const getMonths = (start, end) => {
+    var result = [];
+    var starts = start.split('-');
+    var ends = end.split('-');
+    var staYear = starts[0] * 1;
+    var staMon = starts[1] * 1 < 10 ? starts[1] : starts[1];
+    var endYear = ends[0] * 1;
+    var endMon = ends[1] * 1 < 10 ? ends[1] : ends[1];;
+    result.push(staYear + '-' + staMon);
+    while (staYear <= endYear) {
+        if (staYear === endYear) {
+            while (staMon < endMon) {
+                staMon++;
+                if (staMon < 10) {
+                    result.push(staYear + '-0' + staMon);
+                } else {
+                    result.push(staYear + '-' + staMon);
+                }
+            }
+            staYear++;
+        } else {
+            staMon++;
+            if (staMon > 12) {
+                staMon = 1;
+                staYear++;
+            }
+            if (staMon < 10) {
+                result.push(staYear + '-0' + staMon);
+            } else {
+                result.push(staYear + '-' + staMon);
+            }
+        }
+    }
+    return result.length;
+
+}
+
+/**
+ * 将数字取整为10的倍数
+ * @param {Number} num 需要取整的值
+ * @param {Boolean} ceil 是否向上取整
+ * @param {Number} prec 需要用0占位的数量
+ */
+const formatInt = (num, prec = 2, ceil = true) => {
+    const len = String(num).length;
+    if (len <= prec) {
+        return num
+    };
+
+    const mult = Math.pow(10, prec);
+    return ceil ?
+        Math.ceil(num / mult) * mult :
+        Math.floor(num / mult) * mult;
+}
+
+// formatInt(2345, 2, true)  -> 2400
+// formatInt(2345, 2. false) -> 2300
+// formatInt(2345, 3, true)  -> 3000
+// formatInt(2345, 3, false) -> 2000
