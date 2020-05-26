@@ -1651,26 +1651,3 @@ const getMonths = (start, end) => {
     return result.length;
 
 }
-
-/**
- * 将数字取整为10的倍数
- * @param {Number} num 需要取整的值
- * @param {Boolean} ceil 是否向上取整
- * @param {Number} prec 需要用0占位的数量
- */
-const formatInt = (num, prec = 2, ceil = true) => {
-    const len = String(num).length;
-    if (len <= prec) {
-        return num
-    };
-
-    const mult = Math.pow(10, prec);
-    return ceil ?
-        Math.ceil(num / mult) * mult :
-        Math.floor(num / mult) * mult;
-}
-
-// formatInt(2345, 2, true)  -> 2400
-// formatInt(2345, 2. false) -> 2300
-// formatInt(2345, 3, true)  -> 3000
-// formatInt(2345, 3, false) -> 2000

@@ -858,6 +858,19 @@
         })
     }
 
+    //添加成色监听器
+    const addConditionStatusListener = () => {
+        $('#rp_recordbillsForm-conditionStatus').unbind();
+        $('#rp_recordbillsForm-conditionStatus').change(function () {
+            let conditionStatus = $('#rp_recordbillsForm-testItem option:selected').val();
+            if (conditionStatus) {
+                CalcRepairTotalFee();
+            }
+        })
+    }
+
+
+
     // //添加替换位置监听器
     // const addPartLocationListener = () => {
     //     $('#rp_partsbillsForm-partLocation').unbind();
@@ -1279,7 +1292,7 @@
         if (forFree === '是') {
             $('#rp_recordbillsForm-repairLastFee').val(0);
         } else {
-            $('#rp_recordbillsForm-repairLastFee').val(formatInt(repairTotalFee, 1));
+            $('#rp_recordbillsForm-repairLastFee').val(parseInt(Math.round(repairTotalFee) / 10) * 10);
         }
 
         // console.log('repairTotalFee:' + repairTotalFee);
@@ -2165,10 +2178,10 @@
             },
         })
 
-        //选定产品修改事件
+        //选定测试项目修改事件
         addTestItemListener();
-
-
+        //成色选择监听事件
+        addConditionStatusListener();
 
 
         loadBootStrapSelector({
