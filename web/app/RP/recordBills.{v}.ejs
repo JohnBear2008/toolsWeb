@@ -869,6 +869,20 @@
         })
     }
 
+    //添加维修结果监听器
+    const addRepairResultListener = () => {
+        $('#rp_recordbillsForm-repairResult').unbind();
+        $('#rp_recordbillsForm-repairResult').change(function () {
+            let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val();
+            if (repairResult) {
+                CalcRepairTotalFee();
+            }
+        })
+    }
+
+
+
+
 
 
     // //添加替换位置监听器
@@ -1249,6 +1263,7 @@
                 case months <= 36:
                     break;
             }
+            yearsFee = yearsFee.toFixed(2)
             $('#rp_recordbillsForm-yearsFee').text(yearsFee);
 
             //成色费用
@@ -1263,8 +1278,9 @@
                     conditionFee = partAFee * 0.1;
                     break;
             }
-            $('#rp_recordbillsForm-conditionFee').text(conditionFee);
 
+            conditionFee = conditionFee.toFixed(2)
+            $('#rp_recordbillsForm-conditionFee').text(conditionFee);
         }
 
         //加急费
@@ -1274,10 +1290,12 @@
         $('#rp_recordbillsForm-urgentFee').text(urgentFee);
 
 
-        //总费用<--------有问题,写到此处
+        //总费用
         console.log(testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee);
 
-        repairTotalFee = partAFee + yearsFee + conditionFee + urgentFee;
+        //特定费用转换为浮点
+        repairTotalFee = partAFee + parseFloat(yearsFee) + parseFloat(conditionFee) + urgentFee;
+        repairTotalFee = Number(repairTotalFee).toFixed(2)
         $('#rp_recordbillsForm-repairTotalFee').text(repairTotalFee);
 
         //是否免费
@@ -1285,6 +1303,15 @@
         if ($('#rp_recordbillsForm-inWarranty').text() === '是') { //质保期内免费
             forFree = '是'
         }
+        if ($('#rp_recordbillsForm-isRework').text() === '是') { //返修
+            forFree = '是'
+        }
+
+        if ($('#rp_recordbillsForm-repairResult option:selected').val() === '检测后正常' ||
+            $('#rp_recordbillsForm-repairResult option:selected').val() === '报废') { //ok或报废
+            forFree = '是'
+        }
+
         $('#rp_recordbillsForm-forFree').text(forFree);
 
         //最终费用
@@ -1292,7 +1319,7 @@
         if (forFree === '是') {
             $('#rp_recordbillsForm-repairLastFee').val(0);
         } else {
-            $('#rp_recordbillsForm-repairLastFee').val(parseInt(Math.round(repairTotalFee) / 10) * 10);
+            $('#rp_recordbillsForm-repairLastFee').val(Math.round(repairTotalFee / 10) * 10);
         }
 
         // console.log('repairTotalFee:' + repairTotalFee);
@@ -2178,10 +2205,10 @@
             },
         })
 
-        //选定测试项目修改事件
+        //添加监听器
         addTestItemListener();
-        //成色选择监听事件
         addConditionStatusListener();
+        addRepairResultListener()
 
 
         loadBootStrapSelector({

@@ -1132,28 +1132,10 @@ const getFormData = (i) => {
             value = $(this).val();
         }
 
-        // switch (true) {
-        //     case $(this).is('p'):
-        //         value = $(this).text();
-        //         break;
-        //     case $(this).is('select'):
-        //         let val = "",
-        //             value = [];
-        //         //循环的取出插件选择的元素(通过是否添加了selected类名判断)
-        //         for (let i = 0; i < $("li.selected").length; i++) {
-        //             val = $("li.selected").eq(i).find(".text").text();
-        //             if (val != '') {
-        //                 value.push(val);
-        //             }
-        //         }
-        //         break;
-        //     default:
-        //         value = $(this).value;
-        //         break;
-        // }
-
-        console.log("this id:" + id);
-        console.log("this value:" + this.value);
+        //统一将null undefined 转换为空
+        if (!value) {
+            value = '';
+        }
 
         value = replaceURI(value);
 

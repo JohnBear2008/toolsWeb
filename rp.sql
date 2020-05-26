@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `rp_customers` (
   `remarker` char(50) DEFAULT NULL COMMENT '备注人',
   `creater` char(50) DEFAULT NULL COMMENT '创建人',
   `effective` char(50) DEFAULT NULL COMMENT '有效性',
-  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `customerId` (`customerId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3955 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础数据_客户';
@@ -55,7 +55,7 @@ REPLACE INTO `rp_customers` (`DBID`, `customerId`, `customerShortName`, `custome
 	(2, 'CS_BF_WL', '白峰_万琏', '宁波市北仑区白峰万琏科技塑胶厂', '客户', '新厂商', '新厂商', '宁波市北仑区白峰万琏科技塑胶厂', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '宁波市北仑区白峰镇霓虹路122号', '陈先生', '13958330328', '13958330328', '', '', '', '', '', '', '18个月', '', '', NULL, 'dg_liulx', '是', NULL),
 	(3, 'CS_BJ_JY', '北仑_精益', '北仑柴桥精益注塑加工厂222', '客户', NULL, NULL, '北仑柴桥精益注塑加工厂', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '', '北仑_精益', '13646632732', '13646632732', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
 	(4, 'CS_BL_AS', '北仑_奥森', '宁波奥森科技有限公司', '客户', NULL, '宁波_海天', '宁波奥森科技有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '', '杨先生', '13732186943', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'dg_liulx', '是', NULL),
-	(5, 'CS_BL_BY', '北仑_贝元', '宁波北仑贝元文具有限公司', '客户', NULL, NULL, '宁波北仑贝元文具有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '北仑区大契甬江南路2号5幢楼1楼', '叶敏元', '13906692519', '86813001 139066925', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
+	(5, 'CS_BL_BY', '北仑_贝元', '宁波北仑贝元文具有限公司', '客户', NULL, NULL, '宁波北仑贝元文具有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '北仑区大契甬江南路2号5幢楼1楼', '叶敏元', '13906692519', '86813001 139066925', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', '2020-05-26 13:12:47'),
 	(7, 'CS_BL_DZ', '北仑_大泽鑫工', '宁波市北仑大泽鑫工机械有限公司', '客户', '', '', '宁波市北仑大泽鑫工机械有限公司', '', '款到发货', '', '', '国内', '', '孟祥东', '', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
 	(8, 'CS_BL_HC', '北仑_合诚', '北仑合诚金属制品有限公司', '客户', '', '', '北仑合诚金属制品有限公司', '', '款到发货', '', '', '国内', '', '北仑_合诚', '', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'dg_liulx', '是', NULL),
 	(9, 'CS_BL_HF', '北仑_恒丰', '宁波北仑恒丰模具厂', '客户', '', '', '宁波北仑恒丰模具厂', '', '款到发货', '', '', '国内', '浙江省宁波市北仑区', '周师傅', '', '18957820678', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
@@ -71,7 +71,7 @@ REPLACE INTO `rp_customers` (`DBID`, `customerId`, `customerShortName`, `custome
 	(19, 'CS_BL_SY', '北仑_塑友', '宁波北仑大矸塑友机械维修服务部', '客户', '', '', '宁波北仑大矸塑友机械维修服务部', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '', '北仑_塑友', '', '', '', '', '', '', '', '', '18个月', '', ' ', NULL, 'DG_liulx', '是', NULL),
 	(20, 'CS_BL_WJ', '北仑_五金阀门厂', '宁波市北仑五金阀门厂', '客户', '', '', '宁波市北仑五金阀门厂', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '', '顾新培', '13906692627', '', '', '', '', '', '', '', '18个月', '', ' ', NULL, 'DG_liulx', '是', NULL),
 	(21, 'CS_BL_XB', '北仑_祥博', '宁波北仑祥博塑模有限公司', '客户', '宁波_海天', '宁波_海天', '宁波北仑祥博塑模有限公司', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '', '胡先生', '13355745422', '13355745422', '', '', '', '', '', '', '18个月', '', '', NULL, 'dg_zhouq', '是', NULL),
-	(22, 'CS_BL_XD', '北仑_兴达', '宁波兴达文具用品有限公司', '客户', '宁波_海天', '宁波_海天', '宁波兴达文具用品有限公司', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '宁波市北仑区甬江南路2号', '王工', '15988666901', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'TechHT', '是', NULL),
+	(22, 'CS_BL_XD', '北仑_兴达', '宁波兴达文具用品有限公司', '客户', NULL, '宁波_海天', '宁波兴达文具用品有限公司', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '宁波市北仑区甬江南路2号', '王工', '15988666901', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'TechHT', '是', '2020-05-26 13:11:41'),
 	(23, 'CS_BL_XH', '北仑_新海', '宁波北仑新海塑料制品有限公司', '客户', '', '', '宁波北仑新海塑料制品有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '', '北仑_新海', '000000000000', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'dg_liulx', '是', NULL),
 	(24, 'CS_BL_XR', '北仑旭日', '北仑旭日塑模', '客户', '', '', '北仑旭日塑模', '', '款到发货', '', '', '国内', '', '冯大峰', '13958304920', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_zhouq', '是', NULL),
 	(25, 'CS_BL_XX', '宁波_鑫兴', '宁波市北仑区柴桥鑫兴五金模具塑料厂', '客户', '', '', '宁波市北仑区柴桥鑫兴五金模具塑料厂', '', '款到发货', '', '', '国内', '宁波北仑柴桥', '胡朝辉', '13777276678', '13777276678', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_zhouq', '是', NULL),
@@ -3598,19 +3598,6 @@ REPLACE INTO `rp_partlocations` (`DBID`, `productId`, `partId`, `partName`, `loc
 	(456, '2BP_TECH2M5_1AN', '3XI32', 'DIP SOCKET_32P', 'U7,U8', 2, ''),
 	(457, '2BP_TECH2M5_1AN', '3YG5NB_1A_24E', 'DIP G5NB-1A-E 24VDC', 'RLYO1,RLYO2,RLYO3,RLYO4,RLYO5,RLYO6,RLYO7,RLYO8,RLYO9,RLYO10,RLYO11,RLYO12,RLYO13', 13, ''),
 	(458, '2BP_TECH2M5_1AN', '3YG6RN_1_24', 'DIP 6RN_1_24', 'RLYO14,RLYO15,RLYO16', 3, ''),
-	(459, '2BP_AHBOP', '2BP_AHBOP', 'AHBOP', '', 1, ''),
-	(460, '2BP_AHBOP', '3PCB_CS225_P1052', 'AHBOP', '', 1, ''),
-	(461, '2BP_AHBOP', '3SWD_DTSM_65S', 'SMD 按键 DTSM-65S-S-V-T/R 圜达', 'SW1,SW2,SW3,SW4,SW5,SW6,SW7', 7, '正面'),
-	(462, '2BP_AHBOP', '3DLE323RD', 'DIP BD_E323RD', 'SEG2', 1, '正面'),
-	(463, '2BP_AHBOP', '3DLM326RD', 'DIP BQ_M326RD', 'SEG1', 1, '正面'),
-	(464, '2BP_AHBOP', '3MJS01*07H_B', 'DIP排针底座(base) 黑色 PIN 1*7 2.54mm 180°', 'SEG2', 2, '正面'),
-	(465, '2BP_AHBOP', '3MSLED3_3B', 'DIP LED3_3B', 'LD1,LD2,LD3,LD4', 4, '正面'),
-	(466, '2BP_AHBOP', '3CD6XP104', 'SMD 0.1UF0603', 'C1,C4,C5,C6,C7,C9,C10,\nC11,C12,C13,C14,C15,C16,C17', 14, '背面'),
-	(467, '2BP_AHBOP', '3IDW74HC595', 'SMD 74HC595', 'U4,U3', 2, '背面'),
-	(468, '2BP_AHBOP', '3RD6AK002', 'SMD 2K_5%0603', 'R11', 1, '背面'),
-	(469, '2BP_AHBOP', '3RDAO330', 'SMD 330_5%', 'R3,R4,R5,R6,R7,R8,R9,R10', 8, '背面'),
-	(470, '2BP_AHBOP', '3UDMMBT2222', 'SMD MMBT2222A', 'Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8', 8, '背面'),
-	(471, '2BP_AHBOP', '3MOF10V_M', 'DIP HEADER BOX_10R_M', 'JP1', 1, '背面'),
 	(472, '2BP_A80_CPUA', '2BP_A80_CPUA', 'A80M7', '', 1, ''),
 	(473, '2BP_A80_CPUA', '2BTEC_HB02F', 'DIP HB02', 'UX15', 1, ''),
 	(474, '2BP_A80_CPUA', '3CCP472_302', 'DIP 4700P/3KV', 'CFO1,CFI1,CFD1,CFO2,CFO3,CFW1', 6, ''),
@@ -4781,12 +4768,13 @@ CREATE TABLE IF NOT EXISTS `rp_partsbills` (
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() COMMENT '时间戳',
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`recordBillId`,`rowId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
 
 -- 正在导出表  toolsweb.rp_partsbills 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `rp_partsbills` DISABLE KEYS */;
 REPLACE INTO `rp_partsbills` (`DBID`, `recordBillId`, `rowId`, `partId`, `partName`, `partDescription`, `partLocation`, `num`, `price`, `partFee`, `numStatus`, `remark`, `billSaveTimeStamp`) VALUES
-	(1, 'R-20200525001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX1', 1, 35.00, 35.00, '已领', NULL, '2020-05-25 00:00:00');
+	(1, 'R-20200525001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX1', 1, 35.00, 35.00, '已领', NULL, '2020-05-25 00:00:00'),
+	(2, 'R-20200526001', '1', '3CDYP105_016', 'SMD 1UF/16V_Y5V', 'SMD 1uf16v Y5V 3216', NULL, 1, 5.00, 5.00, '已领', NULL, '2020-05-26 00:00:00');
 /*!40000 ALTER TABLE `rp_partsbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_partsfee 结构
@@ -6642,7 +6630,7 @@ REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`
 	(1551, '3CD6XP105_010', 100, NULL, '', '', '', NULL),
 	(1552, '3CD6XP105_025', 100, NULL, '', '', '', NULL),
 	(1553, '3CD6XP106_006', 100, NULL, '', '', '', NULL),
-	(1554, '3CDYP105_016', 100, NULL, '', '', '', NULL),
+	(1554, '3CDYP105_016', 99, NULL, '', '', '', NULL),
 	(1555, '3CLD6FB301', 100, NULL, '', '', '', NULL),
 	(1556, '3CLDFB121_1A', 100, NULL, '', '', '', NULL),
 	(1557, '3CLDFB800_3A', 100, NULL, '', '', '', NULL),
@@ -6902,7 +6890,7 @@ CREATE TABLE IF NOT EXISTS `rp_partswarehousehistory` (
   `actType` char(50) DEFAULT NULL COMMENT '操作类型',
   `dateTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`)
-) ENGINE=InnoDB AUTO_INCREMENT=149 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
 
 -- 正在导出表  toolsweb.rp_partswarehousehistory 的数据：~4 rows (大约)
 /*!40000 ALTER TABLE `rp_partswarehousehistory` DISABLE KEYS */;
@@ -6912,7 +6900,8 @@ REPLACE INTO `rp_partswarehousehistory` (`DBID`, `partId`, `preNum`, `actNum`, `
 	(145, '2BTEC_HB02F', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
 	(146, '3CD6XP471', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
 	(147, '3RDAO330', 100, -100, 0, NULL, 'R-20200521002', NULL, '领料', '2020-05-21 11:07:23'),
-	(148, '2BTEC_HB02F', 99, -1, 98, NULL, 'R-20200525001', NULL, '领料', '2020-05-25 14:42:00');
+	(148, '2BTEC_HB02F', 99, -1, 98, NULL, 'R-20200525001', NULL, '领料', '2020-05-25 14:42:00'),
+	(149, '3CDYP105_016', 100, -1, 99, NULL, 'R-20200526001', NULL, '领料', '2020-05-26 13:40:59');
 /*!40000 ALTER TABLE `rp_partswarehousehistory` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_productclasses 结构
@@ -15899,8 +15888,7 @@ REPLACE INTO `rp_products` (`DBID`, `productId`, `productName`, `productDescript
 	(17199, 'U31013F183R40Y0Ib4_S14D', 'U31013F183R40Y0Ib4_S14D', '马达转子', '', '伺服电气部件', '马达', '其他', '附件', '是', '', '2020-05-19 09:54:33'),
 	(17200, 'U31320F183R40Y0Ib4_S17D', 'U31320F183R40Y0Ib4_S17D', '马达转子', '', '伺服电气部件', '马达', '其他', '附件', '是', '', '2020-05-19 09:54:33'),
 	(17201, 'U31330F183R40Y0Ib4_S17D', 'U31330F183R40Y0Ib4_S17D', '马达转子', '', '伺服电气部件', '马达', '其他', '附件', '是', '', '2020-05-19 09:54:33'),
-	(17202, '补线', '补线', '补线', '', '其他', '零件', '其他', 'Other', '是', '', '2020-05-19 09:54:33'),
-	(17203, '2BP_AHBOP', '2BP_AHBOP', '2BP_AHBOP', NULL, NULL, NULL, NULL, NULL, '是', NULL, NULL);
+	(17202, '补线', '补线', '补线', '', '其他', '零件', '其他', 'Other', '是', '', '2020-05-19 09:54:33');
 /*!40000 ALTER TABLE `rp_products` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_recordbills 结构
@@ -15922,7 +15910,7 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   `productMonth` char(5) DEFAULT NULL COMMENT '生产月份',
   `productionDate` date DEFAULT NULL COMMENT '生产日期',
   `orginFactoryNo` char(50) DEFAULT NULL COMMENT '原厂编码',
-  `isRework` varchar(255) DEFAULT NULL COMMENT '是否返修',
+  `isRework` char(5) DEFAULT NULL COMMENT '是否返修',
   `repairStaff` char(50) DEFAULT NULL COMMENT '维修人',
   `urgent` char(5) DEFAULT NULL COMMENT '是否紧急',
   `inWarranty` char(5) DEFAULT NULL COMMENT '质保期内',
@@ -15955,14 +15943,15 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`),
   UNIQUE KEY `recordBillId` (`recordBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
 
--- 正在导出表  toolsweb.rp_recordbills 的数据：~2 rows (大约)
+-- 正在导出表  toolsweb.rp_recordbills 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `rp_recordbills` DISABLE KEYS */;
 REPLACE INTO `rp_recordbills` (`DBID`, `recordBillId`, `requestBillId`, `rowId`, `responseBillId`, `productId`, `productName`, `productDescription`, `factoryNo`, `origin`, `systemType`, `productClass`, `productYear`, `productMonth`, `productionDate`, `orginFactoryNo`, `isRework`, `repairStaff`, `urgent`, `inWarranty`, `productFrom`, `conditionStatus`, `productBelong`, `testResult`, `testItem`, `testFee`, `partsFee`, `yearsFee`, `conditionFee`, `urgentFee`, `repairTotalFee`, `repairLastFee`, `forFree`, `faultDescription`, `faultShow`, `faultPart`, `faultReason`, `changePartList`, `repairResult`, `billRemark`, `files`, `maker`, `makeDate`, `finishDate`, `status`, `billSaveTimeStamp`) VALUES
-	(1, NULL, 'AA-20200525001', '1', NULL, '2BP_AHBOP', '2BP_AHBOP', '2BP_AHBOP', '111', '宁波', NULL, NULL, NULL, NULL, NULL, '1111', '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1111111', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-25 13:55:11'),
-	(2, NULL, 'AA-20200525002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '222', '宁波', 'A80', '主机板', '2019', '01', NULL, '222', '否', NULL, '否', '是', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '213123123123123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-25 13:57:07'),
-	(3, 'R-20200525001', 'AA-20200525003', '1', NULL, '2BP_AK668_CPU', '2BP_AK668_CPU\r\n', NULL, '323', '宁波', 'AK668', '主机板', '2009', '02', NULL, '333', '否', '岑建军', '否', '否', '终端客户', '好', '客户', NULL, '检测', 200.00, 35.00, 35.25, 0.00, 0.00, 270.25, 280.00, '否', '3323232', '有间隙气泡,显示红屏', 'AD,RS232', '接触不良,检测OK', '2BTEC_HB02F*1', '检测后正常', NULL, '[]', '熊奇龙', '2020-05-25', '2020-05-25', '维修完成', '2020-05-25 13:58:06');
+	(1, NULL, 'AA-20200526001', '1', NULL, '2BP_AHBOP', '2BP_AHBOP', '2BP_AHBOP', '11', '宁波', NULL, '主机板', '2019', '01', NULL, '22', '否', NULL, '否', '是', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1111111', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00'),
+	(2, 'R-20200526001', 'AA-20200526002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '2121', '宁波', 'A80', '主机板', '2009', '02', NULL, '222', '否', '苏文洁', '否', '否', '终端客户', NULL, '客户', NULL, '检测', 200.00, 5.00, 30.75, 0.00, 0.00, 235.75, 240.00, '否', '123123123', NULL, NULL, NULL, '3CDYP105_016*1', NULL, NULL, '[]', '熊奇龙', '2020-05-26', NULL, '维修中', '2020-05-26 00:00:00'),
+	(3, NULL, 'AA-20200526003', '1', NULL, '2BP_AK668_CPU', '2BP_AK668_CPU\r\n', NULL, '23333', '宁波', 'AK668', '主机板', '2015', '07', NULL, '223', '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '123123123123123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00'),
+	(4, NULL, 'AA-20200526004', '1', NULL, '2BP_TECH2M5_1AN', '2BP_TECH2M5_1AN', 'TECH2M5 CPU', '554', '宁波', 'TECH2', '主机板', '2018', '02', NULL, NULL, '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '345345345345345', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00');
 /*!40000 ALTER TABLE `rp_recordbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_requestbills 结构
@@ -15977,29 +15966,30 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `warrantyPeriod` char(10) DEFAULT NULL COMMENT '保固期',
   `customerArea` varchar(255) DEFAULT NULL COMMENT '区域',
   `customerName` varchar(255) DEFAULT NULL COMMENT '客户名称',
-  `contact` varchar(255) DEFAULT NULL COMMENT '联系人',
-  `mobilePhone` varchar(255) DEFAULT NULL COMMENT '移动电话',
+  `contact` char(50) DEFAULT NULL COMMENT '联系人',
+  `mobilePhone` char(50) DEFAULT NULL COMMENT '移动电话',
   `address` varchar(255) DEFAULT NULL COMMENT '客户地址',
   `customerBelongShort` varchar(255) DEFAULT NULL COMMENT '客户归属简称',
   `customerBelongFull` varchar(255) DEFAULT NULL COMMENT '客户归属全称',
-  `isInland` varchar(255) DEFAULT NULL COMMENT '国内外',
-  `requestWay` varchar(255) DEFAULT NULL COMMENT '送修方式',
-  `requestStaff` varchar(255) DEFAULT NULL COMMENT '送修人',
-  `maker` varchar(255) DEFAULT NULL COMMENT '制单人员',
+  `isInland` char(50) DEFAULT NULL COMMENT '国内外',
+  `requestWay` char(50) DEFAULT NULL COMMENT '送修方式',
+  `requestStaff` char(50) DEFAULT NULL COMMENT '送修人',
+  `maker` char(50) DEFAULT NULL COMMENT '制单人员',
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
   `billRemark` varchar(255) DEFAULT NULL COMMENT '单据备注',
-  `factoryNos` varchar(255) DEFAULT NULL COMMENT '出厂编号清单',
+  `factoryNos` char(50) DEFAULT NULL COMMENT '出厂编号清单',
   `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
 
--- 正在导出表  toolsweb.rp_requestbills 的数据：~2 rows (大约)
+-- 正在导出表  toolsweb.rp_requestbills 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `rp_requestbills` DISABLE KEYS */;
 REPLACE INTO `rp_requestbills` (`DBID`, `requestBillId`, `requestDate`, `fromBillId`, `customerId`, `customerShortName`, `warrantyPeriod`, `customerArea`, `customerName`, `contact`, `mobilePhone`, `address`, `customerBelongShort`, `customerBelongFull`, `isInland`, `requestWay`, `requestStaff`, `maker`, `makeDate`, `billRemark`, `factoryNos`, `billSaveTimeStamp`) VALUES
-	(1, 'AA-20200525001', '2020-05-25', NULL, 'CS_BL_AS', '北仑_奥森', '18个月', '中国-浙江省-宁波市', '宁波奥森科技有限公司', '杨先生', '13732186943', NULL, NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-25', NULL, '111 ', '2020-05-25 13:55:11'),
-	(2, 'AA-20200525002', '2020-05-25', NULL, 'CS_BL_BY', '北仑_贝元', '18个月', '中国-浙江省-宁波市', '宁波北仑贝元文具有限公司', '叶敏元', '13906692519', '北仑区大契甬江南路2号5幢楼1楼', NULL, NULL, '国内', '邮寄过来', '夏飞', '熊奇龙', '2020-05-25', NULL, '222 ', '2020-05-25 13:57:07'),
-	(3, 'AA-20200525003', '2020-05-25', NULL, 'CS_BJ_JY', '北仑_精益', '18个月', '中国-浙江省-宁波市-北仑区', '北仑柴桥精益注塑加工厂222', '北仑_精益', '13646632732', NULL, NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-25', NULL, '323 ', '2020-05-25 13:58:06');
+	(9, 'AA-20200526004', '2020-05-26', NULL, 'CS_BL_XD', '北仑_兴达', '18个月', '中国-浙江省-宁波市-北仑区', '宁波兴达文具用品有限公司', '王工', '15988666901', '宁波市北仑区甬江南路2号', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '554', '2020-05-26 13:11:47'),
+	(10, 'AA-20200526003', '2020-05-26', NULL, 'CS_BL_XD', '北仑_兴达', '18个月', '中国-浙江省-宁波市-北仑区', '宁波兴达文具用品有限公司', '王工', '15988666901', '宁波市北仑区甬江南路2号', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '23333', '2020-05-26 13:11:54'),
+	(11, 'AA-20200526002', '2020-05-26', NULL, 'CS_BL_JY', '北仑_精艺', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑区大碶精艺机械配件厂', '蒋师傅', '13857468253', NULL, '北仑_贝元', NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '2121', '2020-05-26 13:12:02'),
+	(14, 'AA-20200526001', '2020-05-26', NULL, 'CS_BL_BY', '北仑_贝元', '18个月', '中国-浙江省-宁波市', '宁波北仑贝元文具有限公司', '叶敏元', '13906692519', '北仑区大契甬江南路2号5幢楼1楼', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '11', '2020-05-26 13:12:45');
 /*!40000 ALTER TABLE `rp_requestbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_responsebills 结构
