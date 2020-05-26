@@ -3332,7 +3332,6 @@ REPLACE INTO `rp_faultclasses` (`DBID`, `faultId`, `faultName`, `faultClass`, `f
 	(424, 'EZ', '油进杂质', '故障现象', ' ', '149', 'HYB_YANTT', '是', '2019-10-23 00:00:00'),
 	(425, 'FA', '进水乳化', '故障现象', ' ', '150', 'HYB_YANTT', '是', '2019-10-23 00:00:00'),
 	(426, 'FB', '漏油', '故障现象', ' ', '151', 'HYB_YANTT', '是', '2019-10-23 00:00:00'),
-	(427, '', '', '故障现象', ' ', '0', 'India User', '是', '2012-11-21 00:00:00'),
 	(428, 'A', 'AD', '故障部件', '', '1', 'Administrator', '是', '2009-09-01 00:00:00'),
 	(429, 'B', 'CPU', '故障部件', '', '2', 'Administrator', '是', '2009-09-01 00:00:00'),
 	(430, 'C', 'DA', '故障部件', '', '3', 'Administrator', '是', '2009-09-01 00:00:00'),
@@ -4782,13 +4781,12 @@ CREATE TABLE IF NOT EXISTS `rp_partsbills` (
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() COMMENT '时间戳',
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`recordBillId`,`rowId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
 
--- 正在导出表  toolsweb.rp_partsbills 的数据：~9 rows (大约)
+-- 正在导出表  toolsweb.rp_partsbills 的数据：~1 rows (大约)
 /*!40000 ALTER TABLE `rp_partsbills` DISABLE KEYS */;
 REPLACE INTO `rp_partsbills` (`DBID`, `recordBillId`, `rowId`, `partId`, `partName`, `partDescription`, `partLocation`, `num`, `price`, `partFee`, `numStatus`, `remark`, `billSaveTimeStamp`) VALUES
-	(10, 'R-20200520001', '1', '3CDTP106_010', 'SMD 10UF/10V_TA', 'SMD T.C. 10uf/10vA', 'CTA4', 2, 5.00, 10.00, '已领', NULL, '2020-05-20 13:15:45'),
-	(11, 'R-20200520001', '2', '3CD6XP103', 'SMD 1030603', 'SMD X7R 0603 0.01uf', 'CW7', 5, 5.00, 25.00, '已领', NULL, '2020-05-20 13:15:45');
+	(1, 'R-20200525001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX1', 1, 35.00, 35.00, '已领', NULL, '2020-05-25 00:00:00');
 /*!40000 ALTER TABLE `rp_partsbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_partsfee 结构
@@ -6633,7 +6631,7 @@ CREATE TABLE IF NOT EXISTS `rp_partswarehouse` (
   UNIQUE KEY `partId` (`partId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1798 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
 
--- 正在导出表  toolsweb.rp_partswarehouse 的数据：~238 rows (大约)
+-- 正在导出表  toolsweb.rp_partswarehouse 的数据：~252 rows (大约)
 /*!40000 ALTER TABLE `rp_partswarehouse` DISABLE KEYS */;
 REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`, `rpBillId`, `erpBillId`, `saveTimeStamp`) VALUES
 	(1546, '2BP_TECH2M5_1AN', 100, NULL, '', '', '', NULL),
@@ -6788,11 +6786,11 @@ REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`
 	(1695, '3MJS01*07H_B', 100, NULL, '', '', '', NULL),
 	(1696, '3MSLED3_3B', 100, NULL, '', '', '', NULL),
 	(1697, '3RD6AK002', 100, NULL, '', '', '', NULL),
-	(1698, '3RDAO330', 100, NULL, '', '', '', NULL),
+	(1698, '3RDAO330', 0, NULL, '', '', '', NULL),
 	(1699, '3UDMMBT2222', 100, NULL, '', '', '', NULL),
 	(1700, '3MOF10V_M', 100, NULL, '', '', '', NULL),
 	(1701, '2BP_A80_CPUA', 100, NULL, '', '', '', NULL),
-	(1702, '2BTEC_HB02F', 100, NULL, '', '', '', NULL),
+	(1702, '2BTEC_HB02F', 98, NULL, '', '', '', NULL),
 	(1703, '3CEU010_050', 100, NULL, '', '', '', NULL),
 	(1704, '3CEU221_063_1', 100, NULL, '', '', '', NULL),
 	(1705, '3CLCM166125500MB', 100, NULL, '', '', '', NULL),
@@ -6820,7 +6818,7 @@ REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`
 	(1727, '3CD6NP101', 100, NULL, '', '', '', NULL),
 	(1728, '3CD6NP470', 100, NULL, '', '', '', NULL),
 	(1729, '3CD6XP221', 100, NULL, '', '', '', NULL),
-	(1730, '3CD6XP471', 100, NULL, '', '', '', NULL),
+	(1730, '3CD6XP471', 99, NULL, '', '', '', NULL),
 	(1731, '3CDE100_016', 100, NULL, '', '', '', NULL),
 	(1732, '3CDTP105_025', 100, NULL, '', '', '', NULL),
 	(1733, '3CDTP106_016', 100, NULL, '', '', '', NULL),
@@ -6904,13 +6902,17 @@ CREATE TABLE IF NOT EXISTS `rp_partswarehousehistory` (
   `actType` char(50) DEFAULT NULL COMMENT '操作类型',
   `dateTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`)
-) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
+) ENGINE=InnoDB AUTO_INCREMENT=149 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
 
--- 正在导出表  toolsweb.rp_partswarehousehistory 的数据：~140 rows (大约)
+-- 正在导出表  toolsweb.rp_partswarehousehistory 的数据：~4 rows (大约)
 /*!40000 ALTER TABLE `rp_partswarehousehistory` DISABLE KEYS */;
 REPLACE INTO `rp_partswarehousehistory` (`DBID`, `partId`, `preNum`, `actNum`, `nowNum`, `unit`, `rpBillId`, `erpBillId`, `actType`, `dateTimeStamp`) VALUES
 	(143, '3CDTP106_010', 100, -2, 98, NULL, 'R-20200520001', NULL, '领料', '2020-05-20 13:15:44'),
-	(144, '3CD6XP103', 100, -5, 95, NULL, 'R-20200520001', NULL, '领料', '2020-05-20 13:15:44');
+	(144, '3CD6XP103', 100, -5, 95, NULL, 'R-20200520001', NULL, '领料', '2020-05-20 13:15:44'),
+	(145, '2BTEC_HB02F', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
+	(146, '3CD6XP471', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
+	(147, '3RDAO330', 100, -100, 0, NULL, 'R-20200521002', NULL, '领料', '2020-05-21 11:07:23'),
+	(148, '2BTEC_HB02F', 99, -1, 98, NULL, 'R-20200525001', NULL, '领料', '2020-05-25 14:42:00');
 /*!40000 ALTER TABLE `rp_partswarehousehistory` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_productclasses 结构
@@ -15916,25 +15918,33 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   `origin` varchar(255) DEFAULT NULL COMMENT '原产地',
   `systemType` char(50) DEFAULT NULL COMMENT '系统分类',
   `productClass` char(50) DEFAULT NULL COMMENT '产品类别',
-  `productYear` varchar(255) DEFAULT NULL COMMENT '生产年份',
-  `productMonth` varchar(255) DEFAULT NULL COMMENT '生产月份',
+  `productYear` char(5) DEFAULT NULL COMMENT '生产年份',
+  `productMonth` char(5) DEFAULT NULL COMMENT '生产月份',
   `productionDate` date DEFAULT NULL COMMENT '生产日期',
   `orginFactoryNo` char(50) DEFAULT NULL COMMENT '原厂编码',
   `isRework` varchar(255) DEFAULT NULL COMMENT '是否返修',
   `repairStaff` char(50) DEFAULT NULL COMMENT '维修人',
-  `urgent` varchar(255) DEFAULT NULL COMMENT '是否紧急',
-  `inWarranty` varchar(255) DEFAULT NULL COMMENT '质保期内',
-  `productFrom` varchar(255) DEFAULT NULL COMMENT '来源类型',
-  `productBelong` varchar(255) DEFAULT NULL COMMENT '产品归属',
+  `urgent` char(5) DEFAULT NULL COMMENT '是否紧急',
+  `inWarranty` char(5) DEFAULT NULL COMMENT '质保期内',
+  `productFrom` char(50) DEFAULT NULL COMMENT '来源类型',
+  `conditionStatus` char(50) DEFAULT NULL COMMENT '成色',
+  `productBelong` char(50) DEFAULT NULL COMMENT '产品归属',
   `testResult` varchar(255) DEFAULT NULL COMMENT '检测结果',
   `testItem` varchar(255) DEFAULT NULL COMMENT '检测项目',
   `testFee` decimal(10,2) DEFAULT NULL COMMENT '检测费用',
+  `partsFee` decimal(10,2) DEFAULT NULL COMMENT '零件费用',
+  `yearsFee` decimal(10,2) DEFAULT NULL COMMENT '年份费用',
+  `conditionFee` decimal(10,2) DEFAULT NULL COMMENT '成色费用',
+  `urgentFee` decimal(10,2) DEFAULT NULL COMMENT '加急费用',
+  `repairTotalFee` decimal(10,2) DEFAULT NULL COMMENT '总费用',
+  `repairLastFee` decimal(10,2) DEFAULT NULL COMMENT '最终费用',
+  `forFree` char(5) DEFAULT NULL COMMENT '免费维修',
   `faultDescription` varchar(255) DEFAULT NULL COMMENT '故障描述',
+  `faultShow` varchar(255) DEFAULT NULL COMMENT '故障现象',
+  `faultPart` varchar(255) DEFAULT NULL COMMENT '故障部件',
   `faultReason` varchar(255) DEFAULT NULL COMMENT '故障原因',
-  `faultClass` varchar(255) DEFAULT NULL COMMENT '故障分类',
   `changePartList` varchar(255) DEFAULT NULL COMMENT '替换原件清单',
   `repairResult` char(50) DEFAULT NULL COMMENT '维修结果',
-  `repairTotalFee` decimal(10,2) DEFAULT NULL COMMENT '总费用',
   `billRemark` varchar(255) DEFAULT NULL COMMENT '备注',
   `files` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '附件',
   `maker` varchar(255) DEFAULT NULL COMMENT '制单人',
@@ -15945,15 +15955,14 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`),
   UNIQUE KEY `recordBillId` (`recordBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
 
--- 正在导出表  toolsweb.rp_recordbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_recordbills 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `rp_recordbills` DISABLE KEYS */;
-REPLACE INTO `rp_recordbills` (`DBID`, `recordBillId`, `requestBillId`, `rowId`, `responseBillId`, `productId`, `productName`, `productDescription`, `factoryNo`, `origin`, `systemType`, `productClass`, `productYear`, `productMonth`, `productionDate`, `orginFactoryNo`, `isRework`, `repairStaff`, `urgent`, `inWarranty`, `productFrom`, `productBelong`, `testResult`, `testItem`, `testFee`, `faultDescription`, `faultReason`, `faultClass`, `changePartList`, `repairResult`, `repairTotalFee`, `billRemark`, `files`, `maker`, `makeDate`, `finishDate`, `status`, `billSaveTimeStamp`) VALUES
-	(1, NULL, 'AA-20200519001', '1', NULL, '2BP_TECH2M5_1AN', '2BP_TECH2M5_1AN', 'TECH2M5 CPU', '111', '宁波', 'TECH2', '主机板', '2019', '01', NULL, NULL, '否', NULL, '否', '是', '终端客户', '客户', NULL, NULL, NULL, '11212121212', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-19 09:57:19'),
-	(2, NULL, 'AA-20200520001', '1', NULL, '2BP_AHBOP', '2BP_AHBOP', '2BP_AHBOP', '11', '宁波', NULL, NULL, '2019', '01', NULL, NULL, '否', NULL, '否', '是', '终端客户', '客户', NULL, NULL, NULL, '234234234234', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-20 12:57:38'),
-	(3, NULL, 'AA-20200520002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '123123', '宁波', 'A80', '主机板', '2009', '02', NULL, NULL, '否', NULL, '否', '否', '终端客户', '客户', NULL, NULL, NULL, '123123123123123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-20 12:58:36'),
-	(4, 'R-20200520001', 'AA-20200520003', '1', NULL, '2BP_AK668_CPU', '2BP_AK668_CPU\r\n', NULL, '111', '宁波', 'AK668', '主机板', '2019', '03', NULL, NULL, '否', NULL, '否', '是', '终端客户', '客户', NULL, '检测', 200.00, '333333', NULL, NULL, '3CDTP106_010*2,3CD6XP103*5', NULL, 235.00, NULL, '[]', '熊奇龙', '2020-05-20', NULL, '维修中', '2020-05-20 12:59:19');
+REPLACE INTO `rp_recordbills` (`DBID`, `recordBillId`, `requestBillId`, `rowId`, `responseBillId`, `productId`, `productName`, `productDescription`, `factoryNo`, `origin`, `systemType`, `productClass`, `productYear`, `productMonth`, `productionDate`, `orginFactoryNo`, `isRework`, `repairStaff`, `urgent`, `inWarranty`, `productFrom`, `conditionStatus`, `productBelong`, `testResult`, `testItem`, `testFee`, `partsFee`, `yearsFee`, `conditionFee`, `urgentFee`, `repairTotalFee`, `repairLastFee`, `forFree`, `faultDescription`, `faultShow`, `faultPart`, `faultReason`, `changePartList`, `repairResult`, `billRemark`, `files`, `maker`, `makeDate`, `finishDate`, `status`, `billSaveTimeStamp`) VALUES
+	(1, NULL, 'AA-20200525001', '1', NULL, '2BP_AHBOP', '2BP_AHBOP', '2BP_AHBOP', '111', '宁波', NULL, NULL, NULL, NULL, NULL, '1111', '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1111111', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-25 13:55:11'),
+	(2, NULL, 'AA-20200525002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '222', '宁波', 'A80', '主机板', '2019', '01', NULL, '222', '否', NULL, '否', '是', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '213123123123123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-25 13:57:07'),
+	(3, 'R-20200525001', 'AA-20200525003', '1', NULL, '2BP_AK668_CPU', '2BP_AK668_CPU\r\n', NULL, '323', '宁波', 'AK668', '主机板', '2009', '02', NULL, '333', '否', '岑建军', '否', '否', '终端客户', '好', '客户', NULL, '检测', 200.00, 35.00, 35.25, 0.00, 0.00, 270.25, 280.00, '否', '3323232', '有间隙气泡,显示红屏', 'AD,RS232', '接触不良,检测OK', '2BTEC_HB02F*1', '检测后正常', NULL, '[]', '熊奇龙', '2020-05-25', '2020-05-25', '维修完成', '2020-05-25 13:58:06');
 /*!40000 ALTER TABLE `rp_recordbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_requestbills 结构
@@ -15983,15 +15992,14 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
 
--- 正在导出表  toolsweb.rp_requestbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_requestbills 的数据：~2 rows (大约)
 /*!40000 ALTER TABLE `rp_requestbills` DISABLE KEYS */;
 REPLACE INTO `rp_requestbills` (`DBID`, `requestBillId`, `requestDate`, `fromBillId`, `customerId`, `customerShortName`, `warrantyPeriod`, `customerArea`, `customerName`, `contact`, `mobilePhone`, `address`, `customerBelongShort`, `customerBelongFull`, `isInland`, `requestWay`, `requestStaff`, `maker`, `makeDate`, `billRemark`, `factoryNos`, `billSaveTimeStamp`) VALUES
-	(1, 'AA-20200519001', '2020-05-19', NULL, 'CS_BL_AS', '北仑_奥森', '18个月', '中国-浙江省-宁波市', '宁波奥森科技有限公司', '杨先生', '13732186943', NULL, NULL, NULL, '国内', '邮寄过来', '苏文洁', '熊奇龙', '2020-05-19', NULL, '111 ', '2020-05-19 09:57:19'),
-	(2, 'AA-20200520001', '2020-05-20', NULL, 'CS_BL_JCDZ', '北仑_精诚电子', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑精诚电子有限公司', '周先生', '13958300300', '宁波市北仑长白山路637号', NULL, NULL, '国内', '邮寄过来', '林红欢', '熊奇龙', '2020-05-20', NULL, '11 ', '2020-05-20 12:57:38'),
-	(3, 'AA-20200520002', '2020-05-20', NULL, 'CS_BLFJ', '北仑_富敬', '18个月', '中国-浙江省-宁波市', '宁波富敬电子科技有限公司', '杨红', NULL, '宁波出口加工区天山路8号', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-20', NULL, '123123 ', '2020-05-20 12:58:36'),
-	(4, 'AA-20200520003', '2020-05-20', NULL, 'CS_BLQP', '北仑_汽配', '18个月', '中国-浙江省-宁波市', '北仑汽车塑料配件厂', '于贤永', NULL, '北仑霞浦山前工业区', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-20', NULL, '111 ', '2020-05-20 12:59:19');
+	(1, 'AA-20200525001', '2020-05-25', NULL, 'CS_BL_AS', '北仑_奥森', '18个月', '中国-浙江省-宁波市', '宁波奥森科技有限公司', '杨先生', '13732186943', NULL, NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-25', NULL, '111 ', '2020-05-25 13:55:11'),
+	(2, 'AA-20200525002', '2020-05-25', NULL, 'CS_BL_BY', '北仑_贝元', '18个月', '中国-浙江省-宁波市', '宁波北仑贝元文具有限公司', '叶敏元', '13906692519', '北仑区大契甬江南路2号5幢楼1楼', NULL, NULL, '国内', '邮寄过来', '夏飞', '熊奇龙', '2020-05-25', NULL, '222 ', '2020-05-25 13:57:07'),
+	(3, 'AA-20200525003', '2020-05-25', NULL, 'CS_BJ_JY', '北仑_精益', '18个月', '中国-浙江省-宁波市-北仑区', '北仑柴桥精益注塑加工厂222', '北仑_精益', '13646632732', NULL, NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-25', NULL, '323 ', '2020-05-25 13:58:06');
 /*!40000 ALTER TABLE `rp_requestbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_responsebills 结构
@@ -16047,19 +16055,11 @@ CREATE TABLE IF NOT EXISTS `rp_selectoroptions` (
   `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `optionClass_optionValue` (`optionClass`,`optionValue`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础资料_选项清单\r\n\r\n\r\n用于统一管理较少的 option选项';
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础资料_选项清单\r\n\r\n\r\n用于统一管理较少的 option选项';
 
--- 正在导出表  toolsweb.rp_selectoroptions 的数据：~53 rows (大约)
+-- 正在导出表  toolsweb.rp_selectoroptions 的数据：~51 rows (大约)
 /*!40000 ALTER TABLE `rp_selectoroptions` DISABLE KEYS */;
 REPLACE INTO `rp_selectoroptions` (`DBID`, `optionClass`, `optionValue`, `optionText`, `orderId`, `effective`, `saveTimeStamp`) VALUES
-	(1, '故障原因', '使用原因', '使用原因', '1', '是', '2020-01-14 14:31:53'),
-	(2, '故障原因', '设备原因', '设备原因', '2', '是', '2020-01-14 14:31:53'),
-	(4, '故障分类', '正常', '正常', '1', '是', '2020-01-14 14:31:53'),
-	(5, '故障分类', '按键', '按键', '2', '是', '2020-01-14 14:31:53'),
-	(6, '故障分类', '屏幕', '屏幕', '3', '是', '2020-01-14 14:31:53'),
-	(7, '故障分类', 'IO', 'IO', '4', '是', '2020-01-14 14:31:53'),
-	(8, '故障分类', '温度', '温度', '5', '是', '2020-01-14 14:31:53'),
-	(10, '故障分类', '其他', '其他', '6', '是', '2020-01-14 14:31:53'),
 	(11, '送修方式', '邮寄过来', '邮寄过来', '1', '是', '2020-01-14 14:31:53'),
 	(12, '送修方式', '客户送来', '客户送来', '2', '是', '2020-01-14 14:31:53'),
 	(13, '送修方式', '公司人员带回', '公司人员带回', '3', '是', '2020-01-14 14:31:53'),
@@ -16110,7 +16110,10 @@ REPLACE INTO `rp_selectoroptions` (`DBID`, `optionClass`, `optionValue`, `option
 	(59, '原产地', '宁波', '宁波', '1', '是', '2020-04-17 14:58:33'),
 	(60, '原产地', '台湾', '台湾', '2', '是', '2020-04-17 14:58:33'),
 	(61, '保固期', '18个月', '18个月', '1', '是', '2020-04-17 14:58:33'),
-	(62, '保固期', '36个月', '36个月', '2', '是', '2020-04-17 14:58:33');
+	(62, '保固期', '36个月', '36个月', '2', '是', '2020-04-17 14:58:33'),
+	(63, '成色', '好', '好', '1', '是', '2020-04-17 14:58:33'),
+	(64, '成色', '一般', '一般', '2', '是', '2020-04-17 14:58:33'),
+	(65, '成色', '差', '差', '3', '是', '2020-04-17 14:58:33');
 /*!40000 ALTER TABLE `rp_selectoroptions` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_staffs 结构
