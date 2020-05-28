@@ -451,6 +451,49 @@
 
     }
 
+    const checkDuplicateCustomer = async () => {
+
+        let customerShortName = $('#rp_customersForm-customerShortName').val();
+        let customerName = $('#rp_customersForm-customerName').val();
+        let contact = $('#rp_customersForm-contact').val();
+        let mobilePhone = $('#rp_customersForm-mobilePhone').val();
+        let workPhone = $('#rp_customersForm-workPhone').val();
+
+        let filter = "";
+        if (customerShortName) {
+            filter = filter + ' or customerShortName="' + customerShortName + '"';
+        }
+        if (customerName) {
+            filter = filter + ' or customerName="' + customerName + '"';
+        }
+        if (contact) {
+            filter = filter + ' or contact="' + contact + '"';
+        }
+        if (mobilePhone) {
+            filter = filter + ' or mobilePhone="' + mobilePhone + '"';
+        }
+        if (workPhone) {
+            filter = filter + ' or workPhone="' + workPhone + '"';
+        }
+
+        if (filter) {
+            filter = filter.substring(3, filter.length)
+        }
+
+
+        let rs = await getDataBySql({
+            sql: 'getCustomers',
+            params: {
+                filter: filter
+            }
+        })
+
+        console.log('checkDuplicateCustomer', rs);
+        return rs
+
+
+    }
+
 
 
     //保存客户
@@ -468,6 +511,20 @@
             $('#rp_customersForm-remark').val() === '') {
             alert('顾客设为黑名单,必须在备注中注明原因!')
             return
+        }
+
+
+        let duplicateRows = await checkDuplicateCustomer();
+        if (duplicateRows.length > 0) {
+            let duplicateIds = '';
+            for (const row of duplicateRows) {
+                duplicateIds = duplicateIds + row.customerId + ',';
+            }
+            duplicateIds = duplicateIds.substring(0, duplicateIds.length - 1);
+            if (!confirm('检测到可能和以下客户编号:' + duplicateIds + ' 包含重复信息,是否继续')) {
+                return
+            }
+
         }
 
         let mainFormData = getPostFormData({
