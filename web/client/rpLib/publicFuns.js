@@ -1144,10 +1144,10 @@ const getFormData = (i) => {
                 valueStr = valueStr + ',' + n;
             }
             valueStr = valueStr.substring(1, valueStr.length);
-            value=valueStr
+            value = valueStr
         }
 
-
+        //处理异常字符 如 '," 
         value = replaceURI(value);
 
 
@@ -1164,7 +1164,7 @@ const getFormData = (i) => {
         data: data
     }
 
-    console.log('getFormData:' + JSON.stringify(data));
+    // console.log('getFormData:' + JSON.stringify(data));
     return o;
 
 }
