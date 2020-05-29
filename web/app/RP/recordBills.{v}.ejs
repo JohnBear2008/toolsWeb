@@ -527,7 +527,7 @@
 
                                     <!-- 功能组按钮 -->
                                     <div class="well">
-                                        <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
+                                        <!-- <button id='btnScan' type="button" class="btn btn-success">扫描新增</button> -->
                                         <button id='btnAddPart' type="button" class="btn btn-info">添加零件</button>
                                         <button id='btnDeletePart' type="button" class="btn btn-warning">删除零件</button>
                                         <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还零件</button> -->
@@ -620,7 +620,7 @@
                                                         <div class="col-sm-5">
                                                             <select id="rp_partsbillsForm-partLocation"
                                                                 class="selectpicker" data-live-search="true"
-                                                                data-size="5" data-dropup-auto="false">
+                                                                data-size="5" data-dropup-auto="false" multiple>
                                                             </select>
                                                         </div>
 
@@ -1103,7 +1103,7 @@
                 $(this).addClass('selected');
 
                 let rowSelect = subTable.row('.selected').data();
-                console.log("rowSelect:" + JSON.stringify(rowSelect));
+                // console.log("rowSelect:" + JSON.stringify(rowSelect));
 
                 //解绑监听器
                 // $('#rp_partsbillsForm-partLocation').unbind();
@@ -1112,9 +1112,8 @@
 
                 //设置禁止修改
                 if (rowSelect.numStatus === '预领') {
-                    $('#partInfoDiv').find('select,input,textarea').attr("disabled", true);
+                    $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
                 }
-
                 if (rowSelect.numStatus === '已领') {
                     $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
                 }
@@ -1140,6 +1139,9 @@
                         }
                     },
                 })
+
+                console.log('initAndFillFormInputs rowSelect:', rowSelect);
+
 
                 //初始化并填写form内inputs
                 initAndFillFormInputs({
@@ -1181,6 +1183,8 @@
                 columns: subColumnsArray
             }
         })
+
+
 
         //如数据为0,清空tbody 避免直接获取size =1;
         if (dataArray.length === 0) {
@@ -2051,10 +2055,16 @@
             let partData = getFormData({
                 formId: 'rp_partsbillsForm'
             })
-            // console.log('partData:' + JSON.stringify(partData.data))
+            // //格式化位置多选数据
+            // partData['data'][0]['partLocation'] = partData['data'][0]['partLocation'].substring(1,
+            //     partData['data'][0]['partLocation'].length - 1);
+
+
             let rowData = formDataToRowData(partData.data)
             //删除stockNum 属性
             delete rowData.stockNum;
+
+            console.log('rowData:' + JSON.stringify(rowData))
 
 
             rowData.recordBillId = recordBillId;

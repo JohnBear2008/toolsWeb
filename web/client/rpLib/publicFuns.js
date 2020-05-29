@@ -1137,6 +1137,17 @@ const getFormData = (i) => {
             value = '';
         }
 
+        //判断是否为数组,处理数组值['a','b','c']=>a,b,c
+        if (Object.prototype.toString.call(value) == '[object Array]') {
+            let valueStr = '';
+            for (const n of value) {
+                valueStr = valueStr + ',' + n;
+            }
+            valueStr = valueStr.substring(1, valueStr.length);
+            value=valueStr
+        }
+
+
         value = replaceURI(value);
 
 
