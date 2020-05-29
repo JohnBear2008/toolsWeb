@@ -36,10 +36,10 @@
                 <div class="panel-body">
                     <table class="table" id='tableWait'>
                         <thead>
-                            <th>申请单号 </th>
+                            <th width='110'>维修码 </th>
                             <th>客户简称 </th>
-                            <th>产品ID</th>
                             <th>送修日期</th>
+                            <th>超期天数</th>
                         </thead>
                         <tbody></tbody>
 
@@ -58,7 +58,7 @@
                 <div class="panel-body">
                     <table class="table" id='tableDoing'>
                         <thead>
-                            <th>申请单号 </th>
+                            <th width='110'>维修码 </th>
                             <th>客户简称 </th>
                             <th>产品ID</th>
                             <th>维修日期</th>
@@ -82,7 +82,7 @@
                 <div class="panel-body">
                     <table class="table" id='tableWaitSend'>
                         <thead>
-                            <th>申请单号 </th>
+                            <th width='110'>维修码 </th>
                             <th>客户简称 </th>
                             <th>产品ID</th>
                             <th>维修完成</th>
@@ -127,18 +127,18 @@
 <script type="text/javascript">
     //申请表子表dataTable column 数组
     const subColumnsWaitArray = [{
-        data: 'requestBillId',
+        data: 'repairId',
     }, {
         data: 'customerShortName',
     }, {
-        data: 'productId',
-    }, {
         data: 'requestDate',
+    }, {
+        data: 'undoneDays',
     }]
 
     //申请表子表dataTable column 数组
     const subColumnsDoingArray = [{
-        data: 'requestBillId',
+        data: 'repairId',
     }, {
         data: 'customerShortName',
     }, {
@@ -149,7 +149,7 @@
 
     //申请表子表dataTable column 数组
     const subColumnsWaitSendArray = [{
-        data: 'requestBillId',
+        data: 'repairId',
     }, {
         data: 'customerShortName',
     }, {

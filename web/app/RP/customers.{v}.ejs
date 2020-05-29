@@ -451,6 +451,7 @@
 
     }
 
+    //检查可能重复发客户
     const checkDuplicateCustomer = async () => {
 
         let customerShortName = $('#rp_customersForm-customerShortName').val();
@@ -513,7 +514,7 @@
             return
         }
 
-
+        //校验重复数据
         let duplicateRows = await checkDuplicateCustomer();
         if (duplicateRows.length > 0) {
             let duplicateIds = '';
@@ -524,7 +525,6 @@
             if (!confirm('检测到可能和以下客户编号:' + duplicateIds + ' 包含重复信息,是否继续')) {
                 return
             }
-
         }
 
         let mainFormData = getPostFormData({
