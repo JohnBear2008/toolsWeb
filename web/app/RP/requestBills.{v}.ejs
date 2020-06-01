@@ -48,73 +48,89 @@
         </div>
     </div>
 
-    <!-- 功能组按钮 -->
-    <div class="well">
-        <button id='btnRequestBillNew' type="button" class="btn btn-info">新增</button>
-        <button id='btnRequestBillDelete' type="button" class="btn btn-danger">删除</button>
-        <button type="button" class="btn btn-info" id="listPrintBtn">
-            打印维修码
-        </button>
-
-        <button type="button" class="btn btn-primary" id="rp_requestbillsPrint">
-            打印申请单
-        </button>
-    </div>
-
-
-
 
     <div class="row clearfix">
         <div class="col-md-12 column">
 
 
             <!-- 定义基础模块数据表 -->
-            <table id="rp_requestbills" class=" table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>申请单号</th>
-                        <th>送修时间</th>
-                        <th>客户简称</th>
-                        <th>联系人</th>
-                        <th>电话</th>
-                        <th width='300'>地址</th>
-                        <th>客户归属</th>
-                        <th>送修方式</th>
-                        <th>送修人</th>
-                        <th>备注</th>
-                        <th>搜索值</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+
+            <div class="panel panel-default" id='mainTablePanel'>
+                <div class="panel-heading">
+                    <div style="float: left;">
+                        <h3 class="panel-title">申请单</h3>
+                    </div>
+                    <!-- 功能组按钮 -->
+                    <div style="float:right">
+                        <button id='btnRequestBillNew' type="button" class="btn btn-info">新增</button>
+                        <button id='btnRequestBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <button type="button" class="btn btn-info" id="listPrintBtn">
+                            打印维修码
+                        </button>
+                        <button type="button" class="btn btn-primary" id="rp_requestbillsPrint">
+                            打印申请单
+                        </button>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="panel-body">
+                    <table id="rp_requestbills" class=" table table-striped table-bordered" style="min-width:100%">
+                        <thead>
+                            <tr>
+                                <th>申请单号</th>
+                                <th>送修时间</th>
+                                <th>客户简称</th>
+                                <th>联系人</th>
+                                <th>电话</th>
+                                <th width='300'>地址</th>
+                                <th>客户归属</th>
+                                <th>送修方式</th>
+                                <th>送修人</th>
+                                <th>备注</th>
+                                <th>搜索值</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
 
             <!-- 定义主表关联附表数据表 -->
-            <table id="rp_requestbillsSub" class=" table table-striped table-bordered"
-                style="width:100%;display: none;">
-                <thead>
-                    <tr>
-                        <th>序号</th>
-                        <th>产品编号</th>
-                        <th>产品描述</th>
-                        <th>出厂编号</th>
-                        <th>生产年份</th>
-                        <th>生产月份</th>
-                        <th>原厂编号</th>
-                        <th width='300'>故障描述</th>
-                        <th>产品归属</th>
-                        <th>是否返修</th>
-                        <th>是否加急</th>
-                        <th>质保期内</th>
-                        <th>备注</th>
-                        <th>状态</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+
+            <div class="panel panel-default" id='subTablePanel' style="width:100%;display: none;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">产品清单</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="rp_requestbillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>产品编号</th>
+                                <th>产品描述</th>
+                                <th>出厂编号</th>
+                                <th width='35'>生产年份</th>
+                                <th width='35'>生产月份</th>
+                                <th>原厂编号</th>
+                                <th width='200'>故障描述</th>
+                                <th width='35'>产品归属</th>
+                                <th width='35'>是否返修</th>
+                                <th width='35'>是否加急</th>
+                                <th width='35'>质保期内</th>
+                                <th>备注</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
 
 
         </div>
     </div>
+
+
 
     <!-- 打印预览模态框（Modal） -->
     <div class="modal fade" id="printViewModal">
@@ -260,78 +276,6 @@
 
                 </div>
                 <div class="modal-body">
-
-                    <div class="panel-group" id="accordion">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTrack">
-                                        流程跟踪
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseTrack" class="panel-collapse collapse">
-                                <div class="panel-body">
-
-                                    <!-- 关联申请单 -->
-                                    关联申请单
-                                    <table id="rp_requestbillsHistory" class=" table table-striped table-bordered"
-                                        style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>申请单号</th>
-                                                <th>送修时间</th>
-                                                <th>客户编号</th>
-                                                <th>客户简称</th>
-                                                <th>区域</th>
-                                                <th>国内外</th>
-                                                <th>送修人</th>
-                                                <th>送修方式</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-
-                                    关联记录单
-
-                                    <table id="rp_recordHistory" class=" table table-striped table-bordered"
-                                        style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>申请单号</th>
-                                                <th>产品编号</th>
-                                                <th>产品描述</th>
-                                                <th>问题描述</th>
-                                                <th>维修记录</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-
-                                    关联出货单
-
-                                    <table id="rp_responsebills" class=" table table-striped table-bordered"
-                                        style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>申请单号</th>
-                                                <th>记录单号</th>
-                                                <th>出货单号</th>
-                                                <th>客户简称</th>
-                                                <th>产品编号</th>
-                                                <th>维修结果</th>
-                                                <th>出货结果</th>
-                                                <th>是否结清</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
 
 
                     <!-- 表单面板 -->
@@ -531,15 +475,8 @@
                                         <button id='btnAddProduct' type="button" class="btn btn-info">新增产品</button>
                                         <button id='btnDeleteProduct' type="button" class="btn btn-danger">删除产品</button>
                                         <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
-                                        <!-- <button id='btnHistory' type="button" class="btn btn-success">维修记录</button> -->
+
                                     </div>
-
-
-
-
-
-
-
 
                                     <!-- 定义基础模块数据表 -->
                                     <table id="rp_recordbills" class=" table table-striped table-bordered"
@@ -788,25 +725,7 @@
 
 
 
-                            <!-- 维修记录模态框（Modal） -->
-                            <div class="modal fade" id="recordHistoryModal">
-                                <div class="modal-dialog" style="width: 95%">
-                                    <div class="modal-content">
-                                        <div class="modal-body">
 
-                                            <h2>维修历史</h2>
-                                            <hr>
-
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" id="recordHistoryCloseBtn">关闭
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
 
                         </div>
@@ -891,6 +810,30 @@
         data: 'status',
     }]
 
+    const recordHistoryColumnsArray = [{
+            data: 'repairId',
+        }, {
+            data: 'customerShortName'
+        }, {
+            data: 'recordBillId'
+        },
+        {
+            data: 'productId'
+        }, {
+            data: 'isRework',
+        }, {
+            data: 'urgent',
+        }, {
+            data: 'inWarranty',
+        }, {
+            data: 'repairStaff',
+        }, {
+            data: 'repairLastFee',
+        }, {
+            data: 'status',
+        }
+    ]
+
     //选中客户后,填写其他相关信息
 
     const fillCustomerInfo = async (customerShortName) => {
@@ -960,6 +903,8 @@
 
     }
 
+
+
     //选定产品修改事件
     const addProductListener = () => {
         $('#rp_recordbillsForm-productId').unbind();
@@ -967,8 +912,10 @@
             let productId = $('#rp_recordbillsForm-productId option:selected')
                 .val()
             if (productId) {
+
                 $('#rp_recordbillsForm-productId').selectpicker('refresh');
                 fillProductInfo(productId);
+
             }
         });
 
@@ -1043,21 +990,22 @@
 
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
-
-                $('#rp_requestbillsSub').hide();
+                //清空选中单据数据
+                mainTableData = {}
+                $('#subTablePanel').hide();
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
 
                 let rowSelect = table.row('.selected').data();
-                console.log("rowSelect:" + JSON.stringify(rowSelect));
+                // console.log("rowSelect:" + JSON.stringify(rowSelect));
 
                 mainTableData = rowSelect; //刷新全局主表对象数据
 
                 await loadMainBillSubTable(rowSelect.requestBillId)
 
                 //打开面板
-                $('#rp_requestbillsSub').show();
+                $('#subTablePanel').show();
 
             }
 
@@ -1070,8 +1018,8 @@
             //打开关联信息,打印功能
             $("#accordion").show();
 
-            $("#listPrintBtn").show();
-            $("#rp_requestbillsPrint").show();
+            // $("#listPrintBtn").show();
+            // $("#rp_requestbillsPrint").show();
 
             //设定选中
             let table = $('#rp_requestbills').DataTable();
@@ -1081,7 +1029,7 @@
 
             mainTableData = dataSelect; //刷新全局主表对象数据
 
-            console.log('mainTableData', mainTableData);
+            // console.log('mainTableData', mainTableData);
 
             //解除客户监听事件
             $('#rp_requestbillsForm-customerShortName').unbind();
@@ -1136,7 +1084,9 @@
             },
             dtParams: {
                 // bAutoWidth: false,//取消自动宽度
-                columns: mainColumnsArray
+                columns: mainColumnsArray,
+                // scrollX: true,
+                // autoWidth: true
             }
         })
         //清空选项值
@@ -1157,7 +1107,7 @@
         // //添加搜索框监听事件,值变动自动隐藏主页附表
         // $('#rp_requestbills').on('search.dt', function () {
         //     console.log(1111);
-        //     $('#rp_requestbillsSub').hide();
+        //     $('#subTablePanel').hide();
         // })
 
 
@@ -1217,12 +1167,14 @@
     }) => {
 
         //加载表格
-        loadBillDataTable({
+        await loadBillDataTable({
             elementId: elementId,
             dtParams: {
                 dtConfig: 'dtConfigData',
                 data: dataArray,
-                columns: subColumnsArray
+                columns: subColumnsArray,
+                // scrollX: true,
+                // bAutoWidth: true
             }
         })
 
@@ -1358,8 +1310,8 @@
         for (const p in billCustomerData) {
             if (billCustomerData[p] !== customerData[p]) {
 
-                console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
-                    customerData[p] + '不同');
+                // console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
+                //     customerData[p] + '不同');
 
                 compareResult = false;
                 break;
@@ -1522,7 +1474,7 @@
 
             // console.log('contactsStr', contactsStr);
             let contactsArr = contactsStr.split(';')
-            console.log('contactsArr', contactsArr);
+            // console.log('contactsArr', contactsArr);
             for (const n of contactsArr) {
                 if (n) {
                     let name = n.split(',')[0];
@@ -1634,8 +1586,8 @@
             //关闭关联信息,打印按钮
             $("#accordion").hide();
 
-            $("#listPrintBtn").hide();
-            $("#rp_requestbillsPrint").hide();
+            // $("#listPrintBtn").hide();
+            // $("#rp_requestbillsPrint").hide();
 
             //打开面板
             $('#rp_requestbillsModal').modal('show');
@@ -1797,7 +1749,7 @@
 
         //保存产品按钮
 
-        $('#btnProductSave').click(function () {
+        $('#btnProductSave').click(async function () {
 
             let requestBillId = $("#rp_requestbillsForm-requestBillId").text();
 
@@ -1836,6 +1788,22 @@
                 // console.log("rowData:" + JSON.stringify(rowData.status));
                 rowData.rowId = rowNum + 1;
 
+                let rs = await checkRecordHistory({
+                    customerShortName: mainTableData.customerShortName,
+                    productId: rowData.productId
+                })
+
+                if (rs.length > 0) {
+                    alert('检测到可能的返修品,上次维修信息如下:\n' +
+                        '维修日期:' + rs[0].finishDate + '\n' +
+                        '维修人:' + rs[0].repairStaff + '\n' +
+                        '故障描述:' + rs[0].faultDescription + '\n' +
+                        '检测结果:' + rs[0].testResult + '\n' +
+                        '更换原件:' + rs[0].changePartList + '\n' +
+                        '费用:' + rs[0].repairLastFee
+                    )
+                }
+                rowData.isRework = '是'
                 subTableData.push(rowData);
                 // console.log("subTableData:" + JSON.stringify(subTableData));
 
@@ -1887,10 +1855,19 @@
         })
 
 
+
+
+
+
         //表单产品清单打印按钮
         $('#listPrintBtn').click(function () {
 
-            console.log('print subTable', subTableData);
+            if (!mainTableData.requestBillId) {
+                alert('请先选中需要打印的单据!')
+                return
+            }
+
+            // console.log('print subTable', subTableData);
 
             let htmlModel = '　<DIV STYLE="page-break-before:always">' +
                 '<table width="800" border="0">' +
@@ -2087,6 +2064,12 @@
             //     tableId: 'printViewMainTable',
             //     params: formDataToRowData(formData.data)
             // })
+            // console.log('print mainTableData:', mainTableData);
+            if (!mainTableData.requestBillId) {
+                alert('请先选中需要打印的单据!')
+                return
+            }
+
 
             fillTableInputs({
                 tableId: 'printViewMainTable',
@@ -2141,14 +2124,47 @@
             saveRequestbill();
         })
 
-        //维修记录
-        $('#btnHistory').click(function () {
-            $('#recordHistoryModal').modal('show')
-        })
 
-        $('#recordHistoryCloseBtn').click(function () {
-            $('#recordHistoryModal').modal('hide')
-        })
+
+        // //维修历史记录
+        // $('#btnRecordHistory').click(async function () {
+
+        //     if (subTableData.length === 0) {
+        //         alert('不存在相关产品!')
+        //         return
+        //     }
+
+        //     let range = ''
+        //     for (const n of subTableData) {
+        //         range = range + '"' + n.productId + '",'
+        //     }
+        //     range = range.substring(0, range.length - 1);
+        //     range = '(' + range + ')';
+
+
+        //     //加载维修记录
+        //     loadBillDataTable({
+        //         elementId: 'rp_recordbillsHistory',
+        //         sqlParams: {
+        //             sqlId: 'sqlRecordBills',
+        //             params: {
+        //                 filter: 'customerShortName="' + mainTableData.customerShortName +
+        //                     '"and status="维修完成" and productId in' + range,
+        //                 orderBy: 'billSaveTimeStamp desc'
+        //             }
+        //         },
+        //         dtParams: {
+        //             columns: recordHistoryColumnsArray
+        //         }
+        //     })
+
+        //     $('#recordHistoryModal').modal('show')
+
+        // })
+
+        // $('#recordHistoryCloseBtn').click(function () {
+        //     $('#recordHistoryModal').modal('hide')
+        // })
 
 
         //初始化组件
@@ -2340,6 +2356,7 @@
         $('#rp_requestbillsModal').on('hidden.bs.modal', function () {
             let table = $('#rp_requestbills').DataTable();
             table.$('tr.selected').removeClass('selected');
+            mainTableData = {}
 
             // //添加监听出来扫描modal关闭 表单modal失效问题
             $(this).removeData('bs.modal');
@@ -2347,7 +2364,7 @@
         })
 
         //自动调整modal显示位置
-        $('#scanModal,#listPrintViewModal,#printViewModal,#recordHistoryModal').on('show.bs.modal', function (
+        $('#scanModal').on('show.bs.modal', function (
             e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
             $(this).css('display', 'block');

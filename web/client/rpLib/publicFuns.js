@@ -836,7 +836,7 @@ const updateDataTable = async (i) => {
  *
  * @param {*} i={elementId,sqlParams,dtParams}
  */
-const loadBillDataTable = (i) => {
+const loadBillDataTable = async (i) => {
     // console.log("loadBillDataTable i:" + JSON.stringify(i));
     $('#' + i.elementId).DataTable().destroy(); //销毁原数据表格,防止加载错误
 
@@ -908,7 +908,7 @@ const getBillDataTableConfig = (i) => {
         // select: false, //不允许多选操作
         // bStateSave: true, //刷新保存当前页码
         // dom: 'Bfrtlip',
-        bAutoWidth: true, //自动列宽
+        // bAutoWidth: true, //自动列宽
         dom: "<'row'<'col-sm-12'tr>>", //定义datatable组件位置
         language: languageCN
     }
@@ -1642,5 +1642,22 @@ const getMonths = (start, end) => {
         }
     }
     return result.length;
+
+}
+
+
+//校验维修历史
+const checkRecordHistory = async ({
+    customerShortName,
+    productId
+}) => {
+    let rs = await getDataBySql({
+        sql: "sqlRecordBills",
+        params: {
+            filter: 'productId="' + productId + '" and customerShortName="' + customerShortName + '" and status="维修完成"',
+            orderBy: 'billSaveTimeStamp desc'
+        }
+    })
+    return rs
 
 }
