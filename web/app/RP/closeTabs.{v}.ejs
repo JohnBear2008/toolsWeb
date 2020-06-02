@@ -1,0 +1,80 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入boostrapClosableTab库 -->
+<script type="text/javascript" src="/rpLib/boostrapClosableTab/bootstrap-closable-tab.js"></script>
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+
+<div class="rpContent">
+
+
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group">
+            <button type="button" class="btn btn-info">基础资料</button>
+            <button type="button" class="btn btn-default" onclick="add(customersTab);">客户</button>
+            <button type="button" class="btn btn-default" onclick="add(staffsTab);">人员</button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info">工作流程</button>
+            <button type="button" class="btn btn-default" onclick="add(requestBillsTab);">申请单</button>
+            <button type="button" class="btn btn-default" onclick="add(recordBillsTab);">记录单</button>
+        </div>
+      
+    </div>
+    <br>
+
+    <!-- 此处是相关代码 -->
+    <ul class="nav nav-tabs" role="tablist">
+    </ul>
+    <div class="tab-content" >
+    </div>
+    <!-- 相关代码结束 -->
+
+
+</div>
+
+
+<script type="text/javascript">
+    const customersTab = {
+        'id': 'customersTab',
+        'name': '客户',
+        'url': 'tabCustomers',
+        'closable': true
+    };
+    const staffsTab = {
+        'id': 'staffsTab',
+        'name': '人员',
+        'url': 'tabStaffs',
+        'closable': true
+    };
+    const requestBillsTab = {
+        'id': 'requestBillsTab',
+        'name': '申请单',
+        'url': 'tabRequestBills',
+        'closable': true
+    };
+    const recordBillsTab = {
+        'id': 'recordBillsTab',
+        'name': '记录单',
+        'url': 'tabRecordBills',
+        'closable': true
+    };
+
+
+
+    function add(item) {
+        closableTab.addTab(item);
+    }
+</script>

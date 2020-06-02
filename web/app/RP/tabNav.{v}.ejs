@@ -1,0 +1,56 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入boostrapClosableTab库 -->
+<script type="text/javascript" src="/rpLib/boostrapClosableTab/bootstrap-closable-tab.js"></script>
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>工作流程-流程图</h1>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-default" onclick="add();">添加</button>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        var item = {
+            'id': '1',
+            'name': '首页',
+            'url': 'tabNav',
+            'closable': false
+        };
+        closableTab.addTab(item);
+    })
+
+    function add() {
+        var id = $('#id').val();
+        var name = $('#name').val();
+        var uri = $('#url').val();
+        var closable = $('#closable').val();
+        var item = {
+            'id': id,
+            'name': name,
+            'url': uri,
+            'closable': closable == 1 ? true : false
+        };
+        closableTab.addTab(item);
+    }
+</script>

@@ -11,6 +11,158 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
+-- 导出  表 toolsweb.processes 结构
+DROP TABLE IF EXISTS `processes`;
+CREATE TABLE IF NOT EXISTS `processes` (
+  `ProcessOID` int(11) NOT NULL AUTO_INCREMENT,
+  `ProcessOIDParent` int(11) NOT NULL DEFAULT 0,
+  `ProcessAID` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'AID',
+  `Name` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'Name',
+  `Category` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `Description` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `ExecType` int(11) NOT NULL DEFAULT 0,
+  `ExecMode` int(11) NOT NULL DEFAULT 0,
+  `ExecName` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `Route` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+  `ArgumentList` varchar(512) COLLATE utf8_bin DEFAULT NULL,
+  `LevelNumber` int(11) NOT NULL DEFAULT 0,
+  `SortNumber` int(11) NOT NULL DEFAULT 0,
+  `ImageAID` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ColorOdd` int(11) DEFAULT NULL,
+  `ColorEven` int(11) DEFAULT NULL,
+  `Hidden` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ProcessOID`),
+  UNIQUE KEY `UNIQUE` (`ProcessAID`)
+) ENGINE=InnoDB AUTO_INCREMENT=296 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- 正在导出表  toolsweb.processes 的数据：~123 rows (大约)
+/*!40000 ALTER TABLE `processes` DISABLE KEYS */;
+REPLACE INTO `processes` (`ProcessOID`, `ProcessOIDParent`, `ProcessAID`, `Name`, `Category`, `Description`, `ExecType`, `ExecMode`, `ExecName`, `Route`, `ArgumentList`, `LevelNumber`, `SortNumber`, `ImageAID`, `ColorOdd`, `ColorEven`, `Hidden`) VALUES
+	(97, 106, 'System Log', '系统日志', 'Root', '', 4, 0, '/app/system/log/showLoginLogs', '0', NULL, 2, 500, '', NULL, NULL, 0),
+	(104, 106, 'Users', '系统用户', 'Root', '', 0, 0, '/app/system/authority2/user/showUsers', '0', NULL, 1, 100, '', NULL, NULL, 0),
+	(106, 93, 'Authority', 'FOIL系统', 'Root', '', 4, 0, '', '0', NULL, 2, 400, '/images/menu_icon/system.png', NULL, NULL, 0),
+	(146, 106, 'Processes', '系统功能', NULL, '', 0, 0, '/app/system/authority2/process/showProcesses', '0', NULL, 0, 0, '', NULL, NULL, 0),
+	(163, 106, 'RoleAthority', '系统授权', NULL, '', 0, 0, '/app/system/authority2/roleAuthority/showRoleAuthority', '0', NULL, 0, 3, '', NULL, NULL, 0),
+	(164, 106, 'Roles', '系统角色', NULL, '', 0, 0, '/app/system/authority2/role/showRoles', '0', NULL, 0, 2, '', NULL, NULL, 0),
+	(169, 106, 'Orgs', '系统组织', NULL, '', 0, 0, '/app/system/authority2/org/showOrgs', '0', NULL, 0, 1, '', NULL, NULL, 0),
+	(172, -1, 'Demo', '功能示例', NULL, '', 0, 0, '', NULL, NULL, 0, 80, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(173, 172, 'bearSub', 'MES 数据接口', NULL, '', 0, 0, '/app/bear/BearSub', NULL, NULL, 0, 81, '', NULL, NULL, 0),
+	(174, 172, 'uploadPic', '文件上传', NULL, '', 0, 0, '/app/bear/uploadPic', NULL, NULL, 0, 82, '', NULL, NULL, 0),
+	(176, 172, 'bearTest', '子测试页', NULL, '', 0, 0, '/app/bear/BearTest', NULL, NULL, 0, 84, '', NULL, NULL, 0),
+	(177, -1, 'MSTools', '停机密码工具', NULL, '', 0, 0, '', NULL, NULL, 0, 3, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(178, 184, 'MSAkey', '单密钥', NULL, '', 0, 0, '/app/MSAgent/MSAkey', NULL, NULL, 0, 21, '', NULL, NULL, 0),
+	(179, 184, 'MSAKeyG', '分期密钥', NULL, '', 0, 0, '/app/MSAgent/MSAkeyG', NULL, NULL, 0, 22, '', NULL, NULL, 0),
+	(180, 184, 'MSAdmin', '密钥管理', NULL, '', 0, 0, '/app/MSAgent/MSAdmin', NULL, NULL, 0, 23, '', NULL, NULL, 0),
+	(181, -1, 'HMIPrint', '面板解析工具', NULL, '', 0, 0, '', NULL, NULL, 0, 10, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(182, 229, 'TM55维护', 'TM55模具维护', NULL, '', 0, 0, '/app/HMIPrint/Mold/MoldTM55DB', NULL, NULL, 0, 4, '', NULL, NULL, 0),
+	(183, 228, 'moni解析', '监测信息', NULL, '', 0, 0, '/app/HMIPrint/Moni/moniParse', NULL, NULL, 0, 12, '', NULL, NULL, 0),
+	(184, 177, 'MSAgent', '密钥生成', NULL, '', 0, 0, '', NULL, NULL, 0, 20, '', NULL, NULL, 0),
+	(187, 184, 'MSDecrypt', '密钥解密', NULL, '', 0, 0, '/app/MSAgent/MSDecrypt', NULL, NULL, 0, 24, '', NULL, NULL, 0),
+	(188, 229, 'mold解析', '模具信息', NULL, '', 0, 0, '/app/HMIPrint/Mold/MoldParse', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(189, 181, 'error', '警报信息', NULL, '', 0, 0, '/app/HMIPrint/error', NULL, NULL, 0, 15, '', NULL, NULL, 0),
+	(190, 228, 'moni维护', '监测维护', NULL, '', 0, 0, '/app/HMIPrint/Moni/monidb', NULL, NULL, 0, 13, '', NULL, NULL, 0),
+	(191, 177, 'MSSoftware', '单机软件', NULL, '', 0, 0, '', NULL, NULL, 0, 30, '', NULL, NULL, 0),
+	(192, 191, 'MSMac', '软件注册码', NULL, '', 0, 0, '/app/MSSoftware/MSMac', NULL, NULL, 0, 31, '', NULL, NULL, 0),
+	(193, 191, 'MSFac', '厂商授权码', NULL, '', 0, 0, '/app/MSSoftware/MSFacMK', NULL, NULL, 0, 32, '', NULL, NULL, 0),
+	(194, -1, 'PPMTools', 'PPM工具', NULL, '', 0, 0, '', NULL, NULL, 0, 2, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(195, 194, 'PPMBasicInfo', '基础信息', NULL, '', 0, 0, '', NULL, NULL, 0, 51, '', NULL, NULL, 0),
+	(196, 194, 'PPMWorkFlow', '工作流程', NULL, '', 0, 0, '', NULL, NULL, 0, 52, '', NULL, NULL, 0),
+	(197, 194, 'PPMInfoManage', '信息管理', NULL, '', 0, 0, '', NULL, NULL, 0, 54, '', NULL, NULL, 0),
+	(198, 195, 'customers', '客户', NULL, '', 0, 0, '/app/PM/customers', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(200, 195, 'staffs', '人员', NULL, '', 0, 0, '/app/PM/staffs', NULL, NULL, 0, 3, '', NULL, NULL, 0),
+	(201, 195, 'MHESystems', '系统', NULL, '', 0, 0, '/app/PM/MHESystems', NULL, NULL, 0, 6, '', NULL, NULL, 0),
+	(202, 195, 'machines', '机种', NULL, '', 0, 0, '/app/PM/machines', NULL, NULL, 0, 5, '', NULL, NULL, 0),
+	(203, 196, 'workFlow', '流程图', NULL, '', 0, 0, '/app/PM/workFlow', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(204, 196, 'billsPLD', '计划单', NULL, '', 0, 0, '/app/PM/billsPLD', NULL, NULL, 0, 4, '', NULL, NULL, 0),
+	(205, 196, 'billsIPQC', 'IPQC单', NULL, '', 0, 0, '/app/PM/billsIPQC', NULL, NULL, 0, 7, '', NULL, NULL, 0),
+	(206, 196, 'billsFQC', 'FQC单', NULL, '', 0, 0, '/app/PM/billsFQC', NULL, NULL, 0, 8, '', NULL, NULL, 0),
+	(207, 196, 'billsFBK', '反馈单', NULL, '', 0, 0, '/app/PM/billsFBK', NULL, NULL, 0, 10, '', NULL, NULL, 0),
+	(210, 197, 'oldbills', '老系统单据', NULL, '', 0, 0, '/app/PM/oldbills', NULL, NULL, 0, 9, '', NULL, NULL, 0),
+	(211, -1, 'OATools', 'OA管理工具', NULL, '', 0, 0, '', NULL, NULL, 0, 60, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(212, 211, 'OABasicInfo', '基础信息', NULL, '', 0, 0, '', NULL, NULL, 0, 61, '', NULL, NULL, 0),
+	(214, 212, 'OA_Staffs', '人员信息查询', NULL, '', 0, 0, '/app/OA/OA_Staffs', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(215, 194, 'PPMFun', '功能模块', NULL, '', 0, 0, '', NULL, NULL, 0, 55, '', NULL, NULL, 0),
+	(216, 215, 'DB', '数据库模块', NULL, '', 0, 0, '/app/PM/0DB', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(217, 215, 'ORDER', '表单模块', NULL, '', 0, 0, '/app/PM/0ORDER', NULL, NULL, 0, 2, '', NULL, NULL, 0),
+	(218, 212, 'OA_StaffsAdmin', '人员信息管理', NULL, '', 0, 0, '/app/OA/OA_StaffsAdmin', NULL, NULL, 0, 2, '', NULL, NULL, 0),
+	(219, 215, 'ORDERS', '表单跟踪模块', NULL, '', 0, 0, '/app/PM/0ORDERS', NULL, NULL, 0, 3, '', NULL, NULL, 0),
+	(220, 215, 'ORDERSADMIN', '表单管理模块', NULL, '', 0, 0, '/app/PM/0ORDERSADMIN', NULL, NULL, 0, 4, '', NULL, NULL, 0),
+	(221, 215, 'DingTalk', '钉钉机器人模块', NULL, '', 0, 0, '/app/PM/0DingTalk', NULL, NULL, 0, 5, '', NULL, NULL, 0),
+	(222, 215, 'DBBind', '数据绑定模块', NULL, '', 0, 0, '/app/PM/0DBBind', NULL, NULL, 0, 6, '', NULL, NULL, 0),
+	(223, 196, 'billsRQD', '需求单', NULL, '', 0, 0, '/app/PM/prebillsRQD', NULL, NULL, 0, 3, '', NULL, NULL, 0),
+	(224, 196, 'billsTrack', '进度跟踪', NULL, '', 0, 0, '/app/PM/billsTrack', NULL, NULL, 0, 2, '', NULL, NULL, 0),
+	(225, 196, 'billsBPT', '方案单', NULL, '', 0, 0, '/app/PM/billsBPT', NULL, NULL, 0, 5, '', NULL, NULL, 0),
+	(226, 196, 'billsTask', '任务单', NULL, '', 0, 0, '/app/PM/billsTask', NULL, NULL, 0, 6, '', NULL, NULL, 0),
+	(227, 196, 'billsPBH', '发布单', NULL, '', 0, 0, '/app/PM/billsPBH', NULL, NULL, 0, 9, '', NULL, NULL, 0),
+	(228, 181, 'moni 模块', '监测模块', NULL, '', 0, 0, '', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(229, 181, 'mold 模块', '模具模块', NULL, '', 0, 0, '', NULL, NULL, 0, 2, '', NULL, NULL, 0),
+	(230, 229, 'TM54维护', 'TM54模具维护', NULL, '', 0, 0, '/app/HMIPrint/Mold/MoldTM54DB', NULL, NULL, 0, 3, '', NULL, NULL, 0),
+	(231, 195, 'testContents', '测试内容', NULL, '', 0, 0, '/app/PM/testContents', NULL, NULL, 0, 8, '', NULL, NULL, 0),
+	(232, 194, 'PPMTFlow', '内核流程', NULL, '', 0, 0, '', NULL, NULL, 0, 53, '', NULL, NULL, 0),
+	(233, 232, 'T-billsPLD', 'T计划单', NULL, '', 0, 0, '/app/PM/T-billsPLD', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(234, 232, 'T-billsBPT', 'T方案单', NULL, '', 0, 0, '/app/PM/T-billsBPT', NULL, NULL, 0, 2, '', NULL, NULL, 0),
+	(235, 232, 'T-billsTask', 'T任务单', NULL, '', 0, 0, '/app/PM/T-billsTask', NULL, NULL, 0, 3, '', NULL, NULL, 0),
+	(236, 196, 'workCenter', '个人中心', NULL, '', 0, 0, '/app/PM/workCenter', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(237, 232, 'T-billsIPQC', 'T-IPQC单', NULL, '', 0, 0, '/app/PM/T-billsIPQC', NULL, NULL, 0, 4, '', NULL, NULL, 0),
+	(238, 232, 'T-billsTrack', 'T-进度跟踪', NULL, '', 0, 0, '/app/PM/T-billsTrack', NULL, NULL, 0, 0, '', NULL, NULL, 0),
+	(239, 232, 'T-billsFQC', 'T-FQC单', NULL, '', 0, 0, '/app/PM/T-billsFQC', NULL, NULL, 0, 5, '', NULL, NULL, 0),
+	(240, 232, 'T-billsPBH', 'T发布单', NULL, '', 0, 0, '/app/PM/T-billsPBH', NULL, NULL, 0, 6, '', NULL, NULL, 0),
+	(241, 195, 'roles', '角色', NULL, '', 0, 0, '/app/PM/roles', NULL, NULL, 0, 7, '', NULL, NULL, 0),
+	(242, 195, 'dataBinds', '数据关系', NULL, '', 0, 0, '/app/PM/dataBinds', NULL, NULL, 0, 9, '', NULL, NULL, 0),
+	(243, -1, 'AutoTest', '自动测试工具', NULL, '', 0, 0, '', NULL, NULL, 0, 5, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(244, 243, 'Major', '执行', NULL, '', 0, 0, '/app/AutoTest/autotest-Major', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(245, 197, 'billsDBCenter', '计划单', NULL, '', 0, 0, '/app/PM/billsDBCenter?trackType=all', NULL, NULL, 0, 1, '', NULL, NULL, 0),
+	(246, 197, 'T-billsDBCenter', 'T计划单', NULL, NULL, 0, 0, '/app/PM/T-billsDBCenter?trackType=all', NULL, NULL, 0, 3, NULL, NULL, NULL, 0),
+	(247, 197, 'tasksDBCenter', '任务单', NULL, NULL, 0, 0, '/app/PM/tasksDBCenter?trackType=all', NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(248, 197, 'T-tasksDBCenter', 'T任务单', NULL, NULL, 0, 0, '/app/PM/T-tasksDBCenter?trackType=all', NULL, NULL, 0, 4, NULL, NULL, NULL, 0),
+	(249, -1, 'RepairTools', '内修系统工具', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 1, '/images/menu_icon/olive.png', NULL, NULL, 0),
+	(250, 249, 'BasicDB', '基础数据', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, 0),
+	(252, 250, 'rpCustomers', '客户', NULL, NULL, 0, 0, '/app/RP/customers', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(253, 250, 'rpStaffs', '人员', NULL, NULL, 0, 0, '/app/RP/staffs', NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(254, 250, 'rpProducts', '产品', NULL, NULL, 0, 0, '/app/RP/products', NULL, NULL, 0, 3, NULL, NULL, NULL, 0),
+	(255, 250, 'partsFee', '零件费', NULL, NULL, 0, 0, '/app/RP/partsFee', NULL, NULL, 0, 4, NULL, NULL, NULL, 0),
+	(256, 250, 'rpFaultClasses', '故障分类', NULL, NULL, 0, 0, '/app/RP/faultClasses', NULL, NULL, 0, 5, NULL, NULL, NULL, 0),
+	(257, 249, 'WorkFlow', '工作流程', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(258, 257, 'workFlowPic', '工作流程图', NULL, NULL, 0, 0, '/app/RP/workFlow', NULL, NULL, 0, 0, NULL, NULL, NULL, 0),
+	(259, 257, 'rpRequestBill', '维修申请单', NULL, NULL, 0, 0, '/app/RP/requestBills', NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(260, 257, 'rpRecordBill', '维修记录单', NULL, NULL, 0, 0, '/app/RP/recordBills', NULL, NULL, 0, 3, NULL, NULL, NULL, 0),
+	(261, 257, 'rpResponseBill', '维修出货单', NULL, NULL, 0, 0, '/app/RP/responseBills', NULL, NULL, 0, 4, NULL, NULL, NULL, 0),
+	(262, 257, 'rpShowPanel', '显示面板', NULL, NULL, 0, 0, '/app/RP/showPanels', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(263, 249, 'test', '测试', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 99, NULL, NULL, NULL, 0),
+	(264, 263, 'test1', '模块测试', NULL, NULL, 0, 0, '/app/RP/test1', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(265, 197, 'reportBugRate', '报表下载', NULL, NULL, 0, 0, '/app/PM/bugRate', NULL, NULL, 0, 5, NULL, NULL, NULL, 0),
+	(266, 263, 'test2', '二维码生成', NULL, NULL, 0, 0, '/app/RP/test-qrcodeCreate', NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(267, 263, 'test3', '二维码扫描', NULL, NULL, 0, 0, '/app/RP/test-qrcodeScan', NULL, NULL, 0, 3, NULL, NULL, NULL, 0),
+	(268, 263, 'test4', '短信', NULL, NULL, 0, 0, '/app/RP/test4', NULL, NULL, 0, 4, NULL, NULL, NULL, 0),
+	(269, 250, 'rpTestPrices', '检测项目', NULL, NULL, 0, 0, '/app/RP/testItems', NULL, NULL, 0, 6, NULL, NULL, NULL, 0),
+	(270, 249, 'billsCenter', '单据中心', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(271, 270, 'billsDB', '历史单据', NULL, NULL, 0, 0, '/app/RP/billsDB', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(272, 270, 'oldBills', '老系统单据', NULL, NULL, 0, 0, '/app/RP/oldBills', NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(273, 172, 'ticketPrint', '打印小票', NULL, NULL, 0, 0, '/app/bear/TicketPrint', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(274, 263, 'FastDelivery', '快递', NULL, NULL, 0, 0, '/app/RP/funsTest/FastDelivery', NULL, NULL, 0, 5, NULL, NULL, NULL, 0),
+	(275, 263, 'test5', '富文本框', NULL, NULL, 0, 0, '/app/RP/test5', NULL, NULL, 0, 6, NULL, NULL, NULL, 0),
+	(276, 250, 'rpSelectorOptions', '选项清单', NULL, NULL, 0, 0, '/app/RP/selectorOptions', NULL, NULL, 0, 7, NULL, NULL, NULL, 0),
+	(277, -1, 'TMCode', '物料审批工具', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 6, '	 /images/menu_icon/olive.png', NULL, NULL, 0),
+	(278, 277, 'NewProduct', '新品编码提交', NULL, NULL, 0, 0, '/app/TMCode/newProduct', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(279, 277, 'AgreeProduct', '新品编码审批', NULL, NULL, 0, 0, '/app/TMCode/agreeProduct', NULL, NULL, 0, 2, NULL, NULL, NULL, 0),
+	(280, 277, 'AbsoleteProduct', '产品编码报废', NULL, NULL, 0, 0, '/app/TMCode/absoleteProduct', NULL, NULL, 0, 3, NULL, NULL, NULL, 0),
+	(281, 277, 'FindProduct', '正式编码查找', NULL, NULL, 0, 0, '/app/TMCode/findProduct', NULL, NULL, 0, 4, NULL, NULL, NULL, 0),
+	(282, 263, 'print', '打印', NULL, NULL, 0, 0, '/app/RP/funsTest/TicketPrint', NULL, NULL, 0, 7, NULL, NULL, NULL, 0),
+	(283, 263, 'test6', '图表', NULL, NULL, 0, 0, '/app/RP/test6', NULL, NULL, 0, 8, NULL, NULL, NULL, 0),
+	(284, 263, 'test7', '上传', NULL, NULL, 0, 0, '/app/RP/test7', NULL, NULL, 0, 9, NULL, NULL, NULL, 0),
+	(285, 249, 'DataApi', '数据接口', NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 3, NULL, NULL, NULL, 0),
+	(286, 285, 'store', '库存接口', NULL, NULL, 0, 0, '/app/RP/store', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(287, 197, 'reportBugRate_t', 'T报表下载', NULL, NULL, 0, 0, '/app/PM/bugRate_t', NULL, NULL, 0, 6, NULL, NULL, NULL, 0),
+	(288, 172, 'bearSub2', '测试', NULL, NULL, 0, 0, '/app/bear/BearSub2', NULL, NULL, 0, 85, NULL, NULL, NULL, 0),
+	(289, 263, 'test-jsBarcode', '条形码生成', NULL, NULL, 0, 0, '/app/RP/test-JsBarcodeCreate', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(290, 263, 'closeTab', 'tab页', NULL, NULL, 0, 0, '/app/RP/closeTab', NULL, NULL, 0, 1, NULL, NULL, NULL, 0),
+	(291, 257, 'tabCustomer', '客户', NULL, NULL, 0, 0, '/app/RP/tabCustomers', NULL, NULL, 0, 100, NULL, NULL, NULL, 1),
+	(292, 257, 'tabStaff', '人员', NULL, NULL, 0, 0, '/app/RP/tabStaffs', NULL, NULL, 0, 100, NULL, NULL, NULL, 1),
+	(293, 257, 'tabRequestBill', '申请单', NULL, NULL, 0, 0, '/app/RP/tabRequestBills', NULL, NULL, 0, 100, NULL, NULL, NULL, 1),
+	(294, 257, 'tabRecordBill', '记录单', NULL, NULL, 0, 0, '/app/RP/tabRecordBills', NULL, NULL, 0, 100, NULL, NULL, NULL, 1),
+	(295, 257, 'closeTabs', '操作中心', NULL, NULL, 0, 0, '/app/RP/closeTabs', NULL, NULL, 0, 0, NULL, NULL, NULL, 0);
+/*!40000 ALTER TABLE `processes` ENABLE KEYS */;
+
 -- 导出  表 toolsweb.rp_customers 结构
 DROP TABLE IF EXISTS `rp_customers`;
 CREATE TABLE IF NOT EXISTS `rp_customers` (
@@ -46,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `rp_customers` (
   `saveTimeStamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `customerId` (`customerId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3955 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础数据_客户';
+) ENGINE=InnoDB AUTO_INCREMENT=3967 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础数据_客户';
 
 -- 正在导出表  toolsweb.rp_customers 的数据：~2,907 rows (大约)
 /*!40000 ALTER TABLE `rp_customers` DISABLE KEYS */;
@@ -4765,16 +4917,18 @@ CREATE TABLE IF NOT EXISTS `rp_partsbills` (
   `partFee` decimal(10,2) DEFAULT NULL COMMENT '原件费用',
   `numStatus` char(50) DEFAULT NULL COMMENT '领用状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() COMMENT '时间戳',
+  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`recordBillId`,`rowId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
 
--- 正在导出表  toolsweb.rp_partsbills 的数据：~1 rows (大约)
+-- 正在导出表  toolsweb.rp_partsbills 的数据：~4 rows (大约)
 /*!40000 ALTER TABLE `rp_partsbills` DISABLE KEYS */;
 REPLACE INTO `rp_partsbills` (`DBID`, `recordBillId`, `rowId`, `partId`, `partName`, `partDescription`, `partLocation`, `num`, `price`, `partFee`, `numStatus`, `remark`, `billSaveTimeStamp`) VALUES
 	(1, 'R-20200525001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX1', 1, 35.00, 35.00, '已领', NULL, '2020-05-25 00:00:00'),
-	(2, 'R-20200526001', '1', '3CDYP105_016', 'SMD 1UF/16V_Y5V', 'SMD 1uf16v Y5V 3216', NULL, 1, 5.00, 5.00, '已领', NULL, '2020-05-26 00:00:00');
+	(2, 'R-20200526001', '1', '3CDYP105_016', 'SMD 1UF/16V_Y5V', 'SMD 1uf16v Y5V 3216', NULL, 1, 5.00, 5.00, '已领', NULL, '2020-05-26 00:00:00'),
+	(3, 'R-20200526001', '2', '3CCP472_302', 'DIP 4700P/3KV', 'CC 4700pf 3kv500个/包', 'CFI1,CFO2,CFO3', 6, 3.00, 18.00, '已领', NULL, NULL),
+	(5, 'R-20200526001', '3', '3CDTP105_025', 'SMD 1UF/25V_TA', 'SMD T.C. 1uf/25v A', 'CTD2,CTD6,CTD8', 3, 5.00, 15.00, '已领', NULL, NULL);
 /*!40000 ALTER TABLE `rp_partsbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_partsfee 结构
@@ -6718,7 +6872,7 @@ REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`
 	(1639, '3UD2N3906', 100, NULL, '', '', '', NULL),
 	(1640, '3CCP102_102', 100, NULL, '', '', '', NULL),
 	(1641, '3CCP472_102', 100, NULL, '', '', '', NULL),
-	(1642, '3CCP472_302', 100, NULL, '', '', '', NULL),
+	(1642, '3CCP472_302', 94, NULL, '', '', '', NULL),
 	(1643, '3CEU101_025', 100, NULL, '', '', '', NULL),
 	(1644, '3CEU101_050_RUB', 100, NULL, '', '', '', NULL),
 	(1645, '3CEU102_025_RUB', 100, NULL, '', '', '', NULL),
@@ -6808,7 +6962,7 @@ REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`
 	(1729, '3CD6XP221', 100, NULL, '', '', '', NULL),
 	(1730, '3CD6XP471', 99, NULL, '', '', '', NULL),
 	(1731, '3CDE100_016', 100, NULL, '', '', '', NULL),
-	(1732, '3CDTP105_025', 100, NULL, '', '', '', NULL),
+	(1732, '3CDTP105_025', 97, NULL, '', '', '', NULL),
 	(1733, '3CDTP106_016', 100, NULL, '', '', '', NULL),
 	(1734, '3DLD_LG_170G', 100, NULL, '', '', '', NULL),
 	(1735, '3DLD_LG_170E', 100, NULL, '', '', '', NULL),
@@ -6890,9 +7044,9 @@ CREATE TABLE IF NOT EXISTS `rp_partswarehousehistory` (
   `actType` char(50) DEFAULT NULL COMMENT '操作类型',
   `dateTimeStamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`DBID`)
-) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
+) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
 
--- 正在导出表  toolsweb.rp_partswarehousehistory 的数据：~4 rows (大约)
+-- 正在导出表  toolsweb.rp_partswarehousehistory 的数据：~9 rows (大约)
 /*!40000 ALTER TABLE `rp_partswarehousehistory` DISABLE KEYS */;
 REPLACE INTO `rp_partswarehousehistory` (`DBID`, `partId`, `preNum`, `actNum`, `nowNum`, `unit`, `rpBillId`, `erpBillId`, `actType`, `dateTimeStamp`) VALUES
 	(143, '3CDTP106_010', 100, -2, 98, NULL, 'R-20200520001', NULL, '领料', '2020-05-20 13:15:44'),
@@ -6901,7 +7055,9 @@ REPLACE INTO `rp_partswarehousehistory` (`DBID`, `partId`, `preNum`, `actNum`, `
 	(146, '3CD6XP471', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
 	(147, '3RDAO330', 100, -100, 0, NULL, 'R-20200521002', NULL, '领料', '2020-05-21 11:07:23'),
 	(148, '2BTEC_HB02F', 99, -1, 98, NULL, 'R-20200525001', NULL, '领料', '2020-05-25 14:42:00'),
-	(149, '3CDYP105_016', 100, -1, 99, NULL, 'R-20200526001', NULL, '领料', '2020-05-26 13:40:59');
+	(149, '3CDYP105_016', 100, -1, 99, NULL, 'R-20200526001', NULL, '领料', '2020-05-26 13:40:59'),
+	(150, '3CCP472_302', 100, -6, 94, NULL, 'R-20200526001', NULL, '领料', '2020-05-29 09:51:59'),
+	(151, '3CDTP105_025', 100, -3, 97, NULL, 'R-20200526001', NULL, '领料', '2020-05-29 15:02:24');
 /*!40000 ALTER TABLE `rp_partswarehousehistory` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_productclasses 结构
@@ -15943,15 +16099,16 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`),
   UNIQUE KEY `recordBillId` (`recordBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
 
--- 正在导出表  toolsweb.rp_recordbills 的数据：~1 rows (大约)
+-- 正在导出表  toolsweb.rp_recordbills 的数据：~5 rows (大约)
 /*!40000 ALTER TABLE `rp_recordbills` DISABLE KEYS */;
 REPLACE INTO `rp_recordbills` (`DBID`, `recordBillId`, `requestBillId`, `rowId`, `responseBillId`, `productId`, `productName`, `productDescription`, `factoryNo`, `origin`, `systemType`, `productClass`, `productYear`, `productMonth`, `productionDate`, `orginFactoryNo`, `isRework`, `repairStaff`, `urgent`, `inWarranty`, `productFrom`, `conditionStatus`, `productBelong`, `testResult`, `testItem`, `testFee`, `partsFee`, `yearsFee`, `conditionFee`, `urgentFee`, `repairTotalFee`, `repairLastFee`, `forFree`, `faultDescription`, `faultShow`, `faultPart`, `faultReason`, `changePartList`, `repairResult`, `billRemark`, `files`, `maker`, `makeDate`, `finishDate`, `status`, `billSaveTimeStamp`) VALUES
-	(1, NULL, 'AA-20200526001', '1', NULL, '2BP_AHBOP', '2BP_AHBOP', '2BP_AHBOP', '11', '宁波', NULL, '主机板', '2019', '01', NULL, '22', '否', NULL, '否', '是', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1111111', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00'),
-	(2, 'R-20200526001', 'AA-20200526002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '2121', '宁波', 'A80', '主机板', '2009', '02', NULL, '222', '否', '苏文洁', '否', '否', '终端客户', NULL, '客户', NULL, '检测', 200.00, 5.00, 30.75, 0.00, 0.00, 235.75, 240.00, '否', '123123123', NULL, NULL, NULL, '3CDYP105_016*1', NULL, NULL, '[]', '熊奇龙', '2020-05-26', NULL, '维修中', '2020-05-26 00:00:00'),
+	(2, 'R-20200526001', 'AA-20200526002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '2121', '宁波', 'A80', '主机板', '2009', '02', NULL, '222', '否', '苏文洁', '否', '否', '终端客户', NULL, '客户', NULL, '检测', 200.00, 38.00, 35.70, 0.00, 0.00, 273.70, 270.00, '否', '123123123', '字体重叠,爆掉', 'PWR,RTC', '放电OK,检测OK', '3CDYP105_016*1,3CCP472_302*6,3CDTP105_025*3', '维修后正常', NULL, '[]', '熊奇龙', '2020-05-26', '2020-06-01', '维修完成', '2020-05-26 00:00:00'),
 	(3, NULL, 'AA-20200526003', '1', NULL, '2BP_AK668_CPU', '2BP_AK668_CPU\r\n', NULL, '23333', '宁波', 'AK668', '主机板', '2015', '07', NULL, '223', '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '123123123123123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00'),
-	(4, NULL, 'AA-20200526004', '1', NULL, '2BP_TECH2M5_1AN', '2BP_TECH2M5_1AN', 'TECH2M5 CPU', '554', '宁波', 'TECH2', '主机板', '2018', '02', NULL, NULL, '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '345345345345345', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00');
+	(4, NULL, 'AA-20200526004', '1', NULL, '2BP_TECH2M5_1AN', '2BP_TECH2M5_1AN', 'TECH2M5 CPU', '554', '宁波', 'TECH2', '主机板', '2018', '02', NULL, NULL, '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '345345345345345', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-05-26 00:00:00'),
+	(5, NULL, 'AA-20200601001', '1', NULL, '1ACC_HUNTER_JX_B', '1ACC_HUNTER_JX_B', '机箱套料iDriver600_18.5KW-30KW', NULL, '宁波', 'A15', '铁板', '2016', '07', NULL, NULL, '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '4555454545', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-06-01 10:41:36'),
+	(6, NULL, 'AA-20200601002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '22221', '宁波', 'A80', '主机板', '2009', '01', NULL, NULL, '否', NULL, '否', '否', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '123123123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '待维修', '2020-06-01 00:00:00');
 /*!40000 ALTER TABLE `rp_recordbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_requestbills 结构
@@ -15981,15 +16138,16 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
 
--- 正在导出表  toolsweb.rp_requestbills 的数据：~1 rows (大约)
+-- 正在导出表  toolsweb.rp_requestbills 的数据：~5 rows (大约)
 /*!40000 ALTER TABLE `rp_requestbills` DISABLE KEYS */;
 REPLACE INTO `rp_requestbills` (`DBID`, `requestBillId`, `requestDate`, `fromBillId`, `customerId`, `customerShortName`, `warrantyPeriod`, `customerArea`, `customerName`, `contact`, `mobilePhone`, `address`, `customerBelongShort`, `customerBelongFull`, `isInland`, `requestWay`, `requestStaff`, `maker`, `makeDate`, `billRemark`, `factoryNos`, `billSaveTimeStamp`) VALUES
 	(9, 'AA-20200526004', '2020-05-26', NULL, 'CS_BL_XD', '北仑_兴达', '18个月', '中国-浙江省-宁波市-北仑区', '宁波兴达文具用品有限公司', '王工', '15988666901', '宁波市北仑区甬江南路2号', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '554', '2020-05-26 13:11:47'),
-	(10, 'AA-20200526003', '2020-05-26', NULL, 'CS_BL_XD', '北仑_兴达', '18个月', '中国-浙江省-宁波市-北仑区', '宁波兴达文具用品有限公司', '王工', '15988666901', '宁波市北仑区甬江南路2号', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '23333', '2020-05-26 13:11:54'),
 	(11, 'AA-20200526002', '2020-05-26', NULL, 'CS_BL_JY', '北仑_精艺', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑区大碶精艺机械配件厂', '蒋师傅', '13857468253', NULL, '北仑_贝元', NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '2121', '2020-05-26 13:12:02'),
-	(14, 'AA-20200526001', '2020-05-26', NULL, 'CS_BL_BY', '北仑_贝元', '18个月', '中国-浙江省-宁波市', '宁波北仑贝元文具有限公司', '叶敏元', '13906692519', '北仑区大契甬江南路2号5幢楼1楼', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-05-26', NULL, '11', '2020-05-26 13:12:45');
+	(16, 'AA-20200526003', '2020-05-26', NULL, 'CS_BL_XD', '北仑_兴达', '18个月', '中国-浙江省-宁波市-北仑区', '宁波兴达文具用品有限公司', '王工', '15988666901', '宁波市北仑区甬江南路2号', NULL, NULL, '国内', '邮寄过来', '陈润艳', '熊奇龙', '2020-05-26', NULL, '23333', '2020-05-29 15:27:32'),
+	(18, 'AA-20200601001', '2020-06-01', NULL, 'CS_BL_HP', '北仑_海帕', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑海帕文具制造有限公司', '刘', '1356674256', '北仑区小港街道方前村', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-06-01', NULL, '', '2020-06-01 10:41:36'),
+	(20, 'AA-20200601002', '2020-06-01', NULL, 'CS_BL_JY', '北仑_精艺', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑区大碶精艺机械配件厂', '蒋师傅', '13857468253', NULL, '北仑_贝元', NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-06-01', NULL, '22221', '2020-06-01 14:38:49');
 /*!40000 ALTER TABLE `rp_requestbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_responsebills 结构
