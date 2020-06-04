@@ -701,7 +701,14 @@
                 return false
                 break;
             case arr.length > 0:
+
+                let customerShortName = arr[0].customerShortName;
                 for (const n of arr) {
+                    if (n.customerShortName !== customerShortName) {
+                        alert('不同客户维修单不允许混合出货,请检查!')
+                        return false
+                        break;
+                    }
                     if (n.responseBillId) {
                         alert('选中数据中存在已出货单据,不可重复出货,请检查!')
                         return false
