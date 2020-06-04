@@ -58,10 +58,17 @@
             <div class="panel panel-default" id='mainTablePanel'>
                 <div class="panel-heading">
                     <div style="float: left;">
-                        <h3 class="panel-title">申请单</h3>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">过滤</button>
+                            <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
                     </div>
                     <!-- 功能组按钮 -->
                     <div style="float:right">
+
+
+
                         <button id='btnRequestBillNew' type="button" class="btn btn-info">新增</button>
                         <button id='btnRequestBillDelete' type="button" class="btn btn-danger">删除</button>
                         <button type="button" class="btn btn-info" id="listPrintBtn">
@@ -127,6 +134,98 @@
             </div>
 
 
+        </div>
+    </div>
+
+    <!-- 过滤器模态框（Modal） -->
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        过滤器
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:300px">
+                            <form class="form-horizontal" role="form" id='filterForm'>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">送修日期</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-requestDateB" class="form-control " size="16"
+                                                type="text" value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-requestDateE" class="form-control " size="16"
+                                                type="text" value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">制单日期</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-makeDateB" class="form-control " size="16" type="text"
+                                                value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-makeDateE" class="form-control " size="16" type="text"
+                                                value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+
+                                    <div class="col-sm-10">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            id="closeFilter">关闭
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="confirmFilter">
+                                            确定
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
         </div>
     </div>
 
@@ -1073,12 +1172,23 @@
     //主表加载数据函数;
 
     const loadBillMainTable = async () => {
+
+        //显示过滤模式
+        if (mainTableFilter === 'to_days(makeDate) = to_days(now())') {
+            $('#btnFilterToday').addClass('active');
+            $('#btnFilterDiy').removeClass('active');
+        } else {
+            $('#btnFilterDiy').addClass('active');
+            $('#btnFilterToday').removeClass('active');
+        }
+
         //初始化主表
         loadBillDataTable({
             elementId: 'rp_requestbills',
             sqlParams: {
                 sqlId: 'sqlRequestBills',
                 params: {
+                    filter: mainTableFilter,
                     orderBy: 'billSaveTimeStamp desc'
                 }
             },
@@ -1529,16 +1639,83 @@
 
         //存储当前客户信息
         customerData = {}
+        //主表过滤器
+        mainTableFilter = '';
 
 
-        //初始化主表
-        loadBillMainTable();
+
 
         //初始化子表
         loadDataSubTable({
             elementId: 'rp_recordbills',
             dataArray: subTableData
         });
+
+        //过滤器当天按钮
+        $('#btnFilterToday').click(function () {
+            mainTableFilter = 'to_days(makeDate) = to_days(now())';
+            //初始化主表
+            loadBillMainTable();
+
+        })
+
+        $('#btnFilterToday').click(); //默认开启当天过滤
+
+        //过滤器自定义按钮
+        $('#btnFilterDiy').click(function () {
+            //打开面板
+            $('#filterModal').modal('show');
+            clearFormInputs({
+                formId: 'filterForm'
+            })
+
+        })
+
+        //过滤器确认按钮
+
+        $('#confirmFilter').click(function () {
+            //获取filterform内数据
+            let filter = '';
+
+            //申请日期过滤
+            let requestDateB = $('#filterForm-requestDateB').val();
+            let requestDateE = $('#filterForm-requestDateE').val();
+
+            if (requestDateB) {
+                filter = filter + ' and requestDate>="' + requestDateB + '"'
+            }
+
+            if (requestDateE) {
+                filter = filter + ' and requestDate<="' + requestDateE + '"'
+            }
+
+            //制单日期过滤
+            let makeDateB = $('#filterForm-makeDateB').val();
+            let makeDateE = $('#filterForm-makeDateE').val();
+
+            if (makeDateB) {
+                filter = filter + ' and makeDate>="' + makeDateB + '"'
+            }
+
+            if (makeDateE) {
+                filter = filter + ' and makeDate<="' + makeDateE + '"'
+            }
+
+
+
+            //去除filter中开始的and关键字避免sql错误;
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            mainTableFilter = filter
+
+            $('#closeFilter').click();
+            loadBillMainTable()
+
+        })
+
 
 
         //新增需求单按钮
@@ -1789,12 +1966,12 @@
                 rowData.rowId = rowNum + 1;
 
                 let rs = await checkRecordHistory({
-                    customerShortName: mainTableData.customerShortName,
                     productId: rowData.productId
                 })
 
                 if (rs.length > 0) {
-                    alert('检测到可能的返修品,上次维修信息如下:\n' +
+                    alert('检测到近期存在维修记录,请核实是否为返修品,维修信息如下:\n' +
+                        '制单日期:' + rs[0].makeDate + '\n' +
                         '维修日期:' + rs[0].finishDate + '\n' +
                         '维修人:' + rs[0].repairStaff + '\n' +
                         '故障描述:' + rs[0].faultDescription + '\n' +
@@ -2124,47 +2301,15 @@
             saveRequestbill();
         })
 
-
-
-        // //维修历史记录
-        // $('#btnRecordHistory').click(async function () {
-
-        //     if (subTableData.length === 0) {
-        //         alert('不存在相关产品!')
-        //         return
-        //     }
-
-        //     let range = ''
-        //     for (const n of subTableData) {
-        //         range = range + '"' + n.productId + '",'
-        //     }
-        //     range = range.substring(0, range.length - 1);
-        //     range = '(' + range + ')';
-
-
-        //     //加载维修记录
-        //     loadBillDataTable({
-        //         elementId: 'rp_recordbillsHistory',
-        //         sqlParams: {
-        //             sqlId: 'sqlRecordBills',
-        //             params: {
-        //                 filter: 'customerShortName="' + mainTableData.customerShortName +
-        //                     '"and status="维修完成" and productId in' + range,
-        //                 orderBy: 'billSaveTimeStamp desc'
-        //             }
-        //         },
-        //         dtParams: {
-        //             columns: recordHistoryColumnsArray
-        //         }
-        //     })
-
-        //     $('#recordHistoryModal').modal('show')
-
-        // })
-
-        // $('#recordHistoryCloseBtn').click(function () {
-        //     $('#recordHistoryModal').modal('hide')
-        // })
+        //初始化过滤器日期组
+        loadDatePickers({
+            elementIds: [
+                'filterForm-requestDateB',
+                'filterForm-requestDateE',
+                'filterForm-makeDateB',
+                'filterForm-makeDateE'
+            ]
+        })
 
 
         //初始化组件

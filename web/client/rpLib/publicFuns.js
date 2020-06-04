@@ -569,7 +569,10 @@ const loadDataSelector = ({
  *
  * @param {*} i={elementId,params}
  */
-const loadDatePicker = async (i) => {
+const loadDatePicker = async ({
+    elementId,
+    params
+}) => {
     // console.log(JSON.stringify(i))
 
     let defaultParams = {
@@ -586,13 +589,41 @@ const loadDatePicker = async (i) => {
         format: 'yyyy-mm-dd', //年-月-日
     }
 
-    if (i.params) {
-        for (let p in i.params) {
-            defaultParams[p] = i.params[p];
+    if (params) {
+        for (let p in params) {
+            defaultParams[p] = params[p];
         }
     }
 
-    $('#' + i.elementId).datetimepicker(defaultParams);
+    $('#' + elementId).datetimepicker(defaultParams);
+}
+
+
+/**
+ *用于初始话相同设置的时间选择器
+ *
+ * @param {*} {
+ *     elementIds,
+ *     params
+ * }
+ */
+const loadDatePickers = async ({
+    elementIds,
+    params
+}) => {
+    if (Object.prototype.toString.call(elementIds) !== '[object Array]') {
+        console.log('loadDatePickers 参数是错误,非数组!');
+        return
+    }
+    if (elementIds.length > 0) {
+        for (const elementId of elementIds) {
+            loadDatePicker({
+                elementId,
+                params
+            })
+        }
+    }
+
 }
 
 
@@ -1648,13 +1679,12 @@ const getMonths = (start, end) => {
 
 //校验维修历史
 const checkRecordHistory = async ({
-    customerShortName,
     productId
 }) => {
     let rs = await getDataBySql({
         sql: "sqlRecordBills",
         params: {
-            filter: 'productId="' + productId + '" and customerShortName="' + customerShortName + '" and status="维修完成"',
+            filter: 'productId="' + productId + '" and DATE_SUB(CURDATE(), INTERVAL 90 DAY) <= date(makeDate)',
             orderBy: 'billSaveTimeStamp desc'
         }
     })
