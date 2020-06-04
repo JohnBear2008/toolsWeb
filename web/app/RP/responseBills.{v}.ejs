@@ -44,33 +44,138 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
 
-            <!-- 功能组按钮 -->
-            <div class="well">
-                <button id='btnSend' type="button" class="btn btn-info">出货</button>
-                <button id='btnDetail' type="button" class="btn btn-info" style="display: none;">查看</button>
-                <!-- <button id='btnDelete' type="button" class="btn btn-danger">删除出货</button> -->
-            </div>
-
-
-
             <!-- 定义基础模块数据表 -->
-            <table id="rp_responsebills" class=" table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>申请单号</th>
-                        <th>记录单号</th>
-                        <th>出货单号</th>
-                        <th>客户简称</th>
-                        <th>产品编号</th>
-                        <th>维修结果</th>
-                        <th>出货结果</th>
-                        <th>是否结清</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="panel panel-default" id='mainTablePanel'>
+                <div class="panel-heading">
+                    <div style="float: left;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">过滤</button>
+                            <button type="button" id="btnFilterUnFinished" class="btn btn-default">未完结</button>
+                            <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+                    <!-- 功能组按钮 -->
+                    <div style="float:right">
+                        <button id='btnSend' type="button" class="btn btn-info">出货</button>
+                        <button id='btnDetail' type="button" class="btn btn-info" style="display: none;">查看</button>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="panel-body">
+
+                    <!-- 定义基础模块数据表 -->
+                    <table id="rp_responsebills" class=" table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>申请单号</th>
+                                <th>记录单号</th>
+                                <th>出货单号</th>
+                                <th>客户简称</th>
+                                <th>产品编号</th>
+                                <th>维修结果</th>
+                                <th>出货结果</th>
+                                <th>是否结清</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
 
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 过滤器模态框（Modal） -->
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        过滤器
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:300px">
+                            <form class="form-horizontal" role="form" id='filterForm'>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">出货日期</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-responseDateB" class="form-control " size="16"
+                                                type="text" value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-responseDateE" class="form-control " size="16"
+                                                type="text" value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">制单日期</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-makeDateB" class="form-control " size="16" type="text"
+                                                value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-makeDateE" class="form-control " size="16" type="text"
+                                                value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+
+                                    <div class="col-sm-10">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            id="closeFilter">关闭
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="confirmFilter">
+                                            确定
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
         </div>
     </div>
 
@@ -535,13 +640,23 @@
 
     //加载主表数据			
     const loadBillMainTable = async () => {
+
+        //显示过滤模式
+        if (mainTableFilter === 'isSended is null or isFullPay<>"是" or isFullPay is null') {
+            $('#btnFilterUnFinished').addClass('active');
+            $('#btnFilterDiy').removeClass('active');
+        } else {
+            $('#btnFilterDiy').addClass('active');
+            $('#btnFilterUnFinished').removeClass('active');
+        }
+
         //加载表格
         loadBillDataTable({
             elementId: 'rp_responsebills',
             sqlParams: {
                 sqlId: 'sqlResponseBills',
                 params: {
-                    filter: 'status ="维修完成" '
+                    filter: mainTableFilter
                 }
             },
             dtParams: {
@@ -767,8 +882,73 @@
         //定义子表全局变量临时数据数组
         subTableData = [];
 
-        //元素数据-主表
-        loadBillMainTable();
+        //主表过滤器
+        mainTableFilter = '';
+
+        //过滤器当天按钮
+        $('#btnFilterUnFinished').click(function () {
+            mainTableFilter = 'isSended is null or isFullPay<>"是" or isFullPay is null';
+            //初始化主表
+            loadBillMainTable();
+
+        })
+
+        $('#btnFilterUnFinished').click(); //默认开启当天过滤
+
+        //过滤器自定义按钮
+        $('#btnFilterDiy').click(function () {
+            //打开面板
+            $('#filterModal').modal('show');
+            clearFormInputs({
+                formId: 'filterForm'
+            })
+
+        })
+
+        //过滤器确认按钮
+
+        $('#confirmFilter').click(function () {
+            //获取filterform内数据
+            let filter = '';
+
+            //出货日期过滤
+            let responseDateB = $('#filterForm-responseDateB').val();
+            let responseDateE = $('#filterForm-responseDateE').val();
+
+            if (responseDateB) {
+                filter = filter + ' and responseDate>="' + responseDateB + '"'
+            }
+
+            if (responseDateE) {
+                filter = filter + ' and responseDate<="' + responseDateE + '"'
+            }
+
+            //制单日期过滤
+            let makeDateB = $('#filterForm-makeDateB').val();
+            let makeDateE = $('#filterForm-makeDateE').val();
+
+            if (makeDateB) {
+                filter = filter + ' and makeDate>="' + makeDateB + '"'
+            }
+
+            if (makeDateE) {
+                filter = filter + ' and makeDate<="' + makeDateE + '"'
+            }
+
+
+
+            //去除filter中开始的and关键字避免sql错误;
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            mainTableFilter = filter
+
+            $('#closeFilter').click();
+            loadBillMainTable()
+
+        })
 
 
 
@@ -983,6 +1163,16 @@
 
             }
 
+        })
+
+        //初始化过滤器日期组
+        loadDatePickers({
+            elementIds: [
+                'filterForm-responseDateB',
+                'filterForm-responseDateE',
+                'filterForm-makeDateB',
+                'filterForm-makeDateE'
+            ]
         })
 
         //初始化组件
