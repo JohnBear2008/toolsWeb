@@ -12,7 +12,9 @@
 <link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
 <script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
 
-
+<!-- 导入bootstrapSwitch -->
+<link rel="stylesheet" href="/rpLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
 
 <!-- 导入datatimepicker -->
 <link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
@@ -494,7 +496,7 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">检测结果</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-11">
                                         <input class="form-control" id="rp_recordbillsForm-testResult" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
@@ -832,6 +834,32 @@
 
 
                                                 <div class="form-group">
+                                                    <div id='hasChangePartDiv'>
+                                                        <label class="col-sm-1 control-label"
+                                                            for="hasChangePart">换下零件</label>
+                                                        <div class="col-sm-3">
+                                                            <input id="hasChangePart" type="checkbox">
+                                                        </div>
+                                                    </div>
+
+
+                                                    <label class="col-sm-1 control-label">换下零件编号</label>
+                                                    <div class="col-sm-3">
+                                                        <input class="form-control" id="rp_partsbillsForm-changePartId"
+                                                            type="text">
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">换下零件数量</label>
+                                                    <div class="col-sm-3">
+                                                        <input class="form-control" id="rp_partsbillsForm-changePartNum"
+                                                            type="text">
+                                                    </div>
+                                                </div>
+
+
+
+
+                                                <div class="form-group">
                                                     <label class="col-sm-1 control-label">备注</label>
                                                     <div class="col-sm-11">
                                                         <input class="form-control" id="rp_partsbillsForm-remark"
@@ -1041,6 +1069,7 @@
             }
         })
     }
+
 
 
 
@@ -1273,6 +1302,10 @@
 
                 let rowSelect = subTable.row('.selected').data();
                 // console.log("rowSelect:" + JSON.stringify(rowSelect));
+
+                //隐藏换下配件switch
+                //显示换下配件按钮
+                $("#hasChangePartDiv").hide()
 
                 //解绑监听器
                 // $('#rp_partsbillsForm-partLocation').unbind();
@@ -2172,6 +2205,9 @@
             //取消零件信息div禁用
             $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
 
+            //显示换下配件按钮
+            $("#hasChangePartDiv").show()
+
             //清空panel数据
             clearFormInputs({
                 formId: 'rp_partsbillsForm'
@@ -2486,10 +2522,7 @@
             },
         })
 
-        //添加监听器
-        addTestItemListener();
-        addConditionStatusListener();
-        addRepairResultListener()
+
 
 
         loadBootStrapSelector({
@@ -2562,6 +2595,23 @@
             // initValue:'中国,北京'
         })
 
+        //换下配件选择器初始化
+        $("#hasChangePart").bootstrapSwitch({
+            onText: "有",
+            offText: "无",
+            // setState: false,
+            onSwitchChange: function (event, state) {
+                if (state === true) {
+                    let partId = $('#rp_partsbillsForm-partId option:selected').val();
+                    $("#rp_partsbillsForm-changePartId").val(partId)
+                    $("#rp_partsbillsForm-changePartNum").val(1)
+                } else {
+                    $("#rp_partsbillsForm-changePartId").val('')
+                    $("#rp_partsbillsForm-changePartNum").val('')
+                }
+            }
+        });
+
 
         // loadBootStrapSelector({
         //     elementId: 'rp_partsbillsForm-partId',
@@ -2570,8 +2620,15 @@
         //     },
         // })
 
+
         //添加监听器
+        addTestItemListener();
+        addConditionStatusListener();
+        addRepairResultListener()
         addRepairTotalFeeListener();
+
+
+
 
 
         // 关闭事件重置选中datatable选中,避免显示错误

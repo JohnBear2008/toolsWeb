@@ -1195,7 +1195,7 @@ const getFormData = (i) => {
         data: data
     }
 
-    // console.log('getFormData:' + JSON.stringify(data));
+    console.log('getFormData:' + JSON.stringify(data));
     return o;
 
 }

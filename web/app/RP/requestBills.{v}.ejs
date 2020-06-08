@@ -546,7 +546,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label" for="msgSwitch">短信提醒</label>
                                     <div class="col-sm-11">
-                                        <input id="msgSwitch" type="checkbox" checked>
+                                        <input id="msgSwitch" type="checkbox" >
                                     </div>
                                 </div>
 
@@ -2342,7 +2342,10 @@
 
 
 
-        $("#msgSwitch").bootstrapSwitch();
+        $("#msgSwitch").bootstrapSwitch({
+            onText: "是",
+            offText: "否"
+        });
 
 
         //初始化selector
