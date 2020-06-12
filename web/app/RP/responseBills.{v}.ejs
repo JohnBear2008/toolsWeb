@@ -720,6 +720,18 @@
 
         return true;
     }
+    //检查同客户未完成维修单
+    const checkRecordsUndone = async (customerShortName) => {
+        let res = await getDataBySql({
+            sql: 'sqlRecordBills',
+            params: {
+                filter: 'customerShortName="' + customerShortName +
+                    '" and (status ="待维修" or status="维修中")'
+            }
+        })
+        return res;
+
+    }
 
     //检查查看详情数据
     const checkDetailData = (obj) => {
@@ -961,7 +973,7 @@
 
         //定义功能
         //定义功能-出货按钮
-        $('#btnSend').click(function () {
+        $('#btnSend').click(async function () {
 
             //定义变量
             let table = $('#rp_responsebills').DataTable();
@@ -975,6 +987,20 @@
             if (!r) {
                 table.$('tr.selected').removeClass('selected');
                 return;
+            }
+
+            //检测是否存在同客户未完成维修单
+            let recordsUndone = await checkRecordsUndone(dataSelect[0].customerShortName);
+            console.log('recordsUndone', recordsUndone);
+            if (recordsUndone.length > 0) {
+                let undoneRepairIds = '';
+                for (const n of recordsUndone) {
+                    undoneRepairIds = undoneRepairIds + ',' + n.repairId;
+                }
+                undoneRepairIds = undoneRepairIds.substring(1, undoneRepairIds.length);
+                if (confirm('该客户存在以下维修单:' + undoneRepairIds + '未完成,是否等待完成合并出货?')) {
+                    return
+                }
             }
 
             //打开详情面板,关闭子面板
