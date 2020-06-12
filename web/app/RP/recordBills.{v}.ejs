@@ -1038,7 +1038,7 @@
 
     //添加检测项目监听器
     const addTestItemListener = () => {
-        $('#rp_recordbillsForm-testItem').unbind();
+        // $('#rp_recordbillsForm-testItem').unbind();
         $('#rp_recordbillsForm-testItem').change(function () {
             let testFee = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
             if (testFee) {
@@ -1050,7 +1050,7 @@
 
     //添加成色监听器
     const addConditionStatusListener = () => {
-        $('#rp_recordbillsForm-conditionStatus').unbind();
+        // $('#rp_recordbillsForm-conditionStatus').unbind();
         $('#rp_recordbillsForm-conditionStatus').change(function () {
             let conditionStatus = $('#rp_recordbillsForm-testItem option:selected').val();
             if (conditionStatus) {
@@ -1061,7 +1061,7 @@
 
     //添加维修结果监听器
     const addRepairResultListener = () => {
-        $('#rp_recordbillsForm-repairResult').unbind();
+        // $('#rp_recordbillsForm-repairResult').unbind();
         $('#rp_recordbillsForm-repairResult').change(function () {
             let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val();
             if (repairResult) {
@@ -1076,33 +1076,7 @@
 
 
 
-    // //添加替换位置监听器
-    // const addPartLocationListener = () => {
-    //     $('#rp_partsbillsForm-partLocation').unbind();
-    //     $('#rp_partsbillsForm-partLocation').change(function () {
-    //         let partLocation = $('#rp_partsbillsForm-partLocation option:selected').val();
-    //         if (partLocation) {
-    //             // console.log('partLocation11111', partLocation);
-
-    //             //重新刷新显示
-    //             $('#rp_partsbillsForm-partLocation').selectpicker('refresh');
-
-    //             // //获取partId当前值
-    //             // let partId = $('#rp_partsbillsForm-partId option:selected').val();
-
-    //             loadBootStrapSelector({
-    //                 elementId: 'rp_partsbillsForm-partId',
-    //                 sqlParams: {
-    //                     sql: 'getPartSelector',
-    //                     params: {
-    //                         filter: 'partLocation="' + partLocation + '"'
-    //                     }
-    //                 },
-    //             })
-    //         }
-    //     })
-    // }
-
+ 
 
     //加载位置信息selector
     const loadLocationsSelector = async (i) => {
@@ -2626,9 +2600,6 @@
         addConditionStatusListener();
         addRepairResultListener()
         addRepairTotalFeeListener();
-
-
-
 
 
         // 关闭事件重置选中datatable选中,避免显示错误
