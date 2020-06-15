@@ -36,15 +36,15 @@
 
 		<!-- 按钮触发模态框 -->
 
-		<button id="BTNBPTInfo" class="btn btn-info" data-toggle="modal">方案维护</button>
-		<button id="BTNBPTAudit" class="btn btn-warning" data-toggle="modal">方案审核</button>
+		<button id="BTNBPTInfo"  type="button" class="btn btn-info" data-toggle="modal">方案维护</button>
+		<button id="BTNBPTAudit"  type="button" class="btn btn-warning" data-toggle="modal">方案审核</button>
 
 		<div class="btn-group" style="margin-left:20px">
-			<button id="BTNFilterSimple" class="btn btn-default">未完成单据</button>
-			<button id="BTNFilterAll" class="btn btn-default">全部单据</button>
+			<button id="BTNFilterSimple"  type="button" class="btn btn-default">未完成单据</button>
+			<button id="BTNFilterAll"  type="button" class="btn btn-default">全部单据</button>
 		</div>
 
-		<a href="/app/PM/workCenter"><button id="BTNWorkCenter" class="btn btn-success"
+		<a href="/app/PM/workCenter"><button id="BTNWorkCenter"  type="button" class="btn btn-success"
 				style="float:right">个人中心</button></a>
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillBPT" tabindex="-1" role="dialog" aria-labelledby="BillBPTLabel"
@@ -75,7 +75,7 @@
 									<div class="panel-body">
 
 										<!--------------panel--------------------->
-										<button id="BTNTrack" style="float: right">跳转到进度跟踪</button>
+										<button id="BTNTrack"  type="button" style="float: right">跳转到进度跟踪</button>
 
 										<h3 class="panel-title">计划单信息</h3>
 										</br>
@@ -2698,6 +2698,7 @@
 
 				let taskSortTypeNow = $('input:radio[name="taskSortType"]:checked').val();
 				let taskTypeNow = $('input:radio[name="taskType"]:checked').val();
+				let BTIDNow = $('#BTID').text();
 
 				let sameTypeNum = 0;
 
@@ -2705,9 +2706,10 @@
 					let taskSortType = tableTask.row(i).data().taskSortType;
 					let taskType = tableTask.row(i).data().taskType;
 					let BTStatusText = tableTask.row(i).data().BTStatusText;
+					let BTID = tableTask.row(i).data().BTID;
 
 					if (taskSortTypeNow === taskSortType && taskTypeNow === taskType && BTStatusText !==
-						'废弃') {
+						'废弃' && BTIDNow !== BTID) {
 						sameTypeNum = sameTypeNum + 1;
 					}
 				}
