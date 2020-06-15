@@ -1084,6 +1084,9 @@ function taskUploadComplete(evt) {
 
 				switch (BTType) {
 					case 'D':
+						if (fileRawNameStr.indexOf(".") == -1) {
+							swal('文件名缺少.符号,如错误请清空后重新上传')
+						}
 
 						//					console.log("BTType:"+BTType);
 						if (fileVersion == "") {
@@ -1104,9 +1107,6 @@ function taskUploadComplete(evt) {
 
 						break;
 				}
-
-
-
 
 			} else {
 				swal(file[i].errorMessage);
@@ -1873,8 +1873,8 @@ function Fun_fillTrackTable(tableID, SQLParam) {
 
 
 function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
-	console.log('SQLParam',SQLParam);
-	
+	console.log('SQLParam', SQLParam);
+
 
 
 	$(tableID + " thead").html("");
@@ -1910,7 +1910,7 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 
 			let dataR = NulltoEmpty(data);
 			console.log(data);
-			
+
 
 			if (dataR.length != 0) {
 
@@ -1963,7 +1963,7 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 
 					}
 
-					      		  console.log("1111:"+dataR[i].DBID);
+					console.log("1111:" + dataR[i].DBID);
 					trtd = trtd + "<td><a href='javascript:getDBIDInfo(\"" + SQLParam.tableName + "\"," + dataR[i].DBID + ")'>查看</a></td></tr>";
 					$(tableID + " tbody").append(trtd);
 
@@ -2285,7 +2285,7 @@ function showDBIDInfo(tableID, SQLParam) {
 
 	$(tableID).html("");
 
-	console.log("SQLParam:"+JSON.stringify(SQLParam));
+	console.log("SQLParam:" + JSON.stringify(SQLParam));
 
 	for (let i = 0; i < SQLParam.titles.length + 1; i++) {
 		$(tableID).append("<tr></tr>");
@@ -2324,7 +2324,7 @@ function showDBIDInfo(tableID, SQLParam) {
 		success: function (data) {
 
 			let dataR = NulltoEmpty(data);
-			     	//  swal(JSON.stringify(dataR));
+			//  swal(JSON.stringify(dataR));
 
 			if (dataR.length != 0) {
 				let trtd = "";
