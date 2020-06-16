@@ -433,10 +433,10 @@
 												<div class="form-group" id="DivTaskAcceptBTNS">
 													<label class="col-sm-1 control-label">确认:</label>
 													<div class="col-sm-10">
-														<button id="BTNTaskAcceptYes" type="button" class="btn btn-success"
-															data-toggle="modal">确认任务</button>
-														<button id="BTNTaskAcceptNo" type="button" class="btn btn-warning"
-															data-toggle="modal">驳回任务</button>
+														<button id="BTNTaskAcceptYes" type="button"
+															class="btn btn-success" data-toggle="modal">确认任务</button>
+														<button id="BTNTaskAcceptNo" type="button"
+															class="btn btn-warning" data-toggle="modal">驳回任务</button>
 													</div>
 
 												</div>
@@ -464,7 +464,7 @@
 
 											<button id="BTNTaskRecordAdd" type="button" class="btn btn-success"
 												data-toggle="modal">添加记录</button>
-											<button id="BTNTaskRecordAudit"  class="btn btn-warning"
+											<button id="BTNTaskRecordAudit" class="btn btn-warning"
 												data-toggle="modal">审核记录</button>
 											<!-- <button id="BTNTaskRecordClear" class="btn btn-danger" data-toggle="modal" >清除记录</button>-->
 
@@ -589,8 +589,8 @@
 															data-live-search="true">
 														</select>
 
-														<button id="BTNGetTaskAuditor"  type="button" class="btn btn-success"
-															data-toggle="modal">系统指定</button>
+														<button id="BTNGetTaskAuditor" type="button"
+															class="btn btn-success" data-toggle="modal">系统指定</button>
 
 													</div>
 
@@ -610,8 +610,8 @@
 												<div class="form-group" id="DivTaskRecordBTNS">
 													<label class="col-sm-1 control-label">登记:</label>
 													<div class="col-sm-10">
-														<button id="BTNTaskRecordSave"  type="button" class="btn btn-success"
-															data-toggle="modal">保存记录</button>
+														<button id="BTNTaskRecordSave" type="button"
+															class="btn btn-success" data-toggle="modal">保存记录</button>
 
 
 
@@ -1046,16 +1046,18 @@
 		//	console.log("dataSelect.BTAcceptResult:"+dataSelect.BTAcceptResult);
 		switch (dataSelect.BTAcceptResult) {
 			case 0:
-				$('#divTaskInfo input').attr("disabled", false);
-				$('#divTaskInfo select').attr("disabled", false);
-				$('#divTaskInfo textarea').attr("disabled", false);
-
-
 				if (sessionName == $('#taskMaker').text()) {
+					$('#divTaskInfo input').attr("disabled", false);
+					$('#divTaskInfo select').attr("disabled", false);
+					$('#divTaskInfo textarea').attr("disabled", false);
 					$("#BTNTaskSave").show();
 				} else {
+					$('#divTaskInfo input').attr("disabled", true);
+					$('#divTaskInfo select').attr("disabled", true);
+					$('#divTaskInfo textarea').attr("disabled", true);
 					$("#BTNTaskSave").hide();
 				}
+
 
 
 				$('#divTaskAccept input').attr("disabled", false);
@@ -1751,8 +1753,9 @@
 								"DBTable": "ppm_bills_task_t",
 								"DBID": $('#DBID').text(),
 								"taskStaff": $('#taskStaff option:selected').text(),
-								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>').replace(
-									/'/g, '"'),
+								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>')
+									.replace(
+										/'/g, '"'),
 								"taskLimitDate": $('#taskLimitDate').val(),
 								"BTAcceptOpinion": $('#BTAcceptOpinion').val().replace(/\n|\r\n/g,
 									'<br/>'),

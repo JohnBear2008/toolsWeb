@@ -3097,3 +3097,15 @@ const getBizDataBySQL = async (i, o) => {
 
 
 }
+
+//处理html 与textarea不兼容特殊字符 如 <>
+const htmlToTextarea = (str) => {
+	if (!str) {
+		return;
+	}
+	let rs = str
+		.replace(/<br>/g, '\n')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+	return rs
+}

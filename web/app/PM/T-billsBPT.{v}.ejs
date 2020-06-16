@@ -36,15 +36,15 @@
 
 		<!-- 按钮触发模态框 -->
 
-		<button id="BTNBPTInfo"  type="button" class="btn btn-info" data-toggle="modal">方案维护</button>
-		<button id="BTNBPTAudit"  type="button" class="btn btn-warning" data-toggle="modal">方案审核</button>
+		<button id="BTNBPTInfo" type="button" class="btn btn-info" data-toggle="modal">方案维护</button>
+		<button id="BTNBPTAudit" type="button" class="btn btn-warning" data-toggle="modal">方案审核</button>
 
 		<div class="btn-group" style="margin-left:20px">
-			<button id="BTNFilterSimple"  type="button" class="btn btn-default">未完成单据</button>
-			<button id="BTNFilterAll"  type="button" class="btn btn-default">全部单据</button>
+			<button id="BTNFilterSimple" type="button" class="btn btn-default">未完成单据</button>
+			<button id="BTNFilterAll" type="button" class="btn btn-default">全部单据</button>
 		</div>
 
-		<a href="/app/PM/workCenter"><button id="BTNWorkCenter"  type="button" class="btn btn-success"
+		<a href="/app/PM/workCenter"><button id="BTNWorkCenter" type="button" class="btn btn-success"
 				style="float:right">个人中心</button></a>
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillBPT" tabindex="-1" role="dialog" aria-labelledby="BillBPTLabel"
@@ -2972,7 +2972,8 @@
 							"BillID": $('#BPTBPID').val(),
 							"pbhFast": 1,
 							"WFStatus": 0,
-							"WFEndDate": Ndate
+							"WFEndDate": Ndate,
+							"stopReason": '程序已有'
 
 						}
 
@@ -3088,8 +3089,6 @@
 						});
 
 
-
-
 						$.when(ajaxCase3).done(function () {
 
 							let i = {
@@ -3111,15 +3110,9 @@
 
 						});
 
-
-
-
-
 						break;
 
 				}
-
-
 
 			} else {
 				swal("审核人未指定或,当前账号非该单据的指定审核人,不允许审核!");

@@ -1081,13 +1081,13 @@
 
 							filesHtml = filesHtml + tdFiles + " ; ";
 
-							emailModifyContent = emailModifyContent + $(
-									"#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)")
-								.html().replace(/<br>/g, '\n') + "\n";
+							emailModifyContent = emailModifyContent +
+								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)").html()) +
+								"\n";
 
-							emailFunctionsDBE = emailFunctionsDBE + $(
-									"#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)")
-								.html().replace(/<br>/g, '\n') + "\n";
+							emailFunctionsDBE = emailFunctionsDBE +
+								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)").html()) +
+								"\n";
 
 						}
 
@@ -1104,9 +1104,11 @@
 					var ibtn = "<button  class='btn btn-default btn-xs'>×</button>";
 					$("#divFilesUploaded").find("a").after(ibtn);
 
+
 					$("#divFilesUploaded :button").on('click', function () {
 						$(this).prev("a").remove();
 						$(this).prev("span").remove();
+						// $(this).next(";").remove();
 						$(this).remove();
 					})
 
@@ -1141,8 +1143,12 @@
 							// 	'#PBHCTRName').text());
 
 							emailCopyADRS = data[0].contacts;
+							// console.log('emailCopyADRS', emailCopyADRS);
 
-							$("#emailCopyADRS").val(emailCopyADRS.replace(/\s+/g,""));
+							if (emailCopyADRS) {
+								$("#emailCopyADRS").val(emailCopyADRS.replace(/\s+/g, ""));
+							}
+
 							$("#emailContact").val(data[0].contact);
 
 						},
