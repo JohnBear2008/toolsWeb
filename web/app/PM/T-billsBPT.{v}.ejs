@@ -1547,12 +1547,16 @@
 				swal("方案说明未输入,请检查!");
 				return false;
 			}
-
-
 		}
 
 		if ($("#auditor").val() == null || $("#auditor").val() == "") {
 			swal("审核人未选则,请检查!");
+			return false;
+		}
+
+		//禁止自审功能
+		if ($('#auditor option:selected').text() == $("#PGEMaker").val()) {
+			swal("方案不允许自审,请选择其他审核人!");
 			return false;
 		}
 
@@ -1568,8 +1572,6 @@
 		return true;
 
 	}
-
-
 
 
 	function checkTaskInput() {

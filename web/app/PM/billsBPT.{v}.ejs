@@ -1811,6 +1811,12 @@
 			return false;
 		}
 
+		//禁止自审功能
+		if ($('#auditor option:selected').text() == $("#PGEMaker").val()) {
+			swal("方案不允许自审,请选择其他审核人!");
+			return false;
+		}
+
 
 		//	let modifyType=$('input:radio[name="modifyType"]:checked').val();
 
