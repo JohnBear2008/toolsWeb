@@ -757,7 +757,7 @@
                                                         <label class="col-sm-1 control-label">可用库存</label>
                                                         <div class="col-sm-3">
                                                             <p class="form-control-static"
-                                                                id="rp_partsbillsForm-stockNum">
+                                                                id="stockNum">
                                                             </p>
                                                         </div>
 
@@ -975,24 +975,7 @@
     }
 
 
-    //根据partId 获得最新库存数量
-
-    const getStockNum = async (partId) => {
-
-        let r = await getDataBySql({
-            sql: 'getStockNum',
-            params: {
-                filter: 'partId="' + partId + '"'
-            }
-        })
-
-        let stockNum = 0
-        if (r.length > 0) {
-            stockNum = r[0].stockNum
-        }
-        return stockNum
-
-    }
+    
 
     //更新所选配件即时库存
     const showStockNum = async () => {
@@ -1002,7 +985,7 @@
         if (partId) {
             stockNum = await getStockNum(partId);
         }
-        $('#rp_partsbillsForm-stockNum').text(stockNum)
+        $('#stockNum').text(stockNum)
     }
 
 
@@ -1076,7 +1059,7 @@
 
 
 
- 
+
 
     //加载位置信息selector
     const loadLocationsSelector = async (i) => {
@@ -1592,7 +1575,7 @@
         let r = await getDataBySql({
             sql: 'getStockNum',
             params: {
-                filter: 'partId in (' + partIdsRange + ')'
+                filter: 'PID in (' + partIdsRange + ')'
             }
         })
 
@@ -1737,9 +1720,12 @@
                 //扣减零件库存
                 let r2;
                 if (partsNeedUpdateStockArr.length > 0) {
-                    // console.log('checkResultData.JITStock', checkResultData.JITStock);
+                    console.log('checkResultData.JITStock', checkResultData.JITStock);
+                    console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
 
                     for (let n of partsNeedUpdateStockArr) {
+                        //赋值添加PID
+                        n.PID = n.partId;
                         //扣减库存转为负数
                         n.num = -n.num;
 

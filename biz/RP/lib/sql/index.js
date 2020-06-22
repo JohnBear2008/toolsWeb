@@ -4,7 +4,7 @@ const getCustomerSelector =
 	"SELECT customerShortName AS value,customerShortName AS option, CONCAT_WS(',',customerId,customerShortName,contact,mobilePhone,address)as token FROM `rp_customers`"
 const getStaffSelector = "select staffName as value,staffName as option,pinyin as token from `rp_staffs`"
 const getProductSelector =
-	"select productId as value,productId as option,productDescription as token from `rp_products`"
+	"select productId as value,productId as option,productName as token from `rp_products`"
 const getTestItemSelector = "select testItem as value,testItem as option,testFee as token from `rp_testitems`"
 const getOptionSelector =
 	"select optionValue as value,optionText as option,optionText as token from `rp_selectoroptions`";
@@ -13,14 +13,14 @@ const getPartLocationSelector =
 const getPartSelector = "select partId as value,partId as option,partName as token from `rp_partlocations`";
 
 const getFaultSelector = "select concat(faultId,'-',faultName) as value,concat(faultId,'-',faultName) as option, faultId as token from `rp_faultclasses`"
-
+const getWarehouseSelector = "select warehouseName as value,warehouseName as option,warehouseId as token from `rp_warehouseslist`";
 
 
 const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"
 const getProduct = "select * from `rp_products`"
 const getPartInfo = "select * from ( select ta.productId,ta.partId,ta.partName,ta.num,tb.price,tc.productDescription as partDescription from `rp_partlocations` ta left join `rp_partsfee` tb on ta.partId=tb.partId left join `rp_products` tc on ta.partId=tc.productId) A"
-const getStockNum = "select partId,stockNum from `rp_partswarehouse`"
+const getStockNum = "select * from (select PID,stockNum,ta.warehouseId,warehouseName from `rp_warehouse` ta left join `rp_warehouseslist` tb on ta.warehouseId=tb.warehouseId) A"
 
 const getPartLocations = "select locations from `rp_partlocations`"
 
@@ -32,6 +32,15 @@ const getRecordBillsNum = "select count(1) as billsNum from `rp_recordbills`";
 const getResponseBillsNum = "select count(1) as billsNum from `rp_responsebills`";
 //获取记录单状态
 const getRecordBillStatus = "select DBID,status from `rp_recordbills`"
+//获取借货单数量
+const getBorrowBillsNum = "select count(1) as billsNum from `rp_borrowbills`";
+//获取出库单数量
+const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
+//获取借货单子表状态
+const getBorrowSubBill = "select DBID from `rp_borrowsubbills`"
+
+
+
 
 
 
@@ -45,9 +54,9 @@ const sqlChangeparts = "select * from rp_partsBills";
 const sqlResponseBills =
 	"select * from (select * from (select concat( ta.requestBillId,'-',ta.rowId ) as repairId,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) td where status ='维修完成' ) tA"
 //部件即时库存sql
-const rp_partStore = "select ta.partId,ta.stockNum,tb.partDescription,tb.partBelong,tb.partLocation from `rp_partswarehouse` ta left join `rp_parts` tb on ta.partId=tb.partId"
+const rp_store = "select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId"
 //库存记录sql
-const rp_partStoreHistory = "select ta.partId,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_partswarehousehistory` ta left join `rp_parts` tb on ta.partId=tb.partId"
+const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
 
 //历史单据主表sql
 const sqlHistoryBills =
@@ -62,8 +71,20 @@ const sqlSubPartBills = "select * from `rp_partsbills`"
 //出货单作为子表sql
 const sqlSubResponseBills = "select * from `rp_responsebills`"
 
+//借货单主表sql
+const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as searchText from `rp_borrowbills`"
+
+//借货单子表sql
+const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
+
+//出货单sql
+const sqlOutBills = "select * from `rp_outbills`"
+
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";
+
+
+
 
 /**
  *更具传入参数创建执行sql语句

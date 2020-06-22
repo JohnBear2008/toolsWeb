@@ -492,7 +492,9 @@ const loadBootStrapSelector = async ({
 
 
     $('#' + elementId).selectpicker({
-        noneSelectedText: "未选择" //默认显示内容
+        noneSelectedText: "未选择", //默认显示内容
+        // width: '100%' //弹出框宽度
+
     });
 
 
@@ -1507,7 +1509,7 @@ const replaceObjParamsName = (obj, rules) => {
 /**
  *更新库存数据
  *
- * @param {*} i{updateStock:[{partId,stockNum,num}],rpBillId,actType}
+ * @param {*} i{updateStock:[{PID,stockNum,num}],rpBillId,actType}
  * @returns
  */
 const updateStock = async (i) => {
@@ -1516,7 +1518,7 @@ const updateStock = async (i) => {
 
     for (const n of i.updateStock) {
         let arr = {
-            partId: n.partId,
+            PID: n.PID,
             stockNum: n.num
         }
         updateNumArr.push(arr);
@@ -1526,7 +1528,7 @@ const updateStock = async (i) => {
 
     for (const n of i.updateStock) {
         historyRecord.push({
-            partId: n.partId,
+            PID: n.PID,
             preNum: n.stockNum,
             actNum: n.num,
             nowNum: parseInt(n.stockNum) + parseInt(n.num),
@@ -1537,7 +1539,7 @@ const updateStock = async (i) => {
     let r1 = await postDBData({
         sql: 'updateNum',
         params: {
-            tableId: 'rp_partswarehouse',
+            tableId: 'rp_warehouse',
             numTitles: ['stockNum'],
             data: updateNumArr
         }
@@ -1547,7 +1549,7 @@ const updateStock = async (i) => {
     let r2 = await postDBData({
         sql: 'insert',
         params: {
-            tableId: 'rp_partswarehousehistory',
+            tableId: 'rp_warehousehistory',
             // numTitles: ['stockNum'],
             data: historyRecord
         }
@@ -1595,7 +1597,7 @@ const insertStock = async (i) => {
     let r1 = await postDBData({
         sql: 'insert',
         params: {
-            tableId: 'rp_partswarehouse',
+            tableId: 'rp_warehouse',
             data: insertNumArr
         }
     })
@@ -1604,7 +1606,7 @@ const insertStock = async (i) => {
     let r2 = await postDBData({
         sql: 'insert',
         params: {
-            tableId: 'rp_partswarehousehistory',
+            tableId: 'rp_warehousehistory',
             // numTitles: ['stockNum'],
             data: historyRecord
         }
@@ -1689,5 +1691,36 @@ const checkRecordHistory = async ({
         }
     })
     return rs
+
+}
+
+
+
+
+/**
+ *PID 获得客服仓最新库存数量
+ *
+ * @param {*} PID
+ * @returns
+ */
+const getStockNum = async (PID, warehouseName) => {
+
+    let filter = 'PID="' + PID + '" and warehouseId="W1"'
+    if (warehouseName) {
+        filter = 'PID="' + PID + '" and warehouseName="' + warehouseName + '"'
+    }
+    
+    let r = await getDataBySql({
+        sql: 'getStockNum',
+        params: {
+            filter: filter
+        }
+    })
+
+    let stockNum = 0
+    if (r.length > 0) {
+        stockNum = r[0].stockNum
+    }
+    return stockNum
 
 }

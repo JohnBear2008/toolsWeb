@@ -59,14 +59,15 @@
     <div class="row clearfix" id='JITDiv'>
         <div class="col-md-12 column">
             <!-- 定义基础模块数据表 -->
-            <table id="rp_partStore" class=" table table-striped table-bordered" style="width:100%">
+            <table id="rp_store" class=" table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
-                        <th>部件编号</th>
-                        <th>部件描述</th>
-                        <th>部件类型</th>
-                        <th>位置</th>
+                        <th>PID编号</th>
+                        <th>产品名称</th>
+                        <th>产品描述</th>
+                        <th>单位</th>
                         <th>库存数量</th>
+                        <th>更新时间</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -77,7 +78,7 @@
     <div class="row clearfix" id='historyDiv'>
         <div class="col-md-12 column">
             <!-- 定义基础模块数据表 -->
-            <table id="rp_partStoreHistory" class=" table table-striped table-bordered" style="width:100%">
+            <table id="rp_storeHistory" class=" table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <th>部件编号</th>
@@ -99,22 +100,24 @@
 
 
 <script type="text/javascript">
-    const rp_partStoreColumns = [{
-            data: 'partId'
+    const rp_storeColumns = [{
+            data: 'PID'
+        }, {
+            data: 'productName'
         },
         {
-            data: 'partDescription'
+            data: 'productDescription'
         }, {
-            data: 'partBelong',
+            data: 'unit'
         }, {
-            data: 'partLocation',
+            data: 'stockNum'
         }, {
-            data: 'stockNum',
+            data: 'dateTimeStamp'
         }
     ]
 
-    const rp_partStoreHistoryColumns = [{
-            data: 'partId'
+    const rp_storeHistoryColumns = [{
+            data: 'PID'
         },
         {
             data: 'preNum'
@@ -177,7 +180,7 @@
             readWorkbookFromLocalFile(f, function (workbook) {
                 let excelData = readWorkbook(workbook);
                 let storeData = excelJsonArr2DivJsonArr(excelData, {
-                    partId: '部件编号',
+                    PID: '部件编号',
                     num: '数量'
                 })
                 importAddParts(storeData)
@@ -192,24 +195,24 @@
     const importAddParts = async (storeData) => {
         console.log('storeData111', storeData);
         if (storeData.length > 0) {
-            let partIdsArr = [];
+            let PIDsArr = [];
             for (let n of storeData) {
 
                 //转换为大写
-                n.partId = n.partId.toUpperCase();
-                
-                partIdsArr.push(n.partId)
+                n.PID = n.PID.toUpperCase();
+
+                PIDsArr.push(n.PID)
             }
-            let partIdsRange = getRangeString(partIdsArr);
+            let PIDsRange = getRangeString(PIDsArr);
 
 
-            // console.log('partIdsRange', partIdsRange);
+            // console.log('PIDsRange', PIDsRange);
 
-            //查找当前数据内已存在的同partId 库存
+            //查找当前数据内已存在的同PID 库存
             let nowPartStore = await getDataBySql({
                 sql: 'getStockNum',
                 params: {
-                    filter: 'partId in ' + partIdsRange
+                    filter: 'PID in ' + PIDsRange
                 }
             })
 
@@ -221,10 +224,10 @@
             for (let n of storeData) {
                 let find = false
                 for (const m of nowPartStore) {
-                    if (n.partId === m.partId) {
+                    if (n.PID === m.PID) {
                         find = true
                         updateStoreArr.push({
-                            partId: n.partId,
+                            PID: n.PID,
                             stockNum: m.stockNum,
                             num: n.num
                         })
@@ -233,7 +236,7 @@
                 }
                 if (!find) {
                     insertStoreArr.push({
-                        partId: n.partId,
+                        PID: n.PID,
                         stockNum: 0,
                         num: n.num
                     })
@@ -296,29 +299,29 @@
     const loadStoreTable = async () => {
         //加载库存表
         loadBillDataTable({
-            elementId: 'rp_partStore',
+            elementId: 'rp_store',
             sqlParams: {
-                sqlId: 'rp_partStore',
+                sqlId: 'rp_store',
                 // params: {
                 //     orderBy: 'billSaveTimeStamp desc'
                 // }
             },
             dtParams: {
-                columns: rp_partStoreColumns
+                columns: rp_storeColumns
             }
         })
 
         //加载库存历史记录表
         loadBillDataTable({
-            elementId: 'rp_partStoreHistory',
+            elementId: 'rp_storeHistory',
             sqlParams: {
-                sqlId: 'rp_partStoreHistory',
+                sqlId: 'rp_storeHistory',
                 params: {
                     orderBy: 'dateTimeStamp desc'
                 }
             },
             dtParams: {
-                columns: rp_partStoreHistoryColumns
+                columns: rp_storeHistoryColumns
             }
         })
 
