@@ -756,8 +756,7 @@
 
                                                         <label class="col-sm-1 control-label">可用库存</label>
                                                         <div class="col-sm-3">
-                                                            <p class="form-control-static"
-                                                                id="stockNum">
+                                                            <p class="form-control-static" id="stockNum">
                                                             </p>
                                                         </div>
 
@@ -975,7 +974,7 @@
     }
 
 
-    
+
 
     //更新所选配件即时库存
     const showStockNum = async () => {
@@ -1724,23 +1723,24 @@
                     console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
 
                     for (let n of partsNeedUpdateStockArr) {
-                        //赋值添加PID
+                        //赋值添加PID,去除partId
                         n.PID = n.partId;
+                        delete n.partId;
                         //扣减库存转为负数
                         n.num = -n.num;
 
                         for (const m of checkResultData.JITStock) {
-                            if (n.partId === m.partId) {
+                            if (n.PID === m.PID) {
                                 n.stockNum = m.stockNum;
                             }
                         }
 
                     }
-                    // console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
+                    console.log('partsNeedUpdateStockArr222', partsNeedUpdateStockArr);
 
                     r2 = await updateStock({
-                        updateStock: partsNeedUpdateStockArr,
-                        actType: '领料',
+                        stockArr: partsNeedUpdateStockArr,
+                        actType: '维修领料',
                         rpBillId: mainFormData.data[0].recordBillId
                     });
                 }

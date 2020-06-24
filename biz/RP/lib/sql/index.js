@@ -55,8 +55,8 @@ const sqlResponseBills =
 	"select * from (select * from (select concat( ta.requestBillId,'-',ta.rowId ) as repairId,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) td where status ='维修完成' ) tA"
 //部件即时库存sql
 const rp_store = "select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId"
-//库存记录sql
-const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
+// //库存记录sql
+// const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
 
 //历史单据主表sql
 const sqlHistoryBills =
@@ -73,12 +73,13 @@ const sqlSubResponseBills = "select * from `rp_responsebills`"
 
 //借货单主表sql
 const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as searchText from `rp_borrowbills`"
-
 //借货单子表sql
 const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
 
 //出货单sql
 const sqlOutBills = "select * from `rp_outbills`"
+//出货单子表sql
+const sqlOutSubBills="select * from `rp_outsubbills`"
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";

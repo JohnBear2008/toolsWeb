@@ -115,6 +115,7 @@
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
+                                <th>状态</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -374,7 +375,7 @@
 
                             <form class="form-horizontal" role="form" id='rp_outbillsForm'>
 
-                                <!-- <input id="rp_outbillsForm-DBID" type="hidden" value=""> -->
+                                <input id="rp_outbillsForm-DBID" type="hidden" value="">
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label" for="rp_outbillsForm-billId">出库单号</label>
@@ -399,7 +400,7 @@
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-fromBillId">单据来源</label>
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-billForm">单据来源</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_outbillsForm-billForm"></p>
                                     </div>
@@ -435,7 +436,7 @@
 
                                 </div>
 
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label class="col-sm-1 control-label" for="rp_outbillsForm-isInland">国内外</label>
                                     <div class="col-sm-5">
                                         <select id="rp_outbillsForm-isInland" class="selectpicker">
@@ -443,14 +444,14 @@
                                         </select>
                                     </div>
 
-                                    <!-- <label class="col-sm-1 control-label"
+                                    <label class="col-sm-1 control-label"
                                         for="rp_outbillsForm-customerArea">客户区域</label>
                                     <div class="col-sm-5">
                                         <select id="rp_outbillsForm-customerArea" class="selectpicker form-control"
                                             data-live-search="true" data-size="10">
                                         </select>
-                                    </div> -->
-                                </div>
+                                    </div>
+                                </div> -->
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label text-warning"
@@ -524,7 +525,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">单据备注</label>
                                     <div class="col-sm-11">
-                                        <input class="form-control" id="rp_outbillsForm-billRemark" type="text">
+                                        <input class="form-control" id="rp_outbillsForm-remark" type="text">
                                     </div>
                                 </div>
 
@@ -716,7 +717,7 @@
 
                                                     <label class="col-sm-1 control-label">备注</label>
                                                     <div class="col-sm-11">
-                                                        <input class="form-control" id="rp_outsubbillsForm-billRemark"
+                                                        <input class="form-control" id="rp_outsubbillsForm-remark"
                                                             type="text">
                                                     </div>
                                                 </div>
@@ -795,7 +796,7 @@
         data: 'DBID',
         // visible: 'false'
     }, {
-        data: 'fromBillType'
+        data: 'billForm'
     }, {
         data: 'billId'
     }, {
@@ -807,7 +808,7 @@
     }, {
         data: 'auditDate',
     }, {
-        data: 'billRemark',
+        data: 'remark',
     }, {
         data: 'status',
     }];
@@ -826,7 +827,7 @@
     }, {
         data: 'num',
     }, {
-        data: 'billRemark',
+        data: 'remark',
     }, {
         data: 'status',
     }]
@@ -1161,6 +1162,9 @@
         // table.column(9).visible(false)
 
         addMainTableListener();
+
+        //隐藏子表
+        $('#subTablePanel').hide();
     }
 
     //添加子表监听器,定义双击展开事件
@@ -1254,13 +1258,15 @@
 
     const loadMainBillSubTable = async (billId) => {
         let dataArray = await getDataBySql({
-            sql: 'rp_storeHistory',
+            sql: 'sqlOutSubBills',
             params: {
-                filter: 'rpBillId="' + billId + '"'
+                filter: 'billId="' + billId + '"'
             }
         })
         //将表数据同步到共用数组
         subTableData = dataArray;
+        // console.log(subTableData);
+
 
         loadDataSubTable({
             elementId: 'rp_outbillsSub',
@@ -1282,6 +1288,7 @@
 
         if (!mainFormData.data[0].maker) {
             await autoUpdateOutBillId();
+            mainFormData.data[0].status = '待审核';
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
         }
@@ -1330,7 +1337,7 @@
             contact: mainFormData.data[0].contact,
             mobilePhone: mainFormData.data[0].mobilePhone,
             customerBelongShort: mainFormData.data[0].customerBelongShort,
-            isInland: mainFormData.data[0].isInland
+            // isInland: mainFormData.data[0].isInland
         }
 
         //判断当前表内客户数据是否存在更新;
@@ -1419,74 +1426,74 @@
     }
 
 
-    //检查删除单据数据
-    const checkDeleteBills = async () => {
+    // //检查删除单据数据
+    // const checkDeleteBills = async () => {
 
-        let resultData = {
-            result: null,
-            data: {}
-        }
+    //     let resultData = {
+    //         result: null,
+    //         data: {}
+    //     }
 
-        let table = $('#rp_outbills').DataTable();
-        let dataSelect = table.rows('.selected').data();
-        let mainDBIDArr = [];
-        let subDBIDArr = [];
-        let billsIdArr = [];
+    //     let table = $('#rp_outbills').DataTable();
+    //     let dataSelect = table.rows('.selected').data();
+    //     let mainDBIDArr = [];
+    //     let subDBIDArr = [];
+    //     let billsIdArr = [];
 
-        for (let n = 0; n < dataSelect.length; n++) {
-            mainDBIDArr.push(dataSelect[n].DBID);
-            billsIdArr.push(dataSelect[n].billId);
-        }
+    //     for (let n = 0; n < dataSelect.length; n++) {
+    //         mainDBIDArr.push(dataSelect[n].DBID);
+    //         billsIdArr.push(dataSelect[n].billId);
+    //     }
 
-        switch (true) {
-            case billsIdArr.length === 0:
-                alert('请先选中需要删除的出库单!')
+    //     switch (true) {
+    //         case billsIdArr.length === 0:
+    //             alert('请先选中需要删除的出库单!')
 
-                resultData.result = false;
-                return resultData
-                break;
-            case billsIdArr.length > 0:
-                let billIdRange = getRangeString(billsIdArr);
+    //             resultData.result = false;
+    //             return resultData
+    //             break;
+    //         case billsIdArr.length > 0:
+    //             let billIdRange = getRangeString(billsIdArr);
 
-                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+    //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
-                let statusArr = await getDataBySql({
-                    sql: 'getBorrowSubBillStatus',
-                    params: {
-                        filter: 'billId in ' + billIdRange
-                    }
-                })
+    //             let statusArr = await getDataBySql({
+    //                 sql: 'getBorrowSubBillStatus',
+    //                 params: {
+    //                     filter: 'billId in ' + billIdRange
+    //                 }
+    //             })
 
-                // console.log("statusArr:" + JSON.stringify(statusArr));
-                for (const n of statusArr) {
-                    if (n.status !== '待审核') {
-                        alert('选中单据已审核,不符合删除条件!')
-                        resultData.result = false;
-                        return resultData
-                    }
-                    subDBIDArr.push(n.DBID)
-                }
+    //             // console.log("statusArr:" + JSON.stringify(statusArr));
+    //             for (const n of statusArr) {
+    //                 if (n.status !== '待审核') {
+    //                     alert('选中单据已审核,不符合删除条件!')
+    //                     resultData.result = false;
+    //                     return resultData
+    //                 }
+    //                 subDBIDArr.push(n.DBID)
+    //             }
 
-                break;
-        }
+    //             break;
+    //     }
 
-        resultData = {
-            result: true,
-            data: {
-                mainDBIDArr: mainDBIDArr,
-                subDBIDArr: subDBIDArr
-            }
-        }
+    //     resultData = {
+    //         result: true,
+    //         data: {
+    //             mainDBIDArr: mainDBIDArr,
+    //             subDBIDArr: subDBIDArr
+    //         }
+    //     }
 
-        return resultData;
-    }
+    //     return resultData;
+    // }
 
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
         let productId = $('#rp_outsubbillsForm-productId option:selected').val();
         let warehouseId = $('#rp_outsubbillsForm-warehouseName option:selected').val();
-        console.log(warehouseId);
+        // console.log(warehouseId);
 
         if (productId && warehouseId) {
             stockNum = await getStockNum(productId, warehouseId);
@@ -1677,7 +1684,7 @@
 
             createOutBillId();
             $("#rp_outbillsForm-billForm").text('人工出库');
-            $("#rp_outbillsForm-isInland").selectpicker('val', '国内')
+            // $("#rp_outbillsForm-isInland").selectpicker('val', '国内')
             $("#rp_outbillsForm-sendWay").selectpicker('val', '邮寄过来')
 
             //在保存时赋值
@@ -1703,31 +1710,55 @@
 
         //删除需求单
         $('#btnOutBillDelete').click(async function () {
-            //检查条件
-            let resultData = await checkDeleteBills();
-            if (!resultData.result) {
-                return;
+
+            //1.check-检查单据选中
+            if (!mainTableData.billId) {
+                alert('请先选中需要删除的出库单')
+                return
             }
 
-            //提醒删除风险
+            //1.check-检查单据状态
+            if (mainTableData.status !== '待审核') {
+                alert('只允许删除待审核出库单')
+                return
+            }
+
+            //1.check-检查子表状态
+            for (const n of subTableData) {
+                if (n.status !== '预领') {
+                    alert('存在非预领状态的物料,无法删除!')
+                    return
+                }
+            }
+
+            //1.check-提醒删除风险
             if (!confirm('删除后无法恢复,确认删除?')) {
                 return;
             }
 
-            //删除单据
-
-            // let table = $('#rp_outbills').DataTable();
-            // let dataSelect = table.rows('.selected').data();
-            // let DBIDArr = [];
-            // for (let n = 0; n < dataSelect.length; n++) {
-            //     DBIDArr.push(dataSelect[n].DBID);
+            // let resultData = await checkDeleteBills();
+            // if (!resultData.result) {
+            //     return;
             // }
+
+
+            // console.log(mainTableData);
+            // console.log(subTableData);
+
+
+            //2.do-删除单据
+
+            let mainDBIDArr = [mainTableData.DBID]
+            let subDBIDArr = [];
+            for (const n of subTableData) {
+                subDBIDArr.push(n.DBID)
+            }
 
             let r1 = await postDBData({
                 sql: 'delete',
                 params: {
                     tableId: 'rp_outbills',
-                    data: resultData.data.mainDBIDArr
+                    data: mainDBIDArr
                 }
             })
 
@@ -1735,15 +1766,17 @@
                 sql: 'delete',
                 params: {
                     tableId: 'rp_outsubbills',
-                    data: resultData.data.subDBIDArr
+                    data: subDBIDArr
                 }
             })
 
+            //3.return-提醒并重新加载表单
             if (r1.affectedRows && r2.affectedRows) {
                 alert('删除成功!')
-                //重新加载表单
-                loadBillMainTable();
+            } else {
+                alert('出现错误!')
             }
+            loadBillMainTable();
 
 
         })
@@ -2168,7 +2201,7 @@
 
             fillTableRows({
                 tableId: 'printViewSubTable',
-                cols: ['rowId', 'productId', 'productName', 'unit', 'num'],
+                cols: ['rowId', 'productId', 'productName', 'warehouseName', 'unit', 'num'],
                 data: subTableData
             })
 
@@ -2303,16 +2336,16 @@
 
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_outbillsForm-isInland',
-            sqlParams: {
-                sql: 'getOptionSelector',
-                params: {
-                    filter: 'optionClass="国内外"',
-                    orderBy: 'orderId'
-                }
-            },
-        })
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outbillsForm-isInland',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="国内外"',
+        //             orderBy: 'orderId'
+        //         }
+        //     },
+        // })
 
         loadBootStrapSelector({
             elementId: 'rp_outbillsForm-customerBelongShort',

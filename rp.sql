@@ -11,6 +11,81 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
+-- 导出  表 toolsweb.rp_borrowbills 结构
+DROP TABLE IF EXISTS `rp_borrowbills`;
+CREATE TABLE IF NOT EXISTS `rp_borrowbills` (
+  `DBID` int(11) NOT NULL AUTO_INCREMENT,
+  `borrowBillId` char(50) DEFAULT NULL COMMENT '借货单号',
+  `borrowDate` date DEFAULT NULL COMMENT '借货日期',
+  `billForm` char(50) DEFAULT NULL COMMENT '单据来源',
+  `billStatus` char(255) DEFAULT NULL COMMENT '单据状态',
+  `customerId` char(255) DEFAULT NULL COMMENT '客户编号',
+  `customerShortName` char(255) DEFAULT NULL COMMENT '客户简称',
+  `customerName` char(255) DEFAULT NULL COMMENT '客户名称',
+  `contact` char(50) DEFAULT NULL COMMENT '联系人',
+  `mobilePhone` char(50) DEFAULT NULL COMMENT '移动电话',
+  `workPhone` char(50) DEFAULT NULL COMMENT '工作电话',
+  `fax` char(50) DEFAULT NULL COMMENT '传真',
+  `address` varchar(255) DEFAULT NULL COMMENT '地址',
+  `customerBelongShort` char(50) DEFAULT NULL COMMENT '客户归属',
+  `borrowType` char(50) DEFAULT NULL COMMENT '借货类型',
+  `isInland` char(255) DEFAULT NULL COMMENT '国内外',
+  `warehouseName` char(50) DEFAULT NULL COMMENT '仓库名称',
+  `sendWay` char(50) DEFAULT NULL COMMENT '出货方式',
+  `expressId` char(50) DEFAULT NULL COMMENT '运输单号',
+  `operator` char(50) DEFAULT NULL COMMENT '经手人',
+  `tester` char(50) DEFAULT NULL COMMENT '测试人',
+  `preReturnDate` date DEFAULT NULL COMMENT '预归还日期',
+  `maker` char(50) DEFAULT NULL COMMENT '制单人',
+  `auditor` char(50) DEFAULT NULL COMMENT '审核人',
+  `makeDate` date DEFAULT NULL COMMENT '制单日期',
+  `auditDate` date DEFAULT NULL COMMENT '审核日期',
+  `status` char(50) DEFAULT NULL COMMENT '状态',
+  `billRemark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `borrowBillId` (`borrowBillId`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单';
+
+-- 正在导出表  toolsweb.rp_borrowbills 的数据：~4 rows (大约)
+/*!40000 ALTER TABLE `rp_borrowbills` DISABLE KEYS */;
+REPLACE INTO `rp_borrowbills` (`DBID`, `borrowBillId`, `borrowDate`, `billForm`, `billStatus`, `customerId`, `customerShortName`, `customerName`, `contact`, `mobilePhone`, `workPhone`, `fax`, `address`, `customerBelongShort`, `borrowType`, `isInland`, `warehouseName`, `sendWay`, `expressId`, `operator`, `tester`, `preReturnDate`, `maker`, `auditor`, `makeDate`, `auditDate`, `status`, `billRemark`, `billSaveTimeStamp`) VALUES
+	(1, 'B-20200618001', '2020-06-18', NULL, NULL, 'CS_BL_HZ', '北仑_汉正', '宁波北仑汉正塑胶有限公司', '施红军', NULL, NULL, NULL, NULL, NULL, NULL, '国内', NULL, '快递', NULL, '夏秋玲', NULL, NULL, '熊奇龙', NULL, '2020-06-18', NULL, NULL, NULL, '2020-06-18 14:44:39'),
+	(7, 'B-20200619001', '2020-06-19', NULL, NULL, 'CS_BL_WJ', '北仑_五金阀门厂', '宁波市北仑五金阀门厂', '顾新培', '13906692627', NULL, NULL, NULL, NULL, NULL, '国内', NULL, NULL, NULL, NULL, NULL, NULL, '熊奇龙', NULL, '2020-06-19', NULL, '待审核', NULL, '2020-06-19 11:14:00'),
+	(10, 'B-20200622001', '2020-06-22', NULL, NULL, 'CS_BLCG', '北仑_成光', '宁波市北仑区柴桥成光五金厂', '张红成', '13505885979', NULL, NULL, NULL, NULL, NULL, '国内', NULL, '快递', NULL, '苏文洁', NULL, NULL, '熊奇龙', NULL, '2020-06-22', NULL, '已驳回', NULL, '2020-06-22 08:32:37'),
+	(11, 'B-20200622002', '2020-06-22', NULL, NULL, 'CS_BL_JCDZ', '北仑_精诚电子', '宁波市北仑精诚电子有限公司', '周先生', '13958300300', NULL, NULL, '宁波市北仑长白山路637号', NULL, NULL, '国内', NULL, NULL, NULL, NULL, NULL, NULL, '熊奇龙', NULL, '2020-06-22', NULL, '已驳回', NULL, '2020-06-22 09:04:47');
+/*!40000 ALTER TABLE `rp_borrowbills` ENABLE KEYS */;
+
+-- 导出  表 toolsweb.rp_borrowsubbills 结构
+DROP TABLE IF EXISTS `rp_borrowsubbills`;
+CREATE TABLE IF NOT EXISTS `rp_borrowsubbills` (
+  `DBID` int(11) NOT NULL AUTO_INCREMENT,
+  `borrowBillId` char(50) DEFAULT NULL COMMENT '借货单号',
+  `rowId` char(50) DEFAULT NULL COMMENT '序号',
+  `productId` char(50) DEFAULT NULL COMMENT '产品编号',
+  `productName` char(255) DEFAULT NULL COMMENT '产品名称',
+  `productDescription` varchar(255) DEFAULT NULL COMMENT '产品描述',
+  `productClass` char(50) DEFAULT NULL COMMENT '产品类别',
+  `systemType` char(50) DEFAULT NULL COMMENT '系统分类',
+  `unit` char(50) DEFAULT NULL COMMENT '单位',
+  `num` int(3) DEFAULT NULL COMMENT '数量',
+  `price` decimal(10,2) DEFAULT NULL COMMENT '单价',
+  `partFee` decimal(10,2) DEFAULT NULL COMMENT '部件费用',
+  `billRemark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `recordBillId_rowId` (`borrowBillId`,`rowId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单子表';
+
+-- 正在导出表  toolsweb.rp_borrowsubbills 的数据：~4 rows (大约)
+/*!40000 ALTER TABLE `rp_borrowsubbills` DISABLE KEYS */;
+REPLACE INTO `rp_borrowsubbills` (`DBID`, `borrowBillId`, `rowId`, `productId`, `productName`, `productDescription`, `productClass`, `systemType`, `unit`, `num`, `price`, `partFee`, `billRemark`, `billSaveTimeStamp`) VALUES
+	(1, 'B-20200618001', '1', '1ACC_HUNTER_JX_D', '1ACC_HUNTER_JX_D', '机箱套料iDriver600_75-90KW TI60090KW-T', '铁板', '其他', NULL, 1, NULL, NULL, NULL, '2020-06-18 14:44:39'),
+	(6, 'B-20200619001', '1', '1ACC_HUNTER_JX_C', '1ACC_HUNTER_JX_C', '机箱套料iDriver600_37-55KW', '铁板', '其他', NULL, 1, NULL, NULL, NULL, '2020-06-19 00:00:00'),
+	(8, 'B-20200622001', '1', '1AX_RMTP12B_O', '1AX_RMTP12B_O', 'RMTP12+OUTPUT温度控制模组 立式(铝壳) M4', '温控板', '其他', NULL, 1, NULL, NULL, NULL, '2020-06-22 08:32:37'),
+	(9, 'B-20200622002', '1', '0JWCSC44_62O', '0JWCSC44_62O', '0JWCSC44_62O', '原器件', '其他', NULL, 1, NULL, NULL, '2', '2020-06-22 09:04:47');
+/*!40000 ALTER TABLE `rp_borrowsubbills` ENABLE KEYS */;
+
 -- 导出  表 toolsweb.rp_customers 结构
 DROP TABLE IF EXISTS `rp_customers`;
 CREATE TABLE IF NOT EXISTS `rp_customers` (
@@ -77,8 +152,8 @@ REPLACE INTO `rp_customers` (`DBID`, `customerId`, `customerShortName`, `custome
 	(25, 'CS_BL_XX', '宁波_鑫兴', '宁波市北仑区柴桥鑫兴五金模具塑料厂', '客户', '', '', '宁波市北仑区柴桥鑫兴五金模具塑料厂', '', '款到发货', '', '', '国内', '宁波北仑柴桥', '胡朝辉', '13777276678', '13777276678', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_zhouq', '是', NULL),
 	(26, 'CS_BL_YG', '北仑_昱冠', '宁波市北仑大碶昱冠机械厂', '客户', '', '', '宁波市北仑大碶昱冠机械厂', '', '款到发货', '', '', '国内', '', '贺旭东', '13306842575', '13306842575', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
 	(27, 'CS_BL_YL', '北仑_甬仑', '甬仑电子', '客户', '', '', '甬仑电子', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '', '北仑_甬仑', '', '', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
-	(28, 'CS_BL_ZWM', '北仑_张文明', '张文明', '客户', '宁波_通用(甬华)', '宁波_通用(甬华)', '张文明', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '北仑郭巨', '张文明', '', '13606842660', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', NULL),
-	(29, 'CS_BLBD', '北仑_宝笛', '北仑宝笛工艺精机有限公司', '客户', '宁波_海天', '宁波_海天', '北仑宝笛工艺精机有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '北仑明州西路529号', '陈先生', '13967828982', '', '', '', '', '', '', '', '18个月', '', ' ', NULL, '', '是', NULL),
+	(28, 'CS_BL_ZWM', '北仑_张文明', '张文明', '客户', NULL, '宁波_通用(甬华)', '张文明', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '北仑郭巨', '张文明', NULL, '13606842660', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_liulx', '是', '2020-06-18 09:54:59'),
+	(29, 'CS_BLBD', '北仑_宝笛', '北仑宝笛工艺精机有限公司', '客户', NULL, '宁波_海天', '北仑宝笛工艺精机有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '北仑明州西路529号', '陈先生', '13967828982', '', '', '', '', '', '', '', '18个月', '', ' ', NULL, '', '是', '2020-06-18 09:44:07'),
 	(30, 'CS_BLBWC', '北仑_保温厂', '宁波市北仑保温容器厂', '客户', '', '', '宁波市北仑保温容器厂', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '宁波北仑柴桥工业区', '孙群立', '13505885781', '', '', '', '', '', '', '', '18个月', '', ' ', NULL, '', '是', NULL),
 	(31, 'CS_BLBY', '北仑_彼扬', '宁波北仑彼扬塑料制品有限公司', '客户', '宁波_海天', '宁波_海天', '宁波北仑彼扬塑料制品有限公司', '', '款到发货', '中国-浙江省-宁波市', '', '国内', '北仑大矸徐洋中路33号', '顾世华', '13306655270', '13306655270', '315825', '', '', '91330206665592557W', '3901180009000107086工行宁波北仑支行', '', '18个月', '', ' ', NULL, 'xiaf', '是', NULL),
 	(32, 'CS_BLCG', '北仑_成光', '宁波市北仑区柴桥成光五金厂', '客户', '111', NULL, '宁波市北仑区柴桥成光五金厂', '', '款到发货', '中国-浙江省-宁波市-北仑区', '', '国内', '', '张红成', '13505885979', '13505885979', '', '', '', '', '', '', '18个月', '', '', NULL, 'DG_zhouq', '是', NULL),
@@ -3437,6 +3512,84 @@ REPLACE INTO `rp_faultclasses` (`DBID`, `faultId`, `faultName`, `faultClass`, `f
 	(530, '', '锡空焊', '故障原因', ' ', '63', 'product user chen xiao long', '是', '2018-11-27 00:00:00');
 /*!40000 ALTER TABLE `rp_faultclasses` ENABLE KEYS */;
 
+-- 导出  表 toolsweb.rp_inbills 结构
+DROP TABLE IF EXISTS `rp_inbills`;
+CREATE TABLE IF NOT EXISTS `rp_inbills` (
+  `DBID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '入库号',
+  `fromBillType` char(50) DEFAULT NULL COMMENT '来源单类型',
+  `billId` char(50) DEFAULT NULL COMMENT '单据编号',
+  `maker` char(50) DEFAULT NULL COMMENT '制单人',
+  `auditor` char(50) DEFAULT NULL COMMENT '审核人',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-入库单';
+
+-- 正在导出表  toolsweb.rp_inbills 的数据：~0 rows (大约)
+/*!40000 ALTER TABLE `rp_inbills` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rp_inbills` ENABLE KEYS */;
+
+-- 导出  表 toolsweb.rp_outbills 结构
+DROP TABLE IF EXISTS `rp_outbills`;
+CREATE TABLE IF NOT EXISTS `rp_outbills` (
+  `DBID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '出库号',
+  `billForm` char(50) DEFAULT NULL COMMENT '单据来源',
+  `billId` char(50) DEFAULT NULL COMMENT '单据编号',
+  `customerId` char(50) DEFAULT NULL COMMENT '客户编号',
+  `customerShortName` char(50) DEFAULT NULL COMMENT '客户简称',
+  `customerName` varchar(255) DEFAULT NULL COMMENT '客户名称',
+  `customerBelongShort` char(50) DEFAULT NULL COMMENT '客户归属',
+  `contact` char(50) DEFAULT NULL COMMENT '联系人',
+  `mobilePhone` char(50) DEFAULT NULL COMMENT '移动电话',
+  `workPhone` char(50) DEFAULT NULL COMMENT '工作电话',
+  `sendWay` char(50) DEFAULT NULL COMMENT '出货方式',
+  `operator` char(50) DEFAULT NULL COMMENT '经手人',
+  `address` varchar(255) DEFAULT NULL COMMENT '地址',
+  `maker` char(50) DEFAULT NULL COMMENT '制单人',
+  `auditor` char(50) DEFAULT NULL COMMENT '审核人',
+  `makeDate` date DEFAULT NULL COMMENT '制单日期',
+  `auditDate` date DEFAULT NULL COMMENT '审核日期',
+  `status` char(50) DEFAULT NULL COMMENT '单据状态',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-出库单';
+
+-- 正在导出表  toolsweb.rp_outbills 的数据：~2 rows (大约)
+/*!40000 ALTER TABLE `rp_outbills` DISABLE KEYS */;
+REPLACE INTO `rp_outbills` (`DBID`, `billForm`, `billId`, `customerId`, `customerShortName`, `customerName`, `customerBelongShort`, `contact`, `mobilePhone`, `workPhone`, `sendWay`, `operator`, `address`, `maker`, `auditor`, `makeDate`, `auditDate`, `status`, `remark`, `billSaveTimeStamp`) VALUES
+	(7, '人工出库', 'O-20200623001', 'CS_BL_XR', '北仑旭日', '北仑旭日塑模', NULL, '冯大峰', '13958304920', NULL, NULL, '苏文洁', NULL, '熊奇龙', '夏飞', '2020-06-23', NULL, '待审核', NULL, '2020-06-23 12:50:15');
+/*!40000 ALTER TABLE `rp_outbills` ENABLE KEYS */;
+
+-- 导出  表 toolsweb.rp_outsubbills 结构
+DROP TABLE IF EXISTS `rp_outsubbills`;
+CREATE TABLE IF NOT EXISTS `rp_outsubbills` (
+  `DBID` int(11) NOT NULL AUTO_INCREMENT,
+  `billId` char(50) DEFAULT NULL COMMENT '借货单号',
+  `rowId` char(50) DEFAULT NULL COMMENT '序号',
+  `productId` char(50) DEFAULT NULL COMMENT '产品编号',
+  `productName` char(255) DEFAULT NULL COMMENT '产品名称',
+  `productDescription` varchar(255) DEFAULT NULL COMMENT '产品描述',
+  `productClass` char(50) DEFAULT NULL COMMENT '产品类别',
+  `systemType` char(50) DEFAULT NULL COMMENT '系统分类',
+  `warehouseName` char(50) DEFAULT NULL COMMENT '仓库名称',
+  `unit` char(50) DEFAULT NULL COMMENT '单位',
+  `status` char(50) DEFAULT NULL COMMENT '状态',
+  `num` int(3) DEFAULT NULL COMMENT '数量',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `recordBillId_rowId` (`billId`,`rowId`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单子表';
+
+-- 正在导出表  toolsweb.rp_outsubbills 的数据：~3 rows (大约)
+/*!40000 ALTER TABLE `rp_outsubbills` DISABLE KEYS */;
+REPLACE INTO `rp_outsubbills` (`DBID`, `billId`, `rowId`, `productId`, `productName`, `productDescription`, `productClass`, `systemType`, `warehouseName`, `unit`, `status`, `num`, `remark`, `billSaveTimeStamp`) VALUES
+	(14, 'O-20200623001', '1', '3CD6XP102', 'SMD X7R 0603 1000pf', 'SMD X7R 0603 1000pf', '电容器', '其他', '客服仓', 'EA', '预领', 1, '222', '2020-06-23 00:00:00'),
+	(15, 'O-20200623001', '2', '3CMP154_100', 'MEC 0.15J100 SMALL', 'MEC 0.15J100V', '电容器', '其他', '客服仓', 'EA', '预领', 1, NULL, NULL),
+	(17, 'O-20200623001', '3', '3CLD6FB301', 'SMD HBH1608B301', 'SMD HBH1608B301贴片小电感', '原器件', '其他', '客服仓', 'EA', '预领', 1, NULL, NULL);
+/*!40000 ALTER TABLE `rp_outsubbills` ENABLE KEYS */;
+
 -- 导出  表 toolsweb.rp_partlocations 结构
 DROP TABLE IF EXISTS `rp_partlocations`;
 CREATE TABLE IF NOT EXISTS `rp_partlocations` (
@@ -4770,10 +4923,20 @@ CREATE TABLE IF NOT EXISTS `rp_partsbills` (
   `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`recordBillId`,`rowId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
 
--- 正在导出表  toolsweb.rp_partsbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_partsbills 的数据：~9 rows (大约)
 /*!40000 ALTER TABLE `rp_partsbills` DISABLE KEYS */;
+REPLACE INTO `rp_partsbills` (`DBID`, `recordBillId`, `rowId`, `partId`, `partName`, `partDescription`, `partLocation`, `num`, `price`, `partFee`, `numStatus`, `changePartId`, `changePartNum`, `remark`, `billSaveTimeStamp`) VALUES
+	(1, 'R-20200611001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX15', 1, 35.00, 35.00, '已领', '2BTEC_HB02F', 1, NULL, '2020-06-11 00:00:00'),
+	(2, 'R-20200611002', '1', '3CD6NP150', 'SMD 15P0603', 'SMD CAPACITOR 0603 NPO 15P', 'C22,C32,C47', 3, 5.00, 15.00, '已领', '3CD6NP150', 1, NULL, '2020-06-11 00:00:00'),
+	(3, 'R-20200611002', '2', '3CD6XP102', 'SMD 1020603', 'SMD X7R 0603 1000pf', 'CO6,CO7', 14, 5.00, 70.00, '已领', NULL, NULL, NULL, '2020-06-11 00:00:00'),
+	(4, 'R-20200611003', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX15', 1, 35.00, 35.00, '已领', '2BTEC_HB02F', 1, NULL, '2020-06-11 00:00:00'),
+	(5, 'R-20200618001', '1', '3CDYP105_016', 'SMD 1UF/16V_Y5V', 'SMD 1uf16v Y5V 3216', NULL, 4, 5.00, 20.00, '已领', '3CDYP105_016', 1, NULL, '2020-06-18 09:04:18'),
+	(6, 'R-20200619001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX15', 1, 35.00, 35.00, '已领', NULL, NULL, NULL, '2020-06-19 08:46:11'),
+	(7, 'R-20200623001', '1', '2BTEC_HB02F', 'DIP HB02', 'TEMP PRIAMP', 'UX15', 1, 35.00, 35.00, '已领', NULL, NULL, NULL, '2020-06-23 10:47:41'),
+	(8, 'R-20200623001', '2', '3CD6XP221', 'SMD 2210603', 'X7R SMD CAP 0603 220pf', 'CD32', 1, 5.00, 5.00, '已领', NULL, NULL, NULL, '2020-06-23 10:47:41'),
+	(9, 'R-20200623001', '3', '3CDYP105_016', 'SMD 1UF/16V_Y5V', 'SMD 1uf16v Y5V 3216', 'CTD1,CTX3', 4, 5.00, 20.00, '已领', NULL, NULL, NULL, '2020-06-23 10:47:41');
 /*!40000 ALTER TABLE `rp_partsbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_partsfee 结构
@@ -6602,324 +6765,6 @@ REPLACE INTO `rp_partsfee` (`DBID`, `partId`, `price`, `effective`, `creater`, `
 	(19010, '8ZEBZKXG1205C', 5.00, '是', 'DG repair', NULL),
 	(19011, 'SMD FB300_1A0603', 5.00, '是', 'DG repair', NULL);
 /*!40000 ALTER TABLE `rp_partsfee` ENABLE KEYS */;
-
--- 导出  表 toolsweb.rp_partswarehouse 结构
-DROP TABLE IF EXISTS `rp_partswarehouse`;
-CREATE TABLE IF NOT EXISTS `rp_partswarehouse` (
-  `DBID` int(11) NOT NULL AUTO_INCREMENT,
-  `partId` char(255) DEFAULT NULL COMMENT '部件编号',
-  `stockNum` int(10) DEFAULT NULL COMMENT '库存数量',
-  `preNum` int(10) DEFAULT NULL COMMENT '预数量',
-  `unit` char(10) DEFAULT NULL COMMENT '单位',
-  `rpBillId` char(50) DEFAULT NULL COMMENT '系统单号',
-  `erpBillId` char(50) DEFAULT NULL COMMENT 'ERP单号',
-  `saveTimeStamp` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`DBID`),
-  UNIQUE KEY `partId` (`partId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1798 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
-
--- 正在导出表  toolsweb.rp_partswarehouse 的数据：~252 rows (大约)
-/*!40000 ALTER TABLE `rp_partswarehouse` DISABLE KEYS */;
-REPLACE INTO `rp_partswarehouse` (`DBID`, `partId`, `stockNum`, `preNum`, `unit`, `rpBillId`, `erpBillId`, `saveTimeStamp`) VALUES
-	(1546, '2BP_TECH2M5_1AN', 100, NULL, '', '', '', NULL),
-	(1547, '3CD6NP030', 100, NULL, '', '', '', NULL),
-	(1548, '3CD6XP102', 100, NULL, '', '', '', NULL),
-	(1549, '3CD6XP103', 95, NULL, '', '', '', NULL),
-	(1550, '3CD6XP104', 100, NULL, '', '', '', NULL),
-	(1551, '3CD6XP105_010', 100, NULL, '', '', '', NULL),
-	(1552, '3CD6XP105_025', 100, NULL, '', '', '', NULL),
-	(1553, '3CD6XP106_006', 100, NULL, '', '', '', NULL),
-	(1554, '3CDYP105_016', 99, NULL, '', '', '', NULL),
-	(1555, '3CLD6FB301', 100, NULL, '', '', '', NULL),
-	(1556, '3CLDFB121_1A', 100, NULL, '', '', '', NULL),
-	(1557, '3CLDFB800_3A', 100, NULL, '', '', '', NULL),
-	(1558, '3DDOBAS45AL', 100, NULL, '', '', '', NULL),
-	(1559, '3DDOBAV103', 100, NULL, '', '', '', NULL),
-	(1560, '3DDOPMLL4148', 100, NULL, '', '', '', NULL),
-	(1561, '3DDORSS_GS1M', 100, NULL, '', '', '', NULL),
-	(1562, '3DLD_LG_192E_NJT', 100, NULL, '', '', '', NULL),
-	(1563, '3DLD_LG_192G', 100, NULL, '', '', '', NULL),
-	(1564, '3DLD_LG_192Y', 100, NULL, '', '', '', NULL),
-	(1565, '3ID_PC357', 100, NULL, '', '', '', NULL),
-	(1566, '3ID74HC123', 100, NULL, '', '', '', NULL),
-	(1567, '3ID74HC14', 100, NULL, '', '', '', NULL),
-	(1568, '3ID74HC174', 100, NULL, '', '', '', NULL),
-	(1569, '3ID74HC191', 100, NULL, '', '', '', NULL),
-	(1570, '3ID74HC273_S', 100, NULL, '', '', '', NULL),
-	(1571, '3ID74HC32', 100, NULL, '', '', '', NULL),
-	(1572, '3ID74HC390', 100, NULL, '', '', '', NULL),
-	(1573, '3ID74HC393', 100, NULL, '', '', '', NULL),
-	(1574, '3ID74HC74', 100, NULL, '', '', '', NULL),
-	(1575, '3ID74HCT125', 100, NULL, '', '', '', NULL),
-	(1576, '3ID74HCT174', 100, NULL, '', '', '', NULL),
-	(1577, '3ID74HCT245_S', 100, NULL, '', '', '', NULL),
-	(1578, '3ID74LVC14', 100, NULL, '', '', '', NULL),
-	(1579, '3ID93C66J', 100, NULL, '', '', '', NULL),
-	(1580, '3IDAPL1117', 100, NULL, '', '', '', NULL),
-	(1581, '3IDAPM4953', 100, NULL, '', '', '', NULL),
-	(1582, '3IDREF3040', 100, NULL, '', '', '', NULL),
-	(1583, '3IDSGM8426YS8', 100, NULL, '', '', '', NULL),
-	(1584, '3IDT74ALVC164245', 100, NULL, '', '', '', NULL),
-	(1585, '3IDTC7109', 100, NULL, '', '', '', NULL),
-	(1586, '3IDTEC7032A', 100, NULL, '', '', '', NULL),
-	(1587, '3IDTL072', 100, NULL, '', '', '', NULL),
-	(1588, '3IDTL16C550', 100, NULL, '', '', '', NULL),
-	(1589, '3IDTL7705B', 100, NULL, '', '', '', NULL),
-	(1590, '3IDTLV5618A', 100, NULL, '', '', '', NULL),
-	(1591, '3IDULN2003', 100, NULL, '', '', '', NULL),
-	(1592, '3IDW74HC595', 100, NULL, '', '', '', NULL),
-	(1593, '3IDWADM202EAR', 100, NULL, '', '', '', NULL),
-	(1594, '3ITMS320VC5402', 100, NULL, '', '', '', NULL),
-	(1595, '3QDCM25', 100, NULL, '', '', '', NULL),
-	(1596, '3QDOM03_5795_E', 100, NULL, '', '', '', NULL),
-	(1597, '3QDOM18_432', 100, NULL, '', '', '', NULL),
-	(1598, '3QDOM20', 100, NULL, '', '', '', NULL),
-	(1599, '3RD6AK001', 100, NULL, '', '', '', NULL),
-	(1600, '3RD6AK002_2', 100, NULL, '', '', '', NULL),
-	(1601, '3RD6AK003_3', 100, NULL, '', '', '', NULL),
-	(1602, '3RD6AK047', 100, NULL, '', '', '', NULL),
-	(1603, '3RD6AK100', 100, NULL, '', '', '', NULL),
-	(1604, '3RD6AK390', 100, NULL, '', '', '', NULL),
-	(1605, '3RD6AM001', 100, NULL, '', '', '', NULL),
-	(1606, '3RD6AM001_8', 100, NULL, '', '', '', NULL),
-	(1607, '3RD6AM002_2', 100, NULL, '', '', '', NULL),
-	(1608, '3RD6AM010', 100, NULL, '', '', '', NULL),
-	(1609, '3RD6AO000', 100, NULL, '', '', '', NULL),
-	(1610, '3RD6AO022', 100, NULL, '', '', '', NULL),
-	(1611, '3RD6AO033', 100, NULL, '', '', '', NULL),
-	(1612, '3RD6AO100', 100, NULL, '', '', '', NULL),
-	(1613, '3RD6PK004_99', 100, NULL, '', '', '', NULL),
-	(1614, '3RD6PK005_1', 100, NULL, '', '', '', NULL),
-	(1615, '3RD6PK007_5', 100, NULL, '', '', '', NULL),
-	(1616, '3RD6PK010', 100, NULL, '', '', '', NULL),
-	(1617, '3RD6PK011_3', 100, NULL, '', '', '', NULL),
-	(1618, '3RD6PK012_1', 100, NULL, '', '', '', NULL),
-	(1619, '3RD6PK015', 100, NULL, '', '', '', NULL),
-	(1620, '3RD6PK020', 100, NULL, '', '', '', NULL),
-	(1621, '3RD6PK030_1', 100, NULL, '', '', '', NULL),
-	(1622, '3RD6PK034', 100, NULL, '', '', '', NULL),
-	(1623, '3RD6PK034_8', 100, NULL, '', '', '', NULL),
-	(1624, '3RD6PK044_2', 100, NULL, '', '', '', NULL),
-	(1625, '3RD6PK045_3', 100, NULL, '', '', '', NULL),
-	(1626, '3RD6PK053_6', 100, NULL, '', '', '', NULL),
-	(1627, '3RD6PK059', 100, NULL, '', '', '', NULL),
-	(1628, '3RD6PK100', 100, NULL, '', '', '', NULL),
-	(1629, '3RD6PK210', 100, NULL, '', '', '', NULL),
-	(1630, '3RD6PK787', 100, NULL, '', '', '', NULL),
-	(1631, '3RD6PO049_9', 100, NULL, '', '', '', NULL),
-	(1632, '3RD6PO075', 100, NULL, '', '', '', NULL),
-	(1633, '3RD6PO100', 100, NULL, '', '', '', NULL),
-	(1634, '3RD6PO220', 100, NULL, '', '', '', NULL),
-	(1635, '3RDN8P4O330', 100, NULL, '', '', '', NULL),
-	(1636, '3RDN8P4O470', 100, NULL, '', '', '', NULL),
-	(1637, '3TDHS2213BNL', 100, NULL, '', '', '', NULL),
-	(1638, '3UD2N3904', 100, NULL, '', '', '', NULL),
-	(1639, '3UD2N3906', 100, NULL, '', '', '', NULL),
-	(1640, '3CCP102_102', 100, NULL, '', '', '', NULL),
-	(1641, '3CCP472_102', 100, NULL, '', '', '', NULL),
-	(1642, '3CCP472_302', 94, NULL, '', '', '', NULL),
-	(1643, '3CEU101_025', 100, NULL, '', '', '', NULL),
-	(1644, '3CEU101_050_RUB', 100, NULL, '', '', '', NULL),
-	(1645, '3CEU102_025_RUB', 100, NULL, '', '', '', NULL),
-	(1646, '3CEU221_025', 100, NULL, '', '', '', NULL),
-	(1647, '3CEU221_050_1', 100, NULL, '', '', '', NULL),
-	(1648, '3CEU221_050_RUB', 100, NULL, '', '', '', NULL),
-	(1649, '3CEU470_050_RUB', 100, NULL, '', '', '', NULL),
-	(1650, '3CEU471_025_RUB', 100, NULL, '', '', '', NULL),
-	(1651, '3CLPK0807331K', 100, NULL, '', '', '', NULL),
-	(1652, '3CLPK08073R3M', 100, NULL, '', '', '', NULL),
-	(1653, '3CLT5052331KB', 100, NULL, '', '', '', NULL),
-	(1654, '3CMP104_100', 100, NULL, '', '', '', NULL),
-	(1655, '3CMP154_100', 98, NULL, '', '', '', NULL),
-	(1656, '3DOSB160', 100, NULL, '', '', '', NULL),
-	(1657, '3FRT220_33', 100, NULL, '', '', '', NULL),
-	(1658, '3FRX050_60', 100, NULL, '', '', '', NULL),
-	(1659, '3MOM03HB', 100, NULL, '', '', '', NULL),
-	(1660, '3MSE3006W', 100, NULL, '', '', '', NULL),
-	(1661, '3MT2DSB0120_BK', 100, NULL, '', '', '', NULL),
-	(1662, '3MT2EHDVC02P', 100, NULL, '', '', '', NULL),
-	(1663, '3MT2EHDVC02P_OR', 100, NULL, '', '', '', NULL),
-	(1664, '3MT2EHDVC03P', 100, NULL, '', '', '', NULL),
-	(1665, '3MT4DSCC0124PDN', 100, NULL, '', '', '', NULL),
-	(1666, '3MTECH381V03P', 100, NULL, '', '', '', NULL),
-	(1667, '3MTECH381V06P_OR', 100, NULL, '', '', '', NULL),
-	(1668, '3MTECH381V08P', 100, NULL, '', '', '', NULL),
-	(1669, '3MTECH381V10P', 100, NULL, '', '', '', NULL),
-	(1670, '3NDB_09SM', 100, NULL, '', '', '', NULL),
-	(1671, '3NDB_25S', 100, NULL, '', '', '', NULL),
-	(1672, '3NPJACK8P8C', 100, NULL, '', '', '', NULL),
-	(1673, '3RCAK001', 100, NULL, '', '', '', NULL),
-	(1674, '3RCBO010', 100, NULL, '', '', '', NULL),
-	(1675, '3RMAO000_22', 100, NULL, '', '', '', NULL),
-	(1676, '3RMAO000_39', 100, NULL, '', '', '', NULL),
-	(1677, '3RSBK001', 100, NULL, '', '', '', NULL),
-	(1678, '3RSBK010', 100, NULL, '', '', '', NULL),
-	(1679, '3RVBPK010', 100, NULL, '', '', '', NULL),
-	(1680, '3U2SA1013', 100, NULL, '', '', '', NULL),
-	(1681, '3UMJE270', 100, NULL, '', '', '', NULL),
-	(1682, '3UFTU36N06N', 100, NULL, '', '', '', NULL),
-	(1683, '3UTIP102', 100, NULL, '', '', '', NULL),
-	(1684, '3UTL431', 100, NULL, '', '', '', NULL),
-	(1685, '3XF199015', 100, NULL, '', '', '', NULL),
-	(1686, '3XFCQ_20', 100, NULL, '', '', '', NULL),
-	(1687, '3XI32', 100, NULL, '', '', '', NULL),
-	(1688, '3YG5NB_1A_24E', 100, NULL, '', '', '', NULL),
-	(1689, '3YG6RN_1_24', 100, NULL, '', '', '', NULL),
-	(1690, '2BP_AHBOP', 100, NULL, '', '', '', NULL),
-	(1691, '3PCB_CS225_P1052', 100, NULL, '', '', '', NULL),
-	(1692, '3SWD_DTSM_65S', 100, NULL, '', '', '', NULL),
-	(1693, '3DLE323RD', 100, NULL, '', '', '', NULL),
-	(1694, '3DLM326RD', 100, NULL, '', '', '', NULL),
-	(1695, '3MJS01*07H_B', 100, NULL, '', '', '', NULL),
-	(1696, '3MSLED3_3B', 100, NULL, '', '', '', NULL),
-	(1697, '3RD6AK002', 100, NULL, '', '', '', NULL),
-	(1698, '3RDAO330', 0, NULL, '', '', '', NULL),
-	(1699, '3UDMMBT2222', 100, NULL, '', '', '', NULL),
-	(1700, '3MOF10V_M', 100, NULL, '', '', '', NULL),
-	(1701, '2BP_A80_CPUA', 100, NULL, '', '', '', NULL),
-	(1702, '2BTEC_HB02F', 98, NULL, '', '', '', NULL),
-	(1703, '3CEU010_050', 100, NULL, '', '', '', NULL),
-	(1704, '3CEU221_063_1', 100, NULL, '', '', '', NULL),
-	(1705, '3CLCM166125500MB', 100, NULL, '', '', '', NULL),
-	(1706, '3CLT5052101KB', 100, NULL, '', '', '', NULL),
-	(1707, '3DOSB360', 100, NULL, '', '', '', NULL),
-	(1708, '3FUB0202502', 100, NULL, '', '', '', NULL),
-	(1709, '3HS313A', 100, NULL, '', '', '', NULL),
-	(1710, '3HS313B', 100, NULL, '', '', '', NULL),
-	(1711, '3IMC34063', 100, NULL, '', '', '', NULL),
-	(1712, '3IMC34163', 100, NULL, '', '', '', NULL),
-	(1713, '3IMC7805', 100, NULL, '', '', '', NULL),
-	(1714, '3IMC79L05', 100, NULL, '', '', '', NULL),
-	(1715, '3MJS01*02H', 100, NULL, '', '', '', NULL),
-	(1716, '3MT4DSCC0120PDN', 100, NULL, '', '', '', NULL),
-	(1717, '3NCF96ABCT', 99, NULL, '', '', '', NULL),
-	(1718, '3PCB_CS225_P527', 100, NULL, '', '', '', NULL),
-	(1719, '3QRM03_58', 100, NULL, '', '', '', NULL),
-	(1720, '3RMAO000_075', 100, NULL, '', '', '', NULL),
-	(1721, '3UIRL540N', 100, NULL, '', '', '', NULL),
-	(1722, '3URFD16N05L', 100, NULL, '', '', '', NULL),
-	(1723, '3XI28', 100, NULL, '', '', '', NULL),
-	(1724, '3YFTR_F324E', 100, NULL, '', '', '', NULL),
-	(1725, '3YJS_24_K', 100, NULL, '', '', '', NULL),
-	(1726, '3YRY_5W_OH_K', 100, NULL, '', '', '', NULL),
-	(1727, '3CD6NP101', 100, NULL, '', '', '', NULL),
-	(1728, '3CD6NP470', 99, NULL, '', '', '', NULL),
-	(1729, '3CD6XP221', 97, NULL, '', '', '', NULL),
-	(1730, '3CD6XP471', 99, NULL, '', '', '', NULL),
-	(1731, '3CDE100_016', 100, NULL, '', '', '', NULL),
-	(1732, '3CDTP105_025', 97, NULL, '', '', '', NULL),
-	(1733, '3CDTP106_016', 100, NULL, '', '', '', NULL),
-	(1734, '3DLD_LG_170G', 100, NULL, '', '', '', NULL),
-	(1735, '3DLD_LG_170E', 100, NULL, '', '', '', NULL),
-	(1736, '3ID74AHC540_S', 100, NULL, '', '', '', NULL),
-	(1737, '3ID74HC08', 100, NULL, '', '', '', NULL),
-	(1738, '3ID74HC125', 100, NULL, '', '', '', NULL),
-	(1739, '3IDBS616LV1010', 100, NULL, '', '', '', NULL),
-	(1740, '3IDCD4051', 100, NULL, '', '', '', NULL),
-	(1741, '3IDLM311P', 100, NULL, '', '', '', NULL),
-	(1742, '3IDLTC1624', 100, NULL, '', '', '', NULL),
-	(1743, '3IDPC817_H', 100, NULL, '', '', '', NULL),
-	(1744, '3IDTL072I', 100, NULL, '', '', '', NULL),
-	(1745, '3ITMS320C52PJ', 100, NULL, '', '', '', NULL),
-	(1746, '3QDOM40', 100, NULL, '', '', '', NULL),
-	(1747, '3RD6AO120', 100, NULL, '', '', '', NULL),
-	(1748, '3RD6AO330', 100, NULL, '', '', '', NULL),
-	(1749, '3RD6PK001', 100, NULL, '', '', '', NULL),
-	(1750, '3RD6PK001_82', 100, NULL, '', '', '', NULL),
-	(1751, '3RD6PK002', 100, NULL, '', '', '', NULL),
-	(1752, '3RD6PK002_2', 100, NULL, '', '', '', NULL),
-	(1753, '3RD6PK025_5', 100, NULL, '', '', '', NULL),
-	(1754, '3RD6PK031_6', 100, NULL, '', '', '', NULL),
-	(1755, '3RD6PK033_2', 100, NULL, '', '', '', NULL),
-	(1756, '3RD6PK047', 100, NULL, '', '', '', NULL),
-	(1757, '3RD6PK060_4', 100, NULL, '', '', '', NULL),
-	(1758, '3RDAK003_3', 100, NULL, '', '', '', NULL),
-	(1759, '3RDAO220', 100, NULL, '', '', '', NULL),
-	(1760, '3RDAO470', 100, NULL, '', '', '', NULL),
-	(1761, '3RDN8P4K001', 100, NULL, '', '', '', NULL),
-	(1762, '3RDN8P4K004_7', 100, NULL, '', '', '', NULL),
-	(1763, '3RDN8P4K010', 100, NULL, '', '', '', NULL),
-	(1764, '3RDN8P4O033', 100, NULL, '', '', '', NULL),
-	(1765, '3RDN8P4O220', 100, NULL, '', '', '', NULL),
-	(1766, '2BP_AK668_CPU', 100, NULL, '', '', '', NULL),
-	(1767, '3FUB0202502（台）/3FG0202502（大港）', 100, NULL, '', '', '', NULL),
-	(1768, '3FRX030_60', 100, NULL, '', '', '', NULL),
-	(1769, '3ILM385_2.5Z', 100, NULL, '', '', '', NULL),
-	(1770, '3IMC7815', 100, NULL, '', '', '', NULL),
-	(1771, '3IMC78L05', 100, NULL, '', '', '', NULL),
-	(1772, '3MSE3006', 100, NULL, '', '', '', NULL),
-	(1773, '3PCB_CS225_P517', 100, NULL, '', '', '', NULL),
-	(1774, '3CD6NP150', 100, NULL, '', '', '', NULL),
-	(1775, '3CD6YP334', 100, NULL, '', '', '', NULL),
-	(1776, '3CDE220_016', 100, NULL, '', '', '', NULL),
-	(1777, '3CDTP106_010', 96, NULL, '', '', '', NULL),
-	(1778, '3CDTP475_016A', 100, NULL, '', '', '', NULL),
-	(1779, '3ID61LV25616', 100, NULL, '', '', '', NULL),
-	(1780, '3IDEPM3064ATC100U19C', 100, NULL, '', '', '', NULL),
-	(1781, '3IDHCPL_0600', 100, NULL, '', '', '', NULL),
-	(1782, '3IDLTC1864', 100, NULL, '', '', '', NULL),
-	(1783, '3IDOP07', 100, NULL, '', '', '', NULL),
-	(1784, '3IDPS398C', 100, NULL, '', '', '', NULL),
-	(1785, '3QDOM20_1.8V', 100, NULL, '', '', '', NULL),
-	(1786, '3RD6AO220', 100, NULL, '', '', '', NULL),
-	(1787, '3RD6AO470', 100, NULL, '', '', '', NULL),
-	(1788, '3RD6AO510', 100, NULL, '', '', '', NULL),
-	(1789, '3RD6BK010', 100, NULL, '', '', '', NULL),
-	(1790, '3RD6BK015', 100, NULL, '', '', '', NULL),
-	(1791, '3RD6PK002_7', 100, NULL, '', '', '', NULL),
-	(1792, '3RD6PK003_6', 100, NULL, '', '', '', NULL),
-	(1793, '3RD6PO470', 100, NULL, '', '', '', NULL),
-	(1794, '3RD6PO499', 100, NULL, '', '', '', NULL),
-	(1795, '3RD6PO820', 100, NULL, '', '', '', NULL),
-	(1796, '3RDN8P4O010', 100, NULL, '', '', '', NULL),
-	(1797, '3RDPK002', 100, NULL, '', '', '', NULL);
-/*!40000 ALTER TABLE `rp_partswarehouse` ENABLE KEYS */;
-
--- 导出  表 toolsweb.rp_partswarehousehistory 结构
-DROP TABLE IF EXISTS `rp_partswarehousehistory`;
-CREATE TABLE IF NOT EXISTS `rp_partswarehousehistory` (
-  `DBID` int(11) NOT NULL AUTO_INCREMENT,
-  `partId` char(255) DEFAULT NULL COMMENT '部件编号',
-  `preNum` int(10) DEFAULT NULL COMMENT '原数量',
-  `actNum` int(10) DEFAULT NULL COMMENT '操作数量',
-  `nowNum` int(10) DEFAULT NULL COMMENT '当前数量',
-  `unit` char(10) DEFAULT NULL COMMENT '单位',
-  `rpBillId` char(50) DEFAULT NULL COMMENT '系统单号',
-  `erpBillId` char(50) DEFAULT NULL COMMENT 'ERP单号',
-  `actType` char(50) DEFAULT NULL COMMENT '操作类型',
-  `dateTimeStamp` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`DBID`)
-) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
-
--- 正在导出表  toolsweb.rp_partswarehousehistory 的数据：~14 rows (大约)
-/*!40000 ALTER TABLE `rp_partswarehousehistory` DISABLE KEYS */;
-REPLACE INTO `rp_partswarehousehistory` (`DBID`, `partId`, `preNum`, `actNum`, `nowNum`, `unit`, `rpBillId`, `erpBillId`, `actType`, `dateTimeStamp`) VALUES
-	(143, '3CDTP106_010', 100, -2, 98, NULL, 'R-20200520001', NULL, '领料', '2020-05-20 13:15:44'),
-	(144, '3CD6XP103', 100, -5, 95, NULL, 'R-20200520001', NULL, '领料', '2020-05-20 13:15:44'),
-	(145, '2BTEC_HB02F', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
-	(146, '3CD6XP471', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', '2020-05-21 10:44:25'),
-	(147, '3RDAO330', 100, -100, 0, NULL, 'R-20200521002', NULL, '领料', '2020-05-21 11:07:23'),
-	(148, '2BTEC_HB02F', 99, -1, 98, NULL, 'R-20200525001', NULL, '领料', '2020-05-25 14:42:00'),
-	(149, '3CDYP105_016', 100, -1, 99, NULL, 'R-20200526001', NULL, '领料', '2020-05-26 13:40:59'),
-	(150, '3CCP472_302', 100, -6, 94, NULL, 'R-20200526001', NULL, '领料', '2020-05-29 09:51:59'),
-	(151, '3CDTP105_025', 100, -3, 97, NULL, 'R-20200526001', NULL, '领料', '2020-05-29 15:02:24'),
-	(152, '3NCF96ABCT', 100, -1, 99, NULL, 'R-20200603001', NULL, '领料', '2020-06-03 16:01:23'),
-	(153, '3CD6XP221', 100, -3, 97, NULL, 'R-20200608001', NULL, '领料', '2020-06-08 12:41:25'),
-	(154, '3CD6NP470', 100, -1, 99, NULL, 'R-20200608001', NULL, '领料', '2020-06-08 12:42:32'),
-	(155, '3CMP154_100', 100, -2, 98, NULL, 'R-20200608001', NULL, '领料', '2020-06-08 12:44:46'),
-	(156, '3CDTP106_010', 98, -2, 96, NULL, 'R-20200608001', NULL, '领料', '2020-06-08 13:18:56');
-/*!40000 ALTER TABLE `rp_partswarehousehistory` ENABLE KEYS */;
-
--- 导出  表 toolsweb.rp_productclasses 结构
-DROP TABLE IF EXISTS `rp_productclasses`;
-CREATE TABLE IF NOT EXISTS `rp_productclasses` (
-  `DBID` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`DBID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品类别';
-
--- 正在导出表  toolsweb.rp_productclasses 的数据：~0 rows (大约)
-/*!40000 ALTER TABLE `rp_productclasses` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rp_productclasses` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_products 结构
 DROP TABLE IF EXISTS `rp_products`;
@@ -15949,10 +15794,15 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`),
   UNIQUE KEY `recordBillId` (`recordBillId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修记录单';
 
--- 正在导出表  toolsweb.rp_recordbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_recordbills 的数据：~4 rows (大约)
 /*!40000 ALTER TABLE `rp_recordbills` DISABLE KEYS */;
+REPLACE INTO `rp_recordbills` (`DBID`, `recordBillId`, `requestBillId`, `rowId`, `responseBillId`, `productId`, `productName`, `productDescription`, `factoryNo`, `origin`, `systemType`, `productClass`, `productYear`, `productMonth`, `productionDate`, `orginFactoryNo`, `isRework`, `repairStaff`, `urgent`, `inWarranty`, `productFrom`, `conditionStatus`, `productBelong`, `testResult`, `testItem`, `testFee`, `partsFee`, `yearsFee`, `conditionFee`, `urgentFee`, `repairTotalFee`, `repairLastFee`, `forFree`, `faultDescription`, `faultShow`, `faultPart`, `faultReason`, `changePartList`, `repairResult`, `billRemark`, `files`, `maker`, `makeDate`, `finishDate`, `status`, `billSaveTimeStamp`) VALUES
+	(1, NULL, 'AA-20200619001', '1', NULL, '1ACC_HUNTER_JX_D', '1ACC_HUNTER_JX_D', '机箱套料iDriver600_75-90KW TI60090KW-T', '11', '宁波', '其他', '铁板', '2019', '01', NULL, '11', '是', '苏文洁', '否', '是', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '123123123', NULL, NULL, NULL, NULL, NULL, '123123', NULL, NULL, NULL, NULL, '维修中', '2020-06-19 08:22:54'),
+	(2, 'R-20200619001', 'AA-20200619002', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '333', '宁波', 'A80', '主机板', '2015', '05', NULL, '13', '是', NULL, '否', '否', '终端客户', '好', '客户', NULL, '检测', 200.00, 35.00, 23.50, 0.00, 0.00, 258.50, 0.00, '是', '123123123', 'BL-字体重叠,DA-爆掉', 'J-PWR,L-RTC', 'K-放电OK,N-调整OK', '2BTEC_HB02F*1', NULL, '123', '[]', '熊奇龙', '2020-06-19', NULL, '维修中', '2020-06-19 08:24:15'),
+	(3, 'R-20200623001', 'AA-20200623001', '1', NULL, '2BP_A80_CPUA', 'A80M6', 'A80M5', '111', '宁波', 'A80', '主机板', '2019', '01', NULL, '111', '是', '夏飞', '否', '是', '终端客户', '好', '客户', NULL, '检测', 200.00, 60.00, 0.00, 0.00, 0.00, 260.00, 0.00, '是', '123123123', 'BU-显示红屏,DC-GAIN值异常', 'K-RS232,M-SRAM', 'K-放电OK,N-调整OK', '2BTEC_HB02F*1,3CD6XP221*1,3CDYP105_016*4', NULL, '12312', '[]', '熊奇龙', '2020-06-23', NULL, '维修中', '2020-06-23 10:36:12'),
+	(4, NULL, 'AA-20200624001', '1', NULL, '1BATMX03A', 'APC3003 TMXAD03A', 'APC-3003 TMX-AD-03', NULL, NULL, 'S220', 'AD板', '2019', '05', NULL, NULL, '是', NULL, '否', '是', '终端客户', NULL, '客户', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '我123123123123123', NULL, NULL, NULL, NULL, NULL, '1111', NULL, NULL, NULL, NULL, '待维修', '2020-06-24 12:55:50');
 /*!40000 ALTER TABLE `rp_recordbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_requestbills 结构
@@ -15982,10 +15832,15 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
 
--- 正在导出表  toolsweb.rp_requestbills 的数据：~0 rows (大约)
+-- 正在导出表  toolsweb.rp_requestbills 的数据：~3 rows (大约)
 /*!40000 ALTER TABLE `rp_requestbills` DISABLE KEYS */;
+REPLACE INTO `rp_requestbills` (`DBID`, `requestBillId`, `requestDate`, `fromBillId`, `customerId`, `customerShortName`, `warrantyPeriod`, `customerArea`, `customerName`, `contact`, `mobilePhone`, `address`, `customerBelongShort`, `customerBelongFull`, `isInland`, `requestWay`, `requestStaff`, `maker`, `makeDate`, `billRemark`, `factoryNos`, `billSaveTimeStamp`) VALUES
+	(1, 'AA-20200619001', '2020-06-19', NULL, 'CS_BL_JY', '北仑_精艺', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑区大碶精艺机械配件厂', '蒋师傅', '13857468253', NULL, '北仑_贝元', NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-06-19', '123123', '11', '2020-06-19 08:22:54'),
+	(2, 'AA-20200619002', '2020-06-19', NULL, 'CS_BL_XX', '宁波_鑫兴', '18个月', NULL, '宁波市北仑区柴桥鑫兴五金模具塑料厂', '胡朝辉', '13777276678', '宁波北仑柴桥', NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-06-19', NULL, '333', '2020-06-19 08:24:15'),
+	(3, 'AA-20200623001', '2020-06-23', NULL, 'CS_BL_HZ', '北仑_汉正', '18个月', '中国-浙江省-宁波市', '宁波北仑汉正塑胶有限公司', '施红军', NULL, NULL, NULL, NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-06-23', NULL, '111', '2020-06-23 10:36:12'),
+	(4, 'AA-20200624001', '2020-06-24', NULL, 'CS_BL_JY', '北仑_精艺', '18个月', '中国-浙江省-宁波市-北仑区', '宁波市北仑区大碶精艺机械配件厂', '蒋师傅', '13857468253', NULL, '北仑_贝元', NULL, '国内', '邮寄过来', NULL, '熊奇龙', '2020-06-24', NULL, '', '2020-06-24 12:55:49');
 /*!40000 ALTER TABLE `rp_requestbills` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_responsebills 结构
@@ -16615,6 +16470,348 @@ REPLACE INTO `rp_testitems` (`DBID`, `systemType`, `productClass`, `testItem`, `
 	(806, '其他', '原器件', '检测', 50.00, '2018-01-22', NULL, '2020-01-14 13:01:47'),
 	(807, 'AK618', '主机', '检测', 150.00, '2019-02-19', NULL, '2020-01-14 13:01:47');
 /*!40000 ALTER TABLE `rp_testitems` ENABLE KEYS */;
+
+-- 导出  表 toolsweb.rp_warehouse 结构
+DROP TABLE IF EXISTS `rp_warehouse`;
+CREATE TABLE IF NOT EXISTS `rp_warehouse` (
+  `DBID` int(11) NOT NULL AUTO_INCREMENT,
+  `PID` char(50) DEFAULT NULL COMMENT '物料编号',
+  `warehouseId` char(50) DEFAULT NULL COMMENT '仓库编号',
+  `stockNum` int(10) DEFAULT NULL COMMENT '库存数量',
+  `preNum` int(10) DEFAULT NULL COMMENT '预数量',
+  `unit` char(10) DEFAULT NULL COMMENT '单位',
+  `rpBillId` char(50) DEFAULT NULL COMMENT '系统单号',
+  `erpBillId` char(50) DEFAULT NULL COMMENT 'ERP单号',
+  `dateTimeStamp` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `partId_warehouseId` (`PID`,`warehouseId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1798 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库管理_即时库存';
+
+-- 正在导出表  toolsweb.rp_warehouse 的数据：~252 rows (大约)
+/*!40000 ALTER TABLE `rp_warehouse` DISABLE KEYS */;
+REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `preNum`, `unit`, `rpBillId`, `erpBillId`, `dateTimeStamp`) VALUES
+	(1546, '2BP_TECH2M5_1AN', 'W1', 100, NULL, '', '', '', NULL),
+	(1547, '3CD6NP030', 'W1', 100, NULL, '', '', '', NULL),
+	(1548, '3CD6XP102', 'W1', 86, NULL, '', '', '', NULL),
+	(1549, '3CD6XP103', 'W1', 93, NULL, '', '', '', NULL),
+	(1550, '3CD6XP104', 'W1', 100, NULL, '', '', '', NULL),
+	(1551, '3CD6XP105_010', 'W1', 100, NULL, '', '', '', NULL),
+	(1552, '3CD6XP105_025', 'W1', 100, NULL, '', '', '', NULL),
+	(1553, '3CD6XP106_006', 'W1', 100, NULL, '', '', '', NULL),
+	(1554, '3CDYP105_016', 'W1', 91, NULL, '', '', '', NULL),
+	(1555, '3CLD6FB301', 'W1', 100, NULL, '', '', '', NULL),
+	(1556, '3CLDFB121_1A', 'W1', 100, NULL, '', '', '', NULL),
+	(1557, '3CLDFB800_3A', 'W1', 100, NULL, '', '', '', NULL),
+	(1558, '3DDOBAS45AL', 'W1', 100, NULL, '', '', '', NULL),
+	(1559, '3DDOBAV103', 'W1', 100, NULL, '', '', '', NULL),
+	(1560, '3DDOPMLL4148', 'W1', 100, NULL, '', '', '', NULL),
+	(1561, '3DDORSS_GS1M', 'W1', 100, NULL, '', '', '', NULL),
+	(1562, '3DLD_LG_192E_NJT', 'W1', 100, NULL, '', '', '', NULL),
+	(1563, '3DLD_LG_192G', 'W1', 100, NULL, '', '', '', NULL),
+	(1564, '3DLD_LG_192Y', 'W1', 100, NULL, '', '', '', NULL),
+	(1565, '3ID_PC357', 'W1', 100, NULL, '', '', '', NULL),
+	(1566, '3ID74HC123', 'W1', 100, NULL, '', '', '', NULL),
+	(1567, '3ID74HC14', 'W1', 100, NULL, '', '', '', NULL),
+	(1568, '3ID74HC174', 'W1', 100, NULL, '', '', '', NULL),
+	(1569, '3ID74HC191', 'W1', 100, NULL, '', '', '', NULL),
+	(1570, '3ID74HC273_S', 'W1', 100, NULL, '', '', '', NULL),
+	(1571, '3ID74HC32', 'W1', 100, NULL, '', '', '', NULL),
+	(1572, '3ID74HC390', 'W1', 100, NULL, '', '', '', NULL),
+	(1573, '3ID74HC393', 'W1', 100, NULL, '', '', '', NULL),
+	(1574, '3ID74HC74', 'W1', 100, NULL, '', '', '', NULL),
+	(1575, '3ID74HCT125', 'W1', 100, NULL, '', '', '', NULL),
+	(1576, '3ID74HCT174', 'W1', 100, NULL, '', '', '', NULL),
+	(1577, '3ID74HCT245_S', 'W1', 100, NULL, '', '', '', NULL),
+	(1578, '3ID74LVC14', 'W1', 100, NULL, '', '', '', NULL),
+	(1579, '3ID93C66J', 'W1', 100, NULL, '', '', '', NULL),
+	(1580, '3IDAPL1117', 'W1', 100, NULL, '', '', '', NULL),
+	(1581, '3IDAPM4953', 'W1', 100, NULL, '', '', '', NULL),
+	(1582, '3IDREF3040', 'W1', 100, NULL, '', '', '', NULL),
+	(1583, '3IDSGM8426YS8', 'W1', 100, NULL, '', '', '', NULL),
+	(1584, '3IDT74ALVC164245', 'W1', 100, NULL, '', '', '', NULL),
+	(1585, '3IDTC7109', 'W1', 100, NULL, '', '', '', NULL),
+	(1586, '3IDTEC7032A', 'W1', 100, NULL, '', '', '', NULL),
+	(1587, '3IDTL072', 'W1', 100, NULL, '', '', '', NULL),
+	(1588, '3IDTL16C550', 'W1', 100, NULL, '', '', '', NULL),
+	(1589, '3IDTL7705B', 'W1', 100, NULL, '', '', '', NULL),
+	(1590, '3IDTLV5618A', 'W1', 100, NULL, '', '', '', NULL),
+	(1591, '3IDULN2003', 'W1', 100, NULL, '', '', '', NULL),
+	(1592, '3IDW74HC595', 'W1', 100, NULL, '', '', '', NULL),
+	(1593, '3IDWADM202EAR', 'W1', 100, NULL, '', '', '', NULL),
+	(1594, '3ITMS320VC5402', 'W1', 100, NULL, '', '', '', NULL),
+	(1595, '3QDCM25', 'W1', 100, NULL, '', '', '', NULL),
+	(1596, '3QDOM03_5795_E', 'W1', 100, NULL, '', '', '', NULL),
+	(1597, '3QDOM18_432', 'W1', 100, NULL, '', '', '', NULL),
+	(1598, '3QDOM20', 'W1', 100, NULL, '', '', '', NULL),
+	(1599, '3RD6AK001', 'W1', 100, NULL, '', '', '', NULL),
+	(1600, '3RD6AK002_2', 'W1', 100, NULL, '', '', '', NULL),
+	(1601, '3RD6AK003_3', 'W1', 100, NULL, '', '', '', NULL),
+	(1602, '3RD6AK047', 'W1', 100, NULL, '', '', '', NULL),
+	(1603, '3RD6AK100', 'W1', 100, NULL, '', '', '', NULL),
+	(1604, '3RD6AK390', 'W1', 100, NULL, '', '', '', NULL),
+	(1605, '3RD6AM001', 'W1', 100, NULL, '', '', '', NULL),
+	(1606, '3RD6AM001_8', 'W1', 100, NULL, '', '', '', NULL),
+	(1607, '3RD6AM002_2', 'W1', 100, NULL, '', '', '', NULL),
+	(1608, '3RD6AM010', 'W1', 100, NULL, '', '', '', NULL),
+	(1609, '3RD6AO000', 'W1', 100, NULL, '', '', '', NULL),
+	(1610, '3RD6AO022', 'W1', 100, NULL, '', '', '', NULL),
+	(1611, '3RD6AO033', 'W1', 100, NULL, '', '', '', NULL),
+	(1612, '3RD6AO100', 'W1', 100, NULL, '', '', '', NULL),
+	(1613, '3RD6PK004_99', 'W1', 100, NULL, '', '', '', NULL),
+	(1614, '3RD6PK005_1', 'W1', 100, NULL, '', '', '', NULL),
+	(1615, '3RD6PK007_5', 'W1', 100, NULL, '', '', '', NULL),
+	(1616, '3RD6PK010', 'W1', 100, NULL, '', '', '', NULL),
+	(1617, '3RD6PK011_3', 'W1', 100, NULL, '', '', '', NULL),
+	(1618, '3RD6PK012_1', 'W1', 100, NULL, '', '', '', NULL),
+	(1619, '3RD6PK015', 'W1', 100, NULL, '', '', '', NULL),
+	(1620, '3RD6PK020', 'W1', 100, NULL, '', '', '', NULL),
+	(1621, '3RD6PK030_1', 'W1', 100, NULL, '', '', '', NULL),
+	(1622, '3RD6PK034', 'W1', 100, NULL, '', '', '', NULL),
+	(1623, '3RD6PK034_8', 'W1', 100, NULL, '', '', '', NULL),
+	(1624, '3RD6PK044_2', 'W1', 100, NULL, '', '', '', NULL),
+	(1625, '3RD6PK045_3', 'W1', 100, NULL, '', '', '', NULL),
+	(1626, '3RD6PK053_6', 'W1', 100, NULL, '', '', '', NULL),
+	(1627, '3RD6PK059', 'W1', 100, NULL, '', '', '', NULL),
+	(1628, '3RD6PK100', 'W1', 100, NULL, '', '', '', NULL),
+	(1629, '3RD6PK210', 'W1', 100, NULL, '', '', '', NULL),
+	(1630, '3RD6PK787', 'W1', 100, NULL, '', '', '', NULL),
+	(1631, '3RD6PO049_9', 'W1', 100, NULL, '', '', '', NULL),
+	(1632, '3RD6PO075', 'W1', 100, NULL, '', '', '', NULL),
+	(1633, '3RD6PO100', 'W1', 100, NULL, '', '', '', NULL),
+	(1634, '3RD6PO220', 'W1', 100, NULL, '', '', '', NULL),
+	(1635, '3RDN8P4O330', 'W1', 100, NULL, '', '', '', NULL),
+	(1636, '3RDN8P4O470', 'W1', 100, NULL, '', '', '', NULL),
+	(1637, '3TDHS2213BNL', 'W1', 100, NULL, '', '', '', NULL),
+	(1638, '3UD2N3904', 'W1', 100, NULL, '', '', '', NULL),
+	(1639, '3UD2N3906', 'W1', 100, NULL, '', '', '', NULL),
+	(1640, '3CCP102_102', 'W1', 100, NULL, '', '', '', NULL),
+	(1641, '3CCP472_102', 'W1', 100, NULL, '', '', '', NULL),
+	(1642, '3CCP472_302', 'W1', 94, NULL, '', '', '', NULL),
+	(1643, '3CEU101_025', 'W1', 100, NULL, '', '', '', NULL),
+	(1644, '3CEU101_050_RUB', 'W1', 100, NULL, '', '', '', NULL),
+	(1645, '3CEU102_025_RUB', 'W1', 99, NULL, '', '', '', NULL),
+	(1646, '3CEU221_025', 'W1', 100, NULL, '', '', '', NULL),
+	(1647, '3CEU221_050_1', 'W1', 100, NULL, '', '', '', NULL),
+	(1648, '3CEU221_050_RUB', 'W1', 100, NULL, '', '', '', NULL),
+	(1649, '3CEU470_050_RUB', 'W1', 100, NULL, '', '', '', NULL),
+	(1650, '3CEU471_025_RUB', 'W1', 100, NULL, '', '', '', NULL),
+	(1651, '3CLPK0807331K', 'W1', 100, NULL, '', '', '', NULL),
+	(1652, '3CLPK08073R3M', 'W1', 100, NULL, '', '', '', NULL),
+	(1653, '3CLT5052331KB', 'W1', 100, NULL, '', '', '', NULL),
+	(1654, '3CMP104_100', 'W1', 100, NULL, '', '', '', NULL),
+	(1655, '3CMP154_100', 'W1', 98, NULL, '', '', '', NULL),
+	(1656, '3DOSB160', 'W1', 100, NULL, '', '', '', NULL),
+	(1657, '3FRT220_33', 'W1', 100, NULL, '', '', '', NULL),
+	(1658, '3FRX050_60', 'W1', 100, NULL, '', '', '', NULL),
+	(1659, '3MOM03HB', 'W1', 100, NULL, '', '', '', NULL),
+	(1660, '3MSE3006W', 'W1', 100, NULL, '', '', '', NULL),
+	(1661, '3MT2DSB0120_BK', 'W1', 100, NULL, '', '', '', NULL),
+	(1662, '3MT2EHDVC02P', 'W1', 100, NULL, '', '', '', NULL),
+	(1663, '3MT2EHDVC02P_OR', 'W1', 100, NULL, '', '', '', NULL),
+	(1664, '3MT2EHDVC03P', 'W1', 100, NULL, '', '', '', NULL),
+	(1665, '3MT4DSCC0124PDN', 'W1', 100, NULL, '', '', '', NULL),
+	(1666, '3MTECH381V03P', 'W1', 100, NULL, '', '', '', NULL),
+	(1667, '3MTECH381V06P_OR', 'W1', 100, NULL, '', '', '', NULL),
+	(1668, '3MTECH381V08P', 'W1', 100, NULL, '', '', '', NULL),
+	(1669, '3MTECH381V10P', 'W1', 100, NULL, '', '', '', NULL),
+	(1670, '3NDB_09SM', 'W1', 100, NULL, '', '', '', NULL),
+	(1671, '3NDB_25S', 'W1', 100, NULL, '', '', '', NULL),
+	(1672, '3NPJACK8P8C', 'W1', 100, NULL, '', '', '', NULL),
+	(1673, '3RCAK001', 'W1', 100, NULL, '', '', '', NULL),
+	(1674, '3RCBO010', 'W1', 100, NULL, '', '', '', NULL),
+	(1675, '3RMAO000_22', 'W1', 100, NULL, '', '', '', NULL),
+	(1676, '3RMAO000_39', 'W1', 100, NULL, '', '', '', NULL),
+	(1677, '3RSBK001', 'W1', 100, NULL, '', '', '', NULL),
+	(1678, '3RSBK010', 'W1', 100, NULL, '', '', '', NULL),
+	(1679, '3RVBPK010', 'W1', 100, NULL, '', '', '', NULL),
+	(1680, '3U2SA1013', 'W1', 100, NULL, '', '', '', NULL),
+	(1681, '3UMJE270', 'W1', 100, NULL, '', '', '', NULL),
+	(1682, '3UFTU36N06N', 'W1', 100, NULL, '', '', '', NULL),
+	(1683, '3UTIP102', 'W1', 100, NULL, '', '', '', NULL),
+	(1684, '3UTL431', 'W1', 100, NULL, '', '', '', NULL),
+	(1685, '3XF199015', 'W1', 100, NULL, '', '', '', NULL),
+	(1686, '3XFCQ_20', 'W1', 100, NULL, '', '', '', NULL),
+	(1687, '3XI32', 'W1', 100, NULL, '', '', '', NULL),
+	(1688, '3YG5NB_1A_24E', 'W1', 100, NULL, '', '', '', NULL),
+	(1689, '3YG6RN_1_24', 'W1', 100, NULL, '', '', '', NULL),
+	(1690, '2BP_AHBOP', 'W1', 100, NULL, '', '', '', NULL),
+	(1691, '3PCB_CS225_P1052', 'W1', 100, NULL, '', '', '', NULL),
+	(1692, '3SWD_DTSM_65S', 'W1', 100, NULL, '', '', '', NULL),
+	(1693, '3DLE323RD', 'W1', 100, NULL, '', '', '', NULL),
+	(1694, '3DLM326RD', 'W1', 100, NULL, '', '', '', NULL),
+	(1695, '3MJS01*07H_B', 'W1', 100, NULL, '', '', '', NULL),
+	(1696, '3MSLED3_3B', 'W1', 100, NULL, '', '', '', NULL),
+	(1697, '3RD6AK002', 'W1', 100, NULL, '', '', '', NULL),
+	(1698, '3RDAO330', 'W1', 0, NULL, '', '', '', NULL),
+	(1699, '3UDMMBT2222', 'W1', 100, NULL, '', '', '', NULL),
+	(1700, '3MOF10V_M', 'W1', 100, NULL, '', '', '', NULL),
+	(1701, '2BP_A80_CPUA', 'W1', 100, NULL, '', '', '', NULL),
+	(1702, '2BTEC_HB02F', 'W1', 92, NULL, '', '', '', NULL),
+	(1703, '3CEU010_050', 'W1', 100, NULL, '', '', '', NULL),
+	(1704, '3CEU221_063_1', 'W1', 100, NULL, '', '', '', NULL),
+	(1705, '3CLCM166125500MB', 'W1', 100, NULL, '', '', '', NULL),
+	(1706, '3CLT5052101KB', 'W1', 100, NULL, '', '', '', NULL),
+	(1707, '3DOSB360', 'W1', 100, NULL, '', '', '', NULL),
+	(1708, '3FUB0202502', 'W1', 100, NULL, '', '', '', NULL),
+	(1709, '3HS313A', 'W1', 100, NULL, '', '', '', NULL),
+	(1710, '3HS313B', 'W1', 100, NULL, '', '', '', NULL),
+	(1711, '3IMC34063', 'W1', 100, NULL, '', '', '', NULL),
+	(1712, '3IMC34163', 'W1', 100, NULL, '', '', '', NULL),
+	(1713, '3IMC7805', 'W1', 100, NULL, '', '', '', NULL),
+	(1714, '3IMC79L05', 'W1', 100, NULL, '', '', '', NULL),
+	(1715, '3MJS01*02H', 'W1', 100, NULL, '', '', '', NULL),
+	(1716, '3MT4DSCC0120PDN', 'W1', 100, NULL, '', '', '', NULL),
+	(1717, '3NCF96ABCT', 'W1', 99, NULL, '', '', '', NULL),
+	(1718, '3PCB_CS225_P527', 'W1', 100, NULL, '', '', '', NULL),
+	(1719, '3QRM03_58', 'W1', 100, NULL, '', '', '', NULL),
+	(1720, '3RMAO000_075', 'W1', 100, NULL, '', '', '', NULL),
+	(1721, '3UIRL540N', 'W1', 100, NULL, '', '', '', NULL),
+	(1722, '3URFD16N05L', 'W1', 100, NULL, '', '', '', NULL),
+	(1723, '3XI28', 'W1', 100, NULL, '', '', '', NULL),
+	(1724, '3YFTR_F324E', 'W1', 100, NULL, '', '', '', NULL),
+	(1725, '3YJS_24_K', 'W1', 100, NULL, '', '', '', NULL),
+	(1726, '3YRY_5W_OH_K', 'W1', 100, NULL, '', '', '', NULL),
+	(1727, '3CD6NP101', 'W1', 100, NULL, '', '', '', NULL),
+	(1728, '3CD6NP470', 'W1', 99, NULL, '', '', '', NULL),
+	(1729, '3CD6XP221', 'W1', 95, NULL, '', '', '', NULL),
+	(1730, '3CD6XP471', 'W1', 98, NULL, '', '', '', NULL),
+	(1731, '3CDE100_016', 'W1', 100, NULL, '', '', '', NULL),
+	(1732, '3CDTP105_025', 'W1', 94, NULL, '', '', '', NULL),
+	(1733, '3CDTP106_016', 'W1', 100, NULL, '', '', '', NULL),
+	(1734, '3DLD_LG_170G', 'W1', 100, NULL, '', '', '', NULL),
+	(1735, '3DLD_LG_170E', 'W1', 100, NULL, '', '', '', NULL),
+	(1736, '3ID74AHC540_S', 'W1', 100, NULL, '', '', '', NULL),
+	(1737, '3ID74HC08', 'W1', 100, NULL, '', '', '', NULL),
+	(1738, '3ID74HC125', 'W1', 100, NULL, '', '', '', NULL),
+	(1739, '3IDBS616LV1010', 'W1', 100, NULL, '', '', '', NULL),
+	(1740, '3IDCD4051', 'W1', 100, NULL, '', '', '', NULL),
+	(1741, '3IDLM311P', 'W1', 100, NULL, '', '', '', NULL),
+	(1742, '3IDLTC1624', 'W1', 100, NULL, '', '', '', NULL),
+	(1743, '3IDPC817_H', 'W1', 100, NULL, '', '', '', NULL),
+	(1744, '3IDTL072I', 'W1', 100, NULL, '', '', '', NULL),
+	(1745, '3ITMS320C52PJ', 'W1', 100, NULL, '', '', '', NULL),
+	(1746, '3QDOM40', 'W1', 100, NULL, '', '', '', NULL),
+	(1747, '3RD6AO120', 'W1', 100, NULL, '', '', '', NULL),
+	(1748, '3RD6AO330', 'W1', 100, NULL, '', '', '', NULL),
+	(1749, '3RD6PK001', 'W1', 100, NULL, '', '', '', NULL),
+	(1750, '3RD6PK001_82', 'W1', 100, NULL, '', '', '', NULL),
+	(1751, '3RD6PK002', 'W1', 100, NULL, '', '', '', NULL),
+	(1752, '3RD6PK002_2', 'W1', 100, NULL, '', '', '', NULL),
+	(1753, '3RD6PK025_5', 'W1', 100, NULL, '', '', '', NULL),
+	(1754, '3RD6PK031_6', 'W1', 100, NULL, '', '', '', NULL),
+	(1755, '3RD6PK033_2', 'W1', 100, NULL, '', '', '', NULL),
+	(1756, '3RD6PK047', 'W1', 100, NULL, '', '', '', NULL),
+	(1757, '3RD6PK060_4', 'W1', 100, NULL, '', '', '', NULL),
+	(1758, '3RDAK003_3', 'W1', 100, NULL, '', '', '', NULL),
+	(1759, '3RDAO220', 'W1', 100, NULL, '', '', '', NULL),
+	(1760, '3RDAO470', 'W1', 100, NULL, '', '', '', NULL),
+	(1761, '3RDN8P4K001', 'W1', 100, NULL, '', '', '', NULL),
+	(1762, '3RDN8P4K004_7', 'W1', 100, NULL, '', '', '', NULL),
+	(1763, '3RDN8P4K010', 'W1', 100, NULL, '', '', '', NULL),
+	(1764, '3RDN8P4O033', 'W1', 100, NULL, '', '', '', NULL),
+	(1765, '3RDN8P4O220', 'W1', 100, NULL, '', '', '', NULL),
+	(1766, '2BP_AK668_CPU', 'W1', 100, NULL, '', '', '', NULL),
+	(1767, '3FUB0202502（台）/3FG0202502（大港）', 'W1', 100, NULL, '', '', '', NULL),
+	(1768, '3FRX030_60', 'W1', 100, NULL, '', '', '', NULL),
+	(1769, '3ILM385_2.5Z', 'W1', 100, NULL, '', '', '', NULL),
+	(1770, '3IMC7815', 'W1', 100, NULL, '', '', '', NULL),
+	(1771, '3IMC78L05', 'W1', 100, NULL, '', '', '', NULL),
+	(1772, '3MSE3006', 'W1', 100, NULL, '', '', '', NULL),
+	(1773, '3PCB_CS225_P517', 'W1', 100, NULL, '', '', '', NULL),
+	(1774, '3CD6NP150', 'W1', 97, NULL, '', '', '', NULL),
+	(1775, '3CD6YP334', 'W1', 100, NULL, '', '', '', NULL),
+	(1776, '3CDE220_016', 'W1', 100, NULL, '', '', '', NULL),
+	(1777, '3CDTP106_010', 'W1', 96, NULL, '', '', '', NULL),
+	(1778, '3CDTP475_016A', 'W1', 100, NULL, '', '', '', NULL),
+	(1779, '3ID61LV25616', 'W1', 100, NULL, '', '', '', NULL),
+	(1780, '3IDEPM3064ATC100U19C', 'W1', 100, NULL, '', '', '', NULL),
+	(1781, '3IDHCPL_0600', 'W1', 100, NULL, '', '', '', NULL),
+	(1782, '3IDLTC1864', 'W1', 100, NULL, '', '', '', NULL),
+	(1783, '3IDOP07', 'W1', 100, NULL, '', '', '', NULL),
+	(1784, '3IDPS398C', 'W1', 100, NULL, '', '', '', NULL),
+	(1785, '3QDOM20_1.8V', 'W1', 100, NULL, '', '', '', NULL),
+	(1786, '3RD6AO220', 'W1', 100, NULL, '', '', '', NULL),
+	(1787, '3RD6AO470', 'W1', 100, NULL, '', '', '', NULL),
+	(1788, '3RD6AO510', 'W1', 100, NULL, '', '', '', NULL),
+	(1789, '3RD6BK010', 'W1', 100, NULL, '', '', '', NULL),
+	(1790, '3RD6BK015', 'W1', 100, NULL, '', '', '', NULL),
+	(1791, '3RD6PK002_7', 'W1', 100, NULL, '', '', '', NULL),
+	(1792, '3RD6PK003_6', 'W1', 100, NULL, '', '', '', NULL),
+	(1793, '3RD6PO470', 'W1', 100, NULL, '', '', '', NULL),
+	(1794, '3RD6PO499', 'W1', 100, NULL, '', '', '', NULL),
+	(1795, '3RD6PO820', 'W1', 100, NULL, '', '', '', NULL),
+	(1796, '3RDN8P4O010', 'W1', 100, NULL, '', '', '', NULL),
+	(1797, '3RDPK002', 'W1', 100, NULL, '', '', '', NULL);
+/*!40000 ALTER TABLE `rp_warehouse` ENABLE KEYS */;
+
+-- 导出  表 toolsweb.rp_warehousehistory 结构
+DROP TABLE IF EXISTS `rp_warehousehistory`;
+CREATE TABLE IF NOT EXISTS `rp_warehousehistory` (
+  `DBID` int(11) NOT NULL AUTO_INCREMENT,
+  `PID` char(255) DEFAULT NULL COMMENT '部件编号',
+  `preNum` int(10) DEFAULT NULL COMMENT '原数量',
+  `actNum` int(10) DEFAULT NULL COMMENT '操作数量',
+  `nowNum` int(10) DEFAULT NULL COMMENT '当前数量',
+  `unit` char(10) DEFAULT NULL COMMENT '单位',
+  `rpBillId` char(50) DEFAULT NULL COMMENT '系统单号',
+  `erpBillId` char(50) DEFAULT NULL COMMENT 'ERP单号',
+  `actType` char(50) DEFAULT NULL COMMENT '操作类型',
+  `status` char(50) DEFAULT NULL COMMENT '状态',
+  `dateTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`)
+) ENGINE=InnoDB AUTO_INCREMENT=166 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库管理_仓库记录';
+
+-- 正在导出表  toolsweb.rp_warehousehistory 的数据：~19 rows (大约)
+/*!40000 ALTER TABLE `rp_warehousehistory` DISABLE KEYS */;
+REPLACE INTO `rp_warehousehistory` (`DBID`, `PID`, `preNum`, `actNum`, `nowNum`, `unit`, `rpBillId`, `erpBillId`, `actType`, `status`, `dateTimeStamp`) VALUES
+	(143, '3CDTP106_010', 100, -2, 98, NULL, 'R-20200520001', NULL, '领料', NULL, '2020-05-20 13:15:44'),
+	(144, '3CD6XP103', 100, -5, 95, NULL, 'R-20200520001', NULL, '领料', NULL, '2020-05-20 13:15:44'),
+	(145, '2BTEC_HB02F', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', NULL, '2020-05-21 10:44:25'),
+	(146, '3CD6XP471', 100, -1, 99, NULL, 'R-20200521001', NULL, '领料', NULL, '2020-05-21 10:44:25'),
+	(147, '3RDAO330', 100, -100, 0, NULL, 'R-20200521002', NULL, '领料', NULL, '2020-05-21 11:07:23'),
+	(148, '2BTEC_HB02F', 99, -1, 98, NULL, 'R-20200525001', NULL, '领料', NULL, '2020-05-25 14:42:00'),
+	(149, '3CDYP105_016', 100, -1, 99, NULL, 'R-20200526001', NULL, '领料', NULL, '2020-05-26 13:40:59'),
+	(150, '3CCP472_302', 100, -6, 94, NULL, 'R-20200526001', NULL, '领料', NULL, '2020-05-29 09:51:59'),
+	(151, '3CDTP105_025', 100, -3, 97, NULL, 'R-20200526001', NULL, '领料', NULL, '2020-05-29 15:02:24'),
+	(152, '3NCF96ABCT', 100, -1, 99, NULL, 'R-20200603001', NULL, '领料', NULL, '2020-06-03 16:01:23'),
+	(153, '3CD6XP221', 100, -3, 97, NULL, 'R-20200608001', NULL, '领料', NULL, '2020-06-08 12:41:25'),
+	(154, '3CD6NP470', 100, -1, 99, NULL, 'R-20200608001', NULL, '领料', NULL, '2020-06-08 12:42:32'),
+	(155, '3CMP154_100', 100, -2, 98, NULL, 'R-20200608001', NULL, '领料', NULL, '2020-06-08 12:44:46'),
+	(156, '3CDTP106_010', 98, -2, 96, NULL, 'R-20200608001', NULL, '领料', NULL, '2020-06-08 13:18:56'),
+	(157, '2BTEC_HB02F', 98, -1, 97, NULL, 'R-20200611001', NULL, '领料', NULL, '2020-06-11 15:28:15'),
+	(158, '3CD6NP150', 100, -3, 97, NULL, 'R-20200611002', NULL, '领料', NULL, '2020-06-11 15:28:47'),
+	(159, '3CD6XP102', 100, -14, 86, NULL, 'R-20200611002', NULL, '领料', NULL, '2020-06-11 15:28:47'),
+	(160, '2BTEC_HB02F', 97, -1, 96, NULL, 'R-20200611003', NULL, '领料', NULL, '2020-06-11 15:33:59'),
+	(161, '3CDYP105_016', 99, -4, 95, NULL, 'R-20200618001', NULL, '领料', NULL, '2020-06-18 09:04:17'),
+	(162, '2BTEC_HB02F', 95, -1, 94, NULL, 'R-20200619001', NULL, '领料', NULL, '2020-06-19 08:46:09'),
+	(163, '2BTEC_HB02F', 93, -1, 92, NULL, 'R-20200623001', NULL, '领料', NULL, '2020-06-23 10:47:40'),
+	(164, '3CD6XP221', 96, -1, 95, NULL, 'R-20200623001', NULL, '领料', NULL, '2020-06-23 10:47:40'),
+	(165, '3CDYP105_016', 95, -4, 91, NULL, 'R-20200623001', NULL, '领料', NULL, '2020-06-23 10:47:40');
+/*!40000 ALTER TABLE `rp_warehousehistory` ENABLE KEYS */;
+
+-- 导出  表 toolsweb.rp_warehouseslist 结构
+DROP TABLE IF EXISTS `rp_warehouseslist`;
+CREATE TABLE IF NOT EXISTS `rp_warehouseslist` (
+  `DBID` int(11) NOT NULL AUTO_INCREMENT,
+  `warehouseId` char(50) DEFAULT NULL COMMENT '仓库编号',
+  `warehouseName` char(50) DEFAULT NULL COMMENT '仓库名称',
+  `remark` varchar(255) DEFAULT NULL COMMENT '仓库说明',
+  `effective` char(50) DEFAULT NULL COMMENT '有效性',
+  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`DBID`),
+  UNIQUE KEY `warehouseName` (`warehouseName`),
+  UNIQUE KEY `warehouseId` (`warehouseId`)
+) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_仓库';
+
+-- 正在导出表  toolsweb.rp_warehouseslist 的数据：~5 rows (大约)
+/*!40000 ALTER TABLE `rp_warehouseslist` DISABLE KEYS */;
+REPLACE INTO `rp_warehouseslist` (`DBID`, `warehouseId`, `warehouseName`, `remark`, `effective`, `saveTimeStamp`) VALUES
+	(201, 'W1', '客服仓', '客服部标准配件仓库', '是', '2020-06-16 15:54:04'),
+	(202, 'W2', '维修现场仓', '客服部维修现场虚拟仓库', '是', '2020-06-16 15:54:04'),
+	(203, 'W3', '外借仓', '存放外借客户虚拟仓库', '是', '2020-06-16 15:54:04'),
+	(204, 'W4', '办事处仓', '办事处虚拟仓库', '是', '2020-06-16 15:54:04'),
+	(205, 'W5', '报废仓', '存放待报废物品仓库', '是', '2020-06-16 15:54:04');
+/*!40000 ALTER TABLE `rp_warehouseslist` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
