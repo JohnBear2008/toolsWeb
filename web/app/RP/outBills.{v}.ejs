@@ -68,6 +68,7 @@
                     <div style="float:right">
 
                         <button id='btnOutBillNew' type="button" class="btn btn-info">新增</button>
+                        <button id='btnOutBillAudit' type="button" class="btn btn-info">审核</button>
                         <button id='btnOutBillDelete' type="button" class="btn btn-danger">删除</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
                             打印出库码
@@ -1562,6 +1563,44 @@
         });
     }
 
+    //检测库存状态subTableData=[{partId,num,numStatus}]
+    const checkSubTableStock = async (subTableData) => {
+        //1.check
+        console.log('checkSubTableStock', subTableData);
+        if (subTableData.length < 1) {
+            alert('参数错误,子表不存在产品')
+            return false
+        }
+
+        //2.do
+        let PIDArr = [];
+        for (const n of subTableData) {
+            PIDArr.push({
+                PID: n.productId,
+                warehouseName: n.warehouseName
+            });
+        }
+
+        let stockNums = await getStockNums(PIDArr)
+        console.log('stockNums', stockNums);
+
+        for (const n of subTableData) {
+            for (const m of stockNums) {
+                if (n.productId === m.PID && n.num > m.stockNum) {
+                    alert('产品编号:' + n.productId + '在' + n.warehouseName + '中库存不足,请补充库存后重试!')
+                    return false
+                }
+            }
+        }
+
+        //3.return
+        return {
+            result: true,
+            stockNums: stockNums
+        }
+
+    }
+
 
     $(document).ready(function () {
 
@@ -1654,7 +1693,7 @@
 
 
 
-        //新增需求单按钮
+        //新增出库单按钮
         $('#btnOutBillNew').click(function () {
 
             //清空form数据
@@ -1707,8 +1746,98 @@
 
         })
 
+        //审核出库单按钮
+        $('#btnOutBillAudit').click(async function () {
+            //1.check-单据选中状态
+            if (!mainTableData.DBID) {
+                alert('请先选中需要审核的出库单!')
+                return
+            }
+            //1.check-单据审核状态
+            if (mainTableData.status !== '待审核') {
+                alert('该出库单非待审核状态,无法审核!')
+                return
+            }
+            //1.check-即时库存及领料数量
+            let stockResult = await checkSubTableStock(subTableData);
+            if (!stockResult.result) {
+                return
+            }
+            console.log('stockResult', stockResult);
 
-        //删除需求单
+
+            //2.do-扣减零件库存
+            let updateStockArr = []
+            for (let n of subTableData) {
+                for (const m of stockResult.stockNums) {
+                    if (n.PID === m.PID) {
+                        n.stockNum = m.stockNum;
+                    }
+                }
+                //赋值添加PID,去除partId
+                updateStockArr.push({
+                    PID: n.productId,
+                    stockNum: n.stockNum,
+                    num: -n.num
+                })
+            }
+            console.log('updateStockArr', updateStockArr);
+
+
+            let r1 = await updateStock({
+                stockArr: updateStockArr,
+                actType: '人工出库',
+                rpBillId: mainTableData.billId
+            });
+
+            //2.do-更新出库单子表
+            if (r1) {
+                for (let n = 0; n < subTableData.length; n++) {
+                    if (subTableData[n].status === '预领') {
+                        subTableData[n].status = '已领'
+                    }
+                }
+            }
+
+            let r2 = await postDBData({
+                sql: 'replace',
+                params: {
+                    tableId: 'rp_outsubbills',
+                    data: subTableData
+                }
+            })
+
+            //2.do-更新出库单主表
+
+            let mainFormData = getPostFormData({
+                formId: 'rp_outbills'
+            })
+
+            if (!mainFormData.data[0].maker) {
+                await autoUpdateRecordBillId();
+                mainFormData.data[0].maker = sessionName;
+                mainFormData.data[0].makeDate = currentDate();
+                mainFormData.data[0].status = '已审核'
+            }
+
+            let r3 = await postDBData({
+                sql: 'update',
+                params: mainFormData
+            })
+
+            //3.return
+            if (r1.affectedRows && r2.affectedRows && r3.affectedRows) {
+                alert('审核出库成功!')
+                loadBillMainTable();
+            } else {
+                alert('出现错误!')
+            }
+
+
+        })
+
+
+        //删除出库单按钮
         $('#btnOutBillDelete').click(async function () {
 
             //1.check-检查单据选中

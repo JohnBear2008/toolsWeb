@@ -79,7 +79,7 @@ const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
 //出货单sql
 const sqlOutBills = "select * from `rp_outbills`"
 //出货单子表sql
-const sqlOutSubBills="select * from `rp_outsubbills`"
+const sqlOutSubBills = "select * from `rp_outsubbills`"
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";
@@ -249,23 +249,30 @@ const createSql = (i) => {
 			console.log("3333:" + JSON.stringify(i.params));
 
 			let tableId = i.params.tableId;
-
+			let keyTitles = i.params.keyTitles;
 			let numTitles = i.params.numTitles;
 			let data = i.params.data
-			let filterTitle = Object.keys(data[0])[0];
-			console.log("filterTitle:" + filterTitle);
-
 
 			let caseModels = "";
 			let range = "";
 
 			for (const n of numTitles) {
-				let caseModel = n + "= case " + filterTitle;
+				let caseModel = n + "= case ";
 				let when = ""
 				for (const m of data) {
-					let whenSub = " when '" + m[filterTitle] + "' then ifnull(" + n + ",0)+ " + m[n];
+					let whenFilter = "";
+					let rangeFilter = "";
+					for (const keyTitle of keyTitles) {
+						whenFilter = whenFilter + keyTitle + "='" + m[keyTitle] + "' and ";
+						rangeFilter = rangeFilter + "'" + m[keyTitle] + "',";
+					}
+					whenFilter = whenFilter.substring(0, whenFilter.length - 4);
+					rangeFilter = rangeFilter.substring(0, rangeFilter.length - 1);
+					rangeFilter = "(" + rangeFilter + ")";
+
+					let whenSub = " when " + whenFilter + " then ifnull(" + n + ",0)+ " + m[n];
 					when = when + whenSub;
-					range = range + "'" + m[filterTitle] + "',"
+					range = range + rangeFilter + ",";
 				}
 				when = when + " end ";
 				caseModel = caseModel + when + ",";
@@ -275,8 +282,14 @@ const createSql = (i) => {
 
 			caseModels = caseModels.substring(0, caseModels.length - 1);
 			range = range.substring(0, range.length - 1);
-			let filter = filterTitle + " in (" + range + ")";
+			let filterTitlesStr = "";
+			for (const keyTitle of keyTitles) {
+				filterTitlesStr = filterTitlesStr + keyTitle + ",";
+			}
+			filterTitlesStr = filterTitlesStr.substring(0, filterTitlesStr.length - 1);
+			filterTitlesStr = "(" + filterTitlesStr + ")";
 
+			let filter = filterTitlesStr + " in (" + range + ")";
 
 			excuteSql = "update " + tableId + " set " + caseModels + " where " + filter;
 

@@ -1562,7 +1562,7 @@
 
     //获取partIds 多零件实时库存数组,以数组返回,减少数据库交互次数 提高效率;
 
-    const getStockNums = async (partIdsArr) => {
+    const getPartsStockNums = async (partIdsArr) => {
         let partIdsRange = '';
 
         for (const n of partIdsArr) {
@@ -1633,7 +1633,7 @@
         if (partIdsArr.length > 0) {
 
             //获取即时库存
-            let JITStock = await getStockNums(partIdsArr);
+            let JITStock = await getPartsStockNums(partIdsArr);
 
             // console.log('JITStock:', JITStock);
 
@@ -1734,6 +1734,8 @@
                                 n.stockNum = m.stockNum;
                             }
                         }
+                        //指定为W1仓库
+                        n.warehouseId = 'W1';
 
                     }
                     console.log('partsNeedUpdateStockArr222', partsNeedUpdateStockArr);

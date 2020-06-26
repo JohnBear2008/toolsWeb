@@ -1509,7 +1509,7 @@ const replaceObjParamsName = (obj, rules) => {
 /**
  *更新库存数据
  *
- * @param {*} i{stockArr:[{PID,stockNum,num}],rpBillId,actType}
+ * @param {*} i{stockArr:[{PID,stockNum,num,warehouseId}],rpBillId,actType}
  * @returns
  */
 const updateStock = async ({
@@ -1517,13 +1517,14 @@ const updateStock = async ({
     rpBillId,
     actType
 }) => {
-    // console.log("updateStock stockArr:" + JSON.stringify(stockArr));
+    console.log("updateStock stockArr:" + JSON.stringify(stockArr));
     let updateNumArr = [];
 
     for (const n of stockArr) {
         let arr = {
             PID: n.PID,
-            stockNum: n.num
+            stockNum: n.num,
+            warehouseId: n.warehouseId
         }
         updateNumArr.push(arr);
     }
@@ -1536,6 +1537,7 @@ const updateStock = async ({
             preNum: n.stockNum,
             actNum: n.num,
             nowNum: parseInt(n.stockNum) + parseInt(n.num),
+            warehouseId: n.warehouseId,
             actType: actType,
             rpBillId: rpBillId
         })
@@ -1544,6 +1546,7 @@ const updateStock = async ({
         sql: 'updateNum',
         params: {
             tableId: 'rp_warehouse',
+            keyTitles: ['PID', 'warehouseId'],
             numTitles: ['stockNum'],
             data: updateNumArr
         }
@@ -1726,5 +1729,38 @@ const getStockNum = async (PID, warehouseName) => {
         stockNum = r[0].stockNum
     }
     return stockNum
+
+}
+
+
+
+
+/**
+ *PID 获得多个物料指定仓库最新库存数量
+ *
+ * @param {*} PIDArr:[{PID,warehouseName}]
+ * @returns
+ */
+const getStockNums = async (PIDArr) => {
+    //1.check
+    if (!PIDArr) {
+        console.log('getStockNums 无参数');
+        return
+    }
+    //2.do
+    let filterArr = '';
+    for (const n of PIDArr) {
+        filterArr = filterArr + '("' + n.PID + '","' + n.warehouseName + '")' + ',';
+    }
+    filterArr = filterArr.substring(0, filterArr.length - 1);
+    filterArr = '(' + filterArr + ')'
+    let stockArr = await getDataBySql({
+        sql: 'getStockNum',
+        params: {
+            filter: '(PID,warehouseName) in ' + filterArr
+        }
+    })
+    //3.return
+    return stockArr
 
 }
