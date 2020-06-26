@@ -68,7 +68,7 @@
                     <div style="float:right">
 
                         <button id='btnOutBillNew' type="button" class="btn btn-info">新增</button>
-                        <button id='btnOutBillAudit' type="button" class="btn btn-info">审核</button>
+                        <button id='btnOutBillAudit' type="button" class="btn btn-warning">审核</button>
                         <button id='btnOutBillDelete' type="button" class="btn btn-danger">删除</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
                             打印出库码
@@ -651,9 +651,9 @@
                                                         </select>
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">仓库名称</label>
+                                                    <label class="col-sm-1 control-label">仓库</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_outsubbillsForm-warehouseName"
+                                                        <select id="rp_outsubbillsForm-warehouseId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
                                                         </select>
@@ -946,12 +946,12 @@
     }
     //仓库选择修改事件
     const addWarehouseListener = () => {
-        // $('#rp_outsubbillsForm-warehouseName').unbind();
-        $('#rp_outsubbillsForm-warehouseName').change(async function () {
-            let warehouseId = $('#rp_outsubbillsForm-warehouseName option:selected')
+        // $('#rp_outsubbillsForm-warehouseId').unbind();
+        $('#rp_outsubbillsForm-warehouseId').change(async function () {
+            let warehouseId = $('#rp_outsubbillsForm-warehouseId option:selected')
                 .val()
             if (warehouseId) {
-                $('#rp_outsubbillsForm-warehouseName').selectpicker('refresh');
+                $('#rp_outsubbillsForm-warehouseId').selectpicker('refresh');
                 showStockNum();
             }
         });
@@ -1493,7 +1493,7 @@
     const showStockNum = async () => {
         let stockNum = 0;
         let productId = $('#rp_outsubbillsForm-productId option:selected').val();
-        let warehouseId = $('#rp_outsubbillsForm-warehouseName option:selected').val();
+        let warehouseId = $('#rp_outsubbillsForm-warehouseId option:selected').val();
         // console.log(warehouseId);
 
         if (productId && warehouseId) {
@@ -1697,6 +1697,9 @@
         $('#btnOutBillNew').click(function () {
 
             //清空form数据
+            mainTableData = {}
+            subTableData = {}
+
             clearFormInputs({
                 formId: 'rp_outbillsForm'
             })
@@ -1758,6 +1761,12 @@
                 alert('该出库单非待审核状态,无法审核!')
                 return
             }
+
+            //1.check-单据审核人
+            if (mainTableData.auditor !== sessionName) {
+                alert('当前账号非审核人,无法审核!')
+                return
+            }
             //1.check-即时库存及领料数量
             let stockResult = await checkSubTableStock(subTableData);
             if (!stockResult.result) {
@@ -1769,14 +1778,18 @@
             //2.do-扣减零件库存
             let updateStockArr = []
             for (let n of subTableData) {
+                console.log('n', n);
+
                 for (const m of stockResult.stockNums) {
-                    if (n.PID === m.PID) {
+                    console.log('m', m);
+                    if (n.productId === m.PID) {
                         n.stockNum = m.stockNum;
                     }
                 }
                 //赋值添加PID,去除partId
                 updateStockArr.push({
                     PID: n.productId,
+                    warehouseId: n.warehouseId,
                     stockNum: n.stockNum,
                     num: -n.num
                 })
@@ -1793,6 +1806,11 @@
             //2.do-更新出库单子表
             if (r1) {
                 for (let n = 0; n < subTableData.length; n++) {
+
+                    if (subTableData[n].stockNum) {
+                        delete subTableData[n].stockNum;
+                    }
+
                     if (subTableData[n].status === '预领') {
                         subTableData[n].status = '已领'
                     }
@@ -1809,24 +1827,24 @@
 
             //2.do-更新出库单主表
 
-            let mainFormData = getPostFormData({
-                formId: 'rp_outbills'
-            })
 
-            if (!mainFormData.data[0].maker) {
-                await autoUpdateRecordBillId();
-                mainFormData.data[0].maker = sessionName;
-                mainFormData.data[0].makeDate = currentDate();
-                mainFormData.data[0].status = '已审核'
-            }
+            mainTableData.auditor = sessionName;
+            mainTableData.auditDate = currentDate();
+            mainTableData.status = '已审核';
 
             let r3 = await postDBData({
                 sql: 'update',
-                params: mainFormData
+                params: {
+                    tableId: 'rp_outbills',
+                    data: [mainTableData],
+                    key: 'DBID'
+                }
             })
 
             //3.return
-            if (r1.affectedRows && r2.affectedRows && r3.affectedRows) {
+            console.log(r1, r2, r3);
+
+            if (r1 && r2.affectedRows && r3.affectedRows) {
                 alert('审核出库成功!')
                 loadBillMainTable();
             } else {
@@ -2008,7 +2026,7 @@
 
             $("#rp_outsubbillsForm-status").text('新增')
             $("#rp_outsubbillsForm-productId").selectpicker('val', '')
-            $("#rp_outsubbillsForm-warehouseName").selectpicker('val', '客服仓')
+            $("#rp_outsubbillsForm-warehouseId").selectpicker('val', 'W1')
             $("#rp_outsubbillsForm-num").val(1)
 
         })
@@ -2039,7 +2057,11 @@
             let productData = getFormData({
                 formId: 'rp_outsubbillsForm'
             })
-            // console.log('productData:' + JSON.stringify(productData.data))
+            //添加仓库名称
+            productData.data.push({
+                warehouseName: $('#rp_outsubbillsForm-warehouseId option:selected').text()
+            })
+            console.log('productData:' + JSON.stringify(productData.data))
             let rowData = formDataToRowData(productData.data)
             rowData.billId = billId;
             // console.log('rowData:' + JSON.stringify(rowData))
@@ -2502,7 +2524,7 @@
 
 
         loadBootStrapSelector({
-            elementId: 'rp_outsubbillsForm-warehouseName',
+            elementId: 'rp_outsubbillsForm-warehouseId',
             sqlParams: {
                 sql: 'getWarehouseSelector',
             },

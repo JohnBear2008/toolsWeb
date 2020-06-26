@@ -1509,7 +1509,7 @@ const replaceObjParamsName = (obj, rules) => {
 /**
  *更新库存数据
  *
- * @param {*} i{stockArr:[{PID,stockNum,num,warehouseId}],rpBillId,actType}
+ * @param {*} i{stockArr:[{PID,,warehouseId,stockNum,num}],rpBillId,actType}
  * @returns
  */
 const updateStock = async ({
@@ -1532,6 +1532,8 @@ const updateStock = async ({
     let historyRecord = []
 
     for (const n of stockArr) {
+        console.log('stockArr ', n);
+
         historyRecord.push({
             PID: n.PID,
             preNum: n.stockNum,
@@ -1541,6 +1543,8 @@ const updateStock = async ({
             actType: actType,
             rpBillId: rpBillId
         })
+        console.log('historyRecord', historyRecord);
+
     }
     let r1 = await postDBData({
         sql: 'updateNum',
@@ -1710,11 +1714,11 @@ const checkRecordHistory = async ({
  * @param {*} PID
  * @returns
  */
-const getStockNum = async (PID, warehouseName) => {
+const getStockNum = async (PID, warehouseId) => {
 
     let filter = 'PID="' + PID + '" and warehouseId="W1"'
-    if (warehouseName) {
-        filter = 'PID="' + PID + '" and warehouseName="' + warehouseName + '"'
+    if (warehouseId) {
+        filter = 'PID="' + PID + '" and warehouseId="' + warehouseId + '"'
     }
 
     let r = await getDataBySql({

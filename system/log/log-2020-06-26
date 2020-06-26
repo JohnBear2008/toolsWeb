@@ -1,0 +1,2229 @@
+[2020-06-26T14:30:12.325] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'warehouseId' in 'field list'
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:505:15)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0,
+  sql: "replace into `rp_outsubbills` (billId,rowId,status,productId,warehouseId,productName,productDescription,productClass,systemType,unit,num,remark,warehouseName) values ('O-20200626002','1','预领','3CLD6FB301','W1','SMD HBH1608B301','SMD HBH1608B301贴片小电感','原器件','其他','EA','1',null,'客服仓')"
+}
+[2020-06-26T14:30:12.414] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'warehouseId' in 'field list'
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'warehouseId' in 'field list'"}`,
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626002&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E9%A2%84%E9%A2%86&params%5Bdata%5D%5B0%5D%5BproductId%5D=3CLD6FB301&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20HBH1608B301&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20HBH1608B301%E8%B4%B4%E7%89%87%E5%B0%8F%E7%94%B5%E6%84%9F&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E5%8E%9F%E5%99%A8%E4%BB%B6&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626002&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E9%A2%84%E9%A2%86&params%5Bdata%5D%5B0%5D%5BproductId%5D=3CLD6FB301&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20HBH1608B301&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20HBH1608B301%E8%B4%B4%E7%89%87%E5%B0%8F%E7%94%B5%E6%84%9F&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E5%8E%9F%E5%99%A8%E4%BB%B6&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626002&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E9%A2%84%E9%A2%86&params%5Bdata%5D%5B0%5D%5BproductId%5D=3CLD6FB301&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20HBH1608B301&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20HBH1608B301%E8%B4%B4%E7%89%87%E5%B0%8F%E7%94%B5%E6%84%9F&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E5%8E%9F%E5%99%A8%E4%BB%B6&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'warehouseId' in 'field list'"}`,
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '106',
+      etag: 'W/"6a-0IOKFt6hP1v6oPZlcxjfcQ"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:30:12 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '106',
+      etag: 'W/"6a-0IOKFt6hP1v6oPZlcxjfcQ"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:30:12 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626002&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E9%A2%84%E9%A2%86&params%5Bdata%5D%5B0%5D%5BproductId%5D=3CLD6FB301&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20HBH1608B301&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20HBH1608B301%E8%B4%B4%E7%89%87%E5%B0%8F%E7%94%B5%E6%84%9F&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E5%8E%9F%E5%99%A8%E4%BB%B6&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'warehouseId' in 'field list'"}`,
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626002&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E9%A2%84%E9%A2%86&params%5Bdata%5D%5B0%5D%5BproductId%5D=3CLD6FB301&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20HBH1608B301&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20HBH1608B301%E8%B4%B4%E7%89%87%E5%B0%8F%E7%94%B5%E6%84%9F&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E5%8E%9F%E5%99%A8%E4%BB%B6&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_BAD_FIELD_ERROR'
+}
+[2020-06-26T14:38:50.978] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:482:12)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql: "insert into `rp_warehousehistory` (PID,actNum,nowNum,actType,rpBillId) values ('3DDOBAV103','-1','NaN','人工出库','O-20200626003')"
+}
+[2020-06-26T14:38:51.060] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:38:50 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:38:50 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+}
+[2020-06-26T14:41:31.750] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:482:12)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql: "insert into `rp_warehousehistory` (PID,actNum,nowNum,warehouseId,actType,rpBillId) values ('3DDOBAV103','-1','NaN','W1','人工出库','O-20200626003')"
+}
+[2020-06-26T14:41:31.857] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:41:31 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:41:31 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+}
+[2020-06-26T14:44:27.514] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:482:12)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql: "insert into `rp_warehousehistory` (PID,actNum,nowNum,warehouseId,actType,rpBillId) values ('3DDOBAV103','-1','NaN','W1','人工出库','O-20200626003')"
+}
+[2020-06-26T14:44:27.714] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:44:27 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:44:27 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+}
+[2020-06-26T14:46:49.662] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:482:12)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql: "insert into `rp_warehousehistory` (PID,actNum,nowNum,warehouseId,actType,rpBillId) values ('3DDOBAV103','-1','NaN','W1','人工出库','O-20200626003')"
+}
+[2020-06-26T14:46:49.925] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:46:49 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:46:49 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+}
+[2020-06-26T14:50:36.790] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:505:15)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql: "insert into `rp_warehousehistory` (PID,actNum,nowNum,warehouseId,actType,rpBillId) values ('3DDOBAV103','-1','NaN','W1','人工出库','O-20200626003')"
+}
+[2020-06-26T14:50:36.917] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:50:36 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:50:36 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+}
+[2020-06-26T14:53:31.768] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:505:15)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
+  errno: 1366,
+  sqlState: '22007',
+  index: 0,
+  sql: "insert into `rp_warehousehistory` (PID,actNum,nowNum,warehouseId,actType,rpBillId) values ('3DDOBAV103','-1','NaN','W1','人工出库','O-20200626003')"
+}
+[2020-06-26T14:53:31.844] [ERROR] dateFileLog - Error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'NaN' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:53:31 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '186',
+      etag: 'W/"ba-6/F9IPcMuvNRAuiCbigdlg"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:53:31 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: '{"code":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD","message":"ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: \'NaN\' for column `toolsweb`.`rp_warehousehistory`.`nowNum` at row 1"}',
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=insert&params%5BtableId%5D=rp_warehousehistory&params%5Bdata%5D%5B0%5D%5BPID%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BactNum%5D=-1&params%5Bdata%5D%5B0%5D%5BnowNum%5D=NaN&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5BactType%5D=%E4%BA%BA%E5%B7%A5%E5%87%BA%E5%BA%93&params%5Bdata%5D%5B0%5D%5BrpBillId%5D=O-20200626003'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+}
+[2020-06-26T14:56:05.145] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'stockNum' in 'field list'
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:505:15)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0,
+  sql: "replace into `rp_outsubbills` (DBID,billId,rowId,productId,productName,productDescription,productClass,systemType,warehouseName,warehouseId,unit,status,num,remark,billSaveTimeStamp,stockNum) values ('21','O-20200626003','1','3DDOBAV103','SMD BAV103','SMD BAV103 2500/卷\r\n" +
+    "','整流管','其他','客服仓','W1','EA','已领','1',null,'2020-06-26','95')"
+}
+[2020-06-26T14:56:05.245] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'stockNum' in 'field list'
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'stockNum' in 'field list'"}`,
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=21&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626003&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5BproductId%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20BAV103&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20BAV103%202500%2F%E5%8D%B7%0D%0A&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E6%95%B4%E6%B5%81%E7%AE%A1&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E9%A2%86&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BbillSaveTimeStamp%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5BstockNum%5D=95',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=21&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626003&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5BproductId%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20BAV103&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20BAV103%202500%2F%E5%8D%B7%0D%0A&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E6%95%B4%E6%B5%81%E7%AE%A1&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E9%A2%86&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BbillSaveTimeStamp%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5BstockNum%5D=95 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=21&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626003&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5BproductId%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20BAV103&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20BAV103%202500%2F%E5%8D%B7%0D%0A&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E6%95%B4%E6%B5%81%E7%AE%A1&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E9%A2%86&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BbillSaveTimeStamp%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5BstockNum%5D=95',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'stockNum' in 'field list'"}`,
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '103',
+      etag: 'W/"67-tgG/BJQYwEsU1P2fySYxfA"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:56:05 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '103',
+      etag: 'W/"67-tgG/BJQYwEsU1P2fySYxfA"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 06:56:05 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=21&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626003&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5BproductId%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20BAV103&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20BAV103%202500%2F%E5%8D%B7%0D%0A&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E6%95%B4%E6%B5%81%E7%AE%A1&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E9%A2%86&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BbillSaveTimeStamp%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5BstockNum%5D=95 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'stockNum' in 'field list'"}`,
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=replace&params%5BtableId%5D=rp_outsubbills&params%5Bdata%5D%5B0%5D%5BDBID%5D=21&params%5Bdata%5D%5B0%5D%5BbillId%5D=O-20200626003&params%5Bdata%5D%5B0%5D%5BrowId%5D=1&params%5Bdata%5D%5B0%5D%5BproductId%5D=3DDOBAV103&params%5Bdata%5D%5B0%5D%5BproductName%5D=SMD%20BAV103&params%5Bdata%5D%5B0%5D%5BproductDescription%5D=SMD%20BAV103%202500%2F%E5%8D%B7%0D%0A&params%5Bdata%5D%5B0%5D%5BproductClass%5D=%E6%95%B4%E6%B5%81%E7%AE%A1&params%5Bdata%5D%5B0%5D%5BsystemType%5D=%E5%85%B6%E4%BB%96&params%5Bdata%5D%5B0%5D%5BwarehouseName%5D=%E5%AE%A2%E6%9C%8D%E4%BB%93&params%5Bdata%5D%5B0%5D%5BwarehouseId%5D=W1&params%5Bdata%5D%5B0%5D%5Bunit%5D=EA&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E9%A2%86&params%5Bdata%5D%5B0%5D%5Bnum%5D=1&params%5Bdata%5D%5B0%5D%5Bremark%5D=&params%5Bdata%5D%5B0%5D%5BbillSaveTimeStamp%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5BstockNum%5D=95'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_BAD_FIELD_ERROR'
+}
+[2020-06-26T15:02:49.305] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'undefined' in 'where clause'
+    at Query.Sequence._packetToError (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Query.ErrorPacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\sequences\Query.js:82:18)
+    at Protocol._parsePacket (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:271:23)
+    at Parser.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:82:28)
+    at Socket.emit (events.js:315:20)
+    at Socket.EventEmitter.emit (domain.js:505:15)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    --------------------
+    at Protocol._enqueue (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at PoolConnection.Connection.query (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Connection.js:185:25)
+    at doQuery (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:474:24)
+    at success (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:465:9)
+    at Object.exports.safeSuccess (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:98:13)
+    at Object.exports.handleResult (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjError.js:153:12)
+    at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjDBService.engine.mysql.js:89:11
+    at Ping.onPing (F:\TMwork\TOOLSWEB\node_modules\mysql\lib\Pool.js:94:5)
+    at bound (domain.js:426:14)
+    at Ping.runBound [as _callback] (domain.js:439:12) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  index: 0,
+  sql: "update `rp_outbills` set auditor = '熊奇龙',auditDate = '2020-06-26',status = '已审核' where undefined in ('undefined')"
+}
+[2020-06-26T15:02:49.418] [ERROR] dateFileLog - Error: ER_BAD_FIELD_ERROR: Unknown column 'undefined' in 'where clause'
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'undefined' in 'where clause'"}`,
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'POST',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_outbills&params%5Bdata%5D%5B0%5D%5Bauditor%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BauditDate%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E5%AE%A1%E6%A0%B8',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _data: undefined,
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'POST /biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_outbills&params%5Bdata%5D%5B0%5D%5Bauditor%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BauditDate%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E5%AE%A1%E6%A0%B8 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        'Content-Length: 0\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_outbills&params%5Bdata%5D%5B0%5D%5Bauditor%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BauditDate%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E5%AE%A1%E6%A0%B8',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'undefined' in 'where clause'"}`,
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '106',
+      etag: 'W/"6a-39vlPBgUyuuyZ4GsekNgmA"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 07:02:49 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '106',
+      etag: 'W/"6a-39vlPBgUyuuyZ4GsekNgmA"',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 07:02:49 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot POST /biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_outbills&params%5Bdata%5D%5B0%5D%5Bauditor%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BauditDate%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E5%AE%A1%E6%A0%B8 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: `{"code":"ER_BAD_FIELD_ERROR","message":"ER_BAD_FIELD_ERROR: Unknown column 'undefined' in 'where clause'"}`,
+      method: 'POST',
+      path: '/biz/RP/lib/ajaxPost?sql=update&params%5BtableId%5D=rp_outbills&params%5Bdata%5D%5B0%5D%5Bauditor%5D=%E7%86%8A%E5%A5%87%E9%BE%99&params%5Bdata%5D%5B0%5D%5BauditDate%5D=2020-06-26&params%5Bdata%5D%5B0%5D%5Bstatus%5D=%E5%B7%B2%E5%AE%A1%E6%A0%B8'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500,
+  code: 'ER_BAD_FIELD_ERROR'
+}
+[2020-06-26T15:32:15.384] [ERROR] dateFileLog - Error: ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\TMwork\TOOLSWEB\toolsWeb\biz\RP\lib\sql\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\TMwork\TOOLSWEB\toolsWeb\biz\RP\lib\sql\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\TMwork\TOOLSWEB\toolsWeb\biz\RP\lib\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\TMwork\TOOLSWEB\node_modules\express\lib\router\layer.js:95:5)
+
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: 'ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\\TMwork\\TOOLSWEB\\node_modules\\express\\lib\\router\\layer.js:95:5)\n',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'GET',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593156734444&LCID=2052',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: false,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'GET /biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593156734444&LCID=2052 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'GET',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593156734444&LCID=2052',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: 'ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\\TMwork\\TOOLSWEB\\node_modules\\express\\lib\\router\\layer.js:95:5)\n',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'x-content-type-options': 'nosniff',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '1013',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 07:32:15 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'x-content-type-options': 'nosniff',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '1013',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 07:32:15 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot GET /biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593156734444&LCID=2052 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: 'ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\\TMwork\\TOOLSWEB\\node_modules\\express\\lib\\router\\layer.js:95:5)\n',
+      method: 'GET',
+      path: '/biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593156734444&LCID=2052'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500
+}
+[2020-06-26T15:37:03.996] [ERROR] dateFileLog - Error: ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\TMwork\TOOLSWEB\toolsWeb\biz\RP\lib\sql\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\TMwork\TOOLSWEB\toolsWeb\biz\RP\lib\sql\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\TMwork\TOOLSWEB\toolsWeb\biz\RP\lib\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\TMwork\TOOLSWEB\yujiang.Foil.Node\src\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\TMwork\TOOLSWEB\node_modules\express\lib\router\layer.js:95:5)
+
+    at Request.callback (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:792:17)
+    at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:990:12)
+    at IncomingMessage.emit (events.js:327:22)
+    at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+    at endReadableNT (_stream_readable.js:1221:12)
+    at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+  original: null,
+  response: Response {
+    _events: [Object: null prototype] {},
+    _eventsCount: 0,
+    _maxListeners: undefined,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      readable: false,
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [Socket],
+      connection: [Socket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      headers: [Object],
+      rawHeaders: [Array],
+      trailers: {},
+      rawTrailers: [],
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+      client: [Socket],
+      _consuming: false,
+      _dumped: false,
+      req: [ClientRequest],
+      text: 'ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\\TMwork\\TOOLSWEB\\node_modules\\express\\lib\\router\\layer.js:95:5)\n',
+      body: undefined,
+      [Symbol(kCapture)]: false
+    },
+    request: Request {
+      _events: [Object: null prototype],
+      _eventsCount: 1,
+      _maxListeners: undefined,
+      _agent: false,
+      _formData: null,
+      method: 'GET',
+      url: 'http://127.0.0.1:2019/biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593157022943&LCID=2052',
+      header: {},
+      writable: true,
+      _redirects: 0,
+      _maxRedirects: 5,
+      cookies: '',
+      qs: [Object],
+      qsRaw: [],
+      _redirectList: [],
+      req: [ClientRequest],
+      protocol: 'http:',
+      host: '127.0.0.1:2019',
+      _callback: [Function],
+      res: [IncomingMessage],
+      response: [Circular],
+      _timeout: 0,
+      called: true,
+      [Symbol(kCapture)]: false
+    },
+    req: ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      useChunkedEncodingByDefault: false,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      socket: [Socket],
+      connection: [Socket],
+      _header: 'GET /biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593157022943&LCID=2052 HTTP/1.1\r\n' +
+        'Host: 127.0.0.1:2019\r\n' +
+        'Accept-Encoding: gzip, deflate\r\n' +
+        'User-Agent: node-superagent/1.2.0\r\n' +
+        'yujiang-from-server: true\r\n' +
+        'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPSUQiOjEsIkFJRCI6IkFkbWluIiwiTmFtZSI6IueGiuWlh-m-mSIsIk9yZ09JRCI6MSwiaXNBZG1pbiI6dHJ1ZSwib3JnIjp7ImRhdGEiOnsiT3JnT0lEIjoxLCJPcmdPSURQYXJlbnQiOjEsIk9yZ0FJRCI6IuW8mOiuryIsIk5hbWUiOiLlvJjorq8iLCJDYXRlZ29yeSI6bnVsbCwiRGVzY3JpcHRpb24iOiIiLCJDb21wYW55IjpudWxsLCJNYW51ZmFjdHVyaW5nQ2VudGVyIjpudWxsLCJGaW5hbmNpYWxDZW50ZXIiOm51bGwsIlByb2ZpdENlbnRlciI6bnVsbCwiQ29zdENlbnRlciI6bnVsbCwiTGV2ZWxOdW1iZXIiOm51bGwsIk9mZmljZXJPSUQiOm51bGwsIkFkZHJlc3MiOiIiLCJQaG9uZSI6bnVsbCwiQ29udGFjdG9yIjoiIiwiQ29udGFjdG9yUGhvbmUiOiIiLCJDb250YWN0b3JNb2JpbGUiOiIiLCJDb250YWN0b3JFTWFpbCI6IiIsIk9yZ1R5cGVPSUQiOjgsIlZJX0xvZ28iOm51bGwsIlZJX05hbWUiOiIiLCJWSV9EZXNjcmlwdGlvbiI6IiIsIlZJX0Jhbm5lciI6bnVsbCwiU29ydE51bWJlciI6MX0sImlzUm9vdCI6dHJ1ZX0sImlhdCI6MTU5MzEzMDIxNSwiZXhwIjoxNTkzMTU5MDE1fQ.6tcd73PLkTxegx4nof9q0CllbWYLV4OtmnUkzYvgQr4\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _onPendingData: [Function: noopPendingOutput],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'GET',
+      insecureHTTPParser: undefined,
+      path: '/biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593157022943&LCID=2052',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype]
+    },
+    links: {},
+    text: 'ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\\TMwork\\TOOLSWEB\\node_modules\\express\\lib\\router\\layer.js:95:5)\n',
+    body: {},
+    files: {},
+    buffered: true,
+    headers: {
+      'x-powered-by': 'Express',
+      'x-content-type-options': 'nosniff',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '1013',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 07:37:03 GMT',
+      connection: 'close'
+    },
+    header: {
+      'x-powered-by': 'Express',
+      'x-content-type-options': 'nosniff',
+      'content-type': 'text/html; charset=utf-8',
+      'content-length': '1013',
+      vary: 'Accept-Encoding',
+      date: 'Fri, 26 Jun 2020 07:37:03 GMT',
+      connection: 'close'
+    },
+    statusCode: 500,
+    status: 500,
+    statusType: 5,
+    info: false,
+    ok: false,
+    redirect: false,
+    clientError: false,
+    serverError: true,
+    error: Error: cannot GET /biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593157022943&LCID=2052 (500)
+        at Response.toError (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:106:13)
+        at Response.setStatusProperties (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:193:12)
+        at new Response (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\response.js:42:8)
+        at IncomingMessage.<anonymous> (F:\TMwork\TOOLSWEB\node_modules\superagent\lib\node\index.js:986:22)
+        at IncomingMessage.emit (events.js:327:22)
+        at IncomingMessage.EventEmitter.emit (domain.js:505:15)
+        at endReadableNT (_stream_readable.js:1221:12)
+        at processTicksAndRejections (internal/process/task_queues.js:84:21) {
+      status: 500,
+      text: 'ReferenceError: rp_storeHistory is not defined<br> &nbsp; &nbsp;at eval (eval at createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16), &lt;anonymous&gt;:1:1)<br> &nbsp; &nbsp;at Object.createSql (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\sql\\index.js:301:16)<br> &nbsp; &nbsp;at module.exports (F:\\TMwork\\TOOLSWEB\\toolsWeb\\biz\\RP\\lib\\ajaxGet.{m}.js:14:22)<br> &nbsp; &nbsp;at buildData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:186:6)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:128:5<br> &nbsp; &nbsp;at Object.module.exports.read (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.cache.js:78:4)<br> &nbsp; &nbsp;at loadData (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:122:15)<br> &nbsp; &nbsp;at rrnmv (F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:119:2)<br> &nbsp; &nbsp;at F:\\TMwork\\TOOLSWEB\\yujiang.Foil.Node\\src\\yjMVC.js:222:4<br> &nbsp; &nbsp;at Layer.handle [as handle_request] (F:\\TMwork\\TOOLSWEB\\node_modules\\express\\lib\\router\\layer.js:95:5)\n',
+      method: 'GET',
+      path: '/biz/RP/lib/ajaxGet?sql=rp_storeHistory&params%5BorderBy%5D=dateTimeStamp%20desc&_=1593157022943&LCID=2052'
+    },
+    accepted: false,
+    noContent: false,
+    badRequest: false,
+    unauthorized: false,
+    notAcceptable: false,
+    forbidden: false,
+    notFound: false,
+    charset: 'utf-8',
+    type: 'text/html',
+    setEncoding: [Function: bound ],
+    redirects: [],
+    [Symbol(kCapture)]: false
+  },
+  status: 500
+}

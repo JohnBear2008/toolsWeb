@@ -13,7 +13,7 @@ const getPartLocationSelector =
 const getPartSelector = "select partId as value,partId as option,partName as token from `rp_partlocations`";
 
 const getFaultSelector = "select concat(faultId,'-',faultName) as value,concat(faultId,'-',faultName) as option, faultId as token from `rp_faultclasses`"
-const getWarehouseSelector = "select warehouseName as value,warehouseName as option,warehouseId as token from `rp_warehouseslist`";
+const getWarehouseSelector = "select warehouseId as value,warehouseName as option,warehouseId as token from `rp_warehouseslist`";
 
 
 const getRegion = "SELECT mername FROM `region`"
