@@ -36,6 +36,8 @@ const getRecordBillStatus = "select DBID,status from `rp_recordbills`"
 const getBorrowBillsNum = "select count(1) as billsNum from `rp_borrowbills`";
 //获取出库单数量
 const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
+//获取入库单数量
+const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
 //获取借货单子表状态
 const getBorrowSubBill = "select DBID from `rp_borrowsubbills`"
 
@@ -76,10 +78,15 @@ const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as search
 //借货单子表sql
 const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
 
-//出货单sql
+//出库单sql
 const sqlOutBills = "select * from `rp_outbills`"
-//出货单子表sql
+//出库单子表sql
 const sqlOutSubBills = "select * from `rp_outsubbills`"
+
+//入库单sql
+const sqlInBills = "select * from `rp_inbills`"
+//入库单子表sql
+const sqlInSubBills = "select * from `rp_insubbills`"
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";
@@ -147,7 +154,11 @@ const createSql = (i) => {
 			//     values = values.substr(values.indexOf(",") + 1, values.length);
 			// }
 
-			excuteSql = "insert into `" + i.params.tableId + "` " + insertTitles + " values " + insertValues;
+			if (i.params.ignore) {
+				excuteSql = "insert ignore into `" + i.params.tableId + "` " + insertTitles + " values " + insertValues;
+			} else {
+				excuteSql = "insert into `" + i.params.tableId + "` " + insertTitles + " values " + insertValues;
+			}
 			console.log('excuteSql:' + excuteSql);
 			break;
 		case "replace":

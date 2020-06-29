@@ -1546,6 +1546,9 @@ const updateStock = async ({
         console.log('historyRecord', historyRecord);
 
     }
+
+    console.log('updateNumArr', updateNumArr);
+
     let r1 = await postDBData({
         sql: 'updateNum',
         params: {
@@ -1575,10 +1578,12 @@ const updateStock = async ({
 }
 
 
+
+
 /**
  *插入库存数据
  *
- * @param {*} i{insertStock:[{partId,stockNum,num}],rpBillId,actType}
+ * @param {*} i{insertStock:[{PID,warehouseId,stockNum,num}],rpBillId,actType}
  * @returns
  */
 const insertStock = async (i) => {
@@ -1587,7 +1592,8 @@ const insertStock = async (i) => {
 
     for (const n of i.insertStock) {
         let arr = {
-            partId: n.partId,
+            PID: n.PID,
+            warehouseId: n.warehouseId,
             stockNum: n.num
         }
         insertNumArr.push(arr);
@@ -1597,7 +1603,7 @@ const insertStock = async (i) => {
 
     for (const n of i.insertStock) {
         historyRecord.push({
-            partId: n.partId,
+            PID: n.PID,
             preNum: 0,
             actNum: n.num,
             nowNum: n.num,
