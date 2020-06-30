@@ -92,7 +92,7 @@
                                 <th width='300'>地址</th>
                                 <th>客户归属</th>
                                 <th>出货方式</th>
-                                <th>经手人</th>
+                                <th>审核人</th>
                                 <th>备注</th>
                                 <th>状态</th>
                                 <th>搜索值</th>
@@ -564,7 +564,9 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label" for="rp_borrowBillsForm-auditor">审核人</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_borrowBillsForm-auditor"></p>
+                                        <select id="rp_borrowBillsForm-auditor" class="selectpicker"
+                                            data-live-search="true" data-size="5">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label"
@@ -651,6 +653,19 @@
                                                         </select>
                                                     </div>
 
+                                                    <label class="col-sm-1 control-label">仓库</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_borrowsubbillsForm-warehouseId"
+                                                            class="selectpicker form-control" data-live-search="true"
+                                                            data-size="5" data-dropup-auto="false">
+                                                        </select>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                                <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品名称</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
@@ -658,11 +673,8 @@
                                                         </p>
                                                     </div>
 
-                                                </div>
-
-                                                <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品描述</label>
-                                                    <div class="col-sm-11">
+                                                    <div class="col-sm-5">
                                                         <p class="form-control-static"
                                                             id="rp_borrowsubbillsForm-productDescription">
                                                         </p>
@@ -801,7 +813,7 @@
     }, {
         data: 'sendWay',
     }, {
-        data: 'operator',
+        data: 'auditor',
     }, {
         data: 'billRemark',
     }, {
@@ -929,7 +941,7 @@
                 .val()
             if (productId) {
                 $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
-                showStockNum(productId)
+                showStockNum()
                 fillProductInfo(productId);
 
                 $('#rp_borrowsubbillsForm-num').val(1)
@@ -937,6 +949,19 @@
             }
         });
 
+    }
+
+    //仓库选择修改事件
+    const addWarehouseListener = () => {
+        // $('#rp_outsubbillsForm-warehouseId').unbind();
+        $('#rp_borrowsubbillsForm-warehouseId').change(async function () {
+            let warehouseId = $('#rp_borrowsubbillsForm-warehouseId option:selected')
+                .val()
+            if (warehouseId) {
+                $('#rp_borrowsubbillsForm-warehouseId').selectpicker('refresh');
+                showStockNum();
+            }
+        });
     }
 
     // //保固期自动计算事件
@@ -1480,12 +1505,16 @@
     }
 
 
+
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
         let productId = $('#rp_borrowsubbillsForm-productId option:selected').val();
-        if (productId) {
-            stockNum = await getStockNum(productId);
+        let warehouseId = $('#rp_borrowsubbillsForm-warehouseId option:selected').val();
+        // console.log(warehouseId);
+
+        if (productId && warehouseId) {
+            stockNum = await getStockNum(productId, warehouseId);
         }
         $('#stockNum').text(stockNum)
     }
@@ -1745,6 +1774,105 @@
 
         })
 
+        //审核按钮
+        $('#btnBorrowBillAudit').click(async function () {
+            //1.check-检查选中
+            if (!mainTableData.borrowBillId) {
+                alert('请先点击表格选中需要审核的借货单!')
+                return
+            }
+            //1.check-检查审核条件
+            if (mainTableData.status !== '待审核') {
+                alert('非待审核状态,请检查!')
+                return
+            }
+            //1.check-审核确认
+            if (!confirm('审核后无法修改,是否继续')) {
+                return
+            }
+
+            //2.do-系统出库
+            let mainTable = {
+                billForm: '借货单',
+                billId: mainTableData.borrowBillId,
+                customerId: mainTableData.customerId,
+                customerShortName: mainTableData.customerShortName,
+                customerName: mainTableData.customerName,
+                customerBelongShort: mainTableData.customerBelongShort,
+                contact: mainTableData.contact,
+                mobilePhone: mainTableData.mobilePhone,
+                workPhone: mainTableData.workPhone,
+                sendWay: mainTableData.sendWay,
+                operator: mainTableData.operator,
+                address: mainTableData.address,
+                auditor: mainTableData.auditor,
+                makeDate: mainTableData.makeDate,
+                auditDate: currentDate(),
+                status: '已审核',
+                remark: mainTableData.remark,
+            };
+            let subTable = [];
+            for (const n of subTableData) {
+                subTable.push({
+                    billId: n.borrowBillId,
+                    rowId: n.rowId,
+                    productId: n.productId,
+                    productName: n.productName,
+                    productDescription: n.productDescription,
+                    productClass: n.productClass,
+                    systemType: n.systemType,
+                    warehouseId: n.warehouseId,
+                    warehouseName: n.warehouseName,
+                    unit: n.unit,
+                    num: n.num,
+                    status: '已出',
+                    remark: n.remark,
+                    actType: '借货出库',
+                    rpBillId: mainTableData.borrowBillId
+                })
+            }
+
+            let r1 = await autoOutStoreBills({
+                mainTable: mainTable,
+                subTable: subTable
+            })
+
+            console.log('r1', r1);
+
+
+            //2.do-更新借货单状态
+
+            if (!r1) {
+                alert('出现错误')
+                return;
+            }
+
+            let billUpdateData = {
+                borrowBillId: mainTableData.borrowBillId,
+                status: '已审核'
+            }
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_borrowbills',
+                    data: [billUpdateData],
+                    key: 'borrowBillId'
+                }
+            })
+
+            //3.return-操作成功信息
+            if (r2.affectedRows > 0) {
+                alert('审核成功,系统已自动生成相应出库单!')
+            } else {
+                alert('审核失败')
+            }
+            //3.return-刷新主表
+            loadBillMainTable();
+
+
+
+        })
 
         //驳回按钮
         $('#btnBorrowBillReject').click(async function () {
@@ -1886,13 +2014,20 @@
 
             //设置默认值
 
+            // $("#rp_borrowsubbillsForm-status").text('新增')
+            // $("#rp_borrowsubbillsForm-productId").selectpicker('val', '')
+            // $("#rp_borrowsubbillsForm-productFrom").selectpicker('val', '终端客户')
+            // $("#rp_borrowsubbillsForm-productBelong").selectpicker('val', '客户')
+            // $("#rp_borrowsubbillsForm-isRework").selectpicker('val', '否')
+            // $("#rp_borrowsubbillsForm-urgent").selectpicker('val', '否')
+            // $("#rp_borrowsubbillsForm-inWarranty").selectpicker('val', '否')
+
+            //设置默认值
+
             $("#rp_borrowsubbillsForm-status").text('新增')
             $("#rp_borrowsubbillsForm-productId").selectpicker('val', '')
-            $("#rp_borrowsubbillsForm-productFrom").selectpicker('val', '终端客户')
-            $("#rp_borrowsubbillsForm-productBelong").selectpicker('val', '客户')
-            $("#rp_borrowsubbillsForm-isRework").selectpicker('val', '否')
-            $("#rp_borrowsubbillsForm-urgent").selectpicker('val', '否')
-            $("#rp_borrowsubbillsForm-inWarranty").selectpicker('val', '否')
+            $("#rp_borrowsubbillsForm-warehouseId").selectpicker('val', 'W1')
+            $("#rp_borrowsubbillsForm-num").val(1)
         })
 
         //保存产品按钮
@@ -2399,6 +2534,22 @@
             },
         })
 
+        loadBootStrapSelector({
+            elementId: 'rp_borrowBillsForm-auditor',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+            // initValue:''
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_borrowsubbillsForm-warehouseId',
+            sqlParams: {
+                sql: 'getWarehouseSelector',
+            },
+            // initValue: 'W1'
+        })
+
 
         // loadBootStrapSelector({
         //     elementId: 'rp_borrowsubbillsForm-productFrom',
@@ -2472,6 +2623,9 @@
 
         //选定产品修改事件
         addProductListener();
+
+        //仓库选择修改事件
+        addWarehouseListener();
 
         // //保固期计算事件
         // addInWarrantyListener();

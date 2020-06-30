@@ -1637,6 +1637,113 @@ const insertStock = async (i) => {
     return o;
 }
 
+/**
+ *系统自动出库函数,自动生成出库单
+ *
+ * @param {*} {mainTable,subTable}
+ */
+const autoOutStoreBills = async ({
+    mainTable,
+    subTable
+}) => {
+    console.log('mainTable', mainTable);
+    console.log('subTable', subTable);
+
+    //1.check-mainTable检查
+    if (!mainTable.billId) {
+        console.log('autoOutStoreBills mainTable 检查错误!');
+        return
+    }
+    //1.check-subTable检查
+    if (subTable.length < 1) {
+        console.log('autoOutStoreBills subTable 检查错误!');
+        return
+    }
+
+    //1.check-即时库存及领料数量
+    let PIDArr = [];
+
+    for (const n of subTable) {
+        PIDArr.push({
+            PID: n.productId,
+            warehouseId: n.warehouseId
+        })
+    }
+    let stockResult = await getStockNums(PIDArr);
+    console.log('stockResult', stockResult);
+    for (let n of subTable) {
+        for (const m of stockResult) {
+            if (n.productId === m.PID) {
+                n.stockNum = m.stockNum;
+                if (n.stockNum < n.num) {
+                    alert('存在库存不足物料,请补充物料后重试')
+                    return
+                }
+            }
+        }
+    }
+
+    //2.do-出库
+    let stockArr = [];
+    for (const n of subTable) {
+        stockArr.push({
+            PID: n.productId,
+            warehouseId: n.warehouseId,
+            stockNum: n.stockNum,
+            num: -n.num
+        })
+    }
+    console.log('stockArr', stockArr);
+
+    let r1 = await updateStock({
+        stockArr: stockArr,
+        rpBillId: subTable[0].billId,
+        actType: subTable[0].actType
+    })
+
+    //2.do-生成关联出库单
+
+    if (!r1) {
+        console.log('updateStock 失败');
+        return
+    }
+
+    console.log('subTable', subTable);
+    let subTableBills = subTable
+    for (let n of subTableBills) {
+        delete n.stockNum;
+        delete n.actType;
+        delete n.rpBillId;
+    }
+
+    let r2 = await postDBData({
+        sql: 'replace',
+        params: {
+            tableId: 'rp_outsubbills',
+            data: subTableBills
+        }
+    })
+
+    let mainTableBill = mainTable;
+
+    let r3 = await postDBData({
+        sql: 'replace',
+        params: {
+            tableId: 'rp_outbills',
+            data: [mainTableBill]
+        }
+    })
+
+    //3.return
+    console.log(r1, r2, r3);
+
+    if (r2.affectedRows && r3.affectedRows) {
+        return true
+    } else {
+        return false
+    }
+}
+
 
 /**
  *替换中文标点符号至英文
@@ -1748,7 +1855,7 @@ const getStockNum = async (PID, warehouseId) => {
 /**
  *PID 获得多个物料指定仓库最新库存数量
  *
- * @param {*} PIDArr:[{PID,warehouseName}]
+ * @param {*} PIDArr:[{PID,warehouseId}]
  * @returns
  */
 const getStockNums = async (PIDArr) => {
@@ -1760,14 +1867,14 @@ const getStockNums = async (PIDArr) => {
     //2.do
     let filterArr = '';
     for (const n of PIDArr) {
-        filterArr = filterArr + '("' + n.PID + '","' + n.warehouseName + '")' + ',';
+        filterArr = filterArr + '("' + n.PID + '","' + n.warehouseId + '")' + ',';
     }
     filterArr = filterArr.substring(0, filterArr.length - 1);
     filterArr = '(' + filterArr + ')'
     let stockArr = await getDataBySql({
         sql: 'getStockNum',
         params: {
-            filter: '(PID,warehouseName) in ' + filterArr
+            filter: '(PID,warehouseId) in ' + filterArr
         }
     })
     //3.return
