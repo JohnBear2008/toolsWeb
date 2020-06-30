@@ -58,7 +58,7 @@ const sqlResponseBills =
 //部件即时库存sql
 const rp_store = "select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId"
 // //库存记录sql
-// const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
+ const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
 
 //历史单据主表sql
 const sqlHistoryBills =
