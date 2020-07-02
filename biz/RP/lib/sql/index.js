@@ -34,15 +34,17 @@ const getResponseBillsNum = "select count(1) as billsNum from `rp_responsebills`
 const getRecordBillStatus = "select DBID,status from `rp_recordbills`"
 //获取借货单数量
 const getBorrowBillsNum = "select count(1) as billsNum from `rp_borrowbills`";
+//获取还货单数量
+const getReturnBillsNum = "select count(1) as billsNum from `rp_returnbills`";
 //获取出库单数量
 const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
 //获取入库单数量
 const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
-//获取借货单子表状态
-const getBorrowSubBill = "select DBID from `rp_borrowsubbills`"
 
 
 
+// //获取借货单子表状态
+// const getBorrowSubBill = "select DBID from `rp_borrowsubbills`"
 
 
 
@@ -79,7 +81,7 @@ const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as search
 const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
 
 //还货单主表sql
-const sqlReturnBills = "select * from (select ta.borrowBillId,ta.returnBillId,ta.productId,ta.productName,ta.num,ta.unit,ta.returnStatus,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.borrowDate,tb.fax as searchText,tc.billFrom,tc.returnDate,tc.operator,tc.remark,tc.status,tc.maker,tc.makeDate,tc.auditor,tc.auditDate,tc.billSaveTimeStamp from `rp_borrowsubbills` ta left join  `rp_borrowbills` tb on ta.borrowBillId=tb.borrowBillId left join `rp_returnbills` tc on ta.returnBillId=tc.returnBillId) A"
+const sqlReturnBills = "select * from (select ta.borrowBillId,ta.returnBillId,ta.productId,ta.productName,ta.num,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.returnStatus,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.borrowDate,tb.fax as searchText,tc.billFrom,tc.returnDate,tc.operator,tc.remark,tc.status,tc.maker,tc.makeDate,tc.auditor,tc.auditDate,tc.billSaveTimeStamp from `rp_borrowsubbills` ta left join  `rp_borrowbills` tb on ta.borrowBillId=tb.borrowBillId left join `rp_returnbills` tc on ta.returnBillId=tc.returnBillId) A"
 //还货单 子表sql
 const sqlReturnSubBills = "select * from `rp_returnsubbills`"
 
@@ -105,7 +107,7 @@ const sqlTableSelect = "select * from `tableId`";
  * @param {*} i={sql,params}
  */
 const createSql = (i) => {
-	console.log(i.sql);
+	console.log('createSql',i.sql);
 	let excuteSql = "";
 	switch (i.sql) {
 		case "select":
