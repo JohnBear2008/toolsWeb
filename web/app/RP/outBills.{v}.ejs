@@ -61,6 +61,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
@@ -1111,12 +1112,23 @@
     const loadBillMainTable = async () => {
 
         //显示过滤模式
-        if (mainTableFilter === 'to_days(makeDate) = to_days(now())') {
-            $('#btnFilterToday').addClass('active');
-            $('#btnFilterDiy').removeClass('active');
-        } else {
-            $('#btnFilterDiy').addClass('active');
-            $('#btnFilterToday').removeClass('active');
+        switch (true) {
+            case mainTableFilter === 'to_days(makeDate) = to_days(now())':
+                $('#btnFilterToday').addClass('active');
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+
+                break;
+            case mainTableFilter === 'status ="待审核"':
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterUnAudit').addClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            default:
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterDiy').addClass('active');
+                break;
         }
 
         //初始化主表
@@ -1636,6 +1648,13 @@
 
         $('#btnFilterToday').click(); //默认开启当天过滤
 
+        //过滤器待审核
+        $('#btnFilterUnAudit').click(function () {
+            mainTableFilter = 'status ="待审核"';
+            //初始化主表
+            loadBillMainTable();
+        })
+
         //过滤器自定义按钮
         $('#btnFilterDiy').click(function () {
             //打开面板
@@ -1725,7 +1744,7 @@
 
 
             createOutBillId();
-            $("#rp_outbillsForm-billForm").text('人工出库');
+            $("#rp_outbillsForm-billForm").text('出库单');
             // $("#rp_outbillsForm-isInland").selectpicker('val', '国内')
             $("#rp_outbillsForm-sendWay").selectpicker('val', '邮寄过来')
 
@@ -1799,7 +1818,7 @@
 
             let r1 = await updateStock({
                 stockArr: updateStockArr,
-                actType: '人工出库',
+                actType: '出库单',
                 rpBillId: mainTableData.billId
             });
 
@@ -2386,6 +2405,11 @@
                 return
             }
 
+            //1.check-检查必填项
+            if (!$('#rp_outbillsForm-customerId').text()) {
+                alert('未选定客户,请检查!')
+                return;
+            }
 
             //1.check-检查子表项目
             if (subTableData.length === 0) {

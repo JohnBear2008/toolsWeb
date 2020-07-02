@@ -43,7 +43,7 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
-                <h1>库存管理-入库凭单</h1>
+                <h1>库存管理-还货凭单</h1>
             </div>
         </div>
     </div>
@@ -62,37 +62,46 @@
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
+                            <button type="button" id="btnFilterUnReturn" class="btn btn-default">待归还</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
                     <div style="float:right">
 
-                        <button id='btnInBillNew' type="button" class="btn btn-info">新增</button>
-                        <button id='btnInBillAudit' type="button" class="btn btn-warning">审核</button>
-                        <button id='btnInBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <button id='btnReturnBillNew' type="button" class="btn btn-info">正常还货</button>
+                        <button id='btnrequestBillNew' type="button" class="btn btn-info">转维修</button>
+                        <button id='btnReturnBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <button id='btnReturnBillAudit' type="button" class="btn btn-success">审核</button>
+                        <button id='btnReturnBillReject' type="button" class="btn btn-warning">驳回</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
-                            打印入库码
+                            打印还货码
                         </button> -->
-                        <button type="button" class="btn btn-primary" id="rp_inbillsPrint">
-                            打印入库凭单
+                        <button type="button" class="btn btn-primary" id="rp_returnBillsPrint">
+                            打印还货凭单
                         </button>
                     </div>
                     <div style="clear:both"></div>
                 </div>
                 <div class="panel-body">
-                    <table id="rp_inbills" class=" table table-striped table-bordered" style="width:100%">
+                    <table id="rp_returnBills" class=" table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
-                                <th>入库号</th>
-                                <th>来源单类型</th>
-                                <th>单据编号</th>
-                                <th>制单人</th>
+                                <th>还货单号</th>
+                                <th>单据来源</th>
+                                <th>借货单号</th>
+                                <th>客户简称</th>
+                                <th>产品编号</th>
+                                <th>产品名称</th>
+                                <th>借货日期</th>
+                                <th>还货日期</th>
+                                <th>经手人</th>
                                 <th>审核人</th>
-                                <th>制单日期</th>
-                                <th>审核日期</th>
                                 <th>备注</th>
-                                <th>单据状态</th>
+                                <th>制单日期</th>
+                                <th>归还状态</th>
+                                <th>状态</th>
+                                <th>搜索值</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -107,25 +116,21 @@
                     <h3 class="panel-title">产品清单</h3>
                 </div>
                 <div class="panel-body">
-                    <table id="rp_inbillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
+                    <table id="rp_returnBillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
                         <thead>
                             <tr>
                                 <th>序号</th>
                                 <th>产品编号</th>
                                 <th>产品描述</th>
-                                <th>仓库名称</th>
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
-                                <th>状态</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
-
-
         </div>
     </div>
 
@@ -149,11 +154,11 @@
                         <div class="panel-body" style="height:300px">
                             <form class="form-horizontal" role="form" id='filterForm'>
 
-                                <!-- <div class="form-group">
-                                    <label class="col-sm-2 control-label">入库日期</label>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">还货日期</label>
                                     <div class="col-sm-5">
                                         <div class="input-group date form_date ">
-                                            <input id="filterForm-borrowDateB" class="form-control " size="16"
+                                            <input id="filterForm-returnDateB" class="form-control " size="16"
                                                 type="text" value="" placeholder="起始日期" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
@@ -162,14 +167,14 @@
 
                                     <div class="col-sm-5">
                                         <div class="input-group date form_date ">
-                                            <input id="filterForm-borrowDateE" class="form-control " size="16"
+                                            <input id="filterForm-returnDateE" class="form-control " size="16"
                                                 type="text" value="" placeholder="结束日期" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                     </div>
 
-                                </div> -->
+                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">制单日期</label>
@@ -230,15 +235,15 @@
                 <div class="modal-body">
                     <div id="printViewDiv">
 
-                        <h2>弘讯科技股份有限公司入库单</h2>
+                        <h2>弘讯科技股份有限公司还货单</h2>
                         <hr>
 
                         <table id='printViewMainTable' style="border: 0ch; width: 100%;table-layout:fixed;">
                             <tbody>
                                 <tr>
-                                    <td width='80px'>入库单号:</td>
+                                    <td width='80px'>还货单号:</td>
                                     <td>
-                                        <p class="form-control-static" id="printViewMainTable-billId"></p>
+                                        <p class="form-control-static" id="printViewMainTable-returnBillId"></p>
                                     </td>
                                     <td width='80px'>客户编号:</td>
                                     <td>
@@ -290,7 +295,6 @@
                                     <th>序号</th>
                                     <th>产品编号</th>
                                     <th>产品名称</th>
-                                    <th>仓库名称</th>
                                     <th>单位</th>
                                     <th>数量</th>
                                 </tr>
@@ -322,7 +326,7 @@
             <div class="modal-content">
                 <div class="modal-body">
 
-                    <h2>弘讯科技股份有限公司入库清单</h2>
+                    <h2>弘讯科技股份有限公司还货清单</h2>
                     <hr>
 
                     <div id="listPrintViewDiv">
@@ -347,13 +351,14 @@
 
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="rp_inbillsModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal fade" id="rp_returnBillsModal" tabindex="-1" role="dialog" aria-hidden="true"
+        data-backdrop="static">
 
         <div class="modal-dialog" style="width: 75%;">
 
             <!-- 按钮触发模态框 -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_inbillsModal" id="rp_inbillsModalOpen"
-                style="display: none;">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_returnBillsModal"
+                id="rp_returnBillsModalOpen" style="display: none;">
                 开始演示模态框
             </button>
             <div class="modal-content">
@@ -375,42 +380,46 @@
                         <div class="panel-body">
 
 
-                            <form class="form-horizontal" role="form" id='rp_inbillsForm'>
+                            <form class="form-horizontal" role="form" id='rp_returnBillsForm'>
 
-                                <input id="rp_inbillsForm-DBID" type="hidden" value="">
+                                <!-- <input id="rp_returnBillsForm-DBID" type="hidden" value=""> -->
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-billId">入库单号</label>
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_returnBillsForm-returnBillId">还货单号</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-billId"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-returnBillId"></p>
                                     </div>
 
 
 
-                                    <!-- <label class="col-sm-1 control-label" for="rp_inbillsForm-borrowDate">入库日期:</label>
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_returnBillsForm-returnDate">还货日期:</label>
                                     <div class="col-sm-5 ">
                                         <div class="input-group date form_date ">
-                                            <input id="rp_inbillsForm-borrowDate" class="form-control " size="16"
+                                            <input id="rp_returnBillsForm-returnDate" class="form-control " size="16"
                                                 type="text" value="" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
-                                    </div> -->
+                                    </div>
                                 </div>
 
 
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-billForm">单据来源</label>
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_returnBillsForm-fromBillId">单据来源</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-billForm"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-billForm"></p>
                                     </div>
 
 
-                                    <label class="col-sm-1 control-label " for="rp_inbillsForm-customerId">客户编号</label>
+                                    <label class="col-sm-1 control-label "
+                                        for="rp_returnBillsForm-customerId">客户编号</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-customerId"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-customerId"></p>
                                     </div>
 
                                 </div>
@@ -418,10 +427,10 @@
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-customerShortName">客户简称</label>
+                                        for="rp_returnBillsForm-customerShortName">客户简称</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_inbillsForm-customerShortName" class="selectpicker form-control"
-                                            data-live-search="true" data-size="10">
+                                        <select id="rp_returnBillsForm-customerShortName"
+                                            class="selectpicker form-control" data-live-search="true" data-size="10">
                                         </select>
                                     </div>
 
@@ -429,68 +438,69 @@
 
 
 
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-customerName">客户名称</label>
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_returnBillsForm-customerName">客户名称</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_inbillsForm-customerName" type="text">
+                                        <input class="form-control" id="rp_returnBillsForm-customerName" type="text">
                                     </div>
 
 
                                 </div>
 
-                                <!-- <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-isInland">国内外</label>
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_returnBillsForm-isInland">国内外</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_inbillsForm-isInland" class="selectpicker">
+                                        <select id="rp_returnBillsForm-isInland" class="selectpicker">
 
                                         </select>
                                     </div>
 
-                                    <label class="col-sm-1 control-label"
-                                        for="rp_inbillsForm-customerArea">客户区域</label>
+                                    <!-- <label class="col-sm-1 control-label"
+                                        for="rp_returnBillsForm-customerArea">客户区域</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_inbillsForm-customerArea" class="selectpicker form-control"
+                                        <select id="rp_returnBillsForm-customerArea" class="selectpicker form-control"
                                             data-live-search="true" data-size="10">
                                         </select>
-                                    </div>
-                                </div> -->
+                                    </div> -->
+                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label text-warning"
                                         for="customerContacts">可选联系人</label>
                                     <div class="col-sm-5">
-                                        <!-- <input class="form-control" id="rp_inbillsForm-contact" type="text"> -->
+                                        <!-- <input class="form-control" id="rp_returnBillsForm-contact" type="text"> -->
                                         <select id="customerContacts" class="selectpicker">
                                         </select>
                                     </div>
 
                                     <!-- <label class="col-sm-1 control-label"
-                                        for="rp_inbillsForm-customerId">保固期</label>
+                                        for="rp_returnBillsForm-customerId">保固期</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-warrantyPeriod"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-warrantyPeriod"></p>
                                     </div> -->
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-contact">联系人</label>
+                                        for="rp_returnBillsForm-contact">联系人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_inbillsForm-contact" type="text">
+                                        <input class="form-control" id="rp_returnBillsForm-contact" type="text">
                                     </div>
 
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-mobilePhone">移动电话</label>
+                                        for="rp_returnBillsForm-mobilePhone">移动电话</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_inbillsForm-mobilePhone" type="text">
+                                        <input class="form-control" id="rp_returnBillsForm-mobilePhone" type="text">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-customerBelongShort">归属公司简称</label>
+                                        for="rp_returnBillsForm-customerBelongShort">归属公司简称</label>
                                     <div class="col-sm-5">
-                                        <!-- <input class="form-control" id="rp_inbillsForm-customerBelongShort"
+                                        <!-- <input class="form-control" id="rp_returnBillsForm-customerBelongShort"
                                             type="text"> -->
-                                        <select id="rp_inbillsForm-customerBelongShort"
+                                        <select id="rp_returnBillsForm-customerBelongShort"
                                             class="selectpicker form-control" data-live-search="true" data-size="10">
                                         </select>
                                     </div>
@@ -498,18 +508,18 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-sendWay">出货方式</label>
+                                        for="rp_returnBillsForm-sendWay">出货方式</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_inbillsForm-sendWay" class="selectpicker">
+                                        <select id="rp_returnBillsForm-sendWay" class="selectpicker">
 
                                         </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-operator">经手人</label>
+                                        for="rp_returnBillsForm-operator">经手人</label>
                                     <div class="col-sm-5">
-                                        <!-- <input class="form-control" id="rp_inbillsForm-operator" type="text"> -->
-                                        <select id="rp_inbillsForm-operator" class="selectpicker"
+                                        <!-- <input class="form-control" id="rp_returnBillsForm-operator" type="text"> -->
+                                        <select id="rp_returnBillsForm-operator" class="selectpicker"
                                             data-live-search="true" data-size="5">
                                         </select>
                                     </div>
@@ -517,23 +527,16 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_inbillsForm-address">地址</label>
+                                        for="rp_returnBillsForm-address">地址</label>
                                     <div class="col-sm-11">
-                                        <input class="form-control" id="rp_inbillsForm-address" type="text">
+                                        <input class="form-control" id="rp_returnBillsForm-address" type="text">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">单据备注</label>
                                     <div class="col-sm-11">
-                                        <input class="form-control" id="rp_inbillsForm-remark" type="text">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label">单据状态</label>
-                                    <div class="col-sm-11">
-                                        <p class="form-control-static" id="rp_inbillsForm-status"></p>
+                                        <input class="form-control" id="rp_returnBillsForm-billRemark" type="text">
                                     </div>
                                 </div>
 
@@ -544,30 +547,38 @@
                                     </div>
                                 </div> -->
 
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">单据状态</label>
+                                    <div class="col-sm-11">
+                                        <p class="form-control-static" id="rp_returnBillsForm-status"></p>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-maker">制单人</label>
+                                    <label class="col-sm-1 control-label" for="rp_returnBillsForm-maker">制单人</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-maker"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-maker"></p>
                                     </div>
 
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-makeDate">制单日期</label>
+                                    <label class="col-sm-1 control-label" for="rp_returnBillsForm-makeDate">制单日期</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-makeDate"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-makeDate"></p>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-auditor">审核人</label>
+                                    <label class="col-sm-1 control-label" for="rp_returnBillsForm-auditor">审核人</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_inbillsForm-auditor" class="selectpicker" data-live-search="true"
-                                            data-size="5">
+                                        <select id="rp_returnBillsForm-auditor" class="selectpicker"
+                                            data-live-search="true" data-size="5">
                                         </select>
                                     </div>
 
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-auditDate">审核日期</label>
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_returnBillsForm-auditDate">审核日期</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-auditDate"></p>
+                                        <p class="form-control-static" id="rp_returnBillsForm-auditDate"></p>
                                     </div>
                                 </div>
 
@@ -588,24 +599,22 @@
                                     </div>
 
                                     <!-- 定义基础模块数据表 -->
-                                    <table id="rp_insubbills" class=" table table-striped table-bordered"
+                                    <table id="rp_returnsubbills" class=" table table-striped table-bordered"
                                         style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>序号</th>
                                                 <th>产品编号</th>
                                                 <th>产品描述</th>
-                                                <th>仓库名称</th>
                                                 <th>单位</th>
                                                 <th>数量</th>
                                                 <th>备注</th>
-                                                <th>状态</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
 
-                                    <div class="panel panel-default" id='rp_insubbillsPanel'>
+                                    <div class="panel panel-default" id='rp_returnsubbillsPanel'>
                                         <div class="panel-heading">
                                             <h3 class="panel-title">产品详情</h3>
                                         </div>
@@ -614,15 +623,15 @@
 
 
 
-                                            <form class="form-horizontal" role="form" id='rp_insubbillsForm'>
+                                            <form class="form-horizontal" role="form" id='rp_returnsubbillsForm'>
 
-                                                <!-- <input id="rp_insubbillsForm-DBID" type="hidden" value=""> -->
-                                                <input id="rp_insubbillsForm-billId" type="hidden" value="">
+                                                <!-- <input id="rp_returnsubbillsForm-DBID" type="hidden" value=""> -->
+                                                <input id="rp_returnsubbillsForm-returnBillId" type="hidden" value="">
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">序号</label>
                                                     <div class="col-sm-5">
-                                                        <p class="form-control-static" id="rp_insubbillsForm-rowId">
+                                                        <p class="form-control-static" id="rp_returnsubbillsForm-rowId">
                                                         </p>
                                                     </div>
 
@@ -631,21 +640,20 @@
                                                         <p class="form-control-static" id="stockNum">
                                                         </p>
                                                     </div>
-                                                </div>
 
-                                                <div class="form-group">
-                                                    <label class="col-sm-1 control-label">状态</label>
+                                                    <!-- <label class="col-sm-1 control-label">状态</label>
                                                     <div class="col-sm-5">
-                                                        <p class="form-control-static" id="rp_insubbillsForm-status">
+                                                        <p class="form-control-static"
+                                                            id="rp_returnsubbillsForm-status">
                                                         </p>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
 
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_insubbillsForm-productId"
+                                                        <select id="rp_returnsubbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
                                                         </select>
@@ -653,7 +661,7 @@
 
                                                     <label class="col-sm-1 control-label">仓库</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_insubbillsForm-warehouseId"
+                                                        <select id="rp_returnsubbillsForm-warehouseId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
                                                         </select>
@@ -667,14 +675,14 @@
                                                     <label class="col-sm-1 control-label">产品名称</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_insubbillsForm-productName">
+                                                            id="rp_returnsubbillsForm-productName">
                                                         </p>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">产品描述</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_insubbillsForm-productDescription">
+                                                            id="rp_returnsubbillsForm-productDescription">
                                                         </p>
                                                     </div>
                                                 </div>
@@ -683,7 +691,7 @@
                                                     <label class="col-sm-1 control-label">产品类别</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_insubbillsForm-productClass">
+                                                            id="rp_returnsubbillsForm-productClass">
                                                         </p>
 
                                                     </div>
@@ -691,7 +699,7 @@
                                                     <label class="col-sm-1 control-label">系统分类</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_insubbillsForm-systemType">
+                                                            id="rp_returnsubbillsForm-systemType">
                                                         </p>
                                                     </div>
 
@@ -700,14 +708,14 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">单位</label>
                                                     <div class="col-sm-5">
-                                                        <p class="form-control-static" id="rp_insubbillsForm-unit">
+                                                        <p class="form-control-static" id="rp_returnsubbillsForm-unit">
                                                         </p>
 
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">数量</label>
                                                     <div class="col-sm-5">
-                                                        <input class="form-control" id="rp_insubbillsForm-num"
+                                                        <input class="form-control" id="rp_returnsubbillsForm-num"
                                                             type="text">
                                                     </div>
 
@@ -718,8 +726,8 @@
 
                                                     <label class="col-sm-1 control-label">备注</label>
                                                     <div class="col-sm-11">
-                                                        <input class="form-control" id="rp_insubbillsForm-remark"
-                                                            type="text">
+                                                        <input class="form-control"
+                                                            id="rp_returnsubbillsForm-billRemark" type="text">
                                                     </div>
                                                 </div>
 
@@ -773,10 +781,10 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_inbillsModalClose">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_returnBillsModalClose">关闭
                     </button>
 
-                    <button type="button" class="btn btn-primary" id="rp_inbillsSave">
+                    <button type="button" class="btn btn-primary" id="rp_returnBillsSave">
                         保存单据
                     </button>
                 </div>
@@ -794,24 +802,37 @@
     //申请表主表dataTable column 数组
 
     const mainColumnsArray = [{
-        data: 'DBID',
+        data: 'returnBillId',
         // visible: 'false'
     }, {
-        data: 'billForm'
+        data: 'billFrom'
     }, {
-        data: 'billId'
+        data: 'borrowBillId'
     }, {
-        data: 'maker',
+        data: 'customerShortName'
+    }, {
+        data: 'productId'
+    }, {
+        data: 'productName',
+    }, {
+        data: 'borrowDate',
+    }, {
+        data: 'returnDate'
+    }, {
+        data: 'operator',
     }, {
         data: 'auditor',
     }, {
-        data: 'makeDate',
-    }, {
-        data: 'auditDate',
-    }, {
         data: 'remark',
     }, {
+        data: 'makeDate',
+    }, {
+        data: 'returnStatus',
+    }, {
         data: 'status',
+    }, {
+        data: 'searchText',
+        visible: false
     }];
 
     //申请表子表dataTable column 数组
@@ -822,15 +843,11 @@
     }, {
         data: 'productDescription',
     }, {
-        data: 'warehouseName',
-    }, {
         data: 'unit',
     }, {
         data: 'num',
     }, {
-        data: 'remark',
-    }, {
-        data: 'status',
+        data: 'billRemark',
     }]
 
     // const recordHistoryColumnsArray = [{
@@ -886,19 +903,19 @@
         delete r2.customerShortName;
         // console.log('r2:' + JSON.stringify(r2));
         fillFormInputs({
-            formId: 'rp_inbillsForm',
+            formId: 'rp_returnBillsForm',
             params: r2
         })
-        // $("#rp_inbillsForm-customerArea").selectpicker('val', r2.customerArea)
+        // $("#rp_returnBillsForm-customerArea").selectpicker('val', r2.customerArea)
     }
 
     //选定客户修改事件
     const addCustomerListener = () => {
-        $('#rp_inbillsForm-customerShortName').unbind();
-        $('#rp_inbillsForm-customerShortName').change(function () {
-            let customerShortName = $('#rp_inbillsForm-customerShortName option:selected').val();
+        $('#rp_returnBillsForm-customerShortName').unbind();
+        $('#rp_returnBillsForm-customerShortName').change(function () {
+            let customerShortName = $('#rp_returnBillsForm-customerShortName option:selected').val();
             if (customerShortName) {
-                $('#rp_inbillsForm-customerShortName').selectpicker('refresh');
+                $('#rp_returnBillsForm-customerShortName').selectpicker('refresh');
                 fillCustomerInfo(customerShortName);
             }
         });
@@ -918,11 +935,11 @@
         delete r2.productId;
         // console.log('r2:' + JSON.stringify(r2));
         fillFormInputs({
-            formId: 'rp_insubbillsForm',
+            formId: 'rp_returnsubbillsForm',
             params: r2
         })
 
-        // $('#rp_insubbillsForm-productId').selectpicker('val',r1[0].productId)
+        // $('#rp_returnsubbillsForm-productId').selectpicker('val',r1[0].productId)
 
     }
 
@@ -930,28 +947,30 @@
 
     //选定产品修改事件
     const addProductListener = () => {
-        // $('#rp_insubbillsForm-productId').unbind();
-        $('#rp_insubbillsForm-productId').change(async function () {
-            let productId = $('#rp_insubbillsForm-productId option:selected')
+        // $('#rp_returnsubbillsForm-productId').unbind();
+        $('#rp_returnsubbillsForm-productId').change(async function () {
+            let productId = $('#rp_returnsubbillsForm-productId option:selected')
                 .val()
             if (productId) {
-
-                $('#rp_insubbillsForm-productId').selectpicker('refresh');
-                showStockNum();
+                $('#rp_returnsubbillsForm-productId').selectpicker('refresh');
+                showStockNum()
                 fillProductInfo(productId);
+
+                $('#rp_returnsubbillsForm-num').val(1)
 
             }
         });
 
     }
+
     //仓库选择修改事件
     const addWarehouseListener = () => {
-        // $('#rp_insubbillsForm-warehouseId').unbind();
-        $('#rp_insubbillsForm-warehouseId').change(async function () {
-            let warehouseId = $('#rp_insubbillsForm-warehouseId option:selected')
+        // $('#rp_outsubbillsForm-warehouseId').unbind();
+        $('#rp_returnsubbillsForm-warehouseId').change(async function () {
+            let warehouseId = $('#rp_returnsubbillsForm-warehouseId option:selected')
                 .val()
             if (warehouseId) {
-                $('#rp_insubbillsForm-warehouseId').selectpicker('refresh');
+                $('#rp_returnsubbillsForm-warehouseId').selectpicker('refresh');
                 showStockNum();
             }
         });
@@ -959,11 +978,11 @@
 
     // //保固期自动计算事件
     // const addInWarrantyListener = () => {
-    //     $('#rp_insubbillsForm-productYear,#rp_insubbillsForm-productMonth').unbind('change'); //仅解绑change事件
-    //     $('#rp_insubbillsForm-productYear,#rp_insubbillsForm-productMonth').change(function () {
-    //         let warrantyPeriod = parseInt($('#rp_inbillsForm-warrantyPeriod').text());
-    //         let year = $('#rp_insubbillsForm-productYear').val() || '2000'
-    //         let month = $('#rp_insubbillsForm-productMonth').val() || '01'
+    //     $('#rp_returnsubbillsForm-productYear,#rp_returnsubbillsForm-productMonth').unbind('change'); //仅解绑change事件
+    //     $('#rp_returnsubbillsForm-productYear,#rp_returnsubbillsForm-productMonth').change(function () {
+    //         let warrantyPeriod = parseInt($('#rp_returnBillsForm-warrantyPeriod').text());
+    //         let year = $('#rp_returnsubbillsForm-productYear').val() || '2000'
+    //         let month = $('#rp_returnsubbillsForm-productMonth').val() || '01'
     //         console.log(warrantyPeriod, year, month);
 
     //         //计算月份差函数
@@ -982,18 +1001,18 @@
 
     //         if (warrantyPeriod + intervalMonth >= 0) {
     //             console.log('保内');
-    //             $("#rp_insubbillsForm-inWarranty").selectpicker('val', '是')
-    //             // $("#rp_insubbillsForm-inWarranty").selectpicker('refresh')
+    //             $("#rp_returnsubbillsForm-inWarranty").selectpicker('val', '是')
+    //             // $("#rp_returnsubbillsForm-inWarranty").selectpicker('refresh')
     //         } else {
-    //             $("#rp_insubbillsForm-inWarranty").selectpicker('val', '否')
+    //             $("#rp_returnsubbillsForm-inWarranty").selectpicker('val', '否')
     //         }
     //     });
     // }
 
-    //创建入库单新单号
-    const createInBillId = async () => {
+    //创建还货单新单号
+    const createReturnBillId = async () => {
         let r1 = await getDataBySql({
-            sql: "getInBillsNum",
+            sql: "getReturnBillsNum",
             params: {
                 filter: 'makeDate="' + currentDate() + '"'
             }
@@ -1006,8 +1025,8 @@
         // console.log('r4:' + r4);
         let r5 = dateFormat(currentDate(), 'yyyyMMdd');
 
-        let billId = 'I-' + r5 + r4;
-        $("#rp_inbillsForm-billId").text(billId);
+        let billId = 'B-' + r5 + r4;
+        $("#rp_returnBillsForm-returnBillId").text(billId);
     }
 
 
@@ -1017,12 +1036,12 @@
     const addMainTableListener = () => {
 
         //解绑原事件
-        $('#rp_inbills tbody').unbind();
+        $('#rp_returnBills tbody').unbind();
 
         //定义主表单击击事件
-        $('#rp_inbills tbody').on('click', 'tr', async function () {
+        $('#rp_returnBills tbody').on('click', 'tr', async function () {
             //设定选中
-            let table = $('#rp_inbills').DataTable();
+            let table = $('#rp_returnBills').DataTable();
 
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
@@ -1038,7 +1057,7 @@
 
                 mainTableData = rowSelect; //刷新全局主表对象数据
 
-                await loadMainBillSubTable(rowSelect.billId)
+                await loadMainBillSubTable(rowSelect.returnBillId)
 
                 //打开面板
                 $('#subTablePanel').show();
@@ -1049,16 +1068,16 @@
 
 
         //定义主表双击事件
-        $('#rp_inbills tbody').on('dblclick', 'tr', async function () {
+        $('#rp_returnBills tbody').on('dblclick', 'tr', async function () {
 
             //打开关联信息,打印功能
             $("#accordion").show();
 
             // $("#listPrintBtn").show();
-            // $("#rp_inbillsPrint").show();
+            // $("#rp_returnBillsPrint").show();
 
             //设定选中
-            let table = $('#rp_inbills').DataTable();
+            let table = $('#rp_returnBills').DataTable();
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
@@ -1068,11 +1087,11 @@
             // console.log('mainTableData', mainTableData);
 
             //解除客户监听事件
-            $('#rp_inbillsForm-customerShortName').unbind();
+            $('#rp_returnBillsForm-customerShortName').unbind();
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
-                formId: 'rp_inbillsForm',
+                formId: 'rp_returnBillsForm',
                 params: dataSelect
             })
 
@@ -1090,17 +1109,17 @@
             loadContactOptions(customerData);
 
             //关闭子表panel
-            $('#rp_insubbillsPanel').hide();
+            $('#rp_returnsubbillsPanel').hide();
 
             //加载子表记录表数据
 
-            loadBillSubTable(dataSelect.billId);
+            loadBillSubTable(dataSelect.returnBillId);
 
             //客户选定监听事件
             addCustomerListener();
 
             //打开面板
-            $('#rp_inbillsModal').modal('show');
+            $('#rp_returnBillsModal').modal('show');
 
         });
 
@@ -1115,26 +1134,34 @@
             case mainTableFilter === 'to_days(makeDate) = to_days(now())':
                 $('#btnFilterToday').addClass('active');
                 $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterUnReturn').removeClass('active');
                 $('#btnFilterDiy').removeClass('active');
-
                 break;
             case mainTableFilter === 'status ="待审核"':
                 $('#btnFilterToday').removeClass('active');
                 $('#btnFilterUnAudit').addClass('active');
+                $('#btnFilterUnReturn').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            case mainTableFilter === 'returnStatus ="待归还"':
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterUnReturn').addClass('active');
                 $('#btnFilterDiy').removeClass('active');
                 break;
             default:
                 $('#btnFilterToday').removeClass('active');
                 $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterUnReturn').removeClass('active');
                 $('#btnFilterDiy').addClass('active');
                 break;
         }
 
         //初始化主表
         loadBillDataTable({
-            elementId: 'rp_inbills',
+            elementId: 'rp_returnBills',
             sqlParams: {
-                sqlId: 'sqlInBills',
+                sqlId: 'sqlReturnBills',
                 params: {
                     filter: mainTableFilter,
                     orderBy: 'billSaveTimeStamp desc'
@@ -1163,36 +1190,36 @@
 
 
         // //添加搜索框监听事件,值变动自动隐藏主页附表
-        // $('#rp_inbills').on('search.dt', function () {
+        // $('#rp_returnBills').on('search.dt', function () {
         //     console.log(1111);
         //     $('#subTablePanel').hide();
         // })
 
 
-        // //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
-        // let table = $('#rp_inbills').DataTable();
-        // table.column(9).visible(false)
+        //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
+        let table = $('#rp_returnBills').DataTable();
+        table.column(9).visible(false)
 
         addMainTableListener();
 
-        //隐藏子表
+        //隐藏子面板
         $('#subTablePanel').hide();
     }
 
     //添加子表监听器,定义双击展开事件
     const addSubTableListener = () => {
-        let subTable = $('#rp_insubbills').DataTable();
+        let subTable = $('#rp_returnsubbills').DataTable();
 
         //解绑原事件
-        $('#rp_insubbills tbody').unbind();
+        $('#rp_returnsubbills tbody').unbind();
 
         //定义子表双击事件
-        $('#rp_insubbills tbody').on('click', 'tr', function () {
+        $('#rp_returnsubbills tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
 
-                $('#rp_insubbillsPanel').hide();
+                $('#rp_returnsubbillsPanel').hide();
             } else {
                 subTable.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
@@ -1203,12 +1230,12 @@
 
                 //初始化并填写form内inputs
                 initAndFillFormInputs({
-                    formId: 'rp_insubbillsForm',
+                    formId: 'rp_returnsubbillsForm',
                     params: rowSelect
                 })
 
                 //打开面板
-                $('#rp_insubbillsPanel').show();
+                $('#rp_returnsubbillsPanel').show();
 
                 // //选定产品修改事件
                 // addProductListener();
@@ -1255,12 +1282,12 @@
 
 
         loadDataSubTable({
-            elementId: 'rp_insubbills',
+            elementId: 'rp_returnsubbills',
             dataArray: subTableData
         });
 
         // loadDataSubTable({
-        //     elementId: 'rp_inbillsSub',
+        //     elementId: 'rp_returnBillsSub',
         //     dataArray: subTableData
         // });
 
@@ -1270,51 +1297,55 @@
 
     const loadMainBillSubTable = async (billId) => {
         let dataArray = await getDataBySql({
-            sql: 'sqlInSubBills',
+            sql: 'sqlReturnSubBills',
             params: {
-                filter: 'billId="' + billId + '"'
+                filter: 'returnBillId="' + billId + '"'
             }
         })
         //将表数据同步到共用数组
         subTableData = dataArray;
-        // console.log(subTableData);
-
 
         loadDataSubTable({
-            elementId: 'rp_inbillsSub',
+            elementId: 'rp_returnBillsSub',
             dataArray: subTableData
         });
     }
 
 
-    
 
 
+    //保存还货单函数
+    const saveReturnBill = async () => {
 
-    //保存入库单函数
-    const saveInBill = async () => {
 
         let mainFormData = getPostFormData({
-            formId: 'rp_inbillsForm'
+            formId: 'rp_returnBillsForm'
         })
 
         //给主表数据添加,maker 和makeDate日期;新增状态等待单号检测完成,制单人为空则为新增状态
 
         if (!mainFormData.data[0].maker) {
-            await autoUpdateInBillId();
-            mainFormData.data[0].status = '待审核';
+            await autoUpdateReturnBillId();
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
+
+        }
+
+        //更新表单状态
+        if (!mainFormData.data[0].status) {
+            mainFormData.data[0].status = '待审核';
         }
 
         // console.log("subTableData:" + JSON.stringify(subTableData))
 
-        for (let n of subTableData) {
-            n.billId = $("#rp_inbillsForm-billId").text();
-            if (n.status === '新增') {
-                n.status = '预入'
-            }
-        }
+
+
+        // for (let n of subTableData) {
+        //     n.returnBillId = $("#rp_returnBillsForm-returnBillId").text();
+        //     if (n.status === '新增') {
+        //         n.status = '待审核'
+        //     }
+        // }
 
         let r1 = await postDBData({
             sql: 'replace',
@@ -1324,29 +1355,18 @@
         let r2 = await postDBData({
             sql: 'replace',
             params: {
-                tableId: 'rp_insubbills',
+                tableId: 'rp_returnsubbills',
                 data: subTableData
             }
         })
 
-        let PIDArr = [];
-        for (const n of subTableData) {
-            PIDArr.push({
-                PID: n.productId,
-                warehouseId: n.warehouseId
-            })
-        }
+        // console.log('saveReturnBill r1:' + JSON.stringify(r1));
+        // console.log('saveReturnBill r2:' + JSON.stringify(r2));
 
-        let r3 = await initWarehousePID({
-            PIDArr: PIDArr
-        })
-
-        console.log('saveInBill r1:' + JSON.stringify(r1));
-        console.log('saveInBill r2:' + JSON.stringify(r2));
-        console.log('saveInBill r3:' + JSON.stringify(r3));
-
-        if (r1 && r2 && r3) {
+        if (r1.affectedRows > 0 && r2.affectedRows > 0) {
             alert('保存成功!')
+
+
         } else {
             alert('出现错误!')
         }
@@ -1364,7 +1384,7 @@
             contact: mainFormData.data[0].contact,
             mobilePhone: mainFormData.data[0].mobilePhone,
             customerBelongShort: mainFormData.data[0].customerBelongShort,
-            // isInland: mainFormData.data[0].isInland
+            isInland: mainFormData.data[0].isInland
         }
 
         //判断当前表内客户数据是否存在更新;
@@ -1399,8 +1419,8 @@
             }
         }
 
-        // $('#rp_inbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
-        $('#rp_inbillsModalClose').click()
+        // $('#rp_returnBillsModal').modal('hide');多层modal存在失效问题,改用click关闭
+        $('#rp_returnBillsModalClose').click()
 
         loadBillMainTable();
 
@@ -1408,20 +1428,22 @@
     }
 
 
+
+
     //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
 
-    const checkInBillId = async () => {
-        let billId = $("#rp_inbillsForm-billId").text();
+    const checkReturnBillId = async () => {
+        let billId = $("#rp_returnBillsForm-returnBillId").text();
 
         let r1 = await getDataBySql({
-            sql: 'getInBillsNum',
+            sql: 'getReturnBillsNum',
             params: {
-                filter: 'billId="' + billId + '"'
+                filter: 'returnBillId="' + billId + '"'
             }
         })
 
         let r2 = r1[0].billsNum;
-        // console.log("checkInBillId:" + r2);
+        // console.log("checkReturnBillId:" + r2);
 
         let o = r2 > 0 ? false : true;
         return o;
@@ -1429,97 +1451,97 @@
     }
 
     //更新需求单号加1
-    const updateInBillId = () => {
-        let billId = $("#rp_inbillsForm-billId").text();
+    const updateReturnBillId = () => {
+        let billId = $("#rp_returnBillsForm-returnBillId").text();
         if (billId) {
             billIdArr = billId.split('-');
             let newBillId = billIdArr[0] + '-' + (parseInt(billIdArr[1]) + 1);
-            $("#rp_inbillsForm-billId").text(newBillId);
+            $("#rp_returnBillsForm-returnBillId").text(newBillId);
         }
     }
 
     //递归更新单号直到不存在冲突单号;
 
-    const autoUpdateInBillId = async () => {
-        let r = await checkInBillId();
+    const autoUpdateReturnBillId = async () => {
+        let r = await checkReturnBillId();
         if (r) {
             return true
         } else {
-            // console.log('fail:' + $("#rp_inbillsForm-billId").text());
-            updateInBillId()
-            // console.log('fail11:' + $("#rp_inbillsForm-billId").text());
-            return await autoUpdateInBillId();
+            // console.log('fail:' + $("#rp_returnBillsForm-returnBillId").text());
+            updateReturnBillId()
+            // console.log('fail11:' + $("#rp_returnBillsForm-returnBillId").text());
+            return await autoUpdateReturnBillId();
         }
     }
 
 
-    // //检查删除单据数据
-    // const checkDeleteBills = async () => {
+    //检查删除单据数据
+    const checkDeleteBills = async () => {
 
-    //     let resultData = {
-    //         result: null,
-    //         data: {}
-    //     }
+        let resultData = {
+            result: null,
+            data: {}
+        }
 
-    //     let table = $('#rp_inbills').DataTable();
-    //     let dataSelect = table.rows('.selected').data();
-    //     let mainDBIDArr = [];
-    //     let subDBIDArr = [];
-    //     let billsIdArr = [];
+        let table = $('#rp_returnBills').DataTable();
+        let dataSelect = table.rows('.selected').data();
+        let mainDBIDArr = [];
+        let subDBIDArr = [];
+        let billsIdArr = [];
 
-    //     for (let n = 0; n < dataSelect.length; n++) {
-    //         mainDBIDArr.push(dataSelect[n].DBID);
-    //         billsIdArr.push(dataSelect[n].billId);
-    //     }
+        for (let n = 0; n < dataSelect.length; n++) {
+            mainDBIDArr.push(dataSelect[n].DBID);
+            billsIdArr.push(dataSelect[n].returnBillId);
+        }
 
-    //     switch (true) {
-    //         case billsIdArr.length === 0:
-    //             alert('请先选中需要删除的入库单!')
+        switch (true) {
+            case billsIdArr.length === 0:
+                alert('请先选中需要删除的还货单!')
 
-    //             resultData.result = false;
-    //             return resultData
-    //             break;
-    //         case billsIdArr.length > 0:
-    //             let billIdRange = getRangeString(billsIdArr);
+                resultData.result = false;
+                return resultData
+                break;
+            case billsIdArr.length > 0:
+                let billIdRange = getRangeString(billsIdArr);
+                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
-    //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+                let statusArr = await getDataBySql({
+                    sql: 'getReturnSubBill',
+                    params: {
+                        filter: 'returnBillId in ' + billIdRange
+                    }
+                })
 
-    //             let statusArr = await getDataBySql({
-    //                 sql: 'getBorrowSubBillStatus',
-    //                 params: {
-    //                     filter: 'billId in ' + billIdRange
-    //                 }
-    //             })
+                console.log("statusArr:" + JSON.stringify(statusArr));
+                for (const n of statusArr) {
+                    // if (n.status !== '待审核') {
+                    //     alert('选中单据已审核,不符合删除条件!')
+                    //     resultData.result = false;
+                    //     return resultData
+                    // }
+                    subDBIDArr.push(n.DBID)
+                }
+                break;
+        }
 
-    //             // console.log("statusArr:" + JSON.stringify(statusArr));
-    //             for (const n of statusArr) {
-    //                 if (n.status !== '待审核') {
-    //                     alert('选中单据已审核,不符合删除条件!')
-    //                     resultData.result = false;
-    //                     return resultData
-    //                 }
-    //                 subDBIDArr.push(n.DBID)
-    //             }
+        resultData = {
+            result: true,
+            data: {
+                mainDBIDArr: mainDBIDArr,
+                subDBIDArr: subDBIDArr
+            }
+        }
 
-    //             break;
-    //     }
+        return resultData;
+    }
 
-    //     resultData = {
-    //         result: true,
-    //         data: {
-    //             mainDBIDArr: mainDBIDArr,
-    //             subDBIDArr: subDBIDArr
-    //         }
-    //     }
 
-    //     return resultData;
-    // }
 
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let productId = $('#rp_insubbillsForm-productId option:selected').val();
-        let warehouseId = $('#rp_insubbillsForm-warehouseId option:selected').val();
+        let productId = $('#rp_returnsubbillsForm-productId option:selected').val();
+        let warehouseId = $('#rp_returnsubbillsForm-warehouseId option:selected').val();
         // console.log(warehouseId);
 
         if (productId && warehouseId) {
@@ -1581,42 +1603,12 @@
             let contact = $('#customerContacts option:selected').val();
             if (contact) {
                 $("#customerContacts").selectpicker('refresh'); //刷新显示
-                $('#rp_inbillsForm-contact').val($('#customerContacts option:selected')
+                $('#rp_returnBillsForm-contact').val($('#customerContacts option:selected')
                     .val());
-                $('#rp_inbillsForm-mobilePhone').val($('#customerContacts option:selected')
+                $('#rp_returnBillsForm-mobilePhone').val($('#customerContacts option:selected')
                     .data("tokens"));
             }
         });
-    }
-
-    //检测库存状态subTableData=[{partId,num,numStatus}]
-    const checkSubTableStock = async (subTableData) => {
-        //1.check
-        console.log('checkSubTableStock', subTableData);
-        if (subTableData.length < 1) {
-            alert('参数错误,子表不存在产品')
-            return false
-        }
-
-        //2.do
-        let PIDArr = [];
-        for (const n of subTableData) {
-            PIDArr.push({
-                PID: n.productId,
-                warehouseId: n.warehouseId,
-                stockNum: 0
-            });
-        }
-
-        let stockNums = await getStockNums(PIDArr)
-        console.log('checkSubTableStock stockNums', stockNums);
-
-        //3.return
-        return {
-            result: true,
-            stockNums: stockNums
-        }
-
     }
 
 
@@ -1640,7 +1632,7 @@
 
         //初始化子表
         loadDataSubTable({
-            elementId: 'rp_insubbills',
+            elementId: 'rp_returnsubbills',
             dataArray: subTableData
         });
 
@@ -1659,6 +1651,15 @@
             mainTableFilter = 'status ="待审核"';
             //初始化主表
             loadBillMainTable();
+
+        })
+
+        //过滤器待审核
+        $('#btnFilterUnReturn').click(function () {
+            mainTableFilter = 'returnStatus ="待归还"';
+            //初始化主表
+            loadBillMainTable();
+
         })
 
         //过滤器自定义按钮
@@ -1677,17 +1678,17 @@
             //获取filterform内数据
             let filter = '';
 
-            // //申请日期过滤
-            // let borrowDateB = $('#filterForm-borrowDateB').val();
-            // let borrowDateE = $('#filterForm-borrowDateE').val();
+            //申请日期过滤
+            let returnDateB = $('#filterForm-returnDateB').val();
+            let returnDateE = $('#filterForm-returnDateE').val();
 
-            // if (borrowDateB) {
-            //     filter = filter + ' and borrowDate>="' + borrowDateB + '"'
-            // }
+            if (returnDateB) {
+                filter = filter + ' and returnDate>="' + returnDateB + '"'
+            }
 
-            // if (borrowDateE) {
-            //     filter = filter + ' and borrowDate<="' + borrowDateE + '"'
-            // }
+            if (returnDateE) {
+                filter = filter + ' and returnDate<="' + returnDateE + '"'
+            }
 
             //制单日期过滤
             let makeDateB = $('#filterForm-makeDateB').val();
@@ -1700,6 +1701,8 @@
             if (makeDateE) {
                 filter = filter + ' and makeDate<="' + makeDateE + '"'
             }
+
+
 
             //去除filter中开始的and关键字避免sql错误;
 
@@ -1716,15 +1719,12 @@
 
 
 
-        //新增入库单按钮
-        $('#btnInBillNew').click(function () {
+        //新增需求单按钮
+        $('#btnReturnBillNew').click(function () {
 
             //清空form数据
-            mainTableData = {}
-            subTableData = {}
-
             clearFormInputs({
-                formId: 'rp_inbillsForm'
+                formId: 'rp_returnBillsForm'
             })
 
             //清空原有选项
@@ -1734,27 +1734,27 @@
 
             //清空子表及全局变量
             subTableData = [];
-            $('#rp_insubbills tbody').html("");
+            $('#rp_returnsubbills tbody').html("");
 
 
             //打开面板
-            $('#rp_insubbillsPanel').hide();
+            $('#rp_returnsubbillsPanel').hide();
 
 
             //清空modal数据
             clearFormInputs({
-                formId: 'rp_inbillsForm'
+                formId: 'rp_returnBillsForm'
             })
 
 
-            createInBillId();
-            $("#rp_inbillsForm-billForm").text('入库单');
-            // $("#rp_inbillsForm-isInland").selectpicker('val', '国内')
-            $("#rp_inbillsForm-sendWay").selectpicker('val', '邮寄过来')
+            createReturnBillId();
+            $("#rp_returnBillsForm-returnDate").val(currentDate());
+            $("#rp_returnBillsForm-isInland").selectpicker('val', '国内')
+            $("#rp_returnBillsForm-sendWay").selectpicker('val', '邮寄过来')
 
             //在保存时赋值
-            // $("#rp_inbillsForm-maker").text(sessionName);
-            // $("#rp_inbillsForm-makeDate").text(currentDate());
+            // $("#rp_returnBillsForm-maker").text(sessionName);
+            // $("#rp_returnBillsForm-makeDate").text(currentDate());
 
             // //客户选定监听事件
             // addCustomerListener();
@@ -1765,194 +1765,203 @@
             $("#accordion").hide();
 
             // $("#listPrintBtn").hide();
-            // $("#rp_inbillsPrint").hide();
+            // $("#rp_returnBillsPrint").hide();
 
             //打开面板
-            $('#rp_inbillsModal').modal('show');
-
-        })
-
-        //审核入库单按钮
-        $('#btnInBillAudit').click(async function () {
-            //1.check-单据选中状态
-            if (!mainTableData.DBID) {
-                alert('请先选中需要审核的入库单!')
-                return
-            }
-            //1.check-单据审核状态
-            if (mainTableData.status !== '待审核') {
-                alert('该入库单非待审核状态,无法审核!')
-                return
-            }
-
-            //1.check-单据审核人
-            if (mainTableData.auditor !== sessionName) {
-                alert('当前账号非审核人,无法审核!')
-                return
-            }
-            //1.check-即时库存及领料数量
-            let stockResult = await checkSubTableStock(subTableData);
-            if (!stockResult.result) {
-                return
-            }
-            console.log('stockResult', stockResult);
-
-
-            //2.do-增加零件库存
-            let updateStockArr = []
-            for (let n of subTableData) {
-                console.log('n', n);
-
-                for (const m of stockResult.stockNums) {
-                    console.log('m', m);
-                    if (n.productId === m.PID) {
-                        n.stockNum = m.stockNum;
-                    }
-                }
-                //赋值添加PID,去除partId
-                updateStockArr.push({
-                    PID: n.productId,
-                    warehouseId: n.warehouseId,
-                    stockNum: n.stockNum,
-                    num: n.num
-                })
-            }
-            console.log('updateStockArr', updateStockArr);
-
-
-            let r1 = await updateStock({
-                stockArr: updateStockArr,
-                actType: '入库单',
-                rpBillId: mainTableData.billId
-            });
-
-
-
-
-            //2.do-更新入库单子表
-            if (r1) {
-                for (let n of subTableData) {
-                    console.log('n111', n);
-                    if (n.stockNum || n.stockNum == 0) {
-                        console.log('n1222', n);
-
-                        delete n.stockNum
-                    }
-                    if (n.status === '预入') {
-                        n.status = '已入'
-                    }
-                }
-            }
-            console.log('subTableData 11111', subTableData);
-
-            let r2 = await postDBData({
-                sql: 'replace',
-                params: {
-                    tableId: 'rp_insubbills',
-                    data: subTableData
-                }
-            })
-
-            //2.do-更新入库单主表
-
-
-            mainTableData.auditor = sessionName;
-            mainTableData.auditDate = currentDate();
-            mainTableData.status = '已审核';
-
-            let r3 = await postDBData({
-                sql: 'update',
-                params: {
-                    tableId: 'rp_inbills',
-                    data: [mainTableData],
-                    key: 'DBID'
-                }
-            })
-
-            //3.return
-            console.log(r1, r2, r3);
-
-            if (r1 && r2.affectedRows && r3.affectedRows) {
-                alert('审核入库成功!')
-                loadBillMainTable();
-            } else {
-                alert('出现错误!')
-            }
-
+            $('#rp_returnBillsModal').modal('show');
 
         })
 
 
-        //删除入库单按钮
-        $('#btnInBillDelete').click(async function () {
-
-            //1.check-检查单据选中
-            if (!mainTableData.billId) {
-                alert('请先选中需要删除的入库单')
-                return
+        //删除需求单
+        $('#btnReturnBillDelete').click(async function () {
+            //检查条件
+            let resultData = await checkDeleteBills();
+            if (!resultData.result) {
+                return;
             }
 
-            //1.check-检查单据状态
-            if (mainTableData.status !== '待审核') {
-                alert('只允许删除待审核入库单')
-                return
-            }
-
-            //1.check-检查子表状态
-            for (const n of subTableData) {
-                if (n.status !== '预入') {
-                    alert('存在非预入状态的物料,无法删除!')
-                    return
-                }
-            }
-
-            //1.check-提醒删除风险
+            //提醒删除风险
             if (!confirm('删除后无法恢复,确认删除?')) {
                 return;
             }
 
-            // let resultData = await checkDeleteBills();
-            // if (!resultData.result) {
-            //     return;
+            //删除单据
+
+            // let table = $('#rp_returnBills').DataTable();
+            // let dataSelect = table.rows('.selected').data();
+            // let DBIDArr = [];
+            // for (let n = 0; n < dataSelect.length; n++) {
+            //     DBIDArr.push(dataSelect[n].DBID);
             // }
-
-
-            // console.log(mainTableData);
-            // console.log(subTableData);
-
-
-            //2.do-删除单据
-
-            let mainDBIDArr = [mainTableData.DBID]
-            let subDBIDArr = [];
-            for (const n of subTableData) {
-                subDBIDArr.push(n.DBID)
-            }
 
             let r1 = await postDBData({
                 sql: 'delete',
                 params: {
-                    tableId: 'rp_inbills',
-                    data: mainDBIDArr
+                    tableId: 'rp_returnBills',
+                    data: resultData.data.mainDBIDArr
                 }
             })
 
             let r2 = await postDBData({
                 sql: 'delete',
                 params: {
-                    tableId: 'rp_insubbills',
-                    data: subDBIDArr
+                    tableId: 'rp_returnsubbills',
+                    data: resultData.data.subDBIDArr
                 }
             })
 
-            //3.return-提醒并重新加载表单
             if (r1.affectedRows && r2.affectedRows) {
                 alert('删除成功!')
-            } else {
-                alert('出现错误!')
+                //重新加载表单
+                loadBillMainTable();
+
             }
+
+
+        })
+
+        //审核按钮
+        $('#btnReturnBillAudit').click(async function () {
+            //1.check-检查选中
+            if (!mainTableData.returnBillId) {
+                alert('请先点击表格选中需要审核的还货单!')
+                return
+            }
+            //1.check-检查审核条件
+            if (mainTableData.status !== '待审核') {
+                alert('非待审核状态,请检查!')
+                return
+            }
+            //1.check-审核确认
+            if (!confirm('审核后无法修改,是否继续')) {
+                return
+            }
+
+            //2.do-系统出库
+            let mainTable = {
+                billForm: '还货单',
+                billId: mainTableData.returnBillId,
+                customerId: mainTableData.customerId,
+                customerShortName: mainTableData.customerShortName,
+                customerName: mainTableData.customerName,
+                customerBelongShort: mainTableData.customerBelongShort,
+                contact: mainTableData.contact,
+                mobilePhone: mainTableData.mobilePhone,
+                workPhone: mainTableData.workPhone,
+                sendWay: mainTableData.sendWay,
+                operator: mainTableData.operator,
+                address: mainTableData.address,
+                auditor: mainTableData.auditor,
+                makeDate: mainTableData.makeDate,
+                auditDate: currentDate(),
+                status: '已审核',
+                remark: mainTableData.remark,
+            };
+            let subTable = [];
+            for (const n of subTableData) {
+                subTable.push({
+                    billId: n.returnBillId,
+                    rowId: n.rowId,
+                    productId: n.productId,
+                    productName: n.productName,
+                    productDescription: n.productDescription,
+                    productClass: n.productClass,
+                    systemType: n.systemType,
+                    warehouseId: n.warehouseId,
+                    warehouseName: n.warehouseName,
+                    unit: n.unit,
+                    num: n.num,
+                    status: '已出',
+                    remark: n.remark,
+                    actType: '还货单',
+                    rpBillId: mainTableData.returnBillId
+                })
+            }
+
+            let r1 = await autoOutStoreBills({
+                mainTable: mainTable,
+                subTable: subTable
+            })
+
+            console.log('r1', r1);
+
+
+            //2.do-更新还货单状态
+
+            if (!r1) {
+                alert('出现错误')
+                return;
+            }
+
+            let billUpdateData = {
+                returnBillId: mainTableData.returnBillId,
+                status: '已审核'
+            }
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_returnbills',
+                    data: [billUpdateData],
+                    key: 'returnBillId'
+                }
+            })
+
+            //3.return-操作成功信息
+            if (r2.affectedRows > 0) {
+                alert('审核成功,系统已自动生成相应出库单!')
+            } else {
+                alert('审核失败')
+            }
+            //3.return-刷新主表
             loadBillMainTable();
 
+
+
+        })
+
+        //驳回按钮
+        $('#btnReturnBillReject').click(async function () {
+            //check-检查选中
+            // console.log(mainTableData);
+            if (!mainTableData.returnBillId) {
+                alert('请先点击表格选中需要驳回的还货单!')
+                return
+            }
+            //check-检查驳回条件
+            if (mainTableData.status !== '待审核') {
+                alert('只能驳回待审核的还货单,请检查!')
+                return
+            }
+            //check-驳回确认
+            if (!confirm('驳回后该还货单即将失效,是否继续')) {
+                return
+            }
+
+            //do-更新还货单状态
+            let billUpdateData = {
+                returnBillId: mainTableData.returnBillId,
+                status: '已驳回'
+            }
+
+            let rs = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_returnbills',
+                    data: [billUpdateData],
+                    key: 'returnBillId'
+                }
+            })
+
+            //return-操作成功信息
+            if (rs.affectedRows > 0) {
+                alert('驳回成功!')
+            } else {
+                alert('驳回失败')
+            }
+            //return-刷新主表
+            loadBillMainTable();
 
         })
 
@@ -1973,7 +1982,7 @@
                     }
                 })
                 // console.log("productData:" + JSON.stringify(productData));
-                let rowNum = $("#rp_insubbills tbody tr").size();
+                let rowNum = $("#rp_returnsubbills tbody tr").size();
                 let rowData = {};
 
                 rowData.rowId = rowNum + 1;
@@ -1994,12 +2003,12 @@
                 subTableData.push(rowData);
                 //重新加载子表
                 loadDataSubTable({
-                    elementId: 'rp_insubbills',
+                    elementId: 'rp_returnsubbills',
                     dataArray: subTableData
                 });
 
                 // alert('productId:' + productId);
-                // $('#rp_insubbillsPanel').show();
+                // $('#rp_returnsubbillsPanel').show();
 
 
                 scanner.stop().then(function () {
@@ -2037,7 +2046,7 @@
 
         // 新增填单按钮
         $('#btnAddProduct').click(function () {
-            let subTable = $('#rp_insubbills').DataTable();
+            let subTable = $('#rp_returnsubbills').DataTable();
             //删除子表选中状态
             // subTable.$('tr.selected').removeClass('selected');
 
@@ -2045,63 +2054,103 @@
 
             //清空panel数据
             clearFormInputs({
-                formId: 'rp_insubbillsForm'
+                formId: 'rp_returnsubbillsForm'
             })
             //打开面板
-            $('#rp_insubbillsPanel').show();
+            $('#rp_returnsubbillsPanel').show();
 
             //设置默认值
 
-            $("#rp_insubbillsForm-status").text('新增')
-            $("#rp_insubbillsForm-productId").selectpicker('val', '')
-            $("#rp_insubbillsForm-warehouseId").selectpicker('val', 'W1')
-            $("#rp_insubbillsForm-num").val(1)
+            // $("#rp_returnsubbillsForm-status").text('新增')
+            // $("#rp_returnsubbillsForm-productId").selectpicker('val', '')
+            // $("#rp_returnsubbillsForm-productFrom").selectpicker('val', '终端客户')
+            // $("#rp_returnsubbillsForm-productBelong").selectpicker('val', '客户')
+            // $("#rp_returnsubbillsForm-isRework").selectpicker('val', '否')
+            // $("#rp_returnsubbillsForm-urgent").selectpicker('val', '否')
+            // $("#rp_returnsubbillsForm-inWarranty").selectpicker('val', '否')
 
+            //设置默认值
+
+            $("#rp_returnsubbillsForm-status").text('新增')
+            $("#rp_returnsubbillsForm-productId").selectpicker('val', '')
+            $("#rp_returnsubbillsForm-warehouseId").selectpicker('val', 'W1')
+            $("#rp_returnsubbillsForm-num").val(1)
         })
 
         //保存产品按钮
 
         $('#btnProductSave').click(async function () {
 
-            //1.check-检查入库单状态
-            if (mainTableData.status === '已审核') {
-                alert('当前入库单已审核,不允许修改!')
-                return
+            //库存不足警告
+            let stockNum = parseInt($('#stockNum').text());
+            let num = parseInt($('#rp_returnsubbillsForm-num').val())
+            if (num > stockNum) {
+                if (!confirm('该产品客服仓当前库存不足,是否依然保存?')) {
+                    return;
+                }
             }
 
+            let returnBillId = $("#rp_returnBillsForm-returnBillId").text();
 
-            //2.do-保存产品信息
-            let billId = $("#rp_inbillsForm-billId").text();
-            let rowNum = $("#rp_insubbills tbody tr").size();
+            let rowNum = $("#rp_returnsubbills tbody tr").size();
             // console.log('rowNum:' + rowNum);
             let productData = getFormData({
-                formId: 'rp_insubbillsForm'
+                formId: 'rp_returnsubbillsForm'
             })
-            //添加仓库名称
-            productData.data.push({
-                warehouseName: $('#rp_insubbillsForm-warehouseId option:selected').text()
-            })
-            console.log('productData:' + JSON.stringify(productData.data))
+            // console.log('productData:' + JSON.stringify(productData.data))
             let rowData = formDataToRowData(productData.data)
-            rowData.billId = billId;
+            rowData.returnBillId = returnBillId;
             // console.log('rowData:' + JSON.stringify(rowData))
+
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
                 for (let n in subTableData) {
+                    // console.log("subTableData[n]:" + JSON.stringify(subTableData[n].rowId));
+                    // console.log("rowData:" + JSON.stringify(rowData.rowId));
+
                     //此处不用===避免,字符类型不匹配导致相关问题
                     if (subTableData[n].rowId == rowData.rowId) {
+                        // console.log('match');
+                        // if (subTableData[n].status !== '待审核' && subTableData[n].status !== '新增') {
+                        //     alert('已存在下游单据,不符合修改条件!')
+                        //     return;
+                        // }
+
                         subTableData[n] = rowData;
                         break;
                     }
                 }
+                // console.log("subTableData:" + JSON.stringify(subTableData));
+
             } else {
+                // console.log("subTableData before:" + JSON.stringify(subTableData));
+                // console.log("rowData:" + JSON.stringify(rowData.status));
                 rowData.rowId = rowNum + 1;
+
+                // let rs = await checkRecordHistory({
+                //     productId: rowData.productId
+                // })
+
+                // if (rs.length > 0) {
+                //     alert('检测到近期存在还货记录,请核实是否为返修品,还货信息如下:\n' +
+                //         '制单日期:' + rs[0].makeDate + '\n' +
+                //         '还货日期:' + rs[0].finishDate + '\n' +
+                //         '还货人:' + rs[0].repairStaff + '\n' +
+                //         '故障描述:' + rs[0].faultDescription + '\n' +
+                //         '检测结果:' + rs[0].testResult + '\n' +
+                //         '更换原件:' + rs[0].changePartList + '\n' +
+                //         '费用:' + rs[0].repairLastFee
+                //     )
+                // }
+                // rowData.isRework = '是'
                 subTableData.push(rowData);
+                // console.log("subTableData:" + JSON.stringify(subTableData));
+
             }
 
-            //3.return-重新加载子表
+            //重新加载子表
             loadDataSubTable({
-                elementId: 'rp_insubbills',
+                elementId: 'rp_returnsubbills',
                 dataArray: subTableData
             });
 
@@ -2109,42 +2158,44 @@
 
         // 删除产品按钮
         $('#btnDeleteProduct').click(function () {
-
-            //1.check-检查选中
-            let subTable = $('#rp_insubbills').DataTable();
+            let subTable = $('#rp_returnsubbills').DataTable();
             let rowSelect = subTable.row('.selected').data();
+            // alert(JSON.stringify(rowSelect))
 
-            if (!rowSelect) {
-                alert('请先点击表格选中需要删除的产品!')
-                return
-            }
-            //1.check-检查状态
+            // let table = $('#rp_returnBills').DataTable();
+            // let dataSelect = table.rows('.selected').data();
+            // console.log('dataSelect',dataSelect);
 
-            if (rowSelect.status !== '新增') {
-                alert('非新增状态不允许删除!')
-                return
-            }
 
-            //2.do- 删除元素
-            for (const n in subTableData) {
-                if (subTableData[n].rowId === rowSelect.rowId) {
-                    subTableData.splice(n, 1);
+            if (rowSelect) {
+                if (mainTableData.status !== '待审核') {
+                    alert('非待审核状态还货单不允许修改!')
+                } else {
+                    //删除元素
+                    for (const n in subTableData) {
+                        if (subTableData[n].rowId === rowSelect.rowId) {
+                            subTableData.splice(n, 1);
+                        }
+                    }
+                    //重新排序rowId,避免空缺
+                    for (const n in subTableData) {
+                        subTableData[n].rowId = parseInt(n) + 1;
+                    }
+
+                    //重新加载子表
+                    loadDataSubTable({
+                        elementId: 'rp_returnsubbills',
+                        dataArray: subTableData
+                    });
+
+                    //自动点击新增按钮,防止遗留数据产生错误
+                    $('#btnAddProduct').click()
+
                 }
+
+            } else {
+                alert('请先点击表格选中需要删除的产品!')
             }
-            //重新排序rowId,避免空缺
-            for (const n in subTableData) {
-                subTableData[n].rowId = parseInt(n) + 1;
-            }
-
-            //3.return-重新加载子表
-            loadDataSubTable({
-                elementId: 'rp_insubbills',
-                dataArray: subTableData
-            });
-            //3.return-自动点击新增按钮,防止遗留数据产生错误
-            $('#btnAddProduct').click()
-
-
         })
 
 
@@ -2155,7 +2206,7 @@
         // //表单产品清单打印按钮
         // $('#listPrintBtn').click(function () {
 
-        //     if (!mainTableData.billId) {
+        //     if (!mainTableData.returnBillId) {
         //         alert('请先选中需要打印的单据!')
         //         return
         //     }
@@ -2166,7 +2217,7 @@
         //         '<table width="600" border="0">' +
         //         '<tr>' +
         //         '<td width="150"><img src="/images/techmation.png" /></td>' +
-        //         '<td width="200" align="center"><h3>宁波弘讯入库码</h3>' +
+        //         '<td width="200" align="center"><h3>宁波弘讯还货码</h3>' +
         //         '<p><h4>repairId</h4></p></td>' +
         //         '<td width="150" align="center"><div id="qrcode" width:100px height:100px /></td>' +
         //         '</tr>' +
@@ -2259,7 +2310,7 @@
         //                 const element = subTableData[i];
         //                 let newHtml = fillPrintModel({
         //                     htmlModel: htmlModel,
-        //                     repairId: subTableData[i].billId + '-' + subTableData[i]
+        //                     repairId: subTableData[i].returnBillId + '-' + subTableData[i]
         //                         .rowId,
         //                     customerShortName: mainTableData.customerShortName,
         //                     mobilePhone: mainTableData.mobilePhone,
@@ -2287,12 +2338,12 @@
 
         //     createRpHtml(subTableData);
 
-        //     //生成入库二维码
+        //     //生成还货二维码
         //     const createQrcodes = (subTableData) => {
         //         if (subTableData.length > 0) {
         //             for (const n of subTableData) {
         //                 createQrcode({
-        //                     repairId: n.billId + '-' + n.rowId
+        //                     repairId: n.returnBillId + '-' + n.rowId
         //                 })
         //             }
         //         }
@@ -2311,7 +2362,7 @@
         //     // fillPrintModel()
 
         //     // let formData = getFormData({
-        //     //     formId: 'rp_inbillsForm',
+        //     //     formId: 'rp_returnBillsForm',
         //     // })
 
         //     // fillTableInputs({
@@ -2347,10 +2398,10 @@
         // })
 
         //表单打印按钮
-        $('#rp_inbillsPrint').click(function () {
+        $('#rp_returnBillsPrint').click(function () {
 
             // let formData = getFormData({
-            //     formId: 'rp_inbillsForm',
+            //     formId: 'rp_returnBillsForm',
             // })
 
             // fillTableInputs({
@@ -2358,7 +2409,7 @@
             //     params: formDataToRowData(formData.data)
             // })
             // console.log('print mainTableData:', mainTableData);
-            if (!mainTableData.billId) {
+            if (!mainTableData.returnBillId) {
                 alert('请先选中需要打印的单据!')
                 return
             }
@@ -2372,7 +2423,7 @@
 
             fillTableRows({
                 tableId: 'printViewSubTable',
-                cols: ['rowId', 'productId', 'productName', 'warehouseName', 'unit', 'num'],
+                cols: ['rowId', 'productId', 'productName', 'unit', 'num'],
                 data: subTableData
             })
 
@@ -2398,47 +2449,37 @@
         })
 
         //表单保存按钮
-        $('#rp_inbillsSave').click(function () {
-
-            //1.check-检查单据状态
-            if (mainTableData.status === '已审核') {
-                alert('已审核单据无法保存')
-                return
-            }
-
-            //1.check-检查必填项
-            if (!$('#rp_inbillsForm-customerId').text()) {
-                alert('未选定客户,请检查!')
-                return;
-            }
+        $('#rp_returnBillsSave').click(function () {
 
 
-            //1.check-检查子表项目
+            //不存在子表项目则中断保存
             if (subTableData.length === 0) {
-                alert('未添加需要入库的产品,无法保存单据,请检查!')
+                alert('未添加需要还货的产品,无法保存单据,请检查!')
                 return;
             }
 
-            //2.do-保存表单
-            saveInBill();
+            saveReturnBill();
         })
 
         //初始化过滤器日期组
         loadDatePickers({
             elementIds: [
-                // 'filterForm-borrowDateB',
-                // 'filterForm-borrowDateE',
+                'filterForm-returnDateB',
+                'filterForm-returnDateE',
                 'filterForm-makeDateB',
                 'filterForm-makeDateE'
             ]
         })
 
 
-
+        //初始化组件
+        loadDatePicker({
+            elementId: "rp_returnBillsForm-returnDate",
+        })
 
         // //初始化组件
         // loadDatePicker({
-        //     elementId: "rp_insubbillsForm-productYear",
+        //     elementId: "rp_returnsubbillsForm-productYear",
         //     params: {
         //         startView: 4,
         //         minView: 4,
@@ -2448,7 +2489,7 @@
 
         // //初始化组件
         // loadDatePicker({
-        //     elementId: "rp_insubbillsForm-productMonth",
+        //     elementId: "rp_returnsubbillsForm-productMonth",
         //     params: {
         //         startView: 3,
         //         minView: 3,
@@ -2467,7 +2508,7 @@
         //初始化selector
 
         loadBootStrapSelector({
-            elementId: 'rp_inbillsForm-customerShortName',
+            elementId: 'rp_returnBillsForm-customerShortName',
             sqlParams: {
                 sql: 'getCustomerSelector'
             },
@@ -2477,7 +2518,7 @@
 
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_inbillsForm-customerArea',
+        //     elementId: 'rp_returnBillsForm-customerArea',
         //     sqlParams: {
         //         sql: 'getRegionSelector',
         //         // params: {
@@ -2488,24 +2529,16 @@
         // })
 
         loadBootStrapSelector({
-            elementId: 'rp_inbillsForm-operator',
+            elementId: 'rp_returnBillsForm-operator',
             sqlParams: {
                 sql: 'getStaffSelector'
             },
-            // initValue:''
-        })
-
-        loadBootStrapSelector({
-            elementId: 'rp_inbillsForm-auditor',
-            sqlParams: {
-                sql: 'getStaffSelector'
-            },
-            // initValue:''
+            // initValue:'中国,北京'
         })
 
 
         loadBootStrapSelector({
-            elementId: 'rp_insubbillsForm-productId',
+            elementId: 'rp_returnsubbillsForm-productId',
             sqlParams: {
                 sql: 'getProductSelector'
             },
@@ -2513,19 +2546,19 @@
 
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_inbillsForm-isInland',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="国内外"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
+        loadBootStrapSelector({
+            elementId: 'rp_returnBillsForm-isInland',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="国内外"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
         loadBootStrapSelector({
-            elementId: 'rp_inbillsForm-customerBelongShort',
+            elementId: 'rp_returnBillsForm-customerBelongShort',
             // initValue:'',
             sqlParams: {
                 sql: 'getCustomerSelector',
@@ -2538,7 +2571,7 @@
 
 
         loadBootStrapSelector({
-            elementId: 'rp_inbillsForm-sendWay',
+            elementId: 'rp_returnBillsForm-sendWay',
             sqlParams: {
                 sql: 'getOptionSelector',
                 params: {
@@ -2548,9 +2581,16 @@
             },
         })
 
+        loadBootStrapSelector({
+            elementId: 'rp_returnBillsForm-auditor',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+            // initValue:''
+        })
 
         loadBootStrapSelector({
-            elementId: 'rp_insubbillsForm-warehouseId',
+            elementId: 'rp_returnsubbillsForm-warehouseId',
             sqlParams: {
                 sql: 'getWarehouseSelector',
             },
@@ -2559,7 +2599,19 @@
 
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_insubbillsForm-origin',
+        //     elementId: 'rp_returnsubbillsForm-productFrom',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="产品来源"',
+        //             orderBy: 'orderId'
+        //         }
+        //     },
+        // })
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_returnsubbillsForm-origin',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2571,7 +2623,7 @@
 
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_insubbillsForm-productBelong',
+        //     elementId: 'rp_returnsubbillsForm-productBelong',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2582,7 +2634,7 @@
         // })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_insubbillsForm-isRework',
+        //     elementId: 'rp_returnsubbillsForm-isRework',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2592,7 +2644,7 @@
         // })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_insubbillsForm-urgent',
+        //     elementId: 'rp_returnsubbillsForm-urgent',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2602,7 +2654,7 @@
         // })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_insubbillsForm-inWarranty',
+        //     elementId: 'rp_returnsubbillsForm-inWarranty',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2618,6 +2670,7 @@
 
         //选定产品修改事件
         addProductListener();
+
         //仓库选择修改事件
         addWarehouseListener();
 
@@ -2627,8 +2680,8 @@
 
 
         // 关闭事件重置选中datatable选中,避免显示错误
-        $('#rp_inbillsModal').on('hidden.bs.modal', function () {
-            let table = $('#rp_inbills').DataTable();
+        $('#rp_returnBillsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_returnBills').DataTable();
             table.$('tr.selected').removeClass('selected');
             mainTableData = {}
 

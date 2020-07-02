@@ -749,24 +749,41 @@
 
                                                     <div class="form-group">
                                                         <label class="col-sm-1 control-label">序号</label>
-                                                        <div class="col-sm-3">
+                                                        <div class="col-sm-5">
                                                             <p class="form-control-static" id="rp_partsbillsForm-rowId">
                                                             </p>
                                                         </div>
 
-                                                        <label class="col-sm-1 control-label">可用库存</label>
-                                                        <div class="col-sm-3">
-                                                            <p class="form-control-static" id="stockNum">
-                                                            </p>
-                                                        </div>
-
                                                         <label class="col-sm-1 control-label">领用状态</label>
-                                                        <div class="col-sm-3">
+                                                        <div class="col-sm-5">
                                                             <p class="form-control-static"
                                                                 id="rp_partsbillsForm-numStatus">
                                                             </p>
                                                         </div>
                                                     </div>
+
+
+                                                    <div class="form-group">
+                                                        <input id="rp_partsbillsForm-warehouseId" type="hidden"
+                                                            value="W2">
+
+                                                        <label class="col-sm-1 control-label">仓库名称</label>
+                                                        <div class="col-sm-5">
+                                                            <p class="form-control-static"
+                                                                id="rp_partsbillsForm-warehouseName">维修仓
+                                                            </p>
+                                                        </div>
+
+                                                        <label class="col-sm-1 control-label">可用库存</label>
+                                                        <div class="col-sm-5">
+                                                            <p class="form-control-static" id="stockNum">
+                                                            </p>
+                                                        </div>
+
+
+                                                    </div>
+
+
 
                                                     <div class="form-group">
 
@@ -982,7 +999,7 @@
         let partId = $('#rp_partsbillsForm-partId option:selected').val();
 
         if (partId) {
-            stockNum = await getStockNum(partId);
+            stockNum = await getStockNum(partId, 'W2');
         }
         $('#stockNum').text(stockNum)
     }
@@ -991,7 +1008,7 @@
     //选中partId后,填写其他相关信息
 
     const fillPartInfo = async (partId) => {
-        console.log('fillPartInfo partId:' + partId);
+        // console.log('fillPartInfo partId:' + partId);
         let r1 = await getDataBySql({
             sql: 'getPartInfo',
             params: {
@@ -1091,18 +1108,18 @@
         }
 
         let defaultValue = '';
-        console.log('len', $('#' + i.elementId + ' option').length);
+        // console.log('len', $('#' + i.elementId + ' option').length);
 
         if ($('#' + i.elementId + ' option').length === 1) {
             defaultValue = locationsArr[0];
-            console.log('defaultValueArr', defaultValue);
+            // console.log('defaultValueArr', defaultValue);
         }
 
         if (i.initValue) {
             defaultValue = i.initValue;
         }
 
-        console.log('defaultValue', defaultValue);
+        // console.log('defaultValue', defaultValue);
 
 
         $('#' + i.elementId).selectpicker('val', defaultValue);
@@ -1414,7 +1431,7 @@
             let productDate = $('#rp_recordbillsForm-productYear').text() + '-' +
                 $('#rp_recordbillsForm-productMonth').text() + '-01';
             let months = getMonths(productDate, currentDate())
-            console.log('months', months);
+            // console.log('months', months);
             switch (true) {
                 case months > 120:
                     yearsFee = partAFee * 0.15;
@@ -1456,7 +1473,7 @@
 
 
         //总费用
-        console.log(testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee);
+        // console.log(testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee);
 
         //特定费用转换为浮点
         repairTotalFee = partAFee + parseFloat(yearsFee) + parseFloat(conditionFee) + urgentFee;
@@ -1668,142 +1685,14 @@
     }
 
 
-    //保存维修记录单函数
-    const saveRecordBill = async () => {
 
-        //合并相同
-        let checkResultData = await checkPartsStock(subTableData);
-        // alert('checkResultData:' + JSON.stringify(checkResultData))
-
-        if (checkResultData.result) {
-
-            let mainFormData = getPostFormData({
-                formId: 'rp_recordbillsForm'
-            })
-
-            //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
-
-            if (!mainFormData.data[0].maker) {
-                await autoUpdateRecordBillId();
-                mainFormData.data[0].maker = sessionName;
-                mainFormData.data[0].makeDate = currentDate();
-                mainFormData.data[0].status = '维修中'
-            }
-
-            if (mainFormData.data[0].repairResult) {
-                mainFormData.data[0].status = '维修完成'
-                mainFormData.data[0].finishDate = currentDate();
-            }
-
-            //添加附件信息
-
-            let filesArr = getFilesJson();
-            mainFormData.data[0].files = filesArr;
-
-            //添加update key
-            mainFormData.key = 'DBID';
-
-            // alert(JSON.stringify(mainFormData))
-
-            console.log('mainFormData:' + JSON.stringify(mainFormData));
-
-            if (subTableData.length > 0) {
-                let r1 = await postDBData({
-                    sql: 'update',
-                    params: mainFormData
-                })
-
-                //获取需要更新库存数据零件
-                let partsNeedUpdateStockArr = getNeedUpdatePartsArr(subTableData);
-
-                //扣减零件库存
-                let r2;
-                if (partsNeedUpdateStockArr.length > 0) {
-                    console.log('checkResultData.JITStock', checkResultData.JITStock);
-                    console.log('partsNeedUpdateStockArr', partsNeedUpdateStockArr);
-
-                    for (let n of partsNeedUpdateStockArr) {
-                        //赋值添加PID,去除partId
-                        n.PID = n.partId;
-                        delete n.partId;
-                        //扣减库存转为负数
-                        n.num = -n.num;
-
-                        for (const m of checkResultData.JITStock) {
-                            if (n.PID === m.PID) {
-                                n.stockNum = m.stockNum;
-                            }
-                        }
-                        //指定为W1仓库
-                        n.warehouseId = 'W1';
-
-                    }
-                    console.log('partsNeedUpdateStockArr222', partsNeedUpdateStockArr);
-
-                    r2 = await updateStock({
-                        stockArr: partsNeedUpdateStockArr,
-                        actType: '维修领料',
-                        rpBillId: mainFormData.data[0].recordBillId
-                    });
-                }
-
-                if (r2) {
-                    for (let n = 0; n < subTableData.length; n++) {
-                        if (subTableData[n].numStatus === '预领') {
-                            subTableData[n].numStatus = '已领'
-                            delete subTableData[n].stockNum;
-                        }
-                    }
-                    alert('扣减库存成功！')
-                }
-
-                let r3 = await postDBData({
-                    sql: 'replace',
-                    params: {
-                        tableId: 'rp_partsbills',
-                        data: subTableData
-                    }
-                })
-
-                // console.log('saveRecordBill r1:' + JSON.stringify(r1));
-                // console.log('saveRecordBill r2:' + JSON.stringify(r2));
-                // console.log('saveRecordBill r3:' + JSON.stringify(r3));
-
-                if (r1.affectedRows && r3.affectedRows) {
-                    alert('保存成功!')
-                    $('#rp_recordbillsModalClose').click()
-                    loadBillMainTable();
-                } else {
-                    alert('出现错误!')
-                }
-
-            } else {
-                let r4 = await postDBData({
-                    sql: 'update',
-                    params: mainFormData
-                })
-
-                if (r4.affectedRows) {
-                    alert('保存成功!')
-                    $('#rp_recordbillsModal').modal('hide');
-                    loadBillMainTable();
-                } else {
-                    alert('出现错误!')
-                }
-            }
-
-
-
-        } else {
-            alert('存在库存不足零件,请检查!')
-        }
-
-    }
 
     $(document).ready(function () {
 
         //定义全局变量,当前用户名
         sessionName = "<%-locals.session.yjUser.Name%>";
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
         //定义子表全局变量临时数据数组
         subTableData = [];
 
@@ -2028,7 +1917,7 @@
                 video: document.getElementById('staffVideo')
             });
             scanner.addListener('scan', async function (repairId) {
-                console.log('repairId:' + repairId);
+                // console.log('repairId:' + repairId);
 
                 $('#scanModel-repairId').val(repairId);
                 alert('扫描成功,请选择维修人!')
@@ -2072,7 +1961,7 @@
                 video: document.getElementById('preview')
             });
             scanner.addListener('scan', async function (partId) {
-                console.log('partId:' + partId);
+                // console.log('partId:' + partId);
                 let partData = await getDataBySql({
                     sql: 'getPart',
                     params: {
@@ -2080,11 +1969,11 @@
                     }
                 })
 
-                console.log("partData:" + JSON.stringify(partData));
+                // console.log("partData:" + JSON.stringify(partData));
 
                 let rowNum = $("#rp_partsbills tbody tr").size();
 
-                console.log('rowNum:' + rowNum);
+                // console.log('rowNum:' + rowNum);
 
 
                 let rowData = {};
@@ -2102,7 +1991,7 @@
                 rowData.recordBillId = $("#rp_recordbillsForm-recordBillId").text();
 
 
-                console.log("rowData:" + JSON.stringify(rowData));
+                // console.log("rowData:" + JSON.stringify(rowData));
 
                 subTableData.push(rowData);
                 //重新加载子表
@@ -2177,6 +2066,10 @@
 
             //设置默认值
             $("#rp_partsbillsForm-numStatus").text('预领')
+            $("#rp_partsbillsForm-warehouseId").val('W2')
+            $("#rp_partsbillsForm-warehouseName").text('维修仓')
+
+
 
             //解绑监听器
             // $('#rp_partsbillsForm-partLocation').unbind();
@@ -2283,39 +2176,36 @@
 
         $('#btnPartSave').click(function () {
 
-            let recordBillId = $("#rp_recordbillsForm-recordBillId").text();
+            //1.check-库存充足提醒
+            let numStatus = $("#rp_partsbillsForm-numStatus").text();
+            let num = $("#rp_partsbillsForm-num").val();
+            let stockNum = $("#stockNum").text();
+            // console.log(numStatus, num, stockNum);
 
+            if (numStatus === '预领' && num > stockNum) {
+                if (!confirm('该部件维修仓中库存不足,是否继续?')) {
+                    return
+                }
+            }
+
+            let recordBillId = $("#rp_recordbillsForm-recordBillId").text();
             let rowNum = $("#rp_partsbills tbody tr").size();
-            console.log('rowNum:' + rowNum);
+            // console.log('rowNum:' + rowNum);
 
             let partData = getFormData({
                 formId: 'rp_partsbillsForm'
             })
-            // //格式化位置多选数据
-            // partData['data'][0]['partLocation'] = partData['data'][0]['partLocation'].substring(1,
-            //     partData['data'][0]['partLocation'].length - 1);
-
 
             let rowData = formDataToRowData(partData.data)
-            //删除stockNum 属性
-            delete rowData.stockNum;
-
-            console.log('rowData:' + JSON.stringify(rowData))
-
-
             rowData.recordBillId = recordBillId;
-            console.log('rowData:' + JSON.stringify(rowData))
 
-            // //更新rowId
-            // if (!rowData.rowId) {
-            //     rowData.rowId = rowNum + 1;
-            // }
-            // savePartsBill([rowData]);
+            // console.log('rowData:' + JSON.stringify(rowData))
+
 
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
                 for (const n in subTableData) {
-                    console.log("subTableData[n]:" + JSON.stringify(subTableData[n]));
+                    // console.log("subTableData[n]:" + JSON.stringify(subTableData[n]));
                     // console.log("rowData:" + JSON.stringify(rowData.rowId));
 
                     //此处不用===避免,字符类型不匹配导致相关问题
@@ -2333,7 +2223,7 @@
                 subTableData.push(rowData);
 
             }
-            console.log("subTableData T:" + JSON.stringify(subTableData));
+            // console.log("subTableData T:" + JSON.stringify(subTableData));
 
 
             //重新加载子表
@@ -2400,7 +2290,7 @@
                 }
             })
 
-            console.log('options', options);
+            // console.log('options', options);
 
 
             //按系统类型重新加载检测项目
@@ -2459,10 +2349,153 @@
 
 
         //表单保存按钮
-        $('#rp_recordbillsSave').click(function () {
+        $('#rp_recordbillsSave').click(async function () {
 
-            // alert(1)
-            saveRecordBill();
+            //1.check-检查选中
+
+
+
+            //2.do-保存维修单主表信息
+
+            let mainFormData = getPostFormData({
+                formId: 'rp_recordbillsForm'
+            })
+
+            //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
+
+            if (!mainFormData.data[0].maker) {
+                await autoUpdateRecordBillId();
+                mainFormData.data[0].maker = sessionName;
+                mainFormData.data[0].makeDate = currentDate();
+                mainFormData.data[0].status = '维修中'
+            }
+
+            if (mainFormData.data[0].repairResult) {
+                mainFormData.data[0].status = '维修完成'
+                mainFormData.data[0].finishDate = currentDate();
+            }
+
+            //添加附件信息
+
+            let filesArr = getFilesJson();
+            mainFormData.data[0].files = filesArr;
+
+            //添加update key
+            mainFormData.key = 'DBID';
+
+            // alert(JSON.stringify(mainFormData))
+
+            // console.log('mainFormData:' + JSON.stringify(mainFormData));
+            let r1 = await postDBData({
+                sql: 'update',
+                params: mainFormData
+            })
+
+            //2.do-系统出库
+            // console.log('subTableData', subTableData);
+
+            if (subTableData.length > 0) {
+
+                //2.补齐仓库物料编号
+                let PIDArr = [];
+                for (const n of subTableData) {
+                    PIDArr.push({
+                        PID: n.partId,
+                        warehouseId: n.warehouseId
+                    })
+                }
+                // console.log('PIDArr', PIDArr);
+                let r0 = await initWarehousePID({
+                    PIDArr: PIDArr
+                })
+                // console.log('r0', r0);
+
+
+                if (!r0) {
+                    // console.log('初始化仓库数据错误', r0);
+                    return
+                }
+
+                let mainTable = {
+                    billForm: '维修单',
+                    billId: mainFormData.data[0].recordBillId,
+                    customerId: mainFormData.data[0].customerId,
+                    customerShortName: mainFormData.data[0].customerShortName,
+                    customerName: mainFormData.data[0].customerName,
+                    customerBelongShort: mainFormData.data[0].customerBelongShort,
+                    contact: mainFormData.data[0].contact,
+                    mobilePhone: mainFormData.data[0].mobilePhone,
+                    workPhone: mainFormData.data[0].workPhone,
+                    sendWay: mainFormData.data[0].sendWay,
+                    operator: mainFormData.data[0].operator,
+                    address: mainFormData.data[0].address,
+                    maker: mainFormData.data[0].maker,
+                    makeDate: mainFormData.data[0].makeDate,
+                    auditor: mainFormData.data[0].maker,
+                    auditDate: currentDate(),
+                    status: '已审核',
+                    remark: mainFormData.data[0].remark,
+                };
+                let subTable = [];
+                for (const n of subTableData) {
+                    if (n.numStatus === '预领') {
+                        subTable.push({
+                            billId: n.recordBillId,
+                            rowId: n.rowId,
+                            productId: n.partId,
+                            productName: n.partName,
+                            productDescription: n.partDescription,
+                            warehouseId: n.warehouseId,
+                            warehouseName: n.warehouseName,
+                            unit: n.unit,
+                            num: n.num,
+                            status: '已出',
+                            remark: n.remark,
+                            actType: '维修单',
+                            rpBillId: n.recordBillId
+                        })
+                    }
+                }
+
+                if (subTable.length > 0) {
+                    let r2 = await autoOutStoreBills({
+                        mainTable: mainTable,
+                        subTable: subTable
+                    })
+                    // console.log('r2',r2);
+
+
+                    if (r2) {
+                        for (let n of subTableData) {
+                            for (const m of subTable) {
+                                if (m.productId === n.partId && n.numStatus === '预领') {
+                                    n.numStatus = '已领'
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //2.do-更新维修单子表
+
+
+                let r3 = await postDBData({
+                    sql: 'replace',
+                    params: {
+                        tableId: 'rp_partsbills',
+                        data: subTableData
+                    }
+                })
+
+            }
+
+            //3.return-结果提醒刷新
+
+            alert('保存成功!')
+            $('#rp_recordbillsModal').modal('hide');
+            loadBillMainTable();
+
+
         })
 
         //初始化过滤器日期组
@@ -2474,8 +2507,6 @@
                 'filterForm-makeDateE'
             ]
         })
-
-
 
         loadBootStrapSelector({
             elementId: 'rp_recordbillsForm-testItem',

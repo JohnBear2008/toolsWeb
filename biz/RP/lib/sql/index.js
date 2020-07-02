@@ -56,9 +56,9 @@ const sqlChangeparts = "select * from rp_partsBills";
 const sqlResponseBills =
 	"select * from (select * from (select concat( ta.requestBillId,'-',ta.rowId ) as repairId,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) td where status ='维修完成' ) tA"
 //部件即时库存sql
-const rp_store = "select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId"
+const rp_store = "select * from ( select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId) A"
 // //库存记录sql
- const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
+const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
 
 //历史单据主表sql
 const sqlHistoryBills =
@@ -77,6 +77,11 @@ const sqlSubResponseBills = "select * from `rp_responsebills`"
 const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as searchText from `rp_borrowbills`"
 //借货单子表sql
 const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
+
+//还货单主表sql
+const sqlReturnBills = "select * from (select ta.borrowBillId,ta.returnBillId,ta.productId,ta.productName,ta.num,ta.unit,ta.returnStatus,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.borrowDate,tb.fax as searchText,tc.billFrom,tc.returnDate,tc.operator,tc.remark,tc.status,tc.maker,tc.makeDate,tc.auditor,tc.auditDate,tc.billSaveTimeStamp from `rp_borrowsubbills` ta left join  `rp_borrowbills` tb on ta.borrowBillId=tb.borrowBillId left join `rp_returnbills` tc on ta.returnBillId=tc.returnBillId) A"
+//还货单 子表sql
+const sqlReturnSubBills = "select * from `rp_returnsubbills`"
 
 //出库单sql
 const sqlOutBills = "select * from `rp_outbills`"

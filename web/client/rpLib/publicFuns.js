@@ -1197,7 +1197,7 @@ const getFormData = (i) => {
         data: data
     }
 
-    console.log('getFormData:' + JSON.stringify(data));
+    // console.log('getFormData:' + JSON.stringify(data));
     return o;
 
 }
@@ -1676,7 +1676,7 @@ const autoOutStoreBills = async ({
             if (n.productId === m.PID) {
                 n.stockNum = m.stockNum;
                 if (n.stockNum < n.num) {
-                    alert('存在库存不足物料,请补充物料后重试')
+                    alert(n.productId + '存在库存不足物料,请补充物料后重试')
                     return
                 }
             }
@@ -1819,6 +1819,37 @@ const checkRecordHistory = async ({
 }
 
 
+/**
+ *初始化仓库中的PID 避免后续更新库存因无PID错误
+ *
+ * @param {*} {
+ *    PIDArr:[PID,warehouseId]
+ * }
+ * @returns
+ */
+const initWarehousePID = async ({
+    PIDArr
+}) => {
+
+    for (let n of PIDArr) {
+        n.stockNum = 0
+    }
+
+    console.log("PIDArr:" + JSON.stringify(PIDArr));
+    let r1 = await postDBData({
+        sql: 'insert',
+        params: {
+            tableId: 'rp_warehouse',
+            ignore: true,
+            data: PIDArr
+        }
+    })
+    console.log('r1:' + JSON.stringify(r1));
+
+    return r1 ? true : false;
+
+
+}
 
 
 /**
