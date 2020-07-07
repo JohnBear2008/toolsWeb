@@ -402,9 +402,9 @@
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-billForm">单据来源</label>
+                                    <label class="col-sm-1 control-label" for="rp_inbillsForm-billFrom">单据来源</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_inbillsForm-billForm"></p>
+                                        <p class="form-control-static" id="rp_inbillsForm-billFrom"></p>
                                     </div>
 
 
@@ -797,7 +797,7 @@
         data: 'DBID',
         // visible: 'false'
     }, {
-        data: 'billForm'
+        data: 'billFrom'
     }, {
         data: 'billId'
     }, {
@@ -1287,7 +1287,7 @@
     }
 
 
-    
+
 
 
 
@@ -1302,6 +1302,8 @@
 
         if (!mainFormData.data[0].maker) {
             await autoUpdateInBillId();
+            //刷新入库单号
+            mainFormData.data[0].billId = $("#rp_inbillsForm-billId").text();
             mainFormData.data[0].status = '待审核';
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
@@ -1748,7 +1750,7 @@
 
 
             createInBillId();
-            $("#rp_inbillsForm-billForm").text('入库单');
+            $("#rp_inbillsForm-billFrom").text('入库单');
             // $("#rp_inbillsForm-isInland").selectpicker('val', '国内')
             $("#rp_inbillsForm-sendWay").selectpicker('val', '邮寄过来')
 
@@ -1854,7 +1856,6 @@
             })
 
             //2.do-更新入库单主表
-
 
             mainTableData.auditor = sessionName;
             mainTableData.auditDate = currentDate();
@@ -2401,6 +2402,8 @@
         $('#rp_inbillsSave').click(function () {
 
             //1.check-检查单据状态
+            console.log('mainTableData',mainTableData);
+            
             if (mainTableData.status === '已审核') {
                 alert('已审核单据无法保存')
                 return

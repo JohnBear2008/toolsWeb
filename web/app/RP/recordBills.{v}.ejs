@@ -2365,6 +2365,8 @@
 
             if (!mainFormData.data[0].maker) {
                 await autoUpdateRecordBillId();
+                //刷新记录单号
+                mainFormData.data[0].recordBillId = $("#rp_recordbillsForm-recordBillId").text();
                 mainFormData.data[0].maker = sessionName;
                 mainFormData.data[0].makeDate = currentDate();
                 mainFormData.data[0].status = '维修中'
@@ -2417,7 +2419,7 @@
                 }
 
                 let mainTable = {
-                    billForm: '维修单',
+                    billFrom: '维修单',
                     billId: mainFormData.data[0].recordBillId,
                     customerId: mainFormData.data[0].customerId,
                     customerShortName: mainFormData.data[0].customerShortName,

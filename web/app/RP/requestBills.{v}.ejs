@@ -1351,6 +1351,8 @@
 
         if (!mainFormData.data[0].maker) {
             await autoUpdateRequestBillId();
+            //刷新申请单号
+            mainFormData.data[0].requestBillId = $("#rp_requestbillsForm-requestBillId").text();
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
         }

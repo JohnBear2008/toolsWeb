@@ -1142,6 +1142,8 @@
             //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
             if (!mainFormData.data[0].maker) { //新增保存
                 await autoUpdateResponseBillId();
+                //刷新出货单号
+                mainFormData.data[0].responseBillId = $("#responsebillsForm-responseBillId").text()
                 mainFormData.data[0].maker = sessionName;
                 mainFormData.data[0].makeDate = currentDate();
 

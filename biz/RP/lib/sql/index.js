@@ -81,9 +81,14 @@ const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as search
 const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
 
 //还货单主表sql
-const sqlReturnBills = "select * from (select ta.borrowBillId,ta.returnBillId,ta.productId,ta.productName,ta.num,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.returnStatus,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.borrowDate,tb.fax as searchText,tc.billFrom,tc.returnDate,tc.operator,tc.remark,tc.status,tc.maker,tc.makeDate,tc.auditor,tc.auditDate,tc.billSaveTimeStamp from `rp_borrowsubbills` ta left join  `rp_borrowbills` tb on ta.borrowBillId=tb.borrowBillId left join `rp_returnbills` tc on ta.returnBillId=tc.returnBillId) A"
+// const sqlReturnBills = "select * from (select ta.DBID,ta.borrowBillId,ta.returnBillId,ta.productId,ta.productName,ta.num,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.returnStatus,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.borrowDate,tb.fax as searchText,tc.billFrom,tc.returnDate,tc.operator,tc.remark,tc.status,tc.maker,tc.makeDate,tc.auditor,tc.auditDate,tc.billSaveTimeStamp from `rp_borrowsubbills` ta left join  `rp_borrowbills` tb on ta.borrowBillId=tb.borrowBillId left join `rp_returnbills` tc on ta.returnBillId=tc.returnBillId) A"
+const sqlReturnBills = "select *,customerName as searchText from `rp_returnbills`"
+
 //还货单 子表sql
 const sqlReturnSubBills = "select * from `rp_returnsubbills`"
+
+//未还货单主表sql
+const sqlUnreturnBills = "select * from ( select ta.productId,ta.productName,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.remark,ta.status,ta.productDescription as searchText,tb.borrowBillId,tb.customerId,tb.customerShortName,tb.operator,tb.borrowDate from `rp_borrowsubbills` ta left join  (select borrowBillId,customerId,customerShortName,operator,borrowDate from `rp_borrowbills`) tb on ta.borrowBillId=tb.borrowBillId) A"
 
 //出库单sql
 const sqlOutBills = "select * from `rp_outbills`"
@@ -98,7 +103,8 @@ const sqlInSubBills = "select * from `rp_insubbills`"
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";
 
-
+//更新借货单状态
+const updateBorrowStatus = "update `rp_borrowsubbills` set status = case when num=returnNum then '已还入' else '待归还' end"
 
 
 /**
@@ -107,7 +113,7 @@ const sqlTableSelect = "select * from `tableId`";
  * @param {*} i={sql,params}
  */
 const createSql = (i) => {
-	console.log('createSql',i.sql);
+	console.log('createSql', i.sql);
 	let excuteSql = "";
 	switch (i.sql) {
 		case "select":

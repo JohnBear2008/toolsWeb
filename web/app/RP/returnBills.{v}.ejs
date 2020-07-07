@@ -62,15 +62,14 @@
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
-                            <button type="button" id="btnFilterUnReturn" class="btn btn-default">待归还</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
                     <div style="float:right">
-
-                        <button id='btnReturnBillNew' type="button" class="btn btn-info">还货</button>
-                        <button id='btnReturnBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <button id='btnReturnStart' type="button" class="btn btn-info">还货</button>
+                        <button id='btnReturnBillDetail' type="button" class="btn btn-info">查看</button>
+                        <!-- <button id='btnReturnBillDelete' type="button" class="btn btn-danger">删除</button> -->
                         <button id='btnReturnBillAudit' type="button" class="btn btn-success">审核</button>
                         <button id='btnReturnBillReject' type="button" class="btn btn-warning">驳回</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
@@ -88,15 +87,11 @@
                             <tr>
                                 <th>还货单号</th>
                                 <th>单据来源</th>
-                                <th>借货单号</th>
                                 <th>客户简称</th>
-                                <th>产品编号</th>
                                 <th>经手人</th>
                                 <th>审核人</th>
                                 <th>备注</th>
                                 <th>制单日期</th>
-                                <th>未还数量</th>
-                                <th>归还状态</th>
                                 <th>状态</th>
                                 <th>搜索值</th>
                             </tr>
@@ -117,17 +112,84 @@
                         <thead>
                             <tr>
                                 <th>序号</th>
+                                <th>借货单号</th>
                                 <th>产品编号</th>
                                 <th>产品名称</th>
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
+                                <th>状态</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- 待还货模态框（Modal） -->
+    <div class="modal fade" id="unReturnModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 90%;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        待还货
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+
+
+                    <div class="panel panel-default" id='mainTablePanel'>
+                        <div class="panel-heading">
+
+                            <!-- 功能组按钮 -->
+                            <div style="float:right">
+                                <button id='btnReturnBillNew' type="button" class="btn btn-info">生成还货单</button>
+
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                        <div class="panel-body">
+                            <table id="rp_borrowProductBills" class=" table table-striped table-bordered"
+                                style="width:100%">
+                                <thead>
+                                    <tr>
+
+                                        <th>借货单号</th>
+                                        <th>客户简称</th>
+                                        <th>产品编号</th>
+                                        <th>经手人</th>
+                                        <th>借货日期</th>
+                                        <th>未还数量</th>
+                                        <th>状态</th>
+                                        <th>备注</th>
+                                        <th>搜索值</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+
+                </div><!-- /.modal-content -->
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+
+                </div>
+            </div><!-- /.modal -->
         </div>
     </div>
 
@@ -602,11 +664,14 @@
                                         <thead>
                                             <tr>
                                                 <th>序号</th>
+                                                <th>借货单号</th>
                                                 <th>产品编号</th>
                                                 <th>产品描述</th>
                                                 <th>单位</th>
                                                 <th>数量</th>
                                                 <th>备注</th>
+                                                <th>状态</th>
+
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -626,6 +691,7 @@
                                                 <!-- <input id="rp_returnsubbillsForm-DBID" type="hidden" value=""> -->
                                                 <input id="rp_returnsubbillsForm-returnBillId" type="hidden" value="">
 
+
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">序号</label>
                                                     <div class="col-sm-5">
@@ -633,9 +699,9 @@
                                                         </p>
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">可用库存</label>
+                                                    <label class="col-sm-1 control-label">未还数量</label>
                                                     <div class="col-sm-3">
-                                                        <p class="form-control-static" id="stockNum">
+                                                        <p class="form-control-static" id="unreturnNum">
                                                         </p>
                                                     </div>
 
@@ -645,6 +711,28 @@
                                                             id="rp_returnsubbillsForm-status">
                                                         </p>
                                                     </div> -->
+                                                </div>
+
+                                                <div class="form-group">
+
+
+                                                    <label class="col-sm-1 control-label">借货单号</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_returnsubbillsForm-borrowBillId">
+                                                        </p>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">状态</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_returnsubbillsForm-status">
+                                                        </p>
+
+                                                    </div>
+
+
+
                                                 </div>
 
 
@@ -665,7 +753,7 @@
                                                     <div class="col-sm-5">
                                                         <select id="rp_returnsubbillsForm-warehouseId"
                                                             class="selectpicker form-control" data-live-search="true"
-                                                            data-size="5" data-dropup-auto="false">
+                                                            data-size="5" data-dropup-auto="false" disabled>
                                                         </select>
 
 
@@ -811,11 +899,7 @@
     }, {
         data: 'billFrom'
     }, {
-        data: 'borrowBillId'
-    }, {
         data: 'customerShortName'
-    }, {
-        data: 'productId'
     }, {
         data: 'operator',
     }, {
@@ -824,10 +908,6 @@
         data: 'remark',
     }, {
         data: 'makeDate',
-    }, {
-        data: 'unreturnNum',
-    }, {
-        data: 'returnStatus',
     }, {
         data: 'status',
     }, {
@@ -839,6 +919,8 @@
     const subColumnsArray = [{
         data: 'rowId',
     }, {
+        data: 'borrowBillId',
+    }, {
         data: 'productId',
     }, {
         data: 'productName',
@@ -848,31 +930,54 @@
         data: 'num',
     }, {
         data: 'remark',
+    }, {
+        data: 'status',
     }]
 
-    // const recordHistoryColumnsArray = [{
-    //         data: 'repairId',
-    //     }, {
-    //         data: 'customerShortName'
-    //     }, {
-    //         data: 'recordBillId'
-    //     },
-    //     {
-    //         data: 'productId'
-    //     }, {
-    //         data: 'isRework',
-    //     }, {
-    //         data: 'urgent',
-    //     }, {
-    //         data: 'inWarranty',
-    //     }, {
-    //         data: 'repairStaff',
-    //     }, {
-    //         data: 'repairLastFee',
-    //     }, {
-    //         data: 'status',
-    //     }
-    // ]
+
+    const unReturnColumnsArray = [{
+        data: 'borrowBillId'
+    }, {
+        data: 'customerShortName'
+    }, {
+        data: 'productId'
+    }, {
+        data: 'operator',
+    }, {
+        data: 'borrowDate',
+    }, {
+        data: 'unreturnNum',
+    }, {
+        data: 'status',
+    }, {
+        data: 'remark',
+    }, {
+        data: 'searchText',
+        visible: false
+    }];
+
+    //加载待还货表格
+    const loadUnReturnTable = async () => {
+
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_borrowProductBills',
+            sqlParams: {
+                sqlId: 'sqlUnreturnBills',
+                params: {
+                    filter: 'unreturnNum>0',
+                    // orderBy: 'billSaveTimeStamp desc'
+                }
+            },
+            dtParams: {
+                // bAutoWidth: false,//取消自动宽度
+                columns: unReturnColumnsArray,
+                // scrollX: true,
+                // autoWidth: true
+            }
+        })
+
+    }
 
     //选中客户后,填写其他相关信息
 
@@ -963,18 +1068,18 @@
 
     // }
 
-    //仓库选择修改事件
-    const addWarehouseListener = () => {
-        // $('#rp_outsubbillsForm-warehouseId').unbind();
-        $('#rp_returnsubbillsForm-warehouseId').change(async function () {
-            let warehouseId = $('#rp_returnsubbillsForm-warehouseId option:selected')
-                .val()
-            if (warehouseId) {
-                $('#rp_returnsubbillsForm-warehouseId').selectpicker('refresh');
-                showStockNum();
-            }
-        });
-    }
+    // //仓库选择修改事件
+    // const addWarehouseListener = () => {
+    //     // $('#rp_outsubbillsForm-warehouseId').unbind();
+    //     $('#rp_returnsubbillsForm-warehouseId').change(async function () {
+    //         let warehouseId = $('#rp_returnsubbillsForm-warehouseId option:selected')
+    //             .val()
+    //         if (warehouseId) {
+    //             $('#rp_returnsubbillsForm-warehouseId').selectpicker('refresh');
+    //             showStockNum();
+    //         }
+    //     });
+    // }
 
     // //保固期自动计算事件
     // const addInWarrantyListener = () => {
@@ -1049,7 +1154,7 @@
                 mainTableData = {}
                 $('#subTablePanel').hide();
             } else {
-                // table.$('tr.selected').removeClass('selected');
+                table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
 
                 // let rowSelect = table.row('.selected').data();
@@ -1059,27 +1164,29 @@
                 mainTableData = rowSelect; //刷新全局主表对象数据
                 console.log("mainTableData:", mainTableData);
 
-                let rowsSelect = table.rows('.selected').data();
+                // let rowsSelect = table.rows('.selected').data();
 
 
-                subTableData = [];
-                for (let i = 0; i < rowsSelect.length; i++) {
-                    // //删除多余字段
-                    // delete rowsSelect[i].borrowBillId;
-                    // delete rowsSelect[i].unreturnNum;
-                    // delete rowsSelect[i].returnStatus;
+                // subTableData = [];
+                // for (let i = 0; i < rowsSelect.length; i++) {
+                //     // //删除多余字段
+                //     // delete rowsSelect[i].borrowBillId;
+                //     // delete rowsSelect[i].unreturnNum;
+                //     // delete rowsSelect[i].status;
 
-                    subTableData.push({
-                        rowId: rowsSelect[i].rowId,
-                        productId: rowsSelect[i].productId,
-                        productName: rowsSelect[i].productName,
-                        num: rowsSelect[i].num,
-                        unit: rowsSelect[i].unit,
-                        remark: rowsSelect[i].remark,
+                //     subTableData.push({
+                //         DBID: rowsSelect[i].DBID,
+                //         rowId: rowsSelect[i].rowId,
+                //         productId: rowsSelect[i].productId,
+                //         productName: rowsSelect[i].productName,
+                //         unreturnNum: rowsSelect[i].unreturnNum,
+                //         num: rowsSelect[i].num,
+                //         unit: rowsSelect[i].unit,
+                //         remark: rowsSelect[i].remark,
 
-                    });
-                }
-                console.log("subTableData:", subTableData);
+                //     });
+                // }
+                // console.log("subTableData:", subTableData);
 
                 if (mainTableData.returnBillId) {
                     await loadMainBillSubTable(rowSelect.returnBillId)
@@ -1118,7 +1225,7 @@
 
             mainTableData = dataSelect; //刷新全局主表对象数据
 
-            $('#btnReturnBillNew').click();
+            $('#btnReturnBillDetail').click();
 
             // // console.log('mainTableData', mainTableData);
 
@@ -1170,25 +1277,16 @@
             case mainTableFilter === 'to_days(makeDate) = to_days(now())':
                 $('#btnFilterToday').addClass('active');
                 $('#btnFilterUnAudit').removeClass('active');
-                $('#btnFilterUnReturn').removeClass('active');
                 $('#btnFilterDiy').removeClass('active');
                 break;
             case mainTableFilter === 'status ="待审核"':
                 $('#btnFilterToday').removeClass('active');
                 $('#btnFilterUnAudit').addClass('active');
-                $('#btnFilterUnReturn').removeClass('active');
-                $('#btnFilterDiy').removeClass('active');
-                break;
-            case mainTableFilter === 'returnStatus ="待归还"':
-                $('#btnFilterToday').removeClass('active');
-                $('#btnFilterUnAudit').removeClass('active');
-                $('#btnFilterUnReturn').addClass('active');
                 $('#btnFilterDiy').removeClass('active');
                 break;
             default:
                 $('#btnFilterToday').removeClass('active');
                 $('#btnFilterUnAudit').removeClass('active');
-                $('#btnFilterUnReturn').removeClass('active');
                 $('#btnFilterDiy').addClass('active');
                 break;
         }
@@ -1261,7 +1359,7 @@
                 $(this).addClass('selected');
 
                 let rowSelect = subTable.row('.selected').data();
-                // console.log("rowSelect:" + JSON.stringify(rowSelect));
+                console.log("rowSelect:" + JSON.stringify(rowSelect));
 
 
                 //初始化并填写form内inputs
@@ -1269,6 +1367,9 @@
                     formId: 'rp_returnsubbillsForm',
                     params: rowSelect
                 })
+
+                //填写未归还数量
+                $('#unreturnNum').text(rowSelect.unreturnNum);
 
                 //打开面板
                 $('#rp_returnsubbillsPanel').show();
@@ -1429,7 +1530,7 @@
                 // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
                 let statusArr = await getDataBySql({
-                    sql: 'getReturnSubBill',
+                    sql: 'sqlReturnSubBills',
                     params: {
                         filter: 'returnBillId in ' + billIdRange
                     }
@@ -1460,18 +1561,18 @@
 
 
 
-    //更新所选产品即时库存
-    const showStockNum = async () => {
-        let stockNum = 0;
-        let productId = $('#rp_returnsubbillsForm-productId option:selected').val();
-        let warehouseId = $('#rp_returnsubbillsForm-warehouseId option:selected').val();
-        // console.log(warehouseId);
+    // //更新所选产品即时库存
+    // const showStockNum = async () => {
+    //     let unreturnNum = 0;
+    //     let productId = $('#rp_returnsubbillsForm-productId option:selected').val();
+    //     let warehouseId = $('#rp_returnsubbillsForm-warehouseId option:selected').val();
+    //     // console.log(warehouseId);
 
-        if (productId && warehouseId) {
-            stockNum = await getStockNum(productId, warehouseId);
-        }
-        $('#stockNum').text(stockNum)
-    }
+    //     if (productId && warehouseId) {
+    //         unreturnNum = await getStockNum(productId, warehouseId);
+    //     }
+    //     $('#unreturnNum').text(unreturnNum)
+    // }
 
 
     //加载多联系人数据
@@ -1577,13 +1678,6 @@
 
         })
 
-        //过滤器待审核
-        $('#btnFilterUnReturn').click(function () {
-            mainTableFilter = 'returnStatus ="待归还"';
-            //初始化主表
-            loadBillMainTable();
-
-        })
 
         //过滤器自定义按钮
         $('#btnFilterDiy').click(function () {
@@ -1639,14 +1733,130 @@
 
         })
 
+        //还货按钮
+        $('#btnReturnStart').click(async function () {
 
 
-        //新增需求单按钮
+
+            //打开面板
+            $('#unReturnModal').modal('show');
+
+            loadUnReturnTable()
+
+        })
+
+        //还货单新增按钮
+
         $('#btnReturnBillNew').click(async function () {
 
             //1.check-选中检测
-            if (!mainTableData.productId) {
-                alert('未选中产品,请检查')
+            let table = $('#rp_borrowProductBills').DataTable();
+            let rowsSelect = table.rows('.selected').data();
+            if (rowsSelect.length < 1) {
+                alert('请先选中需要归还的产品!')
+                return;
+            }
+
+            //1.check-多选合法性检测
+
+            for (let i = 0; i < rowsSelect.length; i++) {
+                if (i === 0) {
+                    continue
+                }
+                if (rowsSelect[i].customerShortName !== rowsSelect[i - 1]
+                    .customerShortName) {
+                    alert('不支持不同客户合并还货,请重选!')
+                    return
+                }
+            }
+
+
+            //2.do-填写主表数据
+
+            console.log('rowsSelect[0]', rowsSelect[0]);
+
+            //解除客户监听事件
+            $('#rp_returnBillsForm-customerShortName').unbind();
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_returnBillsForm',
+                params: rowsSelect[0]
+            })
+
+            let r1 = await getDataBySql({
+                sql: 'getCustomers',
+                params: {
+                    filter: 'customerShortName="' + rowsSelect[0].customerShortName + '"'
+                }
+            })
+
+            // console.log('r1:' + JSON.stringify(r1));
+
+            customerData = r1[0]; //将查询结果赋给全局变量
+            //加载备选联系人
+            loadContactOptions(customerData);
+
+            //关闭子表panel
+            $('#rp_returnsubbillsPanel').hide();
+
+
+            //设置默认值
+
+            createReturnBillId();
+            $("#rp_returnBillsForm-billFrom").text('电脑端');
+            $("#rp_returnBillsForm-returnDate").val(currentDate());
+            $("#rp_returnBillsForm-status").text('');
+            $("#rp_returnBillsForm-auditor").selectpicker('val', '');
+
+
+            //客户选定监听事件
+            addCustomerListener();
+
+
+            //2.do-加载子表数据
+
+            let returnSubArr = [];
+            for (let i = 0; i < rowsSelect.length; i++) {
+
+                returnSubArr.push({
+                    rowId: i + 1,
+                    borrowBillId: rowsSelect[i].borrowBillId,
+                    productId: rowsSelect[i].productId,
+                    productName: rowsSelect[i].productName,
+                    unreturnNum: rowsSelect[i].unreturnNum,
+                    num: rowsSelect[i].unreturnNum,
+                    unit: rowsSelect[i].unit,
+                    remark: rowsSelect[i].remark,
+                    status: '预还入'
+                })
+
+            }
+
+            subTableData = returnSubArr
+            loadDataSubTable({
+                elementId: 'rp_returnsubbills',
+                dataArray: subTableData
+            });
+
+
+            // loadBillSubTable(dataSelect.returnBillId);
+
+            //打开面板
+            $('#rp_returnBillsModal').modal('show');
+
+
+
+
+        })
+
+
+        //查看按钮
+        $('#btnReturnBillDetail').click(async function () {
+
+            //1.check-选中检测
+            if (!mainTableData.returnBillId) {
+                alert('请先选中需要查看的还货单')
                 return;
             }
 
@@ -1702,10 +1912,6 @@
             if (!mainTableData.returnDate) {
                 $("#rp_returnBillsForm-returnDate").val(currentDate());
             }
-
-
-
-
 
 
 
@@ -1840,82 +2046,143 @@
                 return
             }
 
-            //2.do-系统出库
-            let mainTable = {
-                billFrom: '还货单',
-                billId: mainTableData.returnBillId,
-                customerId: mainTableData.customerId,
-                customerShortName: mainTableData.customerShortName,
-                customerName: mainTableData.customerName,
-                customerBelongShort: mainTableData.customerBelongShort,
-                contact: mainTableData.contact,
-                mobilePhone: mainTableData.mobilePhone,
-                workPhone: mainTableData.workPhone,
-                returnType: mainTableData.returnType,
-                operator: mainTableData.operator,
-                // address: mainTableData.address,
-                auditor: mainTableData.auditor,
-                makeDate: mainTableData.makeDate,
-                auditDate: currentDate(),
-                status: '已审核',
-                remark: mainTableData.remark,
-            };
-            let subTable = [];
-            for (const n of subTableData) {
-                subTable.push({
-                    billId: n.returnBillId,
-                    rowId: n.rowId,
-                    productId: n.productId,
-                    productName: n.productName,
-                    productDescription: n.productDescription,
-                    productClass: n.productClass,
-                    systemType: n.systemType,
-                    warehouseId: n.warehouseId,
-                    warehouseName: n.warehouseName,
-                    unit: n.unit,
-                    num: n.num,
-                    status: '已出',
-                    remark: n.remark,
-                    actType: '还货单',
-                    rpBillId: mainTableData.returnBillId
-                })
-            }
+            //do-判断还货方式
+            let returnType = mainTableData.returnType;
 
-            let r1 = await autoOutStoreBills({
-                mainTable: mainTable,
-                subTable: subTable
-            })
-
-            console.log('r1', r1);
-
-
-            //2.do-更新还货单状态
-
-            if (!r1) {
-                alert('出现错误')
-                return;
-            }
-
-            let billUpdateData = {
-                returnBillId: mainTableData.returnBillId,
-                status: '已审核'
-            }
-
-            let r2 = await postDBData({
-                sql: 'update',
-                params: {
-                    tableId: 'rp_returnbills',
-                    data: [billUpdateData],
-                    key: 'returnBillId'
+            if (returnType === '正常入库') {
+                //2.do-系统出库
+                let mainTable = {
+                    billFrom: '还货单',
+                    billId: mainTableData.returnBillId,
+                    customerId: mainTableData.customerId,
+                    customerShortName: mainTableData.customerShortName,
+                    customerName: mainTableData.customerName,
+                    customerBelongShort: mainTableData.customerBelongShort,
+                    contact: mainTableData.contact,
+                    mobilePhone: mainTableData.mobilePhone,
+                    workPhone: mainTableData.workPhone,
+                    // returnType: mainTableData.returnType,
+                    operator: mainTableData.operator,
+                    // address: mainTableData.address,
+                    auditor: mainTableData.auditor,
+                    makeDate: mainTableData.makeDate,
+                    auditDate: currentDate(),
+                    status: '已审核',
+                    remark: mainTableData.remark,
+                };
+                let subTable = [];
+                for (const n of subTableData) {
+                    subTable.push({
+                        billId: n.returnBillId,
+                        rowId: n.rowId,
+                        productId: n.productId,
+                        productName: n.productName,
+                        productDescription: n.productDescription,
+                        productClass: n.productClass,
+                        systemType: n.systemType,
+                        warehouseId: n.warehouseId,
+                        warehouseName: n.warehouseName,
+                        unit: n.unit,
+                        num: n.num,
+                        status: '已入',
+                        remark: n.remark,
+                        actType: '还货单',
+                        rpBillId: mainTableData.returnBillId
+                    })
                 }
-            })
 
-            //3.return-操作成功信息
-            if (r2.affectedRows > 0) {
-                alert('审核成功,系统已自动生成相应出库单!')
-            } else {
-                alert('审核失败')
+                let r1 = await autoInStoreBills({
+                    mainTable: mainTable,
+                    subTable: subTable
+                })
+
+                console.log('r1', r1);
+
+
+                //2.do-更新还货单状态
+
+                if (!r1) {
+                    alert('出现错误')
+                    return;
+                }
+
+                let billUpdateData = {
+                    returnBillId: mainTableData.returnBillId,
+                    status: '已审核'
+                }
+
+                let r2 = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'rp_returnbills',
+                        data: [billUpdateData],
+                        key: 'returnBillId'
+                    }
+                })
+
+                //do-更新还货单子表
+
+                for (let n of subTableData) {
+                    if (n.status === '预还入') {
+                        n.status = '已还入'
+                    }
+                }
+
+                let r3 = await postDBData({
+                    sql: 'replace',
+                    params: {
+                        tableId: 'rp_returnsubbills',
+                        data: subTableData
+                    }
+                })
+
+                //2.do-更新借货单子表状态
+                console.log('subTableData huan', subTableData);
+
+
+
+                //do-更新借货单还货数量
+                let updateBorrowProductArr = [];
+                let borrowBillIdsStr = ''
+                for (const n of subTableData) {
+                    borrowBillIdsStr = borrowBillIdsStr + '"' + n.borrowBillId + '",'
+                    updateBorrowProductArr.push({
+                        borrowBillId: n.borrowBillId,
+                        productId: n.productId,
+                        returnNum: n.num
+                    })
+                }
+                let r4 = await postDBData({
+                    sql: 'updateNum',
+                    params: {
+                        tableId: 'rp_borrowsubbills',
+                        keyTitles: ['borrowBillId', 'productId'],
+                        numTitles: ['returnNum'],
+                        data: updateBorrowProductArr
+                    }
+                })
+
+                //do-更新借货单状态
+                borrowBillIdsStr = borrowBillIdsStr.substring(0, borrowBillIdsStr.length - 1)
+                let r5 = await postDBData({
+                    sql: 'updateBorrowStatus',
+                    params: {
+                        filter: 'borrowBillId in (' + borrowBillIdsStr + ')'
+                    }
+                })
+
+
+                //3.return-操作成功信息
+                if (r2 && r3 && r4 && r5) {
+                    alert('审核成功,系统已自动生成相应入库单!')
+                } else {
+                    alert('审核失败')
+                }
+
             }
+
+
+
             //3.return-刷新主表
             loadBillMainTable();
 
@@ -1941,13 +2208,13 @@
                 return
             }
 
-            //do-更新还货单状态
+            //2.do-更新还货单状态
             let billUpdateData = {
                 returnBillId: mainTableData.returnBillId,
                 status: '已驳回'
             }
 
-            let rs = await postDBData({
+            let r1 = await postDBData({
                 sql: 'update',
                 params: {
                     tableId: 'rp_returnbills',
@@ -1956,8 +2223,26 @@
                 }
             })
 
+            //2.do-更新还货单子表状态
+            let subbillUpdateData = [];
+            for (const n of subTableData) {
+                subbillUpdateData.push({
+                    returnBillId: n.returnBillId,
+                    status: '已驳回'
+                })
+            }
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_returnsubbills',
+                    data: subbillUpdateData,
+                    key: 'returnBillId'
+                }
+            })
+
             //return-操作成功信息
-            if (rs.affectedRows > 0) {
+            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
                 alert('驳回成功!')
             } else {
                 alert('驳回失败')
@@ -2046,50 +2331,18 @@
 
 
 
-        // // 新增填单按钮
-        // $('#btnAddProduct').click(function () {
-        //     let subTable = $('#rp_returnsubbills').DataTable();
-        //     //删除子表选中状态
-        //     // subTable.$('tr.selected').removeClass('selected');
 
-        //     subTable.rows().deselect();
-
-        //     //清空panel数据
-        //     clearFormInputs({
-        //         formId: 'rp_returnsubbillsForm'
-        //     })
-        //     //打开面板
-        //     $('#rp_returnsubbillsPanel').show();
-
-        //     //设置默认值
-
-        //     // $("#rp_returnsubbillsForm-status").text('新增')
-        //     // $("#rp_returnsubbillsForm-productId").selectpicker('val', '')
-        //     // $("#rp_returnsubbillsForm-productFrom").selectpicker('val', '终端客户')
-        //     // $("#rp_returnsubbillsForm-productBelong").selectpicker('val', '客户')
-        //     // $("#rp_returnsubbillsForm-isRework").selectpicker('val', '否')
-        //     // $("#rp_returnsubbillsForm-urgent").selectpicker('val', '否')
-        //     // $("#rp_returnsubbillsForm-inWarranty").selectpicker('val', '否')
-
-        //     //设置默认值
-
-        //     $("#rp_returnsubbillsForm-status").text('新增')
-        //     $("#rp_returnsubbillsForm-productId").selectpicker('val', '')
-        //     $("#rp_returnsubbillsForm-warehouseId").selectpicker('val', 'W1')
-        //     $("#rp_returnsubbillsForm-num").val(1)
-        // })
 
         //保存产品按钮
 
         $('#btnProductSave').click(async function () {
 
-            //库存不足警告
-            let stockNum = parseInt($('#stockNum').text());
+            //1.check-库存不足警告
+            let unreturnNum = parseInt($('#unreturnNum').text());
             let num = parseInt($('#rp_returnsubbillsForm-num').val())
-            if (num > stockNum) {
-                if (!confirm('该产品客服仓当前库存不足,是否依然保存?')) {
-                    return;
-                }
+            if (num > unreturnNum) {
+                alert('数量不能超过未归还数量,请检查')
+                return;
             }
 
             let returnBillId = $("#rp_returnBillsForm-returnBillId").text();
@@ -2112,12 +2365,6 @@
 
                     //此处不用===避免,字符类型不匹配导致相关问题
                     if (subTableData[n].rowId == rowData.rowId) {
-                        // console.log('match');
-                        // if (subTableData[n].status !== '待审核' && subTableData[n].status !== '新增') {
-                        //     alert('已存在下游单据,不符合修改条件!')
-                        //     return;
-                        // }
-
                         subTableData[n] = rowData;
                         break;
                     }
@@ -2129,22 +2376,6 @@
                 // console.log("rowData:" + JSON.stringify(rowData.status));
                 rowData.rowId = rowNum + 1;
 
-                // let rs = await checkRecordHistory({
-                //     productId: rowData.productId
-                // })
-
-                // if (rs.length > 0) {
-                //     alert('检测到近期存在还货记录,请核实是否为返修品,还货信息如下:\n' +
-                //         '制单日期:' + rs[0].makeDate + '\n' +
-                //         '还货日期:' + rs[0].finishDate + '\n' +
-                //         '还货人:' + rs[0].repairStaff + '\n' +
-                //         '故障描述:' + rs[0].faultDescription + '\n' +
-                //         '检测结果:' + rs[0].testResult + '\n' +
-                //         '更换原件:' + rs[0].changePartList + '\n' +
-                //         '费用:' + rs[0].repairLastFee
-                //     )
-                // }
-                // rowData.isRework = '是'
                 subTableData.push(rowData);
                 // console.log("subTableData:" + JSON.stringify(subTableData));
 
@@ -2158,246 +2389,8 @@
 
         })
 
-        // // 删除产品按钮
-        // $('#btnDeleteProduct').click(function () {
-        //     let subTable = $('#rp_returnsubbills').DataTable();
-        //     let rowSelect = subTable.row('.selected').data();
-        //     // alert(JSON.stringify(rowSelect))
-
-        //     // let table = $('#rp_returnBills').DataTable();
-        //     // let dataSelect = table.rows('.selected').data();
-        //     // console.log('dataSelect',dataSelect);
 
 
-        //     if (rowSelect) {
-        //         if (mainTableData.status !== '待审核') {
-        //             alert('非待审核状态还货单不允许修改!')
-        //         } else {
-        //             //删除元素
-        //             for (const n in subTableData) {
-        //                 if (subTableData[n].rowId === rowSelect.rowId) {
-        //                     subTableData.splice(n, 1);
-        //                 }
-        //             }
-        //             //重新排序rowId,避免空缺
-        //             for (const n in subTableData) {
-        //                 subTableData[n].rowId = parseInt(n) + 1;
-        //             }
-
-        //             //重新加载子表
-        //             loadDataSubTable({
-        //                 elementId: 'rp_returnsubbills',
-        //                 dataArray: subTableData
-        //             });
-
-        //             // //自动点击新增按钮,防止遗留数据产生错误
-        //             // $('#btnAddProduct').click()
-
-        //         }
-
-        //     } else {
-        //         alert('请先点击表格选中需要删除的产品!')
-        //     }
-        // })
-
-
-
-
-
-
-        // //表单产品清单打印按钮
-        // $('#listPrintBtn').click(function () {
-
-        //     if (!mainTableData.returnBillId) {
-        //         alert('请先选中需要打印的单据!')
-        //         return
-        //     }
-
-        //     // console.log('print subTable', subTableData);
-
-        //     let htmlModel = '　<DIV STYLE="page-break-before:always">' +
-        //         '<table width="600" border="0">' +
-        //         '<tr>' +
-        //         '<td width="150"><img src="/images/techmation.png" /></td>' +
-        //         '<td width="200" align="center"><h3>宁波弘讯还货码</h3>' +
-        //         '<p><h4>repairId</h4></p></td>' +
-        //         '<td width="150" align="center"><div id="qrcode" width:100px height:100px /></td>' +
-        //         '</tr>' +
-        //         '</table>' +
-        //         '<table width="600" border="1" class="table table-bordered">' +
-        //         '<tr>' +
-        //         '<td width="80">客户名称</td>' +
-        //         '<td colspan="2">customerShortName</td>' +
-        //         '<td width="80">移动电话</td>' +
-        //         '<td colspan="2">mobilePhone</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td>产品编号</td>' +
-        //         '<td colspan="2">productId</td>' +
-        //         '<td>数量</td>' +
-        //         '<td colspan="2">num</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td>生产日期</td>' +
-        //         '<td width="80">productionDate</td>' +
-        //         '<td width="80">经手人</td>' +
-        //         '<td>operator</td>' +
-        //         '<td width="80">客户归属</td>' +
-        //         '<td width="80">customerBelongShort</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td height="50">故障状况</td>' +
-        //         '<td colspan="5">faultDescription</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td>是否加急</td>' +
-        //         '<td>urgent</td>' +
-        //         '<td>是否返修</td>' +
-        //         '<td>isRework</td>' +
-        //         '<td>产品归属</td>' +
-        //         '<td>productBelong</td>' +
-        //         '</tr>' +
-        //         '</table>' +
-        //         '</DIV>';
-
-        //     //创建模板函数
-        //     const fillPrintModel = ({
-        //         htmlModel,
-        //         repairId,
-        //         customerShortName,
-        //         mobilePhone,
-        //         productId,
-        //         num,
-        //         productionDate,
-        //         operator,
-        //         customerBelongShort,
-        //         faultDescription,
-        //         urgent,
-        //         isRework,
-        //         productBelong
-        //     }) => {
-        //         let newHtml = htmlModel
-        //             .replace(/repairId/, repairId)
-        //             .replace(/qrcode/, 'qrcode-' + repairId)
-        //             .replace(/customerShortName/, customerShortName)
-        //             .replace(/mobilePhone/, mobilePhone)
-        //             .replace(/productId/, productId)
-        //             .replace(/num/, num)
-        //             .replace(/productionDate/, productionDate)
-        //             .replace(/operator/, operator)
-        //             .replace(/customerBelongShort/, customerBelongShort)
-        //             .replace(/faultDescription/, faultDescription)
-        //             .replace(/urgent/, urgent)
-        //             .replace(/isRework/, isRework)
-        //             .replace(/productBelong/, productBelong)
-
-        //         return newHtml;
-        //     }
-        //     //创建二维码函数
-        //     const createQrcode = ({
-        //         repairId
-        //     }) => {
-        //         var qrcode = new QRCode(document.getElementById("qrcode" + '-' + repairId), {
-        //             width: 100,
-        //             height: 100
-        //         });
-        //         qrcode.makeCode(repairId);
-        //     }
-
-        //     //创建信息表函数
-        //     const createRpHtml = (subTableData) => {
-        //         if (subTableData.length > 0) {
-        //             let divHtml = ''
-        //             for (let i = 0; i < subTableData.length; i++) {
-        //                 const element = subTableData[i];
-        //                 let newHtml = fillPrintModel({
-        //                     htmlModel: htmlModel,
-        //                     repairId: subTableData[i].returnBillId + '-' + subTableData[i]
-        //                         .rowId,
-        //                     customerShortName: mainTableData.customerShortName,
-        //                     mobilePhone: mainTableData.mobilePhone,
-        //                     productId: subTableData[i].productId,
-        //                     num: subTableData[i].num,
-        //                     productionDate: subTableData[i].productionDate,
-        //                     operator: mainTableData.operator,
-        //                     customerBelongShort: mainTableData.customerBelongShort,
-        //                     faultDescription: subTableData[i].faultDescription,
-        //                     urgent: subTableData[i].urgent,
-        //                     isRework: subTableData[i].isRework,
-        //                     productBelong: subTableData[i].productBelong
-
-        //                 })
-        //                 //删除第一页换页
-        //                 if (i === 0) {
-        //                     newHtml = newHtml.replace(/STYLE="page-break-before:always"/, '');
-        //                 }
-        //                 divHtml = divHtml + newHtml
-        //             }
-        //             $('#listPrintViewDiv').html(divHtml)
-        //         }
-        //     }
-
-
-        //     createRpHtml(subTableData);
-
-        //     //生成还货二维码
-        //     const createQrcodes = (subTableData) => {
-        //         if (subTableData.length > 0) {
-        //             for (const n of subTableData) {
-        //                 createQrcode({
-        //                     repairId: n.returnBillId + '-' + n.rowId
-        //                 })
-        //             }
-        //         }
-        //     }
-
-
-        //     createQrcodes(subTableData);
-
-
-
-
-
-
-
-
-        //     // fillPrintModel()
-
-        //     // let formData = getFormData({
-        //     //     formId: 'rp_returnBillsForm',
-        //     // })
-
-        //     // fillTableInputs({
-        //     //     tableId: 'printViewMainTable',
-        //     //     params: formDataToRowData(formData.data)
-        //     // })
-
-        //     // fillTableRows({
-        //     //     tableId: 'printViewSubTable',
-        //     //     cols: ['rowId', 'productId', 'productName', 'num'],
-        //     //     data: subTableData
-        //     // })
-
-        //     $('#listPrintViewModal').modal('show')
-        // })
-
-        // //确认打印按钮
-        // $('#listPrintConfirmBtn').click(function () {
-        //     Print('#listPrintViewDiv', {
-        //         onStart: function () {
-        //             console.log('onStart', new Date())
-        //         },
-        //         onEnd: function () {
-        //             console.log('onEnd', new Date())
-        //         }
-        //     })
-        // })
-
-
-        // //打印关闭按钮
-        // $('#listPrintCloseBtn').click(function () {
-        //     $('#listPrintViewModal').modal('hide')
-        // })
 
         //表单打印按钮
         $('#rp_returnBillsPrint').click(function () {
@@ -2453,6 +2446,13 @@
         //表单保存按钮
         $('#rp_returnBillsSave').click(async function () {
 
+            //check-单据状态
+            let billStatus = $("#rp_returnBillsForm-status").text()
+            if (billStatus !== '' && billStatus !== '待审核') {
+                alert('只能保存待审核单据,请检查!')
+                return;
+            }
+
 
             //1.check-不存在子表项目则中断保存
             if (subTableData.length === 0) {
@@ -2470,6 +2470,8 @@
 
             if (!mainFormData.data[0].maker) {
                 await autoUpdateReturnBillId();
+                //刷新还货单号
+                mainFormData.data[0].returnBillId = $("#rp_returnBillsForm-returnBillId").text();
                 mainFormData.data[0].maker = sessionName;
                 mainFormData.data[0].makeDate = currentDate();
             }
@@ -2481,10 +2483,19 @@
 
             console.log('mainFormData', mainFormData);
 
+
+
             let r1 = await postDBData({
                 sql: 'replace',
                 params: mainFormData
             })
+
+            //调整参数,删除unreturnNum 避免保存出错
+            for (let n of subTableData) {
+                n.returnBillId = mainFormData.data[0].returnBillId
+                delete n.DBID
+                delete n.unreturnNum
+            }
 
             let r2 = await postDBData({
                 sql: 'replace',
@@ -2494,10 +2505,23 @@
                 }
             })
 
+            // let PIDArr = [];
+            // for (const n of subTableData) {
+            //     PIDArr.push({
+            //         PID: n.productId,
+            //         warehouseId: n.warehouseId
+            //     })
+            // }
+
+            // let r3 = await initWarehousePID({
+            //     PIDArr: PIDArr
+            // })
+
             console.log('saveReturnBill r1:' + JSON.stringify(r1));
             console.log('saveReturnBill r2:' + JSON.stringify(r2));
+            // console.log('saveReturnBill r3:' + JSON.stringify(r3));
 
-            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+            if (r1 && r2) {
                 alert('保存成功!')
             } else {
                 alert('出现错误!')
@@ -2691,7 +2715,7 @@
             sqlParams: {
                 sql: 'getWarehouseSelector',
             },
-            // initValue: 'W1'
+            initValue: 'W1'
         })
 
 
@@ -2768,8 +2792,8 @@
         // //选定产品修改事件
         // addProductListener();
 
-        //仓库选择修改事件
-        addWarehouseListener();
+        // //仓库选择修改事件
+        // addWarehouseListener();
 
         // //保固期计算事件
         // addInWarrantyListener();

@@ -69,7 +69,7 @@
                     <div style="float:right">
 
                         <button id='btnBorrowBillNew' type="button" class="btn btn-info">新增</button>
-                        <button id='btnBorrowBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <!-- <button id='btnBorrowBillDelete' type="button" class="btn btn-danger">删除</button> -->
                         <button id='btnBorrowBillAudit' type="button" class="btn btn-success">审核</button>
                         <button id='btnBorrowBillReject' type="button" class="btn btn-warning">驳回</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
@@ -120,7 +120,7 @@
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
-                                <th>归还状态</th>
+                                <th>状态</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -408,7 +408,7 @@
                                     <label class="col-sm-1 control-label"
                                         for="rp_borrowBillsForm-fromBillId">单据来源</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_borrowBillsForm-billForm"></p>
+                                        <p class="form-control-static" id="rp_borrowBillsForm-billFrom"></p>
                                     </div>
 
 
@@ -605,7 +605,7 @@
                                                 <th>单位</th>
                                                 <th>数量</th>
                                                 <th>备注</th>
-                                                <th>归还状态</th>
+                                                <th>状态</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -638,10 +638,10 @@
                                                         </p>
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">归还状态</label>
+                                                    <label class="col-sm-1 control-label">状态</label>
                                                     <div class="col-sm-3">
                                                         <p class="form-control-static"
-                                                            id="rp_borrowsubbillsForm-returnStatus">
+                                                            id="rp_borrowsubbillsForm-status">
                                                         </p>
                                                     </div>
 
@@ -842,7 +842,7 @@
     }, {
         data: 'remark',
     }, {
-        data: 'returnStatus',
+        data: 'status',
     }]
 
 
@@ -1268,6 +1268,8 @@
                 filter: 'borrowBillId="' + billId + '"'
             }
         })
+        console.log('dataArray',dataArray);
+        
         //将表数据同步到共用数组
         subTableData = dataArray;
 
@@ -1278,7 +1280,7 @@
     }
 
 
-   
+
 
     //保存借货单函数
     const saveBorrowBill = async () => {
@@ -1319,7 +1321,7 @@
         })
 
         for (let n of subTableData) {
-            n.returnStatus = '待借出'
+            n.status = '预借出'
         }
 
         let r2 = await postDBData({
@@ -1488,7 +1490,7 @@
                 // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
                 let statusArr = await getDataBySql({
-                    sql: 'getBorrowSubBill',
+                    sql: 'sqlBorrowSubBills',
                     params: {
                         filter: 'borrowBillId in ' + billIdRange
                     }
@@ -1825,7 +1827,7 @@
 
             //2.do-系统出库
             let mainTable = {
-                billForm: '借货单',
+                billFrom: '借货单',
                 billId: mainTableData.borrowBillId,
                 customerId: mainTableData.customerId,
                 customerShortName: mainTableData.customerShortName,
@@ -1897,8 +1899,9 @@
             //2.do-更新借货单子表状态
 
             for (let n of subTableData) {
-                if (n.returnStatus === '待借出') {
-                    n.returnStatus = '待归还'
+                if (n.status === '预借出') {
+                    n.status = '待归还'
+                    n.returnNum = 0
                 }
             }
 
@@ -1918,8 +1921,6 @@
             }
             //3.return-刷新主表
             loadBillMainTable();
-
-
 
         })
 
@@ -1941,13 +1942,13 @@
                 return
             }
 
-            //do-更新借货单状态
+            //2.do-更新借货单状态
             let billUpdateData = {
                 borrowBillId: mainTableData.borrowBillId,
                 status: '已驳回'
             }
 
-            let rs = await postDBData({
+            let r1 = await postDBData({
                 sql: 'update',
                 params: {
                     tableId: 'rp_borrowbills',
@@ -1956,8 +1957,26 @@
                 }
             })
 
+            //2.do-更新借货单子表状态
+            let subbillUpdateData = [];
+            for (const n of subTableData) {
+                subbillUpdateData.push({
+                    borrowBillId: n.borrowBillId,
+                    status: '已驳回'
+                })
+            }
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_borrowsubbills',
+                    data: subbillUpdateData,
+                    key: 'borrowBillId'
+                }
+            })
+
             //return-操作成功信息
-            if (rs.affectedRows > 0) {
+            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
                 alert('驳回成功!')
             } else {
                 alert('驳回失败')
@@ -2065,7 +2084,7 @@
 
             //设置默认值
 
-            $("#rp_borrowsubbillsForm-returnStatus").text('新增')
+            $("#rp_borrowsubbillsForm-status").text('新增')
             $("#rp_borrowsubbillsForm-productId").selectpicker('val', '')
             $("#rp_borrowsubbillsForm-warehouseId").selectpicker('val', 'W1')
             $("#rp_borrowsubbillsForm-num").val(1)
@@ -2094,6 +2113,7 @@
             // console.log('productData:' + JSON.stringify(productData.data))
             let rowData = formDataToRowData(productData.data)
             rowData.borrowBillId = borrowBillId;
+            rowData.warehouseName = $('#rp_borrowsubbillsForm-warehouseId option:selected').text()
             // console.log('rowData:' + JSON.stringify(rowData))
 
             //检查是否存在序号,区分新增还是编辑
@@ -2439,6 +2459,13 @@
 
         //表单保存按钮
         $('#rp_borrowBillsSave').click(function () {
+
+            //check-单据状态
+            let billStatus = $("#rp_borrowBillsForm-status").text()
+            if (billStatus !== '' && billStatus !== '待审核') {
+                alert('只能保存待审核单据,请检查!')
+                return;
+            }
 
             //1.check-保存条件
             if (mainTableData.status === '已审核') {

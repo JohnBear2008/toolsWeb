@@ -402,9 +402,9 @@
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-billForm">单据来源</label>
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-billFrom">单据来源</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_outbillsForm-billForm"></p>
+                                        <p class="form-control-static" id="rp_outbillsForm-billFrom"></p>
                                     </div>
 
 
@@ -798,7 +798,7 @@
         data: 'DBID',
         // visible: 'false'
     }, {
-        data: 'billForm'
+        data: 'billFrom'
     }, {
         data: 'billId'
     }, {
@@ -1301,6 +1301,8 @@
 
         if (!mainFormData.data[0].maker) {
             await autoUpdateOutBillId();
+            //刷新出库单号
+            mainFormData.data[0].billId = $("#rp_outbillsForm-billId").text();
             mainFormData.data[0].status = '待审核';
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
@@ -1744,7 +1746,7 @@
 
 
             createOutBillId();
-            $("#rp_outbillsForm-billForm").text('出库单');
+            $("#rp_outbillsForm-billFrom").text('出库单');
             // $("#rp_outbillsForm-isInland").selectpicker('val', '国内')
             $("#rp_outbillsForm-sendWay").selectpicker('val', '邮寄过来')
 
