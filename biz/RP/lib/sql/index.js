@@ -59,9 +59,9 @@ const sqlChangeparts = "select * from rp_partsBills";
 const sqlResponseBills =
 	"select * from (select * from (select concat( ta.requestBillId,'-',ta.rowId ) as repairId,ta.recordBillId,ta.productId,ta.productDescription,ta.faultDescription,ta.repairResult,ta.isRework,ta.repairTotalFee,ta.finishDate,ta.status,tb.requestBillId,tb.customerId,tb.customerShortName,tb.requestDate,tc.DBID,tc.responseBillId,tc.customerName,tc.customerBelong,tc.invoiceName,tc.fax,tc.contact,tc.mobilePhone,tc.responseDate,tc.paymentWay,tc.sendWay,tc.expressCompany,tc.expressId,tc.responseStaff,tc.currency,tc.amount,tc.discount,tc.discountAmount,tc.payAmount,tc.payWay,tc.payDate,tc.isFullPay,tc.isSended,tc.maker,tc.makeDate,tc.remark,tc.billSaveTimeStamp from rp_recordbills ta left join rp_requestbills tb on ta.requestBillId = tb.requestBillId left join rp_responsebills tc on ta.responseBillId = tc.responseBillId) td where status ='维修完成' ) tA"
 //部件即时库存sql
-const rp_store = "select * from ( select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId) A"
+const rp_store = "select * from ( select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit,tc.warehouseId,tc.warehouseName from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId left join `rp_warehouseslist` tc on ta.warehouseId=tc.warehouseId) A"
 // //库存记录sql
-const rp_storeHistory = "select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId"
+const rp_storeHistory = "select * from ( select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp,tb.productName,tc.warehouseName from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId left join `rp_warehouseslist` tc on ta.warehouseId=tc.warehouseId) A"
 
 //历史单据主表sql
 const sqlHistoryBills =
@@ -100,6 +100,11 @@ const sqlOutSubBills = "select * from `rp_outsubbills`"
 const sqlInBills = "select * from `rp_inbills`"
 //入库单子表sql
 const sqlInSubBills = "select * from `rp_insubbills`"
+
+//出库单sql
+const sqlTransferBills = "select * from `rp_transferbills`"
+//出库单子表sql
+const sqlTransferSubBills = "select * from `rp_transfersubbills`"
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";

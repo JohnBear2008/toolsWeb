@@ -62,6 +62,8 @@
             <table id="rp_store" class=" table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
+                        <th>仓库编号</th>
+                        <th>仓库名称</th>
                         <th>PID编号</th>
                         <th>产品名称</th>
                         <th>产品描述</th>
@@ -81,6 +83,7 @@
             <table id="rp_storeHistory" class=" table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
+                        <th>仓库名称</th>
                         <th>PID编号</th>
                         <th>初始数量</th>
                         <th>操作数量</th>
@@ -101,6 +104,10 @@
 
 <script type="text/javascript">
     const rp_storeColumns = [{
+            data: 'warehouseId'
+        }, {
+            data: 'warehouseName'
+        }, {
             data: 'PID'
         }, {
             data: 'productName'
@@ -117,6 +124,8 @@
     ]
 
     const rp_storeHistoryColumns = [{
+            data: 'warehouseName'
+        }, {
             data: 'PID'
         },
         {
@@ -307,7 +316,15 @@
                 }
             },
             dtParams: {
-                columns: rp_storeColumns
+                columns: rp_storeColumns,
+                aLengthMenu: [
+                    [10, 20, 50],
+                    [10, 20, 50]
+                ], //设置每页显示数据条数的下拉选项
+                iDisplayLength: 10, //每页初始显示5条记录,
+                dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
             }
         })
 
@@ -321,7 +338,15 @@
                 }
             },
             dtParams: {
-                columns: rp_storeHistoryColumns
+                columns: rp_storeHistoryColumns,
+                aLengthMenu: [
+                    [10, 20, 50],
+                    [10, 20, 50],
+                ], //设置每页显示数据条数的下拉选项
+                iDisplayLength: 10, //每页初始显示5条记录
+                dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
             }
         })
 

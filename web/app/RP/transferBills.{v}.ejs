@@ -68,11 +68,11 @@
                     <!-- 功能组按钮 -->
                     <div style="float:right">
 
-                        <button id='btnOutBillNew' type="button" class="btn btn-info">新增</button>
-                        <button id='btnOutBillAudit' type="button" class="btn btn-warning">审核</button>
-                        <button id='btnOutBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <button id='btnTransferBillNew' type="button" class="btn btn-info">新增</button>
+                        <button id='btnTransferBillAudit' type="button" class="btn btn-warning">审核</button>
+                        <button id='btnTransferBillDelete' type="button" class="btn btn-danger">删除</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
-                            打印出库码
+                            打印调拨码
                         </button> -->
                         <button type="button" class="btn btn-primary" id="rp_transferbillsPrint">
                             打印调拨凭单
@@ -84,12 +84,13 @@
                     <table id="rp_transferbills" class=" table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
-                                <th>出库号</th>
-                                <th>来源单类型</th>
-                                <th>单据编号</th>
+
+                                <th>调拨单号</th>
+                                <th>拨出仓库</th>
+                                <th>拨入仓库</th>
                                 <th>制单人</th>
-                                <th>审核人</th>
                                 <th>制单日期</th>
+                                <th>审核人</th>
                                 <th>审核日期</th>
                                 <th>备注</th>
                                 <th>单据状态</th>
@@ -150,7 +151,7 @@
                             <form class="form-horizontal" role="form" id='filterForm'>
 
                                 <!-- <div class="form-group">
-                                    <label class="col-sm-2 control-label">出库日期</label>
+                                    <label class="col-sm-2 control-label">调拨日期</label>
                                     <div class="col-sm-5">
                                         <div class="input-group date form_date ">
                                             <input id="filterForm-borrowDateB" class="form-control " size="16"
@@ -238,7 +239,7 @@
                                 <tr>
                                     <td width='80px'>调拨单号:</td>
                                     <td>
-                                        <p class="form-control-static" id="printViewMainTable-billId"></p>
+                                        <p class="form-control-static" id="printViewMainTable-transferBillId"></p>
                                     </td>
                                     <td width='80px'>客户编号:</td>
                                     <td>
@@ -322,7 +323,7 @@
             <div class="modal-content">
                 <div class="modal-body">
 
-                    <h2>弘讯科技股份有限公司出库清单</h2>
+                    <h2>弘讯科技股份有限公司调拨清单</h2>
                     <hr>
 
                     <div id="listPrintViewDiv">
@@ -381,9 +382,10 @@
                                 <input id="rp_transferbillsForm-DBID" type="hidden" value="">
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_transferbillsForm-billId">调拨单号</label>
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_transferbillsForm-transferBillId">调拨单号</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_transferbillsForm-billId"></p>
+                                        <p class="form-control-static" id="rp_transferbillsForm-transferBillId"></p>
                                     </div>
 
                                     <label class="col-sm-1 control-label"
@@ -535,7 +537,8 @@
                                             <form class="form-horizontal" role="form" id='rp_transfersubbillsForm'>
 
                                                 <!-- <input id="rp_transfersubbillsForm-DBID" type="hidden" value=""> -->
-                                                <input id="rp_transfersubbillsForm-billId" type="hidden" value="">
+                                                <input id="rp_transfersubbillsForm-transferBillId" type="hidden"
+                                                    value="">
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">序号</label>
@@ -700,8 +703,6 @@
         </div><!-- /.modal -->
     </div>
 
-
-
 </div>
 
 
@@ -710,18 +711,17 @@
     //申请表主表dataTable column 数组
 
     const mainColumnsArray = [{
-        data: 'DBID',
-        // visible: 'false'
+        data: 'transferBillId'
     }, {
-        data: 'billFrom'
+        data: 'outWarehouseName',
     }, {
-        data: 'billId'
+        data: 'inWarehouseName',
     }, {
         data: 'maker',
     }, {
-        data: 'auditor',
-    }, {
         data: 'makeDate',
+    }, {
+        data: 'auditor',
     }, {
         data: 'auditDate',
     }, {
@@ -771,52 +771,9 @@
     //     }
     // ]
 
-    //选中客户后,填写其他相关信息
-
-    const fillCustomerInfo = async (customerShortName) => {
-        let r1 = await getDataBySql({
-            sql: 'getCustomers',
-            params: {
-                filter: 'customerShortName="' + customerShortName + '"'
-            }
-        })
-
-        // console.log('r1:' + JSON.stringify(r1));
-
-        customerData = r1[0]; //将查询结果赋给全局变量
-        // console.log('customerData:' + JSON.stringify(customerData));
-
-        //黑名单警告
-        if (customerData.creditRank === '黑名单') {
-            alert('当前客户为黑名单客户!备注:' + customerData.remark + ',备注人:' + customerData.remarker)
-        }
 
 
 
-        loadContactOptions(customerData)
-
-
-        let r2 = r1[0]
-        delete r2.customerShortName;
-        // console.log('r2:' + JSON.stringify(r2));
-        fillFormInputs({
-            formId: 'rp_transferbillsForm',
-            params: r2
-        })
-        // $("#rp_transferbillsForm-customerArea").selectpicker('val', r2.customerArea)
-    }
-
-    //选定客户修改事件
-    const addCustomerListener = () => {
-        $('#rp_transferbillsForm-customerShortName').unbind();
-        $('#rp_transferbillsForm-customerShortName').change(function () {
-            let customerShortName = $('#rp_transferbillsForm-customerShortName option:selected').val();
-            if (customerShortName) {
-                $('#rp_transferbillsForm-customerShortName').selectpicker('refresh');
-                fillCustomerInfo(customerShortName);
-            }
-        });
-    }
 
     //填写产品信息功能
     const fillProductInfo = async (productId) => {
@@ -827,7 +784,7 @@
             }
         })
 
-        // console.log('r1:' + JSON.stringify(r1));
+        console.log('r1555555555:' + JSON.stringify(r1));
         let r2 = r1[0]
         delete r2.productId;
         // console.log('r2:' + JSON.stringify(r2));
@@ -872,41 +829,10 @@
         });
     }
 
-    // //保固期自动计算事件
-    // const addInWarrantyListener = () => {
-    //     $('#rp_transfersubbillsForm-productYear,#rp_transfersubbillsForm-productMonth').unbind('change'); //仅解绑change事件
-    //     $('#rp_transfersubbillsForm-productYear,#rp_transfersubbillsForm-productMonth').change(function () {
-    //         let warrantyPeriod = parseInt($('#rp_transferbillsForm-warrantyPeriod').text());
-    //         let year = $('#rp_transfersubbillsForm-productYear').val() || '2000'
-    //         let month = $('#rp_transfersubbillsForm-productMonth').val() || '01'
-    //         console.log(warrantyPeriod, year, month);
 
-    //         //计算月份差函数
-    //         const getIntervalMonth = (startDate, endDate) => {
-    //             var startMonth = startDate.getMonth();
-    //             var endMonth = endDate.getMonth();
-    //             var intervalMonth = (startDate.getFullYear() * 12 + startMonth) - (endDate
-    //                 .getFullYear() *
-    //                 12 + endMonth);
-    //             return intervalMonth;
-    //         }
-
-    //         let nowDate = new Date()
-    //         let productDate = new Date(year + '-' + month + '-01');
-    //         let intervalMonth = getIntervalMonth(productDate, nowDate)
-
-    //         if (warrantyPeriod + intervalMonth >= 0) {
-    //             console.log('保内');
-    //             $("#rp_transfersubbillsForm-inWarranty").selectpicker('val', '是')
-    //             // $("#rp_transfersubbillsForm-inWarranty").selectpicker('refresh')
-    //         } else {
-    //             $("#rp_transfersubbillsForm-inWarranty").selectpicker('val', '否')
-    //         }
-    //     });
-    // }
 
     //创建调拨单新单号
-    const createOutBillId = async () => {
+    const createTransferBillId = async () => {
         let r1 = await getDataBySql({
             sql: "getTransferBillsNum",
             params: {
@@ -921,8 +847,8 @@
         // console.log('r4:' + r4);
         let r5 = dateFormat(currentDate(), 'yyyyMMdd');
 
-        let billId = 'M-' + r5 + r4;
-        $("#rp_transferbillsForm-billId").text(billId);
+        let transferBillId = 'M-' + r5 + r4;
+        $("#rp_transferbillsForm-transferBillId").text(transferBillId);
     }
 
 
@@ -953,7 +879,7 @@
 
                 mainTableData = rowSelect; //刷新全局主表对象数据
 
-                await loadMainBillSubTable(rowSelect.billId)
+                await loadMainBillSubTable(rowSelect.transferBillId)
 
                 //打开面板
                 $('#subTablePanel').show();
@@ -991,28 +917,25 @@
                 params: dataSelect
             })
 
-            let r1 = await getDataBySql({
-                sql: 'getCustomers',
-                params: {
-                    filter: 'customerShortName="' + dataSelect.customerShortName + '"'
-                }
-            })
+            // let r1 = await getDataBySql({
+            //     sql: 'getCustomers',
+            //     params: {
+            //         filter: 'customerShortName="' + dataSelect.customerShortName + '"'
+            //     }
+            // })
 
-            // console.log('r1:' + JSON.stringify(r1));
+            // // console.log('r1:' + JSON.stringify(r1));
 
-            customerData = r1[0]; //将查询结果赋给全局变量
-            //加载备选联系人
-            loadContactOptions(customerData);
+            // customerData = r1[0]; //将查询结果赋给全局变量
 
             //关闭子表panel
             $('#rp_transfersubbillsPanel').hide();
 
             //加载子表记录表数据
 
-            loadBillSubTable(dataSelect.billId);
+            loadBillSubTable(dataSelect.transferBillId);
 
-            //客户选定监听事件
-            addCustomerListener();
+
 
             //打开面板
             $('#rp_transferbillsModal').modal('show');
@@ -1049,7 +972,7 @@
         loadBillDataTable({
             elementId: 'rp_transferbills',
             sqlParams: {
-                sqlId: 'sqlOutBills',
+                sqlId: 'sqlTransferBills',
                 params: {
                     filter: mainTableFilter,
                     orderBy: 'billSaveTimeStamp desc'
@@ -1074,8 +997,6 @@
             'name': 'search',
             'placeholder': '可用表属性过滤'
         });
-
-
 
         // //添加搜索框监听事件,值变动自动隐藏主页附表
         // $('#rp_transferbills').on('search.dt', function () {
@@ -1166,7 +1087,7 @@
 
     //加载展开选定表子表关联数据
 
-    const loadBillSubTable = async (billId) => {
+    const loadBillSubTable = async (transferBillId) => {
 
 
         loadDataSubTable({
@@ -1183,11 +1104,11 @@
 
     //加载展开选定表子表关联数据
 
-    const loadMainBillSubTable = async (billId) => {
+    const loadMainBillSubTable = async (transferBillId) => {
         let dataArray = await getDataBySql({
-            sql: 'sqlOutSubBills',
+            sql: 'sqlTransferSubBills',
             params: {
-                filter: 'billId="' + billId + '"'
+                filter: 'transferBillId="' + transferBillId + '"'
             }
         })
         //将表数据同步到共用数组
@@ -1205,7 +1126,7 @@
 
 
     //保存调拨单函数
-    const saveOutBill = async () => {
+    const saveTransferBill = async () => {
 
         let mainFormData = getPostFormData({
             formId: 'rp_transferbillsForm'
@@ -1214,20 +1135,25 @@
         //给主表数据添加,maker 和makeDate日期;新增状态等待单号检测完成,制单人为空则为新增状态
 
         if (!mainFormData.data[0].maker) {
-            await autoUpdateOutBillId();
+            await autoUpdateTransferBillId();
             //刷新调拨单号
-            mainFormData.data[0].billId = $("#rp_transferbillsForm-billId").text();
+            mainFormData.data[0].transferBillId = $("#rp_transferbillsForm-transferBillId").text();
+
             mainFormData.data[0].status = '待审核';
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
         }
+        mainFormData.data[0].outWarehouseName = $('#rp_transferbillsForm-outWarehouseId option:selected')
+            .text()
+        mainFormData.data[0].inWarehouseName = $('#rp_transferbillsForm-inWarehouseId option:selected')
+            .text()
 
         // console.log("subTableData:" + JSON.stringify(subTableData))
 
         for (let n of subTableData) {
-            n.billId = $("#rp_transferbillsForm-billId").text();
+            n.transferBillId = $("#rp_transferbillsForm-transferBillId").text();
             if (n.status === '新增') {
-                n.status = '预领'
+                n.status = '预调拨'
             }
         }
 
@@ -1244,62 +1170,74 @@
             }
         })
 
-        // console.log('saveOutBill r1:' + JSON.stringify(r1));
-        // console.log('saveOutBill r2:' + JSON.stringify(r2));
+        let PIDArr = [];
+        for (const n of subTableData) {
+            PIDArr.push({
+                PID: n.productId,
+                warehouseId: mainFormData.data[0].inWarehouseId
+            })
+        }
 
-        if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+        let r3 = await initWarehousePID({
+            PIDArr: PIDArr
+        })
+
+        // console.log('saveTransferBill r1:' + JSON.stringify(r1));
+        // console.log('saveTransferBill r2:' + JSON.stringify(r2));
+
+        if (r1 && r2 && r3) {
             alert('保存成功!')
         } else {
             alert('出现错误!')
         }
 
-        //更新客户信息功能
+        // //更新客户信息功能
 
-        // console.log('customerData:' + JSON.stringify(customerData));
-        // console.log('mainFormData:' + JSON.stringify(mainFormData));
+        // // console.log('customerData:' + JSON.stringify(customerData));
+        // // console.log('mainFormData:' + JSON.stringify(mainFormData));
 
-        //定义当前表内实际填写客户数据
-        let billCustomerData = {
-            customerId: mainFormData.data[0].customerId,
-            // customerArea: mainFormData.data[0].customerArea,
-            customerName: mainFormData.data[0].customerName,
-            contact: mainFormData.data[0].contact,
-            mobilePhone: mainFormData.data[0].mobilePhone,
-            customerBelongShort: mainFormData.data[0].customerBelongShort,
-            // isInland: mainFormData.data[0].isInland
-        }
+        // //定义当前表内实际填写客户数据
+        // let billCustomerData = {
+        //     customerId: mainFormData.data[0].customerId,
+        //     // customerArea: mainFormData.data[0].customerArea,
+        //     customerName: mainFormData.data[0].customerName,
+        //     contact: mainFormData.data[0].contact,
+        //     mobilePhone: mainFormData.data[0].mobilePhone,
+        //     customerBelongShort: mainFormData.data[0].customerBelongShort,
+        //     // isInland: mainFormData.data[0].isInland
+        // }
 
-        //判断当前表内客户数据是否存在更新;
-        let compareResult = true;
-        for (const p in billCustomerData) {
-            if (billCustomerData[p] !== customerData[p]) {
+        // //判断当前表内客户数据是否存在更新;
+        // let compareResult = true;
+        // for (const p in billCustomerData) {
+        //     if (billCustomerData[p] !== customerData[p]) {
 
-                // console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
-                //     customerData[p] + '不同');
+        //         // console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
+        //         //     customerData[p] + '不同');
 
-                compareResult = false;
-                break;
-            }
-        }
+        //         compareResult = false;
+        //         break;
+        //     }
+        // }
 
-        //存在不同则更新客户信息
-        if (!compareResult) {
+        // //存在不同则更新客户信息
+        // if (!compareResult) {
 
-            if (confirm('是否更新该客户基础信息?')) {
-                let rc = await postDBData({
-                    sql: 'update',
-                    params: {
-                        tableId: 'rp_customers',
-                        data: [billCustomerData],
-                        key: 'customerId'
-                    }
-                })
-                if (rc.affectedRows > 0) {
-                    alert('更新客户信息成功!')
-                }
+        //     if (confirm('是否更新该客户基础信息?')) {
+        //         let rc = await postDBData({
+        //             sql: 'update',
+        //             params: {
+        //                 tableId: 'rp_customers',
+        //                 data: [billCustomerData],
+        //                 key: 'customerId'
+        //             }
+        //         })
+        //         if (rc.affectedRows > 0) {
+        //             alert('更新客户信息成功!')
+        //         }
 
-            }
-        }
+        //     }
+        // }
 
         // $('#rp_transferbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
         $('#rp_transferbillsModalClose').click()
@@ -1312,18 +1250,18 @@
 
     //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
 
-    const checkOutBillId = async () => {
-        let billId = $("#rp_transferbillsForm-billId").text();
+    const checkTransferBillId = async () => {
+        let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
 
         let r1 = await getDataBySql({
             sql: 'getTransferBillsNum',
             params: {
-                filter: 'billId="' + billId + '"'
+                filter: 'transferBillId="' + transferBillId + '"'
             }
         })
 
         let r2 = r1[0].billsNum;
-        // console.log("checkOutBillId:" + r2);
+        // console.log("checkTransferBillId:" + r2);
 
         let o = r2 > 0 ? false : true;
         return o;
@@ -1331,26 +1269,26 @@
     }
 
     //更新需求单号加1
-    const updateOutBillId = () => {
-        let billId = $("#rp_transferbillsForm-billId").text();
-        if (billId) {
-            billIdArr = billId.split('-');
-            let newBillId = billIdArr[0] + '-' + (parseInt(billIdArr[1]) + 1);
-            $("#rp_transferbillsForm-billId").text(newBillId);
+    const updateTransferBillId = () => {
+        let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
+        if (transferBillId) {
+            transferBillIdArr = transferBillId.split('-');
+            let newBillId = transferBillIdArr[0] + '-' + (parseInt(transferBillIdArr[1]) + 1);
+            $("#rp_transferbillsForm-transferBillId").text(newBillId);
         }
     }
 
     //递归更新单号直到不存在冲突单号;
 
-    const autoUpdateOutBillId = async () => {
-        let r = await checkOutBillId();
+    const autoUpdateTransferBillId = async () => {
+        let r = await checkTransferBillId();
         if (r) {
             return true
         } else {
-            // console.log('fail:' + $("#rp_transferbillsForm-billId").text());
-            updateOutBillId()
-            // console.log('fail11:' + $("#rp_transferbillsForm-billId").text());
-            return await autoUpdateOutBillId();
+            // console.log('fail:' + $("#rp_transferbillsForm-transferBillId").text());
+            updateTransferBillId()
+            // console.log('fail11:' + $("#rp_transferbillsForm-transferBillId").text());
+            return await autoUpdateTransferBillId();
         }
     }
 
@@ -1371,7 +1309,7 @@
 
     //     for (let n = 0; n < dataSelect.length; n++) {
     //         mainDBIDArr.push(dataSelect[n].DBID);
-    //         billsIdArr.push(dataSelect[n].billId);
+    //         billsIdArr.push(dataSelect[n].transferBillId);
     //     }
 
     //     switch (true) {
@@ -1382,14 +1320,14 @@
     //             return resultData
     //             break;
     //         case billsIdArr.length > 0:
-    //             let billIdRange = getRangeString(billsIdArr);
+    //             let transferBillIdRange = getRangeString(billsIdArr);
 
     //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
     //             let statusArr = await getDataBySql({
     //                 sql: 'getBorrowSubBillStatus',
     //                 params: {
-    //                     filter: 'billId in ' + billIdRange
+    //                     filter: 'transferBillId in ' + transferBillIdRange
     //                 }
     //             })
 
@@ -1431,65 +1369,7 @@
     }
 
 
-    //加载多联系人数据
-    const loadContactOptions = (customerData) => {
-        // console.log('contacts', contacts);
 
-        //补齐联系人待选项
-        let contacts = [];
-        if (customerData.contact) {
-            contacts.push({
-                name: customerData.contact,
-                phone: customerData.mobilePhone
-            })
-        }
-
-        if (customerData.contacts) {
-            let contactsStr = customerData.contacts;
-
-            // console.log('contactsStr', contactsStr);
-            let contactsArr = contactsStr.split(';')
-            // console.log('contactsArr', contactsArr);
-            for (const n of contactsArr) {
-                if (n) {
-                    let name = n.split(',')[0];
-                    let phone = n.split(',')[1];
-                    contacts.push({
-                        name: name,
-                        phone: phone
-                    })
-                }
-            }
-        }
-
-        $("#customerContacts").empty(); //清空原有
-
-        if (contacts.length > 0) {
-            for (const contact of contacts) {
-                $("#customerContacts").append(
-                    "<option data-tokens='" + contact.phone + " ' value='" + contact.name + "'>" + contact
-                    .name +
-                    "</option>"
-                );
-            }
-            $("#customerContacts").selectpicker('refresh');
-        }
-
-
-        //添加监听事件
-
-        $('#customerContacts').unbind();
-        $('#customerContacts').change(function () {
-            let contact = $('#customerContacts option:selected').val();
-            if (contact) {
-                $("#customerContacts").selectpicker('refresh'); //刷新显示
-                $('#rp_transferbillsForm-contact').val($('#customerContacts option:selected')
-                    .val());
-                $('#rp_transferbillsForm-mobilePhone').val($('#customerContacts option:selected')
-                    .data("tokens"));
-            }
-        });
-    }
 
     //检测库存状态subTableData=[{partId,num,numStatus}]
     const checkSubTableStock = async (subTableData) => {
@@ -1540,8 +1420,7 @@
         //定义子表全局变量临时数据数组
         subTableData = [];
 
-        //存储当前客户信息
-        customerData = {}
+
         //主表过滤器
         mainTableFilter = '';
 
@@ -1629,7 +1508,7 @@
 
 
         //新增调拨单按钮
-        $('#btnOutBillNew').click(function () {
+        $('#btnTransferBillNew').click(function () {
 
             //清空form数据
             mainTableData = {}
@@ -1659,17 +1538,15 @@
             })
 
 
-            createOutBillId();
-            $("#rp_transferbillsForm-billFrom").text('调拨单');
-            // $("#rp_transferbillsForm-isInland").selectpicker('val', '国内')
+            createTransferBillId();
+
+            $("#rp_transferbillsForm-outWarehouseId").selectpicker('val', 'W1')
             $("#rp_transferbillsForm-sendWay").selectpicker('val', '邮寄过来')
 
             //在保存时赋值
             // $("#rp_transferbillsForm-maker").text(sessionName);
             // $("#rp_transferbillsForm-makeDate").text(currentDate());
 
-            // //客户选定监听事件
-            // addCustomerListener();
 
 
             //显示/隐藏
@@ -1685,7 +1562,7 @@
         })
 
         //审核调拨单按钮
-        $('#btnOutBillAudit').click(async function () {
+        $('#btnTransferBillAudit').click(async function () {
             //check-单据选中状态
             if (!mainTableData.DBID) {
                 alert('请先选中需要审核的调拨单!')
@@ -1702,57 +1579,145 @@
                 alert('当前账号非审核人,无法审核!')
                 return
             }
-            //check-即时库存及领料数量
-            let stockResult = await checkSubTableStock(subTableData);
-            if (!stockResult.result) {
-                return
-            }
-            console.log('stockResult', stockResult);
+            // //check-即时库存及领料数量
+            // let stockResult = await checkSubTableStock(subTableData);
+            // if (!stockResult.result) {
+            //     return
+            // }
+            // console.log('stockResult', stockResult);
 
-
-            //do-扣减零件库存
-            let updateStockArr = []
-            for (let n of subTableData) {
-                console.log('n', n);
-
-                for (const m of stockResult.stockNums) {
-                    console.log('m', m);
-                    if (n.productId === m.PID) {
-                        n.stockNum = m.stockNum;
-                    }
-                }
-                //赋值添加PID,去除partId
-                updateStockArr.push({
-                    PID: n.productId,
-                    warehouseId: n.warehouseId,
-                    stockNum: n.stockNum,
-                    num: -n.num
+            //do-系统出库
+            let outMainTable = {
+                billFrom: '调拨单',
+                billId: mainTableData.transferBillId,
+                // customerId: mainTableData.customerId,
+                // customerShortName: mainTableData.customerShortName,
+                // customerName: mainTableData.customerName,
+                // customerBelongShort: mainTableData.customerBelongShort,
+                // contact: mainTableData.contact,
+                // mobilePhone: mainTableData.mobilePhone,
+                // workPhone: mainTableData.workPhone,
+                // sendWay: mainTableData.sendWay,
+                // address: mainTableData.address,
+                operator: mainTableData.operator,
+                maker: mainTableData.maker,
+                makeDate: mainTableData.makeDate,
+                auditor: mainTableData.auditor,
+                auditDate: currentDate(),
+                status: '已审核',
+                remark: mainTableData.remark,
+            };
+            let outSubTable = [];
+            for (const n of subTableData) {
+                outSubTable.push({
+                    billId: n.transferBillId,
+                    rowId: n.rowId,
+                    productId: n.productId,
+                    productName: n.productName,
+                    productDescription: n.productDescription,
+                    productClass: n.productClass,
+                    systemType: n.systemType,
+                    warehouseId: mainTableData.outWarehouseId,
+                    warehouseName: mainTableData.outWarehouseName,
+                    unit: n.unit,
+                    num: n.num,
+                    status: '已出',
+                    remark: n.remark,
+                    actType: '调拨单',
+                    rpBillId: mainTableData.transferBillId
                 })
             }
-            console.log('updateStockArr', updateStockArr);
+
+            let r1 = await autoOutStoreBills({
+                mainTable: outMainTable,
+                subTable: outSubTable
+            })
+
+            console.log('r1', r1);
 
 
-            let r1 = await updateStock({
-                stockArr: updateStockArr,
-                actType: '调拨单',
-                rpBillId: mainTableData.billId
-            });
+            //do-系统入库
+            if (!r1) {
+                alert('出库失败!')
+                return;
+            }
 
-            //do-更新调拨单子表
-            if (r1) {
-                for (let n = 0; n < subTableData.length; n++) {
+            let inMainTable = {
+                billFrom: '调拨单',
+                billId: mainTableData.transferBillId,
+                // customerId: mainTableData.customerId,
+                // customerShortName: mainTableData.customerShortName,
+                // customerName: mainTableData.customerName,
+                // customerBelongShort: mainTableData.customerBelongShort,
+                // contact: mainTableData.contact,
+                // mobilePhone: mainTableData.mobilePhone,
+                // workPhone: mainTableData.workPhone,
+                // sendWay: mainTableData.sendWay,
+                // address: mainTableData.address,
+                operator: mainTableData.operator,
+                maker: mainTableData.maker,
+                makeDate: mainTableData.makeDate,
+                auditor: mainTableData.auditor,
+                auditDate: currentDate(),
+                status: '已审核',
+                remark: mainTableData.remark,
+            };
+            let inSubTable = [];
+            for (const n of subTableData) {
+                inSubTable.push({
+                    billId: n.transferBillId,
+                    rowId: n.rowId,
+                    productId: n.productId,
+                    productName: n.productName,
+                    productDescription: n.productDescription,
+                    productClass: n.productClass,
+                    systemType: n.systemType,
+                    warehouseId: mainTableData.inWarehouseId,
+                    warehouseName: mainTableData.inWarehouseName,
+                    unit: n.unit,
+                    num: n.num,
+                    status: '已入',
+                    remark: n.remark,
+                    actType: '调拨单',
+                    rpBillId: mainTableData.transferBillId
+                })
+            }
 
-                    if (subTableData[n].stockNum) {
-                        delete subTableData[n].stockNum;
-                    }
+            let r2 = await autoInStoreBills({
+                mainTable: inMainTable,
+                subTable: inSubTable
+            })
 
-                    if (subTableData[n].status === '预领') {
-                        subTableData[n].status = '已领'
-                    }
+            if (!r2) {
+                alert('入库失败!')
+                return;
+            }
+
+            //do-更新调拨单主表
+
+            let billUpdateData = {
+                transferBillId: mainTableData.transferBillId,
+                status: '已审核'
+            }
+
+            let r3 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_transferbills',
+                    data: [billUpdateData],
+                    key: 'transferBillId'
+                }
+            })
+
+            //do-更新调拨单子表状态
+
+            for (let n of subTableData) {
+                if (n.status === '预调拨') {
+                    n.status = '已调拨'
                 }
             }
 
-            let r2 = await postDBData({
+            let r4 = await postDBData({
                 sql: 'replace',
                 params: {
                     tableId: 'rp_transfersubbills',
@@ -1760,41 +1725,26 @@
                 }
             })
 
-            //do-更新调拨单主表
-
-
-            mainTableData.auditor = sessionName;
-            mainTableData.auditDate = currentDate();
-            mainTableData.status = '已审核';
-
-            let r3 = await postDBData({
-                sql: 'update',
-                params: {
-                    tableId: 'rp_transferbills',
-                    data: [mainTableData],
-                    key: 'DBID'
-                }
-            })
-
-            //3.return
-            console.log(r1, r2, r3);
-
-            if (r1 && r2.affectedRows && r3.affectedRows) {
-                alert('审核出库成功!')
-                loadBillMainTable();
+            //return-操作成功信息
+            if (r3 && r4) {
+                alert('审核成功,系统已自动生成相应出库单,入库单!')
             } else {
-                alert('出现错误!')
+                alert('审核失败')
             }
+            //return-刷新主表
+            loadBillMainTable();
+
+
 
 
         })
 
 
         //删除调拨单按钮
-        $('#btnOutBillDelete').click(async function () {
+        $('#btnTransferBillDelete').click(async function () {
 
             //check-检查单据选中
-            if (!mainTableData.billId) {
+            if (!mainTableData.transferBillId) {
                 alert('请先选中需要删除的调拨单')
                 return
             }
@@ -1807,8 +1757,8 @@
 
             //check-检查子表状态
             for (const n of subTableData) {
-                if (n.status !== '预领') {
-                    alert('存在非预领状态的物料,无法删除!')
+                if (n.status !== '预调拨') {
+                    alert('存在非预调拨状态的物料,无法删除!')
                     return
                 }
             }
@@ -1986,7 +1936,7 @@
 
 
             //do-保存产品信息
-            let billId = $("#rp_transferbillsForm-billId").text();
+            let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
             let rowNum = $("#rp_transfersubbills tbody tr").size();
             // console.log('rowNum:' + rowNum);
             let productData = getFormData({
@@ -1995,7 +1945,7 @@
 
             console.log('productData:' + JSON.stringify(productData.data))
             let rowData = formDataToRowData(productData.data)
-            rowData.billId = billId;
+            rowData.transferBillId = transferBillId;
             // console.log('rowData:' + JSON.stringify(rowData))
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
@@ -2065,7 +2015,7 @@
         $('#rp_transferbillsPrint').click(function () {
 
 
-            if (!mainTableData.billId) {
+            if (!mainTableData.transferBillId) {
                 alert('请先选中需要打印的单据!')
                 return
             }
@@ -2129,12 +2079,12 @@
 
             //check-检查子表项目
             if (subTableData.length === 0) {
-                alert('未添加需要出库的产品,无法保存单据,请检查!')
+                alert('未添加需要调拨的产品,无法保存单据,请检查!')
                 return;
             }
 
             //do-保存表单
-            saveOutBill();
+            saveTransferBill();
         })
 
         //初始化过滤器日期组
@@ -2337,8 +2287,6 @@
 
 
 
-        //客户选定监听事件
-        addCustomerListener();
 
         //选定产品修改事件
         addProductListener();
