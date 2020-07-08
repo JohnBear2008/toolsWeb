@@ -2176,7 +2176,7 @@
 
         $('#btnPartSave').click(function () {
 
-            //1.check-库存充足提醒
+            //check-库存充足提醒
             let numStatus = $("#rp_partsbillsForm-numStatus").text();
             let num = $("#rp_partsbillsForm-num").val();
             let stockNum = $("#stockNum").text();
@@ -2351,11 +2351,11 @@
         //表单保存按钮
         $('#rp_recordbillsSave').click(async function () {
 
-            //1.check-检查选中
+            //check-检查选中
 
 
 
-            //2.do-保存维修单主表信息
+            //do-保存维修单主表信息
 
             let mainFormData = getPostFormData({
                 formId: 'rp_recordbillsForm'
@@ -2393,7 +2393,7 @@
                 params: mainFormData
             })
 
-            //2.do-系统出库
+            //do-系统出库
             // console.log('subTableData', subTableData);
 
             if (subTableData.length > 0) {
@@ -2478,7 +2478,7 @@
                     }
                 }
 
-                //2.do-更新维修单子表
+                //do-更新维修单子表
 
 
                 let r3 = await postDBData({
@@ -2491,7 +2491,7 @@
 
             }
 
-            //3.return-结果提醒刷新
+            //return-结果提醒刷新
 
             alert('保存成功!')
             $('#rp_recordbillsModal').modal('hide');

@@ -1652,18 +1652,18 @@ const autoInStoreBills = async ({
     console.log('mainTable', mainTable);
     console.log('subTable', subTable);
 
-    //1.check-mainTable检查
+    //check-mainTable检查
     if (!mainTable.billId) {
         console.log('autoInStoreBills mainTable 检查错误!');
         return
     }
-    //1.check-subTable检查
+    //check-subTable检查
     if (subTable.length < 1) {
         console.log('autoInStoreBills subTable 检查错误!');
         return
     }
 
-    //1.check-即时库存及领料数量
+    //check-即时库存及领料数量
     let PIDArr = [];
 
     for (const n of subTable) {
@@ -1687,7 +1687,7 @@ const autoInStoreBills = async ({
         }
     }
 
-    //2.do-出库
+    //do-出库
     let stockArr = [];
     for (const n of subTable) {
         stockArr.push({
@@ -1705,7 +1705,7 @@ const autoInStoreBills = async ({
         actType: subTable[0].actType
     })
 
-    //2.do-生成关联出库单
+    //do-生成关联出库单
 
     if (!r1) {
         console.log('updateStock 失败');
@@ -1760,18 +1760,18 @@ const autoOutStoreBills = async ({
     console.log('mainTable', mainTable);
     console.log('subTable', subTable);
 
-    //1.check-mainTable检查
+    //check-mainTable检查
     if (!mainTable.billId) {
         console.log('autoOutStoreBills mainTable 检查错误!');
         return
     }
-    //1.check-subTable检查
+    //check-subTable检查
     if (subTable.length < 1) {
         console.log('autoOutStoreBills subTable 检查错误!');
         return
     }
 
-    //1.check-即时库存及领料数量
+    //check-即时库存及领料数量
     let PIDArr = [];
 
     for (const n of subTable) {
@@ -1794,7 +1794,7 @@ const autoOutStoreBills = async ({
         }
     }
 
-    //2.do-出库
+    //do-出库
     let stockArr = [];
     for (const n of subTable) {
         stockArr.push({
@@ -1812,7 +1812,7 @@ const autoOutStoreBills = async ({
         actType: subTable[0].actType
     })
 
-    //2.do-生成关联出库单
+    //do-生成关联出库单
 
     if (!r1) {
         console.log('updateStock 失败');

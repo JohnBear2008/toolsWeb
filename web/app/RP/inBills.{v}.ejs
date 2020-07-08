@@ -1776,23 +1776,23 @@
 
         //审核入库单按钮
         $('#btnInBillAudit').click(async function () {
-            //1.check-单据选中状态
+            //check-单据选中状态
             if (!mainTableData.DBID) {
                 alert('请先选中需要审核的入库单!')
                 return
             }
-            //1.check-单据审核状态
+            //check-单据审核状态
             if (mainTableData.status !== '待审核') {
                 alert('该入库单非待审核状态,无法审核!')
                 return
             }
 
-            //1.check-单据审核人
+            //check-单据审核人
             if (mainTableData.auditor !== sessionName) {
                 alert('当前账号非审核人,无法审核!')
                 return
             }
-            //1.check-即时库存及领料数量
+            //check-即时库存及领料数量
             let stockResult = await checkSubTableStock(subTableData);
             if (!stockResult.result) {
                 return
@@ -1800,7 +1800,7 @@
             console.log('stockResult', stockResult);
 
 
-            //2.do-增加零件库存
+            //do-增加零件库存
             let updateStockArr = []
             for (let n of subTableData) {
                 console.log('n', n);
@@ -1831,7 +1831,7 @@
 
 
 
-            //2.do-更新入库单子表
+            //do-更新入库单子表
             if (r1) {
                 for (let n of subTableData) {
                     console.log('n111', n);
@@ -1855,7 +1855,7 @@
                 }
             })
 
-            //2.do-更新入库单主表
+            //do-更新入库单主表
 
             mainTableData.auditor = sessionName;
             mainTableData.auditDate = currentDate();
@@ -1887,19 +1887,19 @@
         //删除入库单按钮
         $('#btnInBillDelete').click(async function () {
 
-            //1.check-检查单据选中
+            //check-检查单据选中
             if (!mainTableData.billId) {
                 alert('请先选中需要删除的入库单')
                 return
             }
 
-            //1.check-检查单据状态
+            //check-检查单据状态
             if (mainTableData.status !== '待审核') {
                 alert('只允许删除待审核入库单')
                 return
             }
 
-            //1.check-检查子表状态
+            //check-检查子表状态
             for (const n of subTableData) {
                 if (n.status !== '预入') {
                     alert('存在非预入状态的物料,无法删除!')
@@ -1907,7 +1907,7 @@
                 }
             }
 
-            //1.check-提醒删除风险
+            //check-提醒删除风险
             if (!confirm('删除后无法恢复,确认删除?')) {
                 return;
             }
@@ -1922,7 +1922,7 @@
             // console.log(subTableData);
 
 
-            //2.do-删除单据
+            //do-删除单据
 
             let mainDBIDArr = [mainTableData.DBID]
             let subDBIDArr = [];
@@ -1946,7 +1946,7 @@
                 }
             })
 
-            //3.return-提醒并重新加载表单
+            //return-提醒并重新加载表单
             if (r1.affectedRows && r2.affectedRows) {
                 alert('删除成功!')
             } else {
@@ -2064,14 +2064,14 @@
 
         $('#btnProductSave').click(async function () {
 
-            //1.check-检查入库单状态
+            //check-检查入库单状态
             if (mainTableData.status === '已审核') {
                 alert('当前入库单已审核,不允许修改!')
                 return
             }
 
 
-            //2.do-保存产品信息
+            //do-保存产品信息
             let billId = $("#rp_inbillsForm-billId").text();
             let rowNum = $("#rp_insubbills tbody tr").size();
             // console.log('rowNum:' + rowNum);
@@ -2100,7 +2100,7 @@
                 subTableData.push(rowData);
             }
 
-            //3.return-重新加载子表
+            //return-重新加载子表
             loadDataSubTable({
                 elementId: 'rp_insubbills',
                 dataArray: subTableData
@@ -2111,7 +2111,7 @@
         // 删除产品按钮
         $('#btnDeleteProduct').click(function () {
 
-            //1.check-检查选中
+            //check-检查选中
             let subTable = $('#rp_insubbills').DataTable();
             let rowSelect = subTable.row('.selected').data();
 
@@ -2119,14 +2119,14 @@
                 alert('请先点击表格选中需要删除的产品!')
                 return
             }
-            //1.check-检查状态
+            //check-检查状态
 
             if (rowSelect.status !== '新增') {
                 alert('非新增状态不允许删除!')
                 return
             }
 
-            //2.do- 删除元素
+            //do- 删除元素
             for (const n in subTableData) {
                 if (subTableData[n].rowId === rowSelect.rowId) {
                     subTableData.splice(n, 1);
@@ -2137,12 +2137,12 @@
                 subTableData[n].rowId = parseInt(n) + 1;
             }
 
-            //3.return-重新加载子表
+            //return-重新加载子表
             loadDataSubTable({
                 elementId: 'rp_insubbills',
                 dataArray: subTableData
             });
-            //3.return-自动点击新增按钮,防止遗留数据产生错误
+            //return-自动点击新增按钮,防止遗留数据产生错误
             $('#btnAddProduct').click()
 
 
@@ -2401,7 +2401,7 @@
         //表单保存按钮
         $('#rp_inbillsSave').click(function () {
 
-            //1.check-检查单据状态
+            //check-检查单据状态
             console.log('mainTableData',mainTableData);
             
             if (mainTableData.status === '已审核') {
@@ -2409,20 +2409,20 @@
                 return
             }
 
-            //1.check-检查必填项
+            //check-检查必填项
             if (!$('#rp_inbillsForm-customerId').text()) {
                 alert('未选定客户,请检查!')
                 return;
             }
 
 
-            //1.check-检查子表项目
+            //check-检查子表项目
             if (subTableData.length === 0) {
                 alert('未添加需要入库的产品,无法保存单据,请检查!')
                 return;
             }
 
-            //2.do-保存表单
+            //do-保存表单
             saveInBill();
         })
 

@@ -1749,7 +1749,7 @@
 
         $('#btnReturnBillNew').click(async function () {
 
-            //1.check-选中检测
+            //check-选中检测
             let table = $('#rp_borrowProductBills').DataTable();
             let rowsSelect = table.rows('.selected').data();
             if (rowsSelect.length < 1) {
@@ -1757,7 +1757,7 @@
                 return;
             }
 
-            //1.check-多选合法性检测
+            //check-多选合法性检测
 
             for (let i = 0; i < rowsSelect.length; i++) {
                 if (i === 0) {
@@ -1771,7 +1771,7 @@
             }
 
 
-            //2.do-填写主表数据
+            //do-填写主表数据
 
             console.log('rowsSelect[0]', rowsSelect[0]);
 
@@ -1814,7 +1814,7 @@
             addCustomerListener();
 
 
-            //2.do-加载子表数据
+            //do-加载子表数据
 
             let returnSubArr = [];
             for (let i = 0; i < rowsSelect.length; i++) {
@@ -1854,13 +1854,13 @@
         //查看按钮
         $('#btnReturnBillDetail').click(async function () {
 
-            //1.check-选中检测
+            //check-选中检测
             if (!mainTableData.returnBillId) {
                 alert('请先选中需要查看的还货单')
                 return;
             }
 
-            //1.check-多选合法性检测
+            //check-多选合法性检测
             if (subTableData.length > 0) {
                 for (let i = 0; i < subTableData.length; i++) {
                     if (i === 0) {
@@ -1874,7 +1874,7 @@
                 }
             }
 
-            //2.do-填写主表数据
+            //do-填写主表数据
 
             // console.log('mainTableData', mainTableData);
 
@@ -1919,7 +1919,7 @@
             addCustomerListener();
 
 
-            //2.do-加载子表数据
+            //do-加载子表数据
             for (let i = 0; i < subTableData.length; i++) {
                 subTableData[i].rowId = i + 1;
             }
@@ -2031,17 +2031,17 @@
 
         //审核按钮
         $('#btnReturnBillAudit').click(async function () {
-            //1.check-检查选中
+            //check-检查选中
             if (!mainTableData.returnBillId) {
                 alert('请先点击表格选中需要审核的还货单!')
                 return
             }
-            //1.check-检查审核条件
+            //check-检查审核条件
             if (mainTableData.status !== '待审核') {
                 alert('非待审核状态,请检查!')
                 return
             }
-            //1.check-审核确认
+            //check-审核确认
             if (!confirm('审核后无法修改,是否继续')) {
                 return
             }
@@ -2050,7 +2050,7 @@
             let returnType = mainTableData.returnType;
 
             if (returnType === '正常入库') {
-                //2.do-系统出库
+                //do-系统出库
                 let mainTable = {
                     billFrom: '还货单',
                     billId: mainTableData.returnBillId,
@@ -2099,7 +2099,7 @@
                 console.log('r1', r1);
 
 
-                //2.do-更新还货单状态
+                //do-更新还货单状态
 
                 if (!r1) {
                     alert('出现错误')
@@ -2136,7 +2136,7 @@
                     }
                 })
 
-                //2.do-更新借货单子表状态
+                //do-更新借货单子表状态
                 console.log('subTableData huan', subTableData);
 
 
@@ -2172,7 +2172,7 @@
                 })
 
 
-                //3.return-操作成功信息
+                //return-操作成功信息
                 if (r2 && r3 && r4 && r5) {
                     alert('审核成功,系统已自动生成相应入库单!')
                 } else {
@@ -2181,9 +2181,11 @@
 
             }
 
+            //转维修申请
 
 
-            //3.return-刷新主表
+
+            //return-刷新主表
             loadBillMainTable();
 
 
@@ -2208,7 +2210,7 @@
                 return
             }
 
-            //2.do-更新还货单状态
+            //do-更新还货单状态
             let billUpdateData = {
                 returnBillId: mainTableData.returnBillId,
                 status: '已驳回'
@@ -2223,7 +2225,7 @@
                 }
             })
 
-            //2.do-更新还货单子表状态
+            //do-更新还货单子表状态
             let subbillUpdateData = [];
             for (const n of subTableData) {
                 subbillUpdateData.push({
@@ -2337,7 +2339,7 @@
 
         $('#btnProductSave').click(async function () {
 
-            //1.check-库存不足警告
+            //check-库存不足警告
             let unreturnNum = parseInt($('#unreturnNum').text());
             let num = parseInt($('#rp_returnsubbillsForm-num').val())
             if (num > unreturnNum) {
@@ -2454,13 +2456,13 @@
             }
 
 
-            //1.check-不存在子表项目则中断保存
+            //check-不存在子表项目则中断保存
             if (subTableData.length === 0) {
                 alert('未添加需要还货的产品,无法保存单据,请检查!')
                 return;
             }
 
-            //2.do-保存还货单主表
+            //do-保存还货单主表
 
             let mainFormData = getPostFormData({
                 formId: 'rp_returnBillsForm'

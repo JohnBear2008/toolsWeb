@@ -40,7 +40,8 @@ const getReturnBillsNum = "select count(1) as billsNum from `rp_returnbills`";
 const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
 //获取入库单数量
 const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
-
+//获取调拨单数量
+const getTransferBillsNum = "select count(1) as billsNum from `rp_transferbills`"
 
 
 // //获取借货单子表状态

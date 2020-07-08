@@ -1700,30 +1700,30 @@
         //新增需求单按钮
         $('#btnBorrowBillNew').click(function () {
 
-            //2.do-清空form数据
+            //do-清空form数据
             mainTableData = {}
             subTableData = {}
 
-            //2.do-清空form数据
+            //do-清空form数据
             clearFormInputs({
                 formId: 'rp_borrowBillsForm'
             })
 
-            //2.do-清空原有选项
+            //do-清空原有选项
             $('#customerContacts').empty();
             $('#customerContacts').selectpicker('destroy');
 
 
-            //2.do-清空子表及全局变量
+            //do-清空子表及全局变量
             subTableData = [];
             $('#rp_borrowsubbills tbody').html("");
 
 
-            //2.do-打开面板
+            //do-打开面板
             $('#rp_borrowsubbillsPanel').hide();
 
 
-            //2.do-清空modal数据
+            //do-清空modal数据
             clearFormInputs({
                 formId: 'rp_borrowBillsForm'
             })
@@ -1805,27 +1805,27 @@
 
         //审核按钮
         $('#btnBorrowBillAudit').click(async function () {
-            //1.check-检查选中
+            //check-检查选中
             if (!mainTableData.borrowBillId) {
                 alert('请先点击表格选中需要审核的借货单!')
                 return
             }
-            //1.check-检查审核条件
+            //check-检查审核条件
             if (mainTableData.status !== '待审核') {
                 alert('非待审核状态,请检查!')
                 return
             }
-            //1.check-检查审核人
+            //check-检查审核人
             if (mainTableData.auditor !== sessionName) {
                 alert('非指定审核人,请检查!')
                 return
             }
-            //1.check-审核确认
+            //check-审核确认
             if (!confirm('审核后无法修改,是否继续')) {
                 return
             }
 
-            //2.do-系统出库
+            //do-系统出库
             let mainTable = {
                 billFrom: '借货单',
                 billId: mainTableData.borrowBillId,
@@ -1875,7 +1875,7 @@
             console.log('r1', r1);
 
 
-            //2.do-更新借货单状态
+            //do-更新借货单状态
 
             if (!r1) {
                 alert('出现错误')
@@ -1896,7 +1896,7 @@
                 }
             })
 
-            //2.do-更新借货单子表状态
+            //do-更新借货单子表状态
 
             for (let n of subTableData) {
                 if (n.status === '预借出') {
@@ -1913,13 +1913,13 @@
                 }
             })
 
-            //3.return-操作成功信息
+            //return-操作成功信息
             if (r2.affectedRows > 0 && r3.affectedRows > 0) {
                 alert('审核成功,系统已自动生成相应出库单!')
             } else {
                 alert('审核失败')
             }
-            //3.return-刷新主表
+            //return-刷新主表
             loadBillMainTable();
 
         })
@@ -1942,7 +1942,7 @@
                 return
             }
 
-            //2.do-更新借货单状态
+            //do-更新借货单状态
             let billUpdateData = {
                 borrowBillId: mainTableData.borrowBillId,
                 status: '已驳回'
@@ -1957,7 +1957,7 @@
                 }
             })
 
-            //2.do-更新借货单子表状态
+            //do-更新借货单子表状态
             let subbillUpdateData = [];
             for (const n of subTableData) {
                 subbillUpdateData.push({
@@ -2467,13 +2467,13 @@
                 return;
             }
 
-            //1.check-保存条件
+            //check-保存条件
             if (mainTableData.status === '已审核') {
                 alert('已审核单据无法保存,请检查')
                 return
             }
 
-            //1.check-检查必填项
+            //check-检查必填项
             if (!$('#rp_borrowBillsForm-customerId').text()) {
                 alert('未选定客户,请检查!')
                 return;
