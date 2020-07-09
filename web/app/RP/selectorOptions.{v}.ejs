@@ -36,6 +36,15 @@
         </div>
     </div>
 
+    <div>
+        <button type="button" style="display: none;" id="rp_selectoroptionsNew">
+            新增
+        </button>
+        <button type="button" style="display: none;" id="rp_selectoroptionsDelete">
+            删除
+        </button>
+    </div>
+
 
     <div class="row clearfix">
         <div class="col-md-12 column">
@@ -49,6 +58,7 @@
                         <th>选项值</th>
                         <th>显示值</th>
                         <th>排序码</th>
+                        <th>系统选项</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -78,7 +88,7 @@
                         &times;
                     </button>
                     <h4 class="modal-title">
-                        故障分类
+                        选项属性
                     </h4>
 
 
@@ -144,6 +154,12 @@
                                             <option>否</option>
                                         </select>
                                     </div>
+
+                                    <label class="col-sm-1 control-label">系统选项</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_selectoroptionsForm-isSystemOption">
+                                        </p>
+                                    </div>
                                 </div>
 
                             </form>
@@ -175,54 +191,247 @@
 
 
 <script type="text/javascript">
+    const mainColumnsArray = [{
+            data: 'optionClass'
+        },
+        {
+            data: 'optionValue'
+        }, {
+            data: 'optionText'
+        }, {
+            data: 'orderId',
+        }, {
+            data: 'isSystemOption'
+        }
+    ];
+
+    //表dt参数
+    const mainDtParams = {
+        dtConfig: 'dtConfigFull',
+        columns: mainColumnsArray
+    }
+
+    //添加主表监听器,定义双击打开事件
+
+    const addMainTableListener = () => {
+        //定义主表双击事件
+        $('#rp_selectoroptions tbody').on('dblclick', 'tr', function () {
+
+            //设定选中
+            let table = $('#rp_selectoroptions').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_selectoroptionsForm',
+                params: dataSelect
+            })
+
+            //打开面板
+            $('#rp_selectoroptionsModal').modal('show');
+
+        });
+    }
+    //主表加载数据函数;
+    const loadBillMainTable = async () => {
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_selectoroptions',
+            sqlParams: {
+                sqlId: 'sqlTableSelect',
+                params: {
+                    tableId: 'rp_selectoroptions',
+                    orderBy: 'saveTimeStamp desc'
+                }
+            },
+            dtParams: mainDtParams
+        })
+    }
+
+    //新增选项 
+    const addOption = async () => {
+        clearFormInputs({
+            formId: 'rp_selectoroptionsForm'
+        })
+
+        //设置初始值
+        $('#rp_selectoroptionsForm-effective').selectpicker('val', '是');
+        $('#rp_selectoroptionsForm-isSystemOption').text('否');
+
+
+        //打开面板
+        $('#rp_selectoroptionsModalOpen').click();
+
+    }
+
+    const deleteOption = async () => {
+
+        //check-选中检查
+        let table = $('#rp_selectoroptions').DataTable();
+        let rowsSelect = table.rows('.selected').data();
+        console.log('rowsSelect', rowsSelect);
+
+        if (rowsSelect.length === 0) {
+            alert('请先选中需要删除的选项')
+            return
+        }
+
+        //check-系统选项是否包含检查
+        for (let i = 0; i < rowsSelect.length; i++) {
+            if (rowsSelect[i].isSystemOption === '是') {
+                alert('选中选项中包含系统选项,无法删除')
+                return
+            }
+        }
+
+        //do-删除选项
+        let DBIDArr = []
+        for (let i = 0; i < rowsSelect.length; i++) {
+            DBIDArr.push(rowsSelect[i].DBID)
+        }
+
+        let r1 = await postDBData({
+            sql: 'delete',
+            params: {
+                tableId: 'rp_selectoroptions',
+                data: DBIDArr
+            }
+        })
+
+        //return-结果提醒
+        if (r1.affectedRows > 0) {
+            alert('删除成功')
+        } else {
+            alert('出现错误')
+        }
+        //return-重载表格
+        loadBillMainTable();
+
+    }
+
+
+
+    //保存选项
+    const saveOption = async () => {
+        console.log('saveOption run');
+
+        let mainFormData = getPostFormData({
+            formId: 'rp_selectoroptionsForm'
+        })
+
+        console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        if ($('#rp_selectoroptionsForm-isSystemOption').text() === '是') {
+            alert('系统选项无法修改')
+            return
+        }
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: mainFormData
+        })
+
+        if (r1.affectedRows > 0) {
+            alert('保存成功!')
+
+            // $('#rp_selectoroptionsModal').modal('hide');多层modal存在失效问题,改用click关闭
+            $('#rp_selectoroptionsModalClose').click()
+
+            loadBillMainTable();
+        } else {
+            alert('出现错误!')
+        }
+
+    }
+
+
+
+
+
+
+
+
     $(document).ready(function () {
 
 
-        //加载表格
-        loadDataTable({
-            elementId: 'rp_selectoroptions',
-            sqlParams: {
-                tableId: 'rp_selectoroptions',
-                filter: ''
-            },
-            dtParams: {
-                columns: [{
-                        data: 'optionClass'
-                    },
-                    {
-                        data: 'optionValue'
-                    }, {
-                        data: 'optionText'
-                    }, {
-                        data: 'orderId',
-                    }
-                ],
-            }
+        //初始化主表
+        loadBillMainTable();
+
+        //添加主表监听
+        addMainTableListener();
+
+
+        //客户新增按钮
+        $('#rp_selectoroptionsNew').click(function () {
+            addOption();
+        })
+
+        //客户新增按钮
+        $('#rp_selectoroptionsDelete').click(function () {
+            deleteOption();
+        })
+
+        //表单保存按钮
+        $('#rp_selectoroptionsSave').click(function () {
+
+            saveOption();
         })
 
 
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'customerArea',
-        //     sqlParams: {
-        //         sql: 'getRegionSelector'
-        //     },
-        //     // initValue:'中国,北京'
-        // })
-
-        // loadDatePicker({
-        //     elementId: 'saveTimeStamp',
-        //     params: {
-        //         endDate: '2019-12-30'
-        //     }
-        // })
 
 
+        loadBootStrapSelector({
+            elementId: 'rp_selectoroptionsForm-effective',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="是或否"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
 
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_selectoroptionsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_selectoroptions').DataTable();
+            table.$('tr.selected').removeClass('selected');
 
+
+        })
 
 
     });
+
+    // $(document).ready(function () {
+
+
+    //     //加载表格
+    //     loadDataTable({
+    //         elementId: 'rp_selectoroptions',
+    //         sqlParams: {
+    //             tableId: 'rp_selectoroptions',
+    //             filter: ''
+    //         },
+    //         dtParams: {
+    //             columns: [{
+    //                     data: 'optionClass'
+    //                 },
+    //                 {
+    //                     data: 'optionValue'
+    //                 }, {
+    //                     data: 'optionText'
+    //                 }, {
+    //                     data: 'orderId',
+    //                 }
+    //             ],
+    //         }
+    //     })
+
+
+    // });
 </script>

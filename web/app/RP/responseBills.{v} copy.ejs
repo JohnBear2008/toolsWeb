@@ -56,7 +56,7 @@
                     </div>
                     <!-- 功能组按钮 -->
                     <div style="float:right">
-                        <button id='btnResponseStart' type="button" class="btn btn-info">出货</button>
+                        <button id='btnSend' type="button" class="btn btn-info">出货</button>
                         <button id='btnDetail' type="button" class="btn btn-info" style="display: none;">查看</button>
                     </div>
                     <div style="clear:both"></div>
@@ -67,108 +67,22 @@
                     <table id="rp_responsebills" class=" table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
+                                <th>申请单号</th>
+                                <th>记录单号</th>
                                 <th>出货单号</th>
                                 <th>客户简称</th>
-                                <th>出货人</th>
-                                <th>出货方式</th>
+                                <th>产品编号</th>
+                                <th>维修结果</th>
                                 <th>出货结果</th>
                                 <th>是否结清</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
+
+
                 </div>
             </div>
-
-            <!-- 定义主表关联附表数据表 -->
-
-            <div class="panel panel-default" id='subTablePanel' style="width:100%;display: none;">
-                <div class="panel-heading">
-                    <h3 class="panel-title">维修单清单</h3>
-                </div>
-                <div class="panel-body">
-                    <table id="rp_responseBillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
-                        <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>借货单号</th>
-                                <th>产品编号</th>
-                                <th>产品名称</th>
-                                <th>单位</th>
-                                <th>数量</th>
-                                <th>备注</th>
-                                <th>状态</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- 待出货模态框（Modal） -->
-    <div class="modal fade" id="unResponseModal" tabindex="-1" role="dialog" aria-hidden="true">
-
-        <div class="modal-dialog" style="width: 90%;">
-
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-                    </button>
-                    <h4 class="modal-title">
-                        待出货
-                    </h4>
-                </div>
-                <div class="modal-body">
-
-
-
-                    <div class="panel panel-default" id='mainTablePanel'>
-                        <div class="panel-heading">
-
-                            <!-- 功能组按钮 -->
-                            <div style="float:right">
-                                <button id='btnResponseBillNew' type="button" class="btn btn-info">生成出货单</button>
-
-                            </div>
-                            <div style="clear:both"></div>
-                        </div>
-                        <div class="panel-body">
-                            <table id="rp_waitResponseBills" class=" table table-striped table-bordered"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>维修码</th>
-                                        <th>客户简称</th>
-                                        <th>记录单号</th>
-                                        <th>产品编号</th>
-                                        <th>维修人</th>
-                                        <th>维修结果</th>
-                                        <th>费用</th>
-                                        <th>备注</th>
-                                        <th>流程状态</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-
-
-
-                </div><!-- /.modal-content -->
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                    </button>
-
-                </div>
-            </div><!-- /.modal -->
         </div>
     </div>
 
@@ -694,18 +608,24 @@
     //申请表主表dataTable column 数组
 
     const mainColumnsArray = [{
-        data: 'responseBillId'
-    }, {
-        data: 'customerShortName',
-    }, {
-        data: 'responseStaff',
-    }, {
-        data: 'sendWay',
-    }, {
-        data: 'isSended',
-    }, {
-        data: 'isFullPay',
-    }, ]
+            data: 'requestBillId',
+        },
+        {
+            data: 'recordBillId'
+        }, {
+            data: 'responseBillId'
+        }, {
+            data: 'customerShortName',
+        }, {
+            data: 'productId',
+        }, {
+            data: 'repairResult',
+        }, {
+            data: 'isSended',
+        }, {
+            data: 'isFullPay',
+        },
+    ]
 
     //申请表子表dataTable column 数组
     const subColumnsArray = [{
@@ -716,26 +636,6 @@
         data: 'repairResult',
     }, {
         data: 'repairTotalFee',
-    }]
-    //待出货dataTable column
-    const unResponseColumnsArray = [{
-        data: 'repairId'
-    }, {
-        data: 'customerShortName',
-    }, {
-        data: 'recordBillId'
-    }, {
-        data: 'productId',
-    }, {
-        data: 'repairStaff',
-    }, {
-        data: 'repairResult',
-    }, {
-        data: 'repairLastFee',
-    }, {
-        data: 'billRemark',
-    }, {
-        data: 'status',
     }]
 
     //加载主表数据			
@@ -764,37 +664,6 @@
             }
         })
 
-        //清空选项值
-        $('.dataTables_filter input').val('')
-
-        //自定义样式调整
-        $('.dataTables_filter input').attr({
-            'name': 'search',
-            'size': 45
-        });
-        $('.dataTables_filter input').attr({
-            'name': 'search',
-            'placeholder': '可用表属性过滤'
-        });
-
-
-
-        // //添加搜索框监听事件,值变动自动隐藏主页附表
-        // $('#rp_responseBills').on('search.dt', function () {
-        //     console.log(1111);
-        //     $('#subTablePanel').hide();
-        // })
-
-
-        //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
-        let table = $('#rp_responseBills').DataTable();
-        table.column('last').visible(false)
-
-        addMainTableListener();
-
-        //隐藏子面板
-        $('#subTablePanel').hide();
-
 
     }
 
@@ -822,31 +691,6 @@
 
         // //添加子表双击事件
         // addSubTableListener();
-    }
-
-
-    //加载待出货表格
-    const loadUnResponseTable = async () => {
-
-        //初始化主表
-        loadBillDataTable({
-            elementId: 'rp_waitResponseBills',
-            sqlParams: {
-                sqlId: 'sqlResponseSubBills',
-                params: {
-                    filter: 'responseBillId is null',
-                    //     // orderBy: 'billSaveTimeStamp desc'
-                }
-            },
-            dtParams: {
-                // bAutoWidth: false,//取消自动宽度
-                columns: unResponseColumnsArray,
-                iDisplayLength: 10, //每页初始显示5条记录,
-                // scrollX: true,
-                // autoWidth: true
-            }
-        })
-
     }
 
     //检查需要出货的选中数据是否符合规范
@@ -913,7 +757,7 @@
                 filter: 'makeDate="' + currentDate() + '"'
             }
         })
-        console.log('r111111:', r1);
+        // console.log('r1:' + r1);
         let r2 = r1[0].billsNum
         let r3 = parseInt(r2) + 1;
 
@@ -1009,80 +853,8 @@
     }
 
 
-    //加载展开选定表子表关联数据
-
-    const loadMainBillSubTable = async (billId) => {
-        let dataArray = await getDataBySql({
-            sql: 'sqlResponseSubBills',
-            params: {
-                filter: 'responseBillId="' + billId + '"'
-            }
-        })
-
-        console.log('dataArray', dataArray);
-
-        //将表数据同步到共用数组
-        subTableData = dataArray;
-
-        loadDataSubTable({
-            elementId: 'rp_responseBillsSub',
-            dataArray: subTableData
-        });
-    }
-
-
-
     //添加主表监听器,定义双击打开事件
     const addMainTableListener = () => {
-
-
-        //主表单击事件
-        // rp_responseBillsSub
-        //解绑原事件
-        $('#rp_responsebills tbody').unbind();
-
-        //定义主表单击击事件
-        $('#rp_responsebills tbody').on('click', 'tr', async function () {
-            //设定选中
-            let table = $('#rp_responsebills').DataTable();
-
-            if ($(this).hasClass('selected')) {
-                $(this).removeClass('selected');
-                //清空选中单据数据
-                mainTableData = {}
-                $('#subTablePanel').hide();
-            } else {
-                table.$('tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-
-                // let rowSelect = table.row('.selected').data();
-                let rowSelect = table.row(this).data();
-
-
-                mainTableData = rowSelect; //刷新全局主表对象数据
-                console.log("mainTableData:", mainTableData);
-
-                if (mainTableData.responseBillId) {
-                    await loadMainBillSubTable(rowSelect.responseBillId)
-                    //打开面板
-                    $('#subTablePanel').show();
-                } else {
-                    $('#subTablePanel').hide();
-                }
-
-
-
-            }
-
-            // let table = $('#rp_responsebills').DataTable();
-            // table.$('tr.selected').removeClass('selected');
-            // $(this).addClass('selected');
-            // let dataSelect = table.row('.selected').data();
-
-        });
-
-
-
         //定义主表双击事件
         $('#rp_responsebills tbody').on('dblclick', 'tr', async function () {
             //设定选中
@@ -1198,48 +970,27 @@
         })
 
 
-        //出货按钮
-        $('#btnResponseStart').click(async function () {
 
-            //打开面板
-            $('#unResponseModal').modal('show');
+        //定义功能
+        //定义功能-出货按钮
+        $('#btnSend').click(async function () {
 
-            loadUnResponseTable()
+            //定义变量
+            let table = $('#rp_responsebills').DataTable();
+            let dataSelect = table.rows('.selected').data();
 
-        })
-
-
-        //生成出货单按钮
-        $('#btnResponseBillNew').click(async function () {
-
-
-            //check-检查选中
-            let table = $('#rp_waitResponseBills').DataTable();
-            let rowsSelect = table.rows('.selected').data();
-            if (rowsSelect.length === 0) {
-                alert('请先选中需要出货的记录单')
-                return
-            }
-
-            //check-检查状态
-            for (let i = 0; i < rowsSelect.length; i++) {
-                if (rowsSelect[i].status !== '维修完成') {
-                    alert('存在未维修完成的维修单,请检查')
-                    return
-                }
-            }
-
-            //check-检查出货条件
-            subTableData = tableDataToArray(rowsSelect);
+            subTableData = tableDataToArray(dataSelect);
             console.log("subTableData:" + JSON.stringify(subTableData));
+
+            //检查出货条件
             let r = checkSendData(subTableData);
             if (!r) {
                 table.$('tr.selected').removeClass('selected');
                 return;
             }
 
-            //check-检测是否存在同客户未完成维修单
-            let recordsUndone = await checkRecordsUndone(subTableData[0].customerShortName);
+            //检测是否存在同客户未完成维修单
+            let recordsUndone = await checkRecordsUndone(dataSelect[0].customerShortName);
             console.log('recordsUndone', recordsUndone);
             if (recordsUndone.length > 0) {
                 let undoneRepairIds = '';
@@ -1252,21 +1003,21 @@
                 }
             }
 
+            //打开详情面板,关闭子面板
+            $('#rp_responsebillsModal').modal('show');
+            $('#rp_recordbillsPanel').hide();
 
-
-            //do-初始化面板元素,匹配出货表匹配数据
+            //初始化面板元素,匹配出货表匹配数据
             initAndFillFormInputs({
                 formId: 'rp_responsebillsForm',
-                params: subTableData[0]
+                params: dataSelect[0]
             })
 
             //获取客户信息匹配填写
-            let customerId = subTableData[0].customerId;
+            let customerId = dataSelect[0].customerId;
             fillCustomerInfo(customerId);
 
             //设置部分组件默认值
-            //生成出货单号
-            createResponseBillId()
 
             fillFormInputs({
                 formId: 'rp_responsebillsForm',
@@ -1280,11 +1031,10 @@
                 }
             })
 
-            $("#rp_responsebillsForm-responseDate").val(currentDate());
-            $("#rp_responsebillsForm-makeDate").text('');
-            $("#rp_responsebillsForm-maker").text('');
+            // $("#rp_responsebillsForm-responseDate").val(currentDate());
 
-
+            //生成出货单号
+            createResponseBillId()
 
 
             //自动计算总金额
@@ -1301,10 +1051,6 @@
 
             //定义子表功能
             addSubTableListener();
-
-            //打开详情面板,关闭子面板
-            $('#rp_responsebillsModal').modal('show');
-            $('#rp_recordbillsPanel').hide();
 
         })
 
@@ -1451,9 +1197,6 @@
                 }
 
             }
-
-            //return-刷新待出货表
-            loadUnResponseTable()
 
         })
 
