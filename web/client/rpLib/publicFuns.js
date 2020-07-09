@@ -993,36 +993,50 @@ const getBillDataTableConfig = (i) => {
             {
                 text: '删除',
                 action: function () {
-                    let DBIDArray = []
-                    let dataSelected = this.rows({
-                        selected: true
-                    }).data();
-                    for (let n = 0; n < dataSelected.length; n++) {
-                        console.log(JSON.stringify(dataSelected[n]));
-                        DBIDArray.push(dataSelected[n].DBID)
-                    }
-                    // console.log(DBIDArray);
 
-                    if (DBIDArray.length > 0) {
-                        if (confirm('删除后无法恢复,请再次确认!')) {
-                            let sqlParams = {
-                                sql: 'delete',
-                                params: {
-                                    tableId: i.sqlParams.params.tableId,
-                                    data: DBIDArray
-                                }
-                            }
-                            let updateDataTableI = {
-                                elementId: i.elementId,
-                                sqlParams: sqlParams
-                            }
-                            updateDataTable(updateDataTableI);
-                        }
+                    //自动按下隐藏的自定义删除按钮
+                    // alert($('#' + i.elementId + 'Delete').length);
+                    // console.log($('#' + i.elementId + 'Delete').length);
+                    //自定义删除
+
+                    if ($('#' + i.elementId + 'Delete').length > 0) {
+                        $('#' + i.elementId + 'Delete').click()
                     } else {
-                        alert('请点击表格,至少选中一条数据!')
+                        let DBIDArray = []
+                        let dataSelected = this.rows({
+                            selected: true
+                        }).data();
+                        for (let n = 0; n < dataSelected.length; n++) {
+                            console.log(JSON.stringify(dataSelected[n]));
+                            DBIDArray.push(dataSelected[n].DBID)
+                        }
+                        // console.log(DBIDArray);
+
+                        if (DBIDArray.length > 0) {
+                            if (confirm('删除后无法恢复,请再次确认!')) {
+                                let sqlParams = {
+                                    sql: 'delete',
+                                    params: {
+                                        tableId: i.sqlParams.params.tableId,
+                                        data: DBIDArray
+                                    }
+                                }
+                                let updateDataTableI = {
+                                    elementId: i.elementId,
+                                    sqlParams: sqlParams
+                                }
+                                updateDataTable(updateDataTableI);
+                            }
+                        } else {
+                            alert('请点击表格,至少选中一条数据!')
+                        }
+
                     }
 
                 }
+
+
+
             },
             'colvis',
             'excel',
@@ -1675,7 +1689,7 @@ const autoInStoreBills = async ({
     let stockResult = await getStockNums(PIDArr);
     console.log('stockResult', stockResult);
     for (let n of subTable) {
-        n.stockNum = 0;//设置初始默认值
+        n.stockNum = 0; //设置初始默认值
         for (const m of stockResult) {
             if (n.productId === m.PID) {
                 n.stockNum = m.stockNum;

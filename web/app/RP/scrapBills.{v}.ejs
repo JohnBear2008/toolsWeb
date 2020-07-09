@@ -43,7 +43,7 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
-                <h1>库存管理-调拨凭单</h1>
+                <h1>库存管理-报废凭单</h1>
             </div>
         </div>
     </div>
@@ -68,25 +68,24 @@
                     <!-- 功能组按钮 -->
                     <div style="float:right">
 
-                        <button id='btnTransferBillNew' type="button" class="btn btn-info">新增</button>
-                        <button id='btnTransferBillAudit' type="button" class="btn btn-warning">审核</button>
-                        <button id='btnTransferBillDelete' type="button" class="btn btn-danger">删除</button>
-                        
+                        <button id='btnScrapBillNew' type="button" class="btn btn-info">新增</button>
+                        <button id='btnScrapBillAudit' type="button" class="btn btn-warning">审核</button>
+                        <button id='btnScrapBillDelete' type="button" class="btn btn-danger">删除</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
-                            打印调拨码
+                            打印报废码
                         </button> -->
-                        <button type="button" class="btn btn-primary" id="rp_transferbillsPrint">
-                            打印调拨凭单
+                        <button type="button" class="btn btn-primary" id="rp_scrapbillsPrint">
+                            打印报废凭单
                         </button>
                     </div>
                     <div style="clear:both"></div>
                 </div>
                 <div class="panel-body">
-                    <table id="rp_transferbills" class=" table table-striped table-bordered" style="width:100%">
+                    <table id="rp_scrapbills" class=" table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
 
-                                <th>调拨单号</th>
+                                <th>报废单号</th>
                                 <th>拨出仓库</th>
                                 <th>拨入仓库</th>
                                 <th>制单人</th>
@@ -109,13 +108,12 @@
                     <h3 class="panel-title">产品清单</h3>
                 </div>
                 <div class="panel-body">
-                    <table id="rp_transferbillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
+                    <table id="rp_scrapbillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
                         <thead>
                             <tr>
                                 <th>序号</th>
                                 <th>产品编号</th>
                                 <th>产品描述</th>
-
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
@@ -152,7 +150,7 @@
                             <form class="form-horizontal" role="form" id='filterForm'>
 
                                 <!-- <div class="form-group">
-                                    <label class="col-sm-2 control-label">调拨日期</label>
+                                    <label class="col-sm-2 control-label">报废日期</label>
                                     <div class="col-sm-5">
                                         <div class="input-group date form_date ">
                                             <input id="filterForm-borrowDateB" class="form-control " size="16"
@@ -232,15 +230,15 @@
                 <div class="modal-body">
                     <div id="printViewDiv">
 
-                        <h2>弘讯科技股份有限公司调拨单</h2>
+                        <h2>弘讯科技股份有限公司报废单</h2>
                         <hr>
 
                         <table id='printViewMainTable' style="border: 0ch; width: 100%;table-layout:fixed;">
                             <tbody>
                                 <tr>
-                                    <td width='80px'>调拨单号:</td>
+                                    <td width='80px'>报废单号:</td>
                                     <td>
-                                        <p class="form-control-static" id="printViewMainTable-transferBillId"></p>
+                                        <p class="form-control-static" id="printViewMainTable-scrapBillId"></p>
                                     </td>
                                     <td width='80px'>客户编号:</td>
                                     <td>
@@ -324,7 +322,7 @@
             <div class="modal-content">
                 <div class="modal-body">
 
-                    <h2>弘讯科技股份有限公司调拨清单</h2>
+                    <h2>弘讯科技股份有限公司报废清单</h2>
                     <hr>
 
                     <div id="listPrintViewDiv">
@@ -349,14 +347,14 @@
 
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="rp_transferbillsModal" tabindex="-1" role="dialog" aria-hidden="true"
+    <div class="modal fade" id="rp_scrapbillsModal" tabindex="-1" role="dialog" aria-hidden="true"
         data-backdrop="static">
 
         <div class="modal-dialog" style="width: 75%;">
 
             <!-- 按钮触发模态框 -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_transferbillsModal"
-                id="rp_transferbillsModalOpen" style="display: none;">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_scrapbillsModal"
+                id="rp_scrapbillsModalOpen" style="display: none;">
                 开始演示模态框
             </button>
             <div class="modal-content">
@@ -378,22 +376,22 @@
                         <div class="panel-body" style="min-height: 550px;">
 
 
-                            <form class="form-horizontal" role="form" id='rp_transferbillsForm'>
+                            <form class="form-horizontal" role="form" id='rp_scrapbillsForm'>
 
-                                <input id="rp_transferbillsForm-DBID" type="hidden" value="">
+                                <input id="rp_scrapbillsForm-DBID" type="hidden" value="">
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label"
-                                        for="rp_transferbillsForm-transferBillId">调拨单号</label>
+                                        for="rp_scrapbillsForm-scrapBillId">报废单号</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_transferbillsForm-transferBillId"></p>
+                                        <p class="form-control-static" id="rp_scrapbillsForm-scrapBillId"></p>
                                     </div>
 
                                     <label class="col-sm-1 control-label"
-                                        for="rp_transferbillsForm-transferDate">调拨日期:</label>
+                                        for="rp_scrapbillsForm-scrapDate">报废日期:</label>
                                     <div class="col-sm-5 ">
                                         <div class="input-group date form_date ">
-                                            <input id="rp_transferbillsForm-transferDate" class="form-control "
+                                            <input id="rp_scrapbillsForm-scrapDate" class="form-control "
                                                 size="16" type="text" value="" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
@@ -412,7 +410,7 @@
 
                                     <label class="col-sm-1 control-label">拨出仓库</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_transferbillsForm-outWarehouseId"
+                                        <select id="rp_scrapbillsForm-outWarehouseId"
                                             class="selectpicker form-control" data-live-search="true" data-size="5"
                                             data-dropup-auto="false">
                                         </select>
@@ -420,7 +418,7 @@
 
                                     <label class="col-sm-1 control-label">拨入仓库</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_transferbillsForm-inWarehouseId"
+                                        <select id="rp_scrapbillsForm-inWarehouseId"
                                             class="selectpicker form-control" data-live-search="true" data-size="5"
                                             data-dropup-auto="false">
                                         </select>
@@ -434,17 +432,17 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">单据备注</label>
                                     <div class="col-sm-11">
-                                        <input class="form-control" id="rp_transferbillsForm-remark" type="text">
+                                        <input class="form-control" id="rp_scrapbillsForm-remark" type="text">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label text-warning"
-                                        for="rp_transferbillsForm-operator">经手人</label>
+                                        for="rp_scrapbillsForm-operator">经手人</label>
                                     <div class="col-sm-5">
-                                        <!-- <input class="form-control" id="rp_transferbillsForm-operator" type="text"> -->
-                                        <select id="rp_transferbillsForm-operator" class="selectpicker"
+                                        <!-- <input class="form-control" id="rp_scrapbillsForm-operator" type="text"> -->
+                                        <select id="rp_scrapbillsForm-operator" class="selectpicker"
                                             data-live-search="true" data-size="5">
                                         </select>
                                     </div>
@@ -452,7 +450,7 @@
 
                                     <label class="col-sm-1 control-label">单据状态</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_transferbillsForm-status"></p>
+                                        <p class="form-control-static" id="rp_scrapbillsForm-status"></p>
                                     </div>
                                 </div>
 
@@ -465,30 +463,30 @@
 
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_transferbillsForm-maker">制单人</label>
+                                    <label class="col-sm-1 control-label" for="rp_scrapbillsForm-maker">制单人</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_transferbillsForm-maker"></p>
+                                        <p class="form-control-static" id="rp_scrapbillsForm-maker"></p>
                                     </div>
 
                                     <label class="col-sm-1 control-label"
-                                        for="rp_transferbillsForm-makeDate">制单日期</label>
+                                        for="rp_scrapbillsForm-makeDate">制单日期</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_transferbillsForm-makeDate"></p>
+                                        <p class="form-control-static" id="rp_scrapbillsForm-makeDate"></p>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label" for="rp_transferbillsForm-auditor">审核人</label>
+                                    <label class="col-sm-1 control-label" for="rp_scrapbillsForm-auditor">审核人</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_transferbillsForm-auditor" class="selectpicker"
+                                        <select id="rp_scrapbillsForm-auditor" class="selectpicker"
                                             data-live-search="true" data-size="5">
                                         </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label"
-                                        for="rp_transferbillsForm-auditDate">审核日期</label>
+                                        for="rp_scrapbillsForm-auditDate">审核日期</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_transferbillsForm-auditDate"></p>
+                                        <p class="form-control-static" id="rp_scrapbillsForm-auditDate"></p>
                                     </div>
                                 </div>
 
@@ -509,7 +507,7 @@
                                     </div>
 
                                     <!-- 定义基础模块数据表 -->
-                                    <table id="rp_transfersubbills" class=" table table-striped table-bordered"
+                                    <table id="rp_scrapsubbills" class=" table table-striped table-bordered"
                                         style="width:100%">
                                         <thead>
                                             <tr>
@@ -526,26 +524,24 @@
                                         <tbody></tbody>
                                     </table>
 
-                                    <div class="panel panel-default" id='rp_transfersubbillsPanel'>
+                                    <div class="panel panel-default" id='rp_scrapsubbillsPanel'>
                                         <div class="panel-heading">
                                             <h3 class="panel-title">产品详情</h3>
                                         </div>
                                         <div class="panel-body">
 
 
+                                            <form class="form-horizontal" role="form" id='rp_scrapsubbillsForm'>
 
-
-                                            <form class="form-horizontal" role="form" id='rp_transfersubbillsForm'>
-
-                                                <!-- <input id="rp_transfersubbillsForm-DBID" type="hidden" value=""> -->
-                                                <input id="rp_transfersubbillsForm-transferBillId" type="hidden"
+                                                <!-- <input id="rp_scrapsubbillsForm-DBID" type="hidden" value=""> -->
+                                                <input id="rp_scrapsubbillsForm-scrapBillId" type="hidden"
                                                     value="">
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">序号</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-rowId">
+                                                            id="rp_scrapsubbillsForm-rowId">
                                                         </p>
                                                     </div>
 
@@ -560,7 +556,7 @@
                                                     <label class="col-sm-1 control-label">状态</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-status">
+                                                            id="rp_scrapsubbillsForm-status">
                                                         </p>
                                                     </div>
                                                 </div>
@@ -569,7 +565,7 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_transfersubbillsForm-productId"
+                                                        <select id="rp_scrapsubbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
                                                         </select>
@@ -585,14 +581,14 @@
                                                     <label class="col-sm-1 control-label">产品名称</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-productName">
+                                                            id="rp_scrapsubbillsForm-productName">
                                                         </p>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">产品描述</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-productDescription">
+                                                            id="rp_scrapsubbillsForm-productDescription">
                                                         </p>
                                                     </div>
                                                 </div>
@@ -601,7 +597,7 @@
                                                     <label class="col-sm-1 control-label">产品类别</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-productClass">
+                                                            id="rp_scrapsubbillsForm-productClass">
                                                         </p>
 
                                                     </div>
@@ -609,7 +605,7 @@
                                                     <label class="col-sm-1 control-label">系统分类</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-systemType">
+                                                            id="rp_scrapsubbillsForm-systemType">
                                                         </p>
                                                     </div>
 
@@ -619,14 +615,14 @@
                                                     <label class="col-sm-1 control-label">单位</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_transfersubbillsForm-unit">
+                                                            id="rp_scrapsubbillsForm-unit">
                                                         </p>
 
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">数量</label>
                                                     <div class="col-sm-5">
-                                                        <input class="form-control" id="rp_transfersubbillsForm-num"
+                                                        <input class="form-control" id="rp_scrapsubbillsForm-num"
                                                             type="text">
                                                     </div>
 
@@ -637,7 +633,7 @@
 
                                                     <label class="col-sm-1 control-label">备注</label>
                                                     <div class="col-sm-11">
-                                                        <input class="form-control" id="rp_transfersubbillsForm-remark"
+                                                        <input class="form-control" id="rp_scrapsubbillsForm-remark"
                                                             type="text">
                                                     </div>
                                                 </div>
@@ -693,10 +689,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"
-                        id="rp_transferbillsModalClose">关闭
+                        id="rp_scrapbillsModalClose">关闭
                     </button>
 
-                    <button type="button" class="btn btn-primary" id="rp_transferbillsSave">
+                    <button type="button" class="btn btn-primary" id="rp_scrapbillsSave">
                         保存单据
                     </button>
                 </div>
@@ -712,7 +708,7 @@
     //申请表主表dataTable column 数组
 
     const mainColumnsArray = [{
-        data: 'transferBillId'
+        data: 'scrapBillId'
     }, {
         data: 'outWarehouseName',
     }, {
@@ -790,11 +786,11 @@
         delete r2.productId;
         // console.log('r2:' + JSON.stringify(r2));
         fillFormInputs({
-            formId: 'rp_transfersubbillsForm',
+            formId: 'rp_scrapsubbillsForm',
             params: r2
         })
 
-        // $('#rp_transfersubbillsForm-productId').selectpicker('val',r1[0].productId)
+        // $('#rp_scrapsubbillsForm-productId').selectpicker('val',r1[0].productId)
 
     }
 
@@ -802,13 +798,13 @@
 
     //选定产品修改事件
     const addProductListener = () => {
-        // $('#rp_transfersubbillsForm-productId').unbind();
-        $('#rp_transfersubbillsForm-productId').change(async function () {
-            let productId = $('#rp_transfersubbillsForm-productId option:selected')
+        // $('#rp_scrapsubbillsForm-productId').unbind();
+        $('#rp_scrapsubbillsForm-productId').change(async function () {
+            let productId = $('#rp_scrapsubbillsForm-productId option:selected')
                 .val()
             if (productId) {
 
-                $('#rp_transfersubbillsForm-productId').selectpicker('refresh');
+                $('#rp_scrapsubbillsForm-productId').selectpicker('refresh');
                 showStockNum();
                 fillProductInfo(productId);
 
@@ -818,12 +814,12 @@
     }
     //仓库选择修改事件
     const addOutWarehouseListener = () => {
-        // $('#rp_transfersubbillsForm-warehouseId').unbind();
-        $('#rp_transferbillsForm-outWarehouseId').change(async function () {
-            let warehouseId = $('#rp_transferbillsForm-outWarehouseId option:selected')
+        // $('#rp_scrapsubbillsForm-warehouseId').unbind();
+        $('#rp_scrapbillsForm-outWarehouseId').change(async function () {
+            let warehouseId = $('#rp_scrapbillsForm-outWarehouseId option:selected')
                 .val()
-            // $('#rp_transferbillsForm-outWarehouseId').selectpicker('refresh');
-            let productId = $('#rp_transfersubbillsForm-productId option:selected').val();
+            // $('#rp_scrapbillsForm-outWarehouseId').selectpicker('refresh');
+            let productId = $('#rp_scrapsubbillsForm-productId option:selected').val();
             if (warehouseId && productId) {
                 showStockNum();
             }
@@ -832,10 +828,10 @@
 
 
 
-    //创建调拨单新单号
-    const createTransferBillId = async () => {
+    //创建报废单新单号
+    const createScrapBillId = async () => {
         let r1 = await getDataBySql({
-            sql: "getTransferBillsNum",
+            sql: "getScrapBillsNum",
             params: {
                 filter: 'makeDate="' + currentDate() + '"'
             }
@@ -848,8 +844,8 @@
         // console.log('r4:' + r4);
         let r5 = dateFormat(currentDate(), 'yyyyMMdd');
 
-        let transferBillId = 'M-' + r5 + r4;
-        $("#rp_transferbillsForm-transferBillId").text(transferBillId);
+        let scrapBillId = 'X-' + r5 + r4;
+        $("#rp_scrapbillsForm-scrapBillId").text(scrapBillId);
     }
 
 
@@ -859,12 +855,12 @@
     const addMainTableListener = () => {
 
         //解绑原事件
-        $('#rp_transferbills tbody').unbind();
+        $('#rp_scrapbills tbody').unbind();
 
         //定义主表单击击事件
-        $('#rp_transferbills tbody').on('click', 'tr', async function () {
+        $('#rp_scrapbills tbody').on('click', 'tr', async function () {
             //设定选中
-            let table = $('#rp_transferbills').DataTable();
+            let table = $('#rp_scrapbills').DataTable();
 
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
@@ -880,7 +876,7 @@
 
                 mainTableData = rowSelect; //刷新全局主表对象数据
 
-                await loadMainBillSubTable(rowSelect.transferBillId)
+                await loadMainBillSubTable(rowSelect.scrapBillId)
 
                 //打开面板
                 $('#subTablePanel').show();
@@ -891,16 +887,16 @@
 
 
         //定义主表双击事件
-        $('#rp_transferbills tbody').on('dblclick', 'tr', async function () {
+        $('#rp_scrapbills tbody').on('dblclick', 'tr', async function () {
 
             //打开关联信息,打印功能
             $("#accordion").show();
 
             // $("#listPrintBtn").show();
-            // $("#rp_transferbillsPrint").show();
+            // $("#rp_scrapbillsPrint").show();
 
             //设定选中
-            let table = $('#rp_transferbills').DataTable();
+            let table = $('#rp_scrapbills').DataTable();
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
@@ -910,11 +906,11 @@
             // console.log('mainTableData', mainTableData);
 
             //解除客户监听事件
-            $('#rp_transferbillsForm-customerShortName').unbind();
+            $('#rp_scrapbillsForm-customerShortName').unbind();
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
-                formId: 'rp_transferbillsForm',
+                formId: 'rp_scrapbillsForm',
                 params: dataSelect
             })
 
@@ -930,16 +926,16 @@
             // customerData = r1[0]; //将查询结果赋给全局变量
 
             //关闭子表panel
-            $('#rp_transfersubbillsPanel').hide();
+            $('#rp_scrapsubbillsPanel').hide();
 
             //加载子表记录表数据
 
-            loadBillSubTable(dataSelect.transferBillId);
+            loadBillSubTable(dataSelect.scrapBillId);
 
 
 
             //打开面板
-            $('#rp_transferbillsModal').modal('show');
+            $('#rp_scrapbillsModal').modal('show');
 
         });
 
@@ -971,9 +967,9 @@
 
         //初始化主表
         loadBillDataTable({
-            elementId: 'rp_transferbills',
+            elementId: 'rp_scrapbills',
             sqlParams: {
-                sqlId: 'sqlTransferBills',
+                sqlId: 'sqlScrapBills',
                 params: {
                     filter: mainTableFilter,
                     orderBy: 'billSaveTimeStamp desc'
@@ -1000,14 +996,14 @@
         });
 
         // //添加搜索框监听事件,值变动自动隐藏主页附表
-        // $('#rp_transferbills').on('search.dt', function () {
+        // $('#rp_scrapbills').on('search.dt', function () {
         //     console.log(1111);
         //     $('#subTablePanel').hide();
         // })
 
 
         // //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
-        // let table = $('#rp_transferbills').DataTable();
+        // let table = $('#rp_scrapbills').DataTable();
         // table.column('last').visible(false)
 
         addMainTableListener();
@@ -1018,18 +1014,18 @@
 
     //添加子表监听器,定义双击展开事件
     const addSubTableListener = () => {
-        let subTable = $('#rp_transfersubbills').DataTable();
+        let subTable = $('#rp_scrapsubbills').DataTable();
 
         //解绑原事件
-        $('#rp_transfersubbills tbody').unbind();
+        $('#rp_scrapsubbills tbody').unbind();
 
         //定义子表双击事件
-        $('#rp_transfersubbills tbody').on('click', 'tr', function () {
+        $('#rp_scrapsubbills tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
 
-                $('#rp_transfersubbillsPanel').hide();
+                $('#rp_scrapsubbillsPanel').hide();
             } else {
                 subTable.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
@@ -1040,12 +1036,12 @@
 
                 //初始化并填写form内inputs
                 initAndFillFormInputs({
-                    formId: 'rp_transfersubbillsForm',
+                    formId: 'rp_scrapsubbillsForm',
                     params: rowSelect
                 })
 
                 //打开面板
-                $('#rp_transfersubbillsPanel').show();
+                $('#rp_scrapsubbillsPanel').show();
 
                 // //选定产品修改事件
                 // addProductListener();
@@ -1088,16 +1084,16 @@
 
     //加载展开选定表子表关联数据
 
-    const loadBillSubTable = async (transferBillId) => {
+    const loadBillSubTable = async (scrapBillId) => {
 
 
         loadDataSubTable({
-            elementId: 'rp_transfersubbills',
+            elementId: 'rp_scrapsubbills',
             dataArray: subTableData
         });
 
         // loadDataSubTable({
-        //     elementId: 'rp_transferbillsSub',
+        //     elementId: 'rp_scrapbillsSub',
         //     dataArray: subTableData
         // });
 
@@ -1105,11 +1101,11 @@
 
     //加载展开选定表子表关联数据
 
-    const loadMainBillSubTable = async (transferBillId) => {
+    const loadMainBillSubTable = async (scrapBillId) => {
         let dataArray = await getDataBySql({
-            sql: 'sqlTransferSubBills',
+            sql: 'sqlScrapSubBills',
             params: {
-                filter: 'transferBillId="' + transferBillId + '"'
+                filter: 'scrapBillId="' + scrapBillId + '"'
             }
         })
         //将表数据同步到共用数组
@@ -1118,7 +1114,7 @@
 
 
         loadDataSubTable({
-            elementId: 'rp_transferbillsSub',
+            elementId: 'rp_scrapbillsSub',
             dataArray: subTableData
         });
     }
@@ -1126,35 +1122,35 @@
 
 
 
-    //保存调拨单函数
-    const saveTransferBill = async () => {
+    //保存报废单函数
+    const saveScrapBill = async () => {
 
         let mainFormData = getPostFormData({
-            formId: 'rp_transferbillsForm'
+            formId: 'rp_scrapbillsForm'
         })
 
         //给主表数据添加,maker 和makeDate日期;新增状态等待单号检测完成,制单人为空则为新增状态
 
         if (!mainFormData.data[0].maker) {
-            await autoUpdateTransferBillId();
-            //刷新调拨单号
-            mainFormData.data[0].transferBillId = $("#rp_transferbillsForm-transferBillId").text();
+            await autoUpdateScrapBillId();
+            //刷新报废单号
+            mainFormData.data[0].scrapBillId = $("#rp_scrapbillsForm-scrapBillId").text();
 
             mainFormData.data[0].status = '待审核';
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
         }
-        mainFormData.data[0].outWarehouseName = $('#rp_transferbillsForm-outWarehouseId option:selected')
+        mainFormData.data[0].outWarehouseName = $('#rp_scrapbillsForm-outWarehouseId option:selected')
             .text()
-        mainFormData.data[0].inWarehouseName = $('#rp_transferbillsForm-inWarehouseId option:selected')
+        mainFormData.data[0].inWarehouseName = $('#rp_scrapbillsForm-inWarehouseId option:selected')
             .text()
 
         // console.log("subTableData:" + JSON.stringify(subTableData))
 
         for (let n of subTableData) {
-            n.transferBillId = $("#rp_transferbillsForm-transferBillId").text();
+            n.scrapBillId = $("#rp_scrapbillsForm-scrapBillId").text();
             if (n.status === '新增') {
-                n.status = '预调拨'
+                n.status = '预报废'
             }
         }
 
@@ -1166,7 +1162,7 @@
         let r2 = await postDBData({
             sql: 'replace',
             params: {
-                tableId: 'rp_transfersubbills',
+                tableId: 'rp_scrapsubbills',
                 data: subTableData
             }
         })
@@ -1183,8 +1179,8 @@
             PIDArr: PIDArr
         })
 
-        // console.log('saveTransferBill r1:' + JSON.stringify(r1));
-        // console.log('saveTransferBill r2:' + JSON.stringify(r2));
+        // console.log('saveScrapBill r1:' + JSON.stringify(r1));
+        // console.log('saveScrapBill r2:' + JSON.stringify(r2));
 
         if (r1 && r2 && r3) {
             alert('保存成功!')
@@ -1240,8 +1236,8 @@
         //     }
         // }
 
-        // $('#rp_transferbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
-        $('#rp_transferbillsModalClose').click()
+        // $('#rp_scrapbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
+        $('#rp_scrapbillsModalClose').click()
 
         loadBillMainTable();
 
@@ -1251,18 +1247,18 @@
 
     //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
 
-    const checkTransferBillId = async () => {
-        let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
+    const checkScrapBillId = async () => {
+        let scrapBillId = $("#rp_scrapbillsForm-scrapBillId").text();
 
         let r1 = await getDataBySql({
-            sql: 'getTransferBillsNum',
+            sql: 'getScrapBillsNum',
             params: {
-                filter: 'transferBillId="' + transferBillId + '"'
+                filter: 'scrapBillId="' + scrapBillId + '"'
             }
         })
 
         let r2 = r1[0].billsNum;
-        // console.log("checkTransferBillId:" + r2);
+        // console.log("checkScrapBillId:" + r2);
 
         let o = r2 > 0 ? false : true;
         return o;
@@ -1270,26 +1266,26 @@
     }
 
     //更新需求单号加1
-    const updateTransferBillId = () => {
-        let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
-        if (transferBillId) {
-            transferBillIdArr = transferBillId.split('-');
-            let newBillId = transferBillIdArr[0] + '-' + (parseInt(transferBillIdArr[1]) + 1);
-            $("#rp_transferbillsForm-transferBillId").text(newBillId);
+    const updateScrapBillId = () => {
+        let scrapBillId = $("#rp_scrapbillsForm-scrapBillId").text();
+        if (scrapBillId) {
+            scrapBillIdArr = scrapBillId.split('-');
+            let newBillId = scrapBillIdArr[0] + '-' + (parseInt(scrapBillIdArr[1]) + 1);
+            $("#rp_scrapbillsForm-scrapBillId").text(newBillId);
         }
     }
 
     //递归更新单号直到不存在冲突单号;
 
-    const autoUpdateTransferBillId = async () => {
-        let r = await checkTransferBillId();
+    const autoUpdateScrapBillId = async () => {
+        let r = await checkScrapBillId();
         if (r) {
             return true
         } else {
-            // console.log('fail:' + $("#rp_transferbillsForm-transferBillId").text());
-            updateTransferBillId()
-            // console.log('fail11:' + $("#rp_transferbillsForm-transferBillId").text());
-            return await autoUpdateTransferBillId();
+            // console.log('fail:' + $("#rp_scrapbillsForm-scrapBillId").text());
+            updateScrapBillId()
+            // console.log('fail11:' + $("#rp_scrapbillsForm-scrapBillId").text());
+            return await autoUpdateScrapBillId();
         }
     }
 
@@ -1302,7 +1298,7 @@
     //         data: {}
     //     }
 
-    //     let table = $('#rp_transferbills').DataTable();
+    //     let table = $('#rp_scrapbills').DataTable();
     //     let dataSelect = table.rows('.selected').data();
     //     let mainDBIDArr = [];
     //     let subDBIDArr = [];
@@ -1310,25 +1306,25 @@
 
     //     for (let n = 0; n < dataSelect.length; n++) {
     //         mainDBIDArr.push(dataSelect[n].DBID);
-    //         billsIdArr.push(dataSelect[n].transferBillId);
+    //         billsIdArr.push(dataSelect[n].scrapBillId);
     //     }
 
     //     switch (true) {
     //         case billsIdArr.length === 0:
-    //             alert('请先选中需要删除的调拨单!')
+    //             alert('请先选中需要删除的报废单!')
 
     //             resultData.result = false;
     //             return resultData
     //             break;
     //         case billsIdArr.length > 0:
-    //             let transferBillIdRange = getRangeString(billsIdArr);
+    //             let scrapBillIdRange = getRangeString(billsIdArr);
 
     //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
 
     //             let statusArr = await getDataBySql({
     //                 sql: 'getBorrowSubBillStatus',
     //                 params: {
-    //                     filter: 'transferBillId in ' + transferBillIdRange
+    //                     filter: 'scrapBillId in ' + scrapBillIdRange
     //                 }
     //             })
 
@@ -1359,8 +1355,8 @@
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let productId = $('#rp_transfersubbillsForm-productId option:selected').val();
-        let warehouseId = $('#rp_transferbillsForm-outWarehouseId option:selected').val();
+        let productId = $('#rp_scrapsubbillsForm-productId option:selected').val();
+        let warehouseId = $('#rp_scrapbillsForm-outWarehouseId option:selected').val();
         // console.log(warehouseId);
 
         if (productId && warehouseId) {
@@ -1430,7 +1426,7 @@
 
         //初始化子表
         loadDataSubTable({
-            elementId: 'rp_transfersubbills',
+            elementId: 'rp_scrapsubbills',
             dataArray: subTableData
         });
 
@@ -1508,15 +1504,15 @@
 
 
 
-        //新增调拨单按钮
-        $('#btnTransferBillNew').click(function () {
+        //新增报废单按钮
+        $('#btnScrapBillNew').click(function () {
 
             //清空form数据
             mainTableData = {}
             subTableData = {}
 
             clearFormInputs({
-                formId: 'rp_transferbillsForm'
+                formId: 'rp_scrapbillsForm'
             })
 
             //清空原有选项
@@ -1526,27 +1522,27 @@
 
             //清空子表及全局变量
             subTableData = [];
-            $('#rp_transfersubbills tbody').html("");
+            $('#rp_scrapsubbills tbody').html("");
 
 
             //打开面板
-            $('#rp_transfersubbillsPanel').hide();
+            $('#rp_scrapsubbillsPanel').hide();
 
 
             //清空modal数据
             clearFormInputs({
-                formId: 'rp_transferbillsForm'
+                formId: 'rp_scrapbillsForm'
             })
 
 
-            createTransferBillId();
+            createScrapBillId();
 
-            $("#rp_transferbillsForm-outWarehouseId").selectpicker('val', 'W1')
-            $("#rp_transferbillsForm-sendWay").selectpicker('val', '邮寄过来')
+            $("#rp_scrapbillsForm-outWarehouseId").selectpicker('val', 'W1')
+            $("#rp_scrapbillsForm-sendWay").selectpicker('val', '邮寄过来')
 
             //在保存时赋值
-            // $("#rp_transferbillsForm-maker").text(sessionName);
-            // $("#rp_transferbillsForm-makeDate").text(currentDate());
+            // $("#rp_scrapbillsForm-maker").text(sessionName);
+            // $("#rp_scrapbillsForm-makeDate").text(currentDate());
 
 
 
@@ -1555,23 +1551,23 @@
             $("#accordion").hide();
 
             // $("#listPrintBtn").hide();
-            // $("#rp_transferbillsPrint").hide();
+            // $("#rp_scrapbillsPrint").hide();
 
             //打开面板
-            $('#rp_transferbillsModal').modal('show');
+            $('#rp_scrapbillsModal').modal('show');
 
         })
 
-        //审核调拨单按钮
-        $('#btnTransferBillAudit').click(async function () {
+        //审核报废单按钮
+        $('#btnScrapBillAudit').click(async function () {
             //check-单据选中状态
             if (!mainTableData.DBID) {
-                alert('请先选中需要审核的调拨单!')
+                alert('请先选中需要审核的报废单!')
                 return
             }
             //check-单据审核状态
             if (mainTableData.status !== '待审核') {
-                alert('该调拨单非待审核状态,无法审核!')
+                alert('该报废单非待审核状态,无法审核!')
                 return
             }
 
@@ -1589,8 +1585,8 @@
 
             //do-系统出库
             let outMainTable = {
-                billFrom: '调拨单',
-                billId: mainTableData.transferBillId,
+                billFrom: '报废单',
+                billId: mainTableData.scrapBillId,
                 // customerId: mainTableData.customerId,
                 // customerShortName: mainTableData.customerShortName,
                 // customerName: mainTableData.customerName,
@@ -1611,7 +1607,7 @@
             let outSubTable = [];
             for (const n of subTableData) {
                 outSubTable.push({
-                    billId: n.transferBillId,
+                    billId: n.scrapBillId,
                     rowId: n.rowId,
                     productId: n.productId,
                     productName: n.productName,
@@ -1624,8 +1620,8 @@
                     num: n.num,
                     status: '已出',
                     remark: n.remark,
-                    actType: '调拨单',
-                    rpBillId: mainTableData.transferBillId
+                    actType: '报废单',
+                    rpBillId: mainTableData.scrapBillId
                 })
             }
 
@@ -1644,8 +1640,8 @@
             }
 
             let inMainTable = {
-                billFrom: '调拨单',
-                billId: mainTableData.transferBillId,
+                billFrom: '报废单',
+                billId: mainTableData.scrapBillId,
                 // customerId: mainTableData.customerId,
                 // customerShortName: mainTableData.customerShortName,
                 // customerName: mainTableData.customerName,
@@ -1666,7 +1662,7 @@
             let inSubTable = [];
             for (const n of subTableData) {
                 inSubTable.push({
-                    billId: n.transferBillId,
+                    billId: n.scrapBillId,
                     rowId: n.rowId,
                     productId: n.productId,
                     productName: n.productName,
@@ -1679,8 +1675,8 @@
                     num: n.num,
                     status: '已入',
                     remark: n.remark,
-                    actType: '调拨单',
-                    rpBillId: mainTableData.transferBillId
+                    actType: '报废单',
+                    rpBillId: mainTableData.scrapBillId
                 })
             }
 
@@ -1694,34 +1690,34 @@
                 return;
             }
 
-            //do-更新调拨单主表
+            //do-更新报废单主表
 
             let billUpdateData = {
-                transferBillId: mainTableData.transferBillId,
+                scrapBillId: mainTableData.scrapBillId,
                 status: '已审核'
             }
 
             let r3 = await postDBData({
                 sql: 'update',
                 params: {
-                    tableId: 'rp_transferbills',
+                    tableId: 'rp_scrapbills',
                     data: [billUpdateData],
-                    key: 'transferBillId'
+                    key: 'scrapBillId'
                 }
             })
 
-            //do-更新调拨单子表状态
+            //do-更新报废单子表状态
 
             for (let n of subTableData) {
-                if (n.status === '预调拨') {
-                    n.status = '已调拨'
+                if (n.status === '预报废') {
+                    n.status = '已报废'
                 }
             }
 
             let r4 = await postDBData({
                 sql: 'replace',
                 params: {
-                    tableId: 'rp_transfersubbills',
+                    tableId: 'rp_scrapsubbills',
                     data: subTableData
                 }
             })
@@ -1741,25 +1737,25 @@
         })
 
 
-        //删除调拨单按钮
-        $('#btnTransferBillDelete').click(async function () {
+        //删除报废单按钮
+        $('#btnScrapBillDelete').click(async function () {
 
             //check-检查单据选中
-            if (!mainTableData.transferBillId) {
-                alert('请先选中需要删除的调拨单')
+            if (!mainTableData.scrapBillId) {
+                alert('请先选中需要删除的报废单')
                 return
             }
 
             //check-检查单据状态
             if (mainTableData.status !== '待审核') {
-                alert('只允许删除待审核调拨单')
+                alert('只允许删除待审核报废单')
                 return
             }
 
             //check-检查子表状态
             for (const n of subTableData) {
-                if (n.status !== '预调拨') {
-                    alert('存在非预调拨状态的物料,无法删除!')
+                if (n.status !== '预报废') {
+                    alert('存在非预报废状态的物料,无法删除!')
                     return
                 }
             }
@@ -1790,7 +1786,7 @@
             let r1 = await postDBData({
                 sql: 'delete',
                 params: {
-                    tableId: 'rp_transferbills',
+                    tableId: 'rp_scrapbills',
                     data: mainDBIDArr
                 }
             })
@@ -1798,7 +1794,7 @@
             let r2 = await postDBData({
                 sql: 'delete',
                 params: {
-                    tableId: 'rp_transfersubbills',
+                    tableId: 'rp_scrapsubbills',
                     data: subDBIDArr
                 }
             })
@@ -1831,7 +1827,7 @@
                     }
                 })
                 // console.log("productData:" + JSON.stringify(productData));
-                let rowNum = $("#rp_transfersubbills tbody tr").size();
+                let rowNum = $("#rp_scrapsubbills tbody tr").size();
                 let rowData = {};
 
                 rowData.rowId = rowNum + 1;
@@ -1852,12 +1848,12 @@
                 subTableData.push(rowData);
                 //重新加载子表
                 loadDataSubTable({
-                    elementId: 'rp_transfersubbills',
+                    elementId: 'rp_scrapsubbills',
                     dataArray: subTableData
                 });
 
                 // alert('productId:' + productId);
-                // $('#rp_transfersubbillsPanel').show();
+                // $('#rp_scrapsubbillsPanel').show();
 
 
                 scanner.stop().then(function () {
@@ -1895,7 +1891,7 @@
 
         // 新增填单按钮
         $('#btnAddProduct').click(function () {
-            let subTable = $('#rp_transfersubbills').DataTable();
+            let subTable = $('#rp_scrapsubbills').DataTable();
             //删除子表选中状态
             // subTable.$('tr.selected').removeClass('selected');
 
@@ -1903,17 +1899,17 @@
 
             //清空panel数据
             clearFormInputs({
-                formId: 'rp_transfersubbillsForm'
+                formId: 'rp_scrapsubbillsForm'
             })
             //打开面板
-            $('#rp_transfersubbillsPanel').show();
+            $('#rp_scrapsubbillsPanel').show();
 
             //设置默认值
 
-            $("#rp_transfersubbillsForm-status").text('新增')
-            $("#rp_transfersubbillsForm-productId").selectpicker('val', '')
-            $("#rp_transfersubbillsForm-warehouseId").selectpicker('val', 'W1')
-            $("#rp_transfersubbillsForm-num").val(1)
+            $("#rp_scrapsubbillsForm-status").text('新增')
+            $("#rp_scrapsubbillsForm-productId").selectpicker('val', '')
+            $("#rp_scrapsubbillsForm-warehouseId").selectpicker('val', 'W1')
+            $("#rp_scrapsubbillsForm-num").val(1)
 
         })
 
@@ -1921,15 +1917,15 @@
 
         $('#btnProductSave').click(async function () {
 
-            //check-检查调拨单状态
+            //check-检查报废单状态
             if (mainTableData.status === '已审核') {
-                alert('当前调拨单已审核,不允许修改!')
+                alert('当前报废单已审核,不允许修改!')
                 return
             }
 
             //check-库存充足校验
             let stockNum = parseInt($('#stockNum').text());
-            let num = parseInt($("#rp_transfersubbillsForm-num").val());
+            let num = parseInt($("#rp_scrapsubbillsForm-num").val());
             if (num > stockNum) {
                 alert('当前物料在该仓库存不足,无法保存,请选择其他仓库或补充物料后重试!')
                 return
@@ -1937,16 +1933,16 @@
 
 
             //do-保存产品信息
-            let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
-            let rowNum = $("#rp_transfersubbills tbody tr").size();
+            let scrapBillId = $("#rp_scrapbillsForm-scrapBillId").text();
+            let rowNum = $("#rp_scrapsubbills tbody tr").size();
             // console.log('rowNum:' + rowNum);
             let productData = getFormData({
-                formId: 'rp_transfersubbillsForm'
+                formId: 'rp_scrapsubbillsForm'
             })
 
             console.log('productData:' + JSON.stringify(productData.data))
             let rowData = formDataToRowData(productData.data)
-            rowData.transferBillId = transferBillId;
+            rowData.scrapBillId = scrapBillId;
             // console.log('rowData:' + JSON.stringify(rowData))
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
@@ -1964,7 +1960,7 @@
 
             //return-重新加载子表
             loadDataSubTable({
-                elementId: 'rp_transfersubbills',
+                elementId: 'rp_scrapsubbills',
                 dataArray: subTableData
             });
 
@@ -1974,7 +1970,7 @@
         $('#btnDeleteProduct').click(function () {
 
             //check-检查选中
-            let subTable = $('#rp_transfersubbills').DataTable();
+            let subTable = $('#rp_scrapsubbills').DataTable();
             let rowSelect = subTable.row('.selected').data();
 
             if (!rowSelect) {
@@ -2001,7 +1997,7 @@
 
             //return-重新加载子表
             loadDataSubTable({
-                elementId: 'rp_transfersubbills',
+                elementId: 'rp_scrapsubbills',
                 dataArray: subTableData
             });
             //return-自动点击新增按钮,防止遗留数据产生错误
@@ -2013,10 +2009,10 @@
 
 
         //表单打印按钮
-        $('#rp_transferbillsPrint').click(function () {
+        $('#rp_scrapbillsPrint').click(function () {
 
 
-            if (!mainTableData.transferBillId) {
+            if (!mainTableData.scrapBillId) {
                 alert('请先选中需要打印的单据!')
                 return
             }
@@ -2056,7 +2052,7 @@
         })
 
         //表单保存按钮
-        $('#rp_transferbillsSave').click(function () {
+        $('#rp_scrapbillsSave').click(function () {
 
             //check-检查单据状态
             if (mainTableData.status === '已审核') {
@@ -2065,27 +2061,27 @@
             }
 
             //check-检查必填项val
-            if (!($('#rp_transferbillsForm-inWarehouseId option:selected').val() &&
-                    $('#rp_transferbillsForm-outWarehouseId option:selected').val())) {
+            if (!($('#rp_scrapbillsForm-inWarehouseId option:selected').val() &&
+                    $('#rp_scrapbillsForm-outWarehouseId option:selected').val())) {
                 alert('拨出仓库,拨入仓库未选,请检查!')
                 return;
             }
 
             //check-仓库不同校验
-            if ($('#rp_transferbillsForm-inWarehouseId option:selected').val() ===
-                $('#rp_transferbillsForm-outWarehouseId option:selected').val()) {
+            if ($('#rp_scrapbillsForm-inWarehouseId option:selected').val() ===
+                $('#rp_scrapbillsForm-outWarehouseId option:selected').val()) {
                 alert('拨出仓库与拨入仓库必须为不同仓库!')
                 return
             }
 
             //check-检查子表项目
             if (subTableData.length === 0) {
-                alert('未添加需要调拨的产品,无法保存单据,请检查!')
+                alert('未添加需要报废的产品,无法保存单据,请检查!')
                 return;
             }
 
             //do-保存表单
-            saveTransferBill();
+            saveScrapBill();
         })
 
         //初始化过滤器日期组
@@ -2101,13 +2097,13 @@
 
         //初始化组件
         loadDatePicker({
-            elementId: "rp_transferbillsForm-transferDate",
+            elementId: "rp_scrapbillsForm-scrapDate",
         })
 
 
         // //初始化组件
         // loadDatePicker({
-        //     elementId: "rp_transfersubbillsForm-productYear",
+        //     elementId: "rp_scrapsubbillsForm-productYear",
         //     params: {
         //         startView: 4,
         //         minView: 4,
@@ -2117,7 +2113,7 @@
 
         // //初始化组件
         // loadDatePicker({
-        //     elementId: "rp_transfersubbillsForm-productMonth",
+        //     elementId: "rp_scrapsubbillsForm-productMonth",
         //     params: {
         //         startView: 3,
         //         minView: 3,
@@ -2136,7 +2132,7 @@
         //初始化selector
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-customerShortName',
+            elementId: 'rp_scrapbillsForm-customerShortName',
             sqlParams: {
                 sql: 'getCustomerSelector'
             },
@@ -2146,7 +2142,7 @@
 
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transferbillsForm-customerArea',
+        //     elementId: 'rp_scrapbillsForm-customerArea',
         //     sqlParams: {
         //         sql: 'getRegionSelector',
         //         // params: {
@@ -2157,7 +2153,7 @@
         // })
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-operator',
+            elementId: 'rp_scrapbillsForm-operator',
             sqlParams: {
                 sql: 'getStaffSelector'
             },
@@ -2165,7 +2161,7 @@
         })
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-auditor',
+            elementId: 'rp_scrapbillsForm-auditor',
             sqlParams: {
                 sql: 'getStaffSelector'
             },
@@ -2174,14 +2170,14 @@
 
 
         loadBootStrapSelector({
-            elementId: 'rp_transfersubbillsForm-productId',
+            elementId: 'rp_scrapsubbillsForm-productId',
             sqlParams: {
                 sql: 'getProductSelector'
             },
         })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transferbillsForm-isInland',
+        //     elementId: 'rp_scrapbillsForm-isInland',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2192,7 +2188,7 @@
         // })
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-customerBelongShort',
+            elementId: 'rp_scrapbillsForm-customerBelongShort',
             // initValue:'',
             sqlParams: {
                 sql: 'getCustomerSelector',
@@ -2205,7 +2201,7 @@
 
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-sendWay',
+            elementId: 'rp_scrapbillsForm-sendWay',
             sqlParams: {
                 sql: 'getOptionSelector',
                 params: {
@@ -2217,7 +2213,7 @@
 
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-outWarehouseId',
+            elementId: 'rp_scrapbillsForm-outWarehouseId',
             sqlParams: {
                 sql: 'getWarehouseSelector',
             },
@@ -2225,7 +2221,7 @@
         })
 
         loadBootStrapSelector({
-            elementId: 'rp_transferbillsForm-inWarehouseId',
+            elementId: 'rp_scrapbillsForm-inWarehouseId',
             sqlParams: {
                 sql: 'getWarehouseSelector',
             },
@@ -2234,7 +2230,7 @@
 
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-origin',
+        //     elementId: 'rp_scrapsubbillsForm-origin',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2246,7 +2242,7 @@
 
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-productBelong',
+        //     elementId: 'rp_scrapsubbillsForm-productBelong',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2257,7 +2253,7 @@
         // })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-isRework',
+        //     elementId: 'rp_scrapsubbillsForm-isRework',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2267,7 +2263,7 @@
         // })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-urgent',
+        //     elementId: 'rp_scrapsubbillsForm-urgent',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2277,7 +2273,7 @@
         // })
 
         // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-inWarranty',
+        //     elementId: 'rp_scrapsubbillsForm-inWarranty',
         //     sqlParams: {
         //         sql: 'getOptionSelector',
         //         params: {
@@ -2300,8 +2296,8 @@
 
 
         // 关闭事件重置选中datatable选中,避免显示错误
-        $('#rp_transferbillsModal').on('hidden.bs.modal', function () {
-            let table = $('#rp_transferbills').DataTable();
+        $('#rp_scrapbillsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_scrapbills').DataTable();
             table.$('tr.selected').removeClass('selected');
             mainTableData = {}
 

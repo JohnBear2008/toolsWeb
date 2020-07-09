@@ -70,7 +70,8 @@
 
                         <button id='btnOutBillNew' type="button" class="btn btn-info">新增</button>
                         <button id='btnOutBillAudit' type="button" class="btn btn-warning">审核</button>
-                        <button id='btnOutBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <!-- <button id='btnOutBillDelete' type="button" class="btn btn-danger">删除</button> -->
+                        <button id='btnOutBillReject' type="button" class="btn btn-warning">驳回</button>
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
                             打印出库码
                         </button> -->
@@ -2421,6 +2422,69 @@
 
             //do-保存表单
             saveOutBill();
+        })
+
+
+        //驳回按钮
+        $('#btnOutBillReject').click(async function () {
+            //check-检查选中
+            // console.log(mainTableData);
+            if (!mainTableData.billId) {
+                alert('请先点击表格选中需要驳回的借货单!')
+                return
+            }
+            //check-检查驳回条件
+            if (mainTableData.status !== '待审核') {
+                alert('只能驳回待审核的借货单,请检查!')
+                return
+            }
+            //check-驳回确认
+            if (!confirm('驳回后该出库单即将失效,是否继续')) {
+                return
+            }
+
+            //do-更新借货单状态
+            let billUpdateData = {
+                billId: mainTableData.billId,
+                status: '已驳回'
+            }
+
+            let r1 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_outbills',
+                    data: [billUpdateData],
+                    key: 'billId'
+                }
+            })
+
+            //do-更新借货单子表状态
+            let subbillUpdateData = [];
+            for (const n of subTableData) {
+                subbillUpdateData.push({
+                    billId: n.billId,
+                    status: '已驳回'
+                })
+            }
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_outbills',
+                    data: subbillUpdateData,
+                    key: 'billId'
+                }
+            })
+
+            //return-操作成功信息
+            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+                alert('驳回成功!')
+            } else {
+                alert('驳回失败')
+            }
+            //return-刷新主表
+            loadBillMainTable();
+
         })
 
         //初始化过滤器日期组

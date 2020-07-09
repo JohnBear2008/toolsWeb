@@ -42,6 +42,11 @@ const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
 const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
 //获取调拨单数量
 const getTransferBillsNum = "select count(1) as billsNum from `rp_transferbills`"
+//获取报废单数量
+const getScrapBillsNum = "select count(1) as billsNum from `rp_scrapbills`"
+
+// //通用获取表单数量sql
+// const getBillsNum="select count(1) as billsNum from `tableId`"
 
 
 // //获取借货单子表状态
@@ -101,10 +106,16 @@ const sqlInBills = "select * from `rp_inbills`"
 //入库单子表sql
 const sqlInSubBills = "select * from `rp_insubbills`"
 
-//出库单sql
+//调拨单sql
 const sqlTransferBills = "select * from `rp_transferbills`"
-//出库单子表sql
+//调拨单子表sql
 const sqlTransferSubBills = "select * from `rp_transfersubbills`"
+
+//报废单sql
+const sqlScrapBills = "select * from `rp_scrapbills`"
+//报废单子表sql
+const sqlScrapSubBills = "select * from `rp_scrapsubbills`"
+
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";

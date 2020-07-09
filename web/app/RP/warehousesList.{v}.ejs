@@ -36,6 +36,15 @@
         </div>
     </div>
 
+    <div>
+        <button type="button" style="display: none;" id="rp_warehouseslistNew">
+            新增
+        </button>
+        <button type="button" style="display: none;" id="rp_warehouseslistDelete">
+            删除
+        </button>
+    </div>
+
 
     <div class="row clearfix">
         <div class="col-md-12 column">
@@ -48,6 +57,7 @@
                         <th>仓库编号</th>
                         <th>仓库名称</th>
                         <th>仓库说明</th>
+                        <th>系统仓库</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -133,6 +143,14 @@
                                             <option>否</option>
                                         </select>
                                     </div>
+
+                                    <label class="col-sm-1 control-label">系统仓库</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_warehouseslistForm-isSystemStore">
+                                        </p>
+                                    </div>
+
+
                                 </div>
 
                             </form>
@@ -143,7 +161,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_warehouseslistModalClose">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="rp_warehouseslistModalClose">关闭
                     </button>
                     <button type="button" class="btn btn-primary" id="rp_warehouseslistSave">
                         保存
@@ -163,51 +182,218 @@
 
 
 <script type="text/javascript">
+    const mainColumnsArray = [{
+            data: 'warehouseId'
+        }, {
+            data: 'warehouseName'
+        },
+        {
+            data: 'remark'
+        },
+        {
+            data: 'isSystemStore'
+        }
+    ];
+
+    //表dt参数
+    const mainDtParams = {
+        dtConfig: 'dtConfigFull',
+        columns: mainColumnsArray
+    }
+
+
+    //添加主表监听器,定义双击打开事件
+
+    const addMainTableListener = () => {
+        //定义主表双击事件
+        $('#rp_warehouseslist tbody').on('dblclick', 'tr', function () {
+
+            //设定选中
+            let table = $('#rp_warehouseslist').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_warehouseslistForm',
+                params: dataSelect
+            })
+
+            //打开面板
+            $('#rp_warehouseslistModal').modal('show');
+
+        });
+    }
+    //主表加载数据函数;
+    const loadBillMainTable = async () => {
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_warehouseslist',
+            sqlParams: {
+                sqlId: 'sqlTableSelect',
+                params: {
+                    tableId: 'rp_warehouseslist',
+                    orderBy: 'saveTimeStamp desc'
+                }
+            },
+            dtParams: mainDtParams
+        })
+    }
+
+    //新增仓库 
+    const addWarehouse = async () => {
+        clearFormInputs({
+            formId: 'rp_warehouseslistForm'
+        })
+
+        //设置初始值
+        $('#rp_warehouseslistForm-effective').selectpicker('val', '是');
+        $('#rp_warehouseslistForm-isSystemStore').text('否');
+
+
+        //打开面板
+        $('#rp_warehouseslistModalOpen').click();
+
+    }
+
+    const deleteWarehouse = async () => {
+
+        //check-选中检查
+        let table = $('#rp_warehouseslist').DataTable();
+        let rowsSelect = table.rows('.selected').data();
+        console.log('rowsSelect', rowsSelect);
+
+        if (rowsSelect.length === 0) {
+            alert('请先选中需要删除的仓库')
+            return
+        }
+
+        //check-系统仓库是否包含检查
+        for (let i = 0; i < rowsSelect.length; i++) {
+            if (rowsSelect[i].isSystemStore === '是') {
+                alert('选中仓库中包含系统仓库,无法删除')
+                return
+            }
+        }
+
+        //do-删除仓库
+        let DBIDArr = []
+        for (let i = 0; i < rowsSelect.length; i++) {
+            DBIDArr.push(rowsSelect[i].DBID)
+        }
+
+        let r1 = await postDBData({
+            sql: 'delete',
+            params: {
+                tableId: 'rp_warehouseslist',
+                data: DBIDArr
+            }
+        })
+
+        //return-结果提醒
+        if (r1.affectedRows > 0) {
+            alert('删除成功')
+        } else {
+            alert('出现错误')
+        }
+        //return-重载表格
+        loadBillMainTable();
+
+    }
+
+
+
+    //保存仓库
+    const saveWarehouse = async () => {
+        console.log('saveWarehouse run');
+
+        let mainFormData = getPostFormData({
+            formId: 'rp_warehouseslistForm'
+        })
+
+        console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        if ($('#rp_warehouseslistForm-isSystemStore').text() === '是') {
+            alert('系统仓库无法修改')
+            return
+        }
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: mainFormData
+        })
+
+        if (r1.affectedRows > 0) {
+            alert('保存成功!')
+
+            // $('#rp_warehouseslistModal').modal('hide');多层modal存在失效问题,改用click关闭
+            $('#rp_warehouseslistModalClose').click()
+
+            loadBillMainTable();
+        } else {
+            alert('出现错误!')
+        }
+
+    }
+
+
+
+
+
+
+
+
     $(document).ready(function () {
 
 
-        //加载表格
-        loadDataTable({
-            elementId: 'rp_warehouseslist',
-            sqlParams: {
-                tableId: 'rp_warehouseslist',
-                filter: ''
-            },
-            dtParams: {
-                columns: [{
-                        data: 'warehouseId'
-                    }, {
-                        data: 'warehouseName'
-                    },
-                    {
-                        data: 'remark'
-                    }
-                ],
-            }
+        //初始化主表
+        loadBillMainTable();
+
+        //添加主表监听
+        addMainTableListener();
+
+
+        //客户新增按钮
+        $('#rp_warehouseslistNew').click(function () {
+            addWarehouse();
+        })
+
+        //客户新增按钮
+        $('#rp_warehouseslistDelete').click(function () {
+            deleteWarehouse();
+        })
+
+        //表单保存按钮
+        $('#rp_warehouseslistSave').click(function () {
+
+            saveWarehouse();
         })
 
 
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'customerArea',
-        //     sqlParams: {
-        //         sql: 'getRegionSelector'
-        //     },
-        //     // initValue:'中国,北京'
-        // })
-
-        // loadDatePicker({
-        //     elementId: 'saveTimeStamp',
-        //     params: {
-        //         endDate: '2019-12-30'
-        //     }
-        // })
 
 
+        loadBootStrapSelector({
+            elementId: 'rp_warehouseslistForm-effective',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="是或否"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
 
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_warehouseslistModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_warehouseslist').DataTable();
+            table.$('tr.selected').removeClass('selected');
 
+
+        })
 
 
     });
