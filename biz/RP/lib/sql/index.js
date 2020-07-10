@@ -98,8 +98,13 @@ const sqlReturnBills = "select *,customerName as searchText from `rp_returnbills
 //还货单 子表sql
 const sqlReturnSubBills = "select * from `rp_returnsubbills`"
 
+const sqlReturnRequestSubBills="select * from ( select ta.productId,ta.returnBillId,ta.num,tb.productName,tb.productDescription,tb.systemType,tb.productClass from `rp_returnsubbills` ta left join `rp_products` tb on ta.productId=tb.productId) A"
+
 //未还货单主表sql
 const sqlUnreturnBills = "select * from ( select ta.productId,ta.productName,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.remark,ta.status,ta.productDescription as searchText,tb.borrowBillId,tb.customerId,tb.customerShortName,tb.operator,tb.borrowDate from `rp_borrowsubbills` ta left join  (select borrowBillId,customerId,customerShortName,operator,borrowDate from `rp_borrowbills`) tb on ta.borrowBillId=tb.borrowBillId) A"
+
+// //还货待维修sql
+// const sqlUnreturnRequestBills="select * from ( select ta.productId,ta.productName,ta.unit,ta.remark,ta.status,ta.productDescription as searchText,tb.returnBillId,tb.customerId,tb.customerShortName,tb.operator,tb.returnDate from `rp_returnsubbills` ta left join  (select returnBillId,customerId,customerShortName,operator,returnDate from `rp_returnbills`) tb on ta.returnBillId=tb.returnBillId) A"
 
 //出库单sql
 const sqlOutBills = "select * from `rp_outbills`"

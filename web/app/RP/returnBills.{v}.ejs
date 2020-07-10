@@ -755,12 +755,7 @@
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false" disabled>
                                                         </select>
-
-
                                                     </div>
-
-
-
                                                 </div>
 
                                                 <div class="form-group">
@@ -2108,7 +2103,8 @@
 
                 let billUpdateData = {
                     returnBillId: mainTableData.returnBillId,
-                    status: '已审核'
+                    status: '已审核',
+                    auditDate: currentDate()
                 }
 
                 let r2 = await postDBData({
@@ -2182,6 +2178,80 @@
             }
 
             //转维修申请
+
+            if (returnType === '维修申请') {
+                let billUpdateData = {
+                    returnBillId: mainTableData.returnBillId,
+                    status: '待维修',
+                    auditDate: currentDate()
+                }
+
+                let r1 = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'rp_returnbills',
+                        data: [billUpdateData],
+                        key: 'returnBillId'
+                    }
+                })
+
+                //do-更新还货单子表
+
+                for (let n of subTableData) {
+                    if (n.status === '预还入') {
+                        n.status = '待维修'
+                    }
+                }
+
+                let r2 = await postDBData({
+                    sql: 'replace',
+                    params: {
+                        tableId: 'rp_returnsubbills',
+                        data: subTableData
+                    }
+                })
+
+                //do-更新借货单子表状态
+                console.log('subTableData huan', subTableData);
+
+                //do-更新借货单还货数量
+                let updateBorrowProductArr = [];
+                let borrowBillIdsStr = ''
+                for (const n of subTableData) {
+                    borrowBillIdsStr = borrowBillIdsStr + '"' + n.borrowBillId + '",'
+                    updateBorrowProductArr.push({
+                        borrowBillId: n.borrowBillId,
+                        productId: n.productId,
+                        returnNum: n.num
+                    })
+                }
+                let r3 = await postDBData({
+                    sql: 'updateNum',
+                    params: {
+                        tableId: 'rp_borrowsubbills',
+                        keyTitles: ['borrowBillId', 'productId'],
+                        numTitles: ['returnNum'],
+                        data: updateBorrowProductArr
+                    }
+                })
+
+                //do-更新借货单状态
+                borrowBillIdsStr = borrowBillIdsStr.substring(0, borrowBillIdsStr.length - 1)
+                let r4 = await postDBData({
+                    sql: 'updateBorrowStatus',
+                    params: {
+                        filter: 'borrowBillId in (' + borrowBillIdsStr + ')'
+                    }
+                })
+
+
+                //return-操作成功信息
+                if (r1 && r2 && r3 && r4) {
+                    alert('审核成功,请在申请单模块继续转维修流程!')
+                } else {
+                    alert('审核失败')
+                }
+            }
 
 
 
