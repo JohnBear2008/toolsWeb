@@ -410,10 +410,10 @@
 													<label class="col-sm-1 control-label">确认:</label>
 													<div class="col-sm-10">
 
-														<button id="BTNTaskAcceptYes" type="button" class="btn btn-success"
-															data-toggle="modal">确认任务</button>
-														<button id="BTNTaskAcceptNo" type="button" class="btn btn-warning"
-															data-toggle="modal">驳回任务</button>
+														<button id="BTNTaskAcceptYes" type="button"
+															class="btn btn-success" data-toggle="modal">确认任务</button>
+														<button id="BTNTaskAcceptNo" type="button"
+															class="btn btn-warning" data-toggle="modal">驳回任务</button>
 													</div>
 
 												</div>
@@ -441,7 +441,7 @@
 
 											<button id="BTNTaskRecordAdd" type="button" class="btn btn-success"
 												data-toggle="modal">添加记录</button>
-											<button  id="BTNTaskRecordAudit" type="button" class="btn btn-warning"
+											<button id="BTNTaskRecordAudit" type="button" class="btn btn-warning"
 												data-toggle="modal">审核记录</button>
 											<!-- <button id="BTNTaskRecordClear" class="btn btn-danger" data-toggle="modal" >清除记录</button>-->
 
@@ -564,8 +564,8 @@
 															data-live-search="true">
 														</select>
 
-														<button id="BTNGetTaskAuditor" type="button" class="btn btn-success"
-															data-toggle="modal">系统指定</button>
+														<button id="BTNGetTaskAuditor" type="button"
+															class="btn btn-success" data-toggle="modal">系统指定</button>
 
 													</div>
 
@@ -585,8 +585,8 @@
 												<div class="form-group" id="DivTaskRecordBTNS">
 													<label class="col-sm-1 control-label">登记:</label>
 													<div class="col-sm-10">
-														<button id="BTNTaskRecordSave" type="button" class="btn btn-success"
-															data-toggle="modal">保存记录</button>
+														<button id="BTNTaskRecordSave" type="button"
+															class="btn btn-success" data-toggle="modal">保存记录</button>
 
 
 
@@ -1105,7 +1105,7 @@
 				$('#divTaskInfo textarea').attr("disabled", false);
 
 				if (sessionName == $('#taskMaker').text()) {
-					
+
 					$("#BTNTaskSave").show();
 				} else {
 					$("#BTNTaskSave").hide();
@@ -2064,224 +2064,227 @@
 		//按钮-任务记录保存按钮
 		$('#BTNTaskRecordSave').click(function () {
 
-			if (checkAuthority({
+			//检查权限
+			if (!checkAuthority({
 					"SQL": "SQLGetAuthorities",
 					"filter": "StaffName='" + sessionName + "'"
 				}, "Task01")) {
+				return;
+			}
 
-				if (sessionName == $('#taskStaff option:selected').text()) {
+			//检查任务人
+			if (sessionName !== $('#taskStaff option:selected').text()) {
+				swal("您不是该任务单的负责人,无法登记任务!");
+				return
+			}
+
+			//检查输入
+			if (!checkRecordInput()) {
+				return
+			}
+
+			//--------------------
+			var taskFiles = [];
+
+			$('#divFilesUploaded a').each(function () {
+				var fileKey = $(this).attr('href').substring(23);
+				var fileName = $(this).attr('download');
+
+				var fileInfo = {
+					"fileName": fileName,
+					"fileKey": fileKey
+				}
+
+				taskFiles.push(fileInfo);
+			});
+			// 检查附件
+			if (taskFiles.length == 0) {
+				swal("未上传程序，请检查附件是否上传正确!");
+				return
+			}
+
+			if (sessionName == $('#recordAuditor option:selected')
+				.text()) {
+
+				let msgNext = confirm("登记后是否自动审核,开始IPQC流程?");
+				if (msgNext) {
+
+					var recordData = {
+						"DBTable": "ppm_bills_taskrecord",
+						"DBID": $('#recordDBID').text(),
+						"BTID": $('#BTID').text(),
+						"BTVersion": $('#BTVersion').text(),
+						"BPID": $('#taskBPID').text(),
+						"modifyContent": $('#modifyContent').val()
+							.replace(/\n|\r\n/g,
+								'<br/>').replace(/'/g, '"'),
+						"functionsDBE": $('#functionsDBE').val()
+							.replace(/\n|\r\n/g,
+								'<br/>').replace(/'/g, '"'),
+						"recordRemark": $('#recordRemark').val()
+							.replace(/\n|\r\n/g,
+								'<br/>').replace(/'/g, '"'),
+						"fileVersion": $('#fileVersion').val(),
+						"taskFiles": JSON.stringify(taskFiles),
+						"recordMaker": sessionName,
+						"recordMakeDate": Ndate,
+						"recordStatus": "已登记,已审核",
+						"recordAuditor": $(
+								'#recordAuditor option:selected')
+							.text(),
+						"recordAuditDate": Ndate
+					}
 
 
-					if (checkRecordInput()) {
-						//--------------------
-						var taskFiles = [];
+					var ajax1 = $.ajax({
+						method: 'post',
+						url: '/app/PM/saveDBData',
+						data: recordData,
+						success: function (data) {
+							//						            swal("成功数据:" + JSON.stringify(data));
+							if (data.affectedRows != 0) {
 
-						$('#divFilesUploaded a').each(function () {
-							var fileKey = $(this).attr('href').substring(23);
-							var fileName = $(this).attr('download');
-
-							var fileInfo = {
-								"fileName": fileName,
-								"fileKey": fileKey
+								$('#DIVRecordContent').hide();
 							}
-
-							taskFiles.push(fileInfo);
-						});
-
-						if (taskFiles.length == 0) {
-							swal("未上传程序，请检查附件是否上传正确!");
-						} else {
-
-
-							if (sessionName == $('#recordAuditor option:selected')
-								.text()) {
-
-								let msgNext = confirm("登记后是否自动审核,开始IPQC流程?");
-								if (msgNext) {
-
-									var recordData = {
-										"DBTable": "ppm_bills_taskrecord",
-										"DBID": $('#recordDBID').text(),
-										"BTID": $('#BTID').text(),
-										"BTVersion": $('#BTVersion').text(),
-										"BPID": $('#taskBPID').text(),
-										"modifyContent": $('#modifyContent').val()
-											.replace(/\n|\r\n/g,
-												'<br/>').replace(/'/g, '"'),
-										"functionsDBE": $('#functionsDBE').val()
-											.replace(/\n|\r\n/g,
-												'<br/>').replace(/'/g, '"'),
-										"recordRemark": $('#recordRemark').val()
-											.replace(/\n|\r\n/g,
-												'<br/>').replace(/'/g, '"'),
-										"fileVersion": $('#fileVersion').val(),
-										"taskFiles": JSON.stringify(taskFiles),
-										"recordMaker": sessionName,
-										"recordMakeDate": Ndate,
-										"recordStatus": "已登记,已审核",
-										"recordAuditor": $(
-												'#recordAuditor option:selected')
-											.text(),
-										"recordAuditDate": Ndate
-									}
+						},
+						error: function (err) {
+							swal("失败数据:" + JSON.stringify(
+								err));
+						}
+					});
 
 
-									var ajax1 = $.ajax({
-										method: 'post',
-										url: '/app/PM/saveDBData',
-										data: recordData,
-										success: function (data) {
-											//						            swal("成功数据:" + JSON.stringify(data));
-											if (data.affectedRows != 0) {
+					var taskData = {
+						"DBTable": "ppm_bills_task",
+						"BillIDName": "BTID",
+						"BillID": $('#BTID').text(),
+						"recordNum": 1,
+						"IPQCStatus": "未填写"
+					}
 
-												$('#DIVRecordContent').hide();
-											}
-										},
-										error: function (err) {
-											swal("失败数据:" + JSON.stringify(
-												err));
-										}
-									});
+					var ajax2 = $.ajax({
+						method: 'post',
+						url: '/app/PM/updBillStatus',
+						data: taskData,
+						success: function (data, textStatus) {},
+						error: function (XMLHttpRequest,
+							textStatus,
+							errorThrown) {}
+					});
 
-
-									var taskData = {
-										"DBTable": "ppm_bills_task",
-										"BillIDName": "BTID",
-										"BillID": $('#BTID').text(),
-										"recordNum": 1,
-										"IPQCStatus": "未填写"
-									}
-
-									var ajax2 = $.ajax({
-										method: 'post',
-										url: '/app/PM/updBillStatus',
-										data: taskData,
-										success: function (data, textStatus) {},
-										error: function (XMLHttpRequest,
-											textStatus,
-											errorThrown) {}
-									});
-
-									$.when(ajax1, ajax2).done(function () {
+					$.when(ajax1, ajax2).done(function () {
 
 
-										Fun_showRecordsLiteTable(recordsTableSQL,
-											tasksTableInfo);
-										$('#DIVRecordContent').hide();
+						Fun_showRecordsLiteTable(recordsTableSQL,
+							tasksTableInfo);
+						$('#DIVRecordContent').hide();
 
 
-										// let i = { alertMsg: "任务登记审核完成,可开始IPQC检测!" }
-										// swalAndRefresh(i)
+						// let i = { alertMsg: "任务登记审核完成,可开始IPQC检测!" }
+						// swalAndRefresh(i)
 
-										let i = {
-											confirmMsg: '任务登记审核完成,是否发送钉钉IPQC提醒消息?',
-											DDMsg: {
-												at: $(
-														'#IPQCMaker option:selected')
-													.text(),
-												msg: "@" + $(
-														'#IPQCMaker option:selected'
-													)
-													.text() +
-													"任务记录已审核,请登陆系统填写IPQC!"
-											}
-										}
-										let o = {
-											f: io_refresh
-										}
-
-										aio_chooseSendDDMsg(i, o)
-
-
-									});
-
-
-								} else {
-									var recordData = {
-										"DBTable": "ppm_bills_taskrecord",
-										"DBID": $('#recordDBID').text(),
-										"BTID": $('#BTID').text(),
-										"BTVersion": $('#BTVersion').text(),
-										"BPID": $('#taskBPID').text(),
-										"modifyContent": $('#modifyContent').val()
-											.replace(/\n|\r\n/g,
-												'<br/>').replace(/'/g, '"'),
-										"functionsDBE": $('#functionsDBE').val()
-											.replace(/\n|\r\n/g,
-												'<br/>').replace(/'/g, '"'),
-										"recordRemark": $('#recordRemark').val()
-											.replace(/\n|\r\n/g,
-												'<br/>').replace(/'/g, '"'),
-										"fileVersion": $('#fileVersion').val(),
-										"taskFiles": JSON.stringify(taskFiles),
-										"recordMaker": sessionName,
-										"recordMakeDate": Ndate,
-										"recordStatus": "已登记,未审核",
-										"recordAuditor": $(
-												'#recordAuditor option:selected')
-											.text()
-									}
-
-									// console.log("11111:" + JSON.stringify(recordData));
-
-									Fun_saveTaskRecord(recordData);
-
-									let i = {
-										alertMsg: "保存任务记录成功!"
-									}
-									swalAndRefresh(i)
-								}
-
-							} else {
-
-								var recordData = {
-									"DBTable": "ppm_bills_taskrecord",
-									"DBID": $('#recordDBID').text(),
-									"BTID": $('#BTID').text(),
-									"BTVersion": $('#BTVersion').text(),
-									"BPID": $('#taskBPID').text(),
-									"modifyContent": $('#modifyContent').val().replace(
-										/\n|\r\n/g,
-										'<br/>').replace(/'/g, '"'),
-									"functionsDBE": $('#functionsDBE').val().replace(
-										/\n|\r\n/g,
-										'<br/>').replace(/'/g, '"'),
-									"recordRemark": $('#recordRemark').val().replace(
-										/\n|\r\n/g,
-										'<br/>').replace(/'/g, '"'),
-									"fileVersion": $('#fileVersion').val(),
-									"taskFiles": JSON.stringify(taskFiles),
-									"recordMaker": sessionName,
-									"recordMakeDate": Ndate,
-									"recordStatus": "已登记,未审核",
-									"recordAuditor": $(
-										'#recordAuditor option:selected').text()
-								}
-
-
-								Fun_saveTaskRecord(recordData);
-
-								let i = {
-									confirmMsg: '任务保存成功,是否发送钉钉审核提醒消息?',
-									DDMsg: {
-										at: $('#recordAuditor option:selected').text(),
-										msg: "@" + $('#recordAuditor option:selected')
-											.text() +
-											"任务记录已保存,请登陆系统审核!"
-									}
-								}
-								let o = {
-									f: io_refresh
-								}
-
-								aio_chooseSendDDMsg(i, o)
+						let i = {
+							confirmMsg: '任务登记审核完成,是否发送钉钉IPQC提醒消息?',
+							DDMsg: {
+								at: $(
+										'#IPQCMaker option:selected')
+									.text(),
+								msg: "@" + $(
+										'#IPQCMaker option:selected'
+									)
+									.text() +
+									"任务记录已审核,请登陆系统填写IPQC!"
 							}
 						}
-						//--------------------
-					}
+						let o = {
+							f: io_refresh
+						}
+
+						aio_chooseSendDDMsg(i, o)
+
+
+					});
+
+
 				} else {
-					swal("您不是该任务单的负责人,无法登记任务!");
+					var recordData = {
+						"DBTable": "ppm_bills_taskrecord",
+						"DBID": $('#recordDBID').text(),
+						"BTID": $('#BTID').text(),
+						"BTVersion": $('#BTVersion').text(),
+						"BPID": $('#taskBPID').text(),
+						"modifyContent": $('#modifyContent').val()
+							.replace(/\n|\r\n/g,
+								'<br/>').replace(/'/g, '"'),
+						"functionsDBE": $('#functionsDBE').val()
+							.replace(/\n|\r\n/g,
+								'<br/>').replace(/'/g, '"'),
+						"recordRemark": $('#recordRemark').val()
+							.replace(/\n|\r\n/g,
+								'<br/>').replace(/'/g, '"'),
+						"fileVersion": $('#fileVersion').val(),
+						"taskFiles": JSON.stringify(taskFiles),
+						"recordMaker": sessionName,
+						"recordMakeDate": Ndate,
+						"recordStatus": "已登记,未审核",
+						"recordAuditor": $(
+								'#recordAuditor option:selected')
+							.text()
+					}
+
+					// console.log("11111:" + JSON.stringify(recordData));
+
+					Fun_saveTaskRecord(recordData);
+
+					let i = {
+						alertMsg: "保存任务记录成功!"
+					}
+					swalAndRefresh(i)
 				}
+
+			} else {
+
+				var recordData = {
+					"DBTable": "ppm_bills_taskrecord",
+					"DBID": $('#recordDBID').text(),
+					"BTID": $('#BTID').text(),
+					"BTVersion": $('#BTVersion').text(),
+					"BPID": $('#taskBPID').text(),
+					"modifyContent": $('#modifyContent').val().replace(
+						/\n|\r\n/g,
+						'<br/>').replace(/'/g, '"'),
+					"functionsDBE": $('#functionsDBE').val().replace(
+						/\n|\r\n/g,
+						'<br/>').replace(/'/g, '"'),
+					"recordRemark": $('#recordRemark').val().replace(
+						/\n|\r\n/g,
+						'<br/>').replace(/'/g, '"'),
+					"fileVersion": $('#fileVersion').val(),
+					"taskFiles": JSON.stringify(taskFiles),
+					"recordMaker": sessionName,
+					"recordMakeDate": Ndate,
+					"recordStatus": "已登记,未审核",
+					"recordAuditor": $(
+						'#recordAuditor option:selected').text()
+				}
+
+
+				Fun_saveTaskRecord(recordData);
+
+				let i = {
+					confirmMsg: '任务保存成功,是否发送钉钉审核提醒消息?',
+					DDMsg: {
+						at: $('#recordAuditor option:selected').text(),
+						msg: "@" + $('#recordAuditor option:selected')
+							.text() +
+							"任务记录已保存,请登陆系统审核!"
+					}
+				}
+				let o = {
+					f: io_refresh
+				}
+
+				aio_chooseSendDDMsg(i, o)
 			}
 		});
 
