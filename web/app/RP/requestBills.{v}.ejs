@@ -66,8 +66,8 @@
                     </div>
                     <!-- 功能组按钮 -->
                     <div style="float:right">
-                        <button id='btnReturnRequestStart' type="button" class="btn btn-info">还货新增</button>
-                        <!-- <span class="badge">50</span> -->
+                        <button id='btnReturnRequestStart' type="button" class="btn btn-info">还货新增 <span class="badge"
+                                id="returnRequestNum"></span></button>
                         <button id='btnRequestBillNew' type="button" class="btn btn-info">新增</button>
                         <button id='btnRequestBillDelete' type="button" class="btn btn-danger">删除</button>
                         <button type="button" class="btn btn-info" id="listPrintBtn">
@@ -472,11 +472,20 @@
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label"
+                                        for="rp_requestbillsForm-fromBillId">来源单类型</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_requestbillsForm-fromBillType"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label"
                                         for="rp_requestbillsForm-fromBillId">来源单号</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_requestbillsForm-fromBillId"></p>
                                     </div>
 
+                                </div>
+
+                                <div class="form-group">
 
                                     <label class="col-sm-1 control-label "
                                         for="rp_requestbillsForm-customerId">客户编号</label>
@@ -1238,10 +1247,31 @@
             //客户选定监听事件
             addCustomerListener();
 
+            //控制产品工具栏显示
+            if (mainTableData.fromBillType) {
+                $('#productToolBar').hide()
+            } else {
+                $('#productToolBar').show()
+            }
+
             //打开面板
             $('#rp_requestbillsModal').modal('show');
 
         });
+
+    }
+    //显示还货转维修数量
+    const showReturnRequestNum = async () => {
+
+        let rs = await getDataBySql({
+            sql: 'getReturnBillsNum',
+            params: {
+                filter: 'status="待维修"'
+            }
+        })
+        let num = rs[0].billsNum
+        $("#returnRequestNum").text(num)
+
 
     }
 
@@ -1288,6 +1318,10 @@
             'placeholder': '可用表属性与产品出厂编号过滤'
         });
 
+        //do-显示还货新增数量
+
+        showReturnRequestNum()
+
 
 
         // //添加搜索框监听事件,值变动自动隐藏主页附表
@@ -1302,6 +1336,9 @@
         table.column('last').visible(false)
 
         addMainTableListener();
+
+        //关闭面板
+        $('#subTablePanel').hide();
     }
 
     //添加子表监听器,定义双击展开事件
@@ -1324,7 +1361,6 @@
 
                 let rowSelect = subTable.row('.selected').data();
                 // console.log("rowSelect:" + JSON.stringify(rowSelect));
-
 
                 //初始化并填写form内inputs
                 initAndFillFormInputs({
@@ -1368,7 +1404,6 @@
         if (dataArray.length === 0) {
             $('#' + elementId + ' tbody').html("");
         }
-
 
         //添加子表双击事件
         addSubTableListener();
@@ -1471,10 +1506,47 @@
 
         if (r1.affectedRows > 0 && r2.affectedRows > 0) {
             alert('保存成功!')
-
-
         } else {
             alert('出现错误!')
+        }
+
+        //do-更新还货单状态
+        if (mainFormData.data[0].fromBillType === '还货单') {
+
+            let returnBillsIdArr = $("#rp_requestbillsForm-fromBillId").text().split(',');
+            let returnBillsArr = []
+            for (const n of returnBillsIdArr) {
+                returnBillsArr.push({
+                    returnBillId: n,
+                    status: '维修中'
+                })
+            }
+
+            let r1 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_returnbills',
+                    data: returnBillsArr,
+                    key: 'returnBillId'
+                }
+            })
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_returnsubbills',
+                    data: returnBillsArr,
+                    key: 'returnBillId'
+                }
+            })
+
+
+            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+                alert('更新还货单状态成功!')
+            }
+
+            loadUnReturnRequestTable()
+
         }
 
         //更新客户信息功能
@@ -1881,6 +1953,8 @@
 
             //设定默认值
             createRequestBillId();
+
+            $("#rp_requestbillsForm-fromBillType").text('还货单')
             $("#rp_requestbillsForm-requestDate").val(currentDate());
             let returnBillIds = ''
             let sqlReturnBillIds = ''
@@ -1893,6 +1967,9 @@
             $("#rp_requestbillsForm-fromBillId").text(returnBillIds)
             // $("#rp_requestbillsForm-isInland").selectpicker('val', '国内')
             // $("#rp_requestbillsForm-requestWay").selectpicker('val', '邮寄过来')
+
+            $("#rp_requestbillsForm-maker").text('')
+            $("#rp_requestbillsForm-makeDate").text('')
 
             //关闭子表panel
             $('#rp_recordbillsPanel').hide();
@@ -2020,6 +2097,12 @@
 
         //删除需求单
         $('#btnRequestBillDelete').click(async function () {
+            //check-检查是否为系统单据
+            if (mainTableData.fromBillType) {
+                alert('该单为系统生成单据不可删除,可以调整内容!')
+                return
+            }
+
             //检查条件
             let resultData = await checkDeleteBills();
             if (!resultData.result) {
@@ -2058,9 +2141,11 @@
 
             if (r1.affectedRows && r2.affectedRows) {
                 alert('删除成功!')
-                //重新加载表单
-                loadBillMainTable();
+
             }
+
+            //重新加载表单
+            loadBillMainTable();
 
 
         })

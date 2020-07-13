@@ -2491,6 +2491,63 @@
 
             }
 
+
+            //do-报废入库处理
+            if (mainFormData.data[0].repairResult === '报废') {
+
+                //do-系统入报废仓库
+                let mainTable = {
+                    billFrom: '维修单',
+                    billId: mainFormData.data[0].recordBillId,
+                    customerId: mainFormData.data[0].customerId,
+                    customerShortName: mainFormData.data[0].customerShortName,
+                    customerName: mainFormData.data[0].customerName,
+                    customerBelongShort: mainFormData.data[0].customerBelongShort,
+                    contact: mainFormData.data[0].contact,
+                    mobilePhone: mainFormData.data[0].mobilePhone,
+                    workPhone: mainFormData.data[0].workPhone,
+                    // returnType: mainTableData.returnType,
+                    operator: mainFormData.data[0].operator,
+                    // address: mainTableData.address,
+                    maker: mainFormData.data[0].maker,
+                    makeDate: mainFormData.data[0].makeDate,
+                    auditor: mainFormData.data[0].maker,
+                    auditDate: currentDate(),
+                    status: '已审核',
+                    remark: mainFormData.data[0].remark,
+                };
+                let subTable = [{
+                    billId: mainFormData.data[0].recordBillId,
+                    rowId: 1,
+                    productId: mainFormData.data[0].productId,
+                    productName: mainFormData.data[0].productName,
+                    productDescription: mainFormData.data[0].productDescription,
+                    productClass: mainFormData.data[0].productClass,
+                    systemType: mainFormData.data[0].systemType,
+                    warehouseId: 'W3',
+                    warehouseName: '报废仓',
+                    unit: mainFormData.data[0].unit,
+                    num: 1,
+                    status: '已入',
+                    remark: mainFormData.data[0].remark,
+                    actType: '维修单',
+                    rpBillId: mainFormData.data[0].recordBillId
+                }];
+
+
+                let r1 = await autoInStoreBills({
+                    mainTable: mainTable,
+                    subTable: subTable
+                })
+
+                console.log('r1', r1);
+
+                if (r1) {
+                    alert('该产品已加入报废仓,待报废处理')
+                }
+
+            }
+
             //return-结果提醒刷新
 
             alert('保存成功!')
