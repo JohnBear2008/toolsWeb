@@ -69,9 +69,9 @@ const sqlResponseBills = "select * from `rp_responsebills`"
 const sqlResponseSubBills = "select * from ( select ta.*,tb.customerId,tb.customerShortName,concat( ta.requestBillId,'-',ta.rowId ) as repairId from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) A"
 
 //部件即时库存sql
-const rp_store = "select * from ( select ta.PID,ta.stockNum,ta.dateTimeStamp,tb.productName,tb.productDescription,tb.unit,tc.warehouseId,tc.warehouseName from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId left join `rp_warehouseslist` tc on ta.warehouseId=tc.warehouseId) A"
+const rp_store = "select * from ( select ta.PID,ta.stockNum,ta.dateTimeStamp, date_format(ta.dateTimeStamp,'%Y-%m-%d %H:%i:%s') as dateTimeText,tb.productName,tb.productDescription,tb.unit,tc.warehouseId,tc.warehouseName from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId left join `rp_warehouseslist` tc on ta.warehouseId=tc.warehouseId) A"
 // //库存记录sql
-const rp_storeHistory = "select * from ( select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp,tb.productName,tc.warehouseName from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId left join `rp_warehouseslist` tc on ta.warehouseId=tc.warehouseId) A"
+const rp_storeHistory = "select * from ( select ta.PID,ta.preNum,ta.actNum,ta.nowNum,ta.rpBillId,ta.actType,ta.dateTimeStamp,date_format(ta.dateTimeStamp,'%Y-%m-%d %H:%i:%s') as dateTimeText,tb.productName,tc.warehouseName from `rp_warehousehistory` ta left join `rp_products` tb on ta.PID=tb.productId left join `rp_warehouseslist` tc on ta.warehouseId=tc.warehouseId) A"
 
 //历史单据主表sql
 const sqlHistoryBills =
@@ -98,7 +98,7 @@ const sqlReturnBills = "select *,customerName as searchText from `rp_returnbills
 //还货单 子表sql
 const sqlReturnSubBills = "select * from `rp_returnsubbills`"
 
-const sqlReturnRequestSubBills="select * from ( select ta.productId,ta.returnBillId,ta.num,tb.productName,tb.productDescription,tb.systemType,tb.productClass from `rp_returnsubbills` ta left join `rp_products` tb on ta.productId=tb.productId) A"
+const sqlReturnRequestSubBills = "select * from ( select ta.productId,ta.returnBillId,ta.num,tb.productName,tb.productDescription,tb.systemType,tb.productClass from `rp_returnsubbills` ta left join `rp_products` tb on ta.productId=tb.productId) A"
 
 //未还货单主表sql
 const sqlUnreturnBills = "select * from ( select ta.productId,ta.productName,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.remark,ta.status,ta.productDescription as searchText,tb.borrowBillId,tb.customerId,tb.customerShortName,tb.operator,tb.borrowDate from `rp_borrowsubbills` ta left join  (select borrowBillId,customerId,customerShortName,operator,borrowDate from `rp_borrowbills`) tb on ta.borrowBillId=tb.borrowBillId) A"
@@ -125,6 +125,8 @@ const sqlTransferSubBills = "select * from `rp_transfersubbills`"
 const sqlScrapBills = "select * from `rp_scrapbills`"
 //报废单子表sql
 const sqlScrapSubBills = "select * from `rp_scrapsubbills`"
+//报废单 待维修报废sql
+const sqlRecordScrapBills = "select * from ( select ta.recordBillId,ta.productId,ta.productName,ta.repairStaff,ta.repairResult,ta.maker,ta.makeDate,ta.remark,ta.scrapStatus,tb.productDescription,tb.unit from `rp_recordbills` ta left join `rp_products` tb on ta.productId = tb.productId ) A"
 
 
 //查找指定表名中所有数据

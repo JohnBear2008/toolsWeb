@@ -1686,6 +1686,12 @@ const autoInStoreBills = async ({
             warehouseId: n.warehouseId
         })
     }
+
+    //初始化库存记录
+    await initWarehousePID({
+        PIDArr: PIDArr
+    })
+
     let stockResult = await getStockNums(PIDArr);
     console.log('stockResult', stockResult);
     for (let n of subTable) {
@@ -1701,7 +1707,7 @@ const autoInStoreBills = async ({
         }
     }
 
-    //do-出库
+    //do-入库
     let stockArr = [];
     for (const n of subTable) {
         stockArr.push({

@@ -67,10 +67,12 @@
                     </div>
                     <!-- 功能组按钮 -->
                     <div style="float:right">
-
-                        <button id='btnScrapBillNew' type="button" class="btn btn-info">新增</button>
+                        <button id='btnRecordScrapBillStart' type="button" class="btn btn-info">维修报废
+                            <span class="badge" id="recordScrapNum"></span>
+                        </button>
+                        <!-- <button id='btnScrapBillNew' type="button" class="btn btn-info">新增</button> -->
                         <button id='btnScrapBillAudit' type="button" class="btn btn-warning">审核</button>
-                        <button id='btnScrapBillDelete' type="button" class="btn btn-danger">删除</button>
+                        <!-- <button id='btnScrapBillDelete' type="button" class="btn btn-danger">删除</button> -->
                         <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
                             打印报废码
                         </button> -->
@@ -86,8 +88,6 @@
                             <tr>
 
                                 <th>报废单号</th>
-                                <th>拨出仓库</th>
-                                <th>拨入仓库</th>
                                 <th>制单人</th>
                                 <th>制单日期</th>
                                 <th>审核人</th>
@@ -112,8 +112,9 @@
                         <thead>
                             <tr>
                                 <th>序号</th>
+                                <th>来源单号</th>
                                 <th>产品编号</th>
-                                <th>产品描述</th>
+                                <th>产品名称</th>
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
@@ -126,6 +127,60 @@
             </div>
 
 
+        </div>
+    </div>
+
+    <!-- 待维修报废模态框（Modal） -->
+    <div class="modal fade" id="unRecordScrapModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 90%;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        待维修报废
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-default" id='mainTablePanel'>
+                        <div class="panel-heading">
+
+                            <!-- 功能组按钮 -->
+                            <div style="float:right">
+                                <button id='btnRecordScrapBillNew' type="button" class="btn btn-info">生成报废单</button>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                        <div class="panel-body">
+                            <table id="rp_recordbills" class=" table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>记录单号</th>
+                                        <th>产品编号</th>
+                                        <th>产品名称</th>
+                                        <th>维修人</th>
+                                        <th>制单人</th>
+                                        <th>制单日期</th>
+                                        <th>维修结果</th>
+                                        <th>报废状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+
+                </div>
+            </div><!-- /.modal -->
         </div>
     </div>
 
@@ -288,6 +343,7 @@
                             <thead>
                                 <tr>
                                     <th>序号</th>
+                                    <th>来源单号</th>
                                     <th>产品编号</th>
                                     <th>产品名称</th>
 
@@ -381,51 +437,31 @@
                                 <input id="rp_scrapbillsForm-DBID" type="hidden" value="">
 
                                 <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_scrapbillsForm-scrapType">报废类型</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_scrapbillsForm-scrapType"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <label class="col-sm-1 control-label"
                                         for="rp_scrapbillsForm-scrapBillId">报废单号</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_scrapbillsForm-scrapBillId"></p>
                                     </div>
 
+
                                     <label class="col-sm-1 control-label"
                                         for="rp_scrapbillsForm-scrapDate">报废日期:</label>
                                     <div class="col-sm-5 ">
                                         <div class="input-group date form_date ">
-                                            <input id="rp_scrapbillsForm-scrapDate" class="form-control "
-                                                size="16" type="text" value="" readonly>
+                                            <input id="rp_scrapbillsForm-scrapDate" class="form-control " size="16"
+                                                type="text" value="" readonly>
                                             <span class="input-group-addon"><span
                                                     class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
-
-
-
-
-                                <div class="form-group">
-
-                                    <label class="col-sm-1 control-label">拨出仓库</label>
-                                    <div class="col-sm-5">
-                                        <select id="rp_scrapbillsForm-outWarehouseId"
-                                            class="selectpicker form-control" data-live-search="true" data-size="5"
-                                            data-dropup-auto="false">
-                                        </select>
-                                    </div>
-
-                                    <label class="col-sm-1 control-label">拨入仓库</label>
-                                    <div class="col-sm-5">
-                                        <select id="rp_scrapbillsForm-inWarehouseId"
-                                            class="selectpicker form-control" data-live-search="true" data-size="5"
-                                            data-dropup-auto="false">
-                                        </select>
-                                    </div>
-                                </div>
-
-
 
 
 
@@ -468,8 +504,7 @@
                                         <p class="form-control-static" id="rp_scrapbillsForm-maker"></p>
                                     </div>
 
-                                    <label class="col-sm-1 control-label"
-                                        for="rp_scrapbillsForm-makeDate">制单日期</label>
+                                    <label class="col-sm-1 control-label" for="rp_scrapbillsForm-makeDate">制单日期</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_scrapbillsForm-makeDate"></p>
                                     </div>
@@ -483,8 +518,7 @@
                                         </select>
                                     </div>
 
-                                    <label class="col-sm-1 control-label"
-                                        for="rp_scrapbillsForm-auditDate">审核日期</label>
+                                    <label class="col-sm-1 control-label" for="rp_scrapbillsForm-auditDate">审核日期</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_scrapbillsForm-auditDate"></p>
                                     </div>
@@ -499,12 +533,12 @@
                                 <div class="col-md-12 column">
 
                                     <!-- 功能组按钮 -->
-                                    <div class="well">
+                                    <!-- <div class="well">
                                         <button id='btnAddProduct' type="button" class="btn btn-info">新增产品</button>
                                         <button id='btnDeleteProduct' type="button" class="btn btn-danger">删除产品</button>
-                                        <!-- <button id='btnScan' type="button" class="btn btn-success">扫描新增</button> -->
+                                        <button id='btnScan' type="button" class="btn btn-success">扫描新增</button>
 
-                                    </div>
+                                    </div> -->
 
                                     <!-- 定义基础模块数据表 -->
                                     <table id="rp_scrapsubbills" class=" table table-striped table-bordered"
@@ -512,9 +546,9 @@
                                         <thead>
                                             <tr>
                                                 <th>序号</th>
+                                                <th>来源单号</th>
                                                 <th>产品编号</th>
                                                 <th>产品描述</th>
-
                                                 <th>单位</th>
                                                 <th>数量</th>
                                                 <th>备注</th>
@@ -534,18 +568,16 @@
                                             <form class="form-horizontal" role="form" id='rp_scrapsubbillsForm'>
 
                                                 <!-- <input id="rp_scrapsubbillsForm-DBID" type="hidden" value=""> -->
-                                                <input id="rp_scrapsubbillsForm-scrapBillId" type="hidden"
-                                                    value="">
+                                                <input id="rp_scrapsubbillsForm-scrapBillId" type="hidden" value="">
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">序号</label>
                                                     <div class="col-sm-5">
-                                                        <p class="form-control-static"
-                                                            id="rp_scrapsubbillsForm-rowId">
+                                                        <p class="form-control-static" id="rp_scrapsubbillsForm-rowId">
                                                         </p>
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">可用库存</label>
+                                                    <label class="col-sm-1 control-label">报废仓数量</label>
                                                     <div class="col-sm-3">
                                                         <p class="form-control-static" id="stockNum">
                                                         </p>
@@ -555,8 +587,7 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">状态</label>
                                                     <div class="col-sm-5">
-                                                        <p class="form-control-static"
-                                                            id="rp_scrapsubbillsForm-status">
+                                                        <p class="form-control-static" id="rp_scrapsubbillsForm-status">
                                                         </p>
                                                     </div>
                                                 </div>
@@ -565,10 +596,14 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_scrapsubbillsForm-productId"
+                                                        <!-- <select id="rp_scrapsubbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
-                                                        </select>
+                                                        </select> -->
+
+                                                        <p class="form-control-static"
+                                                            id="rp_scrapsubbillsForm-productId">
+                                                        </p>
                                                     </div>
 
 
@@ -593,7 +628,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                                <!-- <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品类别</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
@@ -609,21 +644,23 @@
                                                         </p>
                                                     </div>
 
-                                                </div>
+                                                </div> -->
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">单位</label>
                                                     <div class="col-sm-5">
-                                                        <p class="form-control-static"
-                                                            id="rp_scrapsubbillsForm-unit">
+                                                        <p class="form-control-static" id="rp_scrapsubbillsForm-unit">
                                                         </p>
 
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">数量</label>
                                                     <div class="col-sm-5">
-                                                        <input class="form-control" id="rp_scrapsubbillsForm-num"
-                                                            type="text">
+                                                        <!-- <input class="form-control" id="rp_scrapsubbillsForm-num"
+                                                            type="text"> -->
+                                                        <p class="form-control-static" id="rp_scrapsubbillsForm-num">
+                                                        </p>
+
                                                     </div>
 
                                                 </div>
@@ -688,8 +725,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        id="rp_scrapbillsModalClose">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_scrapbillsModalClose">关闭
                     </button>
 
                     <button type="button" class="btn btn-primary" id="rp_scrapbillsSave">
@@ -710,10 +746,6 @@
     const mainColumnsArray = [{
         data: 'scrapBillId'
     }, {
-        data: 'outWarehouseName',
-    }, {
-        data: 'inWarehouseName',
-    }, {
         data: 'maker',
     }, {
         data: 'makeDate',
@@ -731,9 +763,11 @@
     const subColumnsArray = [{
         data: 'rowId',
     }, {
+        data: 'fromBillId',
+    }, {
         data: 'productId',
     }, {
-        data: 'productDescription',
+        data: 'productName',
     }, {
         data: 'unit',
     }, {
@@ -743,6 +777,28 @@
     }, {
         data: 'status',
     }]
+
+    //待维修报废表
+    const unRecordScrapColumnsArray = [{
+            data: 'recordBillId'
+        },
+        {
+            data: 'productId'
+        },
+        {
+            data: 'productName'
+        }, {
+            data: 'repairStaff',
+        }, {
+            data: 'maker',
+        }, {
+            data: 'makeDate',
+        }, {
+            data: 'repairResult',
+        }, {
+            data: 'scrapStatus',
+        }
+    ]
 
     // const recordHistoryColumnsArray = [{
     //         data: 'repairId',
@@ -791,6 +847,22 @@
         })
 
         // $('#rp_scrapsubbillsForm-productId').selectpicker('val',r1[0].productId)
+
+    }
+
+
+    //显示还货转维修数量
+    const showRecordScrapNum = async () => {
+
+        let rs = await getDataBySql({
+            sql: 'getRecordBillsNum',
+            params: {
+                filter: 'scrapStatus="待报废"'
+            }
+        })
+        let num = rs[0].billsNum
+        $("#recordScrapNum").text(num)
+
 
     }
 
@@ -1006,6 +1078,9 @@
         // let table = $('#rp_scrapbills').DataTable();
         // table.column('last').visible(false)
 
+
+        showRecordScrapNum()
+
         addMainTableListener();
 
         //隐藏子表
@@ -1039,6 +1114,9 @@
                     formId: 'rp_scrapsubbillsForm',
                     params: rowSelect
                 })
+
+                //显示报废仓数量
+                showStockNum()
 
                 //打开面板
                 $('#rp_scrapsubbillsPanel').show();
@@ -1140,10 +1218,10 @@
             mainFormData.data[0].maker = sessionName;
             mainFormData.data[0].makeDate = currentDate();
         }
-        mainFormData.data[0].outWarehouseName = $('#rp_scrapbillsForm-outWarehouseId option:selected')
-            .text()
-        mainFormData.data[0].inWarehouseName = $('#rp_scrapbillsForm-inWarehouseId option:selected')
-            .text()
+        // mainFormData.data[0].outWarehouseName = $('#rp_scrapbillsForm-outWarehouseId option:selected')
+        //     .text()
+        // mainFormData.data[0].inWarehouseName = $('#rp_scrapbillsForm-inWarehouseId option:selected')
+        //     .text()
 
         // console.log("subTableData:" + JSON.stringify(subTableData))
 
@@ -1171,7 +1249,7 @@
         for (const n of subTableData) {
             PIDArr.push({
                 PID: n.productId,
-                warehouseId: mainFormData.data[0].inWarehouseId
+                warehouseId: 'W3'
             })
         }
 
@@ -1179,10 +1257,31 @@
             PIDArr: PIDArr
         })
 
+
+        //do-更新记录单报废状态
+        let rp_recordsArr = []
+
+        for (const n of subTableData) {
+            rp_recordsArr.push({
+                recordBillId: n.fromBillId,
+                scrapStatus: '待审核'
+            })
+        }
+
+        let r4 = await postDBData({
+            sql: 'update',
+            params: {
+                tableId: 'rp_recordbills',
+                data: rp_recordsArr,
+                key: 'recordBillId'
+            }
+        })
+
+
         // console.log('saveScrapBill r1:' + JSON.stringify(r1));
         // console.log('saveScrapBill r2:' + JSON.stringify(r2));
 
-        if (r1 && r2 && r3) {
+        if (r1 && r2 && r3 && r4) {
             alert('保存成功!')
         } else {
             alert('出现错误!')
@@ -1238,6 +1337,8 @@
 
         // $('#rp_scrapbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
         $('#rp_scrapbillsModalClose').click()
+
+        loadUnRecordScrapTable();
 
         loadBillMainTable();
 
@@ -1355,11 +1456,11 @@
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let productId = $('#rp_scrapsubbillsForm-productId option:selected').val();
-        let warehouseId = $('#rp_scrapbillsForm-outWarehouseId option:selected').val();
+        let productId = $('#rp_scrapsubbillsForm-productId').text();
+        let warehouseId = 'W3';
         // console.log(warehouseId);
 
-        if (productId && warehouseId) {
+        if (productId) {
             stockNum = await getStockNum(productId, warehouseId);
         }
         $('#stockNum').text(stockNum)
@@ -1403,6 +1504,30 @@
             result: true,
             stockNums: stockNums
         }
+
+    }
+
+
+    //加载待维修报废表格
+    const loadUnRecordScrapTable = async () => {
+
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_recordbills',
+            sqlParams: {
+                sqlId: 'sqlRecordScrapBills',
+                params: {
+                    filter: 'scrapStatus="待报废"',
+                    // orderBy: 'billSaveTimeStamp desc'
+                }
+            },
+            dtParams: {
+                // bAutoWidth: false,//取消自动宽度
+                columns: unRecordScrapColumnsArray,
+                // scrollX: true,
+                // autoWidth: true
+            }
+        })
 
     }
 
@@ -1502,6 +1627,104 @@
 
         })
 
+        //维修报废新增按钮
+
+        $('#btnRecordScrapBillStart').click(function () {
+            $('#unRecordScrapModal').modal('show');
+            loadUnRecordScrapTable()
+
+        })
+
+
+        //生成维修报废处理
+
+        $('#btnRecordScrapBillNew').click(function () {
+
+            //check-选中
+            let table = $('#rp_recordbills').DataTable();
+            let rowsSelect = table.rows('.selected').data();
+            if (rowsSelect.length === 0) {
+                alert('请先选中需要报废的维修产品!')
+                return
+            }
+
+            //do-清空form数据
+            mainTableData = {}
+
+            clearFormInputs({
+                formId: 'rp_scrapbillsForm'
+            })
+
+            //清空原有选项
+            $('#customerContacts').empty();
+            $('#customerContacts').selectpicker('destroy');
+
+
+
+
+            //打开面板
+            $('#rp_scrapsubbillsPanel').hide();
+
+
+            //清空modal数据
+            clearFormInputs({
+                formId: 'rp_scrapbillsForm'
+            })
+
+            //设置默认值
+
+            $("#rp_scrapbillsForm-scrapType").text('维修报废');
+            createScrapBillId();
+            $("#rp_scrapbillsForm-scrapDate").val(currentDate());
+
+            $("#rp_scrapbillsForm-outWarehouseId").selectpicker('val', 'W1')
+            $("#rp_scrapbillsForm-sendWay").selectpicker('val', '邮寄过来')
+
+
+            //清空子表及全局变量
+            subTableData = [];
+            $('#rp_scrapsubbills tbody').html("");
+
+            for (let i = 0; i < rowsSelect.length; i++) {
+                subTableData.push({
+                    fromBillId: rowsSelect[i].recordBillId,
+                    rowId: i + 1,
+                    productId: rowsSelect[i].productId,
+                    productName: rowsSelect[i].productName,
+                    unit: rowsSelect[i].unit,
+                    num: 1,
+                    remark: rowsSelect[i].remark,
+                    status: '新增'
+                });
+
+            }
+
+            //重新加载子表
+            loadDataSubTable({
+                elementId: 'rp_scrapsubbills',
+                dataArray: subTableData
+            });
+
+
+            //在保存时赋值
+            // $("#rp_scrapbillsForm-maker").text(sessionName);
+            // $("#rp_scrapbillsForm-makeDate").text(currentDate());
+
+
+
+            //显示/隐藏
+            //关闭关联信息,打印按钮
+            $("#accordion").hide();
+
+            // $("#listPrintBtn").hide();
+            // $("#rp_scrapbillsPrint").hide();
+
+            //打开面板
+            $('#rp_scrapbillsModal').modal('show');
+
+
+        })
+
 
 
         //新增报废单按钮
@@ -1509,7 +1732,7 @@
 
             //清空form数据
             mainTableData = {}
-            subTableData = {}
+
 
             clearFormInputs({
                 formId: 'rp_scrapbillsForm'
@@ -1614,8 +1837,8 @@
                     productDescription: n.productDescription,
                     productClass: n.productClass,
                     systemType: n.systemType,
-                    warehouseId: mainTableData.outWarehouseId,
-                    warehouseName: mainTableData.outWarehouseName,
+                    warehouseId: 'W3',
+                    warehouseName: '报废仓',
                     unit: n.unit,
                     num: n.num,
                     status: '已出',
@@ -1635,69 +1858,70 @@
 
             //do-系统入库
             if (!r1) {
-                alert('出库失败!')
+                alert('报废出库失败!')
                 return;
             }
 
-            let inMainTable = {
-                billFrom: '报废单',
-                billId: mainTableData.scrapBillId,
-                // customerId: mainTableData.customerId,
-                // customerShortName: mainTableData.customerShortName,
-                // customerName: mainTableData.customerName,
-                // customerBelongShort: mainTableData.customerBelongShort,
-                // contact: mainTableData.contact,
-                // mobilePhone: mainTableData.mobilePhone,
-                // workPhone: mainTableData.workPhone,
-                // sendWay: mainTableData.sendWay,
-                // address: mainTableData.address,
-                operator: mainTableData.operator,
-                maker: mainTableData.maker,
-                makeDate: mainTableData.makeDate,
-                auditor: mainTableData.auditor,
-                auditDate: currentDate(),
-                status: '已审核',
-                remark: mainTableData.remark,
-            };
-            let inSubTable = [];
-            for (const n of subTableData) {
-                inSubTable.push({
-                    billId: n.scrapBillId,
-                    rowId: n.rowId,
-                    productId: n.productId,
-                    productName: n.productName,
-                    productDescription: n.productDescription,
-                    productClass: n.productClass,
-                    systemType: n.systemType,
-                    warehouseId: mainTableData.inWarehouseId,
-                    warehouseName: mainTableData.inWarehouseName,
-                    unit: n.unit,
-                    num: n.num,
-                    status: '已入',
-                    remark: n.remark,
-                    actType: '报废单',
-                    rpBillId: mainTableData.scrapBillId
-                })
-            }
+            // let inMainTable = {
+            //     billFrom: '报废单',
+            //     billId: mainTableData.scrapBillId,
+            //     // customerId: mainTableData.customerId,
+            //     // customerShortName: mainTableData.customerShortName,
+            //     // customerName: mainTableData.customerName,
+            //     // customerBelongShort: mainTableData.customerBelongShort,
+            //     // contact: mainTableData.contact,
+            //     // mobilePhone: mainTableData.mobilePhone,
+            //     // workPhone: mainTableData.workPhone,
+            //     // sendWay: mainTableData.sendWay,
+            //     // address: mainTableData.address,
+            //     operator: mainTableData.operator,
+            //     maker: mainTableData.maker,
+            //     makeDate: mainTableData.makeDate,
+            //     auditor: mainTableData.auditor,
+            //     auditDate: currentDate(),
+            //     status: '已审核',
+            //     remark: mainTableData.remark,
+            // };
+            // let inSubTable = [];
+            // for (const n of subTableData) {
+            //     inSubTable.push({
+            //         billId: n.scrapBillId,
+            //         rowId: n.rowId,
+            //         productId: n.productId,
+            //         productName: n.productName,
+            //         productDescription: n.productDescription,
+            //         productClass: n.productClass,
+            //         systemType: n.systemType,
+            //         warehouseId: mainTableData.inWarehouseId,
+            //         warehouseName: mainTableData.inWarehouseName,
+            //         unit: n.unit,
+            //         num: n.num,
+            //         status: '已入',
+            //         remark: n.remark,
+            //         actType: '报废单',
+            //         rpBillId: mainTableData.scrapBillId
+            //     })
+            // }
 
-            let r2 = await autoInStoreBills({
-                mainTable: inMainTable,
-                subTable: inSubTable
-            })
+            // let r2 = await autoInStoreBills({
+            //     mainTable: inMainTable,
+            //     subTable: inSubTable
+            // })
 
-            if (!r2) {
-                alert('入库失败!')
-                return;
-            }
+            // if (!r2) {
+            //     alert('入库失败!')
+            //     return;
+            // }
 
             //do-更新报废单主表
 
             let billUpdateData = {
                 scrapBillId: mainTableData.scrapBillId,
+                auditDate: currentDate(),
                 status: '已审核'
             }
 
-            let r3 = await postDBData({
+            let r2 = await postDBData({
                 sql: 'update',
                 params: {
                     tableId: 'rp_scrapbills',
@@ -1714,7 +1938,7 @@
                 }
             }
 
-            let r4 = await postDBData({
+            let r3 = await postDBData({
                 sql: 'replace',
                 params: {
                     tableId: 'rp_scrapsubbills',
@@ -1723,16 +1947,13 @@
             })
 
             //return-操作成功信息
-            if (r3 && r4) {
-                alert('审核成功,系统已自动生成相应出库单,入库单!')
+            if (r2 && r3) {
+                alert('审核成功,该报废单已生效!')
             } else {
                 alert('审核失败')
             }
             //return-刷新主表
             loadBillMainTable();
-
-
-
 
         })
 
@@ -2026,7 +2247,7 @@
 
             fillTableRows({
                 tableId: 'printViewSubTable',
-                cols: ['rowId', 'productId', 'productName', 'warehouseName', 'unit', 'num'],
+                cols: ['rowId', 'productId', 'productName', 'unit', 'num'],
                 data: subTableData
             })
 
@@ -2060,19 +2281,19 @@
                 return
             }
 
-            //check-检查必填项val
-            if (!($('#rp_scrapbillsForm-inWarehouseId option:selected').val() &&
-                    $('#rp_scrapbillsForm-outWarehouseId option:selected').val())) {
-                alert('拨出仓库,拨入仓库未选,请检查!')
-                return;
-            }
+            // //check-检查必填项val
+            // if (!($('#rp_scrapbillsForm-inWarehouseId option:selected').val() &&
+            //         $('#rp_scrapbillsForm-outWarehouseId option:selected').val())) {
+            //     alert('拨出仓库,拨入仓库未选,请检查!')
+            //     return;
+            // }
 
-            //check-仓库不同校验
-            if ($('#rp_scrapbillsForm-inWarehouseId option:selected').val() ===
-                $('#rp_scrapbillsForm-outWarehouseId option:selected').val()) {
-                alert('拨出仓库与拨入仓库必须为不同仓库!')
-                return
-            }
+            // //check-仓库不同校验
+            // if ($('#rp_scrapbillsForm-inWarehouseId option:selected').val() ===
+            //     $('#rp_scrapbillsForm-outWarehouseId option:selected').val()) {
+            //     alert('拨出仓库与拨入仓库必须为不同仓库!')
+            //     return
+            // }
 
             //check-检查子表项目
             if (subTableData.length === 0) {
