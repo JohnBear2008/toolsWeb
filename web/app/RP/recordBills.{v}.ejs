@@ -1175,6 +1175,8 @@
                 let rowSelect = table.row('.selected').data();
                 // console.log("rowSelect:" + JSON.stringify(rowSelect));
 
+                mainTableData = rowSelect
+
                 await loadMainBillSubTable(rowSelect.recordBillId)
 
                 //打开面板
@@ -1190,6 +1192,8 @@
             //设定选中
             let table = $('#rp_recordbills').DataTable();
             table.$('tr.selected').removeClass('selected');
+
+
             $(this).addClass('selected');
             $('#btnRecordBillNew').click()
         });
@@ -2353,9 +2357,7 @@
 
             //check-检查选中
 
-
-
-            //do-保存维修单主表信息
+            //do-获取维修单主表信息
 
             let mainFormData = getPostFormData({
                 formId: 'rp_recordbillsForm'
@@ -2377,6 +2379,15 @@
                 mainFormData.data[0].finishDate = currentDate();
             }
 
+            //补齐不存在信息
+
+            mainFormData.data[0].customerId = mainTableData.customerId;
+            mainFormData.data[0].customerShortName = mainTableData.customerShortName;
+            mainFormData.data[0].customerName = mainTableData.customerName;
+            mainFormData.data[0].contact = mainTableData.contact;
+
+
+
             //添加报废状态
             if (!mainFormData.data[0].scrapStatus && mainFormData.data[0].repairResult === '报废') {
                 mainFormData.data[0].scrapStatus = '待报废'
@@ -2389,14 +2400,6 @@
 
             //添加update key
             mainFormData.key = 'DBID';
-
-            // alert(JSON.stringify(mainFormData))
-
-            // console.log('mainFormData:' + JSON.stringify(mainFormData));
-            let r1 = await postDBData({
-                sql: 'update',
-                params: mainFormData
-            })
 
             //do-系统出库
             // console.log('subTableData', subTableData);
@@ -2417,9 +2420,8 @@
                 })
                 // console.log('r0', r0);
 
-
                 if (!r0) {
-                    // console.log('初始化仓库数据错误', r0);
+                    alert('初始化仓库数据错误', r0);
                     return
                 }
 
@@ -2465,34 +2467,27 @@
                 }
 
                 if (subTable.length > 0) {
-                    let r2 = await autoOutStoreBills({
+                    let r1 = await autoOutStoreBills({
                         mainTable: mainTable,
                         subTable: subTable
                     })
                     // console.log('r2',r2);
 
+                    if (!r1) {
+                        alert('系统出库失败')
+                        return
+                    }
 
-                    if (r2) {
-                        for (let n of subTableData) {
-                            for (const m of subTable) {
-                                if (m.productId === n.partId && n.numStatus === '预领') {
-                                    n.numStatus = '已领'
-                                }
+                    for (let n of subTableData) {
+                        for (const m of subTable) {
+                            if (m.productId === n.partId && n.numStatus === '预领') {
+                                n.numStatus = '已领'
                             }
                         }
                     }
                 }
 
-                //do-更新维修单子表
 
-
-                let r3 = await postDBData({
-                    sql: 'replace',
-                    params: {
-                        tableId: 'rp_partsbills',
-                        data: subTableData
-                    }
-                })
 
             }
 
@@ -2547,10 +2542,50 @@
 
                 console.log('r1', r1);
 
-                if (r1) {
-                    alert('该产品已加入报废仓,待报废处理')
+                if (!r1) {
+                    alert('加入报废仓失败')
+                    return
                 }
 
+                alert('该产品已加入报废仓,待报废处理')
+
+            }
+
+
+            //do-更新维修单主表
+
+            //删除record表中不存在字段避免更新出错.
+            delete mainFormData.data[0].customerId;
+            delete mainFormData.data[0].customerShortName;
+            delete mainFormData.data[0].customerName;
+            delete mainFormData.data[0].contact;
+
+
+            let rMainUpdate = await postDBData({
+                sql: 'update',
+                params: mainFormData
+            })
+
+            if (!rMainUpdate) {
+                alert('更新维修单主表失败')
+                return
+            }
+
+            //do-更新维修单子表
+
+            if (subTableData.length > 0) {
+                let rSubUpdate = await postDBData({
+                    sql: 'replace',
+                    params: {
+                        tableId: 'rp_partsbills',
+                        data: subTableData
+                    }
+                })
+
+                if (!rSubUpdate) {
+                    alert('更新维修单子表失败')
+                    return
+                }
             }
 
             //return-结果提醒刷新

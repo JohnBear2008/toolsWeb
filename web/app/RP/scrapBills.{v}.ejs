@@ -1259,29 +1259,38 @@
 
 
         //do-更新记录单报废状态
-        let rp_recordsArr = []
+        if (mainFormData.data[0].scrapType === '维修报废') {
+            let rp_recordsArr = []
 
-        for (const n of subTableData) {
-            rp_recordsArr.push({
-                recordBillId: n.fromBillId,
-                scrapStatus: '待审核'
+            for (const n of subTableData) {
+                rp_recordsArr.push({
+                    recordBillId: n.fromBillId,
+                    scrapStatus: '待审核'
+                })
+            }
+
+            let rRecordUpdta = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_recordbills',
+                    data: rp_recordsArr,
+                    key: 'recordBillId'
+                }
             })
+
+            if (!rRecordUpdta) {
+                alert('更新记录单报废状态失败')
+                return
+            }
+
         }
 
-        let r4 = await postDBData({
-            sql: 'update',
-            params: {
-                tableId: 'rp_recordbills',
-                data: rp_recordsArr,
-                key: 'recordBillId'
-            }
-        })
 
 
         // console.log('saveScrapBill r1:' + JSON.stringify(r1));
         // console.log('saveScrapBill r2:' + JSON.stringify(r2));
 
-        if (r1 && r2 && r3 && r4) {
+        if (r1 && r2 && r3) {
             alert('保存成功!')
         } else {
             alert('出现错误!')
@@ -1945,6 +1954,41 @@
                     data: subTableData
                 }
             })
+
+            //do-更新来源单单报废状态
+
+            console.log('subTableData11', subTableData);
+
+            if (mainTableData.scrapType === '维修报废') {
+
+                let recordBillsArr = [];
+                for (const n of subTableData) {
+                    recordBillsArr.push({
+                        recordBillId: n.fromBillId,
+                        scrapStatus: '已审核'
+                    })
+                }
+
+                console.log('recordBillsArr', recordBillsArr);
+
+
+                let rRecordUpdate = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'rp_recordbills',
+                        data: recordBillsArr,
+                        key: 'recordBillId'
+                    }
+                })
+
+                if (!rRecordUpdate) {
+                    alert('更新记录单报废状态失败')
+                    return
+                }
+
+            }
+
+
 
             //return-操作成功信息
             if (r2 && r3) {

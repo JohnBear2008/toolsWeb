@@ -1725,7 +1725,7 @@ const autoInStoreBills = async ({
         actType: subTable[0].actType
     })
 
-    //do-生成关联出库单
+    //do-生成关联入库单
 
     if (!r1) {
         console.log('updateStock 失败');
@@ -1749,6 +1749,7 @@ const autoInStoreBills = async ({
     })
 
     let mainTableBill = mainTable;
+    console.log('mainTableBill',mainTableBill);
 
     let r3 = await postDBData({
         sql: 'replace',

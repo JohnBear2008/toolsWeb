@@ -57,7 +57,7 @@ const getScrapBillsNum = "select count(1) as billsNum from `rp_scrapbills`"
 //维修申请单主表单sql
 const sqlRequestBills = "select * , CONCAT_WS(',',address,factoryNos) as searchText from rp_requestbills ";
 //维修单sql
-const sqlRecordBills = "select * ,concat( requestBillId,'-',rowId ) as repairId,datediff(now(),requestDate) as undoneDays from ( select ta.*,tb.customerShortName,tb.makeDate as requestDate from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) tA";
+const sqlRecordBills = "select * ,concat( requestBillId,'-',rowId ) as repairId,datediff(now(),requestDate) as undoneDays from ( select ta.*,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.contact,tb.requestDate from `rp_recordbills` ta left join `rp_requestbills` tb on ta.requestBillId=tb.requestBillId ) tA";
 //维修部件清单sql
 const sqlChangeparts = "select * from rp_partsBills";
 
