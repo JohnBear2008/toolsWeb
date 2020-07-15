@@ -146,7 +146,7 @@
 
                                     <label class="col-sm-1 control-label">系统仓库</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_warehouseslistForm-isSystemStore">
+                                        <p class="form-control-static" id="rp_warehouseslistForm-isSystemOption">
                                         </p>
                                     </div>
 
@@ -191,7 +191,7 @@
             data: 'remark'
         },
         {
-            data: 'isSystemStore'
+            data: 'isSystemOption'
         }
     ];
 
@@ -249,7 +249,7 @@
 
         //设置初始值
         $('#rp_warehouseslistForm-effective').selectpicker('val', '是');
-        $('#rp_warehouseslistForm-isSystemStore').text('否');
+        $('#rp_warehouseslistForm-isSystemOption').text('否');
 
 
         //打开面板
@@ -271,7 +271,7 @@
 
         //check-系统仓库是否包含检查
         for (let i = 0; i < rowsSelect.length; i++) {
-            if (rowsSelect[i].isSystemStore === '是') {
+            if (rowsSelect[i].isSystemOption === '是') {
                 alert('选中仓库中包含系统仓库,无法删除')
                 return
             }
@@ -314,7 +314,7 @@
 
         console.log('mainFormData:' + JSON.stringify(mainFormData));
 
-        if ($('#rp_warehouseslistForm-isSystemStore').text() === '是') {
+        if ($('#rp_warehouseslistForm-isSystemOption').text() === '是') {
             alert('系统仓库无法修改')
             return
         }

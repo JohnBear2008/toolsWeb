@@ -43,6 +43,9 @@
         <button type="button" style="display: none;" id="rp_customersNew">
             新增
         </button>
+        <button type="button" style="display: none;" id="rp_customersDelete">
+            删除
+        </button>
     </div>
 
 
@@ -286,6 +289,14 @@
 
                                     </div>
 
+                                    <label class="col-sm-1 control-label">系统客户</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_customersForm-isSystemOption"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
                                     <label class="col-sm-1 control-label">保存人</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_customersForm-creater"></p>
@@ -445,9 +456,57 @@
         $('#rp_customersForm-paymentType').selectpicker('val', '款到发货');
         $('#rp_customersForm-creditRank').selectpicker('val', '正常');
         $('#rp_customersForm-effective').selectpicker('val', '是');
+        $('#rp_customersForm-isSystemOption').text('否');
+
 
         //打开面板
         $('#rp_customersModalOpen').click();
+
+    }
+
+
+    const deleteCustomer = async () => {
+
+        //check-选中检查
+        let table = $('#rp_customers').DataTable();
+        let rowsSelect = table.rows('.selected').data();
+        console.log('rowsSelect', rowsSelect);
+
+        if (rowsSelect.length === 0) {
+            alert('请先选中需要删除的客户')
+            return
+        }
+
+        //check-系统客户是否包含检查
+        for (let i = 0; i < rowsSelect.length; i++) {
+            if (rowsSelect[i].isSystemOption === '是') {
+                alert('选中客户中包含系统客户,无法删除')
+                return
+            }
+        }
+
+        //do-删除客户
+        let DBIDArr = []
+        for (let i = 0; i < rowsSelect.length; i++) {
+            DBIDArr.push(rowsSelect[i].DBID)
+        }
+
+        let r1 = await postDBData({
+            sql: 'delete',
+            params: {
+                tableId: 'rp_customers',
+                data: DBIDArr
+            }
+        })
+
+        //return-结果提醒
+        if (r1.affectedRows > 0) {
+            alert('删除成功')
+        } else {
+            alert('出现错误')
+        }
+        //return-重载表格
+        loadBillMainTable();
 
     }
 
@@ -499,6 +558,11 @@
 
     //保存客户
     const saveCustomer = async () => {
+        //检查是否为系统客户
+        if ($('#rp_customersForm-isSystemOption').text() === '是') {
+            alert('系统客户不允许修改!')
+            return
+        }
 
         //检查保存条件
         if (!$('#rp_customersForm-customerId').val()) {
@@ -567,6 +631,7 @@
         $('#rp_customersForm-customerArea').unbind();
         $('#rp_customersForm-customerArea').change(function () {
             let customerArea = $('#rp_customersForm-customerArea option:selected').val();
+            $('#rp_customersForm-customerArea').selectpicker('refresh');
             if (customerArea) {
                 let customerAreaText = customerArea.replace(/-/g, '')
                 let address = $('#rp_customersForm-address').val()
@@ -593,6 +658,11 @@
         //客户新增按钮
         $('#rp_customersNew').click(function () {
             addCustomer();
+        })
+
+        //客户新增按钮
+        $('#rp_customersDelete').click(function () {
+            deleteCustomer();
         })
 
         //表单保存按钮
