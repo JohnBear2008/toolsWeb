@@ -996,7 +996,7 @@
         let r1 = await getDataBySql({
             sql: "getInBillsNum",
             params: {
-                filter: 'makeDate="' + currentDate() + '"'
+                filter: 'billId like "I-%" and makeDate="' + currentDate() + '"'
             }
         })
         // console.log('r1:' + r1);

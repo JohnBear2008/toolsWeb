@@ -42,6 +42,9 @@ const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
 const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
 //获取调拨单数量
 const getTransferBillsNum = "select count(1) as billsNum from `rp_transferbills`"
+//获取调拨单子表数量
+const getTransferSubBillsNum = "select count(1) as billsNum from `rp_transfersubbills`"
+
 //获取报废单数量
 const getScrapBillsNum = "select count(1) as billsNum from `rp_scrapbills`"
 
@@ -127,7 +130,8 @@ const sqlScrapBills = "select * from `rp_scrapbills`"
 const sqlScrapSubBills = "select * from `rp_scrapsubbills`"
 //报废单 待维修报废sql
 const sqlRecordScrapBills = "select * from ( select ta.recordBillId,ta.productId,ta.productName,ta.repairStaff,ta.repairResult,ta.maker,ta.makeDate,ta.remark,ta.scrapStatus,tb.productDescription,tb.unit from `rp_recordbills` ta left join `rp_products` tb on ta.productId = tb.productId ) A"
-
+//报废单 待调拨报废sql
+const sqlTransferSubScrapBills = "select * from ( select ta.transferBillId,ta.productId,ta.productName,ta.unit,ta.num,ta.remark,ta.scrapStatus,tb.operator,tb.transferDate from `rp_transfersubbills` ta left join `rp_transferbills` tb on ta.transferBillId=tb.transferBillId ) A"
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";
@@ -265,36 +269,85 @@ const createSql = (i) => {
 			let key = i.params.key;
 			let updateKeys = "";
 			let updateStatement = "";
-			if (i.params.data.length > 0) {
-				for (const n of i.params.data) {
-					updateKeys = updateKeys + "'" + n[key] + "',";
-				}
 
-				let fieldsObj = i.params.data[0];
+			console.log('isarray1111', Array.isArray(key)) //true
 
-				for (const p in fieldsObj) {
-					if (p !== key) { //过滤key,防止更新key错误
-						if (fieldsObj[p]) {
-							updateStatement = updateStatement + p + " = '" + fieldsObj[p] + "',";
-						} else {
-							updateStatement = updateStatement + p + " = null,";
+			//多关键字更新
+
+			if (Array.isArray(key)) {
+				let keyValues = ''
+				if (i.params.data.length > 0) {
+
+					for (const n of i.params.data) {
+						let keyValue = ''
+						for (const k of key) {
+							keyValue = keyValue + "'" + n[k] + "',";
+						}
+						keyValue = "(" + keyValue.substring(0, keyValue.length - 1) + ")";
+						keyValues = keyValues + keyValue + ','
+					}
+					keyValues = keyValues.substring(0, keyValues.length - 1)
+
+
+					let fieldsObj = i.params.data[0];
+
+					for (const p in fieldsObj) {
+						if (!key.includes(p)) { //过滤key,防止更新key错误
+							if (fieldsObj[p]) {
+								updateStatement = updateStatement + p + " = '" + fieldsObj[p] + "',";
+							} else {
+								updateStatement = updateStatement + p + " = null,";
+							}
 						}
 					}
 				}
+				updateStatement = updateStatement.substr(0, updateStatement.length - 1);
 
-				// for (const n in i.params.data) {
-				// 	if (i.params.data.hasOwnProperty(n)) {
-				// 		updateDBIDS = updateDBIDS + i.params.data[n] + ",";
-				// 	}
-				// }
+				updateKeys = "(" + keyValues + ")";
+				console.log('updateKeys:' + updateKeys);
+				let keys = ""
+				for (const n of key) {
+					keys = keys + n + ","
+				}
+				keys = keys.substring(0, keys.length - 1);
+				keys = "(" + keys + ")";
+				excuteSql = "update `" + i.params.tableId + "` set " + updateStatement + " where " + keys + " in " + updateKeys;
+
 			}
-			updateStatement = updateStatement.substr(0, updateStatement.length - 1);
 
-			updateKeys = updateKeys.substr(0, updateKeys.length - 1);
-			updateKeys = "(" + updateKeys + ")";
-			console.log('updateKeys:' + updateKeys);
+			//单关键字更新
+			if (!Array.isArray(key)) {
+				if (i.params.data.length > 0) {
+					for (const n of i.params.data) {
+						updateKeys = updateKeys + "'" + n[key] + "',";
+					}
 
-			excuteSql = "update `" + i.params.tableId + "` set " + updateStatement + " where " + key + " in " + updateKeys;
+					let fieldsObj = i.params.data[0];
+
+					for (const p in fieldsObj) {
+						if (p !== key) { //过滤key,防止更新key错误
+							if (fieldsObj[p]) {
+								updateStatement = updateStatement + p + " = '" + fieldsObj[p] + "',";
+							} else {
+								updateStatement = updateStatement + p + " = null,";
+							}
+						}
+					}
+
+					// for (const n in i.params.data) {
+					// 	if (i.params.data.hasOwnProperty(n)) {
+					// 		updateDBIDS = updateDBIDS + i.params.data[n] + ",";
+					// 	}
+					// }
+				}
+				updateStatement = updateStatement.substr(0, updateStatement.length - 1);
+
+				updateKeys = updateKeys.substr(0, updateKeys.length - 1);
+				updateKeys = "(" + updateKeys + ")";
+				console.log('updateKeys:' + updateKeys);
+				excuteSql = "update `" + i.params.tableId + "` set " + updateStatement + " where " + key + " in " + updateKeys;
+			}
+
 
 			break;
 

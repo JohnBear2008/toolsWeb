@@ -241,20 +241,20 @@
                                     <td>
                                         <p class="form-control-static" id="printViewMainTable-transferBillId"></p>
                                     </td>
-                                    <td width='80px'>客户编号:</td>
+                                    <td width='80px'>调拨日期:</td>
                                     <td>
-                                        <p class="form-control-static" id="printViewMainTable-customerId"></p>
+                                        <p class="form-control-static" id="printViewMainTable-transferDate"></p>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td width='80px'>客户简称:</td>
+                                    <td width='80px'>拨出仓库:</td>
                                     <td>
-                                        <p class="form-control-static" id="printViewMainTable-customerShortName">
+                                        <p class="form-control-static" id="printViewMainTable-outWarehouseName">
                                         </p>
                                     </td>
-                                    <td width='80px'>客户名称:</td>
+                                    <td width='80px'>拨入仓库:</td>
                                     <td>
-                                        <p class="form-control-static" id="printViewMainTable-customerName"></p>
+                                        <p class="form-control-static" id="printViewMainTable-inWarehouseName"></p>
                                     </td>
                                 </tr>
                                 <tr>
@@ -291,7 +291,6 @@
                                     <th>序号</th>
                                     <th>产品编号</th>
                                     <th>产品名称</th>
-
                                     <th>单位</th>
                                     <th>数量</th>
                                 </tr>
@@ -1542,6 +1541,7 @@
 
             $("#rp_transferbillsForm-outWarehouseId").selectpicker('val', 'W1')
             $("#rp_transferbillsForm-sendWay").selectpicker('val', '邮寄过来')
+            $("#rp_transferbillsForm-transferDate").val(currentDate());
 
             //在保存时赋值
             // $("#rp_transferbillsForm-maker").text(sessionName);
@@ -1590,11 +1590,11 @@
             let outMainTable = {
                 billFrom: '调拨单',
                 billId: mainTableData.transferBillId,
-                // customerId: mainTableData.customerId,
-                // customerShortName: mainTableData.customerShortName,
-                // customerName: mainTableData.customerName,
-                // customerBelongShort: mainTableData.customerBelongShort,
-                // contact: mainTableData.contact,
+                customerId: 'S_KFB',
+                customerShortName: '客服部仓库',
+                customerName: '客服部仓库',
+                customerBelongShort: '',
+                contact: '',
                 // mobilePhone: mainTableData.mobilePhone,
                 // workPhone: mainTableData.workPhone,
                 // sendWay: mainTableData.sendWay,
@@ -1645,11 +1645,11 @@
             let inMainTable = {
                 billFrom: '调拨单',
                 billId: mainTableData.transferBillId,
-                // customerId: mainTableData.customerId,
-                // customerShortName: mainTableData.customerShortName,
-                // customerName: mainTableData.customerName,
-                // customerBelongShort: mainTableData.customerBelongShort,
-                // contact: mainTableData.contact,
+                customerId: 'S_KFB',
+                customerShortName: '客服部仓库',
+                customerName: '客服部仓库',
+                customerBelongShort: '',
+                contact: '',
                 // mobilePhone: mainTableData.mobilePhone,
                 // workPhone: mainTableData.workPhone,
                 // sendWay: mainTableData.sendWay,
@@ -1697,7 +1697,9 @@
 
             let billUpdateData = {
                 transferBillId: mainTableData.transferBillId,
+                auditDate: currentDate(),
                 status: '已审核'
+
             }
 
             let r3 = await postDBData({
@@ -1714,6 +1716,10 @@
             for (let n of subTableData) {
                 if (n.status === '预调拨') {
                     n.status = '已调拨'
+                }
+
+                if (mainTableData.inWarehouseId === 'W3') {
+                    n.scrapStatus = '待报废'
                 }
             }
 
@@ -1934,6 +1940,16 @@
                 return
             }
 
+            //check-重复产品校验
+            for (const n of subTableData) {
+                let productId = $('#rp_transfersubbillsForm-productId option:selected').val();
+                if (n.productId === productId) {
+                    alert('已经添加该产品,可直接修改数量,不能重复添加!')
+                    return
+                }
+            }
+
+
 
             //do-保存产品信息
             let transferBillId = $("#rp_transferbillsForm-transferBillId").text();
@@ -2029,7 +2045,7 @@
 
             fillTableRows({
                 tableId: 'printViewSubTable',
-                cols: ['rowId', 'productId', 'productName', 'warehouseName', 'unit', 'num'],
+                cols: ['rowId', 'productId', 'productName', 'unit', 'num'],
                 data: subTableData
             })
 
