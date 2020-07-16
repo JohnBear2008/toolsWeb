@@ -820,6 +820,18 @@
         $('#rp_transferbillsForm-outWarehouseId').change(async function () {
             let warehouseId = $('#rp_transferbillsForm-outWarehouseId option:selected')
                 .val()
+
+            loadBootStrapSelector({
+                elementId: 'rp_transfersubbillsForm-productId',
+                sqlParams: {
+                    sql: 'getStoreProductSelector',
+                    params: {
+                        filter: 'warehouseId ="' + warehouseId + '"'
+                    }
+                },
+            })
+
+
             // $('#rp_transferbillsForm-outWarehouseId').selectpicker('refresh');
             let productId = $('#rp_transfersubbillsForm-productId option:selected').val();
             if (warehouseId && productId) {
@@ -2191,7 +2203,10 @@
         loadBootStrapSelector({
             elementId: 'rp_transfersubbillsForm-productId',
             sqlParams: {
-                sql: 'getProductSelector'
+                sql: 'getStoreProductSelector',
+                params: {
+                    filter: 'warehouseId ="W1"'
+                }
             },
         })
 

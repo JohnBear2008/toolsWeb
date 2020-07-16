@@ -14,6 +14,8 @@ const getPartSelector = "select partId as value,partId as option,partName as tok
 
 const getFaultSelector = "select concat(faultId,'-',faultName) as value,concat(faultId,'-',faultName) as option, faultId as token from `rp_faultclasses`"
 const getWarehouseSelector = "select warehouseId as value,warehouseName as option,warehouseId as token from `rp_warehouseslist`";
+//获取仓库产品清单
+const getStoreProductSelector = "select * from ( select ta.warehouseId,ta.stockNum,ta.PID as value,ta.PID as option,tb.productName as token from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId ) A"
 
 
 const getRegion = "SELECT mername FROM `region`"

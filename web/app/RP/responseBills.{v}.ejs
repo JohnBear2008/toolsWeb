@@ -95,7 +95,7 @@
                                 <th>产品编号</th>
                                 <th>产品名称</th>
                                 <th>维修结果</th>
-                                <th>维修金额</th>
+                                <th>最终金额</th>
                                 <th>备注</th>
                             </tr>
                         </thead>
@@ -431,7 +431,7 @@
                                     <label class="col-sm-1 control-label">出货人</label>
                                     <div class="col-sm-5">
                                         <select id="rp_responsebillsForm-responseStaff" class="selectpicker"
-                                            data-live-search="true">
+                                            data-live-search="true" data-size="10">
                                         </select>
                                     </div>
 
@@ -584,7 +584,7 @@
                                                 <th>产品编号</th>
                                                 <th>产品名称</th>
                                                 <th>维修结果</th>
-                                                <th>维修金额</th>
+                                                <th>最终金额</th>
                                                 <th>备注</th>
                                             </tr>
                                         </thead>
@@ -641,10 +641,10 @@
                                                             id="rp_recordbillsForm-repairResult"></p>
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">维修金额</label>
+                                                    <label class="col-sm-1 control-label">最终金额</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_recordbillsForm-repairTotalFee"></p>
+                                                            id="rp_recordbillsForm-repairLastFee"></p>
                                                     </div>
 
                                                 </div>
@@ -718,7 +718,7 @@
     }, {
         data: 'repairResult',
     }, {
-        data: 'repairTotalFee',
+        data: 'repairLastFee',
     }, {
         data: 'remark',
     }]
@@ -1311,7 +1311,7 @@
             //自动计算总金额
             let amount = 0;
             for (const n of subTableData) {
-                let rowFee = n.repairTotalFee ? n.repairTotalFee : 0;
+                let rowFee = n.repairLastFee ? n.repairLastFee : 0;
                 amount = parseInt(amount) + parseInt(rowFee);
             }
 
@@ -1413,7 +1413,8 @@
                 }
             }
 
-            if (mainFormData.data[0].payAmount >= mainFormData.data[0].amount) {
+            if (mainFormData.data[0].amount == 0 ||
+                mainFormData.data[0].payAmount >= mainFormData.data[0].amount) {
                 mainFormData.data[0].isFullPay = '已结清'
             } else {
                 mainFormData.data[0].isFullPay = '未结清'

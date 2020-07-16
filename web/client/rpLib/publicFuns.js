@@ -509,6 +509,7 @@ const loadBootStrapSelector = async ({
         url: '/app/RP/lib/ajaxGet',
         data: sqlParams,
         success: function (data) {
+            // console.log('loadBootStrapSelector data',data);
             try {
                 for (const n of data) {
                     $('#' + elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));

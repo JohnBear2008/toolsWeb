@@ -1235,7 +1235,7 @@
     const loadBillMainTable = async () => {
 
         //显示过滤模式
-        if (mainTableFilter === 'status<>"维修完成"') {
+        if (mainTableFilter === 'status<>"维修完成" and status<>"已出货"') {
             $('#btnFilterUndone').addClass('active');
             $('#btnFilterDiy').removeClass('active');
         } else {
@@ -1712,7 +1712,7 @@
 
         //过滤器当天按钮
         $('#btnFilterUndone').click(function () {
-            mainTableFilter = 'status<>"维修完成"';
+            mainTableFilter = 'status<>"维修完成" and status<>"已出货"';
             //初始化主表
             loadBillMainTable();
 

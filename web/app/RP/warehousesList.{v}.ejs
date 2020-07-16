@@ -277,6 +277,33 @@
             }
         }
 
+        //check-该仓库是否包含物料
+
+        let warehouseList = ""
+        for (let i = 0; i < rowsSelect.length; i++) {
+            warehouseList = warehouseList + '"' + rowsSelect[i].warehouseId + '",';
+        }
+
+        warehouseList = warehouseList.substr(0, warehouseList.length - 1)
+
+        let wNums = await getDataBySql({
+            sql: 'rp_store',
+            params: {
+                filter: ' warehouseId in (' + warehouseList + ')'
+            }
+        })
+
+        let sumNum = 0
+
+        for (const n of wNums) {
+            sumNum = sumNum + n.stockNum;
+        }
+        if (sumNum > 0) {
+            alert('选中仓库中包含物料库存不允许删除')
+            return
+        }
+
+
         //do-删除仓库
         let DBIDArr = []
         for (let i = 0; i < rowsSelect.length; i++) {
