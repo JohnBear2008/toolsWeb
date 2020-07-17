@@ -21,6 +21,9 @@
 <!-- 导入instascan 二维码扫描库 -->
 <script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
 
+<!-- 导入print 打印库 -->
+<script type="text/javascript" src="/rpLib/print/print.js"></script>
+
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -36,8 +39,6 @@
             </div>
         </div>
     </div>
-
-
 
 
 
@@ -59,6 +60,12 @@
                         <button id='btnResponseStart' type="button" class="btn btn-info">维修出货<span class="badge"
                                 id="recordResponseNum"></span></button>
                         <button id='btnDetail' type="button" class="btn btn-info" style="display: none;">查看</button>
+                        <button type="button" class="btn btn-primary" id="rp_responsebillsPrint">
+                            打印出货单
+                        </button>
+                        <button type="button" class="btn btn-primary" id="rp_responseMsg">
+                            短信提醒
+                        </button>
                     </div>
                     <div style="clear:both"></div>
                 </div>
@@ -168,6 +175,95 @@
 
                 </div>
             </div><!-- /.modal -->
+        </div>
+    </div>
+
+    <!-- 打印预览模态框（Modal） -->
+    <div class="modal fade" id="printViewModal">
+        <div class="modal-dialog" style="width: 80%;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="printViewDiv">
+
+                        <h2>弘讯科技股份有限公司维修出货单</h2>
+                        <hr>
+
+                        <table id='printViewMainTable' style="border: 0ch; width: 100%;table-layout:fixed;">
+                            <tbody>
+                                <tr>
+                                    <td width='80px'>出货单号:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-responseBillId"></p>
+                                    </td>
+                                    <td width='80px'>客户编号:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-customerId"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width='80px'>客户简称:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-customerShortName">
+                                        </p>
+                                    </td>
+                                    <td width='80px'>客户名称:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-customerName"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width='80px'>联系人:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-contact"></p>
+                                    </td>
+                                    <td width='80px'>移动电话:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-mobilePhone"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width='80px'>送修方式:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-responseWay"></p>
+                                    </td>
+                                    <td width='80px'>送修人:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-responseStaff"></p>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+
+
+                        <hr>
+                        <table id='printViewSubTable' class="table table-condensed">
+
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>产品编号</th>
+                                    <th>产品名称</th>
+                                    <th>出厂编号</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="printCloseBtn">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="confirmPrintBtn">
+                        确认打印
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -608,10 +704,10 @@
                                                             id="rp_recordbillsForm-recordBillId"></p>
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">申请单号</label>
+                                                    <label class="col-sm-1 control-label">出货单号</label>
                                                     <div class="col-sm-5">
                                                         <p class="form-control-static"
-                                                            id="rp_recordbillsForm-requestBillId"></p>
+                                                            id="rp_recordbillsForm-responseBillId"></p>
                                                     </div>
 
 
@@ -692,7 +788,7 @@
 
 
 <script type="text/javascript">
-    //申请表主表dataTable column 数组
+    //出货表主表dataTable column 数组
 
     const mainColumnsArray = [{
         data: 'responseBillId'
@@ -708,7 +804,7 @@
         data: 'isFullPay',
     }, ]
 
-    //申请表子表dataTable column 数组
+    //出货表子表dataTable column 数组
     const subColumnsArray = [{
         data: 'recordBillId'
     }, {
@@ -1146,6 +1242,8 @@
         //元素数据-全局变量-当前用户名
         sessionName = "<%-locals.session.yjUser.Name%>";
 
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
         //定义子表全局变量临时数据数组
         subTableData = [];
 
@@ -1388,7 +1486,56 @@
 
         })
 
-        //定义功能-主表双击
+        //表单打印按钮
+        $('#rp_responsebillsPrint').click(function () {
+            console.log('mainTableData', mainTableData);
+
+            //check-单据选中
+            if (!mainTableData.responseBillId) {
+                alert('请先选中需要打印的单据!')
+                return
+            }
+
+
+            fillTableInputs({
+                tableId: 'printViewMainTable',
+                params: mainTableData
+            })
+
+
+            fillTableRows({
+                tableId: 'printViewSubTable',
+                cols: ['rowId', 'productId', 'productName', 'factoryNo'],
+                data: subTableData
+            })
+
+            $('#printViewModal').modal('show')
+        })
+
+        //确认打印按钮
+        $('#confirmPrintBtn').click(function () {
+            Print('#printViewDiv', {
+                onStart: function () {
+                    console.log('onStart', new Date())
+                },
+                onEnd: function () {
+                    console.log('onEnd', new Date())
+                }
+            })
+        })
+
+
+        //打印关闭按钮
+        $('#printCloseBtn').click(function () {
+            $('#printViewModal').modal('hide')
+        })
+
+
+
+        //短信提醒按钮
+        $('#rp_responseMsg').click(function () {
+            alert('暂不开放')
+        })
 
 
         //定义功能-保存单据按钮

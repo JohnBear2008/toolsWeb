@@ -43,7 +43,7 @@ const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
 //获取入库单数量
 const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
 //获取入库单子表数量
-const getInSubBillsNum="select count(1) as billsNum from `rp_insubbills`"
+const getInSubBillsNum = "select count(1) as billsNum from `rp_insubbills`"
 //获取调拨单数量
 const getTransferBillsNum = "select count(1) as billsNum from `rp_transferbills`"
 //获取调拨单子表数量
@@ -96,7 +96,7 @@ const sqlSubResponseBills = "select * from `rp_responsebills`"
 //借货单主表sql
 const sqlBorrowBills = "select *, CONCAT_WS(',',address,warehouseName) as searchText from `rp_borrowbills`"
 //借货单子表sql
-const sqlBorrowSubBills = "select * from `rp_borrowsubbills`"
+const sqlBorrowSubBills = "select *,ifnull(returnNum,0) as returnNum,(num-ifnull(returnNum,0)) as unReturnNum from `rp_borrowsubbills`"
 
 //还货单主表sql
 // const sqlReturnBills = "select * from (select ta.DBID,ta.borrowBillId,ta.returnBillId,ta.productId,ta.productName,ta.num,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.returnStatus,tb.customerId,tb.customerShortName,tb.customerName,tb.customerBelongShort,tb.borrowDate,tb.fax as searchText,tc.billFrom,tc.returnDate,tc.operator,tc.remark,tc.status,tc.maker,tc.makeDate,tc.auditor,tc.auditDate,tc.billSaveTimeStamp from `rp_borrowsubbills` ta left join  `rp_borrowbills` tb on ta.borrowBillId=tb.borrowBillId left join `rp_returnbills` tc on ta.returnBillId=tc.returnBillId) A"
@@ -137,7 +137,7 @@ const sqlRecordScrapBills = "select * from ( select ta.recordBillId,ta.productId
 //报废单 待调拨报废sql
 const sqlTransferSubScrapBills = "select * from ( select ta.transferBillId,ta.productId,ta.productName,ta.unit,ta.num,ta.remark,ta.scrapStatus,tb.operator,tb.transferDate from `rp_transfersubbills` ta left join `rp_transferbills` tb on ta.transferBillId=tb.transferBillId ) A"
 //报废单 待报废sql
-const sqlWaitScrapBills="select * from ( select ta.billId,ta.productId,ta.productName,ta.unit,ta.num,ta.remark,ta.scrapStatus,tb.billFrom,tb.operator,tb.auditDate from `rp_insubbills` ta left join `rp_inbills` tb on ta.billId=tb.billId ) A"
+const sqlWaitScrapBills = "select * from ( select ta.billId,ta.productId,ta.productName,ta.unit,ta.num,ta.remark,ta.scrapStatus,tb.billFrom,tb.operator,tb.auditDate from `rp_insubbills` ta left join `rp_inbills` tb on ta.billId=tb.billId ) A"
 
 
 

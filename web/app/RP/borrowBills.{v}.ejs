@@ -119,6 +119,8 @@
                                 <th>产品描述</th>
                                 <th>单位</th>
                                 <th>数量</th>
+                                <th>已还</th>
+                                <th>未还</th>
                                 <th>备注</th>
                                 <th>状态</th>
                             </tr>
@@ -604,6 +606,8 @@
                                                 <th>产品描述</th>
                                                 <th>单位</th>
                                                 <th>数量</th>
+                                                <th>已还</th>
+                                                <th>未还</th>
                                                 <th>备注</th>
                                                 <th>状态</th>
                                             </tr>
@@ -839,6 +843,10 @@
         data: 'unit',
     }, {
         data: 'num',
+    }, {
+        data: 'returnNum',
+    }, {
+        data: 'unReturnNum',
     }, {
         data: 'remark',
     }, {
@@ -1200,6 +1208,18 @@
                     params: rowSelect
                 })
 
+                //禁止修改关键信息
+                $('#rp_borrowsubbillsForm-productId').prop("disabled", true);
+                $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
+                $('#rp_borrowsubbillsForm-warehouseId').prop("disabled", true);
+                $('#rp_borrowsubbillsForm-warehouseId').selectpicker('refresh');
+                $('#rp_borrowsubbillsForm-num').prop("disabled", true);
+
+
+
+
+
+
                 //打开面板
                 $('#rp_borrowsubbillsPanel').show();
 
@@ -1268,8 +1288,8 @@
                 filter: 'borrowBillId="' + billId + '"'
             }
         })
-        console.log('dataArray',dataArray);
-        
+        console.log('dataArray', dataArray);
+
         //将表数据同步到共用数组
         subTableData = dataArray;
 
@@ -1322,6 +1342,7 @@
 
         for (let n of subTableData) {
             n.status = '预借出'
+            delete n.unReturnNum
         }
 
         let r2 = await postDBData({
@@ -1614,11 +1635,7 @@
 
 
 
-        //初始化子表
-        loadDataSubTable({
-            elementId: 'rp_borrowsubbills',
-            dataArray: subTableData
-        });
+
 
         //过滤器当天按钮
         $('#btnFilterToday').click(function () {
@@ -1702,7 +1719,7 @@
 
             //do-清空form数据
             mainTableData = {}
-            subTableData = {}
+
 
             //do-清空form数据
             clearFormInputs({
@@ -1716,7 +1733,12 @@
 
             //do-清空子表及全局变量
             subTableData = [];
-            $('#rp_borrowsubbills tbody').html("");
+
+            //初始化子表
+            loadDataSubTable({
+                elementId: 'rp_borrowsubbills',
+                dataArray: subTableData
+            });
 
 
             //do-打开面板
@@ -2077,10 +2099,22 @@
             clearFormInputs({
                 formId: 'rp_borrowsubbillsForm'
             })
+
+            //允许修改关键信息
+
+            $('#rp_borrowsubbillsForm-productId').prop("disabled", false);
+            $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
+            $('#rp_borrowsubbillsForm-warehouseId').prop("disabled", false);
+            $('#rp_borrowsubbillsForm-warehouseId').selectpicker('refresh');
+            $('#rp_borrowsubbillsForm-num').prop("disabled", false);
+
+
+
+
+
+
             //打开面板
             $('#rp_borrowsubbillsPanel').show();
-
-
 
             //设置默认值
 
@@ -2088,11 +2122,19 @@
             $("#rp_borrowsubbillsForm-productId").selectpicker('val', '')
             $("#rp_borrowsubbillsForm-warehouseId").selectpicker('val', 'W1')
             $("#rp_borrowsubbillsForm-num").val(1)
+
+
         })
 
         //保存产品按钮
 
         $('#btnProductSave').click(async function () {
+            //check-审核检查
+            let auditDate = $('#rp_borrowBillsForm-auditDate').val()
+            if (auditDate) {
+                alert('已经审核的借货单不允许修改!')
+                return
+            }
 
             //库存不足警告
             let stockNum = parseInt($('#stockNum').text());
@@ -2116,8 +2158,12 @@
             rowData.warehouseName = $('#rp_borrowsubbillsForm-warehouseId option:selected').text()
             // console.log('rowData:' + JSON.stringify(rowData))
 
+            rowData.returnNum = 0;
+            rowData.unReturnNum = num;
+
             //检查是否存在序号,区分新增还是编辑
             if (rowData.rowId) {
+
                 for (let n in subTableData) {
                     // console.log("subTableData[n]:" + JSON.stringify(subTableData[n].rowId));
                     // console.log("rowData:" + JSON.stringify(rowData.rowId));
@@ -2135,6 +2181,8 @@
                 // console.log("subTableData before:" + JSON.stringify(subTableData));
                 // console.log("rowData:" + JSON.stringify(rowData.status));
                 rowData.rowId = rowNum + 1;
+
+
 
                 // let rs = await checkRecordHistory({
                 //     productId: rowData.productId
