@@ -1735,9 +1735,9 @@
                     n.status = '已调拨'
                 }
 
-                if (mainTableData.inWarehouseId === 'W3') {
-                    n.scrapStatus = '待报废'
-                }
+                // if (mainTableData.inWarehouseId === 'W3') {
+                //     n.scrapStatus = '待报废'
+                // }
             }
 
             let r4 = await postDBData({
@@ -2255,6 +2255,9 @@
             elementId: 'rp_transferbillsForm-outWarehouseId',
             sqlParams: {
                 sql: 'getWarehouseSelector',
+                params: {
+                    filter: 'warehouseId<>"W3"'
+                }
             },
             // initValue: 'W1'
         })
