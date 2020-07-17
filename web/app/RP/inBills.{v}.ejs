@@ -2433,12 +2433,12 @@
             //check-检查选中
             // console.log(mainTableData);
             if (!mainTableData.billId) {
-                alert('请先点击表格选中需要驳回的借货单!')
+                alert('请先点击表格选中需要驳回的入库单!')
                 return
             }
             //check-检查驳回条件
             if (mainTableData.status !== '待审核') {
-                alert('只能驳回待审核的借货单,请检查!')
+                alert('只能驳回待审核的入库单,请检查!')
                 return
             }
             //check-驳回确认
@@ -2446,7 +2446,7 @@
                 return
             }
 
-            //do-更新借货单状态
+            //do-更新入库单状态
             let billUpdateData = {
                 billId: mainTableData.billId,
                 status: '已驳回'
@@ -2461,7 +2461,7 @@
                 }
             })
 
-            //do-更新借货单子表状态
+            //do-更新入库单子表状态
             let subbillUpdateData = [];
             for (const n of subTableData) {
                 subbillUpdateData.push({

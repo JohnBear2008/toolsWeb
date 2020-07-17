@@ -42,6 +42,8 @@ const getReturnBillsNum = "select count(1) as billsNum from `rp_returnbills`";
 const getOutBillsNum = "select count(1) as billsNum from `rp_outbills`"
 //获取入库单数量
 const getInBillsNum = "select count(1) as billsNum from `rp_inbills`"
+//获取入库单子表数量
+const getInSubBillsNum="select count(1) as billsNum from `rp_insubbills`"
 //获取调拨单数量
 const getTransferBillsNum = "select count(1) as billsNum from `rp_transferbills`"
 //获取调拨单子表数量
@@ -134,6 +136,10 @@ const sqlScrapSubBills = "select * from `rp_scrapsubbills`"
 const sqlRecordScrapBills = "select * from ( select ta.recordBillId,ta.productId,ta.productName,ta.repairStaff,ta.repairResult,ta.maker,ta.makeDate,ta.remark,ta.scrapStatus,tb.productDescription,tb.unit from `rp_recordbills` ta left join `rp_products` tb on ta.productId = tb.productId ) A"
 //报废单 待调拨报废sql
 const sqlTransferSubScrapBills = "select * from ( select ta.transferBillId,ta.productId,ta.productName,ta.unit,ta.num,ta.remark,ta.scrapStatus,tb.operator,tb.transferDate from `rp_transfersubbills` ta left join `rp_transferbills` tb on ta.transferBillId=tb.transferBillId ) A"
+//报废单 待报废sql
+const sqlWaitScrapBills="select * from ( select ta.billId,ta.productId,ta.productName,ta.unit,ta.num,ta.remark,ta.scrapStatus,tb.billFrom,tb.operator,tb.auditDate from `rp_insubbills` ta left join `rp_inbills` tb on ta.billId=tb.billId ) A"
+
+
 
 //查找指定表名中所有数据
 const sqlTableSelect = "select * from `tableId`";
