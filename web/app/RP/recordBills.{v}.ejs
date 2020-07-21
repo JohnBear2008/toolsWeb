@@ -597,18 +597,28 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">是否返修</label>
                                     <div class="col-sm-3">
-                                        <p class="form-control-static" id="rp_recordbillsForm-isRework"></p>
+                                        <!-- <p class="form-control-static" id="rp_recordbillsForm-isRework"></p> -->
+
+                                        <select id="rp_recordbillsForm-isRework" class="selectpicker"
+                                            data-dropup-auto="false">
+                                        </select>
                                     </div>
 
 
                                     <label class="col-sm-1 control-label">是否加急</label>
                                     <div class="col-sm-3">
-                                        <p class="form-control-static" id="rp_recordbillsForm-urgent"></p>
+                                        <!-- <p class="form-control-static" id="rp_recordbillsForm-urgent"></p> -->
+                                        <select id="rp_recordbillsForm-urgent" class="selectpicker"
+                                            data-dropup-auto="false">
+                                        </select>
                                     </div>
 
                                     <label class="col-sm-1 control-label">质保期内</label>
                                     <div class="col-sm-3">
-                                        <p class="form-control-static" id="rp_recordbillsForm-inWarranty"></p>
+                                        <!-- <p class="form-control-static" id="rp_recordbillsForm-inWarranty"></p> -->
+                                        <select id="rp_recordbillsForm-inWarranty" class="selectpicker"
+                                            data-dropup-auto="false">
+                                        </select>
                                     </div>
 
 
@@ -849,25 +859,58 @@
 
 
 
-                                                <div class="form-group">
-                                                    <div id='hasChangePartDiv'>
+                                                <div class="form-group" id='hasScrapPartBtn'>
+                                                    <div>
                                                         <label class="col-sm-1 control-label"
-                                                            for="hasChangePart">换下零件</label>
+                                                            for="hasScrapPart">报废零件</label>
                                                         <div class="col-sm-3">
-                                                            <input id="hasChangePart" type="checkbox">
+                                                            <input id="hasScrapPart" type="checkbox">
                                                         </div>
                                                     </div>
 
+                                                </div>
 
-                                                    <label class="col-sm-1 control-label">换下零件编号</label>
+
+
+                                                <div class="form-group" id="scrapPartPanel">
+                                                    <label class="col-sm-1 control-label">报废零件编号</label>
                                                     <div class="col-sm-3">
-                                                        <input class="form-control" id="rp_partsbillsForm-changePartId"
+                                                        <input class="form-control" id="rp_partsbillsForm-scrapPartId"
                                                             type="text">
                                                     </div>
 
-                                                    <label class="col-sm-1 control-label">换下零件数量</label>
+                                                    <label class="col-sm-1 control-label">报废零件数量</label>
                                                     <div class="col-sm-3">
-                                                        <input class="form-control" id="rp_partsbillsForm-changePartNum"
+                                                        <input class="form-control" id="rp_partsbillsForm-scrapPartNum"
+                                                            type="text">
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="form-group" id='hasRepairPartBtn'>
+                                                    <div>
+                                                        <label class="col-sm-1 control-label"
+                                                            for="hasRepairPart">返修零件</label>
+                                                        <div class="col-sm-3">
+                                                            <input id="hasRepairPart" type="checkbox">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+
+                                                <div class="form-group" id="repairPartPanel">
+                                                    <label class="col-sm-1 control-label">返修零件编号</label>
+                                                    <div class="col-sm-3">
+                                                        <input class="form-control" id="rp_partsbillsForm-repairPartId"
+                                                            type="text">
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">返修零件数量</label>
+                                                    <div class="col-sm-3">
+                                                        <input class="form-control" id="rp_partsbillsForm-repairPartNum"
                                                             type="text">
                                                     </div>
                                                 </div>
@@ -1035,39 +1078,39 @@
         // $("#rp_recordbillsForm-customerArea").selectpicker('val', r2.customerArea)
     }
 
-    //添加检测项目监听器
-    const addTestItemListener = () => {
-        // $('#rp_recordbillsForm-testItem').unbind();
-        $('#rp_recordbillsForm-testItem').change(function () {
-            let testFee = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
-            if (testFee) {
-                $('#rp_recordbillsForm-testFee').text(testFee);
-                CalcRepairTotalFee();
-            }
-        })
-    }
+    // //添加检测项目监听器
+    // const addTestItemListener = () => {
+    //     // $('#rp_recordbillsForm-testItem').unbind();
+    //     $('#rp_recordbillsForm-testItem').change(function () {
+    //         let testFee = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
+    //         if (testFee) {
+    //             $('#rp_recordbillsForm-testFee').text(testFee);
+    //             CalcRepairTotalFee();
+    //         }
+    //     })
+    // }
 
-    //添加成色监听器
-    const addConditionStatusListener = () => {
-        // $('#rp_recordbillsForm-conditionStatus').unbind();
-        $('#rp_recordbillsForm-conditionStatus').change(function () {
-            let conditionStatus = $('#rp_recordbillsForm-testItem option:selected').val();
-            if (conditionStatus) {
-                CalcRepairTotalFee();
-            }
-        })
-    }
+    // //添加成色监听器
+    // const addConditionStatusListener = () => {
+    //     // $('#rp_recordbillsForm-conditionStatus').unbind();
+    //     $('#rp_recordbillsForm-conditionStatus').change(function () {
+    //         let conditionStatus = $('#rp_recordbillsForm-testItem option:selected').val();
+    //         if (conditionStatus) {
+    //             CalcRepairTotalFee();
+    //         }
+    //     })
+    // }
 
-    //添加维修结果监听器
-    const addRepairResultListener = () => {
-        // $('#rp_recordbillsForm-repairResult').unbind();
-        $('#rp_recordbillsForm-repairResult').change(function () {
-            let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val();
-            if (repairResult) {
-                CalcRepairTotalFee();
-            }
-        })
-    }
+    // //添加维修结果监听器
+    // const addRepairResultListener = () => {
+    //     // $('#rp_recordbillsForm-repairResult').unbind();
+    //     $('#rp_recordbillsForm-repairResult').change(function () {
+    //         let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val();
+    //         if (repairResult) {
+    //             CalcRepairTotalFee();
+    //         }
+    //     })
+    // }
 
 
 
@@ -1166,8 +1209,11 @@
 
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
-
+                //清空选中单据数据
+                mainTableData = {}
                 $('#subTablePanel').hide();
+                // await loadMainBillSubTable()
+
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
@@ -1203,13 +1249,15 @@
     //加载展开选定表子表关联数据
 
     const loadMainBillSubTable = async (billId) => {
-        let dataArray = await getDataBySql({
-            sql: 'sqlSubPartBills',
-            params: {
-                filter: 'recordBillId="' + billId + '"'
-            }
-        })
-
+        let dataArray = []
+        if (billId) {
+            dataArray = await getDataBySql({
+                sql: 'sqlSubPartBills',
+                params: {
+                    filter: 'recordBillId="' + billId + '"'
+                }
+            })
+        }
         // console.log('dataArray', dataArray);
 
         //将表数据同步到共用数组
@@ -1282,7 +1330,21 @@
 
                 //隐藏换下配件switch
                 //显示换下配件按钮
-                $("#hasChangePartDiv").hide()
+                $("#hasScrapPartBtn").hide()
+                $("#hasRepairPartBtn").hide()
+
+
+                if (rowSelect.scrapPartId) {
+                    $("#scrapPartPanel").show()
+                } else {
+                    $("#scrapPartPanel").hide()
+                }
+
+                if (rowSelect.repairPartId) {
+                    $("#repairPartPanel").show()
+                } else {
+                    $("#repairPartPanel").hide()
+                }
 
                 //解绑监听器
                 // $('#rp_partsbillsForm-partLocation').unbind();
@@ -1404,15 +1466,18 @@
 
     //计算总费用
     const CalcRepairTotalFee = () => {
+        console.log('CalcRepairTotalFee do');
         //初始话费用
         let [testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee] = [0, 0, 0, 0, 0,
             0, 0
         ]
-
         //检测费
-        if ($('#rp_recordbillsForm-testFee').text()) {
+        let testFeeNow = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
+        if (testFeeNow) {
+            $('#rp_recordbillsForm-testFee').text(testFeeNow);
             testFee = parseInt($('#rp_recordbillsForm-testFee').text());
         }
+
 
         //配件费
         let rowNum = $("#rp_partsbills tbody tr").size();
@@ -1470,7 +1535,7 @@
         }
 
         //加急费
-        if ($('#rp_recordbillsForm-urgent').text() === '是') {
+        if ($('#rp_recordbillsForm-urgent option:selected').val() === '是') {
             urgentFee = 20;
         }
         $('#rp_recordbillsForm-urgentFee').text(urgentFee);
@@ -1486,10 +1551,10 @@
 
         //是否免费
         let forFree = '否';
-        if ($('#rp_recordbillsForm-inWarranty').text() === '是') { //质保期内免费
+        if ($('#rp_recordbillsForm-inWarranty option:selected').val() === '是') { //质保期内免费
             forFree = '是'
         }
-        if ($('#rp_recordbillsForm-isRework').text() === '是') { //返修
+        if ($('#rp_recordbillsForm-isRework option:selected').val() === '是') { //返修
             forFree = '是'
         }
 
@@ -1525,9 +1590,11 @@
 
     //总费用监听器
     const addRepairTotalFeeListener = () => {
-        $("#rp_recordbillsForm-testFee").on("input propertychange", function () {
-            CalcRepairTotalFee();
-        });
+        $("#rp_recordbillsForm-testFee,#rp_recordbillsForm-isRework,#rp_recordbillsForm-urgent,#rp_recordbillsForm-inWarranty,#rp_recordbillsForm-testItem,#rp_recordbillsForm-conditionStatus,#rp_recordbillsForm-repairResult")
+            // .on("input propertychange ", function () {
+            .on("change", function () {
+                CalcRepairTotalFee();
+            });
 
 
     }
@@ -2060,8 +2127,10 @@
             //取消零件信息div禁用
             $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", false);
 
+            // $('#rp_partsbillsForm scrapPartPanel').find('select,input,textarea').attr("disabled", false);
+
             //显示换下配件按钮
-            $("#hasChangePartDiv").show()
+            $("#hasScrapPartBtn").show()
 
             //清空panel数据
             clearFormInputs({
@@ -2101,6 +2170,17 @@
             // addPartLocationListener()
             addPartIdListener();
             addPartFeeListener();
+
+            //关闭换下部件面板
+            // //取消零件信息div禁用
+            $('#scrapPartPanel').find('select,input,textarea').attr("disabled", false);
+            $('#repairPartPanel').find('select,input,textarea').attr("disabled", false);
+
+
+            $('#hasScrapPart').bootstrapSwitch('state', false);
+            $("#scrapPartPanel").hide()
+            $('#hasRepairPart').bootstrapSwitch('state', false);
+            $("#repairPartPanel").hide()
 
             //打开面板
             $('#rp_partsbillsPanel').show();
@@ -2186,8 +2266,11 @@
             //check-库存充足提醒
             let numStatus = $("#rp_partsbillsForm-numStatus").text();
             let num = $("#rp_partsbillsForm-num").val();
-            let stockNum = $("#stockNum").text();
-            // console.log(numStatus, num, stockNum);
+            let stockNum = parseInt($("#stockNum").text());
+            console.log(numStatus, num, stockNum);
+            console.log(numStatus === '预领');
+            console.log(num > stockNum);
+
 
             if (numStatus === '预领' && num > stockNum) {
                 if (!confirm('该部件维修仓中库存不足,是否继续?')) {
@@ -2260,7 +2343,8 @@
                 return
             }
 
-
+            //赋值到全局变量
+            mainTableData = dataSelect
 
             //打开面板
             $('#rp_recordbillsModal').modal('show');
@@ -2325,18 +2409,12 @@
                 $('#rp_recordbillsForm-testItem').change()
             }
 
-
-
-
             //如存在file属性,对其单独处理生成下载链接
             // alert(JSON.stringify(dataSelect))
             if (dataSelect.files) {
                 let filesLink = getFilesUrl(dataSelect.files)
                 $('#files').html(filesLink);
             }
-
-
-
 
             //不存在单号则创造记录单号
             let recordBillId = $('#rp_recordbillsForm-recordBillId').text();
@@ -2358,7 +2436,21 @@
         //表单保存按钮
         $('#rp_recordbillsSave').click(async function () {
 
-            //check-检查选中
+            console.log('save mainTableData', mainTableData);
+
+            //check-检查单据状态
+            let status = $('#rp_recordbillsForm-status').text()
+            if (status === '维修完成') {
+                alert('该维修单已存在维修结果,无法修改')
+                return
+            }
+            //check-保存确认
+            let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val()
+            if (repairResult) {
+                if (!confirm('选定维修结果后,此维修单完结,无法再次修改,是否保存?')) {
+                    return
+                }
+            }
 
             //do-获取维修单主表信息
 
@@ -2431,27 +2523,27 @@
                 let mainTable = {
                     billFrom: '维修单',
                     billId: mainFormData.data[0].recordBillId,
-                    customerId: mainFormData.data[0].customerId,
-                    customerShortName: mainFormData.data[0].customerShortName,
-                    customerName: mainFormData.data[0].customerName,
-                    customerBelongShort: mainFormData.data[0].customerBelongShort,
-                    contact: mainFormData.data[0].contact,
-                    mobilePhone: mainFormData.data[0].mobilePhone,
-                    workPhone: mainFormData.data[0].workPhone,
-                    sendWay: mainFormData.data[0].sendWay,
-                    operator: mainFormData.data[0].operator,
-                    address: mainFormData.data[0].address,
-                    maker: mainFormData.data[0].maker,
-                    makeDate: mainFormData.data[0].makeDate,
-                    auditor: mainFormData.data[0].maker,
+                    customerId: mainTableData.customerId,
+                    customerShortName: mainTableData.customerShortName,
+                    customerName: mainTableData.customerName,
+                    customerBelongShort: mainTableData.customerBelongShort,
+                    contact: mainTableData.contact,
+                    mobilePhone: mainTableData.mobilePhone,
+                    workPhone: mainTableData.workPhone,
+                    // sendWay: mainFormData.data[0].sendWay,
+                    operator: sessionName,
+                    address: mainTableData.address,
+                    maker: sessionName,
+                    makeDate: currentDate(),
+                    auditor: sessionName,
                     auditDate: currentDate(),
                     status: '已审核',
                     remark: mainFormData.data[0].remark,
                 };
-                let subTable = [];
+                let subTableOut = [];
                 for (const n of subTableData) {
                     if (n.numStatus === '预领') {
-                        subTable.push({
+                        subTableOut.push({
                             billId: n.recordBillId,
                             rowId: n.rowId,
                             productId: n.partId,
@@ -2469,23 +2561,67 @@
                     }
                 }
 
-                if (subTable.length > 0) {
-                    let r1 = await autoOutStoreBills({
+                if (subTableOut.length > 0) {
+                    let rOut = await autoOutStoreBills({
                         mainTable: mainTable,
-                        subTable: subTable
+                        subTable: subTableOut
                     })
                     // console.log('r2',r2);
 
-                    if (!r1) {
+                    if (!rOut) {
                         alert('系统出库失败')
                         return
                     }
+                }
+                //子表报废入库
+                let subTableIn = [];
+                for (const n of subTableData) {
+                    if (n.numStatus === '预领' && n.scrapPartId && n.scrapPartNum) {
+                        subTableIn.push({
+                            billId: n.recordBillId,
+                            rowId: n.rowId,
+                            productId: n.scrapPartId,
+                            productName: n.partName,
+                            productDescription: n.partDescription,
+                            warehouseId: 'W3',
+                            warehouseName: '报废仓',
+                            unit: n.unit,
+                            num: n.scrapPartNum,
+                            status: '已入',
+                            scrapStatus: '待报废',
+                            remark: n.remark,
+                            actType: '维修单',
+                            rpBillId: n.recordBillId
+                        })
+                    }
 
-                    for (let n of subTableData) {
-                        for (const m of subTable) {
-                            if (m.productId === n.partId && n.numStatus === '预领') {
-                                n.numStatus = '已领'
-                            }
+
+                }
+
+                if (subTableIn.length > 0) {
+                    let rIn = await autoInStoreBills({
+                        mainTable: mainTable,
+                        subTable: subTableIn
+                    })
+                    // console.log('r2',r2);
+
+                    if (!rIn) {
+                        alert('系统报废入库失败')
+                        return
+                    }
+
+                }
+
+                for (let n of subTableData) {
+
+                    //更新再维修状态
+                    if (n.numStatus === '预领' && n.repairPartId && n.repairPartNum) {
+                        n.repairPartStatus = '待维修'
+                    }
+
+                    for (const m of subTableOut) {
+                        if (m.productId === n.partId && n.numStatus === '预领') {
+                            n.numStatus = '已领'
                         }
                     }
                 }
@@ -2502,19 +2638,19 @@
                 let mainTable = {
                     billFrom: '维修单',
                     billId: mainFormData.data[0].recordBillId,
-                    customerId: mainFormData.data[0].customerId,
-                    customerShortName: mainFormData.data[0].customerShortName,
-                    customerName: mainFormData.data[0].customerName,
-                    customerBelongShort: mainFormData.data[0].customerBelongShort,
-                    contact: mainFormData.data[0].contact,
-                    mobilePhone: mainFormData.data[0].mobilePhone,
-                    workPhone: mainFormData.data[0].workPhone,
-                    // returnType: mainTableData.returnType,
-                    operator: mainFormData.data[0].operator,
-                    // address: mainTableData.address,
-                    maker: mainFormData.data[0].maker,
-                    makeDate: mainFormData.data[0].makeDate,
-                    auditor: mainFormData.data[0].maker,
+                    customerId: mainTableData.customerId,
+                    customerShortName: mainTableData.customerShortName,
+                    customerName: mainTableData.customerName,
+                    customerBelongShort: mainTableData.customerBelongShort,
+                    contact: mainTableData.contact,
+                    mobilePhone: mainTableData.mobilePhone,
+                    workPhone: mainTableData.workPhone,
+                    // sendWay: mainFormData.data[0].sendWay,
+                    operator: sessionName,
+                    address: mainTableData.address,
+                    maker: sessionName,
+                    makeDate: currentDate(),
+                    auditor: sessionName,
                     auditDate: currentDate(),
                     status: '已审核',
                     remark: mainFormData.data[0].remark,
@@ -2577,6 +2713,10 @@
 
             //do-更新维修单子表
 
+            for (let n of subTableData) {
+
+            }
+
             if (subTableData.length > 0) {
                 let rSubUpdate = await postDBData({
                     sql: 'replace',
@@ -2617,8 +2757,6 @@
                 sql: 'getTestItemSelector',
             },
         })
-
-
 
 
         loadBootStrapSelector({
@@ -2683,6 +2821,9 @@
         })
 
 
+
+
+
         loadBootStrapSelector({
             elementId: 'rp_recordbillsForm-repairStaff',
             sqlParams: {
@@ -2691,19 +2832,61 @@
             // initValue:'中国,北京'
         })
 
-        //换下配件选择器初始化
-        $("#hasChangePart").bootstrapSwitch({
+
+
+        loadBootStrapSelectors({
+            elementIds: [
+                'rp_recordbillsForm-isRework',
+                'rp_recordbillsForm-urgent',
+                'rp_recordbillsForm-inWarranty'
+            ],
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="是或否"'
+                }
+            },
+
+        })
+
+        //报废配件选择器初始化
+        $("#hasScrapPart").bootstrapSwitch({
             onText: "有",
             offText: "无",
             // setState: false,
             onSwitchChange: function (event, state) {
                 if (state === true) {
                     let partId = $('#rp_partsbillsForm-partId option:selected').val();
-                    $("#rp_partsbillsForm-changePartId").val(partId)
-                    $("#rp_partsbillsForm-changePartNum").val(1)
+                    $("#rp_partsbillsForm-scrapPartId").val(partId)
+                    $("#rp_partsbillsForm-scrapPartNum").val(1)
+
+                    $("#scrapPartPanel").show()
                 } else {
-                    $("#rp_partsbillsForm-changePartId").val('')
-                    $("#rp_partsbillsForm-changePartNum").val('')
+                    $("#rp_partsbillsForm-scrapPartId").val('')
+                    $("#rp_partsbillsForm-scrapPartNum").val('')
+
+                    $("#scrapPartPanel").hide()
+                }
+            }
+        });
+
+        //维修配件选择器初始化
+        $("#hasRepairPart").bootstrapSwitch({
+            onText: "有",
+            offText: "无",
+            // setState: false,
+            onSwitchChange: function (event, state) {
+                if (state === true) {
+                    let partId = $('#rp_partsbillsForm-partId option:selected').val();
+                    $("#rp_partsbillsForm-repairPartId").val(partId)
+                    $("#rp_partsbillsForm-repairPartNum").val(1)
+
+                    $("#repairPartPanel").show()
+                } else {
+                    $("#rp_partsbillsForm-repairPartId").val('')
+                    $("#rp_partsbillsForm-repairPartNum").val('')
+
+                    $("#repairPartPanel").hide()
                 }
             }
         });
@@ -2717,10 +2900,10 @@
         // })
 
 
-        //添加监听器
-        addTestItemListener();
-        addConditionStatusListener();
-        addRepairResultListener()
+        //添加总费用计算监听器
+        // addTestItemListener();
+        // addConditionStatusListener();
+        // addRepairResultListener()
         addRepairTotalFeeListener();
 
 

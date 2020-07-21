@@ -51,6 +51,8 @@ const getTransferSubBillsNum = "select count(1) as billsNum from `rp_transfersub
 
 //获取报废单数量
 const getScrapBillsNum = "select count(1) as billsNum from `rp_scrapbills`"
+//获取零件单数量
+const getPartBillsNum = "select count(1) as billsNum from `rp_partsbills`"
 
 // //通用获取表单数量sql
 // const getBillsNum="select count(1) as billsNum from `tableId`"

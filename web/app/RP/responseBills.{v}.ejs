@@ -1133,13 +1133,15 @@
     //加载展开选定表子表关联数据
 
     const loadMainBillSubTable = async (billId) => {
-        let dataArray = await getDataBySql({
-            sql: 'sqlResponseSubBills',
-            params: {
-                filter: 'responseBillId="' + billId + '"'
-            }
-        })
-
+        let dataArray = []
+        if (billId) {
+            dataArray = await getDataBySql({
+                sql: 'sqlResponseSubBills',
+                params: {
+                    filter: 'responseBillId="' + billId + '"'
+                }
+            })
+        }
         console.log('dataArray111', dataArray);
 
         //将表数据同步到共用数组
@@ -1171,6 +1173,7 @@
                 $(this).removeClass('selected');
                 //清空选中单据数据
                 mainTableData = {}
+                // await loadMainBillSubTable()
                 $('#subTablePanel').hide();
             } else {
                 table.$('tr.selected').removeClass('selected');
@@ -1185,8 +1188,6 @@
                     await loadMainBillSubTable(rowSelect.responseBillId)
                     //打开面板
                     $('#subTablePanel').show();
-                } else {
-                    $('#subTablePanel').hide();
                 }
             }
 

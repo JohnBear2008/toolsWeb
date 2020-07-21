@@ -595,6 +595,14 @@
             formId: 'rp_customersForm'
         })
 
+        //自动补齐多联系人
+        if (!mainFormData.data[0].contacts && mainFormData.data[0].contact) {
+            if (mainFormData.data[0].contacts.indexOf(mainFormData.data[0].contact) === -1) {
+                mainFormData.data[0].contacts = mainFormData.data[0].contact + ',' +
+                    mainFormData.data[0].mobilePhone + ';'
+            }
+        }
+
         //调整contacts内的标点符号
         if (mainFormData.data[0].contacts) {
             mainFormData.data[0].contacts = cn2enPunctuation(mainFormData.data[0].contacts)

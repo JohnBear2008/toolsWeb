@@ -529,6 +529,33 @@ const loadBootStrapSelector = async ({
     })
 }
 
+
+/**
+ *加载多个有相同参数的selector
+ *
+ * @param {*} {elementIds,sqlParams,initValue}
+ */
+const loadBootStrapSelectors = async ({
+    elementIds,
+    sqlParams,
+    initValue
+}) => {
+
+    if (!elementIds || elementIds.length === 0) {
+        alert('loadBootStrapSelectors elementIds 参数错误')
+        return
+    }
+
+    for (const elementId of elementIds) {
+        loadBootStrapSelector({
+            elementId: elementId,
+            sqlParams: sqlParams,
+            initValue: initValue
+        })
+    }
+
+}
+
 /**
  *根据选项数组构建selector
  *
@@ -1750,7 +1777,7 @@ const autoInStoreBills = async ({
     })
 
     let mainTableBill = mainTable;
-    console.log('mainTableBill',mainTableBill);
+    console.log('mainTableBill', mainTableBill);
 
     let r3 = await postDBData({
         sql: 'replace',
