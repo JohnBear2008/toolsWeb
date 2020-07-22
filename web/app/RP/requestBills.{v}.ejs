@@ -224,7 +224,7 @@
                             <div style="clear:both"></div>
                         </div>
                         <div class="panel-body">
-                            <table id="rp_partbills" class=" table table-striped table-bordered" style="width:100%">
+                            <table id="rp_partsbills" class=" table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>DBID</th>
@@ -1666,14 +1666,14 @@
         //do-更新还货单状态
         if (mainFormData.data[0].fromBillType === '维修单') {
             //check-检查选中
-            let table = $('#rp_partbills').DataTable();
+            let table = $('#rp_partsbills').DataTable();
             let rowsSelect = table.rows('.selected').data();
             let partBillsArr = []
 
             for (let i = 0; i < rowsSelect.length; i++) {
                 partBillsArr.push({
                     DBID: rowsSelect[i].DBID,
-                    partRepairStatus: '已返修'
+                    repairPartStatus: '已返修'
                 })
 
             }
@@ -1681,7 +1681,7 @@
             let rUpdatePartBill = await postDBData({
                 sql: 'update',
                 params: {
-                    tableId: 'rp_partbills',
+                    tableId: 'rp_partsbills',
                     data: partBillsArr,
                     key: 'DBID'
                 }
@@ -1952,7 +1952,7 @@
 
         //初始化主表
         loadBillDataTable({
-            elementId: 'rp_partbills',
+            elementId: 'rp_partsbills',
             sqlParams: {
                 sqlId: 'sqlPartRequestBills',
                 params: {
@@ -2228,7 +2228,7 @@
         $('#btnPartRequestBillNew').click(async function () {
 
             //check-检查选中
-            let table = $('#rp_partbills').DataTable();
+            let table = $('#rp_partsbills').DataTable();
             let rowsSelect = table.rows('.selected').data();
             if (rowsSelect.length === 0) {
                 alert('请先选中还货单!')
