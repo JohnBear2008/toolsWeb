@@ -1416,13 +1416,15 @@
         for (const p in billCustomerData) {
             if (billCustomerData[p] !== customerData[p]) {
 
-                // console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
-                //     customerData[p] + '不同');
+                console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
+                    customerData[p] + '不同');
                 customerData[p] = billCustomerData[p];
                 customerDataChanged = true;
-                break;
+                // break;
             }
         }
+
+        console.log('customerData', customerData);
 
         //存在不同则更新客户信息
         if (customerDataChanged) {

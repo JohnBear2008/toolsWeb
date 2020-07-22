@@ -960,7 +960,7 @@
             sqlParams: {
                 sqlId: 'sqlUnreturnBills',
                 params: {
-                    filter: 'unreturnNum>0',
+                    filter: 'unreturnNum>0 and (returnStatus<>"预还入" or returnStatus is null)',
                     // orderBy: 'billSaveTimeStamp desc'
                 }
             },
@@ -1219,6 +1219,7 @@
             let dataSelect = table.row('.selected').data();
 
             mainTableData = dataSelect; //刷新全局主表对象数据
+            customerDataChanged = false
 
             $('#btnReturnBillDetail').click();
 
@@ -1572,11 +1573,11 @@
 
     //加载多联系人数据
     const loadContactOptions = (customerData) => {
-        // console.log('contacts', contacts);
+        // console.log('customerData', customerData);
 
         //补齐联系人待选项
         let contacts = [];
-        if (customerData.contact) {
+        if (!customerData.contacts) {
             contacts.push({
                 name: customerData.contact,
                 phone: customerData.mobilePhone
@@ -1602,6 +1603,7 @@
         }
 
         $("#customerContacts").empty(); //清空原有
+        // console.log('contacts', contacts);
 
         if (contacts.length > 0) {
             for (const contact of contacts) {
@@ -1611,6 +1613,7 @@
                     "</option>"
                 );
             }
+            $("#customerContacts").selectpicker('val', customerData.contact);
             $("#customerContacts").selectpicker('refresh');
         }
 
@@ -1622,9 +1625,9 @@
             let contact = $('#customerContacts option:selected').val();
             if (contact) {
                 $("#customerContacts").selectpicker('refresh'); //刷新显示
-                $('#rp_returnBillsForm-contact').val($('#customerContacts option:selected')
+                $('#rp_returnbillsForm-contact').val($('#customerContacts option:selected')
                     .val());
-                $('#rp_returnBillsForm-mobilePhone').val($('#customerContacts option:selected')
+                $('#rp_returnbillsForm-mobilePhone').val($('#customerContacts option:selected')
                     .data("tokens"));
             }
         });
@@ -1643,6 +1646,8 @@
 
         //存储当前客户信息
         customerData = {}
+        //记录客户基本信息是否被改变
+        customerDataChanged = false
         //主表过滤器
         mainTableFilter = '';
 
@@ -1802,7 +1807,9 @@
             $("#rp_returnBillsForm-billFrom").text('电脑端');
             $("#rp_returnBillsForm-returnDate").val(currentDate());
             $("#rp_returnBillsForm-status").text('');
+            $("#rp_returnBillsForm-isInland").selectpicker('val', '国内');
             $("#rp_returnBillsForm-auditor").selectpicker('val', '');
+            $("#rp_returnBillsForm-returnType").selectpicker('val', '维修申请');
 
 
             //客户选定监听事件
@@ -2615,29 +2622,29 @@
                 isInland: mainFormData.data[0].isInland
             }
 
-            //判断当前表内客户数据是否存在更新;
-            let compareResult = true;
+
             for (const p in billCustomerData) {
                 if (billCustomerData[p] !== customerData[p]) {
 
                     console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] +
                         ',customerData[p]:' +
                         customerData[p] + '不同');
+                    customerData[p] = billCustomerData[p];
+                    customerDataChanged = true
 
-                    compareResult = false;
-                    break;
+                    // break;
                 }
             }
 
             //存在不同则更新客户信息
-            if (!compareResult) {
+            if (customerDataChanged) {
 
                 if (confirm('是否更新该客户基础信息?')) {
                     let rc = await postDBData({
                         sql: 'update',
                         params: {
                             tableId: 'rp_customers',
-                            data: [billCustomerData],
+                            data: [customerData],
                             key: 'customerId'
                         }
                     })

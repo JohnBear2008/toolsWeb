@@ -109,8 +109,10 @@ const sqlReturnSubBills = "select * from `rp_returnsubbills`"
 
 const sqlReturnRequestSubBills = "select * from ( select ta.productId,ta.returnBillId,ta.num,tb.productName,tb.productDescription,tb.systemType,tb.productClass from `rp_returnsubbills` ta left join `rp_products` tb on ta.productId=tb.productId) A"
 
+const sqlPartRequestBills = "select * from (select ta.DBID,ta.recordBillId,ta.repairPartId as productId,ta.partName as productName,ta.repairPartNum as num,ta.billSaveTimeStamp as requestDate,ta.repairPartStatus,ta.remark,tb.repairStaff from `rp_partsbills` ta left join `rp_recordbills` tb on ta.recordBillId= tb.recordBillId ) A"
+
 //未还货单主表sql
-const sqlUnreturnBills = "select * from ( select ta.productId,ta.productName,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.remark,ta.status,ta.productDescription as searchText,tb.borrowBillId,tb.customerId,tb.customerShortName,tb.operator,tb.borrowDate from `rp_borrowsubbills` ta left join  (select borrowBillId,customerId,customerShortName,operator,borrowDate from `rp_borrowbills`) tb on ta.borrowBillId=tb.borrowBillId) A"
+const sqlUnreturnBills = "select * from ( select ta.productId,ta.productName,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.remark,ta.status,ta.productDescription as searchText,tb.borrowBillId,tb.customerId,tb.customerShortName,tb.customerName,tb.contact,tb.mobilePhone,tb.operator,tb.borrowDate,tc.returnBillId,tc.returnStatus from `rp_borrowsubbills` ta left join  (select borrowBillId,customerId,customerShortName,customerName,contact,mobilePhone,operator,borrowDate from `rp_borrowbills`) tb on ta.borrowBillId=tb.borrowBillId left join ( select returnBillId,borrowBillId,status as returnStatus from  `rp_returnsubbills` ) tc on tb.borrowBillId =tc.borrowBillId ) A"
 
 // //还货待维修sql
 // const sqlUnreturnRequestBills="select * from ( select ta.productId,ta.productName,ta.unit,ta.remark,ta.status,ta.productDescription as searchText,tb.returnBillId,tb.customerId,tb.customerShortName,tb.operator,tb.returnDate from `rp_returnsubbills` ta left join  (select returnBillId,customerId,customerShortName,operator,returnDate from `rp_returnbills`) tb on ta.returnBillId=tb.returnBillId) A"

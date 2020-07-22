@@ -692,7 +692,8 @@ const initFormInputs = (i) => {
         // console.log('n options:', n.options);
         //无待选项则不更新,避免报错导致整个页面加载失败
         if (n.options.length > 0) {
-            $(n).selectpicker('val', n.options[0].value);
+            // $(n).selectpicker('val', n.options[0].value);
+            $(n).selectpicker('val', '');
         }
     }
 }
@@ -1602,7 +1603,7 @@ const updateStock = async ({
             data: updateNumArr
         }
     })
-    console.log('r1:' + JSON.stringify(r1));
+    // console.log('r1:' + JSON.stringify(r1));
 
     let r2 = await postDBData({
         sql: 'insert',
