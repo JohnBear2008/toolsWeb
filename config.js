@@ -16,7 +16,7 @@ var g_dbConenctions = {
         user: 'root',
         password: '654321',
         insecureAuth: true
-//       timezone:'GMT' //时区
+        //       timezone:'GMT' //时区
     },
     "erp_Connection": {
         engine: "sqlserver",
@@ -34,13 +34,13 @@ var config = {
     port: 2019,
     biz_Connection: {
         engine: "remote.superagent",
-//        engine: "remote.restify",
+        //        engine: "remote.restify",
         connection: {
             url: "http://127.0.0.1:2019/biz"
             // url: "http://192.168.0.9:2019/" // 这个是我们公司服务器的地址
         }
     },
-//    homePage_url: "/app/PM/workCenter",
+    //    homePage_url: "/app/PM/workCenter",
     homePage_url: "/app/system/sitemap/showSitemap",
     db_Connection: g_dbConenctions,
     product: {
@@ -60,8 +60,8 @@ var config = {
         mes: {
             deviceType: "EEI"
         },
-        isNeedReleaseLog:false, 
-        isNeedMultilingual:false,
+        isNeedReleaseLog: false,
+        isNeedMultilingual: false,
         loginBackgroundImage: "/images/login/background.jpg",
         userImg: ''
     },
@@ -76,8 +76,14 @@ var config = {
         login_url: "/app/account/showLogin",
         loginTypes: ["userID"],
         //        loginTypes: ["mobilePhone"],
-//        notNeedLogin_urls: []
-        notNeedLogin_urls: ["/app/PM/linkPage"]
+        //        notNeedLogin_urls: []
+        notNeedLogin_urls: ["/app/PM/linkPage"],
+        // bodyParser: {
+        //     urlencoded: {
+        //         limit: "10mb",
+        //         parameterLimit: 1000000
+        //     }
+        // }
     },
     theme: {
         layout: {
@@ -86,26 +92,26 @@ var config = {
         style: {
             easyui: ["default", "black", "bootstrap", "gray", "metro"][3],
             foil: ["bright", "modern"][0],
-			project:["wathet-blue","wathet-gray","incanus","blue-white"][3],
-        },	
-  },
-  project: {
-         status:{//测试中的样式 分别为 文本 颜色 位置 
-             text: '',//为空时不显示测试中的信息
-             color: '#FFFFFF',
-             padding: '22px 0px'
-         },
-		 edition: "mes"
-     },
+            project: ["wathet-blue", "wathet-gray", "incanus", "blue-white"][3],
+        },
+    },
+    project: {
+        status: { //测试中的样式 分别为 文本 颜色 位置 
+            text: '', //为空时不显示测试中的信息
+            color: '#FFFFFF',
+            padding: '22px 0px'
+        },
+        edition: "mes"
+    },
     packages: {
         version: {
             "jquery-easyui": "1.5",
             "jquery": '1.7.2',
         }
     },
-//    project: {
-//        edition: "mes"
-//    },
+    //    project: {
+    //        edition: "mes"
+    //    },
     isNeedView: true,
     rootDir: path.join(__dirname, "../yujiang.Foil.Node.WebServer"),
     logDir: path.join(__dirname, "./system/log"),
@@ -148,11 +154,11 @@ var config = {
         },
         isCacheView: false
     },
-    sms:{
-        baidu:{
-            ak:"3ZNfTt6yTX8X3ho5e364FeoE",
-            sk:"h8tah3cAG3SzsFnllW8bobND35A1fzLs",
-            invokeId:'f2VnoRb1-JQ9i-2s8Q'
+    sms: {
+        baidu: {
+            ak: "3ZNfTt6yTX8X3ho5e364FeoE",
+            sk: "h8tah3cAG3SzsFnllW8bobND35A1fzLs",
+            invokeId: 'f2VnoRb1-JQ9i-2s8Q'
         }
     }
 };

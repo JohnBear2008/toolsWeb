@@ -7,9 +7,12 @@ module.exports = function (sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService
     var yjDB = global.yjRequire("yujiang.Foil").yjDB
 
-    console.log("ajax Postqqq:" + JSON.stringify(sender.req.query));
+    console.log("ajax Postqqq:", sender.req.query);
 
-    let r1 = sender.req.query;
+
+
+    // let r1 = sender.req.query
+    let r1 = sender.req.body
 
     let sql = sqlObj.createSql(r1);
 
