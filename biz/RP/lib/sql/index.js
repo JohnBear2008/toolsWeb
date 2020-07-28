@@ -151,6 +151,9 @@ const sqlTableSelect = "select * from `tableId`";
 //更新借货单状态
 const updateBorrowStatus = "update `rp_borrowsubbills` set status = case when num=returnNum then '已还入' else '待归还' end"
 
+//入库单导出sql
+const inBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.billId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.scrapStatus,tb.num,tb.remark AS subRemark FROM `rp_inbills` ta LEFT JOIN `rp_insubbills` tb ON ta.billId = tb.billId ) A"
+
 
 /**
  *更具传入参数创建执行sql语句
