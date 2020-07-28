@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
 
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
@@ -28,6 +29,9 @@
 
 <!-- 导入instascan 二维码扫描库 -->
 <script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
+
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
 
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
@@ -63,6 +67,17 @@
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+                    <!-- excel -->
+                    <div style="float: left; margin-left: 15px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">excel</button>
+                            <button type="button" id="batchImportBtn" class="btn btn-default">批量导入</button>
+                            <button type="button" id="batchExportBtn" class="btn btn-default">批量导出</button>
+                            <button type="button" id="importModelBtn" class="btn btn-default">数据模板</button>
+                            <input type="file" id="file" style="display:none;"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
@@ -113,7 +128,7 @@
                             <tr>
                                 <th>序号</th>
                                 <th>产品编号</th>
-                                <th>产品描述</th>
+                                <th>产品名称</th>
                                 <th>仓库名称</th>
                                 <th>单位</th>
                                 <th>数量</th>
@@ -222,7 +237,185 @@
         </div>
     </div>
 
+    <!-- 导出模态框（Modal） -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-hidden="true">
 
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        字段选择
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:350px">
+
+                            <label class="col-sm-2 control-label">主表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height:200px">
+
+                                        <form class="form-horizontal" role="form" id='exportModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="DBID" checked>
+                                                <label class="form-check-label">出库号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="billFrom"
+                                                    checked>
+                                                <label class="form-check-label">单据来源</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="billId" checked>
+                                                <label class="form-check-label">单据编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerId"
+                                                    checked>
+                                                <label class="form-check-label">客户编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerShortName" checked>
+                                                <label class="form-check-label">客户简称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerName"
+                                                    checked>
+                                                <label class="form-check-label">客户名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerBelongShort" checked>
+                                                <label class="form-check-label">客户归属</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="contact" checked>
+                                                <label class="form-check-label">联系人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="mobilePhone"
+                                                    checked>
+                                                <label class="form-check-label">移动电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="workPhone"
+                                                    checked>
+                                                <label class="form-check-label">工作电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="operator"
+                                                    checked>
+                                                <label class="form-check-label">经手人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="maker" checked>
+                                                <label class="form-check-label">制单人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditor" checked>
+                                                <label class="form-check-label">审核人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="makeDate"
+                                                    checked>
+                                                <label class="form-check-label">制单日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditDate"
+                                                    checked>
+                                                <label class="form-check-label">审核日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="status" checked>
+                                                <label class="form-check-label">单据状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="remark" checked>
+                                                <label class="form-check-label">备注</label>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <label class="col-sm-2 control-label">子表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" role="form" id='exportSubModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="rowId" checked>
+                                                <label class="form-check-label">序号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productId"
+                                                    checked>
+                                                <label class="form-check-label">产品编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productName"
+                                                    checked>
+                                                <label class="form-check-label">产品名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseId"
+                                                    checked>
+                                                <label class="form-check-label">仓库编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseName"
+                                                    checked>
+                                                <label class="form-check-label">仓库名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="unit" checked>
+                                                <label class="form-check-label">单位</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="num" checked>
+                                                <label class="form-check-label">数量</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subRemark"
+                                                    checked>
+                                                <label class="form-check-label">子表备注</label>
+                                            </div>
+
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" id="doExportBtn">
+                                    确认导出
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
 
     <!-- 打印预览模态框（Modal） -->
     <div class="modal fade" id="printViewModal">
@@ -596,7 +789,7 @@
                                             <tr>
                                                 <th>序号</th>
                                                 <th>产品编号</th>
-                                                <th>产品描述</th>
+                                                <th>产品名称</th>
                                                 <th>仓库名称</th>
                                                 <th>单位</th>
                                                 <th>数量</th>
@@ -822,7 +1015,7 @@
     }, {
         data: 'productId',
     }, {
-        data: 'productDescription',
+        data: 'productName',
     }, {
         data: 'warehouseName',
     }, {
@@ -1614,6 +1807,159 @@
             stockNums: stockNums
         }
 
+    }
+
+    function selectFile() {
+        $("#file")[0].click();
+    }
+
+    //去除excel生成json中的中文属性
+    const excelJsonArr2DivJsonArr = (excelJsonArr, rules) => {
+        for (let n of excelJsonArr) {
+            n = replaceObjParamsName(n, rules)
+        }
+        return excelJsonArr;
+    }
+
+    const addFileReaderListener = () => {
+        $("#file")[0].addEventListener('change', function (e) {
+
+            //check-检查文件数量
+            var files = e.target.files;
+            if (files.length == 0) return;
+            var f = files[0];
+
+            //check-检查文件格式
+            if (!/\.xlsx$/g.test(f.name)) {
+                alert('仅支持读取xlsx格式！');
+                return;
+            }
+
+            //do-读取数据
+            readWorkbookFromLocalFile(f, async function (workbook) {
+                let excelData = readWorkbook(workbook);
+                let storeData = excelJsonArr2DivJsonArr(excelData, {
+                    billId: '单据编号',
+                    customerId: '客户编号',
+                    customerShortName: '客户简称',
+                    contact: '联系人',
+                    mobilePhone: '移动电话',
+                    workPhone: '工作电话',
+                    operator: '经手人',
+                    maker: '制单人',
+                    auditor: '审核人',
+                    remark: '备注',
+                    rowId: '行号',
+                    productId: '产品编号',
+                    productName: '产品名称',
+                    warehouseId: '仓库编号',
+                    warehouseName: '仓库名称',
+                    unit: '单位',
+                    num: '数量',
+                    subRemark: '子表备注'
+                })
+
+                console.log('storeData', storeData);
+                //do-生成主表,子表数据
+                let outBillsArr = [];
+                let outSubBillsArr = [];
+
+                for (const n of storeData) {
+                    outBillsArr.push({
+                        billFrom: '批量导入',
+                        billId: n.billId,
+                        customerId: n.customerId,
+                        customerShortName: n.customerShortName,
+                        contact: n.contact,
+                        mobilePhone: n.mobilePhone,
+                        workPhone: n.workPhone,
+                        operator: n.operator,
+                        maker: n.maker,
+                        makeDate: currentDate(),
+                        auditor: n.auditor,
+                        status: '待审核',
+                        remark: n.remark
+                    })
+
+                    outSubBillsArr.push({
+                        billId: n.billId,
+                        rowId: n.rowId,
+                        productId: n.productId,
+                        productName: n.productName,
+                        warehouseId: n.warehouseId,
+                        warehouseName: n.warehouseName,
+                        unit: n.unit,
+                        num: n.num,
+                        remark: n.subRemark
+                    })
+                }
+                //do-去重处理
+                // inBillsArr = Array.from(new Set(inBillsArr))仅可用于简单数组去重
+                var obj = {};
+                outBillsArr = outBillsArr.reduce(function (item, next) {
+                    obj[next.billId] ? '' : obj[next.billId] = true && item.push(next);
+                    return item
+                }, [])
+
+
+
+                //do-导入数据库
+                let rOutBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_outbills',
+                        data: outBillsArr
+                    }
+                })
+
+                let rOutSubBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_outsubbills',
+                        data: outSubBillsArr
+                    }
+                })
+
+                //do-初始化库存
+                let PIDArr = [];
+                for (const n of outSubBillsArr) {
+                    PIDArr.push({
+                        PID: n.productId,
+                        warehouseId: n.warehouseId
+                    })
+                }
+
+                let newPIDArr = []
+                for (let i = 0; i < PIDArr.length; i++) {
+                    let isNew = true
+                    for (let j = 0; j < newPIDArr.length; j++) {
+                        if (PIDArr[i].PID === newPIDArr[j].PID && PIDArr[i].warehouseId ===
+                            newPIDArr[j].warehouseId) {
+                            isNew = false;
+                            break;
+                        }
+                    }
+                    if (isNew) {
+                        newPIDArr.push(PIDArr[i])
+                    }
+
+                }
+
+                //初始化库存记录
+                let rInitPID = await initWarehousePID({
+                    PIDArr: newPIDArr
+                })
+
+                if (rOutBills.affectedRows > 0 && rOutSubBills.affectedRows > 0 && rInitPID) {
+                    alert('批量导入成功')
+                }
+
+                //return-刷新主界面
+                loadBillMainTable()
+
+
+            });
+        });
     }
 
 
@@ -2487,6 +2833,109 @@
 
         })
 
+        //批量导出按钮
+        $('#batchExportBtn').click(async function () {
+            $('#exportModal').modal('show')
+
+
+        })
+
+        //执行批量导出按钮
+        $('#doExportBtn').click(async function () {
+
+            let titleTextArr = []
+            let titleValueArr = []
+
+            //主表字段选择
+            $('#exportModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+            //子表字段选择
+            $('#exportSubModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+
+
+
+
+            exportData = await getDataBySql({
+                sql: 'outBillsExportSql',
+                params: {
+                    filter: mainTableFilter
+                }
+            })
+            console.log('exportData', exportData);
+
+            let tableArr = []
+
+            tableArr.push(titleTextArr)
+
+            if (exportData.length > 0) {
+                for (let i = 0; i < exportData.length; i++) {
+                    let row = []
+                    for (const p in exportData[i]) {
+                        if (titleValueArr.includes(p)) {
+                            row.push(exportData[i][p])
+                        }
+                    }
+                    tableArr.push(row)
+                }
+            }
+
+            console.log('tableArr', tableArr);
+
+            var sheet = XLSX.utils.aoa_to_sheet(tableArr);
+            openDownloadDialog(sheet2blob(
+                sheet), '出库单.xlsx');
+        })
+
+        //批量导入按钮
+        $('#batchImportBtn').click(function () {
+            selectFile()
+        })
+
+        //数据模板按钮
+        $('#importModelBtn').click(function () {
+            var aoa = [
+                [
+                    '单据编号',
+                    '客户编号',
+                    '客户简称',
+                    '联系人',
+                    '移动电话',
+                    '工作电话',
+                    '经手人',
+                    '制单人',
+                    '备注',
+                    '行号',
+                    '产品编号',
+                    '产品名称',
+                    '仓库编号',
+                    '仓库名称',
+                    '单位',
+                    '数量',
+                    '子表备注'
+                ],
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '出库单模板.xlsx');
+        })
+
         //初始化过滤器日期组
         loadDatePickers({
             elementIds: [
@@ -2685,9 +3134,8 @@
         //仓库选择修改事件
         addWarehouseListener();
 
-        // //保固期计算事件
-        // addInWarrantyListener();
-
+        //添加文件监听事件
+        addFileReaderListener()
 
 
         // 关闭事件重置选中datatable选中,避免显示错误
