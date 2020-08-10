@@ -58,361 +58,335 @@
 					<div class="modal-body">
 
 
-						<!--------------跟踪面板----------------->
 
-						<!--------------方案单面板----------------->
 
-						<div class="panel panel-info">
-
+						<div id="DivTaskInfo" class="panel panel-info">
 							<div class="panel-heading">
-								<h3 class="panel-title">任务单</h3>
+								<h3 class="panel-title">任务信息</h3>
 							</div>
 
 							<div class="panel-body">
-								<!--begin task panel-------------->
 
-								<div id="DivTaskInfo" class="panel panel-info">
-									<div class="panel-heading">
-										<h3 class="panel-title">任务信息</h3>
+								<div class="form-horizontal">
+									<span id="DBID" style="display:none"></span>
+									<span id="taskBPID" style="display:none"></span>
+
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label">任务单号:</label>
+										<div class="col-sm-2">
+											<span id="BTID" class="help-block"></span>
+
+										</div>
+
+										<label class="col-sm-2 control-label">任务单版本号:</label>
+										<div class="col-sm-1">
+											<span id="BTVersion" class="help-block"></span>
+										</div>
+
+										<label class="col-sm-1 control-label">客户名称:</label>
+										<div class="col-sm-1">
+											<span id="taskCTRName" class="help-block"></span>
+										</div>
+
 									</div>
 
-									<div class="panel-body">
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
 
-										<div class="form-horizontal">
-											<span id="DBID" style="display:none"></span>
-											<span id="taskBPID" ></span>
+										<label class="col-sm-1 control-label">修改属性:</label>
+										<div class="col-sm-8">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="modifyABE" value="ABE1"> 画面
+											</label>
+											<label class="checkbox-inline">
+												<input type="checkbox" name="modifyABE" value="ABE2"> 结构
+											</label>
+											<label class="checkbox-inline">
+												<input type="checkbox" name="modifyABE" value="ABE3"> 参数
+											</label>
 
-											<!-------------------------------------------------------------------------->
-
-											<div class="form-group">
-
-												<label class="col-sm-1 control-label">任务单号:</label>
-												<div class="col-sm-2">
-													<span id="BTID" class="help-block"></span>
-
-												</div>
-
-												<label class="col-sm-2 control-label">任务单版本号:</label>
-												<div class="col-sm-1">
-													<span id="BTVersion" class="help-block"></span>
-												</div>
-
-												<label class="col-sm-1 control-label">客户名称:</label>
-												<div class="col-sm-1">
-													<span id="taskCTRName" class="help-block"></span>
-												</div>
-
-											</div>
-
-											<!-------------------------------------------------------------------------->
-											<div class="form-group">
-
-												<label class="col-sm-1 control-label">修改属性:</label>
-												<div class="col-sm-8">
-													<label class="checkbox-inline">
-														<input type="checkbox" name="modifyABE" value="ABE1"> 画面
-													</label>
-													<label class="checkbox-inline">
-														<input type="checkbox" name="modifyABE" value="ABE2"> 结构
-													</label>
-													<label class="checkbox-inline">
-														<input type="checkbox" name="modifyABE" value="ABE3"> 参数
-													</label>
-
-													<label class="checkbox-inline">
-														<input type="checkbox" name="modifyABE" value="ABE4">通信
-													</label>
-													<label class="checkbox-inline">
-														<input type="checkbox" name="modifyABE" value="ABE5">逻辑
-													</label>
-
-												</div>
-
-
-											</div>
-
-											<!-------------------------------------------------------------------------->
-											<div class="form-group">
-
-												<label class="col-sm-1 control-label" for="name">负责人:</label>
-												<div class="col-sm-1">
-
-													<span id="taskStaff" class="help-block"></span>
-												</div>
-
-												<label class="col-sm-1 control-label"></label>
-												<label for="limitDate" class="col-sm-2 control-label">任务完成期限:</label>
-												<div class="col-sm-2">
-													<span id="taskLimitDate" class="help-block"></span>
-												</div>
-
-
-												<label class="col-sm-2 control-label" for="name">任务发布人:</label>
-												<div class="col-sm-2">
-
-													<span id="taskMaker" class="help-block"></span>
-												</div>
-
-											</div>
-
-
-
-
-											<div class="form-group">
-												<label class="col-sm-1 control-label">任务要求:</label>
-												<div class="col-sm-10">
-													<span id="taskDBE" class="help-block" style="white-space:pre-wrap;"></span>
-
-
-												</div>
-
-											</div>
-
-											<!-------------------------------------------------------------------------->
-
-											<div class="form-group">
-												<label class="col-sm-1 control-label">确认意见:</label>
-												<div class="col-sm-10">
-													<span id="BTAcceptOpinion" class="help-block"></span>
-												</div>
-
-											</div>
-
-											<!-------------------------------------------------------------------------->
-											<div class="form-group">
-
-												<label class="col-sm-1 control-label">FQC申请:</label>
-												<div class="col-sm-3">
-													<label class="radio-inline">
-														<input type="radio" name="FQCRequest" id="radio1" value="1">
-														<span>有</span>
-													</label>
-													<label class="radio-inline">
-														<input type="radio" name="FQCRequest" id="radio2" value="2"
-															checked> <span>无</span>
-													</label>
-
-												</div>
-
-
-												<label class="col-sm-1 control-label">返工任务:</label>
-												<div class="col-sm-2">
-													<span id="taskRepeat" style="display:none"></span>
-													<span id="taskRepeatText" class="help-block"></span>
-												</div>
-
-
-												<label class="col-sm-1 control-label">IPQC填单:</label>
-												<div class="col-sm-3 ">
-													<span id="IPQCMaker" class="help-block"></span>
-												</div>
-
-											</div>
+											<label class="checkbox-inline">
+												<input type="checkbox" name="modifyABE" value="ABE4">通信
+											</label>
+											<label class="checkbox-inline">
+												<input type="checkbox" name="modifyABE" value="ABE5">逻辑
+											</label>
 
 										</div>
 
 
 									</div>
-								</div>
 
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
 
-								<!-------------------------------------------------------------------------->
-								<div class="panel panel-warning">
-									<div class="panel-heading">
-										<h3 class="panel-title">任务记录</h3>
-									</div>
-									<div class="panel-body">
+										<label class="col-sm-1 control-label" for="name">负责人:</label>
+										<div class="col-sm-1">
 
-										<div class="form-horizontal">
+											<span id="taskStaff" class="help-block"></span>
+										</div>
 
-											<!-recordtable-------------->
-
-
-												<table id="tableRecords" class="table table-bordered">
-													<thead></thead>
-													<tbody></tbody>
-												</table>
-
-
-
-
-
-												<!-recordtable-------------->
+										<label class="col-sm-1 control-label"></label>
+										<label for="limitDate" class="col-sm-2 control-label">任务完成期限:</label>
+										<div class="col-sm-2">
+											<span id="taskLimitDate" class="help-block"></span>
 										</div>
 
 
+										<label class="col-sm-2 control-label" for="name">任务发布人:</label>
+										<div class="col-sm-2">
+
+											<span id="taskMaker" class="help-block"></span>
+										</div>
+
 									</div>
-								</div>
-
-								<!-------------------------------------------------------------------------->
-
-
-								<div id="divIPQCPanel" class="panel panel-success">
-									<div class="panel-heading">
-										<h3 class="panel-title">IPQC记录</h3>
-									</div>
-									<div class="panel-body">
-
-
-										<div class="form-horizontal">
-											<!-------------------------------------------------------------------------->
-
-											<div class="form-group">
-												<label class="col-sm-1 control-label">测试内容:</label>
-												<div class="col-sm-10">
-
-													<table id="TableTestContents" class="table table-bordered"
-														style="width:100%;">
-														<thead>
-															<tr>
-																<th width="70px">模块</th>
-																<th>测试内容</th>
-																<th width="120px">测试结果</th>
-																<th width="200px">备注</th>
-															</tr>
-														</thead>
-														<tbody>
-														</tbody>
-													</table>
 
 
 
 
-
-												</div>
-											</div>
-
-											<!-------------------------------------------------------------------------->
-											<div id="DivIPQCInfo">
-												<!----begin--DivIPQCInfo-------------------------------------------------------------------->
-
-												<div class="form-group">
-													<label class="col-sm-1 control-label">备注:</label>
-													<div class="col-sm-10">
-														<span id="IPQCContentShow" class="help-block"></span>
-														<textarea id="IPQCContent" class="form-control"
-															rows="2"></textarea>
-													</div>
-												</div>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label">测试结果:</label>
-													<div class="col-sm-10">
-														<label class="radio-inline">
-															<input type="radio" name="IPQCResult" id="radio1" value="1"
-																checked> 测试通过
-														</label>
-														<label class="radio-inline">
-															<input type="radio" name="IPQCResult" id="radio2" value="2">
-															测试未通过
-														</label>
-
-													</div>
-												</div>
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-
-
-
-													<label for="recordAuditDate"
-														class="col-sm-1 control-label">IPQC制单日期:</label>
-													<div class="col-sm-2">
-														<span id="IPQCMakeDate" class="help-block"></span>
-													</div>
-
-													<label class="col-sm-2 control-label">IPQC结果:</label>
-													<div class="col-sm-1">
-														<span id="IPQCAuditResultText" class="help-block"></span>
-													</div>
-
-													<label class="col-sm-2 control-label">测试项目版本:</label>
-													<div class="col-sm-1">
-														<span id="testContentsVer" class="help-block"></span>
-													</div>
-
-
-												</div>
-
-												<!-------------------------------------------------------------------------->
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label" for="name">IPQC审核人:</label>
-													<div class="col-sm-1">
-
-														<select id="IPQCAuditor" class="selectpicker"
-															data-live-search="true">
-														</select>
-													</div>
-
-													<label class="col-sm-1 control-label"></label>
-													<label for="recordAuditDate"
-														class="col-sm-2 control-label">IPQC审核日期:</label>
-													<div class="col-sm-2">
-														<span id="IPQCAuditDate" class="help-block"></span>
-													</div>
-
-
-
-												</div>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label" for="name">报告:</label>
-													<div class="col-sm-3">
-														<div id="report"></div>
-													</div>
-												</div>
-
-												<!-------------------------------------------------------------------------->
-
-												<div class="form-group" id="DivIPQCBTNS">
-													<label class="col-sm-1 control-label"></label>
-													<div class="col-sm-10">
-														<button id="BTNTaskIPQCSave" class="btn btn-success"
-															data-toggle="modal">保存IPQC记录</button>
-														<button id="BTNTaskIPQCAudit" class="btn btn-warning"
-															data-toggle="modal">审核IPQC记录</button>
-														<!-- <button id="BTNReportCreate" class="btn btn-warning" data-toggle="modal" >生成IPQC报告(开发中)</button>-->
-													</div>
-												</div>
-
-											</div>
-											<!----end DivIPQCInfo------------->
-
+									<div class="form-group">
+										<label class="col-sm-1 control-label">任务要求:</label>
+										<div class="col-sm-10">
+											<span id="taskDBE" class="help-block" style="white-space:pre-wrap;"></span>
 
 
 										</div>
 
+									</div>
 
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label">确认意见:</label>
+										<div class="col-sm-10">
+											<span id="BTAcceptOpinion" class="help-block"></span>
+										</div>
 
 									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+
+										<label class="col-sm-1 control-label">FQC申请:</label>
+										<div class="col-sm-3">
+											<label class="radio-inline">
+												<input type="radio" name="FQCRequest" id="radio1" value="1">
+												<span>有</span>
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="FQCRequest" id="radio2" value="2" checked>
+												<span>无</span>
+											</label>
+
+										</div>
+
+
+										<label class="col-sm-1 control-label">返工任务:</label>
+										<div class="col-sm-2">
+											<span id="taskRepeat" style="display:none"></span>
+											<span id="taskRepeatText" class="help-block"></span>
+										</div>
+
+
+										<label class="col-sm-1 control-label">IPQC填单:</label>
+										<div class="col-sm-3 ">
+											<span id="IPQCMaker" class="help-block"></span>
+										</div>
+
+									</div>
+
 								</div>
-
-
-
-
-
-
-
-
-								<!----end task panel---------------------->
-
-							</div>
-
-							<div class="panel-footer">
-
-
-
-
 
 
 							</div>
-
-
 						</div>
+
+
+						<!-------------------------------------------------------------------------->
+						<div class="panel panel-warning">
+							<div class="panel-heading">
+								<h3 class="panel-title">任务记录</h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="form-horizontal">
+
+									<!-recordtable-------------->
+
+
+										<span id="recordDBID" style="display:none"></span>
+
+										<table id="tableRecords" class="table table-bordered">
+											<thead></thead>
+											<tbody></tbody>
+										</table>
+
+
+
+
+
+										<!-recordtable-------------->
+								</div>
+
+
+							</div>
+						</div>
+
+						<!-------------------------------------------------------------------------->
+
+
+						<div id="divIPQCPanel" class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title">IPQC记录</h3>
+							</div>
+							<div class="panel-body">
+
+
+								<div class="form-horizontal">
+									<!-------------------------------------------------------------------------->
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label">测试内容:</label>
+										<div class="col-sm-10">
+
+											<table id="TableTestContents" class="table table-bordered"
+												style="width:100%;">
+												<thead>
+													<tr>
+														<th width="70px">模块</th>
+														<th>测试内容</th>
+														<th width="120px">测试结果</th>
+														<th width="200px">备注</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+
+
+
+
+
+										</div>
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div id="DivIPQCInfo">
+										<!----begin--DivIPQCInfo-------------------------------------------------------------------->
+
+										<div class="form-group">
+											<label class="col-sm-1 control-label">备注:</label>
+											<div class="col-sm-10">
+												<span id="IPQCContentShow" class="help-block"></span>
+												<textarea id="IPQCContent" class="form-control" rows="2"></textarea>
+											</div>
+										</div>
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+											<label class="col-sm-1 control-label">测试结果:</label>
+											<div class="col-sm-10">
+												<label class="radio-inline">
+													<input type="radio" name="IPQCResult" id="radio1" value="1">
+													测试通过
+												</label>
+												<label class="radio-inline">
+													<input type="radio" name="IPQCResult" id="radio2" value="2" checked>
+													测试未通过
+												</label>
+
+											</div>
+										</div>
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+
+
+
+											<label for="recordAuditDate"
+												class="col-sm-1 control-label">IPQC制单日期:</label>
+											<div class="col-sm-2">
+												<span id="IPQCMakeDate" class="help-block"></span>
+											</div>
+
+											<label class="col-sm-2 control-label">IPQC结果:</label>
+											<div class="col-sm-1">
+												<span id="IPQCAuditResultText" class="help-block"></span>
+											</div>
+
+											<label class="col-sm-2 control-label">测试项目版本:</label>
+											<div class="col-sm-1">
+												<span id="testContentsVer" class="help-block"></span>
+											</div>
+
+
+										</div>
+
+										<!-------------------------------------------------------------------------->
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+
+											<label class="col-sm-1 control-label" for="name">IPQC审核人:</label>
+											<div class="col-sm-1">
+
+												<select id="IPQCAuditor" class="selectpicker" data-live-search="true">
+												</select>
+											</div>
+
+											<label class="col-sm-1 control-label"></label>
+											<label for="recordAuditDate"
+												class="col-sm-2 control-label">IPQC审核日期:</label>
+											<div class="col-sm-2">
+												<span id="IPQCAuditDate" class="help-block"></span>
+											</div>
+
+
+
+										</div>
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+											<label class="col-sm-1 control-label" for="name">报告:</label>
+											<div class="col-sm-3">
+												<div id="report"></div>
+											</div>
+										</div>
+
+										<!-------------------------------------------------------------------------->
+
+										<div class="form-group" id="DivIPQCBTNS">
+											<label class="col-sm-1 control-label"></label>
+											<div class="col-sm-10">
+												<button id="BTNTaskIPQCSave" class="btn btn-success"
+													data-toggle="modal">保存IPQC记录</button>
+												<button id="BTNTaskIPQCAudit" class="btn btn-warning"
+													data-toggle="modal">审核IPQC记录</button>
+												<!-- <button id="BTNReportCreate" class="btn btn-warning" data-toggle="modal" >生成IPQC报告(开发中)</button>-->
+											</div>
+										</div>
+
+									</div>
+									<!----end DivIPQCInfo------------->
+
+
+
+								</div>
+
+
+
+							</div>
+						</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -502,6 +476,53 @@
 				}, "#IPQCAuditor", $('#taskStaff').text());
 			}
 
+		});
+	}
+
+	//ipqc 增加项
+	const showIPQCAddItem = async ({
+		BTID,
+		BTVersion
+	}) => {
+
+		var tr = "<tr>" +
+			"<td>修改内容</td>" +
+			"<td><div id='recordModifyContent'></div></td>" +
+			"<td><input type='radio' name='recordResultRadio'  value='1' ><span>正确</span> <input type='radio' name='recordResultRadio' value='2' checked> <span>不正确</span></td>" +
+			"<td><input id='recordRemark' type='text' value='' style='width:100%'></td></td>" +
+			"</tr>";
+		//$("table").append(tr);
+		// $("#TableTestContents tbody tr:eq(0)").before(tr);
+		$("#TableTestContents tbody").append(tr);
+
+		$.ajax({
+			method: 'get',
+			data: {
+				SQL: 'SQLTaskRecords',
+				filter: 'BTID="' + BTID + '" and BTVersion=' + BTVersion
+			},
+			url: "/app/PM/getSQLDBData",
+			success: function (data) {
+				console.log('data111111', data);
+				//刷新recordDBID
+				$("#recordDBID").text(data[0].DBID)
+
+				$('#recordModifyContent').html(data[0].modifyContent)
+
+
+				let defaultCheckedValue = 2
+				if (data[0].testResult) {
+					defaultCheckedValue = data[0].testResult
+				}
+
+				$("input:radio[name='recordResultRadio'][value=" + defaultCheckedValue +
+					"]").prop("checked", true);
+				$("#recordRemark").val(data[0].testRemark);
+
+			},
+			error: function (err) {
+				console.log('err', err);
+			}
 		});
 	}
 
@@ -608,6 +629,11 @@
 			};
 
 			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, null, null);
+
+			console.log('dataSelect', dataSelect);
+
+
+
 		} else {
 			var IPQCTestResult = JSON.parse(dataSelect.IPQCTestResult);
 			console.log("IPQCTestResult:" + JSON.stringify(IPQCTestResult));
@@ -620,7 +646,13 @@
 			};
 
 			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, IPQCTestResult, dataSelect.IPQCAuditResult);
+
 		}
+
+		showIPQCAddItem({
+			BTID: dataSelect.BTID,
+			BTVersion: dataSelect.BTVersion
+		})
 
 
 
@@ -697,9 +729,6 @@
 			$("input:radio[name=IPQCResult][value=" + dataSelect.IPQCResult + "]").prop("checked", true);
 			$('#IPQCContent').val(dataSelect.IPQCContent.replace(/<br\/>/g, '\n'));
 		}
-
-
-
 
 
 		//	  if(dataSelect.IPQCAuditResult==1||dataSelect.IPQCAuditResult==2){
@@ -932,7 +961,7 @@
 		});
 
 		//按钮-任务记录保存按钮
-		$('#BTNTaskIPQCSave').click(function () {
+		$('#BTNTaskIPQCSave').click(async function () {
 
 
 			if (checkAuthority({
@@ -944,9 +973,21 @@
 
 
 					if (checkIPQCInput()) {
+
+
+
+
+
+
+
+
+						//do-保存ipqc测试内容
 						var IPQCTestResult = [];
 
-						var testNum = $("#TableTestContents").find("tr").length - 1;
+						// var testNum = $("#TableTestContents").find("tr").length - 1;
+
+						var testNum = $("#TableTestContents").find("tr").length - 2; //加入记录测试后多减一行
+
 
 						var radioCheck = true;
 						//	
@@ -955,100 +996,133 @@
 						for (var i = 0; i < testNum; i++) {
 							var testResult = {
 								"testContentDBID": $("#testContentDBID" + i).text(),
-								"testResult": $('input:radio[name="testResultRadio' + i + '"]:checked')
+								"testResult": $('input:radio[name="testResultRadio' + i +
+										'"]:checked')
 									.val(),
 								"testRemark": $("#testRemark" + i).val()
 
 							}
-							radioCheck = radioCheck && $('input:radio[name="testResultRadio' + i +
-								'"]:checked').val();
+							radioCheck = radioCheck &&
+								$('input:radio[name="recordResultRadio"]:checked').val() &&
+								$('input:radio[name="testResultRadio' + i + '"]:checked').val();
 
 							IPQCTestResult.push(testResult);
 						}
 
 
-						if (radioCheck != undefined) {
-							//				swal(JSON.stringify(IPQCTestResult));
+						// if (radioCheck === undefined) {
+						// 	swal("存在未测试内容,请检查!");
+						// 	return
+						// }
+						// alert(radioCheck)
 
-
-							var recordData = {
-								"DBTable": "ppm_bills_task",
-								"DBID": $('#DBID').text(),
-								"IPQCTestResult": JSON.stringify(IPQCTestResult),
-								"testContentsVer": $('#testContentsVer').text(),
-								"IPQCContent": $('#IPQCContent').val().replace(/\n|\r\n/g, '<br/>')
-									.replace(/'/g, '"'),
-								"IPQCResult": $('input:radio[name="IPQCResult"]:checked').val(),
-								"IPQCMaker": sessionName,
-								"IPQCMakeDate": Ndate,
-								"IPQCAuditResult": 0,
-								"IPQCAuditor": $("#IPQCAuditor option:selected").text(),
-								"IPQCStatus": "已填写,未审核",
-								"BTStatus": 5
+						if (radioCheck != 1) {
+							if (!confirm('测试内容存在不正确项,是否继续')) {
+								return
 							}
+						}
 
-							// console.log("recordData:"+JSON.stringify(recordData));
+						if ($('input:radio[name="IPQCResult"]:checked').val() == 2) {
+							if (!confirm('当前任务单IPQC结果未通过,是否继续')) {
+								return
+							}
+						}
 
 
-							$.ajax({
-								method: 'post',
-								url: '/app/PM/updDBData',
-								data: recordData,
-								success: function (data, textStatus) {
-									//                swal("成功数据:"+JSON.stringify(data));
-									if (data.changedRows != 0) {
+						//do-保存修改内容检测结果
 
-										$('#IPQCMakeDate').text(Ndate);
+						let recordTestData = {
+							"DBTable": "ppm_bills_taskrecord",
+							"DBID": $('#recordDBID').text(),
+							"testResult": $('input:radio[name="recordResultRadio"]:checked').val(),
+							"testRemark": $("#recordRemark").val()
+						}
 
-										if (sessionName == $("#IPQCAuditor option:selected")
-											.text()) {
-											let msgNext = confirm("是否立即审核?");
-											if (msgNext) {
-												$('#BTNTaskIPQCAudit').click();
-											}
-										} else {
+						let rRecordUpdate = await $.ajax({
+							method: 'post',
+							url: '/app/PM/updDBData',
+							data: recordTestData,
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
+						});
 
-											if (sessionName != $(
-													"#IPQCAuditor option:selected").text() &&
-												$('input:radio[name="IPQCResult"]:checked')
-												.val() == 2) {
-												let msgContent = "@" + $(
-														"#IPQCAuditor option:selected")
-													.text() + ",检测到未通过的IPQC待您审核,请登陆系统处理!";
-												sendDingMsg({
-													at: $(
-															"#IPQCAuditor option:selected"
-														)
-														.text(),
-													msg: msgContent
-												});
+						if (!rRecordUpdate) {
+							alert('保存测试记录错误')
+							return
+						}
 
-											}
+						var recordData = {
+							"DBTable": "ppm_bills_task",
+							"DBID": $('#DBID').text(),
+							"IPQCTestResult": JSON.stringify(IPQCTestResult),
+							"testContentsVer": $('#testContentsVer').text(),
+							"IPQCContent": $('#IPQCContent').val().replace(/\n|\r\n/g, '<br/>')
+								.replace(/'/g, '"'),
+							"IPQCResult": $('input:radio[name="IPQCResult"]:checked').val(),
+							"IPQCMaker": sessionName,
+							"IPQCMakeDate": Ndate,
+							"IPQCAuditResult": 0,
+							"IPQCAuditor": $("#IPQCAuditor option:selected").text(),
+							"IPQCStatus": "已填写,未审核",
+							"BTStatus": 5
+						}
+
+						// console.log("recordData:"+JSON.stringify(recordData));
+
+
+						$.ajax({
+							method: 'post',
+							url: '/app/PM/updDBData',
+							data: recordData,
+							success: function (data, textStatus) {
+								//                swal("成功数据:"+JSON.stringify(data));
+								if (data.changedRows != 0) {
+
+									$('#IPQCMakeDate').text(Ndate);
+
+									if (sessionName == $(
+											"#IPQCAuditor option:selected")
+										.text()) {
+										let msgNext = confirm("是否立即审核?");
+										if (msgNext) {
+											$('#BTNTaskIPQCAudit').click();
 										}
-
-										swal("IPQC记录更新数据成功!")
-
-
-
-
-
 									} else {
 
+										if (sessionName != $(
+												"#IPQCAuditor option:selected")
+											.text() &&
+											$('input:radio[name="IPQCResult"]:checked')
+											.val() == 2) {
+											let msgContent = "@" + $(
+													"#IPQCAuditor option:selected")
+												.text() + ",检测到未通过的IPQC待您审核,请登陆系统处理!";
+											sendDingMsg({
+												at: $(
+														"#IPQCAuditor option:selected"
+													)
+													.text(),
+												msg: msgContent
+											});
 
-										let i = {
-											alertMsg: "IPQC记录未有数据更新!"
 										}
-										swalAndRefresh(i)
-
 									}
-								},
-								error: function (XMLHttpRequest, textStatus, errorThrown) {}
-							});
+
+									swal("IPQC记录更新数据成功!")
 
 
-						} else {
-							swal("存在未测试内容,请检查!");
-						}
+								} else {
+
+
+									let i = {
+										alertMsg: "IPQC记录未有数据更新!"
+									}
+									swalAndRefresh(i)
+
+								}
+							},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
+						});
 
 
 
@@ -1247,24 +1321,12 @@
 
 
 								});
-
 							}
-
 						}
-
-
-
-
-
 					} else {
 						swal('非IPQC指定审核人,不允许审核!')
 					}
-
-
-
 				}
-
-
 			}
 		});
 
@@ -1327,7 +1389,7 @@
 		//			"</table>" +
 		//			"</body>" +
 		//			"</html>";
-		//			
+
 
 		//  $.ajax({
 		//        method: 'post',

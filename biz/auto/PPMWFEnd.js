@@ -61,7 +61,9 @@ const autoWFEnd = async () => {
 			let sqlRange = getSqlRange(result);
 
 			if (sqlRange !== '()') {
-				let sql1 = "update `ppm_bills_plan` p join `ppm_bills_task` t on p.BPID=t.taskBPID  set p.WFStatus=100,p.WFEndDate=CURDATE(),t.WFStatus=100 where BPID in " + sqlRange;
+				// let sql1 = "update `ppm_bills_plan` p join `ppm_bills_task` t on p.BPID=t.taskBPID  set p.WFStatus=100,p.WFEndDate=CURDATE(),t.WFStatus=100 where BPID in " + sqlRange;
+				//取消完成时间刷新
+				let sql1 = "update `ppm_bills_plan` p join `ppm_bills_task` t on p.BPID=t.taskBPID  set p.WFStatus=100,t.WFStatus=100 where BPID in " + sqlRange;
 				yjDBService.exec({
 					sql: sql1,
 					parameters: [],
@@ -75,8 +77,6 @@ const autoWFEnd = async () => {
 				});
 
 			}
-
-
 
 		},
 		error: function (err) {
@@ -93,9 +93,9 @@ const autoWFEnd = async () => {
 // 自动归档任务---------
 var j1 = schedule
 	.scheduleJob({
-			hour: 10,
-			minute: 24,
-			dayOfWeek: [3]
+			hour: 00,
+			minute: 00,
+			dayOfWeek: [1]
 		},
 		function () {
 

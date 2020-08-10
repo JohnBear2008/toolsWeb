@@ -4,9 +4,136 @@
 
 
 <script type="text/javascript">
-import yjSecurity  from './Foil/yjSecurity'
-	$(function () {
-		alert(yjSecurity["Diffie-Hellman"].sign('123456'))
+	//加密单一参数      
+	function encryptS() {
 
-	});
+		MCode = $("#MCode").val();
+
+		Len = MCodeLen(MCode.length);
+
+		ASEndDay = $("#ASEndDay").val();
+		FASEndDay = moment(ASEndDay).format("YYMMDD"); //格式化日期
+
+		MRadio = $("#MRadio:checked").val();
+
+		ses = "<%-locals.session.yjUser.AID%>";
+
+		source = ses + Len + MCode + FASEndDay + MRadio;
+
+		var cc = encryptByDESModeEBC(CryptoJS.enc.Utf8.parse(source)).toUpperCase();
+
+		return cc;
+	}
+
+
+	//------------------获取手输密码-----------------------------
+	function getPW() {
+
+		MCode = $("#MCode").val();
+		Len = MCodeLen(MCode.length);
+		ASEndDay = $("#ASEndDay").val();
+		FASEndDay = moment(ASEndDay).format("YYMMDD"); //格式化日期    		
+		MRadio = $("#MRadio:checked").val();
+		ses = "<%-locals.session.yjUser.AID%>";
+		partA = ses + Len + MCode;
+		console.log('partA:' + partA)
+
+		Alen = partA.length;
+		partB = FASEndDay + MRadio;
+
+		PW = PWenc(partA, partB).toUpperCase();
+		layer.alert("计算密码成功!");
+		$("#PWResult").val(PW);
+		return PW;
+
+	}
+
+
+	//------------------获取手输密码-----------------------------
+	function getPW8() {
+
+		MCode = $("#MCode").val();
+		Len = MCodeLen(MCode.length);
+		ASEndDay = $("#ASEndDay").val();
+		FASEndDay = moment(ASEndDay).format("YYMMDD"); //格式化日期    		
+		MRadio = $("#MRadio:checked").val();
+		ses = "<%-locals.session.yjUser.AID%>";
+		partA = ses + Len + MCode;
+		console.log('partA:' + partA)
+
+		Alen = partA.length;
+		partB = FASEndDay + MRadio;
+
+		PW = PWenc(partA, partB).toUpperCase();
+		layer.alert("计算密码成功!");
+
+
+		let PW8 = ""
+
+		let PW8_P1 = PW.substring(0, 8)
+
+		console.log("PW8_P1:" + PW8_P1)
+		//计算PW8_P2
+
+
+
+
+		if (MRadio == '1') {
+
+			let endDayR = moment(ASEndDay).format("YYYYMMDD") + 1
+
+			console.log("endDayR:" + endDayR)
+
+			let endDayMD = moment(ASEndDay).format("MMDD") * 100000
+
+			console.log("endDayMD:" + endDayMD)
+
+			let endDaySum = parseInt(endDayR) + parseInt(endDayMD)
+
+			console.log("endDaySum:" + endDaySum)
+
+			let PW8_P2 = endDaySum.toString(16).toUpperCase()
+
+			if (PW8_P2.length < 8) {
+				PW8_P2 = '0' + PW8_P2
+			}
+
+			console.log("PW8_P2:" + PW8_P2)
+
+			PW8 = stringHexAdd(PW8_P1, PW8_P2)
+
+		} else if (MRadio == '2') {
+
+			let endDayR = moment(ASEndDay).format("YYYYMMDD") + 2
+
+			//    	    		console.log("endDayR:"+endDayR)
+
+			let endDayMD = (2000 + parseInt(moment(ASEndDay).format("MDD"))) * 100000
+
+			console.log("endDayMD:" + endDayMD)
+
+			let endDaySum = parseInt(endDayR) + parseInt(endDayMD)
+
+			console.log("endDaySum:" + endDaySum)
+
+			let PW8_P2 = endDaySum.toString(16).toUpperCase()
+
+			if (PW8_P2.length < 8) {
+				PW8_P2 = '0' + PW8_P2
+			}
+
+			console.log("PW8_P2:" + PW8_P2)
+
+			PW8 = stringHexAdd(PW8_P1, PW8_P2)
+
+		}
+
+		PW8 = PW8.replace(/I/g, 'Y')
+		PW8 = PW8.replace(/O/g, 'Z')
+
+
+		$("#PWResult").val(PW8);
+		return PW8;
+
+	}
 </script>

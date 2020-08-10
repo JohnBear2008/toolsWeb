@@ -2459,7 +2459,7 @@ function Fun_showSQLTestContentsTable(SQL, tableID, TestResult, auditCheck) {
 					"<td style='display:none' id='testContentDBID" + i + "'>" + data[i].DBID + "</td>" +
 					"<td>" + data[i].modelType + "</td>" +
 					"<td>" + data[i].content + "</td>" +
-					"<td><input type='radio' name='testResultRadio" + i + "'  value='1' checked><span>正确</span> <input type='radio' name='testResultRadio" + i + "' value='2'> <span>不正确</span></td>" +
+					"<td><input type='radio' name='testResultRadio" + i + "'  value='1' ><span>正确</span> <input type='radio' name='testResultRadio" + i + "' value='2' checked> <span>不正确</span></td>" +
 					"<td><input id='testRemark" + i + "' type='text' value='' style='width:100%'></td>" +
 					"</tr>";
 
@@ -2611,14 +2611,7 @@ function Fun_showSQLTestContentsTableLite(SQL, tableID, TestResult) {
 
 						}
 
-
-
-
 					}
-
-
-
-
 
 				}
 
