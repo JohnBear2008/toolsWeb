@@ -1888,6 +1888,13 @@
 					"orderBy": " saveTimeStamp DESC"
 				};
 				break;
+			case "unCodeAuditYes":
+				var tableSQL = {
+					"SQL": "SQLTableBillsTaskRecord",
+					"filter": " codeAuditor = '" + sessionName + "' AND codeAuditResult  IS NULL ",
+					"orderBy": " saveTimeStamp DESC"
+				};
+				break;
 
 			case "unRecord":
 				var tableSQL = {
@@ -3233,7 +3240,7 @@
 
 			if (codeAuditor.length === 0) {
 				console.log('codeAuditor 未找到数据');
-				returnAuditor
+				return
 			}
 			$("#codeAuditor").selectpicker('val', codeAuditor[0].agentAuditor)
 
