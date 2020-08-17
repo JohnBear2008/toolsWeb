@@ -2281,7 +2281,7 @@ function getDBIDInfo(tableName, DBID) {
 
 
 //根据获得的DBID 详情加载
-function showDBIDInfo(tableID, SQLParam) {
+const showDBIDInfo = async (tableID, SQLParam) => {
 
 	$(tableID).html("");
 
@@ -2292,7 +2292,7 @@ function showDBIDInfo(tableID, SQLParam) {
 	}
 
 
-	$.ajax({
+	await $.ajax({
 		method: 'get',
 		data: SQLParam,
 		url: "/app/PM/getTableTitles",
@@ -2317,7 +2317,7 @@ function showDBIDInfo(tableID, SQLParam) {
 		error: function () {}
 	});
 
-	$.ajax({
+	await $.ajax({
 		method: 'get',
 		data: SQLParam,
 		url: "/app/PM/getTableDatas",
@@ -2427,7 +2427,6 @@ function showDBIDInfo(tableID, SQLParam) {
 
 						Fun_showSQLTestContentsTableLite(tasksTableSQL, "#TableTestContents", TestResult);
 					}
-
 				}
 				files = null;
 			}
@@ -2435,6 +2434,55 @@ function showDBIDInfo(tableID, SQLParam) {
 		},
 		error: function () {}
 	});
+
+	//代码审核记录附加表
+	if (SQLParam.tableName === 'ppm_bills_task') {
+
+		let codeAuditRecord = await getDataBySql({
+			sql: 'getTaskAuditRecord',
+			params: {
+				filter: SQLParam.filter
+			}
+		})
+
+		console.log('codeAuditRecord', codeAuditRecord);
+
+		if (codeAuditRecord[0].rowId) {
+
+			let addonTable = "<table id='TableTestContents' class='table table-bordered'>" +
+				"<thead>" +
+				"<tr>" +
+				"<th width='50px'>序号</th>" +
+				"<th width='120px'>审核日期</th>" +
+				"<th width='80px'>审核人</th>" +
+				"<th width='80px'>审核结果</th>" +
+				"<th >备注</th>" +
+				"</tr>" +
+				"</thead><tbody>"
+
+			for (const n of codeAuditRecord) {
+
+				let addonTableTr = "<tr>" +
+					"<td >" + n.rowId + "</td>" +
+					"<td >" + n.saveDate + "</td>" +
+					"<td >" + n.codeAuditor + "</td>" +
+					"<td >" + n.result + "</td>" +
+					"<td >" + n.remark + "</td>" +
+					"</tr>"
+				addonTable = addonTable + addonTableTr
+			}
+
+			addonTable = addonTable + "</tbody></table>"
+
+
+			let mainTalbeAddonTr = "<tr><td>代码审核记录</td><td>" + addonTable + "</td></tr>"
+
+			$(tableID).append(mainTalbeAddonTr);
+		}
+
+	}
+
+
 
 
 }
@@ -2488,9 +2536,6 @@ function Fun_showSQLTestContentsTable(SQL, tableID, TestResult, auditCheck) {
 
 
 			mergeTableCols(tableID);
-
-
-
 
 			//   		 $(tableID+" tbody").rowspan(0);
 			//   		 $(tableID).rowspan(1);

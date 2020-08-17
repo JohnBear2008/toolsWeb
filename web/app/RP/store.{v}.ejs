@@ -181,6 +181,7 @@
                 let excelData = readWorkbook(workbook);
                 let storeData = excelJsonArr2DivJsonArr(excelData, {
                     PID: '部件编号',
+                    warehouseId: '仓库编号',
                     num: '数量'
                 })
                 importAddParts(storeData)
@@ -354,7 +355,7 @@
 
         $('#store2ExcelBtn').click(function () {
             var aoa = [
-                ['部件编号', '数量'],
+                ['部件编号', '仓库编号', '数量'],
                 ['AAA', 10]
             ];
             var sheet = XLSX.utils.aoa_to_sheet(aoa);

@@ -402,3 +402,380 @@ var JSONNullToEmpty = (i, o) => {
 	return o
 
 }
+
+/**
+ *根据sql获取需要的数据
+ *
+ * @param {*} i={sql,params}
+ */
+const getDataBySql = async (i) => {
+
+	let o;
+	o = await $.ajax({
+		method: 'get',
+		url: '/app/PM/lib/ajaxGet',
+		data: i,
+		success: function (data) {
+			// console.log("getDataBySql data:" + JSON.stringify(data));
+			return data;
+		},
+		error: function () {}
+	})
+	return o;
+}
+
+
+/**
+ *更新数据库中数据
+ *
+ * @param {*} i={sqlParams}
+ */
+const postDBData = async (i) => {
+	// console.log(i);
+	let o = await $.ajax({
+		method: 'post',
+		url: '/app/PM/lib/ajaxPost',
+		data: i,
+		// processData: false, // 告诉jQuery不要去处理发送的数据
+		// contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+		success: function (data) {
+
+		},
+		error: function () {}
+	})
+
+	// console.log("o:"+JSON.stringify(o));
+
+	return o;
+
+}
+
+/**
+ *加载bootStrapSelect 数据
+ *
+ * @param {*} i={elementId,sqlParams,initValue}
+ */
+const loadBootStrapSelector = async ({
+	elementId,
+	sqlParams,
+	initValue
+}) => {
+
+
+	$('#' + elementId).empty(); //清空原有选项
+	// $("#extraSelect1").selectpicker('refresh'); //刷新
+	$('#' + elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+
+
+	$('#' + elementId).selectpicker({
+		noneSelectedText: "未选择", //默认显示内容
+		// width: '100%' //弹出框宽度
+
+	});
+
+
+	if (!sqlParams) {
+		$('#' + elementId).append($('<option value="">未选择</option>'));
+		return
+	}
+
+
+	return $.ajax({
+		method: 'get',
+		url: '/app/PM/lib/ajaxGet',
+		data: sqlParams,
+		success: function (data) {
+			// console.log('loadBootStrapSelector data',data);
+			try {
+				for (const n of data) {
+					$('#' + elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+				}
+				if (initValue) {
+					$('#' + elementId).selectpicker('val', initValue);
+				} else {
+					$('#' + elementId).selectpicker('val', '');
+				}
+
+				$('#' + elementId).selectpicker('refresh');
+			} catch (error) {
+				console.log('#' + elementId, '刷新失败', error);
+			}
+		},
+		error: function () {}
+	})
+}
+
+
+
+//发送钉钉消息i={DDMsg:{at:'熊奇龙',msg:'钉钉消息'}}
+const sendDDMsg = async ({
+	at,
+	msg
+}) => {
+	$.ajax({
+		method: 'post',
+		url: '/app/public/sendDingTalk',
+		data: {
+			at: at,
+			msg: msg
+		},
+		success: function (data, textStatus) {
+			console.log('发送钉钉消息成功');
+		},
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+			console.log('发送钉钉消息失败');
+		}
+	})
+}
+
+/**
+ *获得表单模块dataTable构造参数
+ *
+ * @param {*} i={sqlParams,dtParams}
+ */
+const getBillDataTableConfig = ({
+	elementId, //元素id
+	sqlParams, //sql参数
+	dtParams //表参数
+}) => {
+	// console.log("getBillDataTableConfig i:" + JSON.stringify(i));
+
+	//定义各类参数模版
+	//常用sql语句ajax模版
+	let dtConfigNormal = {
+		ajax: {
+			url: '/app/PM/lib/ajaxGet',
+			data: {
+				sql: 'sqlId',
+				params: {}
+			},
+			dataSrc: ''
+		},
+		columns: [],
+		order: [], //初始排序
+		aLengthMenu: [
+			[5, 10, 25],
+			[5, 10, 25]
+		], //设置每页显示数据条数的下拉选项
+		iDisplayLength: 5, //每页初始显示5条记录
+		select: true, //允许多选操作
+		bAutoWidth: true, //自动列宽
+		bStateSave: false, //true刷新保存当前页码,搜索信息
+		// dom: 'Bfrtlip',
+		dom: "<'row'<'col-sm-6'><'col-sm-6'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-3'i><'col-sm-2'><'col-sm-7'p>>", //定义datatable组件位置
+		language: languageCN
+	}
+
+	//常用sql语句ajax 简单模版
+	let dtConfigSimple = {
+		ajax: {
+			url: '/app/PM/lib/ajaxGet',
+			data: {
+				sql: 'sqlId',
+				params: {}
+			},
+			dataSrc: ''
+		},
+		columns: [],
+		bAutoWidth: true, //自动列宽
+		dom: "<'row'<'col-sm-12'tr>>",
+		language: languageCN
+	}
+
+
+	//常用data直接赋值模版
+	let dtConfigData = {
+		data: [],
+		columns: [],
+		ordering: false, //禁止排序
+		// select: false, //不允许多选操作
+		// bStateSave: true, //刷新保存当前页码
+		// dom: 'Bfrtlip',
+		// bAutoWidth: true, //自动列宽
+		dom: "<'row'<'col-sm-12'tr>>", //定义datatable组件位置
+		language: languageCN
+	}
+
+	let dtConfigFull = {
+		ajax: {
+			url: '/app/PM/lib/ajaxGet',
+			data: {
+				sql: 'sqlId',
+				params: {}
+			},
+			dataSrc: ''
+		},
+		columns: [],
+		order: [], //初始排序
+		select: true, //允许多选操作
+		bAutoWidth: true, //自动列宽
+		bStateSave: false, //true刷新保存当前页码,搜索信息
+		aLengthMenu: [
+			[5, 10, 25],
+			[5, 10, 25]
+		], //设置每页显示数据条数的下拉选项
+		iDisplayLength: 10, //每页初始显示5条记录
+		// ordering:false,//禁止排序
+		order: [], //禁止初始排序
+		// dom: 'Bfrtlip',
+		dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+			"<'row'<'col-sm-12'tr>>" +
+			"<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+		buttons: [{
+				text: '新增',
+				action: function () {
+
+					// 取消选择
+					this.rows().deselect();
+					//自动按下隐藏的自定义新增按钮
+					$('#' + elementId + 'New').click();
+
+				}
+			},
+			{
+				text: '删除',
+				action: function () {
+
+
+					//自定义删除
+
+					if ($('#' + elementId + 'Delete').length > 0) {
+						$('#' + elementId + 'Delete').click()
+					} else {
+						let DBIDArray = []
+						let dataSelected = this.rows({
+							selected: true
+						}).data();
+						for (let n = 0; n < dataSelected.length; n++) {
+							console.log(JSON.stringify(dataSelected[n]));
+							DBIDArray.push(dataSelected[n].DBID)
+						}
+						// console.log(DBIDArray);
+
+						if (DBIDArray.length > 0) {
+							if (confirm('删除后无法恢复,请再次确认!')) {
+								let sqlParams = {
+									sql: 'delete',
+									params: {
+										tableId: sqlParams.params.tableId,
+										data: DBIDArray
+									}
+								}
+								let updateDataTableI = {
+									elementId: elementId,
+									sqlParams: sqlParams
+								}
+								updateDataTable(updateDataTableI);
+							}
+						} else {
+							alert('请点击表格,至少选中一条数据!')
+						}
+
+					}
+
+				}
+
+
+
+			},
+			'colvis',
+			'excel',
+			// 'csv', 
+			// 'print',
+			'copy',
+			{
+				text: '全选',
+				action: function () {
+					this.rows({
+						page: 'current'
+					}).select();
+				}
+			}, {
+				text: '取消全选',
+				action: function () {
+					this.rows({
+						page: 'current'
+					}).deselect();
+				}
+			},
+
+		],
+		language: languageCN
+
+	}
+
+
+	let o;
+	let dtConfig;
+
+	//替换定义参数模版
+	switch (dtParams.dtConfig) {
+		case 'dtConfigFull':
+			dtConfig = dtConfigFull;
+			break;
+		case 'dtConfigData':
+			dtConfig = dtConfigData;
+			break;
+		case 'dtConfigSimple':
+			dtConfig = dtConfigSimple;
+			break;
+		default:
+			dtConfig = dtConfigNormal;
+			break;
+	}
+
+	//修改参数
+
+	if (dtParams.data) {
+		dtConfig.data = dtParams.data;
+	}
+
+	if (sqlParams) {
+		if (sqlParams.sqlId) {
+			dtConfig.ajax.data.sql = sqlParams.sqlId;
+		}
+		if (sqlParams.params) {
+			dtConfig.ajax.data.params = sqlParams.params;
+		}
+	}
+
+	if (dtParams) {
+		for (const p in dtParams) {
+			dtConfig[p] = dtParams[p];
+		}
+
+	}
+
+
+	o = dtConfig;
+
+	return o;
+
+}
+
+
+
+/**
+ *初始化工作流程表单模块DataTable
+ *
+ * @param {*} i={elementId,sqlParams,dtParams}
+ */
+const loadBillDataTable = async ({
+	elementId, //元素id
+	sqlParams, //sql参数
+	dtParams //表格参数
+}) => {
+
+	$('#' + elementId).DataTable().destroy(); //销毁原数据表格,防止加载错误
+	//获得r1={dataTable 参数}
+	let r1 = getBillDataTableConfig({
+		elementId,
+		sqlParams,
+		dtParams
+	});
+	// console.log('r1:' + JSON.stringify(r1));
+	$('#' + elementId).DataTable(r1);
+
+}

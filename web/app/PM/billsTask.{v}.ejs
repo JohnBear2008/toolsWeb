@@ -51,7 +51,7 @@
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillTask" tabindex="-1" role="dialog" aria-labelledby="BillTaskLabel"
 			aria-hidden="true" data-backdrop="static">
-			<div class="modal-dialog" style="width:70%">
+			<div class="modal-dialog" style="width:80%">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" id="BTNModelClose" class="close" aria-hidden="true">&times;</button>
@@ -71,7 +71,7 @@
 										</a>
 									</h4>
 								</div>
-								<div id="collapseTrack" class="panel-collapse collapse in">
+								<div id="collapseTrack" class="panel-collapse collapse ">
 									<div class="panel-body">
 
 										<!--------------panel--------------------->
@@ -114,533 +114,540 @@
 						<!---折叠------------------------>
 
 
-
-						<!--------------方案单面板----------------->
-
-						<div class="panel panel-info">
-
+						<div id="DivTaskPanel" class="panel panel-info">
 							<div class="panel-heading">
-								<h3 class="panel-title">任务单</h3>
+								<h3 class="panel-title">
+									<a data-toggle="collapse" href="#collapseTaskInfo">
+										任务信息:点击可收起
+									</a>
+								</h3>
 							</div>
+							<div id="collapseTaskInfo" class="panel-collapse collapse in">
 
-							<div class="panel-body">
-								<!--begin task panel-------------->
-
-								<div id="DivTaskPanel" class="panel panel-info">
-									<div class="panel-heading">
-										<h3 class="panel-title">任务信息</h3>
-									</div>
+								<div class="panel-body">
 
 
-									<div class="panel-body">
+									<div class="form-horizontal">
+										<span id="DBID" style="display:none"></span>
+										<span id="taskBPID" style="display:none"></span>
+										<!-------------------------------------------------------------------------->
+
+										<div class="form-group">
+
+											<label class="col-sm-1 control-label">任务单号:</label>
+											<div class="col-sm-2">
+
+												<span id="BTID" class="help-block"></span>
+
+											</div>
+
+											<label class="col-sm-2 control-label">任务单版本号:</label>
+											<div class="col-sm-1">
+												<span id="BTVersion" class="help-block"></span>
+											</div>
+
+											<label class="col-sm-1 control-label">客户名称:</label>
+											<div class="col-sm-1">
+												<span id="taskCTRName" class="help-block"></span>
+											</div>
+
+											<label class="col-sm-1 control-label">任务类型:</label>
+											<div class="col-sm-1">
+												<span id="taskTypeText" class="help-block"></span>
+											</div>
 
 
-										<div class="form-horizontal">
-											<span id="DBID" style="display:none"></span>
-											<span id="taskBPID" style="display:none"></span>
-											<!-------------------------------------------------------------------------->
+											<label class="col-sm-1 control-label">类型码:</label>
+											<div class="col-sm-1">
+												<span id="taskSortType" class="help-block"></span>
+											</div>
+
+
+										</div>
+
+										<!-------------------------------------------------------------------------->
+
+
+
+										<div id="divTaskInfo">
+											<!-----divTaskInfo--------------------------------------------------------------------->
+											<div class="form-group">
+
+												<label class="col-sm-1 control-label">修改属性:</label>
+												<div class="col-sm-8">
+													<label class="checkbox-inline">
+														<input type="checkbox" name="modifyABE" value="ABE1"> 画面
+													</label>
+													<label class="checkbox-inline">
+														<input type="checkbox" name="modifyABE" value="ABE2"> 结构
+													</label>
+													<label class="checkbox-inline">
+														<input type="checkbox" name="modifyABE" value="ABE3"> 参数
+													</label>
+
+													<label class="checkbox-inline">
+														<input type="checkbox" name="modifyABE" value="ABE4">通信
+													</label>
+													<label class="checkbox-inline">
+														<input type="checkbox" name="modifyABE" value="ABE5">逻辑
+													</label>
+
+												</div>
+
+
+											</div>
+
+
+
+											<!-------------------------->
 
 											<div class="form-group">
 
-												<label class="col-sm-1 control-label">任务单号:</label>
+												<label class="col-sm-1 control-label" for="name">机型:</label>
+												<div class="col-sm-3">
+													<select id="taskMHEName" class="selectpicker"
+														data-live-search="true" data-dropup-auto="false">
+													</select>
+												</div>
+
+												<label class="col-sm-1 control-label" for="name">系统:</label>
+												<div class="col-sm-3">
+													<select id="taskModel" class="selectpicker" data-live-search="true"
+														data-dropup-auto="false">
+													</select>
+												</div>
+
+											</div>
+											<!-------------------------->
+											<div class="form-group">
+
+												<label class="col-sm-1 control-label">原系统版本:</label>
+												<div class="col-sm-3">
+													<input id="taskOGNSystemVersion" class="form-control" type="text"
+														value="">
+												</div>
+
+												<label class="col-sm-1 control-label">BugID:</label>
+												<div class="col-sm-3">
+													<input id="taskBugID" class="form-control" type="text" value="">
+												</div>
+
+
+											</div>
+											<!-------------------------->
+
+											<div class="form-group">
+
+												<label class="col-sm-1 control-label" for="name">负责人:</label>
 												<div class="col-sm-2">
-
-													<span id="BTID" class="help-block"></span>
-
-												</div>
-
-												<label class="col-sm-2 control-label">任务单版本号:</label>
-												<div class="col-sm-1">
-													<span id="BTVersion" class="help-block"></span>
-												</div>
-
-												<label class="col-sm-1 control-label">客户名称:</label>
-												<div class="col-sm-1">
-													<span id="taskCTRName" class="help-block"></span>
-												</div>
-
-												<label class="col-sm-1 control-label">任务类型:</label>
-												<div class="col-sm-1">
-													<span id="taskTypeText" class="help-block"></span>
+													<!--  <span id="taskStaff"  class="help-block"></span>-->
+													<select id="taskStaff" class="selectpicker" data-live-search="true">
+													</select>
 												</div>
 
 
-												<label class="col-sm-1 control-label">类型码:</label>
-												<div class="col-sm-1">
-													<span id="taskSortType" class="help-block"></span>
-												</div>
 
+
+
+												<label for="limitDate" class="col-sm-2 control-label">任务完成期限:</label>
+												<div class="col-sm-3">
+													<div class="input-group date form_date " data-date=""
+														data-date-format="yyyy-mm-dd" data-link-field="limitDate"
+														data-link-format="yyyy-mm-dd">
+														<input id="taskLimitDate" class="form-control " size="16"
+															type="text" value="" readonly>
+														<span class="input-group-addon"><span
+																class="glyphicon glyphicon-calendar"></span></span>
+													</div>
+													<input type="hidden" id="taskLimitDate" value="" />
+												</div>
 
 											</div>
 
 											<!-------------------------------------------------------------------------->
+											<div class="form-group">
+												<label class="col-sm-1 control-label">任务要求:</label>
+												<div class="col-sm-10">
+													<!-- <span id="taskDBE" class="help-block"></span>-->
 
-
-
-											<div id="divTaskInfo">
-												<!-----divTaskInfo--------------------------------------------------------------------->
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label">修改属性:</label>
-													<div class="col-sm-8">
-														<label class="checkbox-inline">
-															<input type="checkbox" name="modifyABE" value="ABE1"> 画面
-														</label>
-														<label class="checkbox-inline">
-															<input type="checkbox" name="modifyABE" value="ABE2"> 结构
-														</label>
-														<label class="checkbox-inline">
-															<input type="checkbox" name="modifyABE" value="ABE3"> 参数
-														</label>
-
-														<label class="checkbox-inline">
-															<input type="checkbox" name="modifyABE" value="ABE4">通信
-														</label>
-														<label class="checkbox-inline">
-															<input type="checkbox" name="modifyABE" value="ABE5">逻辑
-														</label>
-
-													</div>
-
-
+													<textarea id="taskDBE" class="form-control" rows="6"></textarea>
 												</div>
-
-
-
-												<!-------------------------->
-
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label" for="name">机型:</label>
-													<div class="col-sm-3">
-														<select id="taskMHEName" class="selectpicker"
-															data-live-search="true" data-dropup-auto="false">
-														</select>
-													</div>
-
-													<label class="col-sm-1 control-label" for="name">系统:</label>
-													<div class="col-sm-3">
-														<select id="taskModel" class="selectpicker"
-															data-live-search="true" data-dropup-auto="false">
-														</select>
-													</div>
-
-												</div>
-												<!-------------------------->
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label">原系统版本:</label>
-													<div class="col-sm-3">
-														<input id="taskOGNSystemVersion" class="form-control"
-															type="text" value="">
-													</div>
-
-													<label class="col-sm-1 control-label">BugID:</label>
-													<div class="col-sm-3">
-														<input id="taskBugID" class="form-control" type="text" value="">
-													</div>
-
-
-												</div>
-												<!-------------------------->
-
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label" for="name">负责人:</label>
-													<div class="col-sm-2">
-														<!--  <span id="taskStaff"  class="help-block"></span>-->
-														<select id="taskStaff" class="selectpicker"
-															data-live-search="true">
-														</select>
-													</div>
-
-
-
-
-
-													<label for="limitDate"
-														class="col-sm-2 control-label">任务完成期限:</label>
-													<div class="col-sm-3">
-														<div class="input-group date form_date " data-date=""
-															data-date-format="yyyy-mm-dd" data-link-field="limitDate"
-															data-link-format="yyyy-mm-dd">
-															<input id="taskLimitDate" class="form-control " size="16"
-																type="text" value="" readonly>
-															<span class="input-group-addon"><span
-																	class="glyphicon glyphicon-calendar"></span></span>
-														</div>
-														<input type="hidden" id="taskLimitDate" value="" />
-													</div>
-
-												</div>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label">任务要求:</label>
-													<div class="col-sm-10">
-														<!-- <span id="taskDBE" class="help-block"></span>-->
-
-														<textarea id="taskDBE" class="form-control" rows="6"></textarea>
-													</div>
-
-												</div>
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label" for="name">发布人:</label>
-													<div class="col-sm-3">
-														<span id="taskMaker" class="help-block"></span>
-													</div>
-
-													<label class="col-sm-1 control-label" for="name">发布日期:</label>
-													<div class="col-sm-3">
-
-														<span id="taskMakeDate" class="help-block"></span>
-													</div>
-
-
-												</div>
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label" for="name"></label>
-													<div class="col-sm-3">
-														<button id="BTNTaskSave" type="button" class="btn btn-primary"
-															data-toggle="modal">修改任务</button>
-
-													</div>
-												</div>
-												<!-------------------------------------------------------------------------->
 
 											</div>
-											<!-----divTaskInfo--------------------------------------------------------------------->
-
-											<hr>
-
 											<!-------------------------------------------------------------------------->
+											<div class="form-group">
 
-											<div id="divTaskAccept">
-												<!-----divTaskAccept--------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label">确认意见:</label>
-													<div class="col-sm-10">
-
-														<textarea id="BTAcceptOpinion" class="form-control"
-															rows="2"></textarea>
-													</div>
-
+												<label class="col-sm-1 control-label" for="name">发布人:</label>
+												<div class="col-sm-3">
+													<span id="taskMaker" class="help-block"></span>
 												</div>
 
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
+												<label class="col-sm-1 control-label" for="name">发布日期:</label>
+												<div class="col-sm-3">
 
-													<label class="col-sm-1 control-label">FQC申请:</label>
-													<div class="col-sm-3">
-														<label class="radio-inline">
-															<input type="radio" name="FQCRequest" id="radio1" value="1">
-															<span>有</span>
-														</label>
-														<label class="radio-inline">
-															<input type="radio" name="FQCRequest" id="radio2" value="0"
-																checked> <span>无</span>
-														</label>
-
-													</div>
-
-													<div id="divFQCMaker">
-
-														<label class="col-sm-1 control-label">FQC检测:</label>
-
-														<div class="col-sm-3 ">
-															<select id="FQCMaker" class="selectpicker"
-																data-live-search="true">
-															</select>
-														</div>
-													</div>
-
+													<span id="taskMakeDate" class="help-block"></span>
 												</div>
 
 
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-
-
-
-													<label class="col-sm-1 control-label">返工任务:</label>
-													<div class="col-sm-3">
-														<span id="taskRepeat" style="display:none"></span>
-														<span id="taskRepeatText" class="help-block"></span>
-													</div>
-
-
-													<label class="col-sm-1 control-label">IPQC检测:</label>
-
-													<div class="col-sm-3 ">
-														<select id="IPQCMaker" class="selectpicker"
-															data-live-search="true">
-														</select>
-													</div>
-
-												</div>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-
-													<label class="col-sm-1 control-label" for="name">确认状态:</label>
-													<div class="col-sm-3">
-
-														<span id="BTAcceptResultText" class="help-block"></span>
-
-													</div>
-
-													<label class="col-sm-1 control-label" for="name">确认日期:</label>
-													<div class="col-sm-3">
-
-														<span id="BTAcceptDate" class="help-block"></span>
-													</div>
-
-
-												</div>
-
-
-
-												<!-------------------------------------------------------------------------->
-
-												<div class="form-group" id="DivTaskAcceptBTNS">
-													<label class="col-sm-1 control-label">确认:</label>
-													<div class="col-sm-10">
-
-														<button id="BTNTaskAcceptYes" type="button"
-															class="btn btn-success" data-toggle="modal">确认任务</button>
-														<button id="BTNTaskAcceptNo" type="button"
-															class="btn btn-warning" data-toggle="modal">驳回任务</button>
-													</div>
-
-												</div>
-
-												<!-------------------------------------------------------------------------->
 											</div>
-											<!-------divTaskAccept------------------------------------------------------>
+											<!-------------------------------------------------------------------------->
+											<div class="form-group">
+												<label class="col-sm-1 control-label" for="name"></label>
+												<div class="col-sm-3">
+													<button id="BTNTaskSave" type="button" class="btn btn-primary"
+														data-toggle="modal">修改任务</button>
+
+												</div>
+											</div>
+											<!-------------------------------------------------------------------------->
 
 										</div>
+										<!-----divTaskInfo--------------------------------------------------------------------->
 
+										<hr>
+
+										<!-------------------------------------------------------------------------->
+
+										<div id="divTaskAccept">
+											<!-----divTaskAccept--------------------------------------------------------------------->
+											<div class="form-group">
+												<label class="col-sm-1 control-label">确认意见:</label>
+												<div class="col-sm-10">
+
+													<textarea id="BTAcceptOpinion" class="form-control"
+														rows="2"></textarea>
+												</div>
+
+											</div>
+
+											<!-------------------------------------------------------------------------->
+											<div class="form-group">
+
+												<label class="col-sm-1 control-label">FQC申请:</label>
+												<div class="col-sm-3">
+													<label class="radio-inline">
+														<input type="radio" name="FQCRequest" id="radio1" value="1">
+														<span>有</span>
+													</label>
+													<label class="radio-inline">
+														<input type="radio" name="FQCRequest" id="radio2" value="0"
+															checked>
+														<span>无</span>
+													</label>
+
+												</div>
+
+												<div id="divFQCMaker">
+
+													<label class="col-sm-1 control-label">FQC检测:</label>
+
+													<div class="col-sm-3 ">
+														<select id="FQCMaker" class="selectpicker"
+															data-live-search="true">
+														</select>
+													</div>
+												</div>
+
+											</div>
+
+
+
+											<!-------------------------------------------------------------------------->
+											<div class="form-group">
+												<label class="col-sm-1 control-label">返工任务:</label>
+												<div class="col-sm-3">
+													<span id="taskRepeat" style="display:none"></span>
+													<span id="taskRepeatText" class="help-block"></span>
+												</div>
+
+
+												<label class="col-sm-1 control-label">IPQC检测:</label>
+
+												<div class="col-sm-3 ">
+													<select id="IPQCMaker" class="selectpicker" data-live-search="true">
+													</select>
+												</div>
+
+											</div>
+
+											<!-------------------------------------------------------------------------->
+											<div class="form-group">
+
+												<label class="col-sm-1 control-label" for="name">确认状态:</label>
+												<div class="col-sm-3">
+													<span id="BTAcceptResultText" class="help-block"></span>
+												</div>
+
+												<label class="col-sm-1 control-label" for="name">确认日期:</label>
+												<div class="col-sm-3">
+
+													<span id="BTAcceptDate" class="help-block"></span>
+												</div>
+											</div>
+											<!-------------------------------------------------------------------------->
+
+											<div class="form-group" id="DivTaskAcceptBTNS">
+												<label class="col-sm-1 control-label">确认:</label>
+												<div class="col-sm-10">
+
+													<button id="BTNTaskAcceptYes" type="button" class="btn btn-success"
+														data-toggle="modal">确认任务</button>
+													<button id="BTNTaskAcceptNo" type="button" class="btn btn-warning"
+														data-toggle="modal">驳回任务</button>
+												</div>
+
+											</div>
+
+											<!-------------------------------------------------------------------------->
+										</div>
+										<!-------divTaskAccept------------------------------------------------------>
 
 									</div>
 								</div>
+							</div>
+						</div>
 
+						<!------代码审查---------------->
+						<div class="panel-group" id="codeAuditPanel">
 
-								<!-------------------------------------------------------------------------->
-								<div class="panel panel-warning" id="DivRecordPanel">
-									<div class="panel-heading">
-										<h3 class="panel-title">任务记录</h3>
-									</div>
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" href="#collapseCodeCheck">
+											代码审查面板:点击可收起
+										</a>
+									</h4>
+								</div>
+								<div id="collapseCodeCheck" class="panel-collapse">
 									<div class="panel-body">
 
 										<div class="form-horizontal">
 
-
-											<button id="BTNTaskRecordAdd" type="button" class="btn btn-success"
-												data-toggle="modal">添加记录</button>
-											<button id="BTNTaskRecordAudit" type="button" class="btn btn-warning"
-												data-toggle="modal">审核记录</button>
-											<!-- <button id="BTNTaskRecordClear" class="btn btn-danger" data-toggle="modal" >清除记录</button>-->
-
-											<hr>
-
-											<table id="tableRecords" class="table table-bordered" style="width:100%;">
-												<thead>
-													<tr>
-														<th>记录号</th>
-														<th>修改内容</th>
-														<th>功能说明</th>
-														<th>记录人</th>
-														<th>记录日期</th>
-														<th>审核人</th>
-														<th>审核日期</th>
-													</tr>
-												</thead>
-											</table>
-
-											<hr>
-
-											<div id="DIVRecordContent">
-
-
-												<span id="recordDBID" style="display:none"></span>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label">修改内容说明:</label>
-													<div class="col-sm-10">
-														<textarea id="modifyContent" class="form-control"
-															rows="6"></textarea>
-													</div>
-
-												</div>
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label">程序功能说明:</label>
-													<div class="col-sm-10">
-														<textarea id="functionsDBE" class="form-control"
-															rows="6"></textarea>
-													</div>
-
+											<div class="form-group">
+												<label class="col-sm-1 control-label">出货目录:</label>
+												<div class="col-sm-5">
+													<input id="codeAdr" class="form-control" type="text" value="">
 												</div>
 
-												<!-------------------------------------------------------------------------->
-
-												<div class="form-group" id="DivUploadBTNS">
-													<label class="col-sm-1 control-label" for="name">上传:</label>
-
-													<div class="col-sm-8">
-														<input type="file" name="myHead" multiple="multiple"
-															id="fileToUpload" style="display:none"
-															onchange="taskFileSelected()">
-														<a class="btn btn-info"
-															onclick="$('#fileToUpload').click()">上传程序文件</a>
-
-														<input type="button" type="button" class="btn btn-warning"
-															onclick="taskDeleteFile()" value="清空附件">
-
-													</div>
-
+												<label class="col-sm-1 control-label">检查人:</label>
+												<div class="col-sm-5 ">
+													<select id="codeAuditor" class="selectpicker"
+														data-dropup-auto="false" data-live-search="true">
+													</select>
+													<button id="defaultAuditorBtn" type="button"
+														class="btn btn-primary">默认检查人</button>
+													<button id="agentAuditorBtn" type="button"
+														class="btn btn-primary">代理人</button>
 												</div>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-													<label class="col-sm-1 control-label" for="name">程序附件:</label>
-
-													<div class="col-sm-6">
-														<div id="div_previewImages"></div>
-														<div id="progressNumber"></div>
-														<div id="divFilesUploaded"></div>
-													</div>
-
-													<label class="col-sm-1 control-label" for="name">版本号:</label>
-													<div class="col-sm-3">
-														<input id="fileVersion" class="form-control" type="text"
-															value="">
-													</div>
-
+											</div>
+											<div class="form-group">
+												<label class="col-sm-1 control-label"></label>
+												<div class="col-sm-3">
+													<button id="saveCodeInfoBtn" type="button"
+														class="btn btn-success">保存</button>
+													<button id="codeAuditorRemindBtn" type="button"
+														class="btn btn-success">提醒检查</button>
 												</div>
-
-												<!-------------------------------------------------------------------------->
-
-
-												<div class="form-group">
-													<label class="col-sm-1 control-label">备注:</label>
-													<div class="col-sm-10">
-														<textarea id="recordRemark" class="form-control"
-															rows="2"></textarea>
-													</div>
-
-												</div>
-
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group">
-
-													<label for="recordMaker" class="col-sm-1 control-label">记录人:</label>
-													<div class="col-sm-5">
-														<span id="recordMaker" class="help-block"></span>
-													</div>
-
-
-
-													<label for="recordMakeDate"
-														class="col-sm-1 control-label">记录日期:</label>
-													<div class="col-sm-5">
-														<span id="recordMakeDate" class="help-block"></span>
-													</div>
-												</div>
-
-												<!-------------------------------------------------------------------------->
-												<div class="form-group" id="DivRecordAuditInfo">
-
-													<label class="col-sm-1 control-label" for="name">审核人:</label>
-													<div class="col-sm-5">
-
-														<select id="recordAuditor" class="selectpicker"
-															data-live-search="true">
-														</select>
-
-														<button id="BTNGetTaskAuditor" type="button"
-															class="btn btn-success" data-toggle="modal">系统指定</button>
-
-													</div>
-
-
-													<label for="recordAuditDate"
-														class="col-sm-1 control-label">审核日期:</label>
-													<div class="col-sm-5">
-														<span id="recordAuditDate" class="help-block"></span>
-													</div>
-
-
-												</div>
-
-
-												<!-------------------------------------------------------------------------->
-
-												<div class="form-group" id="DivTaskRecordBTNS">
-													<label class="col-sm-1 control-label">登记:</label>
-													<div class="col-sm-10">
-														<button id="BTNTaskRecordSave" type="button"
-															class="btn btn-success" data-toggle="modal">保存记录</button>
-
-
-
-													</div>
-
-												</div>
-												<!-------------------------------------------------------------------------->
-
-												<div class="form-group" id="DivTaskUpdVerBTN">
-													<label class="col-sm-1 control-label"></label>
-													<div class="col-sm-10">
-
-													</div>
-
-												</div>
-
-
-
-												<!-------------------------------------------------------------------------->
-
 											</div>
 
 
-
-
-
+										</div>
+										<hr />
+										<div class="form-group">
+											<button id="addCodeAuditBtn" type="button"
+												class="btn btn-success">开始检查</button>
 										</div>
 
 
+										<table id="codeCheckRecordTable" class="table table-bordered"
+											style="width:100%;">
+											<thead>
+												<tr>
+													<th>序号号</th>
+													<th>检查日期</th>
+													<th>检查人</th>
+													<th>结果</th>
+													<th>备注</th>
+												</tr>
+											</thead>
+										</table>
 									</div>
 								</div>
-
-
-								<!----end task panel---------------------->
-
 							</div>
-
-							<div class="panel-footer">
-
-
-
-
-
-
-							</div>
-
 
 						</div>
 
 
 
+						<!-------------------------------------------------------------------------->
+						<div class="panel panel-warning" id="taskRecordPanel">
+							<div class="panel-heading">
+								<h3 class="panel-title">任务记录</h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="form-horizontal">
+
+									<button id="BTNTaskRecordAdd" type="button" class="btn btn-success"
+										data-toggle="modal">添加记录</button>
+									<button id="BTNTaskRecordAudit" type="button" class="btn btn-warning"
+										data-toggle="modal">审核记录</button>
+									<!-- <button id="BTNTaskRecordClear" class="btn btn-danger" data-toggle="modal" >清除记录</button>-->
+
+									<hr>
+
+									<table id="tableRecords" class="table table-bordered" style="width:100%;">
+										<thead>
+											<tr>
+												<th>记录号</th>
+												<th>修改内容</th>
+												<th>功能说明</th>
+												<th>记录人</th>
+												<th>记录日期</th>
+												<th>审核人</th>
+												<th>审核日期</th>
+											</tr>
+										</thead>
+									</table>
+
+									<hr>
+
+									<div id="DIVRecordContent">
 
 
-						<!--------------方案单面板----------------->
+										<span id="recordDBID" style="display:none"></span>
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+											<label class="col-sm-1 control-label">修改内容说明:</label>
+											<div class="col-sm-10">
+												<textarea id="modifyContent" class="form-control" rows="6"></textarea>
+											</div>
+
+										</div>
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+											<label class="col-sm-1 control-label">程序功能说明:</label>
+											<div class="col-sm-10">
+												<textarea id="functionsDBE" class="form-control" rows="6"></textarea>
+											</div>
+
+										</div>
+
+										<!-------------------------------------------------------------------------->
+
+										<div class="form-group" id="DivUploadBTNS">
+											<label class="col-sm-1 control-label" for="name">上传:</label>
+
+											<div class="col-sm-8">
+												<input type="file" name="myHead" multiple="multiple" id="fileToUpload"
+													style="display:none" onchange="taskFileSelected()">
+												<a class="btn btn-info" onclick="$('#fileToUpload').click()">上传程序文件</a>
+
+												<input type="button" type="button" class="btn btn-warning"
+													onclick="taskDeleteFile()" value="清空附件">
+
+											</div>
+
+										</div>
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+											<label class="col-sm-1 control-label" for="name">程序附件:</label>
+
+											<div class="col-sm-6">
+												<div id="div_previewImages"></div>
+												<div id="progressNumber"></div>
+												<div id="divFilesUploaded"></div>
+											</div>
+
+											<label class="col-sm-1 control-label" for="name">版本号:</label>
+											<div class="col-sm-3">
+												<input id="fileVersion" class="form-control" type="text" value="">
+											</div>
+
+										</div>
+
+										<!-------------------------------------------------------------------------->
+
+
+										<div class="form-group">
+											<label class="col-sm-1 control-label">备注:</label>
+											<div class="col-sm-10">
+												<textarea id="recordRemark" class="form-control" rows="2"></textarea>
+											</div>
+
+										</div>
+
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group">
+
+											<label for="recordMaker" class="col-sm-1 control-label">记录人:</label>
+											<div class="col-sm-5">
+												<span id="recordMaker" class="help-block"></span>
+											</div>
+
+
+
+											<label for="recordMakeDate" class="col-sm-1 control-label">记录日期:</label>
+											<div class="col-sm-5">
+												<span id="recordMakeDate" class="help-block"></span>
+											</div>
+										</div>
+
+										<!-------------------------------------------------------------------------->
+										<div class="form-group" id="DivRecordAuditInfo">
+
+											<label class="col-sm-1 control-label" for="name">审核人:</label>
+											<div class="col-sm-5">
+
+												<select id="recordAuditor" class="selectpicker" data-live-search="true">
+												</select>
+
+												<button id="BTNGetTaskAuditor" type="button" class="btn btn-success"
+													data-toggle="modal">系统指定</button>
+
+											</div>
+
+
+											<label for="recordAuditDate" class="col-sm-1 control-label">审核日期:</label>
+											<div class="col-sm-5">
+												<span id="recordAuditDate" class="help-block"></span>
+											</div>
+
+
+										</div>
+
+
+										<!-------------------------------------------------------------------------->
+
+										<div class="form-group" id="DivTaskRecordBTNS">
+											<label class="col-sm-1 control-label">登记:</label>
+											<div class="col-sm-10">
+												<button id="BTNTaskRecordSave" type="button" class="btn btn-success"
+													data-toggle="modal">保存记录</button>
+											</div>
+
+										</div>
+										<!-------------------------------------------------------------------------->
+
+										<div class="form-group" id="DivTaskUpdVerBTN">
+											<label class="col-sm-1 control-label"></label>
+											<div class="col-sm-10">
+
+											</div>
+
+										</div>
+										<!-------------------------------------------------------------------------->
+
+									</div>
+
+								</div>
+
+
+							</div>
+						</div>
 
 
 
@@ -660,6 +667,230 @@
 					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal -->
+		</div>
+
+
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="codeCheckRuleModal"" aria-hidden=" true" data-backdrop="static">
+			<div class="modal-dialog" style="width:75%">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" aria-hidden="true" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title" id="BillTaskLabel">代码检查项目</h4>
+					</div>
+					<div class="modal-body">
+
+						<table id="dspCodeCheckRuleTable" class="table table-bordered" style="width:100%;">
+							<thead>
+								<tr>
+									<th colspan="3" style="text-align: center;">
+										<h4>主机代码检查项目</h4>
+									</th>
+								</tr>
+								<tr>
+									<th>序号</th>
+									<th>检查模块</th>
+									<th>检查内容</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										1
+									</td>
+									<td>
+										代码规范化
+									</td>
+									<td>
+										1、语法问题：<br />
+										①没有-1结束或多余-1；
+										②运算时分母为0；
+										③程序命名，版本日期是否正确；<br />
+										2、规范问题：<br />
+										①注释明确，必要的地方必须注释代码说明、人员、日期；
+										②模块化，尽量使用子函数，增加可读性；<br />
+										③同一家程序尽量不要使用新的LC，保证代码同一性。
+										④资料定义每家必须在统一的地方，防止冲突，且不得使用核心预留。<br />
+										3、系统规范：<br />
+										因系统要求的小数位，CODE等是否规范<br />
+										4、代码冗余<br />
+										相同功能代码重复书写；<br />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										2
+									</td>
+									<td>
+										功能修改方案是否合理
+									</td>
+									<td>
+										1、是否能实现客户要求<br />
+										2、是否还有更简更优替代方案<br />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										3
+									</td>
+									<td>
+										功能修改是否全面性、是否新旧兼容性
+									</td>
+									<td>
+										1、标配到原程序的是否有选项，而不影响已出机出去的<br />
+										2、是否考虑新旧HMI搭配问题
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										4
+									</td>
+									<td>
+										功能必备项目
+									</td>
+									<td>
+										1、@92-0001：温控使用接触器；<br />
+										2、F6-0001: TALK超时不警报 “通讯断线超时”；<br />
+										3、@92-0080：PWM<br />
+										4、DA线性无底流、直线型<br />
+										5、温度PID匹配<br />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										5
+									</td>
+									<td>
+										SVN提交
+									</td>
+									<td>
+										1、改完一单就需要提交一次；<br />
+										2、有多余垃圾文件（如.bak）；<br />
+										3、打印未删除；<br />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table id="hmiCodeCheckRuleTable" class="table table-bordered" style="width:100%;">
+							<thead>
+								<tr>
+									<th colspan="3" style="text-align: center;">
+										<h4>面板代码检查项目</h4>
+									</th>
+								</tr>
+								<tr>
+									<th>序号</th>
+									<th>检查模块</th>
+									<th>检查内容</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										1
+									</td>
+									<td>
+										代码规范化
+									</td>
+									<td>
+										1、基本语法<br />
+										①缺少非空判断（子函数已有则不需添加）；
+										②运算时分母为0；
+										③open文件后一定要close；<br />
+										2、版本管理<br />
+										①特殊功能无Define；
+										②代码影响其他版本/厂家；
+										③包含其他厂家的Define(如：泰瑞程序包含中鸿泰D_0HT)；<br />
+										3、变量定义<br />
+										①新定义变量未初始化；
+										②变量名称规范：首字母（变量类型）+变量名称；<br />
+										4、代码冗余<br />
+										①相同功能代码重复书写；"
+									</td>
+								</tr>
+								<tr>
+									<td>
+										2
+									</td>
+									<td>
+										功能修改方案是否合理
+									</td>
+									<td>
+										1、是否能实现客户要求<br />
+										2、是否还有更简更优替代方案<br />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										3
+									</td>
+									<td>
+										功能修改是否全面性、是否新旧兼容性
+									</td>
+									<td>
+										1、温度PID，模温、多个RMTP12时的处理。（tmTaskdsp28m3、cpp）；<br />
+										2、温度只用作监测时，注意PID自学习情况；<br />
+										3、主机lib核心变更，HMI配合修改；考虑新旧主机兼容性<br />
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										4
+									</td>
+									<td>
+										功能必备项目
+									</td>
+									<td>
+										1、改完一单就需要提交一次；<br />
+										2、有多余垃圾文件（如.bak）；<br />
+										3、打印未删除<br />
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+						<div class="form-horizontal">
+							<!-- <span id="codeAuditDBID" style="display:none"></span> -->
+							<span id="codeAuditRowId"></span>
+
+							<div class="form-group">
+								<label class="col-sm-1 control-label">检查结果:</label>
+								<div class="col-sm-3">
+									<label class="radio-inline">
+										<input type="radio" name="codeAduditResult" value="通过">
+										<span>通过</span>
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="codeAduditResult" value="未通过" checked>
+										<span>未通过</span>
+									</label>
+
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">备注:</label>
+								<div class="col-sm-11">
+									<textarea id='codeAuditRemark' class="form-control" rows="2"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label"></label>
+								<div class="col-sm-10">
+									<button id='saveCodeAuditRecordBtn'>保存</button>
+								</div>
+							</div>
+						</div>
+
+
+
+
+					</div>
+				</div>
+			</div>
 		</div>
 
 
@@ -720,73 +951,7 @@
 
 	function Fun_getTaskTrackData(dataSelect) {
 
-		//	var SQLParamPLD={
-		//			"tableName":"ppm_bills_plan",
-		//			"titles":[
-		//				"BPID",
-		//				"version",
-		//				"CTRName",
-		//				"topic",
-		//				"PGEMaker",
-		//				"MHEName",
-		//				"modelD",
-		//				"modelH",
-		//				"limitDate",
-		//				"files"
-		//				],
-		//			"BID":"BPID",
-		//			"VER":"version",
-		//			"filter":"BPID='"+dataSelect.taskBPID+"'"
-		//			};
-		//	
-		//	
-		//	Fun_fillTrackTable("#tableTrackPLD",SQLParamPLD);
-		//	
-		//	var SQLParamBPT={
-		//			"tableName":"ppm_bills_blueprint",
-		//			"titles":[
-		//				"BPTID",
-		//				"BPTVersion",
-		//				"CTRName",
-		//				"BPTDescribe",
-		//				"PGEMaker",
-		//				"auditor",
-		//				"auditDate",
-		//				"modelD",
-		//				"modelH",
-		//				"limitDate",
-		//				"files"
-		//				],
-		//				"BID":"BPTID",
-		//				"VER":"BPTVersion",
-		//			"filter":"BPTID='"+dataSelect.taskBPID+"'"
-		//			};
-		//	
-		//	
-		//	Fun_fillTrackTable("#tableTrackBPT",SQLParamBPT);
-		//	
-		//	
-		//	var SQLParamTask={
-		//			"tableName":"ppm_bills_task",
-		//			"titles":[
-		//				"BTID",
-		//				"BTVersion",
-		////				"taskSortTypeText",
-		//				"taskTypeText",
-		//				"taskStaff",
-		//				"taskDBE",
-		//				"taskLimitDate",
-		//				"IPQCAuditResultText",
-		//				"taskFiles",
-		//				"BTStatusText"
-		//				],
-		//				"BID":"BTID",
-		//				"VER":"BTVersion",
-		//			"filter":"taskBPID='"+dataSelect.taskBPID+"'"
-		//			};
-		//	
-		//	
-		//	Fun_fillTrackTable("#tableTrackTask",SQLParamTask);
+
 
 		var SQLParamPLD = {
 			"tableName": "ppm_bills_plan",
@@ -906,6 +1071,128 @@
 			},
 			error: function (XMLHttpRequest, textStatus, errorThrown) {}
 		});
+	}
+
+	//代码审查记录
+	const loadCodeAuditRecordTable = async ({
+		BTID, //任务单号
+		BTVersion //任务单版本
+	}) => {
+		//check-参数检查
+		if (!BTID && BTVersion) {
+			console.log('loadCodeAuditRecordTable 参数异常');
+			return
+		}
+
+		//d-获取审核记录
+		let codeAuditRecord = await getDataBySql({
+			sql: 'getCodeAuditRecord',
+			params: {
+				filter: 'BTID="' + BTID + '" and BTVersion="' + BTVersion + '"',
+				orderBy: 'rowId'
+			}
+		})
+
+		console.log('codeAuditRecord', codeAuditRecord);
+
+		//r-生成表格
+		loadBillDataTable({
+			elementId: 'codeCheckRecordTable',
+			dtParams: {
+				dtConfig: 'dtConfigData',
+				data: codeAuditRecord,
+				columns: [{
+					data: 'rowId',
+				}, {
+					data: 'saveDate',
+				}, {
+					data: 'codeAuditor',
+				}, {
+					data: 'result',
+				}, {
+					data: 'remark',
+				}]
+				// scrollX: true,
+				// bAutoWidth: true
+			}
+		})
+
+		//如数据为0,清空tbody 避免直接获取size =1;
+		if (codeAuditRecord.length === 0) {
+			$('#codeCheckRecordTable tbody').html("");
+		}
+
+		//解绑原事件
+		$('#codeCheckRecordTable tbody').unbind();
+		// 添加子表双击事件
+
+		let table = $('#codeCheckRecordTable').DataTable();
+		$('#codeCheckRecordTable tbody').on('click', 'tr', function () {
+
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+
+				let rowSelect = table.row('.selected').data();
+				console.log("rowSelect:" + JSON.stringify(rowSelect));
+				$('#codeAuditRowId').text(rowSelect.rowId)
+				$("input:radio[name=codeAduditResult][value=" + rowSelect.result + "]").prop("checked",
+					true);
+				$('#codeAuditRemark').val(rowSelect.remark)
+
+
+				showAuditRuleTable({
+					taskType: $('#taskSortType').text()
+				})
+
+
+				$('#codeCheckRuleModal').modal('show');
+			}
+
+		});
+
+	}
+
+
+	//代码审查面板
+	const fillCodeAuditPanel = async ({
+		BTID, //任务单号
+		BTVersion //任务单版本
+	}) => {
+
+		//c-参数检查
+		if (!BTID && BTVersion) {
+			console.log('fillCodeAuditPanel 参数异常');
+			return
+		}
+
+		//d-加载任务单数据
+		let TaskCodeAuditData = await getDataBySql({
+			sql: 'getTaskCodeAuditData',
+			params: {
+				filter: 'BTID="' + BTID + '" and BTVersion="' + BTVersion + '"'
+			}
+		})
+		console.log('TaskCodeAuditData:', TaskCodeAuditData);
+
+		//r-填写信息
+		if (TaskCodeAuditData.length === 0) {
+			console.log('TaskCodeAuditData 未找到数据');
+			return
+		}
+		$('#codeAdr').val(TaskCodeAuditData[0].codeAdr)
+		$("#codeAuditor").selectpicker('val', TaskCodeAuditData[0].codeAuditor)
+
+		//d-重载记录表
+		loadCodeAuditRecordTable({
+			BTID, //任务单号
+			BTVersion //任务单版本
+		})
+
+
+
 	}
 
 
@@ -1088,7 +1375,6 @@
 				},
 				{
 					data: 'recordAuditDate'
-
 				}
 			]
 		}
@@ -1096,7 +1382,7 @@
 
 		Fun_showRecordsLiteTable(recordsTableSQL, tasksTableInfo);
 
-		console.log("dataSelect.BTAcceptResult:" + dataSelect.BTAcceptResult);
+		// console.log("dataSelect.BTAcceptResult:" + dataSelect.BTAcceptResult);
 		switch (dataSelect.BTAcceptResult) {
 			case 0:
 
@@ -1122,12 +1408,10 @@
 				$('#fileVersion').val("");
 				$('#recordRemark').val("");
 
-
-
-
 				$('#DivTaskAcceptBTNS').show();
 
-				$('#DivRecordPanel').hide();
+				$('#codeAuditPanel').hide();
+				$('#taskRecordPanel').hide();
 
 				break;
 			case 1:
@@ -1142,6 +1426,8 @@
 				$('#divTaskAccept textarea').attr("disabled", true);
 
 				$('#DivTaskAcceptBTNS').hide();
+
+				$('#codeAuditPanel').show();
 
 				//有记录则隐藏
 
@@ -1178,12 +1464,20 @@
 
 				$('#DivTaskAcceptBTNS').hide();
 
-				$('#DivRecordPanel').hide();
+				$('#codeAuditPanel').hide();
+				$('#taskRecordPanel').hide();
 
 
 				break;
 
 		}
+
+		//fillCodeAuditPanel--------
+
+		fillCodeAuditPanel({
+			BTID: dataSelect.BTID,
+			BTVersion: dataSelect.BTVersion
+		})
 
 
 
@@ -1394,7 +1688,7 @@
 	//检查输入项
 	function checkRecordInput() {
 
-		console.log("isInternship(sessionName):" + isInternship(sessionName));
+		// console.log("isInternship(sessionName):" + isInternship(sessionName));
 
 		if ($("#modifyContent").val() == "") {
 			swal("修改内容未填写,请检查!");
@@ -1432,7 +1726,7 @@
 			}
 		})
 
-		console.log("modifyABECheck:" + modifyABECheck);
+		// console.log("modifyABECheck:" + modifyABECheck);
 
 		$.ajax({
 			method: 'get',
@@ -1480,7 +1774,7 @@
 			url: "/app/PM/getSQLDBData",
 			async: false,
 			success: function (data) {
-				console.log("data:" + JSON.stringify(data));
+				// console.log("data:" + JSON.stringify(data));
 
 
 				if (data.length != 0) {
@@ -1537,6 +1831,35 @@
 				error: function (XMLHttpRequest, textStatus, errorThrown) {}
 			});
 
+		}
+	}
+
+
+	//显示审核规则表
+
+	const showAuditRuleTable = ({
+		taskType //任务类型
+	}) => {
+		//c-参数检查
+		if (!taskType) {
+			console.log('showAuditRuleTable 参数错误');
+			return
+		}
+
+		//r-选择显示表
+		switch (taskType) {
+			case 'D':
+				$("#dspCodeCheckRuleTable").show();
+				$("#hmiCodeCheckRuleTable").hide();
+				break;
+			case 'H':
+				$("#dspCodeCheckRuleTable").hide();
+				$("#hmiCodeCheckRuleTable").show();
+				break;
+			default:
+				$("#dspCodeCheckRuleTable").hide();
+				$("#hmiCodeCheckRuleTable").hide();
+				break;
 		}
 	}
 
@@ -1802,7 +2125,7 @@
 						})
 
 						let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
-						console.log('oldTaskLimitDate', oldTaskLimitDate);
+						// console.log('oldTaskLimitDate', oldTaskLimitDate);
 
 						if ($('#taskLimitDate').val() === oldTaskLimitDate) {
 							if (confirm('是否需调整完成期限?')) {
@@ -2003,7 +2326,7 @@
 									$('#BTAcceptResultText').text("已确认");
 									$('#BTAcceptDate').text(Ndate);
 
-									$('#DivRecordPanel').show();
+									$('#taskRecordPanel').show();
 									Fun_getSQLSelectDBData({
 										SQL: "SQLSRStaffs"
 									}, "#recordAuditor");
@@ -2082,7 +2405,7 @@
 			if (dataSelect == undefined) {
 				swal("操作提示:单击选中数据行后,再双击可快速打开表单!");
 			} else {
-				console.log("dataSelect:" + JSON.stringify(dataSelect))
+				// console.log("dataSelect:" + JSON.stringify(dataSelect))
 				Fun_taskRecordInit(dataSelect);
 
 			}
@@ -2642,6 +2965,21 @@
 		//按钮-添加记录
 		$('#BTNTaskRecordAdd').click(function () {
 
+			//c-检查是否为任务人
+			if (sessionName !== $('#taskStaff option:selected').text()) {
+				swal('非任务人无法添加任务记录')
+				return
+			}
+
+			//c-代码审查通过判定
+			let dataSelect = table.row('.selected').data();
+
+			if (dataSelect.codeAuditResult !== '通过') {
+				swal('该任务单未通过代码审核,无法添加任务记录,请通过后重试')
+				return
+			}
+
+
 			let tableRecord = $('#tableRecords').DataTable();
 			let RecordNum = (tableRecord.page.info()).recordsTotal; //总记录数
 
@@ -2669,8 +3007,6 @@
 			} else {
 				swal("暂不开放多记录功能,此任务已有登记记录,请勿重复登记!");
 			}
-
-
 		});
 
 		//按钮-记录审核按钮
@@ -2822,6 +3158,206 @@
 				$("#divFQCMaker").hide();
 			}
 
+		})
+
+
+		loadBootStrapSelector({
+			elementId: 'codeAuditor',
+			sqlParams: {
+				sql: 'getStaffSelector'
+			},
+			// initValue:'中国,北京'
+		})
+
+		//saveCodeInfoBtn 保存代码检查信息按钮
+		$('#saveCodeInfoBtn').click(async function () {
+			//c-检查是否为任务人
+			if (sessionName !== $('#taskStaff option:selected').text()) {
+				swal('非任务人无法保存')
+				return
+			}
+
+			let codeInfo = {
+				BTID: $('#BTID').text(),
+				BTVersion: $('#BTVersion').text(),
+				codeAdr: $('#codeAdr').val(),
+				codeAuditor: $('#codeAuditor option:selected').val(),
+				codeAuditResult: '',
+				codeSaveDate: Ndate,
+			}
+
+
+			let rc = await postDBData({
+				sql: 'update',
+				params: {
+					tableId: 'ppm_bills_task',
+					data: [codeInfo],
+					key: ['BTID', 'BTVersion']
+				}
+			})
+
+			if (rc.affectedRows > 0) {
+				swal('保存成功,可点击提醒检查按钮,发送系统消息!')
+			}
+
+
+		})
+
+		//defaultAuditorBtn 默认检查人按钮
+		$('#defaultAuditorBtn').click(async function () {
+			let codeAuditor = await getDataBySql({
+				sql: 'getCodeAuditor',
+				params: {
+					filter: 'programmer="' + $('#taskStaff option:selected').text() + '"'
+				}
+			})
+
+			if (codeAuditor.length === 0) {
+				console.log('codeAuditor 未找到数据');
+				return
+			}
+			$("#codeAuditor").selectpicker('val', codeAuditor[0].codeAuditor)
+
+		});
+
+
+		//agentAuditorBtn 代理检查人按钮
+		$('#agentAuditorBtn').click(async function () {
+			let codeAuditor = await getDataBySql({
+				sql: 'getCodeAuditor',
+				params: {
+					filter: 'programmer="' + $('#taskStaff option:selected').text() + '"'
+				}
+			})
+
+			if (codeAuditor.length === 0) {
+				console.log('codeAuditor 未找到数据');
+				returnAuditor
+			}
+			$("#codeAuditor").selectpicker('val', codeAuditor[0].agentAuditor)
+
+		});
+
+		// 提醒审核代码按钮
+
+		$('#codeAuditorRemindBtn').click(function () {
+			sendDDMsg({
+				at: $('#codeAuditor option:selected').text(),
+				msg: '@' + $('#codeAuditor option:selected').text() + ',任务单号:' + $('#BTID')
+					.text() + ',客户:' + $('#taskCTRName').text() +
+					',代码已提交,请进行代码审核!'
+			})
+		});
+
+		//addCodeAuditBtn 检查项目按钮
+		$('#addCodeAuditBtn').click(function () {
+
+			//c-检查是否为任务人
+			if (sessionName !== $('#codeAuditor option:selected').text()) {
+				swal('非指定检查人,无法添加审核记录')
+				return
+			}
+
+			showAuditRuleTable({
+				taskType: $('#taskSortType').text()
+			})
+
+			$('#codeAuditRowId').text('')
+			$("input:radio[name=codeAduditResult][value=未通过]").prop("checked",
+				true);
+			$('#codeAuditRemark').val('')
+			$('#codeCheckRuleModal').modal('show');
+		});
+
+		//saveCodeAuditRecordBtn 保存代码审查记录按钮
+		$('#saveCodeAuditRecordBtn').click(async function () {
+
+
+			let rowId = $('#codeAuditRowId').text()
+			if (!rowId) {
+				rowId = $("#codeCheckRecordTable tbody tr").size() + 1;
+			}
+
+			let codeType = '';
+			switch ($('#taskSortType').text()) {
+				case 'D':
+					codeType = 'DSP'
+					break;
+				case 'H':
+					codeType = 'HMI'
+					break;
+			}
+
+			let codeAuditRecord = {
+				// DBID: $('#codeAuditDBID').text(),
+				BPID: $('#taskBPID').text(),
+				BTID: $('#BTID').text(),
+				BTVersion: $('#BTVersion').text(),
+				rowId: rowId,
+				codeType: codeType,
+				codeAuditor: sessionName,
+				result: $('input:radio[name="codeAduditResult"]:checked').val(),
+				remark: $('#codeAuditRemark').val(),
+				saveDate: Ndate
+			}
+
+			let rs = await postDBData({
+				sql: 'replace',
+				params: {
+					tableId: 'ppm_bills_codeaudit',
+					data: [codeAuditRecord]
+				}
+			})
+
+			let codeInfo = {
+				BTID: $('#BTID').text(),
+				BTVersion: $('#BTVersion').text(),
+				codeAuditor: sessionName,
+				codeAuditResult: $('input:radio[name="codeAduditResult"]:checked').val(),
+			}
+
+
+			let rc = await postDBData({
+				sql: 'update',
+				params: {
+					tableId: 'ppm_bills_task',
+					data: [codeInfo],
+					key: ['BTID', 'BTVersion']
+				}
+			})
+
+			if (rs.affectedRows > 0 && rc.affectedRows > 0) {
+				if (confirm('添加审核记录成功,是否通知任务人?')) {
+					let DDMsg = $('input:radio[name="codeAduditResult"]:checked').val() === '通过' ? {
+						at: $('#taskStaff option:selected').text(),
+						msg: '@' + $('#taskStaff option:selected').text() + ', 任务单号:' +
+							$('#BTID').text() + ',客户:' + $('#taskCTRName').text() +
+							',代码审核通过,请进行后续操作'
+					} : {
+						at: $('#codeAuditor option:selected').text(),
+						msg: '@' + $('#taskStaff option:selected').text() + ', 任务单号:' +
+							$('#BTID').text() + ',客户:' + $('#taskCTRName').text() +
+							',代码审核未通过,请修正'
+					}
+					sendDDMsg(DDMsg)
+				}
+			} else {
+				alert('添加审核记录失败')
+			}
+
+			await loadCodeAuditRecordTable({
+				BTID: $('#BTID').text(),
+				BTVersion: $('#BTVersion').text()
+			})
+			$('#codeCheckRuleModal').modal('hide');
+
+		});
+
+
+		// 处理多model 滚动失效问题
+		$('#codeCheckRuleModal').on('hidden.bs.modal', function () {
+			$(this).removeData('bs.modal');
+			$(document.body).addClass("modal-open");
 		})
 
 

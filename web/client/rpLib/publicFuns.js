@@ -895,19 +895,27 @@ const updateDataTable = async (i) => {
 
 
 
+
 /**
  *初始化工作流程表单模块DataTable
  *
  * @param {*} i={elementId,sqlParams,dtParams}
  */
-const loadBillDataTable = async (i) => {
-    // console.log("loadBillDataTable i:" + JSON.stringify(i));
-    $('#' + i.elementId).DataTable().destroy(); //销毁原数据表格,防止加载错误
+const loadBillDataTable = async ({
+    elementId, //元素id
+    sqlParams, //sql参数
+    dtParams //表格参数
+}) => {
 
+    $('#' + elementId).DataTable().destroy(); //销毁原数据表格,防止加载错误
     //获得r1={dataTable 参数}
-    let r1 = getBillDataTableConfig(i);
+    let r1 = getBillDataTableConfig({
+        elementId,
+        sqlParams,
+        dtParams
+    });
     // console.log('r1:' + JSON.stringify(r1));
-    $('#' + i.elementId).DataTable(r1);
+    $('#' + elementId).DataTable(r1);
 
 }
 
@@ -917,7 +925,11 @@ const loadBillDataTable = async (i) => {
  *
  * @param {*} i={sqlParams,dtParams}
  */
-const getBillDataTableConfig = (i) => {
+const getBillDataTableConfig = ({
+    elementId, //元素id
+    sqlParams, //sql参数
+    dtParams //表参数
+}) => {
     // console.log("getBillDataTableConfig i:" + JSON.stringify(i));
 
     //定义各类参数模版
@@ -1009,27 +1021,19 @@ const getBillDataTableConfig = (i) => {
                     // 取消选择
                     this.rows().deselect();
                     //自动按下隐藏的自定义新增按钮
-                    $('#' + i.elementId + 'New').click();
-                    // //清空div
+                    $('#' + elementId + 'New').click();
 
-                    // initFormInputs({
-                    //     formId: i.elementId + 'Form'
-                    // })
-                    // //打开面板
-                    // $('#' + i.elementId + 'ModalOpen').click();
                 }
             },
             {
                 text: '删除',
                 action: function () {
 
-                    //自动按下隐藏的自定义删除按钮
-                    // alert($('#' + i.elementId + 'Delete').length);
-                    // console.log($('#' + i.elementId + 'Delete').length);
+
                     //自定义删除
 
-                    if ($('#' + i.elementId + 'Delete').length > 0) {
-                        $('#' + i.elementId + 'Delete').click()
+                    if ($('#' + elementId + 'Delete').length > 0) {
+                        $('#' + elementId + 'Delete').click()
                     } else {
                         let DBIDArray = []
                         let dataSelected = this.rows({
@@ -1046,12 +1050,12 @@ const getBillDataTableConfig = (i) => {
                                 let sqlParams = {
                                     sql: 'delete',
                                     params: {
-                                        tableId: i.sqlParams.params.tableId,
+                                        tableId: sqlParams.params.tableId,
                                         data: DBIDArray
                                     }
                                 }
                                 let updateDataTableI = {
-                                    elementId: i.elementId,
+                                    elementId: elementId,
                                     sqlParams: sqlParams
                                 }
                                 updateDataTable(updateDataTableI);
@@ -1098,7 +1102,7 @@ const getBillDataTableConfig = (i) => {
     let dtConfig;
 
     //替换定义参数模版
-    switch (i.dtParams.dtConfig) {
+    switch (dtParams.dtConfig) {
         case 'dtConfigFull':
             dtConfig = dtConfigFull;
             break;
@@ -1115,29 +1119,26 @@ const getBillDataTableConfig = (i) => {
 
     //修改参数
 
-    if (i.dtParams.data) {
-        dtConfig.data = i.dtParams.data;
+    if (dtParams.data) {
+        dtConfig.data = dtParams.data;
     }
 
-    if (i.sqlParams) {
-        if (i.sqlParams.sqlId) {
-            dtConfig.ajax.data.sql = i.sqlParams.sqlId;
+    if (sqlParams) {
+        if (sqlParams.sqlId) {
+            dtConfig.ajax.data.sql = sqlParams.sqlId;
         }
-        if (i.sqlParams.params) {
-            dtConfig.ajax.data.params = i.sqlParams.params;
+        if (sqlParams.params) {
+            dtConfig.ajax.data.params = sqlParams.params;
         }
     }
 
-    if (i.dtParams) {
-        for (const p in i.dtParams) {
-            dtConfig[p] = i.dtParams[p];
+    if (dtParams) {
+        for (const p in dtParams) {
+            dtConfig[p] = dtParams[p];
         }
-        // if (i.dtParams.columns) {
-        //     dtConfig.columns = i.dtParams.columns;
-        // }
+
     }
 
-    // console.log("dtConfig:" + JSON.stringify(dtConfig));
 
     o = dtConfig;
 
