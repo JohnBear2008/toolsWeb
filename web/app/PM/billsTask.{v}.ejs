@@ -1411,7 +1411,7 @@
 				$('#DivTaskAcceptBTNS').show();
 
 				$('#codeAuditPanel').hide();
-				$('#taskRecordPanel').hide();
+				// $('#taskRecordPanel').hide();
 
 				break;
 			case 1:
@@ -1465,7 +1465,7 @@
 				$('#DivTaskAcceptBTNS').hide();
 
 				$('#codeAuditPanel').hide();
-				$('#taskRecordPanel').hide();
+				// $('#taskRecordPanel').hide();
 
 
 				break;
@@ -1478,6 +1478,15 @@
 			BTID: dataSelect.BTID,
 			BTVersion: dataSelect.BTVersion
 		})
+
+		if (dataSelect.codeAuditResult === '通过') {
+			$('#taskRecordPanel').show();
+		} else {
+			$('#taskRecordPanel').hide();
+		}
+
+
+
 
 
 
@@ -2966,10 +2975,6 @@
 
 
 
-
-
-
-
 		//按钮-添加记录
 		$('#BTNTaskRecordAdd').click(function () {
 
@@ -3248,17 +3253,41 @@
 
 		// 提醒审核代码按钮
 
-		$('#codeAuditorRemindBtn').click(function () {
-			sendDDMsg({
+		$('#codeAuditorRemindBtn').click(async function () {
+			let rs = await sendDDMsg({
 				at: $('#codeAuditor option:selected').text(),
 				msg: '@' + $('#codeAuditor option:selected').text() + ',任务单号:' + $('#BTID')
 					.text() + ',客户:' + $('#taskCTRName').text() +
 					',代码已提交,请进行代码审核!'
 			})
+
+			// console.log('rs', rs);
+
+			if (rs) {
+				swal('发送成功').then((value) => {
+					io_refresh()
+				})
+			}
+			// io_refresh()
+
+
 		});
 
 		//addCodeAuditBtn 检查项目按钮
 		$('#addCodeAuditBtn').click(function () {
+
+			//c-检查是否为任务记录人
+
+			let table = $('#codeCheckRecordTable').DataTable();
+			let rowSelect = table.row('.selected').data();
+
+			if (rowSelect) {
+				if (sessionName !== rowSelect.codeAuditor) {
+					swal('您不是该审核记录的检查人,无法保存更新!')
+					return
+				}
+			}
+
 
 			//c-检查是否为任务人
 			if (sessionName !== $('#codeAuditor option:selected').text()) {
@@ -3347,7 +3376,13 @@
 							$('#BTID').text() + ',客户:' + $('#taskCTRName').text() +
 							',代码审核未通过,请修正'
 					}
-					sendDDMsg(DDMsg)
+					let rs = await sendDDMsg(DDMsg)
+
+					if (rs) {
+						swal('发送成功').then((value) => {
+							io_refresh()
+						})
+					}
 				}
 			} else {
 				alert('添加审核记录失败')

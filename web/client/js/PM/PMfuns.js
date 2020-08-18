@@ -1383,11 +1383,13 @@ function sendDingMsg(DDMsg) {
 
 	if (confirm("是否发送钉钉提醒消息?")) {
 
-		$.ajax({
+		return $.ajax({
 			method: 'post',
 			url: '/app/PM/sendDingTalk',
 			data: DDMsg,
 			success: function (data, textStatus) {
+
+
 				//           console.log("成功数据:" + JSON.stringify(data));
 
 			},
@@ -3104,6 +3106,7 @@ function confirmSendDDMsg(ips) {
 				default:
 			}
 		});
+
 
 }
 

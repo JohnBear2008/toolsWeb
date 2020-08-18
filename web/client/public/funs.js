@@ -512,7 +512,9 @@ const sendDDMsg = async ({
 	at,
 	msg
 }) => {
-	$.ajax({
+
+	let rs = ''
+	await $.ajax({
 		method: 'post',
 		url: '/app/public/sendDingTalk',
 		data: {
@@ -521,11 +523,18 @@ const sendDDMsg = async ({
 		},
 		success: function (data, textStatus) {
 			console.log('发送钉钉消息成功');
+			rs = true
+
 		},
 		error: function (XMLHttpRequest, textStatus, errorThrown) {
 			console.log('发送钉钉消息失败');
+			rs = false
 		}
 	})
+
+	return rs
+
+
 }
 
 /**
