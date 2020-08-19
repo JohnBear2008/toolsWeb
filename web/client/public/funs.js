@@ -94,9 +94,10 @@ const swalFeedback = (i) => {
 
 	let o = swal(i.msg, {
 			content: "input",
+			allowOutsideClick: false
 		})
 		.then((value) => {
-			if (value === '') {
+			if (!value) {
 				swalFeedback({
 					msg: '请填写反馈内容!'
 				})

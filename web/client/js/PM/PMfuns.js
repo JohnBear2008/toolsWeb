@@ -1875,7 +1875,7 @@ function Fun_fillTrackTable(tableID, SQLParam) {
 
 
 function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
-	console.log('SQLParam', SQLParam);
+	// console.log('SQLParam', SQLParam);
 
 
 
@@ -1911,13 +1911,11 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 		success: function (data) {
 
 			let dataR = NulltoEmpty(data);
-			console.log(data);
-
+			// console.log(data);
 
 			if (dataR.length != 0) {
 
 				for (var i = 0; i < dataR.length; i++) {
-
 					var trtd = "<tr>";
 
 					for (var j = 0; j < SQLParam.titles.length; j++) {
@@ -1965,7 +1963,7 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 
 					}
 
-					console.log("1111:" + dataR[i].DBID);
+					// console.log("1111:" + dataR[i].DBID);
 					trtd = trtd + "<td><a href='javascript:getDBIDInfo(\"" + SQLParam.tableName + "\"," + dataR[i].DBID + ")'>查看</a></td></tr>";
 					$(tableID + " tbody").append(trtd);
 

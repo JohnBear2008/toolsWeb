@@ -4,7 +4,7 @@ const getStaffSelector = "select staffName as value,staffName as option,staffID 
 
 
 //任务单面板 获取任务审核记录
-const getTaskCodeAuditData = "select * from (select t1.BTID,t1.BTVersion,t1.codeAdr,t1.codeAuditor,t1.codeSaveDate,t2.DBID,t2.codeType,t2.result,t2.remark,t2.saveDate from `ppm_bills_task` t1 left join `ppm_bills_codeaudit` t2 on t1.BTID=t2.BTID and t1.BTVersion=t2.BTVersion) ta"
+const getTaskCodeAuditData = "select * from (select t1.BTID,t1.BTVersion,t1.codeAdr,t1.codeAuditor,t1.codeAuditResult,t1.codeSaveDate,t2.DBID,t2.codeType,t2.result,t2.remark,t2.saveDate from `ppm_bills_task` t1 left join `ppm_bills_codeaudit` t2 on t1.BTID=t2.BTID and t1.BTVersion=t2.BTVersion) ta"
 
 //获取任务审核记录
 const getCodeAuditRecord = " select * from `ppm_bills_codeaudit`"

@@ -440,16 +440,24 @@
 														class="btn btn-primary">代理人</button>
 												</div>
 											</div>
+
+											<div class="form-group">
+												<label class="col-sm-1 control-label">代码审核</label>
+												<div class="col-sm-3">
+													<span id="codeAuditResult" class="help-block"></span>
+												</div>
+											</div>
+
+
 											<div class="form-group">
 												<label class="col-sm-1 control-label"></label>
 												<div class="col-sm-3">
 													<button id="saveCodeInfoBtn" type="button"
 														class="btn btn-success">保存</button>
-													<button id="codeAuditorRemindBtn" type="button"
-														class="btn btn-success">提醒检查</button>
+													<!-- <button id="codeAuditorRemindBtn" type="button"
+														class="btn btn-success">提醒检查</button> -->
 												</div>
 											</div>
-
 
 										</div>
 										<hr />
@@ -1184,6 +1192,8 @@
 		}
 		$('#codeAdr').val(TaskCodeAuditData[0].codeAdr)
 		$("#codeAuditor").selectpicker('val', TaskCodeAuditData[0].codeAuditor)
+		$('#codeAuditResult').text(TaskCodeAuditData[0].codeAuditResult)
+
 
 		//d-重载记录表
 		loadCodeAuditRecordTable({
@@ -1479,7 +1489,7 @@
 			BTVersion: dataSelect.BTVersion
 		})
 
-		if (dataSelect.codeAuditResult === '通过') {
+		if (dataSelect.codeAuditResult === '通过' && dataSelect.BTAcceptResult == 1) {
 			$('#taskRecordPanel').show();
 		} else {
 			$('#taskRecordPanel').hide();
@@ -2343,7 +2353,13 @@
 									$('#BTAcceptDate').text(Ndate);
 
 									$('#codeAuditPanel').show();
-									// $('#taskRecordPanel').show();
+
+									if ($('#codeAuditResult').text() === '通过') {
+										$('#taskRecordPanel').show();
+									} else {
+										$('#taskRecordPanel').hide();
+									}
+
 									// Fun_getSQLSelectDBData({
 									// 	SQL: "SQLSRStaffs"
 									// }, "#recordAuditor");
@@ -2687,6 +2703,11 @@
 
 			//check-检查选中
 			var dataSelect = table.row('.selected').data();
+
+			console.log('update dataSelect', dataSelect);
+
+			// return
+
 			if (dataSelect == undefined) {
 				swal("请先选中需要更新版本的任务单!");
 				return
@@ -2711,7 +2732,16 @@
 			}
 
 
+
 			//do-完成任务更新版本
+
+			//确定代码审核状态
+
+			let codeAuditResult = dataSelect.codeAuditResult;
+			if (!confirm('是否保留代码审核结果?')) {
+				codeAuditResult = ''
+			}
+
 			var newBTVersion = parseInt(dataSelect.BTVersion) + 1;
 			var IPQCResultText = $('#IPQCResultText').text();
 			if (dataSelect.BTStatusText === "任务完成") {
@@ -2751,6 +2781,10 @@
 					"taskOGNSystemVersion": dataSelect
 						.taskOGNSystemVersion,
 					"taskBugID": dataSelect.taskBugID,
+					"codeAdr": dataSelect.codeAdr,
+					"codeAuditor": dataSelect.codeAuditor,
+					"codeSaveDate": dataSelect.codeSaveDate,
+					"codeAuditResult": codeAuditResult,
 					"taskRepeat": taskRepeat,
 					"taskRepeatText": taskRepeatText,
 					"taskCTRName": dataSelect.taskCTRName,
@@ -2778,10 +2812,7 @@
 					},
 					error: function (err) {
 
-						if (err.responseText.indexOf(
-								"ER_DUP_ENTRY") !=
-							-
-							1) {
+						if (err.responseText.indexOf("ER_DUP_ENTRY") != 1) {
 							swal("系统中已存在重复数据,请检查!");
 						} else {
 							swal("失败数据:" + JSON.stringify(
@@ -2903,6 +2934,10 @@
 					"taskOGNSystemVersion": dataSelect
 						.taskOGNSystemVersion,
 					"taskBugID": dataSelect.taskBugID,
+					"codeAdr": dataSelect.codeAdr,
+					"codeAuditor": dataSelect.codeAuditor,
+					"codeSaveDate": dataSelect.codeSaveDate,
+					"codeAuditResult": codeAuditResult,
 					"taskRepeat": taskRepeat,
 					"taskRepeatText": taskRepeatText,
 					"taskCTRName": dataSelect.taskCTRName,
@@ -3190,6 +3225,14 @@
 				return
 			}
 
+			//c-检查代码审核结果状态
+			if ($('#codeAuditResult').text() === '通过') {
+				if (!confirm('该任务单代码审核已通过,保存会清空结果,需要重新代码审核,是否继续?')) {
+					return
+				}
+			}
+
+			//d-保存代码信息
 			let codeInfo = {
 				BTID: $('#BTID').text(),
 				BTVersion: $('#BTVersion').text(),
@@ -3198,7 +3241,6 @@
 				codeAuditResult: '',
 				codeSaveDate: Ndate,
 			}
-
 
 			let rc = await postDBData({
 				sql: 'update',
@@ -3209,9 +3251,33 @@
 				}
 			})
 
-			if (rc.affectedRows > 0) {
-				swal('保存成功,可点击提醒检查按钮,发送系统消息!')
+			if (!rc) {
+				swal('保存异常')
+				return
 			}
+
+			//d-发送提醒
+			if (!confirm('保存成功,是否立即发送系统消息提醒代码审核人?')) {
+				$('#BillTask').modal('hide');
+				return
+			}
+
+			let rs = await sendDDMsg({
+				at: $('#codeAuditor option:selected').text(),
+				msg: '@' + $('#codeAuditor option:selected').text() + ',任务单号:' + $('#BTID')
+					.text() + ',客户:' + $('#taskCTRName').text() +
+					',代码已提交,请进行代码审核!'
+			})
+
+			// console.log('rs', rs);
+
+			if (rs) {
+				swal('发送成功').then((value) => {
+					io_refresh()
+				})
+			}
+			// io_refresh()
+
 
 
 		})
@@ -3251,27 +3317,27 @@
 
 		});
 
-		// 提醒审核代码按钮
+		// // 提醒审核代码按钮
 
-		$('#codeAuditorRemindBtn').click(async function () {
-			let rs = await sendDDMsg({
-				at: $('#codeAuditor option:selected').text(),
-				msg: '@' + $('#codeAuditor option:selected').text() + ',任务单号:' + $('#BTID')
-					.text() + ',客户:' + $('#taskCTRName').text() +
-					',代码已提交,请进行代码审核!'
-			})
+		// $('#codeAuditorRemindBtn').click(async function () {
+		// 	let rs = await sendDDMsg({
+		// 		at: $('#codeAuditor option:selected').text(),
+		// 		msg: '@' + $('#codeAuditor option:selected').text() + ',任务单号:' + $('#BTID')
+		// 			.text() + ',客户:' + $('#taskCTRName').text() +
+		// 			',代码已提交,请进行代码审核!'
+		// 	})
 
-			// console.log('rs', rs);
+		// 	// console.log('rs', rs);
 
-			if (rs) {
-				swal('发送成功').then((value) => {
-					io_refresh()
-				})
-			}
-			// io_refresh()
+		// 	if (rs) {
+		// 		swal('发送成功').then((value) => {
+		// 			io_refresh()
+		// 		})
+		// 	}
+		// 	// io_refresh()
 
 
-		});
+		// });
 
 		//addCodeAuditBtn 检查项目按钮
 		$('#addCodeAuditBtn').click(function () {
