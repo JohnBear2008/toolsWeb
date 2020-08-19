@@ -3342,21 +3342,12 @@
 		//addCodeAuditBtn 检查项目按钮
 		$('#addCodeAuditBtn').click(function () {
 
-			//c-检查是否为任务记录人
-
-			let table = $('#codeCheckRecordTable').DataTable();
-			let rowSelect = table.row('.selected').data();
-
-			if (rowSelect) {
-				if (sessionName !== rowSelect.codeAuditor) {
-					swal('您不是该审核记录的检查人,无法保存更新!')
-					return
-				}
-			}
-
 
 			//c-检查是否为任务人
-			if (sessionName !== $('#codeAuditor option:selected').text()) {
+			let table = $('#billsTaskTable').DataTable();
+			let dataSelect = table.row('.selected').data();
+
+			if (sessionName !== dataSelect.codeAuditor) {
 				swal('非指定检查人,无法添加审核记录')
 				return
 			}
@@ -3374,6 +3365,18 @@
 
 		//saveCodeAuditRecordBtn 保存代码审查记录按钮
 		$('#saveCodeAuditRecordBtn').click(async function () {
+
+			//c-检查是否为任务记录人
+
+			let table = $('#codeCheckRecordTable').DataTable();
+			let rowSelect = table.row('.selected').data();
+
+			if (rowSelect) {
+				if (sessionName !== rowSelect.codeAuditor) {
+					swal('您不是该审核记录的检查人,无法保存更新!')
+					return
+				}
+			}
 
 
 			let rowId = $('#codeAuditRowId').text()
