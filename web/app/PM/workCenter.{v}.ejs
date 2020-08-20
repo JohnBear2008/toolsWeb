@@ -834,7 +834,8 @@
 
 		var panelSQLTask = {
 			"SQL": "SQLTableBillsTaskRecord",
-			"filter": " taskStaff = '" + sessionName + "' AND BTAcceptResult =1 AND recordStatus IS NULL "
+			"filter": " taskStaff = '" + sessionName +
+				"' AND BTAcceptResult =1 AND recordStatus IS NULL AND codeAuditResult='通过'"
 		};
 		getUndoneInfo("#TaskunRecord", panelSQLTask, ["taskBPID", "taskCTRName", "BTID"]);
 
