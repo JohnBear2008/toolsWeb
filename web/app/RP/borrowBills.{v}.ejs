@@ -514,10 +514,25 @@
                                     <label class="col-sm-1 control-label text-warning"
                                         for="rp_borrowbillsForm-sendWay">出货方式</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_borrowbillsForm-sendWay" class="selectpicker">
-
+                                        <select id="rp_borrowbillsForm-sendWay" class="selectpicker form-control">
                                         </select>
                                     </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">快递类型</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_borrowbillsForm-expressType" class="selectpicker form-control"
+                                            data-live-search="true" data-size="5" data-dropup-auto="false">
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">快递单号</label>
+                                    <div class="col-sm-5">
+                                        <input id="rp_borrowbillsForm-expressId" class="form-control " type="text">
+                                    </div>
+
                                 </div>
 
                                 <div class="form-group">
@@ -733,23 +748,7 @@
 
                                                 </div>
 
-                                                <div class="form-group">
 
-                                                    <label class="col-sm-1 control-label">快递类型</label>
-                                                    <div class="col-sm-5">
-                                                        <select id="rp_borrowsubbillsForm-expressType"
-                                                            class="selectpicker form-control" data-live-search="true"
-                                                            data-size="5" data-dropup-auto="false">
-                                                        </select>
-                                                    </div>
-
-                                                    <label class="col-sm-1 control-label">快递单号</label>
-                                                    <div class="col-sm-5">
-                                                        <input id="rp_borrowsubbillsForm-expressId"
-                                                            class="form-control " type="text">
-                                                    </div>
-
-                                                </div>
 
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">单位</label>
@@ -2199,12 +2198,7 @@
                 return
             }
 
-            //c-顺付备注检查
-            if ($('#rp_borrowsubbillsForm-expressType option:selected').text() === '顺付' &&
-                !$("#rp_borrowsubbillsForm-remark").val()) {
-                alert('顺付必须在备注中写明原因!')
-                return
-            }
+
 
             //库存不足警告
             let stockNum = parseInt($('#stockNum').text());
@@ -2643,6 +2637,13 @@
                 return;
             }
 
+            //c-顺付备注检查
+            if ($('#rp_borrowbillsForm-expressType option:selected').text() === '顺付' &&
+                !$("#rp_borrowbillsForm-remark").val()) {
+                alert('顺付必须在备注中写明原因!')
+                return
+            }
+
 
 
             saveBorrowBill();
@@ -2775,7 +2776,7 @@
         })
 
         loadBootStrapSelector({
-            elementId: 'rp_borrowsubbillsForm-expressType',
+            elementId: 'rp_borrowbillsForm-expressType',
             sqlParams: {
                 sql: 'getOptionSelector',
                 params: {
