@@ -47,11 +47,12 @@
 
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel"
-			aria-hidden="true">
+			aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog" style="width:75%">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<button type="button" id='btnModalClose' class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="BillPLDLabel">发布面板</h4>
 					</div>
 					<div class="modal-body">
@@ -160,7 +161,7 @@
 									<div class="form-group">
 										<label class="col-sm-1 control-label" for="name">修改要求:</label>
 										<div class="col-sm-8">
-											<span id="detail" class="help-block"></span>
+											<span id="detail" class="help-block" style="white-space:pre-wrap;"></span>
 										</div>
 									</div>
 
@@ -223,18 +224,16 @@
 
 
 									<!-------------------------------------------------------------------------->
+
+
+									<!-------------------------------------------------------------------------->
 									<div class="form-group">
 										<label class="col-sm-1 control-label" for="name">附件:</label>
 
 										<div class="col-sm-8">
-
-
 											<div id="div_previewImages"></div>
 											<div id="progressNumber"></div>
-
 											<div id="divFilesUploaded"></div>
-
-
 										</div>
 
 
@@ -320,6 +319,12 @@
 										<div class="col-sm-10">
 											<button id="BTNGetInfo" class="btn btn-success"
 												data-toggle="modal">智能填单</button>
+
+											<input type="file" name="myHead" multiple="multiple" id="fileToUpload"
+												style="display:none;" onchange="fileSelected()">
+											<a class="btn btn-info" onclick="$('#fileToUpload').click()">附加程序及文件</a>
+
+
 											<button id="BTNResetInfo" class="btn btn-warning"
 												data-toggle="modal">清空信息</button>
 
@@ -345,7 +350,7 @@
 
 
 
-									<div class="form-group" id="DivPBHBTNS">
+									<div class="form-group" id="DivEmaiBTNS">
 										<label class="col-sm-1 control-label">邮件:</label>
 										<div class="col-sm-10">
 											<button id="BTNModelEmail" class="btn btn-default"
@@ -496,7 +501,7 @@
 								<tr>
 									<td colspan="2">
 
-										<div id="emailContentModel" class="help-block" style="white-space:pre;">
+										<div id="emailContentModel" class="help-block">
 
 										</div>
 
@@ -523,10 +528,6 @@
 				<!-------------------------------------------------------------------------->
 
 				<div>
-
-
-
-
 
 
 				</div>
@@ -575,9 +576,6 @@
 			//}
 
 
-
-
-
 			//检测填入邮箱格式是否符合 aa<1@1.com>
 
 			const checkEmail = (email) => {
@@ -586,11 +584,13 @@
 				try {
 					let emailAdr = email.substring(email.indexOf('<'), email.length);
 
-					var myReg1 = /^<[a-zA-Z0-9_-]+\.+[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)>$/;
-					var myReg2 = /^<[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)>$/;
 
 
-					if (myReg1.test(emailAdr)||(myReg2.test(emailAdr))) {
+					var myReg1 = /^<[a-zA-Z0-9_-]+\.+[a-zA-Z0-9_-]+@([a-zA-Z0-9_-]+\.)+(com|cn|net|org|tw)>$/;
+					var myReg2 = /^<[a-zA-Z0-9_-]+@([a-zA-Z0-9_-]+\.)+(com|cn|net|org|tw)>$/;
+
+
+					if (myReg1.test(emailAdr) || (myReg2.test(emailAdr))) {
 						o = true;
 					} else {
 						o = false;
@@ -682,6 +682,8 @@
 				$('#applyDate').text(dataSelect.applyDate);
 				$('#limitDate').text(dataSelect.limitDate);
 				$('#topic').text(dataSelect.topic);
+
+				console.log('detail:' + dataSelect.detail)
 				$('#detail').text(dataSelect.detail.replace(/<br\/>/g, '\n'));
 
 				//	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
@@ -750,7 +752,7 @@
 									" ; ";
 							}
 
-							fileLink = fileLink.substr(0, fileLink.length - 3);
+							// fileLink = fileLink.substr(0, fileLink.length - 3);
 						}
 						var downloadurl = fileLink;
 					} else {
@@ -771,7 +773,7 @@
 								fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" +
 									files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
 							}
-							fileLink = fileLink.substr(0, fileLink.length - 3);
+							// fileLink = fileLink.substr(0, fileLink.length - 3);
 						}
 						var downloadurl = fileLink;
 					} else {
@@ -797,7 +799,7 @@
 				if (dataSelect.PBHAuditor === "") {
 					Fun_getSQLSelectDBData({
 						SQL: "SQLSRStaffs"
-					}, "#PBHAuditor", dataSelect.PGEMaker);
+					}, "#PBHAuditor", '谢丽君');
 				} else {
 					Fun_getSQLSelectDBData({
 						SQL: "SQLSRStaffs"
@@ -814,6 +816,9 @@
 					$("#DivFileBTNS").show();
 					$('#DivToolBTNS').show();
 					$('#DivPBHBTNS').show();
+					$('#DivEmaiBTNS').hide();
+
+
 					$("#PBHAuditor").attr("disabled", false);
 					$('#BTNUpdVer').hide();
 
@@ -832,6 +837,7 @@
 					$("#DivFileBTNS").hide();
 					$('#DivToolBTNS').hide();
 					$('#DivPBHBTNS').hide();
+					$('#DivEmaiBTNS').show();
 					$("#PBHAuditor").attr("disabled", true);
 					$('#BTNUpdVer').show();
 
@@ -846,28 +852,30 @@
 
 				console.log(adrs)
 				let o = '';
-				try {
-					if (adrs.indexOf(',') !== -1) {
-						adrs = adrs.replace(/;/g, ',');
-						adrsArray = adrs.split(',');
 
-						for (let n = 0; n < adrsArray.length; n++) {
-							adrsArray[n] = mark + '-抄送' + (n + 1) + '<' + adrsArray[n] + '>';
+				o = adrs;
+				// try {
+				// 	if (adrs.indexOf(',') !== -1) {
+				// 		adrs = adrs.replace(/;/g, ',');
+				// 		adrsArray = adrs.split(',');
 
-							console.log("adrsArray[n]:" + adrsArray[n]);
+				// 		for (let n = 0; n < adrsArray.length; n++) {
+				// 			adrsArray[n] = mark + '-抄送' + (n + 1) + '<' + adrsArray[n] + '>';
 
-							o = o + adrsArray[n] + ',';
-						}
+				// 			console.log("adrsArray[n]:" + adrsArray[n]);
 
-						o = o.substring(0, o.length - 1);
-					} else if (adrs !== '') {
-						o = mark + '-抄送<' + adrs + '>';
-					}
+				// 			o = o + adrsArray[n] + ',';
+				// 		}
 
-				} catch (error) {
-					console.log("formateCopyEmailADS error:" + error)
+				// 		o = o.substring(0, o.length - 1);
+				// 	} else if (adrs !== '') {
+				// 		o = mark + '-抄送<' + adrs + '>';
+				// 	}
 
-				}
+				// } catch (error) {
+				// 	console.log("formateCopyEmailADS error:" + error)
+
+				// }
 
 				return o;
 
@@ -888,7 +896,7 @@
 					case "unRecord":
 						var tableSQL = {
 							"SQL": "SQLTableBillsPBH",
-							"filter": " maker = '" + sessionName + "' AND PBHStatus IS NULL",
+							"filter": " maker = '" + sessionName + "' AND  ( emailResult=3 OR PBHStatus IS NULL )",
 							"orderBy": " saveTimeStamp DESC"
 						};
 						break;
@@ -916,7 +924,7 @@
 					default:
 						var tableSQL = {
 							"SQL": "SQLTableBillsPBH",
-							"filter": "emailResult=0 OR emailResult IS NULL",
+							"filter": "emailResult=0 OR emailResult=3 OR emailResult IS NULL",
 							"orderBy": " saveTimeStamp DESC"
 						};
 						$("#BTNFilterSimple").addClass("active");
@@ -1073,13 +1081,13 @@
 
 							filesHtml = filesHtml + tdFiles + " ; ";
 
-							emailModifyContent = emailModifyContent + $(
-									"#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)")
-								.html() + "\n";
+							emailModifyContent = emailModifyContent +
+								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)").html()) +
+								"\n";
 
-							emailFunctionsDBE = emailFunctionsDBE + $(
-									"#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)")
-								.html() + "\n";
+							emailFunctionsDBE = emailFunctionsDBE +
+								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)").html()) +
+								"\n";
 
 						}
 
@@ -1096,22 +1104,28 @@
 					var ibtn = "<button  class='btn btn-default btn-xs'>×</button>";
 					$("#divFilesUploaded").find("a").after(ibtn);
 
-					$("#divFilesUploaded :button").on('click', function () {
 
+					$("#divFilesUploaded :button").on('click', function () {
 						$(this).prev("a").remove();
 						$(this).prev("span").remove();
-
+						// $(this).next(";").remove();
 						$(this).remove();
-
 					})
 
+
+					//不抓取功能说明
 					$("#emailContent").val(emailContentFormat + "修改内容:\n" +
-						emailModifyContent + "功能说明:\n" + emailFunctionsDBE);
+						emailModifyContent);
+
+					// $("#emailContent").val(emailContentFormat + "修改内容:\n" +
+					// 	emailModifyContent + "功能说明:\n" + emailFunctionsDBE);
+
+
 
 
 					Fun_getSQLSelectDBData({
 						SQL: "SQLSRStaffs"
-					}, "#PBHAuditor", $('#PGEMaker').text());
+					}, "#PBHAuditor", '谢丽君');
 
 					$.ajax({
 						method: 'get',
@@ -1125,11 +1139,15 @@
 
 							// swal(JSON.stringify(getEmails(data[0].contacts)));
 
+							// let emailCopyADRS = formateCopyEmailADS(getEmails(data[0].contacts), $(
+							// 	'#PBHCTRName').text());
 
-							let emailCopyADRS = formateCopyEmailADS(getEmails(data[0].contacts), $(
-								'#PBHCTRName').text());
+							emailCopyADRS = data[0].contacts;
+							// console.log('emailCopyADRS', emailCopyADRS);
 
-							$("#emailCopyADRS").val(emailCopyADRS);
+							if (emailCopyADRS) {
+								$("#emailCopyADRS").val(emailCopyADRS.replace(/\s+/g, ""));
+							}
 
 							$("#emailContact").val(data[0].contact);
 
@@ -1164,95 +1182,113 @@
 						}, "PBH01")) {
 						if (checkPBHInput()) {
 
-							var files = [];
+							let dataSelect = table.row('.selected').data();
 
-							$('#divFilesUploaded a').each(function () {
-								var fileKey = $(this).attr('href').substring(23);
-								var fileName = $(this).attr('download');
+							console.log("dataSelect.maker:" + dataSelect.maker);
 
-								var fileInfo = {
-									"fileName": fileName,
-									"fileKey": fileKey
+
+							if (sessionName !== dataSelect.maker) {
+								swal("当前帐户非此单方案人,不可填单!")
+							} else {
+								var files = [];
+
+								$('#divFilesUploaded a').each(function () {
+									var fileKey = $(this).attr('href').substring(23);
+									var fileName = $(this).attr('download');
+
+									var fileInfo = {
+										"fileName": fileName,
+										"fileKey": fileKey
+									}
+
+									files.push(fileInfo);
+								});
+
+								let PBHMaker = $('#PBHMaker').text();
+
+								if (PBHMaker === '') {
+									PBHMaker = sessionName;
 								}
 
-								files.push(fileInfo);
-							});
+								var PBHData = {
+									"DBTable": "ppm_bills_PBH",
+									"DBID": $('#DBID').val(),
+									"PBHBPID": $('#BPID').text(),
+									"PBHCTRName": $('#PBHCTRName').text(),
+									"emailADRS": $('#emailADRS').val(),
+									"emailCopyADRS": $('#emailCopyADRS').val(),
+									"emailTitle": $('#emailTitle').val(),
+									//						"files":JSON.stringify(filesValue),
+									"files": JSON.stringify(files),
+									"emailContact": $('#emailContact').val(),
+									"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>')
+										.replace(/'/g, '"'),
+									"PBHRemark": $('#PBHRemark').val(),
+									"PBHMaker": PBHMaker,
+									"PBHMakeDate": Ndate,
+									"PBHAuditor": $('#PBHAuditor option:selected').text(),
+									"billPBHStatus": "已填单,未审核"
+								}
 
-							var PBHData = {
-								"DBTable": "ppm_bills_PBH",
-								"DBID": $('#DBID').val(),
-								"PBHBPID": $('#BPID').text(),
-								"PBHCTRName": $('#PBHCTRName').text(),
-								"emailADRS": $('#emailADRS').val(),
-								"emailCopyADRS": $('#emailCopyADRS').val(),
-								"emailTitle": $('#emailTitle').val(),
-								//						"files":JSON.stringify(filesValue),
-								"files": JSON.stringify(files),
-								"emailContact": $('#emailContact').val(),
-								"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
-								"PBHRemark": $('#PBHRemark').val(),
-								"PBHMaker": sessionName,
-								"PBHMakeDate": Ndate,
-								"PBHAuditor": $('#PBHAuditor option:selected').text(),
-								"billPBHStatus": "已填单,未审核"
-							}
+								//		saveDBData(PBHData,"PBH单");
 
-							//		saveDBData(PBHData,"PBH单");
+								$.ajax({
+									method: 'post',
+									url: '/app/PM/saveDBData',
+									data: PBHData,
+									success: function (data) {
+										//         swal("成功数据:" + JSON.stringify(data));
+										if (data.affectedRows != 0) {
 
-							$.ajax({
-								method: 'post',
-								url: '/app/PM/saveDBData',
-								data: PBHData,
-								success: function (data) {
-									//         swal("成功数据:" + JSON.stringify(data));
-									if (data.affectedRows != 0) {
+											// $('#PBHMaker').text(sessionName);
 
-										$('#PBHMaker').text(sessionName);
+											//     	               swal("方案单数据保存成功!");
 
+											if (sessionName == $('#PBHAuditor option:selected')
+												.text()) {
+												let msg = confirm("发布单保存成功,是否立刻自动审核?");
 
+												if (msg) {
+													$('#BTNPBHAudit').click();
+												} else {
+													io_refresh()
+												}
 
-										//     	               swal("方案单数据保存成功!");
-
-										if (sessionName == $('#PBHAuditor option:selected').text()) {
-											let msg = confirm("发布单保存成功,是否立刻自动审核?");
-
-											if (msg) {
-												$('#BTNPBHAudit').click();
 											} else {
-												io_refresh()
-											}
-
-										} else {
-											// swal('发布单保存成功')
-											// io_refresh()
+												// swal('发布单保存成功')
+												// io_refresh()
 
 
-											let i = {
-												confirmMsg: '发布单保存成功,是否发送钉钉消息?',
-												DDMsg: {
-													at: '"' + $('#PBHAuditor option:selected')
-														.text() + '"',
-													msg: '@' + $('#PBHAuditor option:selected')
-														.text() + ' 发布单已填写,请审核!'
-												},
-												alertMsg: '发送成功'
+												let i = {
+													confirmMsg: '发布单保存成功,是否发送钉钉消息?',
+													DDMsg: {
+														at: '"' + $(
+																'#PBHAuditor option:selected')
+															.text() + '"',
+														msg: '@' + $(
+																'#PBHAuditor option:selected')
+															.text() + ' 发布单已填写,请审核!'
+													},
+													alertMsg: '发送成功'
+												}
+												let o = {
+													f: io_refresh
+												}
+												aio_chooseSendDDMsg(i, o)
 											}
-											let o = {
-												f: io_refresh
-											}
-											aio_chooseSendDDMsg(i, o)
+
 										}
+									},
+									error: function (err) {
+										if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
+											swal("系统中已存在重复数据,请检查!");
+										} else {
+											swal("失败数据:" + JSON.stringify(err));
+										}
+									}
+								});
 
-									}
-								},
-								error: function (err) {
-									if (err.responseText.indexOf("ER_DUP_ENTRY") != -1) {
-										swal("系统中已存在重复数据,请检查!");
-									} else {
-										swal("失败数据:" + JSON.stringify(err));
-									}
-								}
-							});
+							}
 
 						}
 
@@ -1304,7 +1340,8 @@
 									"emailTitle": $('#emailTitle').val(),
 									"files": JSON.stringify(files),
 									"emailContact": $('#emailContact').val(),
-									"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'),
+									"emailContent": $('#emailContent').val().replace(/\n|\r\n/g, '<br/>')
+										.replace(/'/g, '"'),
 									"PBHRemark": $('#PBHRemark').val(),
 									"PBHAuditor": sessionName,
 									"PBHAuditDate": Ndate,
@@ -1409,6 +1446,10 @@
 							"SQL": "SQLGetAuthorities",
 							"filter": "StaffName='" + sessionName + "'"
 						}, "PBH03")) {
+
+
+
+
 						$('#winEmail').window('open');
 
 						$('#emailADRSModel').text($('#emailADRS').val());
@@ -1465,10 +1506,27 @@
 						if ($('#emailContent').val().indexOf("功能说明") != -1) {
 
 							let emailContent = $('#emailContent').val().split("功能说明"); //去除功能说明
-							$('#emailContentModel').html(emailContent[0]);
+
+							let emailContentModel = emailContent[0];
+
+							if ($('#PBHRemark').val() !== '') {
+								emailContentModel = emailContentModel + '备注:' + $('#PBHRemark').val();
+							}
+
+							$('#emailContentModel').html(emailContentModel.replace(/\n|\r\n/g, '<br/>'));
 
 						} else {
-							$('#emailContentModel').html($('#emailContent').val());
+
+							let emailContentModel = $('#emailContent').val().replace(/\n|\r\n/g, '<br/>');
+
+							console.log("emailContentModel:" + emailContentModel)
+
+							if ($('#PBHRemark').val() !== '') {
+								emailContentModel = emailContentModel + '备注:' + $('#PBHRemark').val();
+							}
+
+							$('#emailContentModel').html(emailContentModel);
+
 						}
 
 					}
@@ -1502,7 +1560,7 @@
 							method: 'get',
 							data: {
 								SQL: 'select staffName,telNo from ppm_staffs',
-								filter: 'staffName ="' + $('#PBHAuditor option:selected').text() + '"'
+								filter: 'staffName ="' + $('#PGEMaker').text() + '"'
 							},
 							url: "/app/PM/getSQLDBData",
 							success: function (data) {
@@ -1529,6 +1587,7 @@
 									"emailContact": $('#emailContact').val(),
 									"emailContentHello": $('#emailContentHello').html(),
 									"emailContentModel": $('#emailContentModel').html(),
+									"emailDate": Ndate,
 									"signName": signName,
 									"signTelNo": signTelNo
 								}
@@ -1538,34 +1597,7 @@
 									url: '/app/PM/sendSYSMail',
 									data: emailData,
 									success: function (data, textStatus) {
-										// swal("发送成功:" + JSON.stringify(textStatus));
 
-										// let i = {
-										// 	confirmMsg: '系统邮件已发送,是否发送钉钉提醒消息?',
-										// 	DDMsg: {
-										// 		at: '"' + $('#PGEMaker').text() +
-										// 			'"',
-										// 		msg: '@' + $('#PGEMaker').text() +
-										// 			',客户:' + $('#PBHCTRName')
-										// 		.text() +
-										// 			',该客户计划单系统邮件已发送,请知悉!'
-										// 	},
-										// 	alertMsg: '发送成功'
-										// }
-										// let o = {
-										// 	f: io_refresh
-										// }
-										// aio_chooseSendDDMsg(i, o)
-
-										// let i = {
-										// 	DDMsg: {
-										// 		at: dataSelect.maker,
-										// 		msg: '@' + dataSelect.maker +
-										// 			',计划单号:' + dataSelect.BPID +
-										// 			',客户:' + dataSelect.PLDCTRName +
-										// 			',该计划单已符合发布条件,请填写发布单!'
-										// 	}
-										// }
 
 										let i = {
 
@@ -1601,16 +1633,7 @@
 						})
 
 
-
-
-
-
-
-
 					}
-
-
-
 
 				});
 
@@ -1618,14 +1641,14 @@
 				//按钮-邮件自定义
 				$('#BTNSendEmailDiv').click(function () {
 
-					var msg = confirm("点击自定义邮件后,讲跳转至邮件客户端,发布单默认邮件已发送,是否继续?");
+					var msg = confirm("点击自定义邮件后,将跳转至邮件客户端,发布单默认邮件已发送,是否继续?");
 					if (msg == true) {
 
 
 						var emailData = {
 							"pbhBPID": $('#BPID').text(),
-							"emailResult": 2
-
+							"emailResult": 2,
+							"emailDate": Ndate,
 						}
 
 						$.ajax({
@@ -1645,7 +1668,7 @@
 							$(
 								'#emailTitle').val() + "&cc=" + $('#emailCopyADRS').val() +
 							"&body=" + $(
-								'#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g,'"'));
+								'#emailContent').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g, '"'));
 						$('#mailhref').click();
 
 					}
@@ -1741,10 +1764,25 @@
 
 
 
+								// let i = {
+								// 	alertMsg: "更新版本成功!"
+								// }
+								// swalAndRefresh(i)
+
+								$('#BillPLD').modal('hide');
+
 								let i = {
-									alertMsg: "更新版本成功!"
+									msg: '更新版本成功,请填写更新原因!',
+									updateParams: {
+										"DBTable": "ppm_bills_pbh",
+										"BillIDName": "pbhBPID",
+										"BillID": $('#BPID').text(),
+										"updateReason": '',
+										"filter": "PBHVersion =" + $('#PBHVersion').text()
+
+									}
 								}
-								swalAndRefresh(i)
+								updateAndWriteReason(i);
 
 							});
 
@@ -1818,6 +1856,14 @@
 
 
 				});
+
+
+				//按钮-表单关闭按钮,添加刷新数据功能
+				$('#btnModalClose').click(function () {
+					window.location.reload();
+				});
+
+
 
 
 				//按钮-表单关闭按钮,添加刷新数据功能

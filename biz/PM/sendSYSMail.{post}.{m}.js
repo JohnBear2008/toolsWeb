@@ -30,7 +30,7 @@ module.exports = function (sender) {
 	//	     var mailData=sender.req.query;
 	var pbhBPID = sender.req.query.pbhBPID;
 	var emailResult = sender.req.query.emailResult;
-	var emailDate=sender.req.query.emailDate;
+	var emailDate = sender.req.query.emailDate;
 
 
 	var SQLUpdate = " update `ppm_bills_pbh` set emailResult =?,emailDate=? where pbhBPID=?";
@@ -40,7 +40,7 @@ module.exports = function (sender) {
 
 		yjDBService.exec({
 			sql: SQLUpdate,
-			parameters: [emailResult,emailDate,pbhBPID],
+			parameters: [emailResult, emailDate, pbhBPID],
 			success: sender.success,
 			error: sender.error
 		});
@@ -122,7 +122,7 @@ module.exports = function (sender) {
 
 			// setup email data with unicode symbols
 			let mailOptions = {
-				from: 'TM.NB-软体公用 <servicetech@techmation.com.cn>', // sender address
+				from: 'TM.NB-工程单位 <servicetech@techmation.com.cn>', // sender address
 				to: emailADRS, // list of receivers
 				cc: emailCopyADRS,
 				subject: emailTitle, // Subject line
@@ -176,7 +176,7 @@ module.exports = function (sender) {
 
 				yjDBService.exec({
 					sql: SQLUpdate,
-					parameters: [emailResult,emailDate,pbhBPID],
+					parameters: [emailResult, emailDate, pbhBPID],
 					success: sender.success,
 					error: sender.error
 				});
