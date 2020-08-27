@@ -2491,12 +2491,12 @@ const showDBIDInfo = async (tableID, SQLParam) => {
 //函数-根据自定义SQL获取数据加载内容
 
 
-function Fun_showSQLTestContentsTable(SQL, tableID, TestResult, auditCheck) {
+async function Fun_showSQLTestContentsTable(SQL, tableID, TestResult, auditCheck) {
 
 	//swal(JSON.stringify(DataPara));
 	$(tableID + " tbody").html("");
 
-	$.ajax({
+	await $.ajax({
 		method: 'get',
 		data: SQL,
 		url: "/app/PM/getSQLDBData",

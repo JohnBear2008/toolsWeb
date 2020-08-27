@@ -1907,6 +1907,14 @@
 					"orderBy": " saveTimeStamp DESC"
 				};
 				break;
+			case "unCodeSaveYes":
+				var tableSQL = {
+					"SQL": "SQLTableBillsTaskRecord",
+					"filter": " taskStaff = '" + sessionName +
+						"' AND BTAcceptResult =1 AND (  codeAdr is null or codeAdr ='')  ",
+					"orderBy": " saveTimeStamp DESC"
+				};
+				break;
 			case "unCodeAuditYes":
 				var tableSQL = {
 					"SQL": "SQLTableBillsTaskRecord",
@@ -1915,6 +1923,13 @@
 				};
 				break;
 
+			case "unCodeAuditPass":
+				var tableSQL = {
+					"SQL": "SQLTableBillsTaskRecord",
+					"filter": " taskStaff = '" + sessionName + "' AND codeAuditResult='未通过' ",
+					"orderBy": " saveTimeStamp DESC"
+				};
+				break;
 			case "unRecord":
 				var tableSQL = {
 					"SQL": "SQLTableBillsTaskRecord",

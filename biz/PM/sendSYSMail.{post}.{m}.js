@@ -139,7 +139,6 @@ module.exports = function (sender) {
 					'<p  align="right">表单编号：TMC011 版次：1 </p>' +
 					'</td>' +
 					'</tr>' +
-
 					'<tr>' +
 					'<td width="100">需求单编号：</td>' +
 					'<td><div>' + pbhBPID + '</div></td>' +

@@ -529,7 +529,7 @@
 
 
 	//函数:记录按钮详情页自动填写内容------------------------
-	function Fun_IPQCRecordInit(dataChoose) {
+	async function Fun_IPQCRecordInit(dataChoose) {
 
 		let dataSelect = NulltoEmpty(dataChoose);
 
@@ -622,13 +622,14 @@
 
 			let tasksTableSQL = {
 				"SQL": "SQLTableTestContents",
-				"filter": "taskSortType = '" + dataSelect.taskSortType + "' AND taskType = '" + dataSelect.taskType +
+				"filter": "taskSortType = '" + dataSelect.taskSortType + "' AND taskType = '" + dataSelect
+					.taskType +
 					"' AND billType='IPQC' AND billVersion=(Select MAX(billVersion)  FROM `ppm_testcontents` WHERE taskSortType='" +
 					dataSelect.taskSortType + "' AND taskType='" + dataSelect.taskType + "' AND billType='IPQC')",
 				"orderBy": "modelType"
 			};
 
-			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, null, null);
+			await Fun_showSQLTestContentsTable(tasksTableSQL, tableID, null, null);
 
 			console.log('dataSelect', dataSelect);
 
@@ -640,12 +641,13 @@
 
 			let tasksTableSQL = {
 				"SQL": "SQLTableTestContents",
-				"filter": "taskSortType = '" + dataSelect.taskSortType + "' AND taskType = '" + dataSelect.taskType +
+				"filter": "taskSortType = '" + dataSelect.taskSortType + "' AND taskType = '" + dataSelect
+					.taskType +
 					"' AND billType='IPQC' AND billVersion='" + $('#testContentsVer').text() + "'",
 				"orderBy": "modelType"
 			};
 
-			Fun_showSQLTestContentsTable(tasksTableSQL, tableID, IPQCTestResult, dataSelect.IPQCAuditResult);
+			await Fun_showSQLTestContentsTable(tasksTableSQL, tableID, IPQCTestResult, dataSelect.IPQCAuditResult);
 
 		}
 
@@ -662,46 +664,35 @@
 		$('#recordAuditResultText').text(dataSelect.recordAuditResultText);
 
 
-		if (dataSelect.IPQCAuditResult == 1 || dataSelect.IPQCAuditResult == 2) {
+		// if (dataSelect.IPQCAuditResult == 1 || dataSelect.IPQCAuditResult == 2) {
 
-			$('#divIPQCPanel input').attr("disabled", true);
-			//		$('#divIPQCPanel :select').attr("disabled",true);
-			//		$('#divIPQCPanel :textarea').attr("disabled",true);
+		// 	$('#divIPQCPanel input').attr("disabled", true);
 
+		// 	$('#DivIPQCInfo input').attr("disabled", true);
+		// 	$('#DivIPQCInfo select').attr("disabled", true);
+		// 	$('#DivIPQCInfo textarea').attr("disabled", true);
 
-			// 		  if(IPQCTestResult!=null){
-			// 			 for(var i=0;i<IPQCTestResult.length;i++){
-			// 				swal(1);
-			// 	  		  swal(IPQCTestResult[i].testResult);
-			// 	 		$("input:radio[name='testResultRadio"+i+"']").attr("disabled",true); 
-			// 	        }
-			// 		  }
-
-			$('#DivIPQCInfo input').attr("disabled", true);
-			$('#DivIPQCInfo select').attr("disabled", true);
-			$('#DivIPQCInfo textarea').attr("disabled", true);
-
-			$('#DivIPQCBTNS').hide();
+		// 	$('#DivIPQCBTNS').hide();
 
 
-		} else {
+		// } else {
 
-			$('#DivIPQCInfo input').attr("disabled", false);
-			$('#DivIPQCInfo select').attr("disabled", false);
-			$('#DivIPQCInfo textarea').attr("disabled", false);
+		// 	$('#DivIPQCInfo input').attr("disabled", false);
+		// 	$('#DivIPQCInfo select').attr("disabled", false);
+		// 	$('#DivIPQCInfo textarea').attr("disabled", false);
 
-			$('#DivIPQCBTNS').show();
+		// 	$('#DivIPQCBTNS').show();
 
-			if (sessionName == $("#IPQCMaker").text()) {
+		// 	if (sessionName == $("#IPQCMaker").text()) {
 
-				$('#IPQCAuditor').attr("disabled", false);
-			} else {
-				$('#IPQCAuditor').attr("disabled", true);
-			}
+		// 		$('#IPQCAuditor').attr("disabled", false);
+		// 	} else {
+		// 		$('#IPQCAuditor').attr("disabled", true);
+		// 	}
 
 
-		}
-
+		// }
+		// alert(dataSelect.IPQCAuditResult + dataSelect.IPQCMaker)
 
 
 		$('#modifyContent').text(dataSelect.modifyContent);
@@ -730,12 +721,27 @@
 			$('#IPQCContent').val(dataSelect.IPQCContent.replace(/<br\/>/g, '\n'));
 		}
 
+		//r-控制IPQC填单项目可编辑性
+		if (!dataSelect.IPQCAuditResult && sessionName === dataSelect.IPQCMaker) {
+			$('#divIPQCPanel input').attr("disabled", false);
+			$('#DivIPQCInfo input').attr("disabled", false);
+			$('#DivIPQCInfo select').attr("disabled", false);
+			$('#DivIPQCInfo textarea').attr("disabled", false);
+		} else {
+			$('#divIPQCPanel input').attr("disabled", true);
+			$('#DivIPQCInfo input').attr("disabled", true);
+			$('#DivIPQCInfo select').attr("disabled", true);
+			$('#DivIPQCInfo textarea').attr("disabled", true);
+		}
 
-		//	  if(dataSelect.IPQCAuditResult==1||dataSelect.IPQCAuditResult==2){
-		//		  $('#DivIPQCBTNS').hide();
-		//		}else{
-		//			$('#DivIPQCBTNS').show();
-		//		}
+		//r-控制按钮组显示
+		if (dataSelect.IPQCAuditResult) {
+			$('#DivIPQCBTNS').hide();
+		} else {
+			$('#DivIPQCBTNS').show();
+		}
+
+
 
 
 
@@ -976,11 +982,6 @@
 
 
 
-
-
-
-
-
 						//do-保存ipqc测试内容
 						var IPQCTestResult = [];
 
@@ -1114,17 +1115,15 @@
 										}
 									}
 
-									swal("IPQC记录更新数据成功!")
-
+									swalAndRefresh({
+										alertMsg: "IPQC记录更新数据成功!"
+									})
 
 								} else {
 
-
-									let i = {
+									swalAndRefresh({
 										alertMsg: "IPQC记录未有数据更新!"
-									}
-									swalAndRefresh(i)
-
+									})
 								}
 							},
 							error: function (XMLHttpRequest, textStatus, errorThrown) {}
