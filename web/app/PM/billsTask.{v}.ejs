@@ -1508,7 +1508,7 @@
 			$('#saveCodeInfoBtn').show();
 			$('#defaultAuditorBtn').show();
 			$('#agentAuditorBtn').show();
-			
+
 		} else {
 			$('#collapseCodeCheck input').attr("disabled", true);
 			$('#collapseCodeCheck select').attr("disabled", true);
@@ -3085,9 +3085,15 @@
 				return
 			}
 
+			//c-任务状态检测
+			if (dataSelect.BTStatusText !== '进行中') {
+				swal('无法添加记录,请更新版本!')
+				return
+			}
 
 			let tableRecord = $('#tableRecords').DataTable();
 			let RecordNum = (tableRecord.page.info()).recordsTotal; //总记录数
+
 
 			if (RecordNum == 0) {
 
