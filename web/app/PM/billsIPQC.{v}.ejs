@@ -466,6 +466,7 @@
 
 		$('input[type=radio][name=IPQCResult]').change(function () {
 
+
 			if ($('input:radio[name="IPQCResult"]:checked').val() == 1) {
 				Fun_getSQLSelectDBData({
 					SQL: "SQLSRStaffs"
@@ -492,8 +493,8 @@
 			"<td><input id='recordRemark' type='text' value='' style='width:100%'></td></td>" +
 			"</tr>";
 		//$("table").append(tr);
-		// $("#TableTestContents tbody tr:eq(0)").before(tr);
-		$("#TableTestContents tbody").append(tr);
+		$("#TableTestContents tbody tr:eq(0)").before(tr);
+		// $("#TableTestContents tbody").append(tr);
 
 		$.ajax({
 			method: 'get',
@@ -1003,9 +1004,12 @@
 								"testRemark": $("#testRemark" + i).val()
 
 							}
-							radioCheck = radioCheck &&
-								$('input:radio[name="recordResultRadio"]:checked').val() &&
+							radioCheck = radioCheck *
+								$('input:radio[name="recordResultRadio"]:checked').val() *
 								$('input:radio[name="testResultRadio' + i + '"]:checked').val();
+
+
+							console.log('radioCheck', radioCheck);
 
 							IPQCTestResult.push(testResult);
 						}
@@ -1017,7 +1021,7 @@
 						// }
 						// alert(radioCheck)
 
-						if (radioCheck != 1) {
+						if (radioCheck !== 1) {
 							if (!confirm('测试内容存在不正确项,是否继续')) {
 								return
 							}

@@ -461,24 +461,28 @@
 
 										</div>
 										<hr />
-										<div class="form-group">
-											<button id="addCodeAuditBtn" type="button"
-												class="btn btn-success">开始检查</button>
+
+										<div id="codeAuditRecordDiv">
+											<div class="form-group">
+												<button id="addCodeAuditBtn" type="button"
+													class="btn btn-success">开始检查</button>
+											</div>
+
+
+											<table id="codeCheckRecordTable" class="table table-bordered"
+												style="width:100%;">
+												<thead>
+													<tr>
+														<th>序号号</th>
+														<th>检查日期</th>
+														<th>检查人</th>
+														<th>结果</th>
+														<th>备注</th>
+													</tr>
+												</thead>
+											</table>
 										</div>
 
-
-										<table id="codeCheckRecordTable" class="table table-bordered"
-											style="width:100%;">
-											<thead>
-												<tr>
-													<th>序号号</th>
-													<th>检查日期</th>
-													<th>检查人</th>
-													<th>结果</th>
-													<th>备注</th>
-												</tr>
-											</thead>
-										</table>
 									</div>
 								</div>
 							</div>
@@ -1488,6 +1492,45 @@
 			BTID: dataSelect.BTID,
 			BTVersion: dataSelect.BTVersion
 		})
+
+		//r-控制代码审核面板内容显示
+
+		if (dataSelect.codeAuditor && dataSelect.BTAcceptResult == 1) {
+			$('#codeAuditRecordDiv').show();
+		} else {
+			$('#codeAuditRecordDiv').hide();
+		}
+
+		//r-提交代码审核按钮显示控制
+		if (dataSelect.taskStaff == sessionName) {
+			$('#collapseCodeCheck input').attr("disabled", false);
+			$('#collapseCodeCheck select').attr("disabled", false);
+			$('#saveCodeInfoBtn').show();
+			$('#defaultAuditorBtn').show();
+			$('#agentAuditorBtn').show();
+			
+		} else {
+			$('#collapseCodeCheck input').attr("disabled", true);
+			$('#collapseCodeCheck select').attr("disabled", true);
+			$('#saveCodeInfoBtn').hide();
+			$('#defaultAuditorBtn').hide();
+			$('#agentAuditorBtn').hide();
+		}
+
+		//r--开始代码审核按钮显示控制
+		if (dataSelect.codeAuditor == sessionName) {
+			$('#codeAuditRecordDiv').show();
+			$('#addCodeAuditBtn').show();
+		} else {
+			$('#addCodeAuditBtn').hide();
+		}
+
+
+
+
+
+
+
 
 		if (dataSelect.codeAuditResult === '通过' && dataSelect.BTAcceptResult == 1) {
 			$('#taskRecordPanel').show();
@@ -2753,7 +2796,7 @@
 			//确定代码审核状态
 
 			let codeAuditResult = dataSelect.codeAuditResult;
-			if (!confirm('是否保留代码审核结果?')) {
+			if (!confirm('保留代码审核结果?')) {
 				codeAuditResult = ''
 			}
 

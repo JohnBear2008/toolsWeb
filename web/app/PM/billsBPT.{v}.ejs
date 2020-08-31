@@ -3227,15 +3227,15 @@
 
 
 							let SQLGetFQCRequest =
-								"SELECT GREATEST(ta.FQCRequest,tb.FQCRequest,tc.maxFQCRequest,td.maxFQCRequest) AS FQCRequestResult FROM " +
-								"(SELECT FQCRequest FROM `ppm_customers` WHERE DBID=" + CTRNameDBID +
-								") ta," +
-								"(SELECT FQCRequest FROM `ppm_machines` WHERE DBID=" + MHENameDBID +
-								") tb," +
-								"(SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_systems` WHERE val IN " +
-								taskModels + ")  tc," +
-								"(SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_staffs` WHERE staffName IN " +
-								taskStaffs + ") td";
+								" SELECT GREATEST( ta.FQCRequest,tb.FQCRequest,tc.maxFQCRequest,td.maxFQCRequest ) AS FQCRequestResult FROM " +
+								" ( SELECT FQCRequest FROM `ppm_customers` WHERE DBID=" + CTRNameDBID +
+								" ) ta," +
+								" ( SELECT FQCRequest FROM `ppm_machines` WHERE DBID=" + MHENameDBID +
+								" ) tb," +
+								" ( SELECT MAX(FQCRequest ) AS maxFQCRequest FROM `ppm_systems` WHERE val IN " +
+								taskModels + " )  tc," +
+								" (SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_staffs` WHERE staffName IN " +
+								taskStaffs + " ) td";
 
 
 							$.ajax({

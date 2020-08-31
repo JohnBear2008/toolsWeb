@@ -599,22 +599,17 @@ function Fun_getSQLFullSelectDBData(selectSQL, selectorID, InitValue) {
 
 			$(selectorID).append($('<option value="">未选择</option>'));
 
-			if (InitValue == undefined || InitValue == "") {
-				//        			console.log("InitValue11:"+InitValue);
 
-				for (i = 0; i < data.length; i++) {
-					$(selectorID).append($('<option value=' + data[i].DBID + '>' + Fun_getValSelectText(data[i].selectTitle) + '</option>'));
+			for (i = 0; i < data.length; i++) {
+				$(selectorID).append($('<option value=' + data[i].DBID + '>' + Fun_getValSelectText(data[i].selectTitle) + '</option>'));
+				if (Fun_getValSelectText(data[i].selectTitle) == InitValue || data[i].DBID == InitValue) {
+					$(selectorID).selectpicker('val', data[i].DBID); //留空不设置默认选项
 				}
+			}
+
+
+			if(!InitValue){
 				$(selectorID).selectpicker('val', '');
-
-			} else {
-
-				for (i = 0; i < data.length; i++) {
-					$(selectorID).append($('<option value=' + data[i].DBID + '>' + Fun_getValSelectText(data[i].selectTitle) + '</option>'));
-					if (Fun_getValSelectText(data[i].selectTitle) == InitValue || data[i].DBID == InitValue) {
-						$(selectorID).selectpicker('val', data[i].DBID); //留空不设置默认选项
-					}
-				}
 			}
 
 
