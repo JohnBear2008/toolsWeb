@@ -3296,6 +3296,20 @@
 				}
 			}
 
+			//c-必填
+			// console.log($('#codeAdr').text());
+			// console.log($('#codeAuditor option:selected').val());
+			// console.log(!$('#codeAdr').text() && $('#codeAuditor option:selected').val());
+			if (!$('#codeAdr').val()) {
+				swal('出货目录必填')
+				return
+			}
+
+			if (!$('#codeAuditor option:selected').val()) {
+				swal('审核人必填')
+				return
+			}
+
 			//d-保存代码信息
 			let codeInfo = {
 				BTID: $('#BTID').text(),

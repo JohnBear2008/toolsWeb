@@ -2333,83 +2333,83 @@
 		//按钮-任务新增
 
 		$('#BTNTaskAdd').click(function () {
-
+			//c-检查方案人
 			if (sessionName != $("#PGEMaker").val()) {
 				swal("当前账号非指定方案人,不允许新增该方案任务!");
-			} else {
-				$('#billTaskPanel').show();
+				return
+			}
 
-				$("#taskTypeAspan").show();
-				$("#taskTypeKspan").show();
-				$("#taskTypeLspan").hide();
-				$("#taskTypeOspan").hide();
-				$("#taskTypeRspan").hide();
-				$("#taskTypeBspan").hide();
-
-
-				$("#taskDBID").val("");
-
-				var tableTask = $('#billsTaskTable').DataTable();
-				tableTask.$('tr.selected').removeClass('selected');
-
-
-
-				$('input:radio[name="taskSortType"]').attr("disabled", false);
-
-				$('input:radio[name="taskType"]').attr("disabled", false);
-
-				$('input:checkbox[name="modifyABE"]').prop("checked", false);
-
-				$("input:radio[name=taskSortType][value='D']").prop("checked", true);
-
-				$("input:radio[name=taskType][value='A']").prop("checked", true);
-
-
-
-				$('#BTVersion').text(0);
-				$('#BTStatusText').text('新增');
-
-
-
-				Fun_getSQLSelectDBData({
-					SQL: "SQLSRMachines"
-				}, "#taskMHEName", Fun_getSelectText($('#MHEName option:selected').text()));
-
-				console.log("modelH:" + $('#modelH option:selected').val());
-
-				if ($('#modelD option:selected').val() != undefined) {
-					Fun_getSQLFullSelectDBData({
-						SQL: "SQLSRSystems",
-						filter: "belong='DSP' AND sort='APP' AND status=1"
-					}, "#taskModel", $('#modelD option:selected').val());
-
-				} else {
-					Fun_getSQLFullSelectDBData({
-						SQL: "SQLSRSystems",
-						filter: "belong='DSP' AND sort='APP' AND status=1"
-					}, "#taskModel");
-
-				}
-
-				$('#taskOGNSystemVersion').val($("#OGNSystemVersion").val());
-
-				$('#taskLimitDate').val($('#limitDate').val());
-
-
-				$('#taskDBE').val("");
-				$('#taskMaker').text("");
-				$('#taskMakeDate').text("");
-
-				Fun_BTIDCreate();
-
-				//	addBindEvent(); //添加后taskModel更换失效
-
+			//c-检查参数客户
+			if (!$('#CTRName option:selected').val()) {
+				swal("缺少客户信息参数,请检查!");
+				return
 			}
 
 
+			$('#billTaskPanel').show();
+
+			$("#taskTypeAspan").show();
+			$("#taskTypeKspan").show();
+			$("#taskTypeLspan").hide();
+			$("#taskTypeOspan").hide();
+			$("#taskTypeRspan").hide();
+			$("#taskTypeBspan").hide();
+
+
+			$("#taskDBID").val("");
+
+			var tableTask = $('#billsTaskTable').DataTable();
+			tableTask.$('tr.selected').removeClass('selected');
 
 
 
+			$('input:radio[name="taskSortType"]').attr("disabled", false);
+
+			$('input:radio[name="taskType"]').attr("disabled", false);
+
+			$('input:checkbox[name="modifyABE"]').prop("checked", false);
+
+			$("input:radio[name=taskSortType][value='D']").prop("checked", true);
+
+			$("input:radio[name=taskType][value='A']").prop("checked", true);
+
+
+
+			$('#BTVersion').text(0);
+			$('#BTStatusText').text('新增');
+
+
+
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRMachines"
+			}, "#taskMHEName", Fun_getSelectText($('#MHEName option:selected').text()));
+
+			console.log("modelH:" + $('#modelH option:selected').val());
+
+			if ($('#modelD option:selected').val() != undefined) {
+				Fun_getSQLFullSelectDBData({
+					SQL: "SQLSRSystems",
+					filter: "belong='DSP' AND sort='APP' AND status=1"
+				}, "#taskModel", $('#modelD option:selected').val());
+
+			} else {
+				Fun_getSQLFullSelectDBData({
+					SQL: "SQLSRSystems",
+					filter: "belong='DSP' AND sort='APP' AND status=1"
+				}, "#taskModel");
+
+			}
+
+			$('#taskOGNSystemVersion').val($("#OGNSystemVersion").val());
+
+			$('#taskLimitDate').val($('#limitDate').val());
+
+
+			$('#taskDBE').val("");
+			$('#taskMaker').text("");
+			$('#taskMakeDate').text("");
+
+			Fun_BTIDCreate();
 
 
 		});
