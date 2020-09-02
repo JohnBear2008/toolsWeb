@@ -1,3 +1,5 @@
+const sqlRequestBills = "select * from `ppm_bills_request`"
+
 //selector sql
 const getStaffSelector = "select staffName as value,staffName as option,staffID as token from `ppm_staffs`"
 

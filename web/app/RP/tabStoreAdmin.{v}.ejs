@@ -1,0 +1,401 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
+
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+
+    <!-- 功能组按钮 -->
+    <div class="well">
+        <div class="btn-group">
+            <button type='text' class="btn btn-info" disabled>查看模式</button>
+            <button id="JITStoreBtn" class="btn btn-default">当前库存</button>
+            <button id="storeHistoryBtn" class="btn btn-default">历史记录</button>
+        </div>
+
+        <!-- <div class="btn-group">
+            <button type='text' class="btn btn-info" disabled>excel</button>
+            <button id="store2ExcelBtn" class="btn btn-default">导出模板</button>
+            <button id="excel2StoreBtn" class="btn btn-default">导入库存</button>
+            <input type="file" id="file" style="display:none;"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </div> -->
+
+    </div>
+
+    <div class="row clearfix" id='JITDiv'>
+        <div class="col-md-12 column">
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_store" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>仓库编号</th>
+                        <th>仓库名称</th>
+                        <th>PID编号</th>
+                        <th>产品名称</th>
+                        <th>产品描述</th>
+                        <th>单位</th>
+                        <th>库存数量</th>
+                        <th>更新时间</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row clearfix" id='historyDiv'>
+        <div class="col-md-12 column">
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_storeHistory" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>仓库名称</th>
+                        <th>PID编号</th>
+                        <th>初始数量</th>
+                        <th>操作数量</th>
+                        <th>即时数量</th>
+                        <th>内修单号</th>
+                        <th>操作类型</th>
+                        <th>操作时间</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script type="text/javascript">
+    const rp_storeColumns = [{
+            data: 'warehouseId'
+        }, {
+            data: 'warehouseName'
+        }, {
+            data: 'PID'
+        }, {
+            data: 'productName'
+        },
+        {
+            data: 'productDescription'
+        }, {
+            data: 'unit'
+        }, {
+            data: 'stockNum'
+        }, {
+            data: 'dateTimeText'
+        }
+    ]
+
+    const rp_storeHistoryColumns = [{
+            data: 'warehouseName'
+        }, {
+            data: 'PID'
+        },
+        {
+            data: 'preNum'
+        }, {
+            data: 'actNum',
+        }, {
+            data: 'nowNum',
+        }, {
+            data: 'rpBillId',
+        }, {
+            data: 'actType',
+        }, {
+            data: 'dateTimeText',
+        }
+    ]
+
+    function selectFile() {
+        $("#file")[0].click();
+    }
+
+    //切换模式函数
+    const changeModel = ({
+        model
+    }) => {
+        console.log('model', model);
+        switch (model) {
+            case 'JIT':
+                $("#historyDiv").hide();
+                $("#JITDiv").show();
+                $("#storeHistoryBtn").removeClass("active");
+                $("#JITStoreBtn").addClass("active");
+                break;
+            case 'History':
+                $("#JITDiv").hide();
+                $("#historyDiv").show();
+                $("#JITStoreBtn").removeClass("active");
+                $("#storeHistoryBtn").addClass("active");
+                break;
+        }
+
+    }
+    //去除excel生成json中的中文属性
+    const excelJsonArr2DivJsonArr = (excelJsonArr, rules) => {
+        for (let n of excelJsonArr) {
+            n = replaceObjParamsName(n, rules)
+        }
+        return excelJsonArr;
+    }
+
+    const addFileReaderListener = () => {
+        $("#file")[0].addEventListener('change', function (e) {
+            var files = e.target.files;
+            if (files.length == 0) return;
+            var f = files[0];
+            if (!/\.xlsx$/g.test(f.name)) {
+                alert('仅支持读取xlsx格式！');
+                return;
+            }
+
+            readWorkbookFromLocalFile(f, function (workbook) {
+                let excelData = readWorkbook(workbook);
+                let storeData = excelJsonArr2DivJsonArr(excelData, {
+                    PID: 'PID编号',
+                    num: '数量'
+                })
+                importAddParts(storeData)
+
+            });
+        });
+    }
+
+
+    //导入新增功能
+
+    const importAddParts = async (storeData) => {
+        console.log('storeData111', storeData);
+        if (storeData.length > 0) {
+            let PIDsArr = [];
+            for (let n of storeData) {
+
+                //转换为大写
+                n.PID = n.PID.toUpperCase();
+
+                PIDsArr.push(n.PID)
+            }
+            let PIDsRange = getRangeString(PIDsArr);
+
+
+            // console.log('PIDsRange', PIDsRange);
+
+            //查找当前数据内已存在的同PID 库存
+            let nowPartStore = await getDataBySql({
+                sql: 'getStockNum',
+                params: {
+                    filter: 'PID in ' + PIDsRange
+                }
+            })
+
+            console.log('nowPartStore', nowPartStore);
+
+            let updateStoreArr = [];
+            let insertStoreArr = [];
+
+            for (let n of storeData) {
+                let find = false
+                for (const m of nowPartStore) {
+                    if (n.PID === m.PID) {
+                        find = true
+                        updateStoreArr.push({
+                            PID: n.PID,
+                            stockNum: m.stockNum,
+                            num: n.num
+                        })
+                        // n.stockNum = m.stockNum;
+                    }
+                }
+                if (!find) {
+                    insertStoreArr.push({
+                        PID: n.PID,
+                        stockNum: 0,
+                        num: n.num
+                    })
+                }
+            }
+
+            let rUpdate, rInsert
+
+            switch (true) {
+                case updateStoreArr.length > 0 && insertStoreArr.length > 0:
+                    rUpdate = await updateStock({
+                        updateStock: updateStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
+
+                    rInsert = await insertStock({
+                        insertStock: insertStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
+
+                    if (rUpdate && rInsert) {
+                        alert('导入成功!')
+                    }
+                    break;
+                case updateStoreArr.length > 0 && insertStoreArr.length === 0:
+                    rUpdate = await updateStock({
+                        updateStock: updateStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
+                    if (rUpdate) {
+
+                        alert('导入成功!')
+                    }
+                    break;
+                case updateStoreArr.length === 0 && insertStoreArr.length > 0:
+                    rInsert = await insertStock({
+                        insertStock: insertStoreArr,
+                        rpBillId: '',
+                        actType: '导入新增'
+                    });
+                    if (rInsert) {
+
+                        alert('导入成功!')
+                    }
+
+                    break;
+            }
+
+            //重新加载库存
+            loadStoreTable();
+
+
+
+        }
+    }
+
+    const loadStoreTable = async () => {
+        //加载库存表
+        loadBillDataTable({
+            elementId: 'rp_store',
+            sqlParams: {
+                sqlId: 'rp_store',
+                params: {
+                    filter: 'stockNum>0',
+                    orderBy: 'dateTimeStamp desc'
+                }
+            },
+            dtParams: {
+                columns: rp_storeColumns,
+                aLengthMenu: [
+                    [10, 20, 50],
+                    [10, 20, 50]
+                ], //设置每页显示数据条数的下拉选项
+                iDisplayLength: 10, //每页初始显示5条记录,
+                dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+            }
+        })
+
+        //加载库存历史记录表
+        loadBillDataTable({
+            elementId: 'rp_storeHistory',
+            sqlParams: {
+                sqlId: 'rp_storeHistory',
+                params: {
+                    orderBy: 'dateTimeStamp desc'
+                }
+            },
+            dtParams: {
+                columns: rp_storeHistoryColumns,
+                aLengthMenu: [
+                    [10, 20, 50],
+                    [10, 20, 50],
+                ], //设置每页显示数据条数的下拉选项
+                iDisplayLength: 10, //每页初始显示5条记录
+                dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+            }
+        })
+
+    }
+
+
+    $(document).ready(function () {
+
+        //默认即时库存模式
+        changeModel({
+            model: 'JIT'
+        })
+
+        //加载库存
+        loadStoreTable();
+
+
+        $('#JITStoreBtn').click(function () {
+            changeModel({
+                model: 'JIT'
+            })
+        })
+
+        $('#storeHistoryBtn').click(function () {
+            changeModel({
+                model: 'History'
+            })
+        })
+
+
+        $('#store2ExcelBtn').click(function () {
+            var aoa = [
+                ['PID编号', '数量'],
+                ['AAA', 10]
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '库存模板.xlsx');
+        })
+
+
+        $('#excel2StoreBtn').click(function () {
+            selectFile()
+        })
+
+        // //添加文件监听事件
+        // addFileReaderListener()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+</script>

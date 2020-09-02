@@ -1,0 +1,203 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入boostrapClosableTab库 -->
+<script type="text/javascript" src="/rpLib/boostrapClosableTab/bootstrap-closable-tab.js"></script>
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+
+<div class="rpContent">
+
+
+    <div class="btn-toolbar" role="toolbar">
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-info">基础资料</button>
+            <button type="button" class="btn btn-default" onclick="add(tabCustomers);">客户</button>
+            <button type="button" class="btn btn-default" onclick="add(tabStaffs);">人员</button>
+            <button type="button" class="btn btn-default" onclick="add(tabProducts);">产品</button>
+            <button type="button" class="btn btn-default" onclick="add(tabPartsFee);">零件费</button>
+            <button type="button" class="btn btn-default" onclick="add(tabFaultClasses);">故障分类</button>
+            <button type="button" class="btn btn-default" onclick="add(tabTestItems);">测试项目</button>
+            <button type="button" class="btn btn-default" onclick="add(tabWarehouses);">仓库</button>
+            <button type="button" class="btn btn-default" onclick="add(tabSelectorOptions);">选项清单</button>
+        </div>
+    </div>
+    <br>
+
+    <div class="btn-toolbar" role="toolbar">
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-info">维修流程</button>
+            <button type="button" class="btn btn-default" onclick="add(tabRequestBills);">申请单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabRecordBills);">记录单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabResponseBills);">出货单</button>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-info">仓库流程</button>
+            <button type="button" class="btn btn-default" onclick="add(tabBorrowBills);">借货单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabReturnBills);">还货单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabInBills);">入库单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabOutBills);">出库单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabTransferBills);">调拨单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabScrapBills);">报废单</button>
+            <button type="button" class="btn btn-default" onclick="add(tabStoreAdmin);">库存查询</button>
+        </div>
+
+    </div>
+    <br>
+
+    <!-- 此处是相关代码 -->
+    <ul class="nav nav-tabs" role="tablist">
+    </ul>
+    <div class="tab-content" style="min-height: 900px;">
+    </div>
+    <!-- 相关代码结束 -->
+
+
+</div>
+
+
+<script type="text/javascript">
+    const tabCustomers = {
+        'id': 'tabCustomers',
+        'name': '客户',
+        'url': 'tabCustomers',
+        'closable': true
+    };
+    const tabStaffs = {
+        'id': 'tabStaffs',
+        'name': '人员',
+        'url': 'tabStaffs',
+        'closable': true
+    };
+    const tabProducts = {
+        'id': 'tabProducts',
+        'name': '产品',
+        'url': 'tabProducts',
+        'closable': true
+    };
+
+    const tabPartsFee = {
+        'id': 'tabPartsFee',
+        'name': '零件费',
+        'url': 'tabPartsFee',
+        'closable': true
+    };
+
+    const tabFaultClasses = {
+        'id': 'tabFaultClasses',
+        'name': '故障分类',
+        'url': 'tabFaultClasses',
+        'closable': true
+    };
+
+
+    const tabTestItems = {
+        'id': 'tabTestItems',
+        'name': '检测项目',
+        'url': 'tabTestItems',
+        'closable': true
+    };
+
+
+    const tabWarehouses = {
+        'id': 'tabWarehouses',
+        'name': '仓库',
+        'url': 'tabWarehouses',
+        'closable': true
+    };
+
+    const tabSelectorOptions = {
+        'id': 'tabSelectorOptions',
+        'name': '选项清单',
+        'url': 'tabSelectorOptions',
+        'closable': true
+    };
+
+
+    const tabRequestBills = {
+        'id': 'tabRequestBills',
+        'name': '申请单',
+        'url': 'tabRequestBills',
+        'closable': true
+    };
+    const tabRecordBills = {
+        'id': 'tabRecordBills',
+        'name': '记录单',
+        'url': 'tabRecordBills',
+        'closable': true
+    };
+    const tabResponseBills = {
+        'id': 'tabResponseBills',
+        'name': '出货单',
+        'url': 'tabResponseBills',
+        'closable': true
+    };
+
+    const tabBorrowBills = {
+        'id': 'tabBorrowBills',
+        'name': '借货单',
+        'url': 'tabBorrowBills',
+        'closable': true
+    };
+
+    const tabReturnBills = {
+        'id': 'tabReturnBills',
+        'name': '还货单',
+        'url': 'tabReturnBills',
+        'closable': true
+    };
+
+    const tabInBills = {
+        'id': 'tabInBills',
+        'name': '入库单',
+        'url': 'tabInBills',
+        'closable': true
+    };
+
+    const tabOutBills = {
+        'id': 'tabOutBills',
+        'name': '出库单',
+        'url': 'tabOutBills',
+        'closable': true
+    };
+    const tabTransferBills = {
+        'id': 'tabTransferBills',
+        'name': '调拨单',
+        'url': 'tabTransferBills',
+        'closable': true
+    };
+    const tabScrapBills = {
+        'id': 'tabScrapBills',
+        'name': '报废单',
+        'url': 'tabScrapBills',
+        'closable': true
+    };
+    const tabStoreAdmin = {
+        'id': 'tabStoreAdmin',
+        'name': '库存查询',
+        'url': 'tabStoreAdmin',
+        'closable': true
+    };
+
+
+
+
+
+    function add(item) {
+        closableTab.addTab(item);
+    }
+</script>

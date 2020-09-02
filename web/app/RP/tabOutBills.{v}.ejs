@@ -1,0 +1,3159 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入bootstrapSwitch -->
+<link rel="stylesheet" href="/rpLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+
+<!-- 导入qrcode 二维码库 -->
+<script type="text/javascript" src="/rpLib/qrcode/qrcode.min.js"></script>
+
+<!-- 导入instascan 二维码扫描库 -->
+<script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
+
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
+
+<!-- 导入print 打印库 -->
+<script type="text/javascript" src="/rpLib/print/print.js"></script>
+
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+
+            <!-- 定义基础模块数据表 -->
+
+            <div class="panel panel-default" id='mainTablePanel'>
+                <div class="panel-heading">
+                    <div style="float: left;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">过滤</button>
+                            <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
+                            <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+                    <!-- excel -->
+                    <div style="float: left; margin-left: 15px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">excel</button>
+                            <button type="button" id="batchImportBtn" class="btn btn-default">批量导入</button>
+                            <button type="button" id="batchExportBtn" class="btn btn-default">批量导出</button>
+                            <button type="button" id="importModelBtn" class="btn btn-default">数据模板</button>
+                            <input type="file" id="file" style="display:none;"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                        </div>
+                    </div>
+                    <!-- 功能组按钮 -->
+                    <div style="float:right">
+
+                        <button id='btnOutBillNew' type="button" class="btn btn-info">新增</button>
+                        <button id='btnOutBillAudit' type="button" class="btn btn-warning">审核</button>
+                        <!-- <button id='btnOutBillDelete' type="button" class="btn btn-danger">删除</button> -->
+                        <button id='btnOutBillReject' type="button" class="btn btn-warning">驳回</button>
+                        <!-- <button type="button" class="btn btn-info" id="listPrintBtn">
+                            打印出库码
+                        </button> -->
+                        <button type="button" class="btn btn-primary" id="rp_outbillsPrint">
+                            打印出库凭单
+                        </button>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="panel-body">
+                    <table id="rp_outbills" class=" table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>出库号</th>
+                                <th>来源单类型</th>
+                                <th>单据编号</th>
+                                <th>制单人</th>
+                                <th>审核人</th>
+                                <th>制单日期</th>
+                                <th>审核日期</th>
+                                <th>备注</th>
+                                <th>单据状态</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 定义主表关联附表数据表 -->
+
+            <div class="panel panel-default" id='subTablePanel' style="width:100%;display: none;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">产品清单</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="rp_outbillsSub" class=" table table-striped table-bordered" style="min-width:100%;">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>产品编号</th>
+                                <th>产品名称</th>
+                                <th>仓库名称</th>
+                                <th>单位</th>
+                                <th>数量</th>
+                                <th>备注</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- 过滤器模态框（Modal） -->
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        过滤器
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:300px">
+                            <form class="form-horizontal" role="form" id='filterForm'>
+
+                                <!-- <div class="form-group">
+                                    <label class="col-sm-2 control-label">出库日期</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-borrowDateB" class="form-control " size="16"
+                                                type="text" value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-borrowDateE" class="form-control " size="16"
+                                                type="text" value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                </div> -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">制单日期</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-makeDateB" class="form-control " size="16" type="text"
+                                                value="" placeholder="起始日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <div class="input-group date form_date ">
+                                            <input id="filterForm-makeDateE" class="form-control " size="16" type="text"
+                                                value="" placeholder="结束日期" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+
+                                    <div class="col-sm-10">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            id="closeFilter">关闭
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="confirmFilter">
+                                            确定
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+    <!-- 导出模态框（Modal） -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        字段选择
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:350px">
+
+                            <label class="col-sm-2 control-label">主表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height:200px">
+
+                                        <form class="form-horizontal" role="form" id='exportModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="DBID" checked>
+                                                <label class="form-check-label">出库号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="billFrom"
+                                                    checked>
+                                                <label class="form-check-label">单据来源</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="billId" checked>
+                                                <label class="form-check-label">单据编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerId"
+                                                    checked>
+                                                <label class="form-check-label">客户编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerShortName" checked>
+                                                <label class="form-check-label">客户简称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerName"
+                                                    checked>
+                                                <label class="form-check-label">客户名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerBelongShort" checked>
+                                                <label class="form-check-label">客户归属</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="contact" checked>
+                                                <label class="form-check-label">联系人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="mobilePhone"
+                                                    checked>
+                                                <label class="form-check-label">移动电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="workPhone"
+                                                    checked>
+                                                <label class="form-check-label">工作电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="operator"
+                                                    checked>
+                                                <label class="form-check-label">经手人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="maker" checked>
+                                                <label class="form-check-label">制单人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditor" checked>
+                                                <label class="form-check-label">审核人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="makeDate"
+                                                    checked>
+                                                <label class="form-check-label">制单日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditDate"
+                                                    checked>
+                                                <label class="form-check-label">审核日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="status" checked>
+                                                <label class="form-check-label">单据状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="remark" checked>
+                                                <label class="form-check-label">备注</label>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <label class="col-sm-2 control-label">子表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" role="form" id='exportSubModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="rowId" checked>
+                                                <label class="form-check-label">序号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productId"
+                                                    checked>
+                                                <label class="form-check-label">产品编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productName"
+                                                    checked>
+                                                <label class="form-check-label">产品名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseId"
+                                                    checked>
+                                                <label class="form-check-label">仓库编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseName"
+                                                    checked>
+                                                <label class="form-check-label">仓库名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="unit" checked>
+                                                <label class="form-check-label">单位</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="num" checked>
+                                                <label class="form-check-label">数量</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subRemark"
+                                                    checked>
+                                                <label class="form-check-label">子表备注</label>
+                                            </div>
+
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" id="doExportBtn">
+                                    确认导出
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+    <!-- 打印预览模态框（Modal） -->
+    <div class="modal fade" id="printViewModal">
+        <div class="modal-dialog" style="width: 80%;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="printViewDiv">
+
+                        <h2>弘讯科技股份有限公司出库单</h2>
+                        <hr>
+
+                        <table id='printViewMainTable' style="border: 0ch; width: 100%;table-layout:fixed;">
+                            <tbody>
+                                <tr>
+                                    <td width='80px'>出库单号:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-billId"></p>
+                                    </td>
+                                    <td width='80px'>客户编号:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-customerId"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width='80px'>客户简称:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-customerShortName">
+                                        </p>
+                                    </td>
+                                    <td width='80px'>客户名称:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-customerName"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width='80px'>联系人:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-contact"></p>
+                                    </td>
+                                    <td width='80px'>移动电话:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-mobilePhone"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width='80px'>出货方式:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-sendWay"></p>
+                                    </td>
+                                    <td width='80px'>经手人:</td>
+                                    <td>
+                                        <p class="form-control-static" id="printViewMainTable-operator"></p>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+
+
+                        <hr>
+                        <table id='printViewSubTable' class="table table-condensed">
+
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>产品编号</th>
+                                    <th>产品名称</th>
+                                    <th>仓库名称</th>
+                                    <th>单位</th>
+                                    <th>数量</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="printCloseBtn">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="confirmPrintBtn">
+                        确认打印
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- 打印预览模态框（Modal） -->
+    <!-- <div class="modal fade" id="listPrintViewModal">
+        <div class="modal-dialog" style="width: 600px;">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                    <h2>弘讯科技股份有限公司出库清单</h2>
+                    <hr>
+
+                    <div id="listPrintViewDiv">
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="listPrintCloseBtn">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="listPrintConfirmBtn">
+                        确认打印
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="rp_outbillsModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+
+        <div class="modal-dialog" style="width: 75%;">
+
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_outbillsModal"
+                id="rp_outbillsModalOpen" style="display: none;">
+                开始演示模态框
+            </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        表单详情
+                    </h4>
+
+
+                </div>
+                <div class="modal-body">
+
+
+                    <!-- 表单面板 -->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+
+                            <form class="form-horizontal" role="form" id='rp_outbillsForm'>
+
+                                <input id="rp_outbillsForm-DBID" type="hidden" value="">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-billId">出库单号</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-billId"></p>
+                                    </div>
+
+
+
+                                    <!-- <label class="col-sm-1 control-label" for="rp_outbillsForm-borrowDate">出库日期:</label>
+                                    <div class="col-sm-5 ">
+                                        <div class="input-group date form_date ">
+                                            <input id="rp_outbillsForm-borrowDate" class="form-control " size="16"
+                                                type="text" value="" readonly>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div> -->
+                                </div>
+
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-billFrom">单据来源</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-billFrom"></p>
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label " for="rp_outbillsForm-customerId">客户编号</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-customerId"></p>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-customerShortName">客户简称</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_outbillsForm-customerShortName" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+
+
+
+
+
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_outbillsForm-customerName">客户名称</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_outbillsForm-customerName" type="text">
+                                    </div>
+
+
+                                </div>
+
+                                <!-- <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-isInland">国内外</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_outbillsForm-isInland" class="selectpicker">
+
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label"
+                                        for="rp_outbillsForm-customerArea">客户区域</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_outbillsForm-customerArea" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+                                </div> -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="customerContacts">可选联系人</label>
+                                    <div class="col-sm-5">
+                                        <!-- <input class="form-control" id="rp_outbillsForm-contact" type="text"> -->
+                                        <select id="customerContacts" class="selectpicker">
+                                        </select>
+                                    </div>
+
+                                    <!-- <label class="col-sm-1 control-label"
+                                        for="rp_outbillsForm-customerId">保固期</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-warrantyPeriod"></p>
+                                    </div> -->
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-contact">联系人</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_outbillsForm-contact" type="text">
+                                    </div>
+
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-mobilePhone">移动电话</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_outbillsForm-mobilePhone" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-customerBelongShort">归属公司简称</label>
+                                    <div class="col-sm-5">
+                                        <!-- <input class="form-control" id="rp_outbillsForm-customerBelongShort"
+                                            type="text"> -->
+                                        <select id="rp_outbillsForm-customerBelongShort"
+                                            class="selectpicker form-control" data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-sendWay">出货方式</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_outbillsForm-sendWay" class="selectpicker">
+
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-operator">经手人</label>
+                                    <div class="col-sm-5">
+                                        <!-- <input class="form-control" id="rp_outbillsForm-operator" type="text"> -->
+                                        <select id="rp_outbillsForm-operator" class="selectpicker"
+                                            data-live-search="true" data-size="5">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="rp_outbillsForm-address">地址</label>
+                                    <div class="col-sm-11">
+                                        <input class="form-control" id="rp_outbillsForm-address" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">单据备注</label>
+                                    <div class="col-sm-11">
+                                        <input class="form-control" id="rp_outbillsForm-remark" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">单据状态</label>
+                                    <div class="col-sm-11">
+                                        <p class="form-control-static" id="rp_outbillsForm-status"></p>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="msgSwitch">短信提醒</label>
+                                    <div class="col-sm-11">
+                                        <input id="msgSwitch" type="checkbox">
+                                    </div>
+                                </div> -->
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-maker">制单人</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-maker"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-makeDate">制单日期</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-makeDate"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-auditor">审核人</label>
+                                    <div class="col-sm-5">
+                                        <select id="rp_outbillsForm-auditor" class="selectpicker"
+                                            data-live-search="true" data-size="5">
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label" for="rp_outbillsForm-auditDate">审核日期</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_outbillsForm-auditDate"></p>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            <!-- 子表 -->
+                            <hr>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+
+                                    <!-- 功能组按钮 -->
+                                    <div class="well">
+                                        <button id='btnAddProduct' type="button" class="btn btn-info">新增产品</button>
+                                        <button id='btnDeleteProduct' type="button" class="btn btn-danger">删除产品</button>
+                                        <!-- <button id='btnScan' type="button" class="btn btn-success">扫描新增</button> -->
+
+                                    </div>
+
+                                    <!-- 定义基础模块数据表 -->
+                                    <table id="rp_outsubbills" class=" table table-striped table-bordered"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>产品编号</th>
+                                                <th>产品名称</th>
+                                                <th>仓库名称</th>
+                                                <th>单位</th>
+                                                <th>数量</th>
+                                                <th>备注</th>
+                                                <th>状态</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+
+                                    <div class="panel panel-default" id='rp_outsubbillsPanel'>
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">产品详情</h3>
+                                        </div>
+                                        <div class="panel-body">
+
+
+
+
+                                            <form class="form-horizontal" role="form" id='rp_outsubbillsForm'>
+
+                                                <!-- <input id="rp_outsubbillsForm-DBID" type="hidden" value=""> -->
+                                                <input id="rp_outsubbillsForm-billId" type="hidden" value="">
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">序号</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static" id="rp_outsubbillsForm-rowId">
+                                                        </p>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">可用库存</label>
+                                                    <div class="col-sm-3">
+                                                        <p class="form-control-static" id="stockNum">
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">状态</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static" id="rp_outsubbillsForm-status">
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">产品编号</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_outsubbillsForm-productId"
+                                                            class="selectpicker form-control" data-live-search="true"
+                                                            data-size="5" data-dropup-auto="false">
+                                                        </select>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">仓库</label>
+                                                    <div class="col-sm-5">
+                                                        <select id="rp_outsubbillsForm-warehouseId"
+                                                            class="selectpicker form-control" data-live-search="true"
+                                                            data-size="5" data-dropup-auto="false">
+                                                        </select>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">产品名称</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_outsubbillsForm-productName">
+                                                        </p>
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">产品描述</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_outsubbillsForm-productDescription">
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">产品类别</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_outsubbillsForm-productClass">
+                                                        </p>
+
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">系统分类</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static"
+                                                            id="rp_outsubbillsForm-systemType">
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label">单位</label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static" id="rp_outsubbillsForm-unit">
+                                                        </p>
+
+                                                    </div>
+
+                                                    <label class="col-sm-1 control-label">数量</label>
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control" id="rp_outsubbillsForm-num"
+                                                            type="text">
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="form-group">
+
+                                                    <label class="col-sm-1 control-label">备注</label>
+                                                    <div class="col-sm-11">
+                                                        <input class="form-control" id="rp_outsubbillsForm-remark"
+                                                            type="text">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-1 control-label"></label>
+                                                    <div class="col-sm-5">
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="btnProductSave">
+                                                            保存
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+
+                                            </form>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- 扫描模态框（Modal） -->
+
+                            <!-- <div class="modal fade" id="scanModal">
+                                <div class="modal-dialog" style="width: 675px;">
+                                    <div class="modal-content">
+
+                                        <div class="modal-body">请将产品二维码放置于摄像头内
+                                            <div><button id='btnScanStop' type="button"
+                                                    class="btn btn-info">停止扫描</button></div>
+                                            <div style="width:640;height:480px"><video id="preview"></video>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div> -->
+
+
+
+
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_outbillsModalClose">关闭
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="rp_outbillsSave">
+                        保存单据
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    //申请表主表dataTable column 数组
+
+    const mainColumnsArray = [{
+        data: 'DBID',
+        // visible: 'false'
+    }, {
+        data: 'billFrom'
+    }, {
+        data: 'billId'
+    }, {
+        data: 'maker',
+    }, {
+        data: 'auditor',
+    }, {
+        data: 'makeDate',
+    }, {
+        data: 'auditDate',
+    }, {
+        data: 'remark',
+    }, {
+        data: 'status',
+    }];
+
+    //申请表子表dataTable column 数组
+    const subColumnsArray = [{
+        data: 'rowId',
+    }, {
+        data: 'productId',
+    }, {
+        data: 'productName',
+    }, {
+        data: 'warehouseName',
+    }, {
+        data: 'unit',
+    }, {
+        data: 'num',
+    }, {
+        data: 'remark',
+    }, {
+        data: 'status',
+    }]
+
+    // const recordHistoryColumnsArray = [{
+    //         data: 'repairId',
+    //     }, {
+    //         data: 'customerShortName'
+    //     }, {
+    //         data: 'recordBillId'
+    //     },
+    //     {
+    //         data: 'productId'
+    //     }, {
+    //         data: 'isRework',
+    //     }, {
+    //         data: 'urgent',
+    //     }, {
+    //         data: 'inWarranty',
+    //     }, {
+    //         data: 'repairStaff',
+    //     }, {
+    //         data: 'repairLastFee',
+    //     }, {
+    //         data: 'status',
+    //     }
+    // ]
+
+    //选中客户后,填写其他相关信息
+
+    const fillCustomerInfo = async (customerShortName) => {
+        let r1 = await getDataBySql({
+            sql: 'getCustomers',
+            params: {
+                filter: 'customerShortName="' + customerShortName + '"'
+            }
+        })
+
+        // console.log('r1:' + JSON.stringify(r1));
+
+        customerData = r1[0]; //将查询结果赋给全局变量
+        // console.log('customerData:' + JSON.stringify(customerData));
+
+        //黑名单警告
+        if (customerData.creditRank === '黑名单') {
+            alert('当前客户为黑名单客户!备注:' + customerData.remark + ',备注人:' + customerData.remarker)
+        }
+
+
+
+        loadContactOptions(customerData)
+
+
+        let r2 = r1[0]
+        delete r2.customerShortName;
+        // console.log('r2:' + JSON.stringify(r2));
+        fillFormInputs({
+            formId: 'rp_outbillsForm',
+            params: r2
+        })
+        // $("#rp_outbillsForm-customerArea").selectpicker('val', r2.customerArea)
+    }
+
+    //选定客户修改事件
+    const addCustomerListener = () => {
+        $('#rp_outbillsForm-customerShortName').unbind();
+        $('#rp_outbillsForm-customerShortName').change(function () {
+            let customerShortName = $('#rp_outbillsForm-customerShortName option:selected').val();
+            if (customerShortName) {
+                $('#rp_outbillsForm-customerShortName').selectpicker('refresh');
+                fillCustomerInfo(customerShortName);
+            }
+        });
+    }
+
+    //填写产品信息功能
+    const fillProductInfo = async (productId) => {
+        let r1 = await getDataBySql({
+            sql: 'getProduct',
+            params: {
+                filter: 'productId="' + productId + '"'
+            }
+        })
+
+        // console.log('r1:' + JSON.stringify(r1));
+        let r2 = r1[0]
+        delete r2.productId;
+        // console.log('r2:' + JSON.stringify(r2));
+        fillFormInputs({
+            formId: 'rp_outsubbillsForm',
+            params: r2
+        })
+
+        // $('#rp_outsubbillsForm-productId').selectpicker('val',r1[0].productId)
+
+    }
+
+
+
+    //选定产品修改事件
+    const addProductListener = () => {
+        // $('#rp_outsubbillsForm-productId').unbind();
+        $('#rp_outsubbillsForm-productId').change(async function () {
+            let productId = $('#rp_outsubbillsForm-productId option:selected')
+                .val()
+            if (productId) {
+
+                $('#rp_outsubbillsForm-productId').selectpicker('refresh');
+                showStockNum();
+                fillProductInfo(productId);
+
+            }
+        });
+
+    }
+    //仓库选择修改事件
+    const addWarehouseListener = () => {
+        // $('#rp_outsubbillsForm-warehouseId').unbind();
+        $('#rp_outsubbillsForm-warehouseId').change(async function () {
+            let warehouseId = $('#rp_outsubbillsForm-warehouseId option:selected')
+                .val()
+            if (warehouseId) {
+                $('#rp_outsubbillsForm-warehouseId').selectpicker('refresh');
+                showStockNum();
+            }
+        });
+    }
+
+    // //保固期自动计算事件
+    // const addInWarrantyListener = () => {
+    //     $('#rp_outsubbillsForm-productYear,#rp_outsubbillsForm-productMonth').unbind('change'); //仅解绑change事件
+    //     $('#rp_outsubbillsForm-productYear,#rp_outsubbillsForm-productMonth').change(function () {
+    //         let warrantyPeriod = parseInt($('#rp_outbillsForm-warrantyPeriod').text());
+    //         let year = $('#rp_outsubbillsForm-productYear').val() || '2000'
+    //         let month = $('#rp_outsubbillsForm-productMonth').val() || '01'
+    //         console.log(warrantyPeriod, year, month);
+
+    //         //计算月份差函数
+    //         const getIntervalMonth = (startDate, endDate) => {
+    //             var startMonth = startDate.getMonth();
+    //             var endMonth = endDate.getMonth();
+    //             var intervalMonth = (startDate.getFullYear() * 12 + startMonth) - (endDate
+    //                 .getFullYear() *
+    //                 12 + endMonth);
+    //             return intervalMonth;
+    //         }
+
+    //         let nowDate = new Date()
+    //         let productDate = new Date(year + '-' + month + '-01');
+    //         let intervalMonth = getIntervalMonth(productDate, nowDate)
+
+    //         if (warrantyPeriod + intervalMonth >= 0) {
+    //             console.log('保内');
+    //             $("#rp_outsubbillsForm-inWarranty").selectpicker('val', '是')
+    //             // $("#rp_outsubbillsForm-inWarranty").selectpicker('refresh')
+    //         } else {
+    //             $("#rp_outsubbillsForm-inWarranty").selectpicker('val', '否')
+    //         }
+    //     });
+    // }
+
+    //创建出库单新单号
+    const createOutBillId = async () => {
+        let r1 = await getDataBySql({
+            sql: "getOutBillsNum",
+            params: {
+                filter: 'billId like "O-%" and makeDate="' + currentDate() + '"'
+            }
+        })
+        // console.log('r1:' + r1);
+        let r2 = r1[0].billsNum
+        let r3 = parseInt(r2) + 1;
+
+        let r4 = PrefixInteger(r3, 3);
+        // console.log('r4:' + r4);
+        let r5 = dateFormat(currentDate(), 'yyyyMMdd');
+
+        let billId = 'O-' + r5 + r4;
+        $("#rp_outbillsForm-billId").text(billId);
+    }
+
+
+
+    //添加主表监听器,定义双击打开事件
+
+    const addMainTableListener = () => {
+
+        //解绑原事件
+        $('#rp_outbills tbody').unbind();
+
+        //定义主表单击击事件
+        $('#rp_outbills tbody').on('click', 'tr', async function () {
+            //设定选中
+            let table = $('#rp_outbills').DataTable();
+
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                //清空选中单据数据
+                mainTableData = {}
+                $('#subTablePanel').hide();
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+
+                let rowSelect = table.row('.selected').data();
+                // console.log("rowSelect:" + JSON.stringify(rowSelect));
+
+                mainTableData = rowSelect; //刷新全局主表对象数据
+
+                await loadMainBillSubTable(rowSelect.billId)
+
+                //打开面板
+                $('#subTablePanel').show();
+
+            }
+
+        });
+
+
+        //定义主表双击事件
+        $('#rp_outbills tbody').on('dblclick', 'tr', async function () {
+
+            //打开关联信息,打印功能
+            $("#accordion").show();
+
+            // $("#listPrintBtn").show();
+            // $("#rp_outbillsPrint").show();
+
+            //设定选中
+            let table = $('#rp_outbills').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+
+            mainTableData = dataSelect; //刷新全局主表对象数据
+
+            // console.log('mainTableData', mainTableData);
+
+            //解除客户监听事件
+            $('#rp_outbillsForm-customerShortName').unbind();
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_outbillsForm',
+                params: dataSelect
+            })
+
+            let r1 = await getDataBySql({
+                sql: 'getCustomers',
+                params: {
+                    filter: 'customerShortName="' + dataSelect.customerShortName + '"'
+                }
+            })
+
+            // console.log('r1:' + JSON.stringify(r1));
+
+            customerData = r1[0]; //将查询结果赋给全局变量
+            //加载备选联系人
+            loadContactOptions(customerData);
+
+            //关闭子表panel
+            $('#rp_outsubbillsPanel').hide();
+
+            //加载子表记录表数据
+
+            loadBillSubTable(dataSelect.billId);
+
+            //客户选定监听事件
+            addCustomerListener();
+
+            //打开面板
+            $('#rp_outbillsModal').modal('show');
+
+        });
+
+    }
+
+    //主表加载数据函数;
+
+    const loadBillMainTable = async () => {
+
+        //显示过滤模式
+        switch (true) {
+            case mainTableFilter === 'to_days(makeDate) = to_days(now())':
+                $('#btnFilterToday').addClass('active');
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+
+                break;
+            case mainTableFilter === 'status ="待审核"':
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterUnAudit').addClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            default:
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterDiy').addClass('active');
+                break;
+        }
+
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_outbills',
+            sqlParams: {
+                sqlId: 'sqlOutBills',
+                params: {
+                    filter: mainTableFilter,
+                    orderBy: 'billSaveTimeStamp desc'
+                }
+            },
+            dtParams: {
+                // bAutoWidth: false,//取消自动宽度
+                columns: mainColumnsArray,
+                // scrollX: true,
+                // autoWidth: true
+            }
+        })
+        //清空选项值
+        $('.dataTables_filter input').val('')
+
+        //自定义样式调整
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'size': 45
+        });
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'placeholder': '可用表属性过滤'
+        });
+
+
+
+        // //添加搜索框监听事件,值变动自动隐藏主页附表
+        // $('#rp_outbills').on('search.dt', function () {
+        //     console.log(1111);
+        //     $('#subTablePanel').hide();
+        // })
+
+
+        // //隐藏搜索值数据列,bStateSave 会导致列中visible 属性失效,采用指定隐藏方案
+        // let table = $('#rp_outbills').DataTable();
+        // table.column('last').visible(false)
+
+        addMainTableListener();
+
+        //隐藏子表
+        $('#subTablePanel').hide();
+    }
+
+    //添加子表监听器,定义双击展开事件
+    const addSubTableListener = () => {
+        let subTable = $('#rp_outsubbills').DataTable();
+
+        //解绑原事件
+        $('#rp_outsubbills tbody').unbind();
+
+        //定义子表双击事件
+        $('#rp_outsubbills tbody').on('click', 'tr', function () {
+
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+
+                $('#rp_outsubbillsPanel').hide();
+            } else {
+                subTable.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+
+                let rowSelect = subTable.row('.selected').data();
+                // console.log("rowSelect:" + JSON.stringify(rowSelect));
+
+
+                //初始化并填写form内inputs
+                initAndFillFormInputs({
+                    formId: 'rp_outsubbillsForm',
+                    params: rowSelect
+                })
+
+                //打开面板
+                $('#rp_outsubbillsPanel').show();
+
+                // //选定产品修改事件
+                // addProductListener();
+            }
+
+        });
+    }
+
+
+
+
+
+    //用数组重载子表
+    const loadDataSubTable = async ({
+        elementId,
+        dataArray
+    }) => {
+
+        //加载表格
+        await loadBillDataTable({
+            elementId: elementId,
+            dtParams: {
+                dtConfig: 'dtConfigData',
+                data: dataArray,
+                columns: subColumnsArray,
+                // scrollX: true,
+                // bAutoWidth: true
+            }
+        })
+
+        //如数据为0,清空tbody 避免直接获取size =1;
+        if (dataArray.length === 0) {
+            $('#' + elementId + ' tbody').html("");
+        }
+
+
+        //添加子表双击事件
+        addSubTableListener();
+    }
+
+    //加载展开选定表子表关联数据
+
+    const loadBillSubTable = async (billId) => {
+
+
+        loadDataSubTable({
+            elementId: 'rp_outsubbills',
+            dataArray: subTableData
+        });
+
+        // loadDataSubTable({
+        //     elementId: 'rp_outbillsSub',
+        //     dataArray: subTableData
+        // });
+
+    }
+
+    //加载展开选定表子表关联数据
+
+    const loadMainBillSubTable = async (billId) => {
+        let dataArray = await getDataBySql({
+            sql: 'sqlOutSubBills',
+            params: {
+                filter: 'billId="' + billId + '"'
+            }
+        })
+        //将表数据同步到共用数组
+        subTableData = dataArray;
+        // console.log(subTableData);
+
+
+        loadDataSubTable({
+            elementId: 'rp_outbillsSub',
+            dataArray: subTableData
+        });
+    }
+
+
+
+
+    //保存出库单函数
+    const saveOutBill = async () => {
+
+        let mainFormData = getPostFormData({
+            formId: 'rp_outbillsForm'
+        })
+
+        //给主表数据添加,maker 和makeDate日期;新增状态等待单号检测完成,制单人为空则为新增状态
+
+        if (!mainFormData.data[0].maker) {
+            await autoUpdateOutBillId();
+            //刷新出库单号
+            mainFormData.data[0].billId = $("#rp_outbillsForm-billId").text();
+            mainFormData.data[0].status = '待审核';
+            mainFormData.data[0].maker = sessionName;
+            mainFormData.data[0].makeDate = currentDate();
+        }
+
+        // console.log("subTableData:" + JSON.stringify(subTableData))
+
+        for (let n of subTableData) {
+            n.billId = $("#rp_outbillsForm-billId").text();
+            if (n.status === '新增') {
+                n.status = '预领'
+            }
+        }
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: mainFormData
+        })
+
+        let r2 = await postDBData({
+            sql: 'replace',
+            params: {
+                tableId: 'rp_outsubbills',
+                data: subTableData
+            }
+        })
+
+        // console.log('saveOutBill r1:' + JSON.stringify(r1));
+        // console.log('saveOutBill r2:' + JSON.stringify(r2));
+
+        if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+            alert('保存成功!')
+        } else {
+            alert('出现错误!')
+        }
+
+        //更新客户信息功能
+
+        // console.log('customerData:' + JSON.stringify(customerData));
+        // console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        //定义当前表内实际填写客户数据
+        let billCustomerData = {
+            customerId: mainFormData.data[0].customerId,
+            // customerArea: mainFormData.data[0].customerArea,
+            customerName: mainFormData.data[0].customerName,
+            contact: mainFormData.data[0].contact,
+            mobilePhone: mainFormData.data[0].mobilePhone,
+            customerBelongShort: mainFormData.data[0].customerBelongShort,
+            // isInland: mainFormData.data[0].isInland
+        }
+
+        //判断当前表内客户数据是否存在更新;
+        let compareResult = true;
+        for (const p in billCustomerData) {
+            if (billCustomerData[p] !== customerData[p]) {
+
+                // console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
+                //     customerData[p] + '不同');
+
+                compareResult = false;
+                break;
+            }
+        }
+
+        //存在不同则更新客户信息
+        if (!compareResult) {
+
+            if (confirm('是否更新该客户基础信息?')) {
+                let rc = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'rp_customers',
+                        data: [billCustomerData],
+                        key: 'customerId'
+                    }
+                })
+                if (rc.affectedRows > 0) {
+                    alert('更新客户信息成功!')
+                }
+
+            }
+        }
+
+        // $('#rp_outbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
+        $('#rp_outbillsModalClose').click()
+
+        loadBillMainTable();
+
+
+    }
+
+
+    //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
+
+    const checkOutBillId = async () => {
+        let billId = $("#rp_outbillsForm-billId").text();
+
+        let r1 = await getDataBySql({
+            sql: 'getOutBillsNum',
+            params: {
+                filter: 'billId="' + billId + '"'
+            }
+        })
+
+        let r2 = r1[0].billsNum;
+        // console.log("checkOutBillId:" + r2);
+
+        let o = r2 > 0 ? false : true;
+        return o;
+
+    }
+
+    //更新需求单号加1
+    const updateOutBillId = () => {
+        let billId = $("#rp_outbillsForm-billId").text();
+        if (billId) {
+            billIdArr = billId.split('-');
+            let newBillId = billIdArr[0] + '-' + (parseInt(billIdArr[1]) + 1);
+            $("#rp_outbillsForm-billId").text(newBillId);
+        }
+    }
+
+    //递归更新单号直到不存在冲突单号;
+
+    const autoUpdateOutBillId = async () => {
+        let r = await checkOutBillId();
+        if (r) {
+            return true
+        } else {
+            // console.log('fail:' + $("#rp_outbillsForm-billId").text());
+            updateOutBillId()
+            // console.log('fail11:' + $("#rp_outbillsForm-billId").text());
+            return await autoUpdateOutBillId();
+        }
+    }
+
+
+    // //检查删除单据数据
+    // const checkDeleteBills = async () => {
+
+    //     let resultData = {
+    //         result: null,
+    //         data: {}
+    //     }
+
+    //     let table = $('#rp_outbills').DataTable();
+    //     let dataSelect = table.rows('.selected').data();
+    //     let mainDBIDArr = [];
+    //     let subDBIDArr = [];
+    //     let billsIdArr = [];
+
+    //     for (let n = 0; n < dataSelect.length; n++) {
+    //         mainDBIDArr.push(dataSelect[n].DBID);
+    //         billsIdArr.push(dataSelect[n].billId);
+    //     }
+
+    //     switch (true) {
+    //         case billsIdArr.length === 0:
+    //             alert('请先选中需要删除的出库单!')
+
+    //             resultData.result = false;
+    //             return resultData
+    //             break;
+    //         case billsIdArr.length > 0:
+    //             let billIdRange = getRangeString(billsIdArr);
+
+    //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+
+    //             let statusArr = await getDataBySql({
+    //                 sql: 'getBorrowSubBillStatus',
+    //                 params: {
+    //                     filter: 'billId in ' + billIdRange
+    //                 }
+    //             })
+
+    //             // console.log("statusArr:" + JSON.stringify(statusArr));
+    //             for (const n of statusArr) {
+    //                 if (n.status !== '待审核') {
+    //                     alert('选中单据已审核,不符合删除条件!')
+    //                     resultData.result = false;
+    //                     return resultData
+    //                 }
+    //                 subDBIDArr.push(n.DBID)
+    //             }
+
+    //             break;
+    //     }
+
+    //     resultData = {
+    //         result: true,
+    //         data: {
+    //             mainDBIDArr: mainDBIDArr,
+    //             subDBIDArr: subDBIDArr
+    //         }
+    //     }
+
+    //     return resultData;
+    // }
+
+    //更新所选产品即时库存
+    const showStockNum = async () => {
+        let stockNum = 0;
+        let productId = $('#rp_outsubbillsForm-productId option:selected').val();
+        let warehouseId = $('#rp_outsubbillsForm-warehouseId option:selected').val();
+        // console.log(warehouseId);
+
+        if (productId && warehouseId) {
+            stockNum = await getStockNum(productId, warehouseId);
+        }
+        $('#stockNum').text(stockNum)
+    }
+
+
+    //加载多联系人数据
+    const loadContactOptions = (customerData) => {
+        // console.log('contacts', contacts);
+
+        //补齐联系人待选项
+        let contacts = [];
+        if (customerData.contact) {
+            contacts.push({
+                name: customerData.contact,
+                phone: customerData.mobilePhone
+            })
+        }
+
+        if (customerData.contacts) {
+            let contactsStr = customerData.contacts;
+
+            // console.log('contactsStr', contactsStr);
+            let contactsArr = contactsStr.split(';')
+            // console.log('contactsArr', contactsArr);
+            for (const n of contactsArr) {
+                if (n) {
+                    let name = n.split(',')[0];
+                    let phone = n.split(',')[1];
+                    contacts.push({
+                        name: name,
+                        phone: phone
+                    })
+                }
+            }
+        }
+
+        $("#customerContacts").empty(); //清空原有
+
+        if (contacts.length > 0) {
+            for (const contact of contacts) {
+                $("#customerContacts").append(
+                    "<option data-tokens='" + contact.phone + " ' value='" + contact.name + "'>" + contact
+                    .name +
+                    "</option>"
+                );
+            }
+            $("#customerContacts").selectpicker('refresh');
+        }
+
+
+        //添加监听事件
+
+        $('#customerContacts').unbind();
+        $('#customerContacts').change(function () {
+            let contact = $('#customerContacts option:selected').val();
+            if (contact) {
+                $("#customerContacts").selectpicker('refresh'); //刷新显示
+                $('#rp_outbillsForm-contact').val($('#customerContacts option:selected')
+                    .val());
+                $('#rp_outbillsForm-mobilePhone').val($('#customerContacts option:selected')
+                    .data("tokens"));
+            }
+        });
+    }
+
+    //检测库存状态subTableData=[{partId,num,numStatus}]
+    const checkSubTableStock = async (subTableData) => {
+        //1.check
+        console.log('checkSubTableStock', subTableData);
+        if (subTableData.length < 1) {
+            alert('参数错误,子表不存在产品')
+            return false
+        }
+
+        //2.do
+        let PIDArr = [];
+        for (const n of subTableData) {
+            PIDArr.push({
+                PID: n.productId,
+                warehouseId: n.warehouseId
+            });
+        }
+
+        let stockNums = await getStockNums(PIDArr)
+        console.log('stockNums', stockNums);
+
+        for (const n of subTableData) {
+            for (const m of stockNums) {
+                if (n.productId === m.PID && n.num > m.stockNum) {
+                    alert('产品编号:' + n.productId + '在' + n.warehouseName + '中库存不足,请补充库存后重试!')
+                    return false
+                }
+            }
+        }
+
+        //3.return
+        return {
+            result: true,
+            stockNums: stockNums
+        }
+
+    }
+
+    function selectFile() {
+        $("#file")[0].click();
+    }
+
+    //去除excel生成json中的中文属性
+    const excelJsonArr2DivJsonArr = (excelJsonArr, rules) => {
+        for (let n of excelJsonArr) {
+            n = replaceObjParamsName(n, rules)
+        }
+        return excelJsonArr;
+    }
+
+    const addFileReaderListener = () => {
+        $("#file")[0].addEventListener('change', function (e) {
+
+            //check-检查文件数量
+            var files = e.target.files;
+            if (files.length == 0) return;
+            var f = files[0];
+
+            //check-检查文件格式
+            if (!/\.xlsx$/g.test(f.name)) {
+                alert('仅支持读取xlsx格式！');
+                return;
+            }
+
+            //do-读取数据
+            readWorkbookFromLocalFile(f, async function (workbook) {
+                let excelData = readWorkbook(workbook);
+                let storeData = excelJsonArr2DivJsonArr(excelData, {
+                    billId: '单据编号',
+                    customerId: '客户编号',
+                    customerShortName: '客户简称',
+                    contact: '联系人',
+                    mobilePhone: '移动电话',
+                    workPhone: '工作电话',
+                    operator: '经手人',
+                    maker: '制单人',
+                    auditor: '审核人',
+                    remark: '备注',
+                    rowId: '行号',
+                    productId: '产品编号',
+                    productName: '产品名称',
+                    warehouseId: '仓库编号',
+                    warehouseName: '仓库名称',
+                    unit: '单位',
+                    num: '数量',
+                    subRemark: '子表备注'
+                })
+
+                console.log('storeData', storeData);
+                //do-生成主表,子表数据
+                let outBillsArr = [];
+                let outSubBillsArr = [];
+
+                for (const n of storeData) {
+                    outBillsArr.push({
+                        billFrom: '批量导入',
+                        billId: n.billId,
+                        customerId: n.customerId,
+                        customerShortName: n.customerShortName,
+                        contact: n.contact,
+                        mobilePhone: n.mobilePhone,
+                        workPhone: n.workPhone,
+                        operator: n.operator,
+                        maker: n.maker,
+                        makeDate: currentDate(),
+                        auditor: n.auditor,
+                        status: '待审核',
+                        remark: n.remark
+                    })
+
+                    outSubBillsArr.push({
+                        billId: n.billId,
+                        rowId: n.rowId,
+                        productId: n.productId,
+                        productName: n.productName,
+                        warehouseId: n.warehouseId,
+                        warehouseName: n.warehouseName,
+                        unit: n.unit,
+                        num: n.num,
+                        remark: n.subRemark
+                    })
+                }
+                //do-去重处理
+                // inBillsArr = Array.from(new Set(inBillsArr))仅可用于简单数组去重
+                var obj = {};
+                outBillsArr = outBillsArr.reduce(function (item, next) {
+                    obj[next.billId] ? '' : obj[next.billId] = true && item.push(next);
+                    return item
+                }, [])
+
+
+
+                //do-导入数据库
+                let rOutBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_outbills',
+                        data: outBillsArr
+                    }
+                })
+
+                let rOutSubBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_outsubbills',
+                        data: outSubBillsArr
+                    }
+                })
+
+                //do-初始化库存
+                let PIDArr = [];
+                for (const n of outSubBillsArr) {
+                    PIDArr.push({
+                        PID: n.productId,
+                        warehouseId: n.warehouseId
+                    })
+                }
+
+                let newPIDArr = []
+                for (let i = 0; i < PIDArr.length; i++) {
+                    let isNew = true
+                    for (let j = 0; j < newPIDArr.length; j++) {
+                        if (PIDArr[i].PID === newPIDArr[j].PID && PIDArr[i].warehouseId ===
+                            newPIDArr[j].warehouseId) {
+                            isNew = false;
+                            break;
+                        }
+                    }
+                    if (isNew) {
+                        newPIDArr.push(PIDArr[i])
+                    }
+
+                }
+
+                //初始化库存记录
+                let rInitPID = await initWarehousePID({
+                    PIDArr: newPIDArr
+                })
+
+                if (rOutBills.affectedRows > 0 && rOutSubBills.affectedRows > 0 && rInitPID) {
+                    alert('批量导入成功')
+                }
+
+                //return-刷新主界面
+                loadBillMainTable()
+
+
+            });
+        });
+    }
+
+
+    $(document).ready(function () {
+
+        // alert(parseInt(''))
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
+        //定义子表全局变量临时数据数组
+        subTableData = [];
+
+        //存储当前客户信息
+        customerData = {}
+        //主表过滤器
+        mainTableFilter = '';
+
+
+
+
+        //初始化子表
+        loadDataSubTable({
+            elementId: 'rp_outsubbills',
+            dataArray: subTableData
+        });
+
+        //过滤器当天按钮
+        $('#btnFilterToday').click(function () {
+            mainTableFilter = 'to_days(makeDate) = to_days(now())';
+            //初始化主表
+            loadBillMainTable();
+
+        })
+
+        $('#btnFilterToday').click(); //默认开启当天过滤
+
+        //过滤器待审核
+        $('#btnFilterUnAudit').click(function () {
+            mainTableFilter = 'status ="待审核"';
+            //初始化主表
+            loadBillMainTable();
+        })
+
+        //过滤器自定义按钮
+        $('#btnFilterDiy').click(function () {
+            //打开面板
+            $('#filterModal').modal('show');
+            clearFormInputs({
+                formId: 'filterForm'
+            })
+
+        })
+
+        //过滤器确认按钮
+
+        $('#confirmFilter').click(function () {
+            //获取filterform内数据
+            let filter = '';
+
+            // //申请日期过滤
+            // let borrowDateB = $('#filterForm-borrowDateB').val();
+            // let borrowDateE = $('#filterForm-borrowDateE').val();
+
+            // if (borrowDateB) {
+            //     filter = filter + ' and borrowDate>="' + borrowDateB + '"'
+            // }
+
+            // if (borrowDateE) {
+            //     filter = filter + ' and borrowDate<="' + borrowDateE + '"'
+            // }
+
+            //制单日期过滤
+            let makeDateB = $('#filterForm-makeDateB').val();
+            let makeDateE = $('#filterForm-makeDateE').val();
+
+            if (makeDateB) {
+                filter = filter + ' and makeDate>="' + makeDateB + '"'
+            }
+
+            if (makeDateE) {
+                filter = filter + ' and makeDate<="' + makeDateE + '"'
+            }
+
+
+
+            //去除filter中开始的and关键字避免sql错误;
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            mainTableFilter = filter
+
+            $('#closeFilter').click();
+            loadBillMainTable()
+
+        })
+
+
+
+        //新增出库单按钮
+        $('#btnOutBillNew').click(function () {
+
+            //清空form数据
+            mainTableData = {}
+            subTableData = {}
+
+            clearFormInputs({
+                formId: 'rp_outbillsForm'
+            })
+
+            //清空原有选项
+            $('#customerContacts').empty();
+            $('#customerContacts').selectpicker('destroy');
+
+
+            //清空子表及全局变量
+            subTableData = [];
+            $('#rp_outsubbills tbody').html("");
+
+
+            //打开面板
+            $('#rp_outsubbillsPanel').hide();
+
+
+            //清空modal数据
+            clearFormInputs({
+                formId: 'rp_outbillsForm'
+            })
+
+
+            createOutBillId();
+            $("#rp_outbillsForm-billFrom").text('出库单');
+            // $("#rp_outbillsForm-isInland").selectpicker('val', '国内')
+            $("#rp_outbillsForm-sendWay").selectpicker('val', '邮寄过来')
+
+            //在保存时赋值
+            // $("#rp_outbillsForm-maker").text(sessionName);
+            // $("#rp_outbillsForm-makeDate").text(currentDate());
+
+            // //客户选定监听事件
+            // addCustomerListener();
+
+
+            //显示/隐藏
+            //关闭关联信息,打印按钮
+            $("#accordion").hide();
+
+            // $("#listPrintBtn").hide();
+            // $("#rp_outbillsPrint").hide();
+
+            //打开面板
+            $('#rp_outbillsModal').modal('show');
+
+        })
+
+        //审核出库单按钮
+        $('#btnOutBillAudit').click(async function () {
+            //check-单据选中状态
+            if (!mainTableData.DBID) {
+                alert('请先选中需要审核的出库单!')
+                return
+            }
+            //check-单据审核状态
+            if (mainTableData.status !== '待审核') {
+                alert('该出库单非待审核状态,无法审核!')
+                return
+            }
+
+            //check-单据审核人
+            if (mainTableData.auditor !== sessionName) {
+                alert('当前账号非审核人,无法审核!')
+                return
+            }
+            //check-即时库存及领料数量
+            let stockResult = await checkSubTableStock(subTableData);
+            if (!stockResult.result) {
+                return
+            }
+            console.log('stockResult', stockResult);
+
+
+            //do-扣减零件库存
+            let updateStockArr = []
+            for (let n of subTableData) {
+                console.log('n', n);
+
+                for (const m of stockResult.stockNums) {
+                    console.log('m', m);
+                    if (n.productId === m.PID) {
+                        n.stockNum = m.stockNum;
+                    }
+                }
+                //赋值添加PID,去除partId
+                updateStockArr.push({
+                    PID: n.productId,
+                    warehouseId: n.warehouseId,
+                    stockNum: n.stockNum,
+                    num: -n.num
+                })
+            }
+            console.log('updateStockArr', updateStockArr);
+
+
+            let r1 = await updateStock({
+                stockArr: updateStockArr,
+                actType: '出库单',
+                rpBillId: mainTableData.billId
+            });
+
+            //do-更新出库单子表
+            if (r1) {
+                for (let n = 0; n < subTableData.length; n++) {
+
+                    if (subTableData[n].stockNum) {
+                        delete subTableData[n].stockNum;
+                    }
+
+                    if (subTableData[n].status === '预领') {
+                        subTableData[n].status = '已领'
+                    }
+                }
+            }
+
+            let r2 = await postDBData({
+                sql: 'replace',
+                params: {
+                    tableId: 'rp_outsubbills',
+                    data: subTableData
+                }
+            })
+
+            //do-更新出库单主表
+
+
+            mainTableData.auditor = sessionName;
+            mainTableData.auditDate = currentDate();
+            mainTableData.status = '已审核';
+
+            let r3 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_outbills',
+                    data: [mainTableData],
+                    key: 'DBID'
+                }
+            })
+
+            //3.return
+            console.log(r1, r2, r3);
+
+            if (r1 && r2.affectedRows && r3.affectedRows) {
+                alert('审核出库成功!')
+                loadBillMainTable();
+            } else {
+                alert('出现错误!')
+            }
+
+
+        })
+
+
+        //删除出库单按钮
+        $('#btnOutBillDelete').click(async function () {
+
+            //check-检查单据选中
+            if (!mainTableData.billId) {
+                alert('请先选中需要删除的出库单')
+                return
+            }
+
+            //check-检查单据状态
+            if (mainTableData.status !== '待审核') {
+                alert('只允许删除待审核出库单')
+                return
+            }
+
+            //check-检查子表状态
+            for (const n of subTableData) {
+                if (n.status !== '预领') {
+                    alert('存在非预领状态的物料,无法删除!')
+                    return
+                }
+            }
+
+            //check-提醒删除风险
+            if (!confirm('删除后无法恢复,确认删除?')) {
+                return;
+            }
+
+            // let resultData = await checkDeleteBills();
+            // if (!resultData.result) {
+            //     return;
+            // }
+
+
+            // console.log(mainTableData);
+            // console.log(subTableData);
+
+
+            //do-删除单据
+
+            let mainDBIDArr = [mainTableData.DBID]
+            let subDBIDArr = [];
+            for (const n of subTableData) {
+                subDBIDArr.push(n.DBID)
+            }
+
+            let r1 = await postDBData({
+                sql: 'delete',
+                params: {
+                    tableId: 'rp_outbills',
+                    data: mainDBIDArr
+                }
+            })
+
+            let r2 = await postDBData({
+                sql: 'delete',
+                params: {
+                    tableId: 'rp_outsubbills',
+                    data: subDBIDArr
+                }
+            })
+
+            //return-提醒并重新加载表单
+            if (r1.affectedRows && r2.affectedRows) {
+                alert('删除成功!')
+            } else {
+                alert('出现错误!')
+            }
+            loadBillMainTable();
+
+
+        })
+
+
+
+        // 扫描按钮
+        $('#btnScan').click(function () {
+
+            let scanner = new Instascan.Scanner({
+                video: document.getElementById('preview')
+            });
+            scanner.addListener('scan', async function (productId) {
+                // console.log('productId:' + productId);
+                let productData = await getDataBySql({
+                    sql: 'getProduct',
+                    params: {
+                        filter: 'productId="' + productId + '"'
+                    }
+                })
+                // console.log("productData:" + JSON.stringify(productData));
+                let rowNum = $("#rp_outsubbills tbody tr").size();
+                let rowData = {};
+
+                rowData.rowId = rowNum + 1;
+                rowData.status = '新增'
+                rowData.productId = productData[0].productId;
+                rowData.productName = productData[0].productName;
+                rowData.productDescription = productData[0].productDescription;
+                rowData.factoryNo = '11111'
+                rowData.origin = 'nb'
+                rowData.isRework = '否';
+                rowData.urgent = '否';
+                rowData.inWarranty = '否';
+                rowData.productFrom = '终端客户';
+                rowData.productBelong = '客户 ';
+
+                // console.log("rowData:" + JSON.stringify(rowData));
+
+                subTableData.push(rowData);
+                //重新加载子表
+                loadDataSubTable({
+                    elementId: 'rp_outsubbills',
+                    dataArray: subTableData
+                });
+
+                // alert('productId:' + productId);
+                // $('#rp_outsubbillsPanel').show();
+
+
+                scanner.stop().then(function () {
+                    // alert('stoped');
+                    $('#scanModal').modal('hide')
+                });
+            });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]).then(function () {
+                        // alert('start');
+                    }).catch(function (err) {
+                        alert('err:' + err);
+                    });
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+                alert("系统错误,请检查摄像头设备!")
+
+            });
+
+            // 停止扫描按钮功能定义
+            $('#btnScanStop').unbind();
+            $('#btnScanStop').click(function () {
+                scanner.stop()
+                $('#scanModal').modal('hide')
+            })
+
+            $('#scanModal').modal('show');
+        })
+
+
+
+        // 新增填单按钮
+        $('#btnAddProduct').click(function () {
+            let subTable = $('#rp_outsubbills').DataTable();
+            //删除子表选中状态
+            // subTable.$('tr.selected').removeClass('selected');
+
+            subTable.rows().deselect();
+
+            //清空panel数据
+            clearFormInputs({
+                formId: 'rp_outsubbillsForm'
+            })
+            //打开面板
+            $('#rp_outsubbillsPanel').show();
+
+            //设置默认值
+
+            $("#rp_outsubbillsForm-status").text('新增')
+            $("#rp_outsubbillsForm-productId").selectpicker('val', '')
+            $("#rp_outsubbillsForm-warehouseId").selectpicker('val', 'W1')
+            $("#rp_outsubbillsForm-num").val(1)
+
+        })
+
+        //保存产品按钮
+
+        $('#btnProductSave').click(async function () {
+
+            //check-检查出库单状态
+            if (mainTableData.status === '已审核') {
+                alert('当前出库单已审核,不允许修改!')
+                return
+            }
+
+            //check-库存充足校验
+            let stockNum = parseInt($('#stockNum').text());
+            let num = parseInt($("#rp_outsubbillsForm-num").val());
+            if (num > stockNum) {
+                alert('当前物料在该仓库存不足,无法保存,请选择其他仓库或补充物料后重试!')
+                return
+            }
+
+
+            //do-保存产品信息
+            let billId = $("#rp_outbillsForm-billId").text();
+            let rowNum = $("#rp_outsubbills tbody tr").size();
+            // console.log('rowNum:' + rowNum);
+            let productData = getFormData({
+                formId: 'rp_outsubbillsForm'
+            })
+            //添加仓库名称
+            productData.data.push({
+                warehouseName: $('#rp_outsubbillsForm-warehouseId option:selected').text()
+            })
+            console.log('productData:' + JSON.stringify(productData.data))
+            let rowData = formDataToRowData(productData.data)
+            rowData.billId = billId;
+            // console.log('rowData:' + JSON.stringify(rowData))
+            //检查是否存在序号,区分新增还是编辑
+            if (rowData.rowId) {
+                for (let n in subTableData) {
+                    //此处不用===避免,字符类型不匹配导致相关问题
+                    if (subTableData[n].rowId == rowData.rowId) {
+                        subTableData[n] = rowData;
+                        break;
+                    }
+                }
+            } else {
+                rowData.rowId = rowNum + 1;
+                subTableData.push(rowData);
+            }
+
+            //return-重新加载子表
+            loadDataSubTable({
+                elementId: 'rp_outsubbills',
+                dataArray: subTableData
+            });
+
+        })
+
+        // 删除产品按钮
+        $('#btnDeleteProduct').click(function () {
+
+            //check-检查选中
+            let subTable = $('#rp_outsubbills').DataTable();
+            let rowSelect = subTable.row('.selected').data();
+
+            if (!rowSelect) {
+                alert('请先点击表格选中需要删除的产品!')
+                return
+            }
+            //check-检查状态
+
+            if (rowSelect.status !== '新增') {
+                alert('非新增状态不允许删除!')
+                return
+            }
+
+            //do- 删除元素
+            for (const n in subTableData) {
+                if (subTableData[n].rowId === rowSelect.rowId) {
+                    subTableData.splice(n, 1);
+                }
+            }
+            //重新排序rowId,避免空缺
+            for (const n in subTableData) {
+                subTableData[n].rowId = parseInt(n) + 1;
+            }
+
+            //return-重新加载子表
+            loadDataSubTable({
+                elementId: 'rp_outsubbills',
+                dataArray: subTableData
+            });
+            //return-自动点击新增按钮,防止遗留数据产生错误
+            $('#btnAddProduct').click()
+
+
+        })
+
+
+
+
+
+
+        // //表单产品清单打印按钮
+        // $('#listPrintBtn').click(function () {
+
+        //     if (!mainTableData.billId) {
+        //         alert('请先选中需要打印的单据!')
+        //         return
+        //     }
+
+        //     // console.log('print subTable', subTableData);
+
+        //     let htmlModel = '　<DIV STYLE="page-break-before:always">' +
+        //         '<table width="600" border="0">' +
+        //         '<tr>' +
+        //         '<td width="150"><img src="/images/techmation.png" /></td>' +
+        //         '<td width="200" align="center"><h3>宁波弘讯出库码</h3>' +
+        //         '<p><h4>repairId</h4></p></td>' +
+        //         '<td width="150" align="center"><div id="qrcode" width:100px height:100px /></td>' +
+        //         '</tr>' +
+        //         '</table>' +
+        //         '<table width="600" border="1" class="table table-bordered">' +
+        //         '<tr>' +
+        //         '<td width="80">客户名称</td>' +
+        //         '<td colspan="2">customerShortName</td>' +
+        //         '<td width="80">移动电话</td>' +
+        //         '<td colspan="2">mobilePhone</td>' +
+        //         '</tr>' +
+        //         '<tr>' +
+        //         '<td>产品编号</td>' +
+        //         '<td colspan="2">productId</td>' +
+        //         '<td>数量</td>' +
+        //         '<td colspan="2">num</td>' +
+        //         '</tr>' +
+        //         '<tr>' +
+        //         '<td>生产日期</td>' +
+        //         '<td width="80">productionDate</td>' +
+        //         '<td width="80">经手人</td>' +
+        //         '<td>operator</td>' +
+        //         '<td width="80">客户归属</td>' +
+        //         '<td width="80">customerBelongShort</td>' +
+        //         '</tr>' +
+        //         '<tr>' +
+        //         '<td height="50">故障状况</td>' +
+        //         '<td colspan="5">faultDescription</td>' +
+        //         '</tr>' +
+        //         '<tr>' +
+        //         '<td>是否加急</td>' +
+        //         '<td>urgent</td>' +
+        //         '<td>是否返修</td>' +
+        //         '<td>isRework</td>' +
+        //         '<td>产品归属</td>' +
+        //         '<td>productBelong</td>' +
+        //         '</tr>' +
+        //         '</table>' +
+        //         '</DIV>';
+
+        //     //创建模板函数
+        //     const fillPrintModel = ({
+        //         htmlModel,
+        //         repairId,
+        //         customerShortName,
+        //         mobilePhone,
+        //         productId,
+        //         num,
+        //         productionDate,
+        //         operator,
+        //         customerBelongShort,
+        //         faultDescription,
+        //         urgent,
+        //         isRework,
+        //         productBelong
+        //     }) => {
+        //         let newHtml = htmlModel
+        //             .replace(/repairId/, repairId)
+        //             .replace(/qrcode/, 'qrcode-' + repairId)
+        //             .replace(/customerShortName/, customerShortName)
+        //             .replace(/mobilePhone/, mobilePhone)
+        //             .replace(/productId/, productId)
+        //             .replace(/num/, num)
+        //             .replace(/productionDate/, productionDate)
+        //             .replace(/operator/, operator)
+        //             .replace(/customerBelongShort/, customerBelongShort)
+        //             .replace(/faultDescription/, faultDescription)
+        //             .replace(/urgent/, urgent)
+        //             .replace(/isRework/, isRework)
+        //             .replace(/productBelong/, productBelong)
+
+        //         return newHtml;
+        //     }
+        //     //创建二维码函数
+        //     const createQrcode = ({
+        //         repairId
+        //     }) => {
+        //         var qrcode = new QRCode(document.getElementById("qrcode" + '-' + repairId), {
+        //             width: 100,
+        //             height: 100
+        //         });
+        //         qrcode.makeCode(repairId);
+        //     }
+
+        //     //创建信息表函数
+        //     const createRpHtml = (subTableData) => {
+        //         if (subTableData.length > 0) {
+        //             let divHtml = ''
+        //             for (let i = 0; i < subTableData.length; i++) {
+        //                 const element = subTableData[i];
+        //                 let newHtml = fillPrintModel({
+        //                     htmlModel: htmlModel,
+        //                     repairId: subTableData[i].billId + '-' + subTableData[i]
+        //                         .rowId,
+        //                     customerShortName: mainTableData.customerShortName,
+        //                     mobilePhone: mainTableData.mobilePhone,
+        //                     productId: subTableData[i].productId,
+        //                     num: subTableData[i].num,
+        //                     productionDate: subTableData[i].productionDate,
+        //                     operator: mainTableData.operator,
+        //                     customerBelongShort: mainTableData.customerBelongShort,
+        //                     faultDescription: subTableData[i].faultDescription,
+        //                     urgent: subTableData[i].urgent,
+        //                     isRework: subTableData[i].isRework,
+        //                     productBelong: subTableData[i].productBelong
+
+        //                 })
+        //                 //删除第一页换页
+        //                 if (i === 0) {
+        //                     newHtml = newHtml.replace(/STYLE="page-break-before:always"/, '');
+        //                 }
+        //                 divHtml = divHtml + newHtml
+        //             }
+        //             $('#listPrintViewDiv').html(divHtml)
+        //         }
+        //     }
+
+
+        //     createRpHtml(subTableData);
+
+        //     //生成出库二维码
+        //     const createQrcodes = (subTableData) => {
+        //         if (subTableData.length > 0) {
+        //             for (const n of subTableData) {
+        //                 createQrcode({
+        //                     repairId: n.billId + '-' + n.rowId
+        //                 })
+        //             }
+        //         }
+        //     }
+
+
+        //     createQrcodes(subTableData);
+
+
+
+
+
+
+
+
+        //     // fillPrintModel()
+
+        //     // let formData = getFormData({
+        //     //     formId: 'rp_outbillsForm',
+        //     // })
+
+        //     // fillTableInputs({
+        //     //     tableId: 'printViewMainTable',
+        //     //     params: formDataToRowData(formData.data)
+        //     // })
+
+        //     // fillTableRows({
+        //     //     tableId: 'printViewSubTable',
+        //     //     cols: ['rowId', 'productId', 'productName', 'num'],
+        //     //     data: subTableData
+        //     // })
+
+        //     $('#listPrintViewModal').modal('show')
+        // })
+
+        // //确认打印按钮
+        // $('#listPrintConfirmBtn').click(function () {
+        //     Print('#listPrintViewDiv', {
+        //         onStart: function () {
+        //             console.log('onStart', new Date())
+        //         },
+        //         onEnd: function () {
+        //             console.log('onEnd', new Date())
+        //         }
+        //     })
+        // })
+
+
+        // //打印关闭按钮
+        // $('#listPrintCloseBtn').click(function () {
+        //     $('#listPrintViewModal').modal('hide')
+        // })
+
+        //表单打印按钮
+        $('#rp_outbillsPrint').click(function () {
+
+            // let formData = getFormData({
+            //     formId: 'rp_outbillsForm',
+            // })
+
+            // fillTableInputs({
+            //     tableId: 'printViewMainTable',
+            //     params: formDataToRowData(formData.data)
+            // })
+            // console.log('print mainTableData:', mainTableData);
+            if (!mainTableData.billId) {
+                alert('请先选中需要打印的单据!')
+                return
+            }
+
+
+            fillTableInputs({
+                tableId: 'printViewMainTable',
+                params: mainTableData
+            })
+
+
+            fillTableRows({
+                tableId: 'printViewSubTable',
+                cols: ['rowId', 'productId', 'productName', 'warehouseName', 'unit', 'num'],
+                data: subTableData
+            })
+
+            $('#printViewModal').modal('show')
+        })
+
+        //确认打印按钮
+        $('#confirmPrintBtn').click(function () {
+            Print('#printViewDiv', {
+                onStart: function () {
+                    console.log('onStart', new Date())
+                },
+                onEnd: function () {
+                    console.log('onEnd', new Date())
+                }
+            })
+        })
+
+
+        //打印关闭按钮
+        $('#printCloseBtn').click(function () {
+            $('#printViewModal').modal('hide')
+        })
+
+        //表单保存按钮
+        $('#rp_outbillsSave').click(function () {
+
+            //check-检查单据状态
+            if (mainTableData.status === '已审核') {
+                alert('已审核单据无法保存')
+                return
+            }
+
+            //check-检查必填项
+            if (!$('#rp_outbillsForm-customerId').text()) {
+                alert('未选定客户,请检查!')
+                return;
+            }
+
+            //check-检查子表项目
+            if (subTableData.length === 0) {
+                alert('未添加需要出库的产品,无法保存单据,请检查!')
+                return;
+            }
+
+            //do-保存表单
+            saveOutBill();
+        })
+
+
+        //驳回按钮
+        $('#btnOutBillReject').click(async function () {
+            //check-检查选中
+            // console.log(mainTableData);
+            if (!mainTableData.billId) {
+                alert('请先点击表格选中需要驳回的出库单!')
+                return
+            }
+            //check-检查驳回条件
+            if (mainTableData.status !== '待审核') {
+                alert('只能驳回待审核的出库单,请检查!')
+                return
+            }
+            //check-驳回确认
+            if (!confirm('驳回后该出库单即将失效,是否继续')) {
+                return
+            }
+
+            //do-更新出库单状态
+            let billUpdateData = {
+                billId: mainTableData.billId,
+                status: '已驳回'
+            }
+
+            let r1 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_outbills',
+                    data: [billUpdateData],
+                    key: 'billId'
+                }
+            })
+
+            //do-更新出库单子表状态
+            let subbillUpdateData = [];
+            for (const n of subTableData) {
+                subbillUpdateData.push({
+                    billId: n.billId,
+                    status: '已驳回'
+                })
+            }
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'rp_outbills',
+                    data: subbillUpdateData,
+                    key: 'billId'
+                }
+            })
+
+            //return-操作成功信息
+            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+                alert('驳回成功!')
+            } else {
+                alert('驳回失败')
+            }
+            //return-刷新主表
+            loadBillMainTable();
+
+        })
+
+        //批量导出按钮
+        $('#batchExportBtn').click(async function () {
+            $('#exportModal').modal('show')
+
+
+        })
+
+        //执行批量导出按钮
+        $('#doExportBtn').click(async function () {
+
+            let titleTextArr = []
+            let titleValueArr = []
+
+            //主表字段选择
+            $('#exportModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+            //子表字段选择
+            $('#exportSubModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+
+
+
+
+            exportData = await getDataBySql({
+                sql: 'outBillsExportSql',
+                params: {
+                    filter: mainTableFilter
+                }
+            })
+            console.log('exportData', exportData);
+
+            let tableArr = []
+
+            tableArr.push(titleTextArr)
+
+            if (exportData.length > 0) {
+                for (let i = 0; i < exportData.length; i++) {
+                    let row = []
+                    for (const p in exportData[i]) {
+                        if (titleValueArr.includes(p)) {
+                            row.push(exportData[i][p])
+                        }
+                    }
+                    tableArr.push(row)
+                }
+            }
+
+            console.log('tableArr', tableArr);
+
+            var sheet = XLSX.utils.aoa_to_sheet(tableArr);
+            openDownloadDialog(sheet2blob(
+                sheet), '出库单.xlsx');
+        })
+
+        //批量导入按钮
+        $('#batchImportBtn').click(function () {
+            selectFile()
+        })
+
+        //数据模板按钮
+        $('#importModelBtn').click(function () {
+            var aoa = [
+                [
+                    '单据编号',
+                    '客户编号',
+                    '客户简称',
+                    '联系人',
+                    '移动电话',
+                    '工作电话',
+                    '经手人',
+                    '制单人',
+                    '备注',
+                    '行号',
+                    '产品编号',
+                    '产品名称',
+                    '仓库编号',
+                    '仓库名称',
+                    '单位',
+                    '数量',
+                    '子表备注'
+                ],
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '出库单模板.xlsx');
+        })
+
+        //初始化过滤器日期组
+        loadDatePickers({
+            elementIds: [
+                // 'filterForm-borrowDateB',
+                // 'filterForm-borrowDateE',
+                'filterForm-makeDateB',
+                'filterForm-makeDateE'
+            ]
+        })
+
+
+
+
+        // //初始化组件
+        // loadDatePicker({
+        //     elementId: "rp_outsubbillsForm-productYear",
+        //     params: {
+        //         startView: 4,
+        //         minView: 4,
+        //         format: 'yyyy'
+        //     }
+        // })
+
+        // //初始化组件
+        // loadDatePicker({
+        //     elementId: "rp_outsubbillsForm-productMonth",
+        //     params: {
+        //         startView: 3,
+        //         minView: 3,
+        //         format: 'mm'
+        //     }
+        // })
+
+
+
+        // $("#msgSwitch").bootstrapSwitch({
+        //     onText: "是",
+        //     offText: "否"
+        // });
+
+
+        //初始化selector
+
+        loadBootStrapSelector({
+            elementId: 'rp_outbillsForm-customerShortName',
+            sqlParams: {
+                sql: 'getCustomerSelector'
+            },
+        })
+
+
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outbillsForm-customerArea',
+        //     sqlParams: {
+        //         sql: 'getRegionSelector',
+        //         // params: {
+        //         //     filter: 'mername like "%宁波%"'
+        //         // }
+        //     },
+        //     // initValue:'中国,北京'
+        // })
+
+        loadBootStrapSelector({
+            elementId: 'rp_outbillsForm-operator',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+            // initValue:''
+        })
+
+        loadBootStrapSelector({
+            elementId: 'rp_outbillsForm-auditor',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+            // initValue:''
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_outsubbillsForm-productId',
+            sqlParams: {
+                sql: 'getProductSelector'
+            },
+        })
+
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outbillsForm-isInland',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="国内外"',
+        //             orderBy: 'orderId'
+        //         }
+        //     },
+        // })
+
+        loadBootStrapSelector({
+            elementId: 'rp_outbillsForm-customerBelongShort',
+            // initValue:'',
+            sqlParams: {
+                sql: 'getCustomerSelector',
+                params: {
+                    filter: 'customerType="客户"'
+                }
+            },
+            // initValue:'中国,北京'
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_outbillsForm-sendWay',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="出货方式"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'rp_outsubbillsForm-warehouseId',
+            sqlParams: {
+                sql: 'getWarehouseSelector',
+            },
+            // initValue: 'W1'
+        })
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outsubbillsForm-origin',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="原产地"',
+        //             orderBy: 'orderId'
+        //         }
+        //     },
+        // })
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outsubbillsForm-productBelong',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="产品归属"',
+        //             orderBy: 'orderId'
+        //         }
+        //     },
+        // })
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outsubbillsForm-isRework',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="是或否"'
+        //         }
+        //     },
+        // })
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outsubbillsForm-urgent',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="是或否"'
+        //         }
+        //     },
+        // })
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_outsubbillsForm-inWarranty',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="是或否"'
+        //         }
+        //     },
+        // })
+
+
+
+        //客户选定监听事件
+        addCustomerListener();
+
+        //选定产品修改事件
+        addProductListener();
+        //仓库选择修改事件
+        addWarehouseListener();
+
+        //添加文件监听事件
+        addFileReaderListener()
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_outbillsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_outbills').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            mainTableData = {}
+
+            // //添加监听出来扫描modal关闭 表单modal失效问题
+            $(this).removeData('bs.modal');
+            $(document.body).addClass("modal-open");
+        })
+
+        //自动调整modal显示位置
+        $('#scanModal').on('show.bs.modal', function (
+            e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零 
+            $(this).css('display', 'block');
+            // var modalHeight = $(window).height() / 2;
+            let modalHeight = $(window).height() / 3;
+            $(this).find('.modal-dialog').css({
+                'margin-top': modalHeight
+            });
+        });
+
+
+
+
+
+
+    });
+</script>

@@ -1,0 +1,531 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/ppmLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/ppmLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/ppmLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/ppmLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/ppmLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入bootstrapSwitch -->
+<link rel="stylesheet" href="/ppmLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
+<script type="text/javascript" src="/ppmLib/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/ppmLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/ppmLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/ppmLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+
+<!-- 导入qrcode 二维码库 -->
+<script type="text/javascript" src="/ppmLib/qrcode/qrcode.min.js"></script>
+
+<!-- 导入instascan 二维码扫描库 -->
+<script type="text/javascript" src="/ppmLib/instascan/instascan.min.js"></script>
+
+<!-- 导入print 打印库 -->
+<script type="text/javascript" src="/ppmLib/print/print.js"></script>
+
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+
+
+
+
+
+
+
+    <!-- 表单面板 -->
+    <div class="panel panel-default" style="width:75%;margin: auto;">
+        <div class="panel-heading" style="text-align: center;">
+            <h3 class="panel-title">
+                弘讯科技PPM需求单
+            </h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" id='ppm_requestbillsForm'>
+
+                <!-- <input id="ppm_requestbillsForm-DBID" type="hidden" value=""> -->
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-requestBillId">申请单号</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-requestBillId"></p>
+                    </div>
+
+
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-requestDate">送修时间:</label>
+                    <div class="col-sm-5 ">
+                        <div class="input-group date form_date ">
+                            <input id="ppm_requestbillsForm-requestDate" class="form-control " size="16" type="text"
+                                value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-fromBillId">来源单类型</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-fromBillType"></p>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-fromBillId">来源单号</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-fromBillId"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label " for="ppm_requestbillsForm-customerId">客户编号</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-customerId"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning"
+                        for="ppm_requestbillsForm-customerShortName">客户简称</label>
+                    <div class="col-sm-5">
+                        <select id="ppm_requestbillsForm-customerShortName" class="selectpicker form-control"
+                            data-live-search="true" data-size="10">
+                        </select>
+                    </div>
+
+
+
+
+
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-customerName">客户名称</label>
+                    <div class="col-sm-5">
+                        <input class="form-control" id="ppm_requestbillsForm-customerName" type="text">
+                    </div>
+
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-isInland">国内外</label>
+                    <div class="col-sm-5">
+                        <select id="ppm_requestbillsForm-isInland" class="selectpicker">
+
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-customerArea">客户区域</label>
+                    <div class="col-sm-5">
+                        <select id="ppm_requestbillsForm-customerArea" class="selectpicker form-control"
+                            data-live-search="true" data-size="10">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning" for="customerContacts">可选联系人</label>
+                    <div class="col-sm-5">
+                        <!-- <input class="form-control" id="ppm_requestbillsForm-contact" type="text"> -->
+                        <select id="customerContacts" class="selectpicker">
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-customerId">保固期</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-warrantyPeriod"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning" for="ppm_requestbillsForm-contact">联系人</label>
+                    <div class="col-sm-5">
+                        <input class="form-control" id="ppm_requestbillsForm-contact" type="text">
+                    </div>
+
+                    <label class="col-sm-1 control-label text-warning"
+                        for="ppm_requestbillsForm-mobilePhone">移动电话</label>
+                    <div class="col-sm-5">
+                        <input class="form-control" id="ppm_requestbillsForm-mobilePhone" type="text">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning"></label>
+                    <div class="col-sm-5">
+                        <button type="button" class="btn btn-warning" id="addContactsBtn">添加到可选联系人
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning"
+                        for="ppm_requestbillsForm-customerBelongShort">归属公司简称</label>
+                    <div class="col-sm-5">
+                        <!-- <input class="form-control" id="ppm_requestbillsForm-customerBelongShort"
+                        type="text"> -->
+                        <select id="ppm_requestbillsForm-customerBelongShort" class="selectpicker form-control"
+                            data-live-search="true" data-size="10">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning"
+                        for="ppm_requestbillsForm-requestWay">送修方式</label>
+                    <div class="col-sm-5">
+                        <select id="ppm_requestbillsForm-requestWay" class="selectpicker">
+
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label text-warning"
+                        for="ppm_requestbillsForm-requestStaff">送修人</label>
+                    <div class="col-sm-5">
+                        <!-- <input class="form-control" id="ppm_requestbillsForm-requestStaff" type="text"> -->
+                        <select id="ppm_requestbillsForm-requestStaff" class="selectpicker" data-live-search="true"
+                            data-size="5">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-warning" for="ppm_requestbillsForm-address">地址</label>
+                    <div class="col-sm-11">
+                        <input class="form-control" id="ppm_requestbillsForm-address" type="text">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">单据备注</label>
+                    <div class="col-sm-11">
+                        <input class="form-control" id="ppm_requestbillsForm-remark" type="text">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="msgSwitch">短信提醒</label>
+                    <div class="col-sm-11">
+                        <input id="msgSwitch" type="checkbox">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-maker">制单人</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-maker"></p>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-makeDate">制单时间</label>
+                    <div class="col-sm-5">
+                        <p class="form-control-static" id="ppm_requestbillsForm-makeDate"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="ppm_requestbillsForm-makeDate"></label>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-warning" id="addContactsBtn">保存
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="panel-footer">
+
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    //保存维修申请单函数
+    const saveRequestbill = async () => {
+
+        let mainFormData = getPostFormData({
+            formId: 'ppm_requestbillsForm'
+        })
+
+        //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
+
+        if (!mainFormData.data[0].maker) {
+            await autoUpdateRequestBillId();
+            //刷新申请单号
+            mainFormData.data[0].requestBillId = $("#ppm_requestbillsForm-requestBillId").text();
+            mainFormData.data[0].maker = sessionName;
+            mainFormData.data[0].makeDate = currentDate();
+        }
+
+        // console.log("subTableData:" + JSON.stringify(subTableData))
+
+        //添加申请单号到子表数据
+
+        //给主表数据中添加产品清单
+        let factoryNos = '';
+        for (let n of subTableData) {
+            n.requestBillId = $("#ppm_requestbillsForm-requestBillId").text();
+            n.fromBillId = $("#ppm_requestbillsForm-fromBillId").text();
+            if (n.status === '新增') {
+                n.status = '待维修'
+            }
+            factoryNos = factoryNos + n.factoryNo + ' ';
+        }
+
+        mainFormData.data[0].factoryNos = factoryNos;
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: mainFormData
+        })
+
+        let r2 = await postDBData({
+            sql: 'replace',
+            params: {
+                tableId: 'ppm_recordbills',
+                data: subTableData
+            }
+        })
+
+        // console.log('saveRequestbill r1:' + JSON.stringify(r1));
+        // console.log('saveRequestbill r2:' + JSON.stringify(r2));
+
+        if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+            alert('保存成功!')
+        } else {
+            alert('出现错误!')
+        }
+
+        //do-更新还货单状态
+        if (mainFormData.data[0].fromBillType === '还货单') {
+
+            let returnBillsIdArr = $("#ppm_requestbillsForm-fromBillId").text().split(',');
+            let returnBillsArr = []
+            for (const n of returnBillsIdArr) {
+                returnBillsArr.push({
+                    returnBillId: n,
+                    status: '已返修'
+                })
+            }
+
+            let r1 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'ppm_returnbills',
+                    data: returnBillsArr,
+                    key: 'returnBillId'
+                }
+            })
+
+            let r2 = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'ppm_returnsubbills',
+                    data: returnBillsArr,
+                    key: 'returnBillId'
+                }
+            })
+
+
+            if (r1.affectedRows > 0 && r2.affectedRows > 0) {
+                alert('更新还货单状态成功!')
+            }
+
+            loadUnReturnRequestTable()
+
+        }
+
+        //do-更新还货单状态
+        if (mainFormData.data[0].fromBillType === '维修单') {
+            //check-检查选中
+            let table = $('#ppm_partsbills').DataTable();
+            let rowsSelect = table.rows('.selected').data();
+            let partBillsArr = []
+
+            for (let i = 0; i < rowsSelect.length; i++) {
+                partBillsArr.push({
+                    DBID: rowsSelect[i].DBID,
+                    repairPartStatus: '已返修'
+                })
+
+            }
+
+            let rUpdatePartBill = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'ppm_partsbills',
+                    data: partBillsArr,
+                    key: 'DBID'
+                }
+            })
+            if (rUpdatePartBill.affectedRows > 0) {
+                alert('更新配件返修状态成功!')
+            }
+
+            loadUnPartRequestTable()
+
+        }
+
+        //更新客户信息功能
+
+        // console.log('customerData:' + JSON.stringify(customerData));
+        // console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+        //定义当前表内实际填写客户数据
+        let billCustomerData = {
+            customerId: mainFormData.data[0].customerId,
+            customerArea: mainFormData.data[0].customerArea,
+            customerName: mainFormData.data[0].customerName,
+            contact: mainFormData.data[0].contact,
+            mobilePhone: mainFormData.data[0].mobilePhone,
+            customerBelongShort: mainFormData.data[0].customerBelongShort,
+            isInland: mainFormData.data[0].isInland
+        }
+
+        //判断当前表内客户数据是否存在更新;
+
+        for (const p in billCustomerData) {
+            if (billCustomerData[p] !== customerData[p]) {
+
+                // console.log(p + ':' + 'billCustomerData[p]' + billCustomerData[p] + ',customerData[p]:' +
+                //     customerData[p] + '不同');
+
+                customerData[p] = billCustomerData[p];
+                customerDataChanged = true;
+                // break;
+            }
+        }
+
+        //存在不同则更新客户信息
+        if (customerDataChanged) {
+
+            if (confirm('是否更新该客户基础信息?')) {
+                let rc = await postDBData({
+                    sql: 'update',
+                    params: {
+                        tableId: 'ppm_customers',
+                        data: [customerData],
+                        key: 'customerId'
+                    }
+                })
+                if (rc.affectedRows > 0) {
+                    alert('更新客户信息成功!')
+                }
+
+            }
+        }
+
+        // $('#ppm_requestbillsModal').modal('hide');多层modal存在失效问题,改用click关闭
+        $('#ppm_requestbillsModalClose').click()
+
+
+    }
+
+
+
+
+
+
+
+    $(document).ready(function () {
+
+
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
+
+
+        //存储当前客户信息
+        customerData = {}
+        //记录客户基本信息是否被改变
+        customerDataChanged = false
+        //主表过滤器
+        mainTableFilter = '';
+
+
+
+
+
+
+
+
+        // //初始化过滤器日期组
+        // loadDatePickers({
+        //     elementIds: [
+        //         'filterForm-requestDateB',
+        //         'filterForm-requestDateE',
+        //         'filterForm-makeDateB',
+        //         'filterForm-makeDateE'
+        //     ]
+        // })
+
+
+        // //初始化组件
+        // loadDatePicker({
+        //     elementId: "ppm_requestbillsForm-requestDate",
+        // })
+
+        // $("#msgSwitch").bootstrapSwitch({
+        //     onText: "是",
+        //     offText: "否"
+        // });
+
+
+        // //初始化selector
+
+
+
+        // loadBootStrapSelector({
+        //     elementId: 'ppm_recordbillsForm-productBelong',
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="产品归属"',
+        //             orderBy: 'orderId'
+        //         }
+        //     },
+        // })
+
+        // loadBootStrapSelectors({
+        //     elementIds: [
+        //         'ppm_recordbillsForm-isRework',
+        //         'ppm_recordbillsForm-urgent',
+        //         'ppm_recordbillsForm-inWarranty'
+        //     ],
+        //     sqlParams: {
+        //         sql: 'getOptionSelector',
+        //         params: {
+        //             filter: 'optionClass="是或否"'
+        //         }
+        //     },
+
+        // })
+
+
+
+
+        // //enter键监听
+        // $(window).keyup(function (event) {
+        //     // var event = ev || event
+        //     if (event.keyCode == 13) {
+        //         // alert("按了enter键")
+        //     }
+        // });
+
+
+
+
+
+
+    });
+</script>

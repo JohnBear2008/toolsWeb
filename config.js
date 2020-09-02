@@ -77,7 +77,7 @@ var config = {
         loginTypes: ["userID"],
         //        loginTypes: ["mobilePhone"],
         //        notNeedLogin_urls: []
-        notNeedLogin_urls: ["/app/PM/linkPage"],
+        notNeedLogin_urls: ["/app/PM/linkPage","/app/PM/billsRequest"],
         // bodyParser: {
         //     urlencoded: {
         //         limit: "10mb",

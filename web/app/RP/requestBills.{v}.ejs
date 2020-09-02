@@ -271,8 +271,28 @@
                 <div class="modal-body">
 
                     <div class="panel panel-info">
-                        <div class="panel-body" style="height:300px">
+                        <div class="panel-body" style="height:500px">
                             <form class="form-horizontal" role="form" id='filterForm'>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">客户简称</label>
+                                    <div class="col-sm-5">
+                                        <select class="selectpicker" id="filterForm-customerShortName" multiple
+                                            data-live-search="true" data-size="10"
+                                            data-selected-text-format="count > 3">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">送修人</label>
+                                    <div class="col-sm-5">
+                                        <select class="selectpicker" id="filterForm-requestStaff" multiple
+                                            data-live-search="true" data-size="10"
+                                            data-selected-text-format="count > 3">
+                                        </select>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">送修日期</label>
@@ -511,7 +531,6 @@
                                     </div>
 
 
-
                                     <label class="col-sm-1 control-label"
                                         for="rp_requestbillsForm-requestDate">送修时间:</label>
                                     <div class="col-sm-5 ">
@@ -524,11 +543,7 @@
                                     </div>
                                 </div>
 
-
-
-
                                 <div class="form-group">
-
                                     <label class="col-sm-1 control-label"
                                         for="rp_requestbillsForm-fromBillId">来源单类型</label>
                                     <div class="col-sm-5">
@@ -540,21 +555,17 @@
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_requestbillsForm-fromBillId"></p>
                                     </div>
-
                                 </div>
 
                                 <div class="form-group">
-
                                     <label class="col-sm-1 control-label "
                                         for="rp_requestbillsForm-customerId">客户编号</label>
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_requestbillsForm-customerId"></p>
                                     </div>
-
                                 </div>
 
                                 <div class="form-group">
-
                                     <label class="col-sm-1 control-label text-warning"
                                         for="rp_requestbillsForm-customerShortName">客户简称</label>
                                     <div class="col-sm-5">
@@ -2023,6 +2034,29 @@
             //获取filterform内数据
             let filter = '';
 
+            //客户简称过滤
+            let customerSelectedValues = [];
+            $("#filterForm-customerShortName option:selected ").each(function () {
+                customerSelectedValues.push($(this).val());
+            });
+
+            if (customerSelectedValues.length > 0) {
+                let customerRange = getRangeString(customerSelectedValues);
+                filter = ' and customerShortName in ' + customerRange;
+            }
+
+            //送修人过滤
+            let requestStaffSelectedValues = [];
+            $("#filterForm-requestStaff option:selected ").each(function () {
+                requestStaffSelectedValues.push($(this).val());
+            });
+
+            if (requestStaffSelectedValues.length > 0) {
+                let requestStaffRange = getRangeString(requestStaffSelectedValues);
+                filter = ' and requestStaff in ' + requestStaffRange;
+            }
+
+
             //申请日期过滤
             let requestDateB = $('#filterForm-requestDateB').val();
             let requestDateE = $('#filterForm-requestDateE').val();
@@ -3052,6 +3086,7 @@
 
 
 
+
         loadBootStrapSelector({
             elementId: 'rp_requestbillsForm-customerArea',
             sqlParams: {
@@ -3166,6 +3201,21 @@
             },
 
         })
+
+        loadBootStrapSelector({
+            elementId: 'filterForm-customerShortName',
+            sqlParams: {
+                sql: 'getCustomerSelector'
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'filterForm-requestStaff',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+        })
+
 
 
 
