@@ -1,12 +1,21 @@
-const sqlRequestBills = "select * from `ppm_bills_request`"
-
 //selector sql
+const getOptionSelector =
+	"select optionValue as value,optionText as option,optionText as token from `ppm_selectoroptions`";
+
+const getCTRNameSelector = "select FTYName as value,concat(FTYID,'-',FTYName) as option,concat(FTYID,'-',FTYName)  as token from `ppm_customers`"
+const getMHENameSelector = "select MHEName as value,concat_ws('-',MHEType,MHEName) as option,concat_ws('-',MHEType,MHEName) as token from ppm_machines "
+const getSytemSelector = "select val as value,val as option,val as token from ppm_systems";
 const getStaffSelector = "select staffName as value,staffName as option,staffID as token from `ppm_staffs`"
 
 
 
 //任务单面板 获取任务审核记录
 const getTaskCodeAuditData = "select * from (select t1.BTID,t1.BTVersion,t1.codeAdr,t1.codeAuditor,t1.codeAuditResult,t1.codeSaveDate,t2.DBID,t2.codeType,t2.result,t2.remark,t2.saveDate from `ppm_bills_task` t1 left join `ppm_bills_codeaudit` t2 on t1.BTID=t2.BTID and t1.BTVersion=t2.BTVersion) ta"
+
+
+//需求单sql
+const sqlRequestBills = "select * from `ppm_bills_request`"
+
 
 //获取任务审核记录
 const getCodeAuditRecord = " select * from `ppm_bills_codeaudit`"

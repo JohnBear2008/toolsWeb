@@ -1336,8 +1336,8 @@ const uploadFiles = (files) => {
         formData.append(n, files[n]);
     }
 
-    // //添加目录放置到指定文件夹
-    formData.append("desDir", "rp");
+    // // //添加目录放置到指定文件夹
+    // formData.append("desDir", "rp");
 
     console.log('data:' + formData);
     formData.forEach((value, key) => console.log('formData:' + key + ':' + value));
@@ -1575,5 +1575,3 @@ const getMonths = (start, end) => {
     return result.length;
 
 }
-
-
