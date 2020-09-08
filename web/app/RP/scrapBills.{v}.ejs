@@ -1093,7 +1093,7 @@
         let r1 = await getDataBySql({
             sql: "getScrapBillsNum",
             params: {
-                filter: 'makeDate="' + currentDate() + '"'
+                filter: 'scrapBillId like "X-%" and makeDate="' + currentDate() + '"'
             }
         })
         // console.log('r1:' + r1);

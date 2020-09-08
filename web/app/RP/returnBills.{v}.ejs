@@ -1115,7 +1115,7 @@
         let r1 = await getDataBySql({
             sql: "getReturnBillsNum",
             params: {
-                filter: 'makeDate="' + currentDate() + '"'
+                filter: 'returnBillId like "R-%" and makeDate="' + currentDate() + '"'
             }
         })
         // console.log('r1:' + r1);

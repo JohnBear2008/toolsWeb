@@ -847,7 +847,7 @@
         let r1 = await getDataBySql({
             sql: "getTransferBillsNum",
             params: {
-                filter: 'makeDate="' + currentDate() + '"'
+                filter: 'transferBillId like "M-%" and makeDate="' + currentDate() + '"'
             }
         })
         // console.log('r1:' + r1);

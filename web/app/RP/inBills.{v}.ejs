@@ -254,13 +254,13 @@
                 <div class="modal-body">
 
                     <div class="panel panel-info">
-                        <div class="panel-body" style="height:350px">
+                        <div class="panel-body" style="height:600px">
 
                             <label class="col-sm-2 control-label">主表字段</label>
                             <div class="col-sm-4">
 
                                 <div class="panel panel-default">
-                                    <div class="panel-body" style="height:200px">
+                                    <div class="panel-body" style="height:500px">
 
                                         <form class="form-horizontal" role="form" id='exportModelForm'>
                                             <div class="form-check">
@@ -1868,6 +1868,14 @@
                     subRemark: '子表备注'
                 })
 
+                //c-校验单号规则
+                for (const n of storeData) {
+                    if (n.billId.indexOf('P-') === -1) {
+                        alert('批量导入单号必须以 P- 开始,请检查!')
+                        return
+                    }
+                }
+
                 console.log('storeData', storeData);
                 //do-生成主表,子表数据
                 let inBillsArr = [];
@@ -1959,7 +1967,6 @@
                     if (isNew) {
                         newPIDArr.push(PIDArr[i])
                     }
-
                 }
 
                 //初始化库存记录
@@ -1973,8 +1980,6 @@
 
                 //return-刷新主界面
                 loadBillMainTable()
-
-
             });
         });
     }

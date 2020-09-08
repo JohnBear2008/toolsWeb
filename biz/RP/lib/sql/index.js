@@ -35,7 +35,7 @@ const getResponseBillsNum = "select count(1) as billsNum from `rp_responsebills`
 //获取记录单状态
 const getRecordBillStatus = "select DBID,status from `rp_recordbills`"
 //获取借货单数量
-const getBorrowBillsNum = "select count(1) as billsNum from `rp_borrowbills`";
+const getBorrowBillsNum = "select count(1) as billsNum from `rp_borrowbills`  ";
 //获取还货单数量
 const getReturnBillsNum = "select count(1) as billsNum from `rp_returnbills`";
 //获取出库单数量
@@ -150,6 +150,9 @@ const sqlTableSelect = "select * from `tableId`";
 
 //更新借货单状态
 const updateBorrowStatus = "update `rp_borrowsubbills` set status = case when num=returnNum then '已还入' else '待归还' end"
+
+//借货单导出sql
+const borrowBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.borrowBillId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.num,tb.returnNum,(tb.num-tb.returnNum) as unReturnNum,tb.status as subStatus,tb.remark AS subRemark FROM `rp_borrowbills` ta LEFT JOIN `rp_borrowsubbills` tb ON ta.borrowBillId = tb.borrowBillId ) A"
 
 //入库单导出sql
 const inBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.billId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.scrapStatus,tb.num,tb.remark AS subRemark FROM `rp_inbills` ta LEFT JOIN `rp_insubbills` tb ON ta.billId = tb.billId ) A"

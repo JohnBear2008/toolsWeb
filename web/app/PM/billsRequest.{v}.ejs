@@ -298,6 +298,14 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="ppm_bills_requestForm-feedBack">反馈信息</label>
+                                    <div class="col-sm-11">
+                                        <p class="form-control-static" id="ppm_bills_requestForm-feedBack"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <label class="col-sm-1 control-label"></label>
                                     <div class="col-sm-2">
                                         <button type="button" class="btn btn-warning" id="submitRequestBtn">提交
@@ -399,6 +407,16 @@
                 $('#files').html(filesLink);
             }
 
+            //r-部件显示控制
+            if (['待审核', '审核驳回', ''].includes(dataSelect.status)) {
+                $('#uploadToolDiv').show()
+                $('#submitRequestBtn').show()
+            } else {
+                $('#uploadToolDiv').hide()
+                $('#submitRequestBtn').hide()
+            }
+
+
             //打开面板
             $('#ppm_bills_requestModal').modal('show');
 
@@ -454,8 +472,21 @@
             $("#ppm_bills_requestForm-orderFromDep").selectpicker('val', '其他部门');
             $("#ppm_bills_requestForm-applyDate").val(currentDate());
 
+            //r-部件显示控制
+            $('#uploadToolDiv').show()
+
         })
 
+        //获取审核人按钮
+        $('#getAuditorBtn').click(async function () {
+            let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
+            let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
+            let modelD = $('#ppm_bills_requestForm-modelD option:selected').text()
+            let modelH = $('#ppm_bills_requestForm-modelH option:selected').text()
+
+            alert(CTRName + MHEName + modelD + modelH)
+
+        })
 
 
         //提交按钮
@@ -492,11 +523,13 @@
             let filesArr = getFilesJson();
             requestBillData.data[0].files = filesArr;
 
-            //d-补充数据
-            if (!requestBillData.data[0].status) {
-                requestBillData.data[0].status = '待审核'
-            }
+            //d-调整数据
+
+            requestBillData.data[0].status = '待审核'
+
             requestBillData.data[0].makeDate = currentDate()
+
+            requestBillData.data[0].feedBack = ''
 
 
             //d-保存单据
