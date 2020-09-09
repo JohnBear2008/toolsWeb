@@ -3,6 +3,15 @@
 <link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
 <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
 
+<script src="/js/PM/PMfuns.js"></script>
+
+<style type="text/css">
+	.glyphicon-exclamation-sign {
+		color: coral;
+		font-size: 20px;
+	}
+</style>
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 <div class="divcontent">
 	<h1>个人中心</h1>
@@ -67,6 +76,8 @@
 						</div>
 					</div>
 				</div>
+
+
 
 			</div>
 
@@ -714,6 +725,21 @@
 
 
 <script>
+	function DateMinus(date1, date2) {
+
+		var sdate = new Date(date1);
+
+		var now = new Date(date2);
+
+		var days = now.getTime() - sdate.getTime();
+
+		var day = parseInt(days / (1000 * 60 * 60 * 24));
+		// console.log(parseInt(day));
+		return day
+
+
+	}
+
 	function getUndoneInfo(divID, panelSQL, dataCols) {
 
 
@@ -736,10 +762,22 @@
 
 					for (let i = 0; i < data.length; i++) {
 
+
+						// console.log('divcontent data', data);
+
 						for (let j = 0; j < dataCols.length; j++) {
 
 							DivContent = DivContent + data[i][dataCols[j]] + "|";
 
+						}
+
+						//是否加icon
+
+						if (data[i].taskLimitDate) {
+							if (DateMinus(Ndate, data[i].taskLimitDate) <= 1) {
+								DivContent = DivContent +
+									'<span class="glyphicon glyphicon-exclamation-sign" /> '
+							}
 						}
 
 						//   if(data[i]['BPID']==null){
@@ -833,6 +871,8 @@
 	$(function () {
 
 		sessionName = "<%-locals.session.yjUser.Name%>";
+
+
 
 		//需求单-未审核
 		var panelSQLRQT = {
