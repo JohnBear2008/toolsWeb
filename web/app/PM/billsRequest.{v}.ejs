@@ -479,12 +479,65 @@
 
         //获取审核人按钮
         $('#getAuditorBtn').click(async function () {
+
+
+            //c-检查参数
+            let CTRNameVal = $('#ppm_bills_requestForm-CTRName option:selected').val()
+            let MHENameVal = $('#ppm_bills_requestForm-MHEName option:selected').val()
+            let modelDVal = $('#ppm_bills_requestForm-modelD option:selected').val()
+            let modelHVal = $('#ppm_bills_requestForm-modelH option:selected').val()
+
+            if (!CTRNameVal && !MHENameVal && !modelDVal && !modelHVal) {
+                alert('客户,机型,系统DSP,系统HMI至少选则一项,请检查')
+                return
+            }
+
             let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
             let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
             let modelD = $('#ppm_bills_requestForm-modelD option:selected').text()
             let modelH = $('#ppm_bills_requestForm-modelH option:selected').text()
 
-            alert(CTRName + MHEName + modelD + modelH)
+            let ModelName = "";
+            if (modelHVal) {
+                ModelName = modelH
+            }
+            if (modelDVal) {
+                ModelName = modelD
+            }
+
+            let filter = ''
+            if (CTRNameVal) {
+                filter = filter + ' and CTRName="' + CTRName + '"';
+            }
+
+            if (MHENameVal) {
+                filter = filter + ' and MHEName="' + MHEName + '"';
+            }
+
+            if (ModelName) {
+                filter = filter + ' and ModelName="' + ModelName + '"';
+            }
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            let rs = await getDataBySql({
+                sql: 'getBindAuditor',
+                params: {
+                    filter: filter,
+                    ordorBy: 'saveTimeStamp desc'
+                }
+            })
+
+            // console.log('rs', rs);
+
+            let auditor = '谢丽君';
+            if (rs.length > 0) {
+                auditor = rs[0].auditor;
+            }
+
+            $("#ppm_bills_requestForm-auditor").selectpicker('val', auditor);
 
         })
 
@@ -524,6 +577,9 @@
             requestBillData.data[0].files = filesArr;
 
             //d-调整数据
+
+            // requestBillData.data[0].auditor = $('#ppm_bills_requestForm-auditor option:selected')
+            //     .text()
 
             requestBillData.data[0].status = '待审核'
 
@@ -667,20 +723,15 @@
 
 
 
-        // loadBootStrapSelectors({
-        //     elementIds: [
-        //         'ppm_recordbillsForm-isRework',
-        //         'ppm_recordbillsForm-urgent',
-        //         'ppm_recordbillsForm-inWarranty'
-        //     ],
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
 
-        // })
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#ppm_bills_requestModal').on('hidden.bs.modal', function () {
+            let table = $('#ppm_bills_request').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            mainTableData = {}
+        })
 
 
 

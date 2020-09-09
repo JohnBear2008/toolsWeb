@@ -180,7 +180,6 @@ module.exports = function (sender) {
 			var SQLExecute = SQLTableBillsDBCenter_T;
 			break;
 
-
 		case "SQLGetOldBillInfo":
 			var SQLExecute = SQLGetOldBillInfo;
 			break;
@@ -226,6 +225,9 @@ module.exports = function (sender) {
 			break;
 		case "SQLNeworder":
 			var SQLExecute = SQLNeworder;
+			break;
+		case "SQLTableBillsRQT":
+			var SQLExecute = SQLTableBillsRQT;
 			break;
 		case "SQLNotDone":
 			var SQLExecute = SQLNotDone;

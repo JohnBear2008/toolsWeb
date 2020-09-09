@@ -511,6 +511,10 @@ const loadBootStrapSelector = async ({
         success: function (data) {
             // console.log('loadBootStrapSelector data',data);
             try {
+
+                //r-添加option
+                $('#' + elementId).append($('<option value="">未选择</option>'));
+
                 for (const n of data) {
                     $('#' + elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
                 }
@@ -1574,4 +1578,38 @@ const getMonths = (start, end) => {
     }
     return result.length;
 
+}
+
+/**
+ *自动记录绑定关系
+ *
+ * @param {*} data 绑定数据
+ */
+const autoAddBindAuditor = async (data) => {
+
+    let rs = await postDBData({
+        sql: 'insert',
+        params: {
+            tableId: 'ppm_customerbinds',
+            data: [data]
+        }
+    })
+
+    console.log('autoAddBindAuditor rs', rs);
+
+    return rs ? true : false
+}
+
+//
+/**
+ *获取浏览器url传入参数
+ *
+ * @param {*} name
+ * @returns
+ */
+const getQueryString = (name) => {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r) return unescape(r[2]);
+    return null;
 }

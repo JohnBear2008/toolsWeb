@@ -4,6 +4,8 @@
 <!-- 导入js库 -->
 <script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
 
+
+
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/ppmLib/DataTables/datatables.min.css" />
 <script type="text/javascript" src="/ppmLib/DataTables/datatables.min.js"></script>
@@ -52,12 +54,10 @@
                     <div style="float: left;">
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
-                            <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
-                            <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                            <button type="button" id="btnFilterUnAudit" class="btn btn-default">未审核</button>
+                            <button type="button" id="btnFilterAll" class="btn btn-default">全部</button>
                         </div>
                     </div>
-
-
                     <div style="clear:both"></div>
                 </div>
                 <div class="panel-body">
@@ -69,6 +69,7 @@
                                 <th>机型</th>
                                 <th>申请人</th>
                                 <th>申请时间</th>
+                                <th>审核人</th>
                                 <th>单据状态</th>
                             </tr>
                         </thead>
@@ -79,10 +80,6 @@
 
         </div>
     </div>
-
-
-
-
 
 
     <!-- 模态框（Modal） -->
@@ -338,6 +335,22 @@
     //主表加载数据函数;
 
     const loadBillMainTable = async () => {
+        //r-模式确定
+        //显示过滤模式
+        switch (true) {
+            case mainTableFilter === "status='待审核'":
+                $('#btnFilterUnAudit').addClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+            case mainTableFilter === '':
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterAll').addClass('active');
+                break;
+            default:
+                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+        }
 
 
 
@@ -362,6 +375,8 @@
                     data: 'maker',
                 }, {
                     data: 'makeDate',
+                }, {
+                    data: 'auditor',
                 }, {
                     data: 'status',
                 }]
@@ -393,6 +408,8 @@
                 params: dataSelect
             })
 
+
+
             //如存在file属性,对其单独处理生成下载链接
             // alert(JSON.stringify(dataSelect))
             if (dataSelect.files) {
@@ -404,14 +421,13 @@
             $('#ppm_bills_requestModal').modal('show');
 
         });
-
-
     }
 
 
     $(document).ready(function () {
 
-
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
         //定义主表全局变量临时数据对象
         mainTableData = {};
 
@@ -419,11 +435,104 @@
         mainTableFilter = '';
 
 
+        var undone = getQueryString("undone");
+
+
+        switch (undone) {
+            case "unAudit":
+                mainTableFilter = "auditor ='" + sessionName + "' AND status='待审核'"
+                break;
+
+            default:
+                break;
+        }
+
+
 
         loadBillMainTable()
 
+        //按钮-过滤未审核
+        $('#btnFilterUnAudit').click(async function () {
 
+            // $('#btnFilterUnAudit').addClass('active');
+            // $('#btnFilterAll').removeClass('active');
 
+            mainTableFilter = "status='待审核'"
+            loadBillMainTable()
+        })
+
+        //按钮-过滤全部
+        $('#btnFilterAll').click(async function () {
+
+            // $('#btnFilterUnAudit').removeClass('active');
+            // $('#btnFilterAll').addClass('active');
+
+            mainTableFilter = ""
+            loadBillMainTable()
+        })
+
+        //获取审核人按钮
+        $('#getAuditorBtn').click(async function () {
+
+            //c-检查参数
+            let CTRNameVal = $('#ppm_bills_requestForm-CTRName option:selected').val()
+            let MHENameVal = $('#ppm_bills_requestForm-MHEName option:selected').val()
+            let modelDVal = $('#ppm_bills_requestForm-modelD option:selected').val()
+            let modelHVal = $('#ppm_bills_requestForm-modelH option:selected').val()
+
+            if (!CTRNameVal && !MHENameVal && !modelDVal && !modelHVal) {
+                alert('客户,机型,系统DSP,系统HMI至少选则一项,请检查')
+                return
+            }
+
+            let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
+            let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
+            let modelD = $('#ppm_bills_requestForm-modelD option:selected').text()
+            let modelH = $('#ppm_bills_requestForm-modelH option:selected').text()
+
+            let ModelName = "";
+            if (modelHVal) {
+                ModelName = modelH
+            }
+            if (modelDVal) {
+                ModelName = modelD
+            }
+
+            let filter = ''
+            if (CTRNameVal) {
+                filter = filter + ' and CTRName="' + CTRName + '"';
+            }
+
+            if (MHENameVal) {
+                filter = filter + ' and MHEName="' + MHEName + '"';
+            }
+
+            if (ModelName) {
+                filter = filter + ' and ModelName="' + ModelName + '"';
+            }
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            let rs = await getDataBySql({
+                sql: 'getBindAuditor',
+                params: {
+                    filter: filter,
+                    ordorBy: 'saveTimeStamp desc'
+                }
+            })
+
+            // console.log('rs', rs);
+
+            let auditor = '谢丽君';
+            if (rs.length > 0) {
+                auditor = rs[0].auditor;
+            }
+
+            $("#ppm_bills_requestForm-auditor").selectpicker('val', auditor);
+
+        })
 
         //提交按钮
         $('#saveRequestBtn').click(async function () {
@@ -491,6 +600,58 @@
         //审核通过按钮
         $('#auditRequestBtn').click(async function () {
 
+            //c-检查审核人
+            let auditor = $('#ppm_bills_requestForm-auditor option:selected').val();
+            if (sessionName !== auditor) {
+                alert('您不是此需求单的审核人,无法审核!')
+                return
+            }
+
+
+            //d-添加绑定关系 
+
+            let CTRNameVal = $('#ppm_bills_requestForm-CTRName option:selected').attr(
+                'data-tokens')
+            let MHENameVal = $('#ppm_bills_requestForm-MHEName option:selected').attr('data-tokens')
+            let modelDVal = $('#ppm_bills_requestForm-modelD option:selected').attr('data-tokens')
+            let modelHVal = $('#ppm_bills_requestForm-modelH option:selected').attr('data-tokens')
+            let staffVal = $('#ppm_bills_requestForm-auditor option:selected').attr('data-tokens')
+
+            // alert(staffVal)
+            // return
+
+            let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
+            let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
+            let modelD = $('#ppm_bills_requestForm-modelD option:selected').text()
+            let modelH = $('#ppm_bills_requestForm-modelH option:selected').text()
+            let staffName = $('#ppm_bills_requestForm-auditor option:selected').text()
+
+            let ModelVal = ""
+            let ModelName = "";
+            if (modelHVal) {
+                ModelVal = modelHVal
+                ModelName = modelH
+            }
+            if (modelDVal) {
+                ModelVal = modelDVal
+                ModelName = modelD
+            }
+
+            let addResult = await autoAddBindAuditor({
+                CTRVal: CTRNameVal,
+                CTRName: CTRName,
+                MHEVal: MHENameVal,
+                MHEName: MHEName,
+                ModelVal: ModelVal,
+                ModelName: ModelName,
+                staffVal: staffVal,
+                staffName: staffName
+            })
+            if (!addResult) {
+                alert(addResult)
+                return
+            }
+
             //d-审核
             let billData = {
                 DBID: $('#ppm_bills_requestForm-DBID').val(),
@@ -522,6 +683,14 @@
 
         //审核驳回按钮
         $('#rejectRequestBtn').click(async function () {
+
+            //c-检查审核人
+            let auditor = $('#ppm_bills_requestForm-auditor option:selected').val();
+            if (sessionName !== auditor) {
+                alert('您不是此需求单的审核人,无法驳回!')
+                return
+            }
+
             //c-检查反馈信息
             let feedBack = $('#ppm_bills_requestForm-feedBack').val()
             if (!feedBack) {
@@ -627,7 +796,6 @@
                 params: {
                     filter: 'status=1'
                 }
-
             },
         })
 
@@ -672,21 +840,12 @@
 
 
 
-
-        // loadBootStrapSelectors({
-        //     elementIds: [
-        //         'ppm_recordbillsForm-isRework',
-        //         'ppm_recordbillsForm-urgent',
-        //         'ppm_recordbillsForm-inWarranty'
-        //     ],
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-
-        // })
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#ppm_bills_requestModal').on('hidden.bs.modal', function () {
+            let table = $('#ppm_bills_request').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            mainTableData = {}
+        })
 
 
 

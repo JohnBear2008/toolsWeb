@@ -18,6 +18,27 @@
 			<hr>
 
 			<div style="width:30%;float:left;margin-left:2%;">
+				<h4>未完结的需求单</h4>
+
+				<div id="RQTunAudit" class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">需求单-未审核
+							<a href="/app/PM/billsRequestAdmin?undone=unAudit"><span id="RQTunAuditNum"
+									class="badge"></span></a>
+							<a href="/app/PM/billsRequestAdmin?undone=unAudit">点击处理</a>
+						</h3>
+					</div>
+					<div class="panel-body">
+						<div id="RQTunAuditContent">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div style='clear:both'></div>
+			<hr>
+
+			<div style="width:30%;float:left;margin-left:2%;">
 				<h4>未完结的计划单</h4>
 
 				<div id="PLDunAudit" class="panel panel-warning">
@@ -812,6 +833,13 @@
 	$(function () {
 
 		sessionName = "<%-locals.session.yjUser.Name%>";
+
+		//需求单-未审核
+		var panelSQLRQT = {
+			"SQL": "SQLTableBillsRQT",
+			"filter": "auditor ='" + sessionName + "' AND status='待审核'"
+		};
+		getUndoneInfo("#RQTunAudit", panelSQLRQT, ["makeDate", "maker", "CTRName"]);
 
 		var panelSQLPLD = {
 			"SQL": "SQLTableBillsPLD",
