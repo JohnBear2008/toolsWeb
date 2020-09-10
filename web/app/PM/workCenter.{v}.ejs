@@ -126,6 +126,21 @@
 					</div>
 				</div>
 
+				<div id="BPTbadRequest" class="panel panel-danger">
+					<div class="panel-heading">
+						<h3 class="panel-title">方案单-需求不合理
+							<a href="/app/PM/billsBPT?undone=badRequest"><span id="BPTbadRequestNum"
+									class="badge"></span></a>
+							<a href="/app/PM/billsBPT?undone=badRequest">点击处理</a>
+						</h3>
+					</div>
+					<div class="panel-body">
+						<div id="BPTbadRequestContent">
+						</div>
+					</div>
+				</div>
+
+
 			</div>
 
 
@@ -766,7 +781,6 @@
 						// console.log('divcontent data', data);
 
 						for (let j = 0; j < dataCols.length; j++) {
-
 							DivContent = DivContent + data[i][dataCols[j]] + "|";
 
 						}
@@ -909,7 +923,17 @@
 			"SQL": "SQLTableBillsBPT",
 			"filter": "maker = '" + sessionName + "' AND auditResult =2 "
 		};
+
 		getUndoneInfo("#BPTauditNo", panelSQLBPT, ["BPID", "PLDCTRName"]);
+
+
+
+		var panelSQLBPT = {
+			"SQL": "SQLTableBillsBPT",
+			"filter": "PLDMaker = '" + sessionName + "' AND modifyType =3 and auditResult=1"
+		};
+		getUndoneInfo("#BPTbadRequest", panelSQLBPT, ["BPID", "PLDCTRName"]);
+
 
 
 		var panelSQLTask = {
