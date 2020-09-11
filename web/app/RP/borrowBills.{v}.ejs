@@ -47,7 +47,7 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
-                <h1>库存管理-借货凭单</h1>
+                <h1>库存管理-借货单</h1>
             </div>
         </div>
     </div>
@@ -92,7 +92,7 @@
                             打印借货码
                         </button> -->
                         <button type="button" class="btn btn-primary" id="rp_borrowbillsPrint">
-                            打印借货凭单
+                            打印借货单
                         </button>
                     </div>
                     <div style="clear:both"></div>
@@ -1899,8 +1899,8 @@
                 //c-检查导入数据规范
                 let billsIdArr = [];
                 for (const n of storeData) {
-                    if (n.borrowBillId.indexOf('P-') === -1) { //单据编号以P-开头
-                        alert('批量导入借货单号必须以P-为前缀,请检查')
+                    if (n.borrowBillId.indexOf('PB-') === -1) { //单据编号以P-开头
+                        alert('批量导入借货单号必须以PB-为前缀,请检查')
                         return
                     }
 

@@ -47,7 +47,7 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
-                <h1>库存管理-入库凭单</h1>
+                <h1>库存管理-入库单</h1>
             </div>
         </div>
     </div>
@@ -91,7 +91,7 @@
                             打印入库码
                         </button> -->
                         <button type="button" class="btn btn-primary" id="rp_inbillsPrint">
-                            打印入库凭单
+                            打印入库单
                         </button>
                     </div>
                     <div style="clear:both"></div>
@@ -1153,38 +1153,7 @@
         });
     }
 
-    // //保固期自动计算事件
-    // const addInWarrantyListener = () => {
-    //     $('#rp_insubbillsForm-productYear,#rp_insubbillsForm-productMonth').unbind('change'); //仅解绑change事件
-    //     $('#rp_insubbillsForm-productYear,#rp_insubbillsForm-productMonth').change(function () {
-    //         let warrantyPeriod = parseInt($('#rp_inbillsForm-warrantyPeriod').text());
-    //         let year = $('#rp_insubbillsForm-productYear').val() || '2000'
-    //         let month = $('#rp_insubbillsForm-productMonth').val() || '01'
-    //         console.log(warrantyPeriod, year, month);
 
-    //         //计算月份差函数
-    //         const getIntervalMonth = (startDate, endDate) => {
-    //             var startMonth = startDate.getMonth();
-    //             var endMonth = endDate.getMonth();
-    //             var intervalMonth = (startDate.getFullYear() * 12 + startMonth) - (endDate
-    //                 .getFullYear() *
-    //                 12 + endMonth);
-    //             return intervalMonth;
-    //         }
-
-    //         let nowDate = new Date()
-    //         let productDate = new Date(year + '-' + month + '-01');
-    //         let intervalMonth = getIntervalMonth(productDate, nowDate)
-
-    //         if (warrantyPeriod + intervalMonth >= 0) {
-    //             console.log('保内');
-    //             $("#rp_insubbillsForm-inWarranty").selectpicker('val', '是')
-    //             // $("#rp_insubbillsForm-inWarranty").selectpicker('refresh')
-    //         } else {
-    //             $("#rp_insubbillsForm-inWarranty").selectpicker('val', '否')
-    //         }
-    //     });
-    // }
 
     //创建入库单新单号
     const createInBillId = async () => {
@@ -1651,67 +1620,7 @@
     }
 
 
-    // //检查删除单据数据
-    // const checkDeleteBills = async () => {
 
-    //     let resultData = {
-    //         result: null,
-    //         data: {}
-    //     }
-
-    //     let table = $('#rp_inbills').DataTable();
-    //     let dataSelect = table.rows('.selected').data();
-    //     let mainDBIDArr = [];
-    //     let subDBIDArr = [];
-    //     let billsIdArr = [];
-
-    //     for (let n = 0; n < dataSelect.length; n++) {
-    //         mainDBIDArr.push(dataSelect[n].DBID);
-    //         billsIdArr.push(dataSelect[n].billId);
-    //     }
-
-    //     switch (true) {
-    //         case billsIdArr.length === 0:
-    //             alert('请先选中需要删除的入库单!')
-
-    //             resultData.result = false;
-    //             return resultData
-    //             break;
-    //         case billsIdArr.length > 0:
-    //             let billIdRange = getRangeString(billsIdArr);
-
-    //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
-
-    //             let statusArr = await getDataBySql({
-    //                 sql: 'getBorrowSubBillStatus',
-    //                 params: {
-    //                     filter: 'billId in ' + billIdRange
-    //                 }
-    //             })
-
-    //             // console.log("statusArr:" + JSON.stringify(statusArr));
-    //             for (const n of statusArr) {
-    //                 if (n.status !== '待审核') {
-    //                     alert('选中单据已审核,不符合删除条件!')
-    //                     resultData.result = false;
-    //                     return resultData
-    //                 }
-    //                 subDBIDArr.push(n.DBID)
-    //             }
-
-    //             break;
-    //     }
-
-    //     resultData = {
-    //         result: true,
-    //         data: {
-    //             mainDBIDArr: mainDBIDArr,
-    //             subDBIDArr: subDBIDArr
-    //         }
-    //     }
-
-    //     return resultData;
-    // }
 
     //更新所选产品即时库存
     const showStockNum = async () => {
@@ -1851,6 +1760,7 @@
                     billId: '单据编号',
                     customerId: '客户编号',
                     customerShortName: '客户简称',
+                    customerName: '客户名称',
                     contact: '联系人',
                     mobilePhone: '移动电话',
                     workPhone: '工作电话',
@@ -1871,8 +1781,8 @@
                 //c-校验单号规则
                 let billsIdArr = [];
                 for (const n of storeData) {
-                    if (n.billId.indexOf('P-') === -1) {
-                        alert('批量导入单号必须以 P- 开始,请检查!')
+                    if (n.billId.indexOf('PI-') === -1) {
+                        alert('批量导入单号必须以 PI- 开始,请检查!')
                         return
                     }
 
@@ -2069,17 +1979,6 @@
             //获取filterform内数据
             let filter = '';
 
-            // //申请日期过滤
-            // let borrowDateB = $('#filterForm-borrowDateB').val();
-            // let borrowDateE = $('#filterForm-borrowDateE').val();
-
-            // if (borrowDateB) {
-            //     filter = filter + ' and borrowDate>="' + borrowDateB + '"'
-            // }
-
-            // if (borrowDateE) {
-            //     filter = filter + ' and borrowDate<="' + borrowDateE + '"'
-            // }
 
             //制单日期过滤
             let makeDateB = $('#filterForm-makeDateB').val();
@@ -2728,8 +2627,6 @@
 
 
 
-
-
             exportData = await getDataBySql({
                 sql: 'inBillsExportSql',
                 params: {
@@ -2781,6 +2678,7 @@
                     '工作电话',
                     '经手人',
                     '制单人',
+                    '审核人',
                     '备注',
                     '行号',
                     '产品编号',
