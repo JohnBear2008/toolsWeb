@@ -275,7 +275,7 @@
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" value="borrowBillId"
                                                     checked>
-                                                <label class="form-check-label">单据编号</label>
+                                                <label class="form-check-label">借货单号</label>
                                             </div>
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" value="customerId"
@@ -1895,14 +1895,48 @@
                 })
 
                 console.log('storeData', storeData);
+
+                //c-检查导入数据规范
+                let billsIdArr = [];
+                for (const n of storeData) {
+                    if (n.borrowBillId.indexOf('P-') === -1) { //单据编号以P-开头
+                        alert('批量导入借货单号必须以P-为前缀,请检查')
+                        return
+                    }
+
+                    billsIdArr.push(n.borrowBillId)
+                }
+
+                //c-检查重复单号
+                let billIdRange = getRangeString(billsIdArr);
+                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+
+                let statusArr = await getDataBySql({
+                    sql: 'sqlBorrowBills',
+                    params: {
+                        filter: 'borrowBillId in ' + billIdRange
+                    }
+                })
+                console.log('statusArr', statusArr);
+
+                let dupBillIds = "";
+                if (statusArr.length > 0) {
+                    for (const n of statusArr) {
+                        dupBillIds = dupBillIds + n.borrowBillId + ',';
+                    }
+                    dupBillIds = dupBillIds.substring(0, dupBillIds.length - 1);
+                    alert('以下单号' + dupBillIds + '存在重复单号,请检查!')
+                    return
+                }
+
                 //do-生成主表,子表数据
-                let inBillsArr = [];
-                let inSubBillsArr = [];
+                let borrowBillsArr = [];
+                let borrowSubBillsArr = [];
 
                 for (const n of storeData) {
-                    inBillsArr.push({
+                    borrowBillsArr.push({
                         billFrom: '批量导入',
-                        billId: n.billId,
+                        borrowBillId: n.borrowBillId,
                         customerId: n.customerId,
                         customerShortName: n.customerShortName,
                         contact: n.contact,
@@ -1916,8 +1950,8 @@
                         remark: n.remark
                     })
 
-                    inSubBillsArr.push({
-                        billId: n.billId,
+                    borrowSubBillsArr.push({
+                        borrowBillId: n.borrowBillId,
                         rowId: n.rowId,
                         productId: n.productId,
                         productName: n.productName,
@@ -1925,47 +1959,49 @@
                         warehouseName: n.warehouseName,
                         unit: n.unit,
                         num: n.num,
+                        status: '预借出',
                         remark: n.subRemark
                     })
                 }
                 //do-去重处理
-                // inBillsArr = Array.from(new Set(inBillsArr))仅可用于简单数组去重
+                // borrowBillsArr = Array.from(new Set(borrowBillsArr))仅可用于简单数组去重
                 var obj = {};
-                inBillsArr = inBillsArr.reduce(function (item, next) {
-                    obj[next.billId] ? '' : obj[next.billId] = true && item.push(next);
+                borrowBillsArr = borrowBillsArr.reduce(function (item, next) {
+                    obj[next.borrowBillId] ? '' : obj[next.borrowBillId] = true && item
+                        .push(next);
                     return item
                 }, [])
 
                 //子表不去重
                 // var subObj = {};
-                // inSubBillsArr = inSubBillsArr.reduce(function (item, next) {
-                //     subObj[next.billId] ? '' : subObj[next.billId] = true && item.push(
+                // borrowSubBillsArr = borrowSubBillsArr.reduce(function (item, next) {
+                //     subObj[next.borrowBillId] ? '' : subObj[next.borrowBillId] = true && item.push(
                 //         next);
                 //     return item
                 // }, [])
-                console.log('inBillsArr', inBillsArr);
-                console.log('inSubBillsArr', inSubBillsArr);
+                console.log('borrowBillsArr', borrowBillsArr);
+                console.log('borrowSubBillsArr', borrowSubBillsArr);
 
                 //do-导入数据库
                 let rInBills = await postDBData({
                     sql: 'insert',
                     params: {
-                        tableId: 'rp_inbills',
-                        data: inBillsArr
+                        tableId: 'rp_borrowbills',
+                        data: borrowBillsArr
                     }
                 })
 
                 let rInSubBills = await postDBData({
                     sql: 'insert',
                     params: {
-                        tableId: 'rp_insubbills',
-                        data: inSubBillsArr
+                        tableId: 'rp_borrowsubbills',
+                        data: borrowSubBillsArr
                     }
                 })
 
                 //do-初始化库存
                 let PIDArr = [];
-                for (const n of inSubBillsArr) {
+                for (const n of borrowSubBillsArr) {
                     PIDArr.push({
                         PID: n.productId,
                         warehouseId: n.warehouseId
@@ -2022,7 +2058,6 @@
         customerDataChanged = false
         //主表过滤器
         mainTableFilter = '';
-
 
 
         //过滤器当天按钮
@@ -2187,7 +2222,7 @@
             var aoa = [
                 [
                     '单据来源',
-                    '单据编号',
+                    '借货单号',
                     '客户编号',
                     '客户简称',
                     '客户名称',
@@ -2421,7 +2456,6 @@
             })
 
             //do-更新借货单子表状态
-
             for (let n of subTableData) {
                 if (n.status === '预借出') {
                     n.status = '待归还'
@@ -2444,6 +2478,12 @@
             } else {
                 alert('审核失败')
             }
+
+            //do-补齐unReturnNum
+            for (let n of subTableData) {
+                n.unReturnNum = n.num
+            }
+
             //return-刷新主表
             loadBillMainTable();
 
@@ -3149,8 +3189,8 @@
         //仓库选择修改事件
         addWarehouseListener();
 
-        // //保固期计算事件
-        // addInWarrantyListener();
+        //添加文件监听事件
+        addFileReaderListener()
 
 
 

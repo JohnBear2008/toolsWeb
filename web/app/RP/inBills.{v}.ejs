@@ -1869,11 +1869,36 @@
                 })
 
                 //c-校验单号规则
+                let billsIdArr = [];
                 for (const n of storeData) {
                     if (n.billId.indexOf('P-') === -1) {
                         alert('批量导入单号必须以 P- 开始,请检查!')
                         return
                     }
+
+                    billsIdArr.push(n.billId)
+                }
+
+                //c-检查重复单号
+                let billIdRange = getRangeString(billsIdArr);
+                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+
+                let statusArr = await getDataBySql({
+                    sql: 'sqlInBills',
+                    params: {
+                        filter: 'billId in ' + billIdRange
+                    }
+                })
+                console.log('statusArr', statusArr);
+
+                let dupBillIds = "";
+                if (statusArr.length > 0) {
+                    for (const n of statusArr) {
+                        dupBillIds = dupBillIds + n.billId + ',';
+                    }
+                    dupBillIds = dupBillIds.substring(0, dupBillIds.length - 1);
+                    alert('以下单号' + dupBillIds + '存在重复单号,请检查!')
+                    return
                 }
 
                 console.log('storeData', storeData);
@@ -1887,6 +1912,7 @@
                         billId: n.billId,
                         customerId: n.customerId,
                         customerShortName: n.customerShortName,
+                        customerName: n.customerName,
                         contact: n.contact,
                         mobilePhone: n.mobilePhone,
                         workPhone: n.workPhone,
@@ -1907,6 +1933,7 @@
                         warehouseName: n.warehouseName,
                         unit: n.unit,
                         num: n.num,
+                        status: '预入',
                         remark: n.subRemark
                     })
                 }
@@ -1976,6 +2003,8 @@
 
                 if (rInBills.affectedRows > 0 && rInSubBills.affectedRows > 0 && rInitPID) {
                     alert('批量导入成功')
+                } else {
+                    alert('批量导入出错')
                 }
 
                 //return-刷新主界面
@@ -2189,9 +2218,6 @@
                 rpBillId: mainTableData.billId
             });
 
-
-
-
             //do-更新入库单子表
             if (r1) {
                 for (let n of subTableData) {
@@ -2203,6 +2229,9 @@
                     }
                     if (n.status === '预入') {
                         n.status = '已入'
+                    }
+                    if (n.warehouseId === 'W3') {
+                        n.scrapStatus = '待报废'
                     }
                 }
             }
@@ -2514,199 +2543,7 @@
 
 
 
-        // //表单产品清单打印按钮
-        // $('#listPrintBtn').click(function () {
 
-        //     if (!mainTableData.billId) {
-        //         alert('请先选中需要打印的单据!')
-        //         return
-        //     }
-
-        //     // console.log('print subTable', subTableData);
-
-        //     let htmlModel = '　<DIV STYLE="page-break-before:always">' +
-        //         '<table width="600" border="0">' +
-        //         '<tr>' +
-        //         '<td width="150"><img src="/images/techmation.png" /></td>' +
-        //         '<td width="200" align="center"><h3>宁波弘讯入库码</h3>' +
-        //         '<p><h4>repairId</h4></p></td>' +
-        //         '<td width="150" align="center"><div id="qrcode" width:100px height:100px /></td>' +
-        //         '</tr>' +
-        //         '</table>' +
-        //         '<table width="600" border="1" class="table table-bordered">' +
-        //         '<tr>' +
-        //         '<td width="80">客户名称</td>' +
-        //         '<td colspan="2">customerShortName</td>' +
-        //         '<td width="80">移动电话</td>' +
-        //         '<td colspan="2">mobilePhone</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td>产品编号</td>' +
-        //         '<td colspan="2">productId</td>' +
-        //         '<td>数量</td>' +
-        //         '<td colspan="2">num</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td>生产日期</td>' +
-        //         '<td width="80">productionDate</td>' +
-        //         '<td width="80">经手人</td>' +
-        //         '<td>operator</td>' +
-        //         '<td width="80">客户归属</td>' +
-        //         '<td width="80">customerBelongShort</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td height="50">故障状况</td>' +
-        //         '<td colspan="5">faultDescription</td>' +
-        //         '</tr>' +
-        //         '<tr>' +
-        //         '<td>是否加急</td>' +
-        //         '<td>urgent</td>' +
-        //         '<td>是否返修</td>' +
-        //         '<td>isRework</td>' +
-        //         '<td>产品归属</td>' +
-        //         '<td>productBelong</td>' +
-        //         '</tr>' +
-        //         '</table>' +
-        //         '</DIV>';
-
-        //     //创建模板函数
-        //     const fillPrintModel = ({
-        //         htmlModel,
-        //         repairId,
-        //         customerShortName,
-        //         mobilePhone,
-        //         productId,
-        //         num,
-        //         productionDate,
-        //         operator,
-        //         customerBelongShort,
-        //         faultDescription,
-        //         urgent,
-        //         isRework,
-        //         productBelong
-        //     }) => {
-        //         let newHtml = htmlModel
-        //             .replace(/repairId/, repairId)
-        //             .replace(/qrcode/, 'qrcode-' + repairId)
-        //             .replace(/customerShortName/, customerShortName)
-        //             .replace(/mobilePhone/, mobilePhone)
-        //             .replace(/productId/, productId)
-        //             .replace(/num/, num)
-        //             .replace(/productionDate/, productionDate)
-        //             .replace(/operator/, operator)
-        //             .replace(/customerBelongShort/, customerBelongShort)
-        //             .replace(/faultDescription/, faultDescription)
-        //             .replace(/urgent/, urgent)
-        //             .replace(/isRework/, isRework)
-        //             .replace(/productBelong/, productBelong)
-
-        //         return newHtml;
-        //     }
-        //     //创建二维码函数
-        //     const createQrcode = ({
-        //         repairId
-        //     }) => {
-        //         var qrcode = new QRCode(document.getElementById("qrcode" + '-' + repairId), {
-        //             width: 100,
-        //             height: 100
-        //         });
-        //         qrcode.makeCode(repairId);
-        //     }
-
-        //     //创建信息表函数
-        //     const createRpHtml = (subTableData) => {
-        //         if (subTableData.length > 0) {
-        //             let divHtml = ''
-        //             for (let i = 0; i < subTableData.length; i++) {
-        //                 const element = subTableData[i];
-        //                 let newHtml = fillPrintModel({
-        //                     htmlModel: htmlModel,
-        //                     repairId: subTableData[i].billId + '-' + subTableData[i]
-        //                         .rowId,
-        //                     customerShortName: mainTableData.customerShortName,
-        //                     mobilePhone: mainTableData.mobilePhone,
-        //                     productId: subTableData[i].productId,
-        //                     num: subTableData[i].num,
-        //                     productionDate: subTableData[i].productionDate,
-        //                     operator: mainTableData.operator,
-        //                     customerBelongShort: mainTableData.customerBelongShort,
-        //                     faultDescription: subTableData[i].faultDescription,
-        //                     urgent: subTableData[i].urgent,
-        //                     isRework: subTableData[i].isRework,
-        //                     productBelong: subTableData[i].productBelong
-
-        //                 })
-        //                 //删除第一页换页
-        //                 if (i === 0) {
-        //                     newHtml = newHtml.replace(/STYLE="page-break-before:always"/, '');
-        //                 }
-        //                 divHtml = divHtml + newHtml
-        //             }
-        //             $('#listPrintViewDiv').html(divHtml)
-        //         }
-        //     }
-
-
-        //     createRpHtml(subTableData);
-
-        //     //生成入库二维码
-        //     const createQrcodes = (subTableData) => {
-        //         if (subTableData.length > 0) {
-        //             for (const n of subTableData) {
-        //                 createQrcode({
-        //                     repairId: n.billId + '-' + n.rowId
-        //                 })
-        //             }
-        //         }
-        //     }
-
-
-        //     createQrcodes(subTableData);
-
-
-
-
-
-
-
-
-        //     // fillPrintModel()
-
-        //     // let formData = getFormData({
-        //     //     formId: 'rp_inbillsForm',
-        //     // })
-
-        //     // fillTableInputs({
-        //     //     tableId: 'printViewMainTable',
-        //     //     params: formDataToRowData(formData.data)
-        //     // })
-
-        //     // fillTableRows({
-        //     //     tableId: 'printViewSubTable',
-        //     //     cols: ['rowId', 'productId', 'productName', 'num'],
-        //     //     data: subTableData
-        //     // })
-
-        //     $('#listPrintViewModal').modal('show')
-        // })
-
-        // //确认打印按钮
-        // $('#listPrintConfirmBtn').click(function () {
-        //     Print('#listPrintViewDiv', {
-        //         onStart: function () {
-        //             console.log('onStart', new Date())
-        //         },
-        //         onEnd: function () {
-        //             console.log('onEnd', new Date())
-        //         }
-        //     })
-        // })
-
-
-        // //打印关闭按钮
-        // $('#listPrintCloseBtn').click(function () {
-        //     $('#listPrintViewModal').modal('hide')
-        // })
 
         //表单打印按钮
         $('#rp_inbillsPrint').click(function () {
@@ -2938,6 +2775,7 @@
                     '单据编号',
                     '客户编号',
                     '客户简称',
+                    '客户名称',
                     '联系人',
                     '移动电话',
                     '工作电话',
@@ -3046,7 +2884,6 @@
                 sql: 'getProductSelector'
             },
         })
-
 
 
         // loadBootStrapSelector({

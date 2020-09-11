@@ -4,6 +4,9 @@
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
 
+<!-- 导入插件函数js库 -->
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
+
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
 <script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
@@ -31,6 +34,9 @@
 
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
+
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
 
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -63,6 +69,13 @@
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+                    <!-- excel -->
+                    <div style="float: left; margin-left: 15px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">excel</button>
+                            <button type="button" id="batchExportBtn" class="btn btn-default">批量导出</button>
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
@@ -285,7 +298,193 @@
         </div>
     </div>
 
+    <!-- 导出模态框（Modal） -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-hidden="true">
 
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        字段选择
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:600px">
+
+                            <label class="col-sm-2 control-label">主表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height:500px">
+
+                                        <form class="form-horizontal" role="form" id='exportModelForm'>
+
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="billFrom"
+                                                    checked>
+                                                <label class="form-check-label">单据来源</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="returnBillId"
+                                                    checked>
+                                                <label class="form-check-label">还货单号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerId"
+                                                    checked>
+                                                <label class="form-check-label">客户编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerShortName" checked>
+                                                <label class="form-check-label">客户简称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerName"
+                                                    checked>
+                                                <label class="form-check-label">客户名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerBelongShort" checked>
+                                                <label class="form-check-label">客户归属</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="contact" checked>
+                                                <label class="form-check-label">联系人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="mobilePhone"
+                                                    checked>
+                                                <label class="form-check-label">移动电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="workPhone"
+                                                    checked>
+                                                <label class="form-check-label">工作电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="operator"
+                                                    checked>
+                                                <label class="form-check-label">经手人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="maker" checked>
+                                                <label class="form-check-label">制单人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditor" checked>
+                                                <label class="form-check-label">审核人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="makeDate"
+                                                    checked>
+                                                <label class="form-check-label">制单日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditDate"
+                                                    checked>
+                                                <label class="form-check-label">审核日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="status" checked>
+                                                <label class="form-check-label">单据状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="remark" checked>
+                                                <label class="form-check-label">备注</label>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <label class="col-sm-2 control-label">子表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" role="form" id='exportSubModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="rowId" checked>
+                                                <label class="form-check-label">序号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="borrowBillId"
+                                                    checked>
+                                                <label class="form-check-label">借货单号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productId"
+                                                    checked>
+                                                <label class="form-check-label">产品编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productName"
+                                                    checked>
+                                                <label class="form-check-label">产品名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseId"
+                                                    checked>
+                                                <label class="form-check-label">仓库编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseName"
+                                                    checked>
+                                                <label class="form-check-label">仓库名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="unit" checked>
+                                                <label class="form-check-label">单位</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="num" checked>
+                                                <label class="form-check-label">数量</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subStatus"
+                                                    checked>
+                                                <label class="form-check-label">还货状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subRemark"
+                                                    checked>
+                                                <label class="form-check-label">子表备注</label>
+                                            </div>
+
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" id="doExportBtn">
+                                    确认导出
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
 
     <!-- 打印预览模态框（Modal） -->
     <div class="modal fade" id="printViewModal">
@@ -961,7 +1160,7 @@
             sqlParams: {
                 sqlId: 'sqlUnreturnBills',
                 params: {
-                    filter: 'unreturnNum>0 and (returnStatus<>"预还入" or returnStatus is null)',
+                    filter: 'unreturnNum>0 and status="待归还"',
                     // orderBy: 'billSaveTimeStamp desc'
                 }
             },
@@ -1022,47 +1221,40 @@
         });
     }
 
-    // //填写产品信息功能
-    // const fillProductInfo = async (productId) => {
-    //     let r1 = await getDataBySql({
-    //         sql: 'getProduct',
-    //         params: {
-    //             filter: 'productId="' + productId + '"'
-    //         }
-    //     })
+    //修改还货类型事件
 
-    //     // console.log('r1:' + JSON.stringify(r1));
-    //     let r2 = r1[0]
-    //     delete r2.productId;
-    //     // console.log('r2:' + JSON.stringify(r2));
-    //     fillFormInputs({
-    //         formId: 'rp_returnsubbillsForm',
-    //         params: r2
-    //     })
+    const addReturnTypeListener = () => {
+        $('#rp_returnbillsForm-returnType').unbind();
+        $('#rp_returnbillsForm-returnType').change(function () {
+            let returnType = $('#rp_returnbillsForm-returnType option:selected').val();
 
-    //     // $('#rp_returnsubbillsForm-productId').selectpicker('val',r1[0].productId)
+            let subWarehouseId, subWarehouseName = ''
 
-    // }
+            switch (returnType) {
+                case '维修申请':
+                    subWarehouseId = 'W2'
+                    subWarehouseName = '维修仓'
+                    break;
+                case '正常入库':
+                    subWarehouseId = 'W1'
+                    subWarehouseName = '客服仓'
+                    break;
+                default:
+                    break;
+            }
+
+            for (let n of subTableData) {
+                n.warehouseId = subWarehouseId
+                n.warehouseName = subWarehouseName
+            }
+
+            $('#rp_returnsubbillsForm-warehouseId').selectpicker('val', subWarehouseId)
+
+        });
+
+    }
 
 
-
-    // //选定产品修改事件
-    // const addProductListener = () => {
-    //     // $('#rp_returnsubbillsForm-productId').unbind();
-    //     $('#rp_returnsubbillsForm-productId').change(async function () {
-    //         let productId = $('#rp_returnsubbillsForm-productId option:selected')
-    //             .val()
-    //         if (productId) {
-    //             $('#rp_returnsubbillsForm-productId').selectpicker('refresh');
-    //             showStockNum()
-    //             fillProductInfo(productId);
-
-    //             $('#rp_returnsubbillsForm-num').val(1)
-
-    //         }
-    //     });
-
-    // }
 
     // //仓库选择修改事件
     // const addWarehouseListener = () => {
@@ -1077,38 +1269,6 @@
     //     });
     // }
 
-    // //保固期自动计算事件
-    // const addInWarrantyListener = () => {
-    //     $('#rp_returnsubbillsForm-productYear,#rp_returnsubbillsForm-productMonth').unbind('change'); //仅解绑change事件
-    //     $('#rp_returnsubbillsForm-productYear,#rp_returnsubbillsForm-productMonth').change(function () {
-    //         let warrantyPeriod = parseInt($('#rp_returnbillsForm-warrantyPeriod').text());
-    //         let year = $('#rp_returnsubbillsForm-productYear').val() || '2000'
-    //         let month = $('#rp_returnsubbillsForm-productMonth').val() || '01'
-    //         console.log(warrantyPeriod, year, month);
-
-    //         //计算月份差函数
-    //         const getIntervalMonth = (startDate, endDate) => {
-    //             var startMonth = startDate.getMonth();
-    //             var endMonth = endDate.getMonth();
-    //             var intervalMonth = (startDate.getFullYear() * 12 + startMonth) - (endDate
-    //                 .getFullYear() *
-    //                 12 + endMonth);
-    //             return intervalMonth;
-    //         }
-
-    //         let nowDate = new Date()
-    //         let productDate = new Date(year + '-' + month + '-01');
-    //         let intervalMonth = getIntervalMonth(productDate, nowDate)
-
-    //         if (warrantyPeriod + intervalMonth >= 0) {
-    //             console.log('保内');
-    //             $("#rp_returnsubbillsForm-inWarranty").selectpicker('val', '是')
-    //             // $("#rp_returnsubbillsForm-inWarranty").selectpicker('refresh')
-    //         } else {
-    //             $("#rp_returnsubbillsForm-inWarranty").selectpicker('val', '否')
-    //         }
-    //     });
-    // }
 
     //创建还货单新单号
     const createReturnBillId = async () => {
@@ -1734,6 +1894,78 @@
 
         })
 
+
+        //批量导出按钮
+        $('#batchExportBtn').click(async function () {
+            $('#exportModal').modal('show')
+        })
+
+        //执行批量导出按钮
+        $('#doExportBtn').click(async function () {
+
+            let titleTextArr = []
+            let titleValueArr = []
+
+            //主表字段选择
+            $('#exportModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+            //子表字段选择
+            $('#exportSubModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+
+
+
+
+            exportData = await getDataBySql({
+                sql: 'returnBillsExportSql',
+                params: {
+                    filter: mainTableFilter
+                }
+            })
+            console.log('exportData', exportData);
+
+            let tableArr = []
+
+            tableArr.push(titleTextArr)
+
+            if (exportData.length > 0) {
+                for (let i = 0; i < exportData.length; i++) {
+                    let row = []
+                    for (const p in exportData[i]) {
+                        if (titleValueArr.includes(p)) {
+                            row.push(exportData[i][p])
+                        }
+                    }
+                    tableArr.push(row)
+                }
+            }
+
+            console.log('tableArr', tableArr);
+
+
+
+            var sheet = XLSX.utils.aoa_to_sheet(tableArr);
+            openDownloadDialog(sheet2blob(
+                sheet), '还货单.xlsx');
+        })
+
         //还货按钮
         $('#btnReturnStart').click(async function () {
 
@@ -1775,6 +2007,8 @@
             //do-填写主表数据
 
             console.log('rowsSelect[0]', rowsSelect[0]);
+
+
 
             //解除客户监听事件
             $('#rp_returnbillsForm-customerShortName').unbind();
@@ -1827,6 +2061,8 @@
                     borrowBillId: rowsSelect[i].borrowBillId,
                     productId: rowsSelect[i].productId,
                     productName: rowsSelect[i].productName,
+                    warehouseId: 'W2',
+                    warehouseName: '维修仓',
                     unreturnNum: rowsSelect[i].unreturnNum,
                     num: rowsSelect[i].unreturnNum,
                     unit: rowsSelect[i].unit,
@@ -2869,15 +3105,8 @@
         //客户选定监听事件
         addCustomerListener();
 
-        // //选定产品修改事件
-        // addProductListener();
-
-        // //仓库选择修改事件
-        // addWarehouseListener();
-
-        // //保固期计算事件
-        // addInWarrantyListener();
-
+        //还货类型监听事件
+        addReturnTypeListener()
 
 
         // 关闭事件重置选中datatable选中,避免显示错误

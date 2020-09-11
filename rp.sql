@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `rp_borrowbills` (
   `isInland` char(255) DEFAULT NULL COMMENT '国内外',
   `warehouseName` char(50) DEFAULT NULL COMMENT '仓库名称',
   `sendWay` char(50) DEFAULT NULL COMMENT '出货方式',
+  `expressType` char(50) DEFAULT NULL COMMENT '快递类型',
   `expressId` char(50) DEFAULT NULL COMMENT '运输单号',
   `operator` char(50) DEFAULT NULL COMMENT '经手人',
   `tester` char(50) DEFAULT NULL COMMENT '测试人',
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `rp_borrowbills` (
   `auditDate` date DEFAULT NULL COMMENT '审核日期',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `borrowBillId` (`borrowBillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单';
@@ -61,6 +62,8 @@ CREATE TABLE IF NOT EXISTS `rp_borrowsubbills` (
   `productName` char(255) DEFAULT NULL COMMENT '产品名称',
   `productDescription` varchar(255) DEFAULT NULL COMMENT '产品描述',
   `productClass` char(50) DEFAULT NULL COMMENT '产品类别',
+  `factoryNo` char(50) DEFAULT NULL COMMENT '出厂编号',
+  `productDate` char(50) DEFAULT NULL COMMENT '生产日期',
   `systemType` char(50) DEFAULT NULL COMMENT '系统分类',
   `unit` char(50) DEFAULT NULL COMMENT '单位',
   `warehouseId` char(50) DEFAULT NULL COMMENT '仓库编号',
@@ -70,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `rp_borrowsubbills` (
   `price` decimal(10,2) DEFAULT NULL COMMENT '单价',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `status` char(50) DEFAULT NULL COMMENT '状态',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`borrowBillId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单子表';
@@ -112,12 +115,12 @@ CREATE TABLE IF NOT EXISTS `rp_customers` (
   `creater` char(50) DEFAULT NULL COMMENT '创建人',
   `effective` char(50) DEFAULT NULL COMMENT '有效性',
   `isSystemOption` char(50) DEFAULT NULL COMMENT '系统客户',
-  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `customerId` (`customerId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3971 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础数据_客户';
 
--- 正在导出表  toolsweb.rp_customers 的数据：~2,908 rows (大约)
+-- 正在导出表  toolsweb.rp_customers 的数据：~2,891 rows (大约)
 /*!40000 ALTER TABLE `rp_customers` DISABLE KEYS */;
 REPLACE INTO `rp_customers` (`DBID`, `customerId`, `customerShortName`, `customerName`, `customerType`, `customerBelongShort`, `customerBelongFull`, `invoiceName`, `taxId`, `paymentType`, `customerArea`, `fax`, `isInland`, `address`, `contact`, `mobilePhone`, `workPhone`, `zipCode`, `email`, `contacts`, `bankName`, `bankAccount`, `creditRank`, `warrantyPeriod`, `restDay`, `remark`, `remarker`, `creater`, `effective`, `isSystemOption`, `saveTimeStamp`) VALUES
 	(1, 'CS_BDZFNB', '保定_正方宁波分部', '保定正方福利电子有限公司宁波采购分部', '客户', '', '', '保定正方福利电子有限公司宁波采购分部', '', '', '中国-浙江省-宁波市', '', '国内', '宁波市区宝善路篮江岸巷26号503室', '路亚邦', '', '0574-87131567', '', '', '', '', '', '', '18个月', '', ' 海天客户  13065684796', NULL, '', '是', '否', '2020-07-15 11:17:21'),
@@ -3235,11 +3238,11 @@ CREATE TABLE IF NOT EXISTS `rp_faultclasses` (
   `orderId` char(50) DEFAULT NULL COMMENT '排序号',
   `creater` varchar(255) DEFAULT '' COMMENT '创建人',
   `effective` char(10) DEFAULT '' COMMENT '是否有效',
-  `saveTimeStamp` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp() COMMENT '时间戳',
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=542 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_故障类别';
 
--- 正在导出表  toolsweb.rp_faultclasses 的数据：~265 rows (大约)
+-- 正在导出表  toolsweb.rp_faultclasses 的数据：~263 rows (大约)
 /*!40000 ALTER TABLE `rp_faultclasses` DISABLE KEYS */;
 REPLACE INTO `rp_faultclasses` (`DBID`, `faultId`, `faultName`, `faultClass`, `faultNameEN`, `orderId`, `creater`, `effective`, `saveTimeStamp`) VALUES
 	(267, 'BG', '有间隙气泡', '故障现象', '', '1', 'Administrator', '否', '2009-08-31 00:00:00'),
@@ -3529,7 +3532,7 @@ CREATE TABLE IF NOT EXISTS `rp_inbills` (
   `auditDate` date DEFAULT NULL COMMENT '审核日期',
   `status` char(50) DEFAULT NULL COMMENT '单据状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-出库单';
 
@@ -3541,23 +3544,23 @@ CREATE TABLE IF NOT EXISTS `rp_inbills` (
 DROP TABLE IF EXISTS `rp_insubbills`;
 CREATE TABLE IF NOT EXISTS `rp_insubbills` (
   `DBID` int(11) NOT NULL AUTO_INCREMENT,
-  `billId` char(50) DEFAULT NULL COMMENT '借货单号',
+  `billId` char(50) DEFAULT NULL COMMENT '单据编号',
   `rowId` char(50) DEFAULT NULL COMMENT '序号',
   `productId` char(50) DEFAULT NULL COMMENT '产品编号',
   `productName` char(255) DEFAULT NULL COMMENT '产品名称',
   `productDescription` varchar(255) DEFAULT NULL COMMENT '产品描述',
   `productClass` char(50) DEFAULT NULL COMMENT '产品类别',
   `systemType` char(50) DEFAULT NULL COMMENT '系统分类',
-  `warehouseName` char(50) DEFAULT NULL COMMENT '仓库名称',
   `warehouseId` char(50) DEFAULT NULL COMMENT '仓库编号',
+  `warehouseName` char(50) DEFAULT NULL COMMENT '仓库名称',
   `unit` char(50) DEFAULT NULL COMMENT '单位',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `scrapStatus` char(50) DEFAULT NULL COMMENT '报废状态',
   `num` int(3) DEFAULT NULL COMMENT '数量',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
-  UNIQUE KEY `recordBillId_rowId` (`billId`,`rowId`)
+  UNIQUE KEY `billId_rowId` (`billId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单子表';
 
 -- 正在导出表  toolsweb.rp_insubbills 的数据：~0 rows (大约)
@@ -3586,7 +3589,7 @@ CREATE TABLE IF NOT EXISTS `rp_outbills` (
   `auditDate` date DEFAULT NULL COMMENT '审核日期',
   `status` char(50) DEFAULT NULL COMMENT '单据状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-出库单';
 
@@ -3611,7 +3614,7 @@ CREATE TABLE IF NOT EXISTS `rp_outsubbills` (
   `num` int(3) DEFAULT NULL COMMENT '数量',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`billId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-借货凭单子表';
@@ -4079,7 +4082,7 @@ CREATE TABLE IF NOT EXISTS `rp_parts` (
   `productClass` varchar(255) DEFAULT '' COMMENT '产品类别',
   `effective` varchar(255) DEFAULT NULL COMMENT '是否有效',
   `creater` varchar(255) DEFAULT NULL COMMENT '创建人员',
-  `saveTimeStamp` datetime DEFAULT current_timestamp(),
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `partId` (`partId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_产品';
@@ -4110,7 +4113,7 @@ CREATE TABLE IF NOT EXISTS `rp_partsbills` (
   `repairPartNum` int(3) DEFAULT NULL COMMENT '返修配件数量',
   `repairPartStatus` char(50) DEFAULT NULL COMMENT '配件维修状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`recordBillId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内修系统_工作流程_维修记录单 子表 更换部件清单表';
@@ -14971,7 +14974,7 @@ CREATE TABLE IF NOT EXISTS `rp_recordbills` (
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
   `finishDate` date DEFAULT NULL COMMENT '完成日期',
   `status` char(50) DEFAULT NULL COMMENT '状态',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId_rowId` (`requestBillId`,`rowId`),
   UNIQUE KEY `recordBillId` (`recordBillId`)
@@ -15006,7 +15009,7 @@ CREATE TABLE IF NOT EXISTS `rp_requestbills` (
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
   `remark` varchar(255) DEFAULT NULL COMMENT '单据备注',
   `factoryNos` char(50) DEFAULT NULL COMMENT '出厂编号清单',
-  `billSaveTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `requestBillId` (`requestBillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修申请单';
@@ -15048,7 +15051,7 @@ CREATE TABLE IF NOT EXISTS `rp_responsebills` (
   `makeDate` date DEFAULT NULL COMMENT '制单日期',
   `finishDate` date DEFAULT NULL COMMENT '归档日期',
   `remark` char(50) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp() COMMENT '时间戳',
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `responseBillId` (`responseBillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_工作流程_维修出货单';
@@ -15084,7 +15087,7 @@ CREATE TABLE IF NOT EXISTS `rp_returnbills` (
   `auditDate` date DEFAULT NULL COMMENT '审核日期',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `borrowBillId` (`returnBillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-还货凭单';
@@ -15111,7 +15114,7 @@ CREATE TABLE IF NOT EXISTS `rp_returnsubbills` (
   `num` int(3) DEFAULT NULL COMMENT '数量',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `status` char(50) DEFAULT NULL COMMENT '状态',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`returnBillId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-还货凭单子表';
@@ -15134,7 +15137,7 @@ CREATE TABLE IF NOT EXISTS `rp_scrapbills` (
   `auditDate` date DEFAULT NULL COMMENT '审核日期',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `borrowBillId` (`scrapBillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-报废凭单';
@@ -15157,7 +15160,7 @@ CREATE TABLE IF NOT EXISTS `rp_scrapsubbills` (
   `num` int(3) DEFAULT NULL COMMENT '数量',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`scrapBillId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-调拨单子表';
@@ -15176,12 +15179,12 @@ CREATE TABLE IF NOT EXISTS `rp_selectoroptions` (
   `orderId` char(2) DEFAULT NULL COMMENT '排序码',
   `effective` char(5) DEFAULT NULL COMMENT '有效',
   `isSystemOption` char(5) DEFAULT NULL COMMENT '系统选项',
-  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `optionClass_optionValue` (`optionClass`,`optionValue`)
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础资料_选项清单\r\n\r\n\r\n用于统一管理较少的 option选项';
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8 COMMENT='内修系统_基础资料_选项清单\r\n\r\n\r\n用于统一管理较少的 option选项';
 
--- 正在导出表  toolsweb.rp_selectoroptions 的数据：~58 rows (大约)
+-- 正在导出表  toolsweb.rp_selectoroptions 的数据：~61 rows (大约)
 /*!40000 ALTER TABLE `rp_selectoroptions` DISABLE KEYS */;
 REPLACE INTO `rp_selectoroptions` (`DBID`, `optionClass`, `optionValue`, `optionText`, `orderId`, `effective`, `isSystemOption`, `saveTimeStamp`) VALUES
 	(11, '送修方式', '邮寄过来', '邮寄过来', '1', '是', '是', '2020-01-14 14:31:53'),
@@ -15242,7 +15245,9 @@ REPLACE INTO `rp_selectoroptions` (`DBID`, `optionClass`, `optionValue`, `option
 	(67, '还货类型', '正常入库', '正常入库', '2', '是', '是', '2020-06-04 13:48:17'),
 	(68, '还货类型', '维修申请', '维修申请', '1', '是', '是', '2020-06-04 13:48:17'),
 	(72, '处理方式', '维修申请', '维修申请', '2', '是', '是', '2020-01-14 14:31:53'),
-	(73, '处理方式', '报废入库', '报废入库', '1', '是', '是', '2020-01-14 14:31:53');
+	(73, '处理方式', '报废入库', '报废入库', '1', '是', '是', '2020-01-14 14:31:53'),
+	(74, '快递类型', '顺付', '顺付', '1', '是', '是', '2020-01-14 14:31:53'),
+	(75, '快递类型', '到付', '到付', '2', '是', '是', '2020-01-14 14:31:53');
 /*!40000 ALTER TABLE `rp_selectoroptions` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_staffs 结构
@@ -15269,7 +15274,7 @@ CREATE TABLE IF NOT EXISTS `rp_staffs` (
   `inservice` char(50) DEFAULT NULL COMMENT '就职状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `effective` char(50) DEFAULT NULL COMMENT '有效性',
-  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `staffId` (`staffId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_人员';
@@ -15482,7 +15487,7 @@ CREATE TABLE IF NOT EXISTS `rp_testitems` (
   `testFee` decimal(10,2) DEFAULT NULL COMMENT '检测费用',
   `beginDate` date DEFAULT NULL COMMENT '开始日期',
   `endDate` date DEFAULT NULL COMMENT '结束日期',
-  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `systemType_productClass_testItem` (`systemType`,`productClass`,`testItem`)
 ) ENGINE=InnoDB AUTO_INCREMENT=808 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='内修系统_基础数据_故障类别';
@@ -15775,7 +15780,7 @@ CREATE TABLE IF NOT EXISTS `rp_transferbills` (
   `auditDate` date DEFAULT NULL COMMENT '审核日期',
   `status` char(50) DEFAULT NULL COMMENT '单据状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-报废单';
 
@@ -15798,7 +15803,7 @@ CREATE TABLE IF NOT EXISTS `rp_transfersubbills` (
   `num` int(3) DEFAULT NULL COMMENT '数量',
   `status` char(50) DEFAULT NULL COMMENT '状态',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `billSaveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `billSaveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `recordBillId_rowId` (`transferBillId`,`rowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库凭单-报废单子表';
@@ -15814,16 +15819,16 @@ CREATE TABLE IF NOT EXISTS `rp_warehouse` (
   `PID` char(50) DEFAULT NULL COMMENT '物料编号',
   `warehouseId` char(50) DEFAULT NULL COMMENT '仓库编号',
   `stockNum` int(10) DEFAULT NULL COMMENT '库存数量',
-  `dateTimeStamp` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `dateTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `partId_warehouseId` (`PID`,`warehouseId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2311 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库管理_即时库存';
+) ENGINE=InnoDB AUTO_INCREMENT=2398 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库管理_即时库存';
 
 -- 正在导出表  toolsweb.rp_warehouse 的数据：~369 rows (大约)
 /*!40000 ALTER TABLE `rp_warehouse` DISABLE KEYS */;
 REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `dateTimeStamp`) VALUES
 	(1546, '2BP_TECH2M5_1AN', 'W1', 100, NULL),
-	(1547, '3CD6NP030', 'W1', 100, NULL),
+	(1547, '3CD6NP030', 'W1', 90, '2020-09-01 08:59:12'),
 	(1548, '3CD6XP102', 'W1', 79, '2020-07-22 17:49:32'),
 	(1549, '3CD6XP103', 'W1', 100, NULL),
 	(1550, '3CD6XP104', 'W1', 100, NULL),
@@ -16083,7 +16088,7 @@ REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `dateTime
 	(1818, '1ACC_HUNTER_JX_D', 'W1', 0, '2020-07-15 16:44:54'),
 	(1820, '1ACCPP16_25', 'W1', 29, '2020-07-22 15:53:26'),
 	(1824, '1ACC_HUNTER_JX_A', 'W2', 1, '2020-06-29 15:14:45'),
-	(1828, '189_RO38_64_D420_200C6', 'W1', 25, '2020-07-22 15:52:35'),
+	(1828, '189_RO38_64_D420_200C6', 'W1', 22, '2020-09-10 15:41:31'),
 	(1831, '1AX_TMIOT_I102', 'W1', 1, '2020-06-29 15:32:53'),
 	(1832, '1AX_TMIOT_I102', 'W2', 1, '2020-06-29 15:32:53'),
 	(1837, '1ACC_LED_I300TR', 'W1', 16, '2020-07-22 17:00:49'),
@@ -16093,10 +16098,10 @@ REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `dateTime
 	(1849, '1AX_RMTP12_O', 'W1', 61, '2020-07-22 17:42:11'),
 	(1850, '1BAC6KAD05', 'W1', 7, '2020-07-22 15:52:35'),
 	(1851, '1BBX_303BT7OAN', 'W1', 5, '2020-07-15 14:34:11'),
-	(1865, '189_RO38_64_D420_200', 'W1', 19, '2020-07-22 17:42:11'),
+	(1865, '189_RO38_64_D420_200', 'W1', 49, '2020-09-11 13:29:33'),
 	(1874, '1ACC_RFID_RS232TG', 'W1', 39, '2020-07-22 17:00:49'),
 	(1880, '189_SE_94_D420_320K', 'W1', 8, '2020-07-22 17:00:49'),
-	(1883, '3CD6NP101', 'W2', 2, '2020-07-20 13:29:28'),
+	(1883, '3CD6NP101', 'W2', 0, '2020-07-22 18:38:44'),
 	(1889, '3CD6XP221', 'W2', 93, '2020-07-21 15:37:35'),
 	(1896, '3CDE100_016', 'W2', 87, '2020-07-20 12:52:59'),
 	(1901, '3CEU101_025', 'W2', 86, '2020-07-21 15:14:03'),
@@ -16107,7 +16112,7 @@ REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `dateTime
 	(1955, '1ACC_HUNTER_TP_E', 'W2', 0, '2020-07-08 14:06:18'),
 	(1958, '1AL_TS_060_P', 'W1', 54, '2020-07-22 17:00:49'),
 	(1959, '1BX_AUSTONETI7B_TV', 'W1', 13, '2020-07-22 15:22:41'),
-	(1960, '0JWCSC44_62O', 'W1', 6, '2020-07-15 10:35:26'),
+	(1960, '0JWCSC44_62O', 'W1', 32, '2020-09-11 13:29:33'),
 	(1961, '189_SE_26_D420_400K2', 'W1', 16, '2020-07-22 15:22:41'),
 	(1977, '1BX_AUSTONETI7B_TV', 'W2', 1, '2020-07-08 14:23:34'),
 	(1978, '189_RO38_64_D420_200', 'W2', 0, '2020-07-08 14:07:07'),
@@ -16119,7 +16124,7 @@ REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `dateTime
 	(2044, '1AX_RMTP12_O', 'W3', 0, '2020-07-15 10:01:17'),
 	(2048, '1ACC_HUNTER_JX_A', 'W3', 0, '2020-07-15 10:07:16'),
 	(2051, '1ACC_RFID_RS232TG', 'W3', 1, '2020-07-15 16:45:44'),
-	(2053, '0JWCSC44_62O', 'W3', 1, '2020-07-16 14:07:41'),
+	(2053, '0JWCSC44_62O', 'W3', 2, '2020-09-11 13:16:01'),
 	(2055, '189_SE_26_D420_400K2', 'W3', 0, '2020-07-15 10:27:21'),
 	(2062, '1ACC_HUNTER_JX_C', 'W3', 0, '2020-07-17 09:57:06'),
 	(2066, '189_SE_26_D420_400K2', 'W2', 2, '2020-07-15 14:34:12'),
@@ -16190,7 +16195,44 @@ REPLACE INTO `rp_warehouse` (`DBID`, `PID`, `warehouseId`, `stockNum`, `dateTime
 	(2295, '3ID74LVC14', 'W2', 2, '2020-07-22 17:49:33'),
 	(2296, '3RD6AK001', 'W2', 2, '2020-07-22 17:49:33'),
 	(2297, '3RD6AO033', 'W2', 2, '2020-07-22 17:49:33'),
-	(2298, '3RD6PK034', 'W2', 2, '2020-07-22 17:49:33');
+	(2298, '3RD6PK034', 'W2', 2, '2020-07-22 17:49:33'),
+	(2312, '3CD6NP101', 'W3', 5, '2020-09-11 13:25:08'),
+	(2313, 'A1', NULL, 10, '2020-07-24 08:36:06'),
+	(2314, 'A2', NULL, 11, '2020-07-24 08:36:06'),
+	(2315, 'A3', NULL, 12, '2020-07-24 08:36:06'),
+	(2316, 'A4', NULL, 13, '2020-07-24 08:36:06'),
+	(2317, 'A5', NULL, 14, '2020-07-24 08:36:06'),
+	(2318, 'A6', NULL, 15, '2020-07-24 08:36:06'),
+	(2319, 'A7', NULL, 16, '2020-07-24 08:36:06'),
+	(2320, 'A8', NULL, 17, '2020-07-24 08:36:06'),
+	(2321, 'A9', NULL, 18, '2020-07-24 08:36:06'),
+	(2322, 'A10', NULL, 19, '2020-07-24 08:36:06'),
+	(2323, 'A11', NULL, 20, '2020-07-24 08:36:06'),
+	(2324, 'A12', NULL, 21, '2020-07-24 08:36:06'),
+	(2325, 'A13', NULL, 22, '2020-07-24 08:36:06'),
+	(2326, 'A14', NULL, 23, '2020-07-24 08:36:06'),
+	(2327, 'A15', NULL, 24, '2020-07-24 08:36:06'),
+	(2328, 'A16', NULL, 25, '2020-07-24 08:36:06'),
+	(2329, 'A17', NULL, 26, '2020-07-24 08:36:06'),
+	(2330, 'A18', NULL, 27, '2020-07-24 08:36:06'),
+	(2331, 'A19', NULL, 28, '2020-07-24 08:36:06'),
+	(2332, 'A20', NULL, 29, '2020-07-24 08:36:06'),
+	(2333, 'A21', NULL, 30, '2020-07-24 08:36:06'),
+	(2334, 'A22', NULL, 31, '2020-07-24 08:36:06'),
+	(2335, 'A23', NULL, 32, '2020-07-24 08:36:06'),
+	(2336, 'A24', NULL, 33, '2020-07-24 08:36:06'),
+	(2337, 'A25', NULL, 34, '2020-07-24 08:36:06'),
+	(2338, 'A26', NULL, 35, '2020-07-24 08:36:06'),
+	(2339, 'A27', NULL, 36, '2020-07-24 08:36:06'),
+	(2340, 'A28', NULL, 37, '2020-07-24 08:36:06'),
+	(2341, 'A29', NULL, 38, '2020-07-24 08:36:06'),
+	(2342, 'A30', NULL, 39, '2020-07-24 08:36:06'),
+	(2343, 'A31', NULL, 40, '2020-07-24 08:36:06'),
+	(2344, 'A32', NULL, 41, '2020-07-24 08:36:06'),
+	(2345, '3CD6NP102', 'W3', 8, '2020-09-11 13:25:08'),
+	(2347, 'AAA', 'W1', 21, '2020-07-28 10:38:53'),
+	(2348, 'BBB', 'W1', 20, '2020-07-28 10:38:53'),
+	(2354, '3CD6NP030', 'W4', 40, '2020-09-11 13:34:01');
 /*!40000 ALTER TABLE `rp_warehouse` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.rp_warehousehistory 结构
@@ -16206,7 +16248,7 @@ CREATE TABLE IF NOT EXISTS `rp_warehousehistory` (
   `erpBillId` char(50) DEFAULT NULL COMMENT 'ERP单号',
   `actType` char(50) DEFAULT NULL COMMENT '操作类型',
   `warehouseId` char(50) DEFAULT NULL COMMENT '仓库编号',
-  `dateTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `dateTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='仓库管理_仓库记录';
 
@@ -16223,7 +16265,7 @@ CREATE TABLE IF NOT EXISTS `rp_warehouseslist` (
   `remark` varchar(255) DEFAULT NULL COMMENT '仓库说明',
   `effective` char(50) DEFAULT NULL COMMENT '有效性',
   `isSystemOption` char(50) DEFAULT NULL COMMENT '系统仓库',
-  `saveTimeStamp` timestamp NULL DEFAULT current_timestamp(),
+  `saveTimeStamp` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`DBID`),
   UNIQUE KEY `warehouseName` (`warehouseName`),
   UNIQUE KEY `warehouseId` (`warehouseId`)
