@@ -26,6 +26,10 @@ const getTaskAuditRecord = "select * from ( select t1.DBID,t2.BTID,t2.BTVersion,
 
 //获取默认代码检查人
 const getCodeAuditor = "select * from `ppm_codeauditrule`"
+
+//计划单数量
+const getPLDNum = "SELECT COUNT(1) AS PLDNum FROM `ppm_bills_plan` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW()) AND version=0"
+
 /**
  *更具传入参数创建执行sql语句
  *

@@ -64,6 +64,7 @@
                     <table id="ppm_bills_request" class=" table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
+                                <th>计划单号</th>
                                 <th>客户</th>
                                 <th width='300'>修改主题</th>
                                 <th>机型</th>
@@ -366,6 +367,8 @@
             },
             dtParams: {
                 columns: [{
+                    data: 'BPID',
+                }, {
                     data: 'CTRName',
                 }, {
                     data: 'topic',
@@ -575,7 +578,7 @@
             requestBillData.data[0].makeDate = currentDate()
 
 
-            //d-保存单据
+            repla //d-保存单据
             let r1 = await postDBData({
                 sql: 'replace',
                 params: requestBillData
@@ -652,9 +655,134 @@
                 return
             }
 
+            //d-生成计划单
+
+            let PLDNumRS = await getDataBySql({
+                sql: 'getPLDNum'
+            })
+            console.log('PLDNumRS', PLDNumRS);
+
+            let PLDNum = PLDNumRS[0].PLDNum + 1
+
+            if (PLDNum < 9) {
+                PLDNum = "0" + PLDNum;
+            }
+
+            //定义BPID单号标识符;
+            let charA, charB, charC
+            switch ($('#ppm_bills_requestForm-PLDArea option:selected').val()) {
+                case '大港':
+                    charA = 'D';
+                    break;
+                case '虎门':
+                    charA = 'H';
+                    break;
+                case '台湾':
+                    charA = 'T';
+                    break;
+                default:
+                    break;
+            }
+
+            switch ($('#ppm_bills_requestForm-orderFrom option:selected').val()) {
+                case '邮件':
+                    charB = 'M';
+                    break;
+                case '电话':
+                    charB = 'T';
+                    break;
+                case '传真':
+                    charB = 'F';
+                    break;
+                case '微信':
+                    charB = 'W';
+                    break;
+                case '工具':
+                    charB = 'P';
+                    break;
+                default:
+                    break;
+            }
+
+            switch ($('#ppm_bills_requestForm-orderFromDep option:selected').val()) {
+                case '客户订单':
+                    charC = 'A';
+                    break;
+                case '其他部门':
+                    charC = 'B';
+                    break;
+                case '工程单位':
+                    charC = 'C';
+                    break;
+                case '公司预算或经营会议':
+                    charC = 'D';
+                    break;
+                default:
+                    break;
+            }
+
+
+            let BPID = "P" + dateFormat(currentDate(), "yyyyMMdd") + PLDNum + "_" + charA + charB +
+                "_" + charC;
+
+
+            alert(BPID)
+
+            //d-生成计划单
+
+            let PLDData = {
+                tableId: 'ppm_bills_plan',
+                data: [{
+                    "BPID": BPID,
+                    "CTRName": $('#ppm_bills_requestForm-CTRName option:selected')
+                        .val(),
+                    "topic": $("#ppm_bills_requestForm-topic").val(),
+                    "detail": $("#ppm_bills_requestForm-detail").val().replace(
+                        /\n|\r\n/g, '<br/>').replace(/'/g, '"'),
+                    "PGEMaker": staffName,
+                    "PLDArea": charA,
+                    "orderFrom": charB,
+                    "orderFromDep": charC,
+                    "billClass": $('#ppm_bills_requestForm-billClass option:selected')
+                        .text(),
+                    "MHEName": $('#ppm_bills_requestForm-MHEName option:selected')
+                        .val(),
+                    "modelD": modelD,
+                    "modelH": modelH,
+                    // "OGNSystemVersion": $('#OGNSystemVersion').val(),
+                    "applyDate": $('#ppm_bills_requestForm-applyDate').val(),
+                    "limitDate": $('#ppm_bills_requestForm-limitDate').val(),
+                    "maker": staffName,
+                    "makeDate": currentDate(),
+                    "version": 0,
+                    "files": getFilesJson(),
+                    "auditor": staffName,
+                    "auditDate": currentDate(),
+                    "auditResult": 1,
+                    "PLDStatus": 1,
+                    // "auditOpinion": $('#ppm_bills_requestForm-auditOpinion').val().replace(
+                    //     /\n|\r\n/g, '<br/>').replace(/'/g, '"'),
+                    "WFStatus": 10
+                }]
+            }
+
+            console.log('PLDData', PLDData);
+
+            let PLDSaveResult = await postDBData({
+                sql: 'replace',
+                params: PLDData
+            })
+
+            if (!PLDSaveResult) {
+                alert('生成计划单错')
+                return
+            }
+
+
             //d-审核
             let billData = {
                 DBID: $('#ppm_bills_requestForm-DBID').val(),
+                BPID: BPID,
                 status: '审核通过'
             }
 
@@ -672,6 +800,9 @@
             } else {
                 alert('审核失败!')
             }
+
+
+
 
             //r-重载表格
             loadBillMainTable()
