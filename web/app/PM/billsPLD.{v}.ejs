@@ -1491,7 +1491,7 @@
 
 		//按钮-表格新增计划单
 
-		$('#BTNFormSave').click(function () {
+		$('#BTNFormSave').click(async function () {
 
 			if (checkPLDInput()) {
 				var files = [];
@@ -1508,9 +1508,35 @@
 					files.push(fileInfo);
 				});
 
+				//d-自动调整BPID单号功能
+				let BPID = $('#BPID').val()
+
+				if (!$('#makeDate').text()) {
+					let PLDNumRS = await getDataBySql({
+						sql: 'getPLDNum'
+					})
+					console.log('PLDNumRS', PLDNumRS);
+
+					let PLDNum = PLDNumRS[0].PLDNum + 1
+
+					if (PLDNum < 9) {
+						PLDNum = "0" + PLDNum;
+					}
+
+					BPID = "P" + new Date(Ndate).Format("yyyyMMdd") + PLDNum + "_" +
+						$('input:radio[name="PLDArea"]:checked').val() +
+						$('input:radio[name="orderFrom"]:checked').val() + "_" +
+						$('input:radio[name="orderFromDep"]:checked').val();
+					// alert(BPID)
+					// return
+				}
+
+
+
+
 				var billData = {
 					"DBTable": "ppm_bills_plan",
-					"BPID": $('#BPID').val(),
+					"BPID": BPID,
 					"CTRName": Fun_getSelectText($('#CTRName option:selected').text()),
 					"topic": $('#topic').val(),
 					"detail": $('#detail').val().replace(/\n|\r\n/g, '<br/>').replace(/'/g, '"'),
