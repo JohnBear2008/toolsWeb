@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
 
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
@@ -31,6 +32,9 @@
 
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
+
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
 
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -63,6 +67,17 @@
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+                    <!-- excel -->
+                    <div style="float: left; margin-left: 15px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">excel</button>
+                            <button type="button" id="batchImportBtn" class="btn btn-default">批量导入</button>
+                            <button type="button" id="batchExportBtn" class="btn btn-default">批量导出</button>
+                            <button type="button" id="importModelBtn" class="btn btn-default">数据模板</button>
+                            <input type="file" id="file" style="display:none;"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
@@ -114,7 +129,6 @@
                                 <th>序号</th>
                                 <th>产品编号</th>
                                 <th>产品描述</th>
-
                                 <th>单位</th>
                                 <th>数量</th>
                                 <th>备注</th>
@@ -222,7 +236,158 @@
         </div>
     </div>
 
+    <!-- 导出模态框（Modal） -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-hidden="true">
 
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        字段选择
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:600px">
+
+                            <label class="col-sm-2 control-label">主表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height:500px">
+
+                                        <form class="form-horizontal" role="form" id='exportModelForm'>
+
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="transferBillId"
+                                                    checked>
+                                                <label class="form-check-label">调拨单号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="transferDate"
+                                                    checked>
+                                                <label class="form-check-label">调拨日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="outWarehouseId"
+                                                    checked>
+                                                <label class="form-check-label">拨出仓库编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="outWarehouseName"
+                                                    checked>
+                                                <label class="form-check-label">拨出仓库</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="inWarehouseId"
+                                                    checked>
+                                                <label class="form-check-label">拨入仓库编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="inWarehouseName"
+                                                    checked>
+                                                <label class="form-check-label">拨入仓库</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="operator"
+                                                    checked>
+                                                <label class="form-check-label">经手人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="maker" checked>
+                                                <label class="form-check-label">制单人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditor" checked>
+                                                <label class="form-check-label">审核人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="makeDate"
+                                                    checked>
+                                                <label class="form-check-label">制单日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditDate"
+                                                    checked>
+                                                <label class="form-check-label">审核日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="status" checked>
+                                                <label class="form-check-label">单据状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="remark" checked>
+                                                <label class="form-check-label">备注</label>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <label class="col-sm-2 control-label">子表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" role="form" id='exportSubModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="rowId" checked>
+                                                <label class="form-check-label">序号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productId"
+                                                    checked>
+                                                <label class="form-check-label">产品编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productName"
+                                                    checked>
+                                                <label class="form-check-label">产品名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="unit" checked>
+                                                <label class="form-check-label">单位</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="num" checked>
+                                                <label class="form-check-label">数量</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subRemark"
+                                                    checked>
+                                                <label class="form-check-label">子表备注</label>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" id="doExportBtn">
+                                    确认导出
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
 
     <!-- 打印预览模态框（Modal） -->
     <div class="modal fade" id="printViewModal">
@@ -400,12 +565,6 @@
                                 </div>
 
 
-
-
-
-
-
-
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label">拨出仓库</label>
@@ -514,7 +673,6 @@
                                                 <th>序号</th>
                                                 <th>产品编号</th>
                                                 <th>产品描述</th>
-
                                                 <th>单位</th>
                                                 <th>数量</th>
                                                 <th>备注</th>
@@ -529,9 +687,6 @@
                                             <h3 class="panel-title">产品详情</h3>
                                         </div>
                                         <div class="panel-body">
-
-
-
 
                                             <form class="form-horizontal" role="form" id='rp_transfersubbillsForm'>
 
@@ -572,11 +727,6 @@
                                                             data-size="5" data-dropup-auto="false">
                                                         </select>
                                                     </div>
-
-
-
-
-
                                                 </div>
 
                                                 <div class="form-group">
@@ -679,12 +829,6 @@
                             </div> -->
 
 
-
-
-
-
-
-
                         </div>
                     </div>
 
@@ -745,30 +889,6 @@
     }, {
         data: 'status',
     }]
-
-    // const recordHistoryColumnsArray = [{
-    //         data: 'repairId',
-    //     }, {
-    //         data: 'customerShortName'
-    //     }, {
-    //         data: 'recordBillId'
-    //     },
-    //     {
-    //         data: 'productId'
-    //     }, {
-    //         data: 'isRework',
-    //     }, {
-    //         data: 'urgent',
-    //     }, {
-    //         data: 'inWarranty',
-    //     }, {
-    //         data: 'repairStaff',
-    //     }, {
-    //         data: 'repairLastFee',
-    //     }, {
-    //         data: 'status',
-    //     }
-    // ]
 
 
 
@@ -1304,67 +1424,7 @@
     }
 
 
-    // //检查删除单据数据
-    // const checkDeleteBills = async () => {
 
-    //     let resultData = {
-    //         result: null,
-    //         data: {}
-    //     }
-
-    //     let table = $('#rp_transferbills').DataTable();
-    //     let dataSelect = table.rows('.selected').data();
-    //     let mainDBIDArr = [];
-    //     let subDBIDArr = [];
-    //     let billsIdArr = [];
-
-    //     for (let n = 0; n < dataSelect.length; n++) {
-    //         mainDBIDArr.push(dataSelect[n].DBID);
-    //         billsIdArr.push(dataSelect[n].transferBillId);
-    //     }
-
-    //     switch (true) {
-    //         case billsIdArr.length === 0:
-    //             alert('请先选中需要删除的调拨单!')
-
-    //             resultData.result = false;
-    //             return resultData
-    //             break;
-    //         case billsIdArr.length > 0:
-    //             let transferBillIdRange = getRangeString(billsIdArr);
-
-    //             // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
-
-    //             let statusArr = await getDataBySql({
-    //                 sql: 'getBorrowSubBillStatus',
-    //                 params: {
-    //                     filter: 'transferBillId in ' + transferBillIdRange
-    //                 }
-    //             })
-
-    //             // console.log("statusArr:" + JSON.stringify(statusArr));
-    //             for (const n of statusArr) {
-    //                 if (n.status !== '待审核') {
-    //                     alert('选中单据已审核,不符合删除条件!')
-    //                     resultData.result = false;
-    //                     return resultData
-    //                 }
-    //                 subDBIDArr.push(n.DBID)
-    //             }
-
-    //             break;
-    //     }
-
-    //     resultData = {
-    //         result: true,
-    //         data: {
-    //             mainDBIDArr: mainDBIDArr,
-    //             subDBIDArr: subDBIDArr
-    //         }
-    //     }
-
-    //     return resultData;
-    // }
 
     //更新所选产品即时库存
     const showStockNum = async () => {
@@ -1420,6 +1480,199 @@
 
     }
 
+    function selectFile() {
+        $("#file")[0].click();
+    }
+
+    //去除excel生成json中的中文属性
+    const excelJsonArr2DivJsonArr = (excelJsonArr, rules) => {
+        for (let n of excelJsonArr) {
+            n = replaceObjParamsName(n, rules)
+        }
+        return excelJsonArr;
+    }
+
+    const addFileReaderListener = () => {
+        $("#file")[0].addEventListener('change', function (e) {
+
+            //check-检查文件数量
+            var files = e.target.files;
+            if (files.length == 0) return;
+            var f = files[0];
+
+            //check-检查文件格式
+            if (!/\.xlsx$/g.test(f.name)) {
+                alert('仅支持读取xlsx格式！');
+                return;
+            }
+
+            //do-读取数据
+            readWorkbookFromLocalFile(f, async function (workbook) {
+                let excelData = readWorkbook(workbook);
+                let storeData = excelJsonArr2DivJsonArr(excelData, {
+                    transferBillId: '调拨单号',
+                    transferDate: '调拨日期',
+                    outWarehouseId: '拨出仓库编号',
+                    outWarehouseName: '拨出仓库',
+                    inWarehouseId: '拨入仓库编号',
+                    inWarehouseName: '拨入仓库',
+                    operator: '经手人',
+                    maker: '制单人',
+                    auditor: '审核人',
+                    remark: '备注',
+                    rowId: '行号',
+                    productId: '产品编号',
+                    productName: '产品名称',
+                    unit: '单位',
+                    num: '数量',
+                    subRemark: '子表备注'
+                })
+
+                console.log('storeData', storeData);
+
+                //c-校验单号规则
+                let billsIdArr = [];
+                for (const n of storeData) {
+                    if (n.transferBillId.indexOf('PM-') === -1) {
+                        alert('批量导入单号必须以 PM- 开始,请检查!')
+                        return
+                    }
+                    billsIdArr.push(n.transferBillId)
+                }
+
+                //c-检查重复单号
+                let billIdRange = getRangeString(billsIdArr);
+                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+
+                let statusArr = await getDataBySql({
+                    sql: 'sqlTransferBills',
+                    params: {
+                        filter: 'transferBillId in ' + billIdRange
+                    }
+                })
+                console.log('statusArr', statusArr);
+
+                let dupBillIds = "";
+                if (statusArr.length > 0) {
+                    for (const n of statusArr) {
+                        dupBillIds = dupBillIds + n.transferBillId + ',';
+                    }
+                    dupBillIds = dupBillIds.substring(0, dupBillIds.length - 1);
+                    alert('以下单号' + dupBillIds + '存在重复单号,请检查!')
+                    return
+                }
+
+                console.log('storeData', storeData);
+                //do-生成主表,子表数据
+                let transferBillsArr = [];
+                let transferSubBillsArr = [];
+
+                for (const n of storeData) {
+
+                    transferBillsArr.push({
+                        transferBillId: n.transferBillId,
+                        transferDate: n.transferDate,
+                        outWarehouseId: n.outWarehouseId,
+                        outWarehouseName: n.outWarehouseName,
+                        inWarehouseId: n.inWarehouseId,
+                        inWarehouseName: n.inWarehouseName,
+                        operator: n.operator,
+                        maker: n.maker,
+                        makeDate: currentDate(),
+                        auditor: n.auditor,
+                        status: '待审核',
+                        remark: n.remark
+                    })
+
+                    transferSubBillsArr.push({
+                        transferBillId: n.transferBillId,
+                        rowId: n.rowId,
+                        productId: n.productId,
+                        productName: n.productName,
+                        unit: n.unit,
+                        num: n.num,
+                        status: '预调拨',
+                        remark: n.subRemark
+                    })
+                }
+                //do-去重处理
+                // inBillsArr = Array.from(new Set(inBillsArr))仅可用于简单数组去重
+                var obj = {};
+                transferBillsArr = transferBillsArr.reduce(function (item, next) {
+                    obj[next.transferBillId] ? '' : obj[next.transferBillId] = true &&
+                        item.push(next);
+                    return item
+                }, [])
+
+                //子表不去重
+                // var subObj = {};
+                // inSubBillsArr = inSubBillsArr.reduce(function (item, next) {
+                //     subObj[next.billId] ? '' : subObj[next.billId] = true && item.push(
+                //         next);
+                //     return item
+                // }, [])
+                console.log('transferBillsArr', transferBillsArr);
+                console.log('transferSubBillsArr', transferSubBillsArr);
+
+                //do-导入数据库
+                let rTranferBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_transferbills',
+                        data: transferBillsArr
+                    }
+                })
+
+                let rTranferSubBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_transfersubbills',
+                        data: transferSubBillsArr
+                    }
+                })
+
+                //do-初始化库存
+                let PIDArr = [];
+                for (const n of transferSubBillsArr) {
+                    PIDArr.push({
+                        PID: n.productId,
+                        warehouseId: n.warehouseId
+                    })
+                }
+
+                let newPIDArr = []
+                for (let i = 0; i < PIDArr.length; i++) {
+                    let isNew = true
+                    for (let j = 0; j < newPIDArr.length; j++) {
+                        if (PIDArr[i].PID === newPIDArr[j].PID && PIDArr[i].warehouseId ===
+                            newPIDArr[j].warehouseId) {
+                            isNew = false;
+                            break;
+                        }
+                    }
+                    if (isNew) {
+                        newPIDArr.push(PIDArr[i])
+                    }
+                }
+
+                //初始化库存记录
+                let rInitPID = await initWarehousePID({
+                    PIDArr: newPIDArr
+                })
+
+                if (rTranferBills.affectedRows > 0 && rTranferSubBills.affectedRows > 0 &&
+                    rInitPID) {
+                    alert('批量导入成功')
+                } else {
+                    alert('批量导入出错')
+                }
+
+                //return-刷新主界面
+                loadBillMainTable()
+            });
+        });
+    }
+
 
     $(document).ready(function () {
 
@@ -1434,8 +1687,6 @@
 
         //主表过滤器
         mainTableFilter = '';
-
-
 
 
         //初始化子表
@@ -1477,17 +1728,6 @@
             //获取filterform内数据
             let filter = '';
 
-            // //申请日期过滤
-            // let borrowDateB = $('#filterForm-borrowDateB').val();
-            // let borrowDateE = $('#filterForm-borrowDateE').val();
-
-            // if (borrowDateB) {
-            //     filter = filter + ' and borrowDate>="' + borrowDateB + '"'
-            // }
-
-            // if (borrowDateE) {
-            //     filter = filter + ' and borrowDate<="' + borrowDateE + '"'
-            // }
 
             //制单日期过滤
             let makeDateB = $('#filterForm-makeDateB').val();
@@ -2120,6 +2360,106 @@
             saveTransferBill();
         })
 
+        //批量导出按钮
+        $('#batchExportBtn').click(async function () {
+            $('#exportModal').modal('show')
+        })
+
+        //执行批量导出按钮
+        $('#doExportBtn').click(async function () {
+
+            let titleTextArr = []
+            let titleValueArr = []
+
+            //主表字段选择
+            $('#exportModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+            //子表字段选择
+            $('#exportSubModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+
+
+            exportData = await getDataBySql({
+                sql: 'transferBillsExportSql',
+                params: {
+                    filter: mainTableFilter
+                }
+            })
+            console.log('exportData', exportData);
+
+            let tableArr = []
+
+            tableArr.push(titleTextArr)
+
+            if (exportData.length > 0) {
+                for (let i = 0; i < exportData.length; i++) {
+                    let row = []
+                    for (const p in exportData[i]) {
+                        if (titleValueArr.includes(p)) {
+                            row.push(exportData[i][p])
+                        }
+                    }
+                    tableArr.push(row)
+                }
+            }
+
+            console.log('tableArr', tableArr);
+
+
+
+            var sheet = XLSX.utils.aoa_to_sheet(tableArr);
+            openDownloadDialog(sheet2blob(
+                sheet), '调拨单.xlsx');
+        })
+
+        //批量导入按钮
+        $('#batchImportBtn').click(function () {
+            selectFile()
+        })
+
+        //数据模板按钮
+        $('#importModelBtn').click(function () {
+            var aoa = [
+                [
+                    '调拨单号',
+                    '调拨日期',
+                    '拨出仓库编号',
+                    '拨出仓库',
+                    '拨入仓库编号',
+                    '拨入仓库',
+                    '经手人',
+                    '制单人',
+                    '审核人',
+                    '单据备注',
+                    '行号',
+                    '产品编号',
+                    '产品名称',
+                    '单位',
+                    '数量',
+                    '子表备注'
+                ],
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '调拨单模板.xlsx');
+        })
+
         //初始化过滤器日期组
         loadDatePickers({
             elementIds: [
@@ -2137,32 +2477,6 @@
         })
 
 
-        // //初始化组件
-        // loadDatePicker({
-        //     elementId: "rp_transfersubbillsForm-productYear",
-        //     params: {
-        //         startView: 4,
-        //         minView: 4,
-        //         format: 'yyyy'
-        //     }
-        // })
-
-        // //初始化组件
-        // loadDatePicker({
-        //     elementId: "rp_transfersubbillsForm-productMonth",
-        //     params: {
-        //         startView: 3,
-        //         minView: 3,
-        //         format: 'mm'
-        //     }
-        // })
-
-
-
-        // $("#msgSwitch").bootstrapSwitch({
-        //     onText: "是",
-        //     offText: "否"
-        // });
 
 
         //初始化selector
@@ -2177,16 +2491,7 @@
 
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transferbillsForm-customerArea',
-        //     sqlParams: {
-        //         sql: 'getRegionSelector',
-        //         // params: {
-        //         //     filter: 'mername like "%宁波%"'
-        //         // }
-        //     },
-        //     // initValue:'中国,北京'
-        // })
+
 
         loadBootStrapSelector({
             elementId: 'rp_transferbillsForm-operator',
@@ -2215,16 +2520,7 @@
             },
         })
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transferbillsForm-isInland',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="国内外"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
+
 
         loadBootStrapSelector({
             elementId: 'rp_transferbillsForm-customerBelongShort',
@@ -2271,58 +2567,6 @@
         })
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-origin',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="原产地"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
-
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-productBelong',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="产品归属"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-isRework',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-urgent',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_transfersubbillsForm-inWarranty',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
 
 
 
@@ -2332,8 +2576,8 @@
         //仓库选择修改事件
         addOutWarehouseListener();
 
-        // //保固期计算事件
-        // addInWarrantyListener();
+        //添加文件监听事件
+        addFileReaderListener()
 
 
 

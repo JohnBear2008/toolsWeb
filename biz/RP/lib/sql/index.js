@@ -155,7 +155,7 @@ const updateBorrowStatus = "update `rp_borrowsubbills` set status = case when nu
 const borrowBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.borrowBillId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.num,tb.returnNum,(tb.num-tb.returnNum) as unReturnNum,tb.status as subStatus,tb.remark AS subRemark FROM `rp_borrowbills` ta LEFT JOIN `rp_borrowsubbills` tb ON ta.borrowBillId = tb.borrowBillId ) A"
 
 //还货单导出sql
-const returnBillsExportSql="SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.returnBillId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.borrowBillId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.num,tb.status as subStatus,tb.remark AS subRemark FROM `rp_returnbills` ta LEFT JOIN `rp_returnsubbills` tb ON ta.returnBillId = tb.returnBillId ) A"
+const returnBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.returnBillId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.borrowBillId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.num,tb.status as subStatus,tb.remark AS subRemark FROM `rp_returnbills` ta LEFT JOIN `rp_returnsubbills` tb ON ta.returnBillId = tb.returnBillId ) A"
 
 //入库单导出sql
 const inBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.billId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.scrapStatus,tb.num,tb.remark AS subRemark FROM `rp_inbills` ta LEFT JOIN `rp_insubbills` tb ON ta.billId = tb.billId ) A"
@@ -163,7 +163,8 @@ const inBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.billId,t
 //出库单导出sql
 const outBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.billId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.num,tb.remark AS subRemark FROM `rp_outbills` ta LEFT JOIN `rp_outsubbills` tb ON ta.billId = tb.billId ) A"
 
-
+//调拨单导出sql
+const transferBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.transferBillId,ta.transferDate,ta.outWarehouseName,ta.inWarehouseName,ta.operator,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.unit,tb.num,tb.remark AS subRemark FROM `rp_transferbills` ta LEFT JOIN `rp_transfersubbills` tb ON ta.transferBillId = tb.transferBillId ) A"
 /**
  *更具传入参数创建执行sql语句
  *

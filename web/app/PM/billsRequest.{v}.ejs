@@ -25,10 +25,11 @@
 
 
 <!-- 导入foil 库 -->
-<script type="text/javascript" src='/js/foil/yjClient.common.js'></script>
-<script type="text/javascript" src='/js/foil/yjClient.remote.js'></script>
+<!-- <script type="text/javascript" src='/js/foil/yjClient.common.js'></script>
+<script type="text/javascript" src='/js/foil/yjClient.remote.js'></script> -->
 
-
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 <!-- 定义html元素 -->
 <div class="rpContent">
@@ -52,21 +53,30 @@
 
             <div class="panel panel-default" id='mainTablePanel'>
                 <div class="panel-heading">
-                    <div style="float:left;width:300px;">
-                        <div class="input-group">
-                            <span class="input-group-addon">申请人</span>
-                            <input id="maker" type="text" class="form-control" placeholder="输入申请人查询">
+
+                    <div style="float: left;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">过滤</button>
+                            <button type="button" id="btnFilterUndone" class="btn btn-default">未完成</button>
+                            <button type="button" id="btnFilterAll" class="btn btn-default">全部</button>
                         </div>
                     </div>
-                    <div style="float:left;" ">
-                        <button type=" button" class="btn btn-info" id="getRequestBtn">查询
-                        </button>
+
+                    <div style="float: left;margin-left: 25px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">功能</button>
+                            <button type=" button" class="btn btn-info" id="newRequestBtn">新增
+                            </button>
+
+                        </div>
+
                     </div>
 
-                    <div style="float:right;" ">
-                        <button type=" button" class="btn btn-warning" id="newRequestBtn">新增
-                        </button>
+                    <div style="float: right;">
+
+                        <a href="/app/PM/workCenter"><button class="btn btn-success">个人中心</button></a>
                     </div>
+
                     <div style="clear:both"></div>
                 </div>
                 <div class="panel-body">
@@ -80,6 +90,7 @@
                                 <th>申请人</th>
                                 <th>申请时间</th>
                                 <th>单据状态</th>
+                                <th>反馈</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -279,7 +290,7 @@
 
                                     <label class="col-sm-1 control-label" for="ppm_bills_requestForm-maker">申请人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="ppm_bills_requestForm-maker" type="text">
+                                        <p class="form-control-static" id="ppm_bills_requestForm-maker"></p>
                                     </div>
                                 </div>
 
@@ -344,6 +355,22 @@
 
     const loadBillMainTable = async () => {
 
+        //r-显示过滤模式
+        switch (true) {
+            case mainTableFilter === "maker='" + sessionName + "' and ( status='待审核' or status='审核驳回')":
+                $('#btnFilterUndone').addClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+            case mainTableFilter === "maker='" + sessionName + "'":
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterAll').addClass('active');
+                break;
+            default:
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+        }
+
         //c-检查申请人
         if (!mainTableFilter) {
             return
@@ -374,9 +401,24 @@
                     data: 'makeDate',
                 }, {
                     data: 'status',
+                }, {
+                    data: 'feedBack',
                 }]
             }
         })
+
+        //清空选项值
+        $('.dataTables_filter input').val('')
+
+        //自定义样式调整
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'size': 45
+        });
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'placeholder': '可用表属性过滤搜索'
+        });
 
 
         //解绑原事件
@@ -431,6 +473,9 @@
 
     $(document).ready(function () {
 
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
+
 
         //定义主表全局变量临时数据对象
         mainTableData = {};
@@ -438,24 +483,33 @@
         //过滤器
         mainTableFilter = '';
 
+        let undone = getQueryString("undone");
+        switch (undone) {
+            case "reject":
+                mainTableFilter = "maker ='" + sessionName + "' AND status='审核驳回'"
+                break;
+            default:
+                mainTableFilter = "maker='" + sessionName + "' and ( status='待审核' or status='审核驳回')";
+                break;
+        }
 
+        //加载主表
+        loadBillMainTable()
 
+        //过滤 未完成按钮
+        $('#btnFilterUndone').click(function () {
 
-        //查询按钮
-        $('#getRequestBtn').click(function () {
-            //c-检查申请人
-            let maker = $('#maker').val()
-            if (!maker) {
-                alert('请输入申请人再查找!')
-                return
-            }
-
-            mainTableFilter = "maker='" + maker + "'"
-
+            mainTableFilter = "maker='" + sessionName + "' and ( status='待审核' or status='审核驳回')"
             //r-重载主表
             loadBillMainTable()
+        })
 
+        //过滤 全部按钮
+        $('#btnFilterAll').click(function () {
 
+            mainTableFilter = "maker='" + sessionName + "'"
+            //r-重载主表
+            loadBillMainTable()
         })
 
         //新增按钮
@@ -474,6 +528,9 @@
             $("#ppm_bills_requestForm-billClass").selectpicker('val', '量产');
             $("#ppm_bills_requestForm-orderFromDep").selectpicker('val', '其他部门');
             $("#ppm_bills_requestForm-applyDate").val(currentDate());
+            $("#ppm_bills_requestForm-limitDate").val(getIntervalDate(currentDate(), 3));
+
+            getIntervalDate
 
             //r-部件显示控制
             $('#uploadToolDiv').show()
@@ -550,15 +607,20 @@
         $('#submitRequestBtn').click(async function () {
 
             //c-检查必填项
+            if (!$('#ppm_bills_requestForm-modelD option:selected').val() && !$(
+                    '#ppm_bills_requestForm-modelH option:selected').val()) {
+                alert('系统DSP,系统HMI至少选一项,请检查')
+                return
+            }
+
+
+
             if (!$("#ppm_bills_requestForm-topic").val()) {
                 alert('修改主题必填')
                 return
             }
 
-            if (!$("#ppm_bills_requestForm-maker").val()) {
-                alert('申请人必填')
-                return
-            }
+
 
             //c-检查状态
             let status = $('#ppm_bills_requestForm-status').text()
@@ -587,8 +649,8 @@
 
             requestBillData.data[0].status = '待审核'
 
+            requestBillData.data[0].maker = sessionName
             requestBillData.data[0].makeDate = currentDate()
-
             requestBillData.data[0].feedBack = ''
 
 
@@ -605,8 +667,8 @@
             }
 
             //r-重载表格
-            $('#maker').val(requestBillData.data[0].maker)
-            $('#getRequestBtn').click()
+            loadBillMainTable()
+
 
             //r-关闭modal
             $('#ppm_bills_requestModal').modal('hide');
@@ -721,13 +783,6 @@
                 sql: 'getStaffSelector'
             },
         })
-
-
-
-
-
-
-
 
 
         // 关闭事件重置选中datatable选中,避免显示错误

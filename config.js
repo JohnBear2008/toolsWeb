@@ -78,14 +78,14 @@ var config = {
         //        loginTypes: ["mobilePhone"],
         //        notNeedLogin_urls: []
         notNeedLogin_urls: [
-            "/system.files.upload/",
-            "/system.files/",
-            "/app/PM/lib/ajaxGet",
-            "/biz/PM/lib/ajaxGet",
-            "/app/PM/lib/ajaxPost",
-            "/biz/PM/lib/ajaxPost/",
+            // "/system.files.upload/",
+            // "/system.files/",
+            // "/app/PM/lib/ajaxGet",
+            // "/biz/PM/lib/ajaxGet",
+            // "/app/PM/lib/ajaxPost",
+            // "/biz/PM/lib/ajaxPost/",
             "/app/PM/linkPage",
-            "/app/PM/billsRequest"
+            // "/app/PM/billsRequest"
         ],
         // bodyParser: {
         //     urlencoded: {

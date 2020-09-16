@@ -48,6 +48,9 @@ const currentDate = () => {
     return clock;
 }
 
+
+
+
 /**
  *格式化日期函数
  *
@@ -1612,4 +1615,17 @@ const getQueryString = (name) => {
     var r = window.location.search.substr(1).match(reg);
     if (r) return unescape(r[2]);
     return null;
+}
+
+//获取间隔天数日期
+const getIntervalDate = (
+    date, //基准日期
+    dayNum //间隔天数
+) => {
+
+    let oldDate = new Date(date);
+    let milliseconds = oldDate.getTime() + 1000 * 60 * 60 * 24 * dayNum;
+    let newDate = dateFormat(new Date(milliseconds), "yyyy-MM-dd")
+    console.log('newDate', newDate);
+    return newDate;
 }

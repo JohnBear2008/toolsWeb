@@ -386,6 +386,20 @@
             }
         })
 
+        //清空选项值
+        $('.dataTables_filter input').val('')
+
+        //自定义样式调整
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'size': 45
+        });
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'placeholder': '可用表属性过滤搜索'
+        });
+
+
 
         //解绑原事件
         $('#ppm_bills_request tbody').unbind();
@@ -393,8 +407,6 @@
 
         //d-定义主表双击事件
         $('#ppm_bills_request tbody').on('dblclick', 'tr', async function () {
-
-
             //设定选中
             let table = $('#ppm_bills_request').DataTable();
             table.$('tr.selected').removeClass('selected');
@@ -437,9 +449,7 @@
         //过滤器
         mainTableFilter = '';
 
-
         var undone = getQueryString("undone");
-
 
         switch (undone) {
             case "unAudit":
@@ -730,6 +740,17 @@
 
             //d-生成计划单
 
+            //d-获取计划单fileJson
+            let newFileArr = []
+            let oldFileArr = JSON.parse(getFilesJson())
+            for (const n of oldFileArr) {
+                newFileArr.push({
+                    fileName: n.name,
+                    fileKey: n.key
+                })
+            }
+            let newFileJson = JSON.stringify(newFileArr)
+
             let PLDData = {
                 tableId: 'ppm_bills_plan',
                 data: [{
@@ -755,7 +776,7 @@
                     "maker": staffName,
                     "makeDate": currentDate(),
                     "version": 0,
-                    "files": getFilesJson(),
+                    "files": newFileJson,
                     "auditor": staffName,
                     "auditDate": currentDate(),
                     "auditResult": 1,

@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
 
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
@@ -32,12 +33,11 @@
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
 
-
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
 
 <!-- 定义html元素 -->
 <div class="rpContent">
-
-
 
 
     <div class="row clearfix">
@@ -54,6 +54,17 @@
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+                    <!-- excel -->
+                    <div style="float: left; margin-left: 15px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">excel</button>
+                            <button type="button" id="batchImportBtn" class="btn btn-default">批量导入</button>
+                            <button type="button" id="batchExportBtn" class="btn btn-default">批量导出</button>
+                            <button type="button" id="importModelBtn" class="btn btn-default">数据模板</button>
+                            <input type="file" id="file" style="display:none;"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
@@ -332,8 +343,6 @@
             </div>
         </div>
     </div> -->
-
-
 
 
 
@@ -2109,6 +2118,35 @@
 
             //do-保存表单
             saveTransferBill();
+        })
+
+        //数据模板按钮
+        $('#importModelBtn').click(function () {
+            var aoa = [
+                [
+                    '单据编号',
+                    '客户编号',
+                    '客户简称',
+                    '客户名称',
+                    '联系人',
+                    '移动电话',
+                    '工作电话',
+                    '经手人',
+                    '制单人',
+                    '审核人',
+                    '备注',
+                    '行号',
+                    '产品编号',
+                    '产品名称',
+                    '仓库编号',
+                    '仓库名称',
+                    '单位',
+                    '数量',
+                    '子表备注'
+                ],
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '调拨单模板.xlsx');
         })
 
         //初始化过滤器日期组
