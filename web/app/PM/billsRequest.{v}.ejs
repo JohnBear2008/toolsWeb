@@ -57,7 +57,7 @@
                     <div style="float: left;">
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
-                            <button type="button" id="btnFilterUndone" class="btn btn-default">未完成</button>
+                            <button type="button" id="btnFilterUnaudit" class="btn btn-default">未审核</button>
                             <button type="button" id="btnFilterAll" class="btn btn-default">全部</button>
                         </div>
                     </div>
@@ -357,16 +357,16 @@
 
         //r-显示过滤模式
         switch (true) {
-            case mainTableFilter === "maker='" + sessionName + "' and ( status='待审核' or status='审核驳回')":
-                $('#btnFilterUndone').addClass('active');
+            case mainTableFilter === "maker='" + sessionName + "' and status='待审核'":
+                $('#btnFilterUnaudit').addClass('active');
                 $('#btnFilterAll').removeClass('active');
                 break;
             case mainTableFilter === "maker='" + sessionName + "'":
-                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterUnaudit').removeClass('active');
                 $('#btnFilterAll').addClass('active');
                 break;
             default:
-                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterUnaudit').removeClass('active');
                 $('#btnFilterAll').removeClass('active');
                 break;
         }
@@ -497,9 +497,9 @@
         loadBillMainTable()
 
         //过滤 未完成按钮
-        $('#btnFilterUndone').click(function () {
+        $('#btnFilterUnaudit').click(function () {
 
-            mainTableFilter = "maker='" + sessionName + "' and ( status='待审核' or status='审核驳回')"
+            mainTableFilter = "maker='" + sessionName + "' and status='待审核'"
             //r-重载主表
             loadBillMainTable()
         })
@@ -526,7 +526,7 @@
             $("#ppm_bills_requestForm-PLDArea").selectpicker('val', '大港');
             $("#ppm_bills_requestForm-orderFrom").selectpicker('val', '邮件');
             $("#ppm_bills_requestForm-billClass").selectpicker('val', '量产');
-            $("#ppm_bills_requestForm-orderFromDep").selectpicker('val', '其他部门');
+            $("#ppm_bills_requestForm-orderFromDep").selectpicker('val', '客户订单');
             $("#ppm_bills_requestForm-applyDate").val(currentDate());
             $("#ppm_bills_requestForm-limitDate").val(getIntervalDate(currentDate(), 3));
 
