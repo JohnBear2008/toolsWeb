@@ -267,7 +267,7 @@
 
                                     <label class="col-sm-1 control-label" for="ppm_bills_requestForm-maker">申请人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="ppm_bills_requestForm-maker" type="text">
+                                        <p class="form-control-static" id="ppm_bills_requestForm-maker"></p>
                                     </div>
                                 </div>
 
@@ -617,6 +617,11 @@
             let auditor = $('#ppm_bills_requestForm-auditor option:selected').val();
             if (sessionName !== auditor) {
                 alert('您不是此需求单的审核人,无法审核!')
+                return
+            }
+
+            //c-审核再确认
+            if (!confirm('审核后此单由您负责处理,将自动生成计划单,再次确认!')) {
                 return
             }
 

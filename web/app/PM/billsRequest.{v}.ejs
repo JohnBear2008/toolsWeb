@@ -613,10 +613,13 @@
                 return
             }
 
-
-
             if (!$("#ppm_bills_requestForm-topic").val()) {
                 alert('修改主题必填')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-auditor option:selected').val()) {
+                alert('审核人必填,如不确定,可用系统指定功能,请检查!')
                 return
             }
 
