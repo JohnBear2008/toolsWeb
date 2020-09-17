@@ -187,17 +187,6 @@
 
 
 <script>
-
-
-
-
-
-
-
-
-
-
-
 	//函数:详情按钮详情页自动填写内容------------------------
 	function Fun_winDetailInit(dataSelect) {
 
@@ -212,7 +201,6 @@
 				"topic",
 				"PGEMaker",
 				"MHEName",
-
 				//				"modelD",
 				//				"modelH",
 				"applyDate",
@@ -234,7 +222,6 @@
 				"CTRName",
 				"PGEMaker",
 				"auditDate",
-
 				//				"modelD",
 				//				"modelH",
 				"limitDate",
@@ -324,23 +311,34 @@
 
 
 		if (trackBPID != null) {
-			var tableSQL = { "SQL": "SQLTableBillsTrack", "filter": "BPID ='" + trackBPID + "'" };
+			var tableSQL = {
+				"SQL": "SQLTableBillsTrack",
+				"filter": "BPID ='" + trackBPID + "'"
+			};
 		} else {
 
 
 
 			switch (trackType) {
 				case 'all':
-					var tableSQL = { "SQL": "SQLTableBillsTrack" };
+					var tableSQL = {
+						"SQL": "SQLTableBillsTrack"
+					};
 					$("#BTNFilterAll").addClass("active");
 					break;
 				case "delay":
-					var tableSQL = { "SQL": "SQLTableBillsTrack", "filter": "limitDate < emailDate" };
+					var tableSQL = {
+						"SQL": "SQLTableBillsTrack",
+						"filter": "limitDate < emailDate"
+					};
 					$("#BTNFilterDelay").addClass("active");
 
 					break;
 				default:
-					var tableSQL = { "SQL": "SQLTableBillsTrack", "filter": "taskStaffs like '%" + sessionName + "%' OR PGEMaker='" + sessionName + "'" };
+					var tableSQL = {
+						"SQL": "SQLTableBillsTrack",
+						"filter": "taskStaffs like '%" + sessionName + "%' OR PGEMaker='" + sessionName + "'"
+					};
 					$("#BTNFilterSimple").addClass("active");
 
 			}
@@ -348,19 +346,43 @@
 
 		const tableInfo = {
 			"tableID": "#billsTrackTable",
-			"columnsData": [
-				{ data: 'DBID', "visible": false },
-				{ data: 'BPID' },
-				{ data: 'version' },
-				{ data: 'CTRName' },
-				{ data: 'limitDate' },
-				{ data: 'PLDStatusText' },
-				{ data: 'BPTStatusText' },
-				{ data: 'taskNum' },
-				{ data: 'taskNumDone' },
-				{ data: 'FQCRequestText' },
-				{ data: 'FQCResultText' },
-				{ data: 'emailResultText' }
+			"columnsData": [{
+					data: 'DBID',
+					"visible": false
+				},
+				{
+					data: 'BPID'
+				},
+				{
+					data: 'version'
+				},
+				{
+					data: 'CTRName'
+				},
+				{
+					data: 'limitDate'
+				},
+				{
+					data: 'PLDStatusText'
+				},
+				{
+					data: 'BPTStatusText'
+				},
+				{
+					data: 'taskNum'
+				},
+				{
+					data: 'taskNumDone'
+				},
+				{
+					data: 'FQCRequestText'
+				},
+				{
+					data: 'FQCResultText'
+				},
+				{
+					data: 'emailResultText'
+				}
 			]
 		}
 
@@ -435,7 +457,10 @@
 		//删除按钮----------
 		$('#BTNStop').click(function () {
 
-			if (checkAuthority({ "SQL": "SQLGetAuthorities", "filter": "StaffName='" + sessionName + "'" }, "Track01")) {
+			if (checkAuthority({
+					"SQL": "SQLGetAuthorities",
+					"filter": "StaffName='" + sessionName + "'"
+				}, "Track01")) {
 				//-----
 
 
@@ -469,18 +494,16 @@
 							method: 'post',
 							url: '/app/PM/updBillStatus',
 							data: PLDUpdData,
-							success: function (data, textStatus) {
-							},
-							error: function (XMLHttpRequest, textStatus, errorThrown) { }
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
 						});
 
 						var ajax2 = $.ajax({
 							method: 'post',
 							url: '/app/PM/updBillStatus',
 							data: taskUpdData,
-							success: function (data, textStatus) {
-							},
-							error: function (XMLHttpRequest, textStatus, errorThrown) { }
+							success: function (data, textStatus) {},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {}
 						});
 
 
@@ -498,7 +521,7 @@
 									"DBTable": "ppm_bills_plan",
 									"BillIDName": "BPID",
 									"BillID": dataSelect.BPID,
-									"stopReason":'',
+									"stopReason": '',
 									"filter": "version =" + dataSelect.version
 								}
 							}
@@ -518,5 +541,4 @@
 
 
 	});
-
 </script>

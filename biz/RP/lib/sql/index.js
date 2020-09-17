@@ -165,6 +165,9 @@ const outBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.billId,
 
 //调拨单导出sql
 const transferBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.transferBillId,ta.transferDate,ta.outWarehouseName,ta.inWarehouseName,ta.operator,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.unit,tb.num,tb.remark AS subRemark FROM `rp_transferbills` ta LEFT JOIN `rp_transfersubbills` tb ON ta.transferBillId = tb.transferBillId ) A"
+
+//报废单导出sql
+const scrapBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.scrapBillId,ta.scrapDate,ta.scrapType,ta.operator,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.fromBillId,tb.productId,tb.productName,tb.productDescription,tb.unit,tb.num,tb.remark AS subRemark FROM `rp_scrapbills` ta LEFT JOIN `rp_scrapsubbills` tb ON ta.scrapBillId = tb.scrapBillId ) A"
 /**
  *更具传入参数创建执行sql语句
  *
