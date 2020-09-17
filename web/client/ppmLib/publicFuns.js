@@ -1369,7 +1369,25 @@ const uploadFiles = (files) => {
             console.log("file evt:" + JSON.stringify(evt));
 
             let filesLink = getSuccessFilesUrl(data);
-            $('#files').html(filesLink)
+            let oldlink = $('#files').html()
+            let newLink = oldlink + filesLink
+
+
+            $('#files').html(newLink)
+
+            $("#files").find("button").remove(); //先删除已有button
+
+            let ibtn = "<button type='button' class='btn btn-default btn-xs'>×</button>";
+            $("#files").find("a").after(ibtn);
+
+            $("#files :button").on('click', function () {
+                $(this).prev("a").remove();
+                $(this).prev("span").remove();
+                // $(this).next(";").remove();
+                $(this).remove();
+                console.log($('#files').html());
+            })
+
 
             //[服务器所在文件所在目录位置]一般为"http://119.23.216.181/RoboBlogs/Upload_File/default_show.png"
             // $('#summernote').summernote('insertImage',
@@ -1406,10 +1424,10 @@ const getSuccessFilesUrl = (obj) => {
         if (file.status === 'success') {
             if (obj.fields.desDir) {
                 filesLink = filesLink + '<a  href=' + "/system.files.download/" + obj.fields.desDir + "%2F" + file.key + ' download=' +
-                    file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
+                    file.fileRawName + '>' + '<span>' + file.fileRawName + ';</span></a>';
             } else {
                 filesLink = filesLink + '<a  href=' + "/system.files.download/" + file.key + ' download=' +
-                    file.fileRawName + '>' + '<span>' + file.fileRawName + '</span></a>' + ' ; ';
+                    file.fileRawName + '>' + '<span>' + file.fileRawName + ';</span></a>';
             }
         }
     }

@@ -216,22 +216,14 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">申请日期</label>
                                     <div class="col-sm-5">
-                                        <div class="input-group date form_date ">
-                                            <input id="ppm_bills_requestForm-applyDate" class="form-control " size="16"
-                                                type="text" value="" placeholder="申请日期" readonly>
-                                            <span class="input-group-addon"><span
-                                                    class="glyphicon glyphicon-calendar"></span></span>
-                                        </div>
+                                        <input id="ppm_bills_requestForm-applyDate" class="form-control " size="16"
+                                            type="text" value="" placeholder="申请日期" readonly>
                                     </div>
 
                                     <label class="col-sm-1 control-label">完成期限</label>
                                     <div class="col-sm-5">
-                                        <div class="input-group date form_date ">
-                                            <input id="ppm_bills_requestForm-limitDate" class="form-control " size="16"
-                                                type="text" value="" placeholder="完成期限" readonly>
-                                            <span class="input-group-addon"><span
-                                                    class="glyphicon glyphicon-calendar"></span></span>
-                                        </div>
+                                        <input id="ppm_bills_requestForm-limitDate" class="form-control " size="16"
+                                            type="text" value="" placeholder="完成期限" readonly>
                                     </div>
 
                                 </div>
@@ -548,10 +540,17 @@
             let modelDVal = $('#ppm_bills_requestForm-modelD option:selected').val()
             let modelHVal = $('#ppm_bills_requestForm-modelH option:selected').val()
 
-            if (!CTRNameVal && !MHENameVal && !modelDVal && !modelHVal) {
-                alert('客户,机型,系统DSP,系统HMI至少选则一项,请检查')
+            if (!CTRNameVal && !MHENameVal) {
+                alert('客户,机型至少选则一项,请检查')
                 return
             }
+
+            if (!modelDVal && !modelHVal) {
+                alert('系统DSP,系统HMI至少选则一项,请检查')
+                return
+            }
+
+
 
             let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
             let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
@@ -678,14 +677,24 @@
 
         })
 
-        //初始化过滤器日期组
+        //  初始化过滤器日期组
         loadDatePickers({
             elementIds: [
                 'ppm_bills_requestForm-applyDate',
                 'ppm_bills_requestForm-limitDate',
-
             ]
         })
+
+        // $('.form_date').datetimepicker({
+        // 	language: 'zh-CN',
+        // 	weekStart: 1,
+        // 	todayBtn: 1,
+        // 	autoclose: 1,
+        // 	todayHighlight: 1,
+        // 	startView: 2,
+        // 	minView: 2,
+        // 	forceParse: 0
+        // });
 
 
         //初始化selector
