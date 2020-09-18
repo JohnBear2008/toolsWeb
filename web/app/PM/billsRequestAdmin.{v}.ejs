@@ -53,10 +53,21 @@
                 <div class="panel-heading">
                     <div style="float: left;">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-primary">过滤</button>
-                            <button type="button" id="btnFilterUnAudit" class="btn btn-default">未审核</button>
+                            <button type="button" class="btn btn-primary" disabled>过滤</button>
+                            <button type="button" id="btnFilterRelated" class="btn btn-default">与我相关</button>
+                            <button type="button" id="btnFilterUndone" class="btn btn-default">未完结</button>
                             <button type="button" id="btnFilterAll" class="btn btn-default">全部</button>
                         </div>
+                    </div>
+
+                    <div style="float: left;margin-left: 25px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" disabled>功能</button>
+                            <button type=" button" class="btn btn-info" id="newRequestBtn">新增
+                            </button>
+
+                        </div>
+
                     </div>
                     <div style="clear:both"></div>
                 </div>
@@ -67,10 +78,10 @@
                                 <th>计划单号</th>
                                 <th>客户</th>
                                 <th width='300'>修改主题</th>
-                                <th>机型</th>
                                 <th>申请人</th>
                                 <th>申请时间</th>
                                 <th>审核人</th>
+                                <th>反馈</th>
                                 <th>单据状态</th>
                             </tr>
                         </thead>
@@ -279,7 +290,7 @@
                                 </div>
 
 
-                                <div class="form-group">
+                                <div class="form-group" id='feedBackRow'>
                                     <label class="col-sm-1 control-label text-warning"
                                         for="ppm_bills_requestForm-feedBack">反馈信息</label>
                                     <div class="col-sm-11">
@@ -290,7 +301,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label"></label>
                                     <div class="col-sm-5">
-                                        <button type="button" class="btn btn-warning" id="saveRequestBtn">修改
+                                        <button type="button" class="btn btn-warning" id="saveRequestBtn">保存
                                         </button>
                                         <button type="button" class="btn btn-success" id="auditRequestBtn">审核通过
                                         </button>
@@ -331,16 +342,24 @@
         //r-模式确定
         //显示过滤模式
         switch (true) {
-            case mainTableFilter === "status='待审核'":
-                $('#btnFilterUnAudit').addClass('active');
+            case mainTableFilter === "maker='" + sessionName + "' or auditor='" + sessionName + "'":
+                $('#btnFilterRelated').addClass('active');
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+            case mainTableFilter === "status<>'已完结'":
+                $('#btnFilterRelated').removeClass('active');
+                $('#btnFilterUndone').addClass('active');
                 $('#btnFilterAll').removeClass('active');
                 break;
             case mainTableFilter === '':
-                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterRelated').removeClass('active');
+                $('#btnFilterUndone').removeClass('active');
                 $('#btnFilterAll').addClass('active');
                 break;
             default:
-                $('#btnFilterUnAudit').removeClass('active');
+                $('#btnFilterRelated').removeClass('active');
+                $('#btnFilterUndone').removeClass('active');
                 $('#btnFilterAll').removeClass('active');
                 break;
         }
@@ -365,13 +384,13 @@
                 }, {
                     data: 'topic',
                 }, {
-                    data: 'MHEName',
-                }, {
                     data: 'maker',
                 }, {
                     data: 'makeDate',
                 }, {
                     data: 'auditor',
+                }, {
+                    data: 'feedBack',
                 }, {
                     data: 'status',
                 }]
@@ -424,6 +443,24 @@
                 $('#files').html(filesLink);
             }
 
+            //r-显示控制
+            $('#feedBackRow').show()
+
+            if (['待审核', '审核驳回', ''].includes(dataSelect.status)) {
+                $('#saveRequestBtn').show()
+            } else {
+                $('#saveRequestBtn').hide()
+            }
+
+
+            if (dataSelect.auditor === sessionName && dataSelect.status === '待审核') {
+                $('#auditRequestBtn').show()
+                $('#rejectRequestBtn').show()
+            } else {
+                $('#auditRequestBtn').hide()
+                $('#rejectRequestBtn').hide()
+            }
+
             //打开面板
             $('#ppm_bills_requestModal').modal('show');
 
@@ -456,24 +493,59 @@
 
         loadBillMainTable()
 
-        //按钮-过滤未审核
-        $('#btnFilterUnAudit').click(async function () {
+        //按钮-过滤与我相关
+        $('#btnFilterRelated').click(async function () {
 
-            // $('#btnFilterUnAudit').addClass('active');
-            // $('#btnFilterAll').removeClass('active');
+            mainTableFilter = "maker='" + sessionName + "' or auditor='" + sessionName + "'"
+            loadBillMainTable()
+        })
 
-            mainTableFilter = "status='待审核'"
+        //按钮-过滤未完结
+        $('#btnFilterUndone').click(async function () {
+
+            mainTableFilter = "status<>'已完结'"
             loadBillMainTable()
         })
 
         //按钮-过滤全部
         $('#btnFilterAll').click(async function () {
 
-            // $('#btnFilterUnAudit').removeClass('active');
-            // $('#btnFilterAll').addClass('active');
-
             mainTableFilter = ""
             loadBillMainTable()
+        })
+
+        //新增按钮
+        $('#newRequestBtn').click(function () {
+            //r-打开面板
+            $('#ppm_bills_requestModal').modal('show');
+
+            //d-清空表单
+            clearFormInputs({
+                formId: 'ppm_bills_requestForm'
+            })
+
+            //r-设定初始值
+            $("#ppm_bills_requestForm-PLDArea").selectpicker('val', '大港');
+            $("#ppm_bills_requestForm-orderFrom").selectpicker('val', '邮件');
+            $("#ppm_bills_requestForm-billClass").selectpicker('val', '量产');
+            $("#ppm_bills_requestForm-orderFromDep").selectpicker('val', '客户订单');
+            $("#ppm_bills_requestForm-applyDate").val(currentDate());
+            $("#ppm_bills_requestForm-limitDate").val(getIntervalDate(currentDate(), 3));
+
+
+
+            //r-部件显示控制
+
+            $('#feedBackRow').hide()
+
+            $('#uploadToolDiv').show()
+            $('#getAuditorBtn').show()
+            $('#saveRequestBtn').show()
+            $('#auditRequestBtn').hide()
+            $('#rejectRequestBtn').hide()
+
+
+
         })
 
         //获取审核人按钮
@@ -542,10 +614,20 @@
 
             $("#ppm_bills_requestForm-auditor").selectpicker('val', auditor);
 
+
+
         })
 
         //提交按钮
         $('#saveRequestBtn').click(async function () {
+
+            //c-账号检测
+            let table = $('#ppm_bills_request').DataTable();
+            let dataSelect = table.row('.selected').data();
+            if (sessionName !== dataSelect.maker && sessionName !== dataSelect.auditor) {
+                alert('当前账号非此单申请人或审核人,无法修改!')
+                return
+            }
 
             //c-检查必填项
             if (!$('#ppm_bills_requestForm-modelD option:selected').val() && !$(
@@ -572,6 +654,13 @@
                 return
             }
 
+            //c-重置审核状态确认
+            if (status === '审核驳回') {
+                if (!confirm('该申请单已经审核驳回,保存将重新提交审核,再次确认!')) {
+                    return
+                }
+            }
+
 
             //d-获取表单数据
 
@@ -585,11 +674,25 @@
             let filesArr = getFilesJson();
             requestBillData.data[0].files = filesArr;
 
-            //d-补充数据
-            if (!requestBillData.data[0].status) {
+            //d-调整数据
+
+            if (!requestBillData.data[0].DBID) {
+                delete requestBillData.data[0].DBID
+            }
+
+            if (!requestBillData.data[0].maker) {
+                requestBillData.data[0].maker = sessionName
+            }
+
+            requestBillData.data[0].makeDate = currentDate()
+
+
+
+            if (!requestBillData.data[0].status || requestBillData.data[0].status === '审核驳回') {
+                requestBillData.data[0].feedBack = ''
                 requestBillData.data[0].status = '待审核'
             }
-            requestBillData.data[0].makeDate = currentDate()
+
 
 
             //d-保存单据
