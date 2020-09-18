@@ -22,6 +22,9 @@
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
 
+<!-- 导入js库 -->
+<script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 
@@ -2765,12 +2768,37 @@
 
 		//按钮-方案保存
 
-		$('#BTNBPTSave').click(function () {
+		$('#BTNBPTSave').click(async function () {
 
 			if (checkAuthority({
 					"SQL": "SQLGetAuthorities",
 					"filter": "StaffName='" + sessionName + "'"
 				}, "BPT01")) {
+
+
+				//d-更新需求单状态
+
+				let requestBill = {
+					BPID: $('#BPTID').val(),
+					status: '进行中'
+				}
+
+				let requestRs = await postDBData({
+					sql: 'update',
+					params: {
+						tableId: 'ppm_bills_request',
+						data: [requestBill],
+						key: 'BPID'
+					}
+				})
+
+				if (!requestRs) {
+					console.log('更新需求单状态错误', requestRs);
+				}
+
+
+
+
 
 				if (sessionName != $("#PGEMaker").val()) {
 					swal("当前账号非指定方案人,不允许保存方案!");
@@ -2905,8 +2933,10 @@
 										let i = {
 											confirmMsg: '方案单已保存,是否发送钉钉审核提醒消息?',
 											DDMsg: {
-												at: $('#auditor option:selected').text(),
-												msg: "@" + $('#auditor option:selected')
+												at: $('#auditor option:selected')
+													.text(),
+												msg: "@" + $(
+														'#auditor option:selected')
 													.text() + "," + CTRName +
 													"方案单已完成,请登陆系统审核!"
 											}

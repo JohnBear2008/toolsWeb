@@ -22,6 +22,9 @@
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
 
+<!-- 导入js库 -->
+<script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 
@@ -1534,12 +1537,34 @@
 
 				//按钮-发送邮件
 
-				$('#BTNModelEmailSend').click(function () {
+				$('#BTNModelEmailSend').click(async function () {
 
 
 					if ($('#PBHAuditDate').text() === "") {
 						swal('该发布单未审核,不允许发送系统邮件!')
 					} else {
+
+						//d-更新需求单状态
+
+						let requestBill = {
+							BPID: $('#BPTID').val(),
+							status: '已完结'
+						}
+
+						let requestRs = await postDBData({
+							sql: 'update',
+							params: {
+								tableId: 'ppm_bills_request',
+								data: [requestBill],
+								key: 'BPID'
+							}
+						})
+
+						if (!requestRs) {
+							console.log('更新需求单状态错误', requestRs);
+						}
+
+
 
 						var files = [];
 
@@ -1604,7 +1629,8 @@
 											DDMsg: {
 												at: '"' + $('#PGEMaker').text() +
 													'"',
-												msg: '@' + $('#PGEMaker').text() +
+												msg: '@' + $('#PGEMaker')
+													.text() +
 													',客户:' + $('#PBHCTRName')
 													.text() +
 													',该客户计划单系统邮件已发送,请知悉!'
@@ -1639,10 +1665,31 @@
 
 
 				//按钮-邮件自定义
-				$('#BTNSendEmailDiv').click(function () {
+				$('#BTNSendEmailDiv').click(async function () {
 
 					var msg = confirm("点击自定义邮件后,将跳转至邮件客户端,发布单默认邮件已发送,是否继续?");
 					if (msg == true) {
+
+						//d-更新需求单状态
+
+						let requestBill = {
+							BPID: $('#BPTID').val(),
+							status: '已完结'
+						}
+
+						let requestRs = await postDBData({
+							sql: 'update',
+							params: {
+								tableId: 'ppm_bills_request',
+								data: [requestBill],
+								key: 'BPID'
+							}
+						})
+
+						if (!requestRs) {
+							console.log('更新需求单状态错误', requestRs);
+						}
+
 
 
 						var emailData = {
