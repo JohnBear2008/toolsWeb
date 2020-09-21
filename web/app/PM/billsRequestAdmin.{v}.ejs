@@ -486,6 +486,7 @@
                 break;
 
             default:
+                mainTableFilter = "maker='" + sessionName + "' or auditor='" + sessionName + "'"
                 break;
         }
 
@@ -624,9 +625,11 @@
             //c-账号检测
             let table = $('#ppm_bills_request').DataTable();
             let dataSelect = table.row('.selected').data();
-            if (sessionName !== dataSelect.maker && sessionName !== dataSelect.auditor) {
-                alert('当前账号非此单申请人或审核人,无法修改!')
-                return
+            if (dataSelect) {
+                if (sessionName !== dataSelect.maker && sessionName !== dataSelect.auditor) {
+                    alert('当前账号非此单申请人或审核人,无法修改!')
+                    return
+                }
             }
 
             //c-检查必填项
@@ -1078,7 +1081,7 @@
             sqlParams: {
                 sql: 'getSytemSelector',
                 params: {
-                    filter: 'belong="DSP"'
+                    filter: 'belong="DSP" and sort="APP"'
                 }
             },
         })
@@ -1088,7 +1091,7 @@
             sqlParams: {
                 sql: 'getSytemSelector',
                 params: {
-                    filter: 'belong="HMI"'
+                    filter: 'belong="HMI"  and sort="APP"'
                 }
             },
         })
