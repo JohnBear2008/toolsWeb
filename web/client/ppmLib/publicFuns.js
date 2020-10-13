@@ -512,14 +512,14 @@ const loadBootStrapSelector = async ({
         url: '/app/PM/lib/ajaxGet',
         data: sqlParams,
         success: function (data) {
-            // console.log('loadBootStrapSelector data',data);
+            // console.log('loadBootStrapSelector data', data);
             try {
 
                 //r-添加option
                 $('#' + elementId).append($('<option value="">未选择</option>'));
 
                 for (const n of data) {
-                    $('#' + elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+                    $('#' + elementId).append($('<option  data-tokens=' + n.token + ' value="' + n.value + '">' + n.option + '</option>'));
                 }
                 if (initValue) {
                     $('#' + elementId).selectpicker('val', initValue);

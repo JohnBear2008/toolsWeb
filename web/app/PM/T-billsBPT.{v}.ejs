@@ -2748,8 +2748,7 @@
 		//按钮-表单审核通过按钮
 		//按钮-表单审核通过按钮
 		$('#BTNBPTAuditYes').click(function () {
-
-
+			// alert(sessionName+'&&'+$('#auditor option:selected').text())
 
 
 			if (sessionName == $('#auditor option:selected').text()) {
@@ -2758,9 +2757,11 @@
 				// }
 				let modifyType = $('input:radio[name="modifyType"]:checked').val();
 				let dataSelect = table.row('.selected').data();
+			
 
 				switch (modifyType) {
 					case '1':
+					case '4':
 
 						let tableTask = $('#billsTaskTable').DataTable();
 						let TaskNum = (tableTask.page.info()).recordsTotal; //总任务数
@@ -2772,11 +2773,6 @@
 							var CTRNameDBID = $('#CTRName option:selected').val();
 							var MHENameDBID = $('#MHEName option:selected').val();
 
-							//						var modelDDBID=$('#modelD option:selected').val();
-							//						var modelHDBID=$('#modelH option:selected').val();
-							//						 var tableTask = $('#billsTaskTable').DataTable();
-							//						 var TaskNum = (tableTask.page.info()).recordsTotal;//总任务数
-							//						 swal("TaskNum:"+TaskNum);
 
 							let taskStaffs = "";
 							let taskModels = "";
@@ -2816,47 +2812,6 @@
 							taskStaffs = "(" + taskStaffs + ")";
 							taskModels = "(" + taskModels + ")";
 
-
-							// let SQLGetFQCRequest =
-							// 	"SELECT GREATEST(ta.FQCRequest,tb.FQCRequest,tc.maxFQCRequest,td.maxFQCRequest) AS FQCRequestResult FROM " +
-							// 	"(SELECT FQCRequest FROM `ppm_customers` WHERE DBID=" + CTRNameDBID +
-							// 	") ta," +
-							// 	"(SELECT FQCRequest FROM `ppm_machines` WHERE DBID=" + MHENameDBID +
-							// 	") tb," +
-							// 	"(SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_systems` WHERE val IN " +
-							// 	taskModels + ")  tc," +
-							// 	"(SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_staffs` WHERE staffName IN " +
-							// 	taskStaffs + ") td";
-
-
-							// $.ajax({
-							// 	method: 'get',
-							// 	url: '/app/PM/getSQLDBData',
-							// 	data: {
-							// 		"SQL": SQLGetFQCRequest
-							// 	},
-							// 	success: function (data) {
-							// 		//					      swal("成功数据:" + JSON.stringify(data));
-
-
-
-
-							// 	},
-							// 	error: function (err) {
-							// 		swal("失败数据:" + JSON.stringify(err));
-							// 	}
-							// });
-
-
-							// if (data[0].FQCRequestResult == 1) {
-							// 			var FQCRequest = 1;
-							// 			var FQCRequestText = "有";
-							// 			var FQCStaff = "刘梦";
-							// 		} else {
-							// 			var FQCRequest = 0;
-							// 			var FQCRequestText = "无";
-							// 			var FQCStaff = "";
-							// 		}
 
 							let PLDUpdData = {
 								"DBTable": "ppm_bills_plan_t",
