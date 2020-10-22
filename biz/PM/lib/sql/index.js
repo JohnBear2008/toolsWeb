@@ -30,6 +30,10 @@ const getCodeAuditor = "select * from `ppm_codeauditrule`"
 //计划单数量
 const getPLDNum = "SELECT COUNT(1) AS PLDNum FROM `ppm_bills_plan` WHERE TO_DAYS(makeDate) = TO_DAYS(NOW()) AND version=0"
 
+
+//代码审核导出sql
+const sqlCodeAuditExport = "select ta.*,tb.taskStaff from ppm_bills_codeaudit ta left join ppm_bills_task tb on ta.BTID=tb.BTID and ta.BTVersion=tb.BTVersion"
+
 /**
  *更具传入参数创建执行sql语句
  *
