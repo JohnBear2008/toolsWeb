@@ -63,7 +63,7 @@ module.exports = function (sender) {
 
 
 		var emailADRS = sender.req.query.emailADRS;
-		var emailCopyADRS = sender.req.query.emailCopyADRS + ',TM.NB-软体公用<servicetech@techmation.com.cn>';
+		var emailCopyADRS = sender.req.query.emailCopyADRS + ',TM.NB-工程单位<servicetech@techmation.com.cn>';
 		var emailTitle = sender.req.query.emailTitle;
 		var emailFiles = JSON.parse(sender.req.query.emailFiles);
 		var emailContent = sender.req.query.emailContent;
@@ -108,7 +108,7 @@ module.exports = function (sender) {
 
 			let mailSign = '<br />Best Regards' +
 				'<hr>' +
-				'TM.NB-软体公用' + '<br />' +
+				'TM.NB-工程单位' + '<br />' +
 				'Application Class' + '<br />' +
 				'MAIL: servicetech@techmation.com.cn' + '<br />' +
 				'负责人:' + signName + '<br />' +

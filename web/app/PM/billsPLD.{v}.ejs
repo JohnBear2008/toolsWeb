@@ -246,8 +246,6 @@
 											<!--<button id="BTNFormClear" class="btn btn-warning" >清空选择</button>-->
 										</div>
 
-
-
 									</div>
 
 									<!-------------------------------------------------------------------------->
@@ -551,14 +549,18 @@
 				url: "/app/PM/getSQLDBData",
 				success: function (data) {
 
-					if (data[0].GPLDNum < 10) {
-						var Num = "0" + (data[0].GPLDNum + 1);
+					let billNumId = 0;
+
+					console.log('data[0].GPLDNum', data[0].GPLDNum);
+					if ((data[0].GPLDNum + 1) < 10) {
+						billNumId = "0" + (data[0].GPLDNum + 1);
 					} else {
-						var Num = data[0].GPLDNum + 1;
+						billNumId = data[0].GPLDNum + 1;
 					}
+					console.log('Num', billNumId);
 
 					console.log("back Task data:" + JSON.stringify(data));
-					let BPID = "P" + new Date(Ndate).Format("yyyyMMdd") + Num + "_" + $(
+					let BPID = "P" + new Date(Ndate).Format("yyyyMMdd") + billNumId + "_" + $(
 						'input:radio[name="PLDArea"]:checked').val() + $(
 						'input:radio[name="orderFrom"]:checked').val() + "_" + $(
 						'input:radio[name="orderFromDep"]:checked').val();
@@ -1530,9 +1532,6 @@
 					// alert(BPID)
 					// return
 				}
-
-
-
 
 				var billData = {
 					"DBTable": "ppm_bills_plan",

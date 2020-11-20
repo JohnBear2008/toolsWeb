@@ -18,16 +18,27 @@ var g_dbConenctions = {
         insecureAuth: true
         //       timezone:'GMT' //时区
     },
-    "erp_Connection": {
+    // "erp_Connection": {
+    //     engine: "sqlserver",
+    //     package: "msnodesqlv8",
+    //     connection: {
+    //         driver: "SQL Server Native Client 11.0",
+    //         server: '192.168.0.26',
+    //         database: 'T9Techmation',
+    //         user: 'sa',
+    //         password: '338168',
+    //     }
+    // },
+    "rich_T9": {
         engine: "sqlserver",
         package: "msnodesqlv8",
         connection: {
-            driver: "SQL Server Native Client 11.0",
-            server: '192.168.0.2',
-            database: 'CHIComp01',
+            driver: "SQL Server Native Client 10.0",
+            server: '192.168.0.26',
+            database: 'T9Techmation',
             user: 'sa',
-            password: 'techDG2218',
-        }
+            password: '338168',
+        },      
     }
 };
 var config = {
