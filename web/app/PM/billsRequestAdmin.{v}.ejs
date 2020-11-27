@@ -739,6 +739,29 @@
                 return
             }
 
+            //c-检查必填项
+            if (!$('#ppm_bills_requestForm-CTRName option:selected').val()) {
+                alert('客户未选择,请检查')
+                return
+            }
+
+
+            if (!$('#ppm_bills_requestForm-modelD option:selected').val() && !$(
+                    '#ppm_bills_requestForm-modelH option:selected').val()) {
+                alert('系统DSP,系统HMI至少选一项,请检查')
+                return
+            }
+
+            if (!$("#ppm_bills_requestForm-topic").val()) {
+                alert('修改主题必填')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-auditor option:selected').val()) {
+                alert('审核人必填,如不确定,可用系统指定功能,请检查!')
+                return
+            }
+
 
 
             //c-审核再确认

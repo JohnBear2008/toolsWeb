@@ -38,7 +38,7 @@ var g_dbConenctions = {
             database: 'T9Techmation',
             user: 'sa',
             password: '338168',
-        },      
+        },
     }
 };
 var config = {
