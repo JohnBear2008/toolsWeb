@@ -1,3 +1,6 @@
+let yjSecurity = require('./yjSecurity')
+let pwe = 'hgifHOsbkTXmqxfJLe9UUpHdYfQ4kaTVgc1GoRUuOi/J51fcZ7mR669D42zZQnjSklxUvMvxp9K6zelt2qBtY6FXrMZDy7GFF78thIKR6T7PVsVpqP7HXfVZzyxFs9OpYuQOOCOkTMPlmCcd03VFudIADSRntL+9/TBONlB79ND5raWhIuSp8GpFaQmm/QG2tXccRy3fsiTPETnqZMS2u/6jy3PmwgBN57dTZGN0GaEM2508RsdZSuTfPB9Fu46D+WHX/0tZEH5kOqL4X6o2NOWL4CMYZnVrjX4LdxIEz+VY01r3UAmaHki1wWL2CijFlgG2zgFejuYtyhBeJ8ggDA=='
+
 var path = require("path");
 var g_dbConenctions = {
     //    engine: "mysql",
@@ -14,7 +17,7 @@ var g_dbConenctions = {
         server: '127.0.0.1',
         database: 'toolsWeb',
         user: 'root',
-        password: '654321',
+        password: yjSecurity["Diffie-Hellman"].decrypt(pwe),
         insecureAuth: true
         //       timezone:'GMT' //时区
     },

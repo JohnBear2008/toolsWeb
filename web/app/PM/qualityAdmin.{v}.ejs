@@ -1,0 +1,188 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/ppmLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
+
+
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/ppmLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/ppmLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/ppmLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/ppmLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入bootstrapSwitch -->
+<link rel="stylesheet" href="/ppmLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
+<script type="text/javascript" src="/ppmLib/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/ppmLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/ppmLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/ppmLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>信息管理-品质管理</h1>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+
+            <!-- 定义基础模块数据表 -->
+
+            <div class="panel panel-default" id='mainTablePanel'>
+                <div class="panel-heading">
+                    <div style="float: left;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" disabled>类型</button>
+                            <button type="button" id="btnModelCodeAudit" class="btn btn-default">代码审核</button>
+                            <button type="button" id="btnModelIPQC" class="btn btn-default">IPQC</button>
+                        </div>
+                    </div>
+
+                    <div style="float: left;margin-left: 25px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" disabled>过滤</button>
+                            <button type="button" id="btnFilterWeek" class="btn btn-default">本周</button>
+                            <button type="button" id="btnFilterWeek" class="btn btn-default">本月</button>
+                            <button type="button" id="btnFilterAll" class="btn btn-default">全部</button>
+                            <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+
+                    <div style="float: left;margin-left: 25px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" disabled>excel</button>
+                            <button type=" button" class="btn btn-info" id="excelExportBtn">导出
+                            </button>
+                        </div>
+
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="panel-body">
+                    <table id="ppm_bills_codeAudit" class=" table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>计划单号</th>
+                                <th>客户</th>
+                                <th width='300'>修改主题</th>
+                                <th>申请人</th>
+                                <th>申请时间</th>
+                                <th>审核人</th>
+                                <th>反馈</th>
+                                <th>单据状态</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <table id="ppm_bills_ipqc" class=" table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>计划单号</th>
+                                <th>客户</th>
+                                <th width='300'>修改主题</th>
+                                <th>申请人</th>
+                                <th>申请时间</th>
+                                <th>审核人</th>
+                                <th>反馈</th>
+                                <th>单据状态</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    const loadBillMainTable = async ({
+        tableId, //表id
+        columns, //列清单
+    }) => {
+
+        //r-初始化主表
+        loadBillDataTable({
+            elementId: tableId,
+            sqlParams: sqlParams,
+            dtParams: dtParams
+        })
+
+        //清空选项值
+        $('.dataTables_filter input').val('')
+
+        //自定义样式调整
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'size': 45
+        });
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'placeholder': '可用表属性过滤搜索'
+        });
+    }
+
+    const loadCodeAuditTable = async () => {
+        //d-定义参数
+        let tableId = 'ppm_bills_codeAudit'
+        let sqlParams = {
+            sqlId: 'getCodeAuditRecord',
+            params: {
+                filter: mainTableFilter,
+                orderBy: 'billSaveTimeStamp desc'
+            }
+        }
+    }
+
+
+
+
+
+    $(document).ready(function () {
+
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
+
+        //过滤器
+        mainTableFilter = '';
+
+
+
+
+
+
+    });
+</script>
