@@ -46,18 +46,19 @@ module.exports = function (sender) {
     columnsData = [
       // { data: 'DBID', "visible": false },
       { data: 'BillNo', "visible": true, "width": "10%" },
-      { data: 'BillDate', "width": "8%" },
+      { data: 'BillDate',  "visible": true, "width": "7%" },
+      { data: 'DispMonth',  "visible": true, "width": "3%" },
       { data: 'Personname', "visible": true, "width": "5%" },
       { data: 'DeptName', "visible": true, "width": "5%" },
       { data: 'Remark', "visible": true, "width": "5%" },
       { data: 'OrgName', "visible": true, "width": "16%" },
-      { data: 'Creatorname', "visible": true, "width": "8%" },
-      { data: 'Permitname', "visible": true, "width": "8%" },
-      { data: 'FromBillNo', "visible": true, "width": "8%" },
-      { data: 'OAmount', "visible": true, "width": "8%" },
-      { data: 'WriteOffOAmount', "visible": true, "width": "8%" },
-      { data: 'RowCode', "visible": true, "width": "8%" },
-      { data: 'InvoiceBillNo', "visible": true, "width": "8%" },
+      { data: 'Creatorname', "visible": true, "width": "7%" },
+      { data: 'Permitname', "visible": true, "width": "7%" },
+      { data: 'FromBillNo', "visible": true, "width": "7%" },
+      { data: 'OAmount', "visible": true, "width": "7%" },
+      { data: 'WriteOffOAmount', "visible": true, "width": "7%" },
+      { data: 'RowCode', "visible": true, "width": "7%" },
+      { data: 'InvoiceBillNo', "visible": true, "width": "7%" },
     ];
     sender.success(columnsData);
     // console.log("叫叫", columnsData);

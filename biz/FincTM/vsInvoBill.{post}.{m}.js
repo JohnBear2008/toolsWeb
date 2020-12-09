@@ -14,11 +14,12 @@ module.exports = function (sender) {
 	var Pattern = sender.req.query.Pattern;
 	var Advstr = sender.req.query.Advstr;
 	var SIGN = Advstr.SIGN;
-	var BillNo = Advstr.BillNo;
+	var BillNo = Advstr.BillNo;//nouse
 	var placeForB = Advstr.placeForB;
 	var placeForE = Advstr.placeForE;
+	var DeptId = Advstr.DeptId;
 	var PersonId = Advstr.PersonId;
-	console.log("江南:" ,SIGN, "才 " ,BillNo , "良:" ,placeForB ,"辰:" ,placeForE,"佳人:" ,PersonId );
+	console.log("江南:" ,SIGN, "才 " ,DeptId , "良:" ,placeForB ,"辰:" ,placeForE,"佳人:" ,PersonId );
 	loop_NLevel();
 	function loop_NLevel() {
 		var dataARR = [];
@@ -58,9 +59,9 @@ module.exports = function (sender) {
 		"  LEFT JOIN capOrganization tcg on a.CompId = tcg.OrgId " +
 		"  LEFT JOIN comDepartment tcd on a.DeptId = tcd.DeptId " ;
 		var filter = ' 1=1 '; 
-		if (BillNo != "" && BillNo != "null" && BillNo != undefined && BillNo.length > 0) {
-			console.log("岸号", BillNo);
-			filter += " AND  A.[BillNo]  LIKE " + "'%" + BillNo + "%'";
+		if (DeptId != "" && DeptId != "null" && DeptId != undefined && DeptId.length > 0) {
+			console.log("部門", DeptId);
+			filter += " AND  a.DeptId  =  " + "'" + DeptId + "' ";
 		}
 		if (placeForB != "" && placeForB != "null" && placeForB != undefined && placeForB.length > 0) {
 			console.log("需求日期开始日", placeForB);
@@ -87,9 +88,16 @@ module.exports = function (sender) {
 				var obj = '';
 				console.log("太美:" ,data.length );
 				for (var i = 0; i < data.length; i++) {
+					var BillDate =  data[i].BillDate;
+					var dumpBill = JSON.stringify(BillDate);
+					var DispMonth = '';
+					if(dumpBill.length>6){
+						DispMonth =dumpBill.substring(4,6);
+					}
 					obj = {
 						"BillNo": data[i].BillNo,
 						"BillDate": data[i].BillDate,
+						"DispMonth": DispMonth,
 						"Personname": data[i].Personname  ,
 						"DeptName": data[i].DeptName,
 						"Remark": data[i].Remark  ,

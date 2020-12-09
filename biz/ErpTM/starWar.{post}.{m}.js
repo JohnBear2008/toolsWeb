@@ -9,6 +9,7 @@ module.exports = function (sender) {
 	if (connectionOptions) {
 		connection = yjDBServiceUtil.extractConnectionOptions(connectionOptions);
 	}
+	
 	var arrange = sender.req.query.arrange;
 	var prodID = sender.req.query.prodID;
 	var prodNM = sender.req.query.prodNM;
@@ -21,6 +22,8 @@ module.exports = function (sender) {
 		AdvPers(prodID, prodNM);
 	} else if (arrange == 'AdvFinc') {
 		AdvFinc(prodID, prodNM);
+	} else if (arrange == 'DeptFinc') {
+		DeptFinc(prodID, prodNM);
 	} else if (arrange == 'BasicFinc') {
 		BasicFinc();
 	} else {
@@ -124,6 +127,38 @@ module.exports = function (sender) {
 					datas.push(temp)
 				}
 				// console.log("維修是否:"+JSON.stringify(datas));
+				sender.success(datas);
+			},
+			error: {},
+		});
+	}
+	function DeptFinc(prodID, prodNM) {
+		var filter = "  1=1 ";
+		if (prodID != "" && prodID != "null" && prodID != undefined && prodID.length > 0) {
+			filter += "  AND   DeptId LIKE " + "'%" + prodID + "%'";
+		}
+		if (prodNM != "" && prodNM != "null" && prodNM != undefined && prodNM.length > 0) {
+			filter += "  AND   DeptName LIKE " + "'%" + prodNM + "%'";
+		}
+ 
+		var SQLqry = " select TOP 50 a.[DeptId] ,a.[DeptName]  from [comDepartment] a where " + filter
+		console.log("部梦", SQLqry);
+		var dataArr = [];
+		yjDBService_sqlserver.exec({
+			connectionOptions: connection,
+			sql: SQLqry,
+			parameters: [],
+			success: function (r) {
+				var datas = [];
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					var temp = {
+						"ProductID": data[i].DeptId,
+						"ProductName": data[i].DeptName,
+					}
+					datas.push(temp)
+				}
+				console.log("供给是否:"+JSON.stringify(datas));
 				sender.success(datas);
 			},
 			error: {},

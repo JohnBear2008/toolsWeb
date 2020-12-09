@@ -1,5 +1,8 @@
 let yjSecurity = require('./yjSecurity')
+
 let pwe = 'hgifHOsbkTXmqxfJLe9UUpHdYfQ4kaTVgc1GoRUuOi/J51fcZ7mR669D42zZQnjSklxUvMvxp9K6zelt2qBtY6FXrMZDy7GFF78thIKR6T7PVsVpqP7HXfVZzyxFs9OpYuQOOCOkTMPlmCcd03VFudIADSRntL+9/TBONlB79ND5raWhIuSp8GpFaQmm/QG2tXccRy3fsiTPETnqZMS2u/6jy3PmwgBN57dTZGN0GaEM2508RsdZSuTfPB9Fu46D+WHX/0tZEH5kOqL4X6o2NOWL4CMYZnVrjX4LdxIEz+VY01r3UAmaHki1wWL2CijFlgG2zgFejuYtyhBeJ8ggDA=='
+let pweT9 = 'TVaX3EUu8YLju8UV/9keI26SATPqYyRw8QtfTn5aOWofEa0KEfBPE6qxtas1vw7KzjRDkY5yuZupa+ZYToglYy6socUR5jUOQzuM+lZNTiXrIGcog9jerMI/RFVNqWTBdkmOpTiO3gOKLtUuOAz+MHU3Vnq2unsi1lKEvEc5g3v9ML6C846csqtn+Ql1mepcErTBMylS64MPTpWTp2L+4UeBES0/a/Hj+yQ4nd4SC1SECz9/0wJZjPcZBXYpk7mkTYzq646PgpAIdWqUmk7SY4gW2BNjwXbG4+gdoQ/34R+oAxv/K86x++wVnJi3Wulp+zyk1UoPaaRFjbLrONgENw=='
+console.log(pweT9);
 
 var path = require("path");
 var g_dbConenctions = {
@@ -18,7 +21,8 @@ var g_dbConenctions = {
         database: 'toolsWeb',
         user: 'root',
         password: yjSecurity["Diffie-Hellman"].decrypt(pwe),
-        insecureAuth: true
+        insecureAuth: true,
+        multipleStatements: true
         //       timezone:'GMT' //时区
     },
     // "erp_Connection": {
@@ -37,10 +41,10 @@ var g_dbConenctions = {
         package: "msnodesqlv8",
         connection: {
             driver: "SQL Server Native Client 10.0",
-            server: '192.168.0.26',
+            server: '192.168.0.22',
             database: 'T9Techmation',
             user: 'sa',
-            password: '338168',
+            password: yjSecurity["Diffie-Hellman"].decrypt(pweT9),
         },
     }
 };
@@ -137,9 +141,33 @@ var config = {
     //    },
     isNeedView: true,
     rootDir: path.join(__dirname, "../yujiang.Foil.Node.WebServer"),
-    logDir: path.join(__dirname, "./system/log"),
+
+    log: { // 必要参数
+        // 必要参数,日志文件存储位置
+        logDir: path.join(__dirname, "./system/log"),
+        login: {
+            isLog: true,
+            isIPLocation: false,
+        }
+    },
     autoRunDirs: [path.join(__dirname, "./biz/auto")],
     routeDirs: [{
+        nameSpace: "/app/tm.utils.type",
+        rootDir: path.join(__dirname, "../tm.utils.type/web"),
+        dir: path.join(__dirname, "../tm.utils.type/web")
+    }, {
+        nameSpace: "/biz/tm.utils.type",
+        rootDir: path.join(__dirname, "../tm.utils.type/biz"),
+        dir: path.join(__dirname, "../tm.utils.type/biz")
+    }, {
+        nameSpace: "/app/system/authority2/user",
+        rootDir: path.join(__dirname, "../tm.utils.account.classic/web"),
+        dir: path.join(__dirname, "../tm.utils.account.classic/web")
+    }, {
+        nameSpace: "/biz/system/authority2/user",
+        rootDir: path.join(__dirname, "../tm.utils.account.classic/biz"),
+        dir: path.join(__dirname, "../tm.utils.account.classic/biz")
+    }, {
         isNeedAuthorityCheck: true,
         rootDir: path.join(__dirname, "../yujiang.Foil.Node.BizServer"),
         dir: path.join(__dirname, "../yujiang.Foil.Node.BizServer/biz")

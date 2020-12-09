@@ -30,82 +30,120 @@
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
-<!-- <script src="/banq/TMEvent.js"></script> -->
-<script src="/bomq/custom.js"></script>
+<script src="/bomq/cusFincAR.js"></script>
 
 <!-- 导出报告EXCEL -->
-<script type=text/javascript src="/cacu/xlsFinc.js"></script>
+<script type=text/javascript src="/cacu/xlsFincAR.js"></script>
 <script src="/public/report/js/xlsx.core.min.js"></script>
 <script src="/public/report/js/xlsx.full.min.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 <div class="divcontent">
 	<div id="handout_wrap_inner"></div>
-	<h1>应收转应收&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	</h1>
 	<label> 日期： </label>
 	<div class="layui-inline">
-		<button id="BTNPlace" type="button" class="btn btn-info">单据日期</button>
+		<button id="BTNPlace" type="button" class="btn btn-info">过滤器</button>
 	</div>
-	<label>单号：</label>
+	<label>部門：</label>
 	<div class="layui-inline">
-		<input class="can-find-M140" name="BillNo" id="BillNo" value="" autocomplete="off">
+		<input class="can-find-M140" name="DeptId" id="DeptId" value="" autocomplete="off">
 	</div>
-	<!-- <label>客户：</label>
-	<div class="layui-inline">
-		<input class="can-find-M140" name="BusiPart" id="BusiPart" value="" autocomplete="off">
-	</div> -->
-	<label>财务员：</label>
+	<label>业务员：</label>
 	<div class="layui-inline">
 		<input class="can-find-M140" name="PersonId" id="PersonId" value="" autocomplete="off">
 	</div>
 	<input type="button" id="SeaBtn" class="btn btn-info" value="查找" />
 	<input type="button" id="ResetBtn" class="btn btn-warning" value="清除" />
-	<!-- <button type="button" id="BusOpen" class="btn btn-primary">客户</button> -->
-	<button type="button" id="SalOpen" class="btn btn-primary">财务</button>
 	<button id="BTNExportExcel" class="btn btn-default">导出</button>
-	<!-- <input type="button" id="DisplayBtn" class="layui-btn layui-btn-sm layui-btn-info" value="栏位" /> -->
-
 	<hr>
 	<span id="matchRec" class="green-match-search"> </span>
 	<br />
-	<!-- 点击自定义过滤弹出的窗口 -->
-	<div id="PlaceFilter" class="easyui-window" title="日期" closed="true" style="width:800px;height:400px;">
-		<form style="padding:10px 50px;">
-			<div class="form-horizontal">
-				<div class="form-group">
-					<label for="placeForDate" class="col-sm-2 control-label">上周日期范围:</label>
-					<div class="col-sm-3 ">
-						<div class="input-group date form_dateA " data-date="" data-date-format="yyyymmdd"
-							data-link-field="placeForDateB" data-link-format="yyyymmdd">
-							<input id="placeForDateB" class="form-control " size="16" type="text" value=""
-								readonly>
-							<span class="input-group-addon"><span
-									class="glyphicon glyphicon-calendar"></span></span>
-						</div>
-						<input type="hidden" id="placeForDateB" value="" />
-					</div>
 
-					<div class="col-sm-3 ">
-						<div class="input-group date form_date " data-date="" data-date-format="yyyymmdd"
-							data-link-field="placeForDateE" data-link-format="yyyymmdd">
-							<input id="placeForDateE" class="form-control " size="16" type="text" value=""
-								readonly>
-							<span class="input-group-addon"><span
-									class="glyphicon glyphicon-calendar"></span></span>
+
+	<!-- 过滤器弹出开始 -->
+	<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel"
+		aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:65%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="panel-title">过滤器
+						<button id="BTNFormClose" type="button" class="btn btn-primary"
+							data-dismiss="modal">关闭</button></h3>
+				</div>
+				<div class="modal-body">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title"></h3>
 						</div>
-						<input type="hidden" id="placeForDateE" value="" />
+						<div class="panel-body">
+							<div class="form-horizontal" id="DivAnaly">
+								<div class="form-group">
+									<label for="placeForDate"
+										class="col-sm-2 control-label">日期范围:</label>
+									<div class="col-sm-3 ">
+										<div class="input-group date form_dateA " data-date=""
+											data-date-format="yyyymmdd"
+											data-link-field="placeForDateB"
+											data-link-format="yyyymmdd">
+											<input id="placeForDateB" class="form-control "
+												size="16" type="text" value="" readonly>
+											<span class="input-group-addon"><span
+													class="glyphicon glyphicon-calendar"></span></span>
+										</div>
+										<input type="hidden" id="placeForDateB" value="" />
+									</div>
+
+									<div class="col-sm-3 ">
+										<div class="input-group date form_date " data-date=""
+											data-date-format="yyyymmdd"
+											data-link-field="placeForDateE"
+											data-link-format="yyyymmdd">
+											<input id="placeForDateE" class="form-control "
+												size="16" type="text" value="" readonly>
+											<span class="input-group-addon"><span
+													class="glyphicon glyphicon-calendar"></span></span>
+										</div>
+										<input type="hidden" id="placeForDateE" value="" />
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<span id="spanID" class="green-label"> 业务ID </span>
+								<input id="saleID" class="can-drop" type="text" value="">
+								<span id="spanNM" class="green-label"> 业务名 </span>
+								<input id="saleNM" class="can-drop" type="text" value="">
+								<button id="SalFIND" type="button" class="btn btn-info">查找</button>
+							</div>
+							<br />
+							<div class="form-group">
+								<span id="listspan" class="blue-label"> 列表 </span>
+								<select id="FishValue" name="FishValue" class="can-area-note"></select>
+							</div>
+							<div class="form-group">
+								<span id="spanID" class="green-label"> 部門ID </span>
+								<input id="deptID" class="can-drop" type="text" value="">
+								<span id="spanNM" class="green-label"> 部門名 </span>
+								<input id="deptNM" class="can-drop" type="text" value="">
+								<button id="DepFIND" type="button" class="btn btn-info">查找</button>
+							</div>
+							<br />
+							<div class="form-group">
+								<span id="listspan" class="blue-label"> 列表 </span>
+								<select id="CrabValue" name="CrabValue" class="can-area-note"></select>
+							</div>		
+						</div>
 					</div>
 				</div>
-		</form>
-	</div>
-	<div class="form-group">
-		<label class="col-sm-2 control-label"></label>
-		<div class="col-sm-3 ">
-			<button id="PlaceComfirmBtn" type="button" class="btn btn-primary">确认</button>
-			<button id="PlaceCancelBtn" type="button" class="btn btn-warning">清空</button>
-		</div>
-	</div>
+				<div class="modal-footer">
+					<button id="BTNFormYES" type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+					<button id="BTNFormClose" type="button" class="btn btn-primary"
+						data-dismiss="modal">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div><!-- modal fade -->
+	<!-- 过滤器弹出结束 -->
+
 </div>
 
 <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
@@ -115,56 +153,6 @@
 
 		</thead>
 	</table>
-</div>
-<!-- 点击进阶查找弹出窗口 -->
-<div id="DivBusance" class="easyui-window" title="进阶查找" closed="true"
-	style="top:100px; left:400px; width:900px;height:550px;">
-	<div class="form-group">
-		<span id="spanID" class="green-label-small"> 编号 </span>
-		<input id="busiID" class="can-drop" type="text" value="">
-
-		<span id="spanNM" class="green-label-small"> 名称 </span>
-		<input id="busiNM" class="can-drop-spec" type="text" value="">
-		<br />
-	</div>
-	<div class="form-group">
-		<button id="BusFIND" type="button" class="btn btn-info">查找</button>
-	</div>
-	<br />
-	<div class="form-group">
-		<span id="listspan" class="blue-label"> 列表 </span>
-		<select id="LifeValue" name="LifeValue" class="can-area-note"></select>
-	</div>
-	<div class="form-group">
-		<button id="BusOK" type="button" class="btn btn-primary">确认</button>
-		<button id="BusCAN" type="button" class="btn btn-warning">清空</button>
-	</div>
-	<br />
-</div>
-<!-- 点击进阶查找弹出窗口 -->
-<div id="DivSale" class="easyui-window" title="进阶查找" closed="true"
-	style="top:100px; left:400px; width:900px;height:550px;">
-	<div class="form-group">
-		<span id="spanID" class="green-label-small"> 编号 </span>
-		<input id="saleID" class="can-drop" type="text" value="">
-
-		<span id="spanNM" class="green-label-small"> 名称 </span>
-		<input id="saleNM" class="can-drop-spec" type="text" value="">
-		<br />
-	</div>
-	<div class="form-group">
-		<button id="SalFIND" type="button" class="btn btn-info">查找</button>
-	</div>
-	<br />
-	<div class="form-group">
-		<span id="listspan" class="blue-label"> 列表 </span>
-		<select id="FishValue" name="FishValue" class="can-area-note"></select>
-	</div>
-	<div class="form-group">
-		<button id="SalOK" type="button" class="btn btn-primary">确认</button>
-		<button id="SalCAN" type="button" class="btn btn-warning">清空</button>
-	</div>
-	<br />
 </div>
 <div id="root" style="height: 100%"></div>
 
@@ -207,7 +195,6 @@
 		FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
 		FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
 		FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
-		console.log("敏A希", FieldA, "敏B希", FieldB);
 	}
 	var columnsData = [];
 	//页面加载函数---------------
@@ -222,12 +209,9 @@
 				"tableID": "#center_TB",
 				"DBTable": "auto_parts"
 			}
-
 			missAType = getQueryString("missA");
-			console.log("将心" + missAType);
 			var missAencode = decodeURI(missAType);
 
-			console.log("初心" + missAencode);
 			glbA = missAencode;
 			if (glbA == "" || glbA == 'null' || glbA == null || glbA.length < 0) {
 				glbA = '2020';
@@ -240,7 +224,8 @@
 			}
 			//过滤功能组 自定义按钮-----
 			$('#BTNPlace').click(function () {
-				$('#PlaceFilter').window('open');
+				// $('#PlaceFilter').window('open');//日期的
+				$('#lovewindow').modal('show');
 				$('.form_dateA').datetimepicker({
 					language: 'zh-CN',
 					weekStart: 1,
@@ -264,51 +249,31 @@
 				$("#BTNGroupFilter").children().removeClass("active");
 				$("#BTNPlace").addClass("active")
 			});
+			$('#BTNFormYES').click(function () {
+				var FishValue = $('#FishValue').val();
+				FishValue =nulReplaceTxt(FishValue,'');
+				var LFList = FishValue.split('##');
+				$('#PersonId').val(LFList[0]);
+				$("#FishValue").val(); $("#FishValue").html("");
 
-			$('#PlaceComfirmBtn').click(function () {
-				$('#PlaceFilter').window('close');
+				var CrabValue = $('#CrabValue').val();
+				CrabValue=nulReplaceTxt(CrabValue,''); 
+				var LCList = CrabValue.split('##');
+				$('#DeptId').val(LCList[0]);
+				$("#CrabValue").val(); $("#CrabValue").html("");
+				
+				$('#lovewindow').window('close');
 			});
-			$('#PlaceCancelBtn').click(function () {
-				$("#placeForDateB").val("")
-				$("#placeForDateE").val("")
+			$('#BTNFormClose').click(function () {
+				$('#lovewindow').window('close');
 			});
-			// $('#BTNDeliv').click(function () {
-
-			// 	$('#DelivFilter').window('open');
-
-			// 	$('.form_date').datetimepicker({
-			// 		language: 'zh-CN',
-			// 		weekStart: 1,
-			// 		todayBtn: 1,
-			// 		autoclose: 1,
-			// 		todayHighlight: 1,
-			// 		startView: 2,
-			// 		minView: 2,
-			// 		forceParse: 0
-			// 	});
-			// 	$("#BTNGroupFilter").children().removeClass("active");
-			// 	$("#DelivFilter").addClass("active")
-			// });
+		 
 			columnsData = [
-				// { data: 'DBID', "visible": false },
-				{ data: 'Parts_Class', "visible": false },
-				{ data: 'Parts_Chi', "visible": FieldA },
-				{ data: 'Parts_Code' },
-				{ data: 'Parts_Name', "visible": FieldB },
-				{ data: 'Parts_Old_Code', "visible": FieldC },
-				{ data: 'Parts_Old_Name', "visible": FieldD },
-				{ data: 'BILL_ID', "visible": FieldE },
-				{ data: 'Property', "visible": FieldF },
-				{ data: 'Parts_Apply_Date', "visible": FieldG },
-				{ data: 'Parts_Status', "visible": false },
-				{ data: 'Combo_Title', "visible": FieldH },
-				{ data: 'Reason', "visible": FieldI },
-				{ data: 'Combo_Staff', "visible": FieldJ },
-				{ data: 'SMT_Title', "visible": false },
-				{ data: 'Supply_Title', "visible": false },
+				 
 			];
 			var contentSum = "";
 			var content = '<tr>'
+				+ '<th>栏位1</th>'
 				+ '<th>栏位1</th>'
 				+ '<th>栏位1</th>'
 				+ '<th>栏位1</th>'
@@ -339,25 +304,10 @@
 		"DBTable": "auto_parts"
 	}
 	columnsData = [
-		// { data: 'DBID', "visible": false },
-		{ data: 'Parts_Class', "visible": false },
-		{ data: 'Parts_Chi', "visible": FieldA },
-		{ data: 'Parts_Code' },
-		{ data: 'Parts_Name', "visible": FieldB },
-		{ data: 'Parts_Old_Code', "visible": FieldC },
-		{ data: 'Parts_Old_Name', "visible": FieldD },
-		{ data: 'BILL_ID', "visible": FieldE },
-		{ data: 'Property', "visible": FieldF },
-		{ data: 'Parts_Apply_Date', "visible": FieldG },
-		{ data: 'Parts_Status', "visible": false },
-		{ data: 'Combo_Title', "visible": FieldH },
-		{ data: 'Reason', "visible": FieldI },
-		{ data: 'Combo_Staff', "visible": FieldJ },
-		{ data: 'SMT_Title', "visible": false },
-		{ data: 'Supply_Title', "visible": false },
+		 
 	];
 
-	function showDBDataSelf(DataPara, columnsData, BillNo, PersonId, placeForB, placeForE, morder) {
+	function showDBDataSelf(DataPara, columnsData, DeptId, PersonId, placeForB, placeForE, morder) {
 		var limit = '50';
 		var filter = ' 1=1 ';
 		var orderBy = '';
@@ -365,6 +315,7 @@
 		var content = '<tr>'
 			+ '<th>单据编号</th>'
 			+ '<th>单据日期</th>'
+			+ '<th>月份</th>'
 			+ '<th>业务人员</th>'
 			+ '<th>业务部门</th>'
 			+ '<th>备注</th>'
@@ -379,13 +330,13 @@
 			+ '</tr>';
 		contentSum += content;
 		$('#content').html(contentSum);
-		$("#center_TB").dataTable().fnDestroy();  //搞好thead
+		$("#center_TB").dataTable().fnDestroy();  
 		var signoption = $("#SIGN option:selected");
 		var signTxt = signoption.text();
 		var Advstr = {
-			"SIGN": signTxt, "BillNo": BillNo, "PersonId": PersonId, "placeForB": placeForB, "placeForE": placeForE
+			"SIGN": signTxt, "DeptId": DeptId, "PersonId": PersonId, "placeForB": placeForB, "placeForE": placeForE
 		};
-		$("#matchRec").html("查找条件:" + "   " + BillNo + "   " + PersonId + "   " + placeForB + "  " + placeForE);
+		$("#matchRec").html("查找条件:" + "   " + DeptId + "   " + PersonId + "   " + placeForB + "  " + placeForE);
 		var reportChannel = 'FincHead';
 		var arrange = 'Invoice';
 		var pclass = 'A2';
@@ -456,58 +407,18 @@
 			{ data: 'Supply_Title', "visible": false },
 		];
 	}
-	$('#BusOpen').click(function () {
-		$('#DivBusance').window('open');
-		var busiID = $('#busiID').val();
-		var busiNM = $('#busiNM').val();
-		if (busiID != '' || busiNM != '') {
-			console.log("他要");
-			CritAdvBusi(busiID, busiNM);
-		} else {
-			console.log("这是");
-			CritBacBusi();
-		}
-	});
-	$('#BusFIND').click(function () {
-		var busiID = $('#busiID').val();
-		var busiNM = $('#busiNM').val();
-		CritAdvBusi(busiID, busiNM);
-	});
-	$('#BusOK').click(function () {
-		var LifeValue = $('#LifeValue').val();
-		var LFList = LifeValue.split('##');
-		$('#BusiPart').val(LFList[0]);
-		$('#DivBusance').window('close');
-	});
-	$('#BusCAN').click(function () {
-		$("#LifeValue").val(); $("#LifeValue").html("");
-	});
-	$('#SalOpen').click(function () {
-		$('#DivSale').window('open');
-		var saleID = $('#saleID').val();
-		var saleNM = $('#saleNM').val();
-		if (saleID != '' || saleNM != '') {
-			console.log("明井");
-			FincAdvPers(saleID, saleNM);
-		} else {
-			console.log("基础");
-			FincBacPers();
-		}
-	});
+	 
 	$('#SalFIND').click(function () {
 		var saleID = $('#saleID').val();
 		var saleNM = $('#saleNM').val();
 		FincAdvPers(saleID, saleNM);
 	});
-	$('#SalOK').click(function () {
-		var FishValue = $('#FishValue').val();
-		var LFList = FishValue.split('##');
-		$('#PersonId').val(LFList[0]);
-		$('#DivSale').window('close');
+	$('#DepFIND').click(function () {
+		var deptID = $('#deptID').val();
+		var deptNM = $('#deptNM').val();
+		FincAdvDeps(deptID, deptNM);
 	});
-	$('#SalCAN').click(function () {
-		$("#FishValue").val(); $("#FishValue").html("");
-	});
+	 
 
 	$('#ResetBtn').click(function () {
 		$("#BillNo").val(""); $("#BillNo").html("");
@@ -518,23 +429,28 @@
 	});
 	$('#SeaBtn').click(function () {
 		$("#center_TB").dataTable().fnDestroy();
-		var BillNo = $('#BillNo').val();
+		var DeptId = $('#DeptId').val();
 		var PersonId = $('#PersonId').val();
 		var placeForB = $('#placeForDateB').val();
 		var placeForE = $('#placeForDateE').val();
 		var morder = "";
-		showDBDataSelf(DataPara, columnsData, BillNo, PersonId, placeForB, placeForE, morder);
+		showDBDataSelf(DataPara, columnsData, DeptId, PersonId, placeForB, placeForE, morder);
 	});
 	$('#BTNExportExcel').click(function () {
-		var BillNo = $('#BillNo').val();
+		var DeptId = $('#DeptId').val();
 		var PersonId = $('#PersonId').val();
 		var placeForB = $("#placeForDateB").val();
-		var placeForE = $("#placeForDateE").val(); 
+		var placeForE = $("#placeForDateE").val();
 		var signoption = $("#SIGN option:selected");
 		var signTxt = signoption.text();
 		var Advstr = {
-			"SIGN": signTxt, "BillNo": BillNo, "PersonId": PersonId, "placeForB": placeForB, "placeForE": placeForE
+			"SIGN": signTxt, "DeptId": DeptId, "PersonId": PersonId, "placeForB": placeForB, "placeForE": placeForE
 		};
-		enterFinc( Advstr);
+		enterFinc(Advstr);
 	});
+	function nulReplaceTxt(passTxt,repword) {
+		var ret = '';
+		ret = (passTxt == null || passTxt == undefined) ? (repword) : passTxt;
+		return ret;
+	}
 </script>
