@@ -26,7 +26,7 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
-
+<!-- layui -->
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
@@ -40,17 +40,17 @@
 
 <div class="divcontent">
 	<div id="handout_wrap_inner"></div>
-	<label> 日期： </label>
+	<!-- <label> 日期： </label> -->
 	<div class="layui-inline">
 		<button id="BTNPlace" type="button" class="btn btn-info">过滤器</button>
 	</div>
-	<label>部門：</label>
 	<div class="layui-inline">
-		<input class="can-find-M140" name="DeptId" id="DeptId" value="" autocomplete="off">
+		<!-- <input class="can-find-M140" name="DeptId" id="DeptId" value="" autocomplete="off"> -->
+		<input type="hidden" id="DeptId" value="" />
 	</div>
-	<label>业务员：</label>
 	<div class="layui-inline">
-		<input class="can-find-M140" name="PersonId" id="PersonId" value="" autocomplete="off">
+		<!-- <input class="can-find-M140" name="PersonId" id="PersonId" value="" autocomplete="off"> -->
+		<input type="hidden" id="PersonId" value="" />
 	</div>
 	<input type="button" id="SeaBtn" class="btn btn-info" value="查找" />
 	<input type="button" id="ResetBtn" class="btn btn-warning" value="清除" />
@@ -58,17 +58,13 @@
 	<hr>
 	<span id="matchRec" class="green-match-search"> </span>
 	<br />
-
-
 	<!-- 过滤器弹出开始 -->
 	<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel"
 		aria-hidden="true" data-backdrop="static">
 		<div class="modal-dialog" style="width:65%">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3 class="panel-title">过滤器
-						<button id="BTNFormClose" type="button" class="btn btn-primary"
-							data-dismiss="modal">关闭</button></h3>
+					<h3 class="panel-title">过滤器</h3>
 				</div>
 				<div class="modal-body">
 					<div class="panel panel-info">
@@ -76,66 +72,83 @@
 							<h3 class="panel-title"></h3>
 						</div>
 						<div class="panel-body">
-							<div class="form-horizontal" id="DivAnaly">
-								<div class="form-group">
-									<label for="placeForDate"
-										class="col-sm-2 control-label">日期范围:</label>
-									<div class="col-sm-3 ">
-										<div class="input-group date form_dateA " data-date=""
-											data-date-format="yyyymmdd"
-											data-link-field="placeForDateB"
-											data-link-format="yyyymmdd">
-											<input id="placeForDateB" class="form-control "
-												size="16" type="text" value="" readonly>
-											<span class="input-group-addon"><span
-													class="glyphicon glyphicon-calendar"></span></span>
-										</div>
-										<input type="hidden" id="placeForDateB" value="" />
+							<!-- <div class="form-horizontal" id="DivAnaly"> -->
+							<div class="form-group">
+								<label for="placeForDate" class="col-sm-1 control-label">日期开始:</label>
+								<div class="col-sm-3 ">
+									<div class="input-group date form_dateA " data-date=""
+										data-date-format="yyyymmdd" data-link-field="placeForDateB"
+										data-link-format="yyyymmdd">
+										<input id="placeForDateB" class="form-control " size="16"
+											type="text" value="" readonly>
+										<span class="input-group-addon"><span
+												class="glyphicon glyphicon-calendar"></span></span>
 									</div>
-
-									<div class="col-sm-3 ">
-										<div class="input-group date form_date " data-date=""
-											data-date-format="yyyymmdd"
-											data-link-field="placeForDateE"
-											data-link-format="yyyymmdd">
-											<input id="placeForDateE" class="form-control "
-												size="16" type="text" value="" readonly>
-											<span class="input-group-addon"><span
-													class="glyphicon glyphicon-calendar"></span></span>
-										</div>
-										<input type="hidden" id="placeForDateE" value="" />
+									<input type="hidden" id="placeForDateB" value="" />
+								</div>
+								<label for="placeForDate" class="col-sm-1 control-label">结束:</label>
+								<div class="col-sm-3 ">
+									<div class="input-group date form_date " data-date=""
+										data-date-format="yyyymmdd" data-link-field="placeForDateE"
+										data-link-format="yyyymmdd">
+										<input id="placeForDateE" class="form-control " size="16"
+											type="text" value="" readonly>
+										<span class="input-group-addon"><span
+												class="glyphicon glyphicon-calendar"></span></span>
 									</div>
+									<input type="hidden" id="placeForDateE" value="" />
 								</div>
 							</div>
+							<br />
+							<br />
+							<br />
+							<!-- </div> -->
 							<div class="form-group">
-								<span id="spanID" class="green-label"> 业务ID </span>
-								<input id="saleID" class="can-drop" type="text" value="">
-								<span id="spanNM" class="green-label"> 业务名 </span>
-								<input id="saleNM" class="can-drop" type="text" value="">
-								<button id="SalFIND" type="button" class="btn btn-info">查找</button>
+								<label class="col-sm-1 control-label">业务ID</label>
+								<div class="col-sm-3">
+									<input id="saleID" class="form-control" type="text" value="">
+								</div>
+								<label class="col-sm-1 control-label">业务名</label>
+								<div class="col-sm-3">
+									<input id="saleNM" class="form-control" type="text" value="">
+								</div>
+								<button id="SalFIND" type="button" class="btn btn-default">查找</button>
 							</div>
 							<br />
 							<div class="form-group">
-								<span id="listspan" class="blue-label"> 列表 </span>
-								<select id="FishValue" name="FishValue" class="can-area-note"></select>
-							</div>
-							<div class="form-group">
-								<span id="spanID" class="green-label"> 部門ID </span>
-								<input id="deptID" class="can-drop" type="text" value="">
-								<span id="spanNM" class="green-label"> 部門名 </span>
-								<input id="deptNM" class="can-drop" type="text" value="">
-								<button id="DepFIND" type="button" class="btn btn-info">查找</button>
+								<label class="col-sm-1 control-label">业务列表</label>
+								<div class="col-sm-3">
+									<select id="FishValue" class="form-control" type="text"
+										value=""></select>
+								</div>
 							</div>
 							<br />
+							<br></br>
 							<div class="form-group">
-								<span id="listspan" class="blue-label"> 列表 </span>
-								<select id="CrabValue" name="CrabValue" class="can-area-note"></select>
-							</div>		
+								<label class="col-sm-1 control-label">部門ID</label>
+								<div class="col-sm-3">
+									<input id="deptID" class="form-control" type="text" value="">
+								</div>
+								<label class="col-sm-1 control-label">部門名</label>
+								<div class="col-sm-3">
+									<input id="deptNM" class="form-control" type="text" value="">
+								</div>
+								<button id="DepFIND" type="button" class="btn btn-default">查找</button>
+							</div>
+							</br>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">部門列表</label>
+								<div class="col-sm-3">
+									<select id="CrabValue" class="form-control" type="text"
+										value=""></select>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button id="BTNFormYES" type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+					<button id="BTNFormYES" type="button" class="btn btn-primary"
+						data-dismiss="modal">确认</button>
 					<button id="BTNFormClose" type="button" class="btn btn-primary"
 						data-dismiss="modal">关闭</button>
 				</div>
@@ -224,8 +237,8 @@
 			}
 			//过滤功能组 自定义按钮-----
 			$('#BTNPlace').click(function () {
-				// $('#PlaceFilter').window('open');//日期的
 				$('#lovewindow').modal('show');
+
 				$('.form_dateA').datetimepicker({
 					language: 'zh-CN',
 					weekStart: 1,
@@ -251,25 +264,25 @@
 			});
 			$('#BTNFormYES').click(function () {
 				var FishValue = $('#FishValue').val();
-				FishValue =nulReplaceTxt(FishValue,'');
+				FishValue = nulReplaceTxt(FishValue, '');
 				var LFList = FishValue.split('##');
 				$('#PersonId').val(LFList[0]);
-				$("#FishValue").val(); $("#FishValue").html("");
+				// $("#FishValue").val(); $("#FishValue").html("");
 
 				var CrabValue = $('#CrabValue').val();
-				CrabValue=nulReplaceTxt(CrabValue,''); 
+				CrabValue = nulReplaceTxt(CrabValue, '');
 				var LCList = CrabValue.split('##');
 				$('#DeptId').val(LCList[0]);
-				$("#CrabValue").val(); $("#CrabValue").html("");
-				
+				// $("#CrabValue").val(); $("#CrabValue").html("");
+
 				$('#lovewindow').window('close');
 			});
 			$('#BTNFormClose').click(function () {
 				$('#lovewindow').window('close');
 			});
-		 
+
 			columnsData = [
-				 
+
 			];
 			var contentSum = "";
 			var content = '<tr>'
@@ -304,7 +317,7 @@
 		"DBTable": "auto_parts"
 	}
 	columnsData = [
-		 
+
 	];
 
 	function showDBDataSelf(DataPara, columnsData, DeptId, PersonId, placeForB, placeForE, morder) {
@@ -330,7 +343,7 @@
 			+ '</tr>';
 		contentSum += content;
 		$('#content').html(contentSum);
-		$("#center_TB").dataTable().fnDestroy();  
+		$("#center_TB").dataTable().fnDestroy();
 		var signoption = $("#SIGN option:selected");
 		var signTxt = signoption.text();
 		var Advstr = {
@@ -366,7 +379,7 @@
 				dataSrc: ''
 			},
 			columns: columnsData,
-			// aaSorting: [0, 'asc'],
+			aaSorting: [1, 'desc'], //asc
 			autoWidth: true,
 			language: languageCN,
 			createdRow: function (row, data, dataIndex) {
@@ -407,7 +420,7 @@
 			{ data: 'Supply_Title', "visible": false },
 		];
 	}
-	 
+
 	$('#SalFIND').click(function () {
 		var saleID = $('#saleID').val();
 		var saleNM = $('#saleNM').val();
@@ -418,11 +431,9 @@
 		var deptNM = $('#deptNM').val();
 		FincAdvDeps(deptID, deptNM);
 	});
-	 
-
 	$('#ResetBtn').click(function () {
 		$("#BillNo").val(""); $("#BillNo").html("");
-		$("#BusiPart").val(""); $("#BusiPart").html("");
+		$("#DeptId").val(""); $("#DeptId").html("");
 		$("#PersonId").val(""); $("#PersonId").html("");
 		$("#placeForDateB").val(""); $("#placeForDateB").html("");
 		$("#placeForDateE").val(""); $("#placeForDateE").html("");
@@ -448,7 +459,7 @@
 		};
 		enterFinc(Advstr);
 	});
-	function nulReplaceTxt(passTxt,repword) {
+	function nulReplaceTxt(passTxt, repword) {
 		var ret = '';
 		ret = (passTxt == null || passTxt == undefined) ? (repword) : passTxt;
 		return ret;

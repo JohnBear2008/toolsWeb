@@ -48,7 +48,7 @@ module.exports = function (sender) {
 
 	// Category="%"+Category+"%";
 	var SQLExecute =
-	      " select TOP 1000  a.BillNo,  a.BillDate, a.PersonId,cm1.Username as Personname,  a.DeptId,tcd.DeptName, " +
+	      " select a.BillNo,  a.BillDate, a.PersonId,cm1.Username as Personname,  a.DeptId,tcd.DeptName, " +
 		" a.Remark,  a.CompId, tcg.OrgName,  a.CreatorId,cm2.Username as Creatorname,  a.PermitterId,cm3.Username as Permitname, " +
 		" tvb.FromBillNo,  tvb.OAmount,  tvb.WriteOffOAmount,  tvb.RowCode,  acb.InvoiceBillNo " +
 		" from [arTransferBill] a LEFT JOIN [arTransferBillOut] tvb  on a.BillNo=tvb.BillNo " +
@@ -59,6 +59,7 @@ module.exports = function (sender) {
 		"  LEFT JOIN capOrganization tcg on a.CompId = tcg.OrgId " +
 		"  LEFT JOIN comDepartment tcd on a.DeptId = tcd.DeptId " ;
 		var filter = ' 1=1 '; 
+		var order = ' Order By A.BillDate DESC'; 
 		if (DeptId != "" && DeptId != "null" && DeptId != undefined && DeptId.length > 0) {
 			console.log("部門", DeptId);
 			filter += " AND  a.DeptId  =  " + "'" + DeptId + "' ";
@@ -77,6 +78,9 @@ module.exports = function (sender) {
 		}
 		if (filter != "" && filter != undefined) {
 			SQLExecute = SQLExecute + " WHERE " + filter;
+		}
+		if (order != "" && order != undefined) {
+			SQLExecute = SQLExecute + order;
 		}
 		//  console.log("夜色:" ,SQLExecute );
 			yjDBService_sqlserver.exec({

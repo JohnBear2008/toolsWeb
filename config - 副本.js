@@ -1,64 +1,7 @@
-let yjSecurity = require('./yjSecurity')
 
-let pwe = 'VcboyQ87LTLpDlGDKpyn100KpZ003cFMn+f4UkTpB0Dr6SNii2CLS5WGLXMYzD0wXgs3lkar/SticR1LBCcFbox9Vz6lzk3qKydzxkpaDz54uBxuDYyQR9KxB2eDhXEnFyr8K9Jp0Xr03NmcQ3lIXldwCXSfcqXgKH+u7bnVAeTeow74gYrLkLfx+UXyn98JQNk0ead5Y/CmO9fi6/qC9AJPFsPaERAde0wlx8L/znokyZlP35/+7Vwd1YqHGwYjWwe1Boka3dJ289rE5vigIkVXPxcyEHcIqtLGtTAnRHMuc4R8j+NSQC+z0y3ygTuXFqc5Ppge5Nvu7TC6hwW2Nw=='
-let pweT9 = 'TVaX3EUu8YLju8UV/9keI26SATPqYyRw8QtfTn5aOWofEa0KEfBPE6qxtas1vw7KzjRDkY5yuZupa+ZYToglYy6socUR5jUOQzuM+lZNTiXrIGcog9jerMI/RFVNqWTBdkmOpTiO3gOKLtUuOAz+MHU3Vnq2unsi1lKEvEc5g3v9ML6C846csqtn+Ql1mepcErTBMylS64MPTpWTp2L+4UeBES0/a/Hj+yQ4nd4SC1SECz9/0wJZjPcZBXYpk7mkTYzq646PgpAIdWqUmk7SY4gW2BNjwXbG4+gdoQ/34R+oAxv/K86x++wVnJi3Wulp+zyk1UoPaaRFjbLrONgENw=='
-console.log(yjSecurity["Diffie-Hellman"].decrypt(pwe));
 
 var path = require("path");
-var g_dbConenctions = {
-    //    engine: "mysql",
-    //    connection: {
-    //        server: '10.10.0.23',
-    //        database: 'toolsWeb',
-    //        user: 'demo',
-    //        password: 'test',
-    //        port:'3308',
-    //        insecureAuth: true
-    //    },
-    engine: "mysql",
-    connection: {
-        server: '127.0.0.1',
-        database: 'toolsWeb',
-        user: 'root',
-        password: yjSecurity["Diffie-Hellman"].decrypt(pwe),
-        insecureAuth: true,
-        multipleStatements: true
-        //       timezone:'GMT' //时区
-    },
-    // "erp_Connection": {
-    //     engine: "sqlserver",
-    //     package: "msnodesqlv8",
-    //     connection: {
-    //         driver: "SQL Server Native Client 11.0",
-    //         server: '192.168.0.26',
-    //         database: 'T9Techmation',
-    //         user: 'sa',
-    //         password: '338168',
-    //     }
-    // },
-    // "rich_T9": {
-    //     engine: "sqlserver",
-    //     package: "msnodesqlv8",
-    //     connection: {
-    //         driver: "SQL Server Native Client 10.0",
-    //         server: '192.168.0.22',
-    //         database: 'T9Techmation',
-    //         user: 'sa',
-    //         password: yjSecurity["Diffie-Hellman"].decrypt(pweT9),
-    //     },
-    // },
-    "rich_T9": {
-        engine: "sqlserver",
-        package: "msnodesqlv8",
-        connection: {
-            driver: "SQL Server Native Client 10.0",
-            server: '192.168.0.26',
-            database: 'T9Techmation',
-            user: 'sa',
-            password: 338168,
-        },
-    }
-};
+
 var config = {
     port: 2019,
     biz_Connection: {

@@ -37,7 +37,7 @@ function FincAdvDeps(prodID, prodNM) {//应收帐
       $("#CrabValue").val(); $("#CrabValue").html("");
       for (var i = 0; i < dataArr.length; i++) {
         var youoption = document.createElement("option");
-        youoption.text = dataArr[i].ProductID + " 姓名: " + dataArr[i].ProductName;
+        youoption.text = dataArr[i].ProductID + " 名称: " + dataArr[i].ProductName;
         youoption.id = "crabtime";
         youoption.name = "crabtime";
         youoption.value = dataArr[i].ProductID + "##" + dataArr[i].ProductName;

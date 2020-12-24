@@ -91,7 +91,7 @@ function FunStat( mdata ) {
         speebook.push(mdata[i].WriteOffOAmount);
         speebook.push(mdata[i].RowCode);
         speebook.push(mdata[i].InvoiceBillNo); 
-        kiss.push(speebook);
+        kiss.push(speebook); 
     }
     var sheet1 = XLSX.utils.aoa_to_sheet(kiss);
  

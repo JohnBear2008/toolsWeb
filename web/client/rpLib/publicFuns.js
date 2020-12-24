@@ -1229,8 +1229,6 @@ const getFormData = (i) => {
         //处理异常字符 如 '," 
         value = replaceURI(value);
 
-
-
         if (id) {
             data.push({
                 [id]: value
@@ -1392,9 +1390,10 @@ const uploadFiles = (files) => {
             }
             return myXhr; //xhr对象返回给jQuery使用
         },
-        success: function (data, evt) {
+        success: function (data, evt, info) {
             console.log("file data:" + JSON.stringify(data));
-            console.log("file evt:" + JSON.stringify(evt));
+            console.log("file evt:" + evt);
+            console.log("file info:" + JSON.stringify(info));
 
             let filesLink = getSuccessFilesUrl(data);
             $('#files').html(filesLink)
