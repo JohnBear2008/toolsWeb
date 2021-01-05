@@ -1,0 +1,455 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<!-- date picker -->
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- 打印 -->
+<script src="/public/print/print.js"></script>
+<!-- 预览 -->
+<script src="/arch/FnFee.js"></script>
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<script src="/bomq/supplyFn.js"></script>
+<script src="/bomq/utilFn.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+	<div id="noprint" class="noprint">
+		<div class="divcontent">
+			<div id="handout_wrap_inner"></div>
+			<h1>历史记录查找</h1>
+			<label>文号:</label>
+			<div class="layui-inline">
+				<input class="layui-input" name="BillNo" id="BillNo" value="" autocomplete="off">
+			</div>
+			<label>申请号:</label>
+			<div class="layui-inline">
+				<input class="layui-input" name="ApplicNo" id="ApplicNo" value="" autocomplete="off">
+			</div>
+			<label>模式:</label>
+			<select id="Pattern" name="Pattern" class="can-find-M140"></select>
+			<input type="button" id="SeaBtn" class="btn btn-info" value="查找" />
+			<!-- <input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" /> -->
+			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
+			<button id="BTNFitSearch" type="button" class="btn btn-info">操作</button>
+			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
+			<!-- <input type="button" id="DetailBtn" class="btn btn-info" value="解析" />
+			<input type="button" id="AlterBtn" class="btn btn-info" value="撤回" />
+			<input type="button" id="DraftBtn" class="btn btn-info" value="修改" /> -->
+			<hr>
+			<br />
+			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
+				style="width:800px;height:400px;">
+				<form style="padding:10px 50px;">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
+							<div class="col-sm-3 ">
+								<div class="input-group date form_date " data-date=""
+									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateB"
+									data-link-format="yyyy-mm-dd">
+									<input id="taskMakeDateB" class="form-control " size="16"
+										type="text" value="" readonly>
+									<span class="input-group-addon"><span
+											class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="taskMakeDateB" value="" />
+							</div>
+
+							<div class="col-sm-3 ">
+
+								<div class="input-group date form_date " data-date=""
+									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateE"
+									data-link-format="yyyy-mm-dd">
+									<input id="taskMakeDateE" class="form-control " size="16"
+										type="text" value="" readonly>
+									<span class="input-group-addon"><span
+											class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="taskMakeDateE" value="" />
+							</div>
+						</div>
+				</form>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label"></label>
+				<div class="col-sm-3 ">
+					<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
+					<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
+				</div>
+			</div>
+		</div>
+	</div><!-- modal fade -->
+	<div class="modal fade" id="kisswindow" tabindex="-1" role="dialog" aria-labelledby="kisswindowLabel"
+		aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:70%">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">费用明细</h3>
+						</div>
+						<div id="listPrintViewDiv">
+						</div>
+						<div class="modal-footer">
+							<button id="PrintConfirm" type="button" class="btn btn-info">打印</button>
+							<button id="PrintClose" type="button" class="btn btn-primary"
+								data-dismiss="modal">关闭</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div><!-- 总结 -->
+		</div><!-- /.modal -->
+	</div>	
+		<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+			<!--数据呈现区-->
+			<table id="center_TB" class="table table-striped table-bordered">
+				<thead id="content">
+
+				</thead>
+			</table>
+		</div>
+	</div>
+	<div id="root" style="height: 100%"></div>
+	<script>
+		var missAType = '';
+		var glbA = '';
+		var glbB = '';
+		var glbC = '';
+		var glbD = '';
+		var glbE = '';
+		var glbF = '';
+		var glbG = '';
+		var glbH = '';
+		var glbS = '';
+		var Pattern = '';
+		var advSearch = '';
+		var selClass = '';
+		var FieldA = true;
+		var FieldB = true;
+		var FieldC = true;
+		var FieldD = true;
+		var FieldE = false;
+		var FieldF = false;
+		var FieldG = false;
+		var FieldH = true;
+		var FieldI = false;
+		var FieldJ = false;
+		var FieldK = false;
+		var storage = window.localStorage;
+		var hidata = localStorage.getItem("findcolor");
+		hidata = JSON.parse(hidata);
+		let sData = [];
+		if (hidata != undefined && hidata != null) {
+			FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
+			FieldB = ((hidata.B == null || hidata.B == undefined) ? (FieldB) : hidata.B);
+			FieldC = ((hidata.C == null || hidata.C == undefined) ? (FieldC) : hidata.C);
+			FieldD = ((hidata.D == null || hidata.D == undefined) ? (FieldD) : hidata.D);
+			FieldE = ((hidata.E == null || hidata.E == undefined) ? (FieldE) : hidata.E);
+			FieldF = ((hidata.F == null || hidata.F == undefined) ? (FieldF) : hidata.F);
+			FieldG = ((hidata.G == null || hidata.G == undefined) ? (FieldG) : hidata.G);
+			FieldH = ((hidata.H == null || hidata.H == undefined) ? (FieldH) : hidata.H);
+			FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
+			FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
+			FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
+			console.log("敏A希", FieldA, "敏B希", FieldB);
+		}
+		var columnsData = [];
+		//页面加载函数---------------
+		$(document).ready(function () {
+			layui.use(['form', 'layedit', 'laydate'], function () {
+				var form = layui.form
+					, layer = layui.layer
+					, layedit = layui.layedit
+					, laydate = layui.laydate;
+				form.render();
+				var DataPara = {
+					"tableID": "#center_TB",
+					"DBTable": "auto_parts"
+				}
+
+				missAType = getQueryString("missA");
+				console.log("将心" + missAType);
+				var missAencode = decodeURI(missAType);
+
+				console.log("初心" + missAencode);
+				glbA = missAencode;
+				if (glbA == "" || glbA == 'null' || glbA == null || glbA.length < 0) {
+					glbA = '2020';
+				}
+				if (glbS == "" || glbS == 'null' || glbS == null || glbS.length < 0) {
+					glbS = 'A';
+				}
+				if (glbH == "" || glbH == 'null' || glbH == null || glbH.length < 0) {
+					glbH = 'Parts_Year';
+				}
+				columnsData = [
+
+				];
+				var contentSum = "";
+				var content = '<tr>'
+					+ '<th>栏位1</th>'
+					+ '<th>栏位1</th>'
+					+ '<th>栏位1</th>'
+					+ '<th>栏位1</th>'
+					+ '<th>栏位1</th>'
+
+					+ '</tr>';
+				contentSum += content;
+				$('#content').html(contentSum);
+				var youoption = document.createElement("option");
+				youoption.id = "SIGN";
+				youoption.name = "SIGN";
+				youoption.text = "AND";
+				youoption.value = "1";
+				$("#SIGN").append(youoption);
+				youoption = document.createElement("option");
+				youoption.text = "OR";
+				youoption.value = "2";
+				$("#SIGN").append(youoption);
+			});
+			getpull();
+		});
+
+		var DataPara = {
+			"tableID": "#center_TB",
+			"DBTable": "auto_parts"
+		}
+		columnsData = [
+
+		];
+		function showDBDataByBill(DataPara, columnsData, BillNo, ApplicNo, Pattern) {
+
+			var limit = '5000';
+			var filter = ' 1=1 ';
+			var orderBy = '';
+
+			var contentSum = "";
+			var content = '<tr>'
+				+ '<th></th>'
+				+ '<th>系统编号</th>'
+				+ '<th>预算项目</th>'
+				+ '<th>品名/说明</th>'
+				+ '<th>申请日期</th>'
+				+ '<th>计划案号</th>'
+				+ '<th>申请单编号</th>'
+				+ '<th>使用部门</th>'
+				+ '<th>申请人ID</th>'
+				+ '<th>总金额</th>'
+				// + '<th>币别</th>'
+				// + '<th>付款方式</th>'
+				+ '<th>打单日期</th>'
+				+ '<th>现在审批人</th>'
+				+ '<th>状态</th>'
+				+ '<th>申请说明</th>'
+				+ '</tr>';
+			contentSum += content;
+			$('#content').html(contentSum);
+			$("#center_TB").dataTable().fnDestroy();  //搞好thead
+			var signoption = $("#SIGN option:selected");
+			var signTxt = signoption.text();
+			var Advstr = { "SIGN": signTxt, "BillNo": BillNo, "ApplicNo": ApplicNo, "Pattern": Pattern, "limit": limit };
+			$("#matchRec").html("查找条件:" + signTxt + "   " + BillNo + "   " + ApplicNo);
+			var reportChannel = 'FeeHead';
+			var arrange = 'Lookup';
+			var taskData = { "reportType": reportChannel, "arrange": arrange };
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMFinc/getRoute",
+				success: function (data) {
+					let newColumns = [];
+					newColumns = data;
+					var reportType = 'FeeHisVisit';
+					var taskData = { "reportType": reportType, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					bornTable(taskData, newColumns);
+				},
+				error: function () {
+				}
+			})
+		}
+		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern) {
+			var limit = '5000';
+			var filter = ' 1=1 ';
+			var orderBy = '';
+
+			var contentSum = "";
+			var content = '<tr>'
+				+ '<th></th>'
+				+ '<th>系统编号</th>'
+				+ '<th>预算项目</th>'
+				+ '<th>品名/说明</th>'
+				+ '<th>申请日期</th>'
+				+ '<th>计划案号</th>'
+				+ '<th>申请单编号</th>'
+				+ '<th>使用部门</th>'
+				+ '<th>申请人ID</th>'
+				+ '<th>总金额</th>'
+				// + '<th>币别</th>'
+				// + '<th>付款方式</th>'
+				+ '<th>打单日期</th>'
+				+ '<th>现在审批人</th>'
+				+ '<th>状态</th>'
+				+ '<th>申请说明</th>'
+				+ '</tr>';
+			contentSum += content;
+			$('#content').html(contentSum);
+			$("#center_TB").dataTable().fnDestroy();  //搞好thead
+			var signoption = $("#SIGN option:selected");
+			var signTxt = signoption.text();
+			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "limit": limit };
+			console.log("看精英小帅", Advstr);
+			var reportChannel = 'FeeHead';
+			var arrange = 'Lookup';
+			var taskData = { "reportType": reportChannel, "arrange": arrange };
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMFinc/getRoute",
+				success: function (data) {
+					console.log("机车和平", data)
+					let newColumns = [];
+					newColumns = data;
+					var reportType = 'FeeHisVisit';
+					var taskType = { "reportType": reportType, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					console.log("审审....", taskType);
+					bornTable(taskType, newColumns);
+				},
+				error: function () {
+				}
+			})
+
+
+		}
+		function bornTable(taskData, columnsData) {
+			$(DataPara.tableID).DataTable({
+				ajax: {
+					method: 'post',
+					data: taskData,
+					url: "/app/TMFinc/getRoute",
+					dataSrc: ''
+				},
+				columns: columnsData,
+				aaSorting: [1, 'desc'],
+				language: languageCN
+			});
+			var table = $('#center_TB').DataTable();
+			$('#center_TB tbody').on('click', 'tr', function () {
+				$(this).removeClass('selected');
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});
+		}
+
+		function reloadCol() {
+			columnsData = [
+
+			];
+		}
+		$('#BTNFitler').click(function () {
+
+			$('#DivFilter').window('open');
+
+			$('.form_date').datetimepicker({
+				language: 'zh-CN',
+				weekStart: 1,
+				todayBtn: 1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+			});
+
+			$("#BTNGroupFilter").children().removeClass("active");
+			$("#BTNFitler").addClass("active")
+		});
+		//过滤功能组 自定义过滤确认按钮-----NNN
+		$('#FilterComfirmBtnN').click(function () {
+			$('#DivFilter').window('close');
+		});
+		//过滤功能组 自定义过滤确认按钮-----
+		$('#FilterCancelBtnN').click(function () {
+
+			$("#taskMakeDateB").val("")
+			$("#taskMakeDateE").val("")
+		});
+		$('#BTNFitSearch').click(function () {
+			$("#center_TB").dataTable().fnDestroy();
+			var MakeDateB = $("#taskMakeDateB").val();
+			var MakeDateE = $("#taskMakeDateE").val();
+
+			reloadCol();
+			console.log("秋43", JSON.stringify(columnsData));
+			console.log("B理绪", MakeDateB);
+			console.log("E理绪", MakeDateE);
+			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern);
+		});
+
+		$('#ResetBtn').click(function () {
+			$("#mainclass").html(""); $("#mainclass").val("");
+			$("#mateId").html(""); $("#mateId").val("");
+			$("#invoice").html(""); $("#invoice").val("");
+			$("#mainpast").html(""); $("#mainpast").val("");
+			$("#mainname").html(""); $("#mainname").val("");
+			getCategory();
+		});
+		$('#DetailBtn').click(function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				console.log("西阭", (billNo));
+				shuffleWin(billNo);
+				$('#kisswindow').modal('show');
+			}
+		});
+		$('#SeaBtn').click(function () {
+			$("#center_TB").dataTable().fnDestroy();
+			var BillNo = $('#BillNo').val();
+			var ApplicNo = $('#ApplicNo').val();
+			Pattern = $('#Pattern').val();
+			var msource = '';
+			var morder = "";
+			reloadCol();
+			showDBDataByBill(DataPara, columnsData, BillNo, ApplicNo, Pattern);
+		});
+		$('#PrintConfirm').click(function () {
+			Print('#listPrintViewDiv', {
+				onStart: function () {
+					console.log('onStart', new Date())
+				},
+				onEnd: function () {
+					console.log('onEnd', new Date())
+				}
+			})
+		});
+		$('#PrintClose').click(function () {
+			$('#kisswindow').window('close');
+		});
+
+	</script>

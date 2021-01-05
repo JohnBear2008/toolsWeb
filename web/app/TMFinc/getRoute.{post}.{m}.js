@@ -17,6 +17,9 @@ module.exports = function (sender) {
         case "vsInvoBill":
             url = ["FincTM", "vsInvoBill"];
             break;
+        case "visitTranAR":
+            url = ["FincTM", "visitTranAR"];
+            break;
         case "FincHead":
             url = ["FincTM", "FincHead"];
             break;
@@ -25,6 +28,35 @@ module.exports = function (sender) {
             break;
         case "OrderV":
             url = ["FincTM", "OrderV"];
+            break;
+		case "ironSubject":
+            url = ["BguTM", "ironSubject"];
+            break;
+		case "applyBudget":
+            url = ["BguTM", "applyBudget"];
+            break;
+		case "BulletQuery":
+            url = ["BguTM", "BulletQuery"];
+            break;
+		case "CherryFee":
+            url = ["BguTM", "CherryFee"];
+            console.log("CherryFee ",reportType);
+            break;
+		case "agreeFee":
+            url = ["BguTM", "agreeFee"];
+            console.log("agreeFee ",reportType);
+            break;
+		case "rejectFee":
+            url = ["BguTM", "rejectFee"];
+            console.log("rejectFee ",reportType);
+            break;
+		case "FeeHead":
+            url = ["BguTM", "FeeHead"];
+            console.log("FeeHead ",reportType);
+            break;
+		case "FeeHisVisit":
+            url = ["BguTM", "FeeHisVisit"];
+            console.log("FeeHisVisit...................... ",reportType);
             break;
         default:
             console.log("找不到Finc路由");

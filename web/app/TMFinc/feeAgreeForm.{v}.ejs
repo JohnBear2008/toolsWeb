@@ -1,0 +1,287 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- JS  -->
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<!-- date picker -->
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/arch/FnFee.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<!-- <script src="/banq/TMfun.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<script src="/banq/power.js"></script> -->
+<script src="/bomq/utilFn.js"></script>
+<script src="/public/print/print.js"></script>
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<link rel="stylesheet" href="/layui/v2.5.6/css/layui.css" media="all">
+<script src="/layui/v2.5.6/layui.all.js" charset="utf-8"></script>
+<script src="/layui/v2.5.6/layui.js" charset="utf-8"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+	<div id="noprint" class="noprint">
+		<div class="divcontent">
+			<div id="handout_wrap_inner"></div>
+			<h1>弘讯科技采购单审批</h1>
+			<label>审批号:</label>
+			<div class="layui-inline">
+				<input class="layui-input" name="mainbillno" id="mainbillno" value="" autocomplete="off">
+			</div>
+			<input type="button" id="SeaBtn" onclick="searchFile('1')" class="btn btn-info" value="查找" />
+			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
+			<input type="button" id="SeaDateBtn" onclick="searchFile('2')" class="btn btn-info" value="查找" />
+			<hr>
+			<br />
+		</div>
+	</div>
+	<table class="layui-hide" id="test" lay-filter="test"></table>
+	<script type="text/html" id="toolbarDemo">
+      <div class="layui-btn-group userTable">
+		<label>操&nbsp;&nbsp;&nbsp;&nbsp;作: </label>
+        <button class="layui-btn layui-btn-normal" lay-event="viewSumary">预览</button>
+        <!-- <button class="layui-btn layui-btn-normal" lay-event="massReject">批量审批驳回</button> -->
+      </div>
+    </script>
+	<table id="demo" lay-filter="test"></table>
+	<script type="text/html" id="barDemo">
+      <a class="layui-btn layui-btn-xs" lay-event="approval">同意</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reject">驳回</a>
+      <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="analysis">预览</a> 
+    </script>
+	<!-- 总结 -->
+	<div class="modal fade" id="kisswindow" tabindex="-1" role="dialog" aria-labelledby="kisswindowLabel"
+		aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:70%">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">费用明细</h3>
+						</div>
+						<div id="listPrintViewDiv">
+						</div>
+						<div class="modal-footer">
+							<button id="BtnAgree" type="button" class="btn btn-warning">同意</button>
+							<button id="BtnReject" type="button" class="btn btn-danger ">退回</button>
+							<button id="PrintConfirm" type="button" class="btn btn-info">打印</button>
+							<button id="PrintClose" type="button" class="btn btn-primary"
+								data-dismiss="modal">关闭</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div><!-- 总结 -->
+			<!-- 点击自定义过滤弹出的窗口 -->
+			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
+				style="width:800px;height:400px;">
+				<div class="form-horizontal">
+					<form style="padding:10px 50px;">
+						<div class="form-group">
+							<label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
+							<div class="col-sm-3 ">
+								<div class="input-group date form_date " data-date=""
+									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateB"
+									data-link-format="yyyy-mm-dd">
+									<input id="taskMakeDateB" class="form-control " size="16"
+										type="text" value="" readonly>
+									<span class="input-group-addon"><span
+											class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="taskMakeDateB" value="" />
+							</div>
+							<div class="col-sm-3 ">
+								<div class="input-group date form_date " data-date=""
+									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateE"
+									data-link-format="yyyy-mm-dd">
+									<input id="taskMakeDateE" class="form-control " size="16"
+										type="text" value="" readonly>
+									<span class="input-group-addon"><span
+											class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="taskMakeDateE" value="" />
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label"></label>
+					<div class="col-sm-3 ">
+						<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
+						<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
+					</div>
+				</div>
+			</div>
+			<!-- fin 自定义过滤  -->
+			<script>
+				var missmode = '';
+				var missType = '';
+				var missAcute = '';
+				var missBcute = '';
+				var missCcute = '';
+				var missDcute = '';
+				var centerTable = null;
+				var objCenter = null;
+				const empdata = [];
+				var sessionName = '';
+				var sessionAID = '';
+				var sessionOID = '';
+				let sData = [];
+				$(document).ready(function () {
+					layui.use(['table', 'form', 'layedit', 'laydate'], function () {
+						sessionName = "<%-locals.session.yjUser.Name%>";
+						sessionAID = "<%-locals.session.yjUser.AID%>";
+						sessionOID = "<%-locals.session.yjUser.OID%>";
+						// if (sessionAID == 'tmCodeAdm' || sessionAID == 'Admin') {
+						// } else {
+						// 	chkPower(sessionOID);
+						// }
+						missType = getQueryString("missT");
+						//    console.log("妲己"+missType);
+						var missTencode = decodeURI(missType);
+						missAcute = getQueryString("missA");
+						//    console.log("将心"+missAcute);
+						var missAencode = decodeURI(missAcute);
+						//    console.log("初心"+missAencode);
+						missBcute = getQueryString("missB");
+						// console.log("将咖"+missBcute);
+						var missBencode = decodeURI(missBcute);
+						missCcute = getQueryString("missC");
+						// console.log("初咖" + missCcute);
+						missDcute = getQueryString("missD");
+						missmode = getQueryString("missE");
+						$("#mainbillno").val(missAcute);
+						$("#mainPclass").val(missBcute);
+						$("#taskMakeDateB").val(missCcute);
+						$("#taskMakeDateE").val(missDcute);
+						searchFile(missmode);
+					});
+				});
+				$('#BTNFitler').click(function () {
+					$('#DivFilter').window('open');
+					$('.form_date').datetimepicker({
+						language: 'zh-CN',
+						weekStart: 1,
+						todayBtn: 1,
+						autoclose: 1,
+						todayHighlight: 1,
+						startView: 2,
+						minView: 2,
+						forceParse: 0
+					});
+					$("#BTNFitler").addClass("active")
+				});
+				//过滤功能组 自定义过滤确认按钮-----NNN
+				$('#FilterComfirmBtnN').click(function () {
+					$('#DivFilter').window('close');
+				});
+				//过滤功能组 自定义过滤确认按钮-----
+				$('#FilterCancelBtnN').click(function () {
+					$("#taskMakeDateB").val("")
+					$("#taskMakeDateE").val("")
+				});
+				function doubleChk() {
+					var checkStatus = centerTable.checkStatus(objCenter.config.id);
+				}
+				$('#PrintConfirm').click(function () {
+					Print('#listPrintViewDiv', {
+						onStart: function () {
+							console.log('onStart', new Date())
+						},
+						onEnd: function () {
+							console.log('onEnd', new Date())
+						}
+					})
+				});
+				$('#BtnAgree').click(function () {
+					layer.confirm('进行审批同意吗，请确认操作是否无误？', {
+						btn: ['是', '否']
+					}, function () {
+						var checkStatus = centerTable.checkStatus(objCenter.config.id);
+						var dataARR = (checkStatus.data);
+						var selBillNo = dataARR[0].BillNo;
+						// console.log("艺仁",JSON.stringify(checkStatus));
+						// console.log("敏希", (selBillNo));
+						// layer.msg('操作成功', { icon: 1 });
+						var reportType = 'agreeFee';
+						var taskData = {
+							"reportType": reportType, "BillNo": selBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
+						}
+						// layer.alert("同意此笔审批号" + selBillNo);
+						$('#kisswindow').modal('toggle');
+						$.ajax({
+							method: 'post',
+							data: taskData,
+							url: "/app/TMFinc/getRoute",
+							success: function (result) {
+								layer.confirm("申请文号" + result.BillNo + "已" + (result.Status), {
+									btn: ['知道了']
+								}, function () {
+									layer.msg('操作成功', { icon: 1 });
+									var DateB = $("#taskMakeDateB").val();
+									var DateE = $("#taskMakeDateE").val();
+									var paramType = missType;
+									var paramClearA = encodeURI(encodeURI(result.BillNo));
+									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + paramType + "&missA=" + paramClearA + "&missC=" + DateB + "&missD=" + DateE + " ";
+								});
+							},
+							error: function () {
+							}
+						})
+					}, function () {
+						layer.msg('无操作', { icon: 1 });
+					});
+				});
+				$('#BtnReject').click(function () {
+					layer.confirm('进行审批驳回吗，请确认操作是否无误？', {
+						btn: ['是', '否']
+					}, function () {
+						var checkStatus = centerTable.checkStatus(objCenter.config.id);
+						var dataARR = (checkStatus.data);
+						var selBillNo = dataARR[0].BillNo;
+						// console.log("艺仁",JSON.stringify(checkStatus));
+						// console.log("敏希", (selBillNo));
+						layer.msg('操作成功', { icon: 1 });
+						var reportType = 'rejectFee';
+						var taskData = {
+							"reportType": reportType, "BillNo": selBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
+						}
+						layer.alert("驳回此笔审批号" + selBillNo);
+						$('#kisswindow').modal('toggle');
+						$.ajax({
+							method: 'post',
+							data: taskData,
+							url: "/app/TMFinc/getRoute",
+							success: function (result) {
+								layer.confirm("驳回文号" + result.BillNo + "已" + (result.Status), {
+									btn: ['知道了']
+								}, function () {
+									layer.msg('操作成功', { icon: 1 });
+									var DateB = $("#taskMakeDateB").val();
+									var DateE = $("#taskMakeDateE").val();
+									var paramType = missType;
+									var paramClearA = encodeURI(encodeURI(result.BillNo));
+									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + paramType + "&missA=" + paramClearA + "&missC=" + DateB + "&missD=" + DateE + " ";
+								});
+							},
+							error: function () {
+							}
+						})
+					}, function () {
+						layer.msg('无操作', { icon: 1 });
+					});
+				});
+			</script>
