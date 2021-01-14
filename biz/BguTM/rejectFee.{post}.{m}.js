@@ -40,8 +40,8 @@ module.exports = function (sender) {
 				var CurWorkId = '';
 				var CurName = '';
                 var CurStatus = 'R';
-                var Status = '';
-                var StatusText = '';
+                var SendStatus = '';
+                var CurText = '';
                 var AppFlag = 0;
                 var fixdate = '';
                 var fixlv = '';
@@ -161,31 +161,28 @@ module.exports = function (sender) {
                         nextName = data[i].BodName;
                     }
                 }
-                if (AppFlag == 1) {
-                    Status = '1';
-                    console.log("翻盘成功  ", AppFlag);
-                } else {
-                    Status = '2';
-                    StatusText = '退回';
-                    console.log("翻盘失算....", AppFlag);
-                }
-                HandleParts(BillNo, Status , StatusText , CurStatus, fixdate, fixlv);
-                console.log("妲己nextLevel", nextLevel);
-                console.log("妲己EntryDate", EntryDate);
-                console.log("妲己nextName", nextName);
-                console.log("妲己nextWorkId", nextWorkId);
+ 
+                    CurStatus = 'R';
+                    CurText = '退回';
+					console.log("赔了夫人....");
+				 
+                HandleParts(BillNo,  CurText , CurStatus, fixdate, fixlv);
+                console.log("褒姒nextLevel", nextLevel);
+                console.log("褒姒EntryDate", EntryDate);
+                console.log("褒姒nextName", nextName);
+                console.log("褒姒nextWorkId", nextWorkId);
             },
             error: sender.error
         });
     }
-    function HandleParts(BillNo, Status, StatusText , CurStatus, fixdate, fixlv) {
-        let SQL = "Update `bgu_rule` set  Status = ? , StatusText = ?, CurStatus = ? , " +
+    function HandleParts(BillNo,  CurText , CurStatus, fixdate, fixlv) {
+        let SQL = "Update `bgu_rule` set   CurText = ?, CurStatus = ? , " +
             " " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
         console.log("香月SQL:", SQL);
 
         yjDBService.exec({
             sql: SQL,
-            parameters: [Status, StatusText , CurStatus, BillNo],
+            parameters: [ CurText , CurStatus, BillNo],
             rowsAsArray: true,
             success: function (result) {
                 var retcode = { "Status": "OK", "message": "审批完成", "BillNo": BillNo };

@@ -40,7 +40,8 @@ module.exports = function (sender) {
 				var CurLevel = '';
 				var CurWorkId = '';
 				var CurName = '';
-				var Status = '';
+				var CurStatus = '';
+				var CurText = '';
 				var AppFlag = 0;
 				var fixdate = '';
 				var fixlv = '';
@@ -54,7 +55,7 @@ module.exports = function (sender) {
 					CurWorkId = data[i].CurWorkId;
 					CurName = data[i].CurName;
 					nextLevel = parseInt(CurLevel) + 1;
-					if (nextLevel == TermiLevel) {
+					if (CurLevel == TermiLevel) {   
 						AppFlag = 1;
 					}
 					if (nextLevel == 2) {
@@ -160,13 +161,14 @@ module.exports = function (sender) {
 					}
 				}
 				if (AppFlag == 1) {
-					Status = '1';
-					console.log("翻盘成功  ", AppFlag);
+					CurStatus = 'Q';
+					CurText = '核准'; 
+					console.log("生米煮熟  ", AppFlag);
 				} else {
-					Status = '0';
+					CurStatus = 'P';
 					console.log("翻盘进行....", AppFlag);
 				}
-				HandleParts(BillNo, Status, nextLevel, nextWorkId, nextName, fixdate, fixlv);
+				HandleParts(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, fixdate, fixlv);
 				console.log("妲己nextLevel", nextLevel);
 				console.log("妲己EntryDate", EntryDate);
 				console.log("妲己nextName", nextName);
@@ -175,14 +177,14 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function HandleParts(BillNo, Status, CurLevel, CurWorkId, CurName, fixdate, fixlv) {
-		let SQL = "Update `bgu_rule` set  Status = ? , CurLevel = ? , CurWorkId = ? , CurName = ? ," +
+	function HandleParts(BillNo, CurStatus, CurText , CurLevel, CurWorkId, CurName, fixdate, fixlv) {
+		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? ," +
 			" " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
 		console.log("香月SQL:", SQL);
 
 		yjDBService.exec({
 			sql: SQL,
-			parameters: [Status, CurLevel, CurWorkId, CurName, BillNo],
+			parameters: [CurStatus, CurText , CurLevel, CurWorkId, CurName, BillNo],
 			rowsAsArray: true,
 			success: function (result) {
 				var retcode = { "Status": "OK", "message": "审批完成", "BillNo": BillNo };
@@ -195,7 +197,7 @@ module.exports = function (sender) {
 }
 
 			// `entryDate`, `groupLabel`, `staffID`, `staffName`, `curStatus`, `CurLevel`,
-			//  `TermiLevel`, `CurWorkId`, `CurName`, `Status`, `StatusText`,
+			//  `TermiLevel`, `CurWorkId`, `CurName`, `Status`, `CurText`,
 			// `oppWorkId`,
 			// `oppName` ,
 			// `oppDate` ,

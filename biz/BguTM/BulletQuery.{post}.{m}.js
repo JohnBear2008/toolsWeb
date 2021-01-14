@@ -37,6 +37,7 @@ module.exports = function (sender) {
             var Delivery = '';
             var Supplier = '';
             var Underburget = '';
+            var AppendType = '';
             var Department = '';
             if (result[1][i] == null || result[1][i] == undefined) {
             } else {
@@ -44,7 +45,7 @@ module.exports = function (sender) {
               SNNo = result[1][i].SNNo; SNNo = nulReplaceTxt(SNNo);
               BudgetItem = result[1][i].BudgetItem; BudgetItem = nulReplaceTxt(BudgetItem);
               ItemNo = result[1][i].ItemNo; ItemNo = nulReplaceTxt(ItemNo);
-              Description = result[1][i].Description; Description = nulReplaceTxt(Description);
+              // Description = result[1][i].Description; Description = nulReplaceTxt(Description);
               Unit = result[1][i].Unit; Unit = nulReplaceTxt(Unit);
               Remain = result[1][i].Remain; Remain = nulReplaceTxt(Remain);
               UnitPrice = result[1][i].UnitPrice; UnitPrice = nulReplaceTxt(UnitPrice);
@@ -53,6 +54,7 @@ module.exports = function (sender) {
               Delivery = result[1][i].Delivery; Delivery = nulReplaceTxt(Delivery);
               Supplier = result[1][i].Supplier; Supplier = nulReplaceTxt(Supplier);
               Underburget = result[1][i].Underburget; Underburget = nulReplaceTxt(Underburget);
+              AppendType = result[1][i].AppendType; AppendType = nulReplaceTxt(AppendType);
               Department = result[1][i].Department; Department = nulReplaceTxt(Department);
             }
             var obj2 = {
@@ -60,7 +62,7 @@ module.exports = function (sender) {
               "SNNo": SNNo,
               "BudgetItem": BudgetItem,
               "ItemNo": ItemNo,
-              "Description": Description,
+              // "Description": Description,
               "Unit": Unit,
               "Remain": Remain,
               "UnitPrice": UnitPrice,
@@ -69,6 +71,7 @@ module.exports = function (sender) {
               "Delivery": Delivery,
               "Supplier": Supplier,
               "Underburget": Underburget,
+              "AppendType": AppendType,
               "Department": Department,
             };
             dataARR.push(obj2);
@@ -111,12 +114,12 @@ module.exports = function (sender) {
           var PsdDate = '';
           var CeoDate = '';
           var BodDate = '';
-          var Status = '';
+          var SendStatus = '';
           var CurStatus = '';
           var CurLevel = '';
           var TermiLevel = '';
           var CurName = '';
-          var StatusText = '';
+          var CurText = '';
           if (result[2][0] == null || result[2][0] == undefined) {
           } else {
             OppName = result[2][0].OppName; OppName = nulReplaceTxt(OppName); OppDate = result[2][0].OppDate; OppDate = nulReplaceTxt(OppDate);
@@ -128,9 +131,10 @@ module.exports = function (sender) {
             PsdName = result[2][0].PsdName; PsdName = nulReplaceTxt(PsdName); PsdDate = result[2][0].PsdDate; PsdDate = nulReplaceTxt(PsdDate);
             CeoName = result[2][0].CeoName; CeoName = nulReplaceTxt(CeoName); CeoDate = result[2][0].CeoDate; CeoDate = nulReplaceTxt(CeoDate);
             BodName = result[2][0].BodName; BodName = nulReplaceTxt(BodName); BodDate = result[2][0].BodDate; BodDate = nulReplaceTxt(BodDate);
-            Status = result[2][0].Status; Status = nulReplaceTxt(Status); CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
+            SendStatus = result[2][0].SendStatus; SendStatus = nulReplaceTxt(SendStatus); 
+            CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
             CurLevel = result[2][0].CurLevel; CurLevel = nulReplaceTxt(CurLevel); TermiLevel = result[2][0].TermiLevel; TermiLevel = nulReplaceTxt(TermiLevel);
-            CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); StatusText = result[2][0].StatusText; StatusText = nulReplaceTxt(StatusText);
+            CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); CurText = result[2][0].CurText; CurText = nulReplaceTxt(CurText);
           }
           var objX = {
             "OppName": OppName, "OppDate": OppDate,
@@ -142,9 +146,9 @@ module.exports = function (sender) {
             "PsdName": PsdName, "PsdDate": PsdDate,
             "CeoName": CeoName, "CeoDate": CeoDate,
             "BodName": BodName, "BodDate": BodDate,
-            "Status": Status, "CurStatus": CurStatus,
+            "SendStatus": SendStatus, "CurStatus": CurStatus,
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
-            "CurName": CurName, "StatusText": StatusText,
+            "CurName": CurName, "CurText": CurText,
           };
           var dumpX = JSON.stringify(objX);
           if (dumpX.length > 50) {
@@ -166,7 +170,7 @@ module.exports = function (sender) {
       // var BillNo = '20201225103088';
       let SQL2 =
         " select  `BillNo` , `SNNo` , `BudgetItem` , `ItemNo` , `Description` , `Unit` , " +
-        " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` , `Department` " +
+        " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` ,  `AppendType` ,`Department` " +
         " from bgu_purchdetail tba  " +
         " where tba.BillNo= ?  Order By SNNo ";
       console.log("DDD韩效:", qryBillNo);
@@ -192,13 +196,14 @@ module.exports = function (sender) {
               "Delivery": data[i].Delivery,
               "Supplier": data[i].Supplier,
               "Underburget": data[i].Underburget,
+              "AppendType": data[i].AppendType,
               "Department": data[i].Department,
             }
             datas.push(temp)
           }
           var dump = JSON.stringify(datas);
-          if (dump.length > 100) {
-            console.log("世禄:" + dump.substring(0, 100));
+          if (dump.length > 500) {
+            console.log("世禄:" + dump.substring(0, 500));
           } else {
             console.log("金禄:" + JSON.stringify(datas));
           }
@@ -214,7 +219,6 @@ module.exports = function (sender) {
         "`DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
         " from bgu_purchmain tba  " +
         " where tba.BillNo= ?   ";
-      // console.log("SQL2:", SQL2, " 金采媛 ", qryBillNo);
       yjDBService.exec({
         sql: SQL2,
         parameters: [qryBillNo],
@@ -256,13 +260,11 @@ module.exports = function (sender) {
       // var BillNo = '20201225103088';
       let SQL2 =
         " select  `BillNo` ,`entryDate` ,`groupLabel` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
-        " `CurName` ,`Status`,`StatusText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`DptWorkId` ,`DptName` ," +
+        " `CurName` ,`SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`DptWorkId` ,`DptName` ," +
         " `DptDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
         " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate`  from bgu_rule tba  " +
         " where tba.BillNo= ?   ";
-      // console.log(" 金賢 SQL2:", SQL2, " 詩賢 ", BillNo);
-      // `BillNo` ,`entryDate` ,`groupLabel` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ,`CurName` ,`Status`,`StatusText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`DptWorkId` ,`DptName` ,`DptDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,`Level4` ,`pur1WorkId` ,`PurName` ,`pur1Date` ,`Level5` ,`pExWorkId` ,`pExName` ,`pExDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` ,`Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate` ,
       yjDBService.exec({
         sql: SQL2,
         parameters: [qryBillNo],
@@ -283,8 +285,8 @@ module.exports = function (sender) {
               "Level7": data[i].Level7, "PsdWorkId": data[i].PsdWorkId, "PsdName": data[i].PsdName, "PsdDate": data[i].PsdDate,
               "Level8": data[i].Level8, "CeoWorkId": data[i].CeoWorkId, "CeoName": data[i].CeoName, "CeoDate": data[i].CeoDate,
               "Level9": data[i].Level9, "BodWorkId": data[i].BodWorkId, "BodName": data[i].BodName, "BodDate": data[i].BodDate,
-              "BillNo": data[i].BillNo, "Status": data[i].Status, "CurStatus": data[i].CurStatus, "CurLevel": data[i].CurLevel,
-              "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "StatusText": data[i].StatusText,
+              "BillNo": data[i].BillNo, "SendStatus": data[i].SendStatus, "CurStatus": data[i].CurStatus, "CurLevel": data[i].CurLevel,
+              "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "CurText": data[i].CurText,
             }
             datas.push(temp)
           }

@@ -1,34 +1,6 @@
 //FnFee.js
-function analysisWin(pclass, billid, pcode, pname) {
-    var reportType = 'CherryQuery';
-    var arrange = 'popup';
-    var taskData = { "reportType": reportType, "arrange": arrange, "PartsClass": pclass, "BILLID": billid, "PartsCode": pcode, "DBTable": "auto_rec_parts" };
-    $.ajax({
-        method: 'post',
-        data: taskData,
-        url: "/app/TMCode/getRoute",
-        success: function (data) {
-            console.log("新新");
-            const json2 = JSON.stringify(data);
-            const bjob = JSON.parse(json2);
-            $("#specNHead").val("编码: " + pcode + " 品名: " + pname);
-            $("#specEF").val("EF: " + bjob.SupplyTitle + " 供应商: " + bjob.SMTTitle);
-            $("#specModel").val(bjob.Model);
-            $("#specAssem").val(bjob.Assembly);
-            $("#specUnitE").val(bjob.UnitE);
-            $("#specPhase").val(bjob.Phase);
-            $("#specPrior").val(bjob.Prior);
-            $("#specStaff").val(bjob.Staff);
-            $("#specApplyDate").val(bjob.ApplyDate);
-            $("#specList").val(bjob.ValueM + bjob.NameM + bjob.ValueA + bjob.NameA + bjob.Value1 + bjob.Name1 + bjob.Value2 + bjob.Name2 + bjob.Value3 + bjob.Name3 + bjob.Value4 + bjob.Name4 + bjob.Value5 + bjob.Name5 + bjob.Value6 + bjob.Name6 + bjob.Value7 + bjob.Name7 + bjob.Value8 + bjob.Name8
-                + bjob.Value9 + bjob.Name9 + bjob.Value10 + bjob.Name10 + bjob.Value11 + bjob.Name11 + bjob.Value12 + bjob.Name12 + bjob.Value13 + bjob.Name13 + bjob.Value14 + bjob.Name14 + bjob.Value15 + bjob.Name15
-                + bjob.Value16 + bjob.Name16 + bjob.Value17 + bjob.Name17 + bjob.Value18 + bjob.Name18 + bjob.Value19 + bjob.Name19 + bjob.Value20 + bjob.Name20);
-        },
-        error: function () {
-        }
-    })
-}
-function shuffleWin(  BillNo ) {
+ 
+function shuffleA(  BillNo ) {
     var reportType = 'BulletQuery';
     var arrange = 'popup';
     var taskData = { "reportType": reportType, "arrange": arrange,   "BillNo": BillNo  };
@@ -40,19 +12,18 @@ function shuffleWin(  BillNo ) {
             const json2 = JSON.stringify(data);
             const bjob = JSON.parse(json2);
             // console.log("新新", json2);
-            console.log("加里", bjob[10].StaffName);
-            console.log("李在希", bjob[10].Explanation);
-            var StatusOK =bjob[11].StatusText;
-            var CurLevel =bjob[11].CurLevel;
+            console.log("加里", bjob[10].StaffName); 
+            console.log("李在希", bjob[11].CurLevel);
             sData = [];
             let htmlModel = '';
+            let CurLight = bjob[11].CurLevel;
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
                 '<table width = "1000" border = "1"  > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="3" height="50" align="center"><img src="/images/techmation.png" /></td>' +
                 '<td  colspan="7" align="center"><h3>宁波弘讯科技股份有限公司</h3></td>' +
-                '<td  colspan="3" align="center" class="coffee-drop" >Status</td> ' +
+                '<td  colspan="3" align="center" class="coffee-drop" >StatusOK</td> ' +
                 '</tr>' +
                 '<tr>' +
                 '<td  colspan="7" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
@@ -87,7 +58,6 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">SNO_1</td>' +
                 '<td width="50" height="25">BudItem_1</td>' +
                 '<td width="50" height="25">ItemO_1</td>' +
-                '<td width="50" height="25">Descip_1</td>' +
                 '<td width="50" height="25">Measure_1</td>' +
                 '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">UniPrice_1</td>' +
@@ -96,13 +66,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_1</td>' +
                 '<td width="50" height="25">Vender_1</td>' +
                 '<td width="50" height="25">Underbur_1</td>' +
+                '<td width="50" height="25">ApendType_1</td>' +
                 '<td width="50" height="25">DeptM_1</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_2</td>' +
                 '<td width="50" height="25">BudItem_2</td>' +
                 '<td width="50" height="25">ItemO_2</td>' +
-                '<td width="50" height="25">Descip_2</td>' +
                 '<td width="50" height="25">Measure_2</td>' +
                 '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">UniPrice_2</td>' +
@@ -111,13 +81,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_2</td>' +
                 '<td width="50" height="25">Vender_2</td>' +
                 '<td width="50" height="25">Underbur_2</td>' +
+                '<td width="50" height="25">ApendType_2</td>' +
                 '<td width="50" height="25">DeptM_2</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_3</td>' +
                 '<td width="50" height="25">BudItem_3</td>' +
                 '<td width="50" height="25">ItemO_3</td>' +
-                '<td width="50" height="25">Descip_3</td>' +
                 '<td width="50" height="25">Measure_3</td>' +
                 '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">UniPrice_3</td>' +
@@ -126,13 +96,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_3</td>' +
                 '<td width="50" height="25">Vender_3</td>' +
                 '<td width="50" height="25">Underbur_3</td>' +
+                '<td width="50" height="25">ApendType_3</td>' +
                 '<td width="50" height="25">DeptM_3</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_4</td>' +
                 '<td width="50" height="25">BudItem_4</td>' +
                 '<td width="50" height="25">ItemO_4</td>' +
-                '<td width="50" height="25">Descip_4</td>' +
                 '<td width="50" height="25">Measure_4</td>' +
                 '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">UniPrice_4</td>' +
@@ -141,13 +111,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_4</td>' +
                 '<td width="50" height="25">Vender_4</td>' +
                 '<td width="50" height="25">Underbur_4</td>' +
+                '<td width="50" height="25">ApendType_4</td>' +
                 '<td width="50" height="25">DeptM_4</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_5</td>' +
                 '<td width="50" height="25">BudItem_5</td>' +
                 '<td width="50" height="25">ItemO_5</td>' +
-                '<td width="50" height="25">Descip_5</td>' +
                 '<td width="50" height="25">Measure_5</td>' +
                 '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">UniPrice_5</td>' +
@@ -156,13 +126,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_5</td>' +
                 '<td width="50" height="25">Vender_5</td>' +
                 '<td width="50" height="25">Underbur_5</td>' +
+                '<td width="50" height="25">ApendType_5</td>' +
                 '<td width="50" height="25">DeptM_5</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_6</td>' +
                 '<td width="50" height="25">BudItem_6</td>' +
                 '<td width="50" height="25">ItemO_6</td>' +
-                '<td width="50" height="25">Descip_6</td>' +
                 '<td width="50" height="25">Measure_6</td>' +
                 '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">UniPrice_6</td>' +
@@ -171,13 +141,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_6</td>' +
                 '<td width="50" height="25">Vender_6</td>' +
                 '<td width="50" height="25">Underbur_6</td>' +
+                '<td width="50" height="25">ApendType_6</td>' +
                 '<td width="50" height="25">DeptM_6</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_7</td>' +
                 '<td width="50" height="25">BudItem_7</td>' +
                 '<td width="50" height="25">ItemO_7</td>' +
-                '<td width="50" height="25">Descip_7</td>' +
                 '<td width="50" height="25">Measure_7</td>' +
                 '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">UniPrice_7</td>' +
@@ -186,13 +156,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_7</td>' +
                 '<td width="50" height="25">Vender_7</td>' +
                 '<td width="50" height="25">Underbur_7</td>' +
+                '<td width="50" height="25">ApendType_7</td>' +
                 '<td width="50" height="25">DeptM_7</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_8</td>' +
                 '<td width="50" height="25">BudItem_8</td>' +
                 '<td width="50" height="25">ItemO_8</td>' +
-                '<td width="50" height="25">Descip_8</td>' +
                 '<td width="50" height="25">Measure_8</td>' +
                 '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">UniPrice_8</td>' +
@@ -201,13 +171,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_8</td>' +
                 '<td width="50" height="25">Vender_8</td>' +
                 '<td width="50" height="25">Underbur_8</td>' +
+                '<td width="50" height="25">ApendType_8</td>' +
                 '<td width="50" height="25">DeptM_8</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_9</td>' +
                 '<td width="50" height="25">BudItem_9</td>' +
                 '<td width="50" height="25">ItemO_9</td>' +
-                '<td width="50" height="25">Descip_9</td>' +
                 '<td width="50" height="25">Measure_9</td>' +
                 '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">UniPrice_9</td>' +
@@ -216,13 +186,13 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_9</td>' +
                 '<td width="50" height="25">Vender_9</td>' +
                 '<td width="50" height="25">Underbur_9</td>' +
+                '<td width="50" height="25">ApendType_9</td>' +
                 '<td width="50" height="25">DeptM_9</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">SNO_10</td>' +
                 '<td width="50" height="25">BudItem_10</td>' +
                 '<td width="50" height="25">ItemO_10</td>' +
-                '<td width="50" height="25">Descip_10</td>' +
                 '<td width="50" height="25">Measure_10</td>' +
                 '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">UniPrice_10</td>' +
@@ -231,10 +201,12 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" height="25">Delivway_10</td>' +
                 '<td width="50" height="25">Vender_10</td>' +
                 '<td width="50" height="25">Underbur_10</td>' +
+                '<td width="50" height="25">ApendType_10</td>' +
                 '<td width="50" height="25">DeptM_10</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" rowspan ="4" colspan="8" height="25">申请说明</td>' +
+                '<td width="50" rowspan="4" colspan="8" height="25">申请说明： <br/>  ' +
+                '<textarea class="fee-drop-super" width="1500" rows="5" >Explan</textarea></td> ' +
                 '<td width="50" colspan="2" height="25">总金额</td>' +
                 '<td width="50" colspan="3" height="25">TotalV</td>' +
                 '</tr>' +
@@ -247,9 +219,9 @@ function shuffleWin(  BillNo ) {
                 '<td width="50" colspan="3" height="25">Pay_method</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="2" height="25">说明：</td>' +
-                '<td width="50" colspan="3" height="25">Explan</td>' +
-                '</tr>' +
+                '<td width="50" colspan="5" height="25">说明： <br/>' +
+                '1.上表各项内容需详填 <br/>' +
+                '2.本单若用于产品原物料的采购，须填写“库存”列；用于工具类采购，须填写“新增/换新/补偿”列</td>' +             '</tr>' +
                 '<tr>' +
                 '<td id=\"manOP\" width="50"  colspan="1" height="25">申请人</td>' +
                 '<td id=\"mandpt\" width="50"  colspan="1" height="25">部门主管</td>' +
@@ -289,8 +261,7 @@ function shuffleWin(  BillNo ) {
                 objT = {
                     "SNO" : bjob[i].SNNo, 
                     "BudItem" : bjob[i].BudgetItem, 
-                    "ItemO": bjob[i].ItemNo,
-                    "Descip": bjob[i].Description,
+                    "ItemO": bjob[i].ItemNo, 
                     "Measure": bjob[i].Unit,
                     "Invent": bjob[i].Remain,
                     "UniPrice": bjob[i].UnitPrice,
@@ -299,6 +270,7 @@ function shuffleWin(  BillNo ) {
                     "Delivway": bjob[i].Delivery,
                     "Vender": bjob[i].Supplier,
                     "Underbur": bjob[i].Underburget,
+                    "ApendType": bjob[i].AppendType,
                     "DeptM": bjob[i].Department,
                 }
                 // console.log("睿娜",objT);
@@ -335,9 +307,9 @@ function shuffleWin(  BillNo ) {
                     "PsdName": bjob[i].PsdName, "PsdDate": bjob[i].PsdDate,
                     "CeoName": bjob[i].CeoName, "CeoDate": bjob[i].CeoDate,
                     "BodName": bjob[i].BodName, "BodDate": bjob[i].BodDate,
-                    "Status": bjob[i].Status, "CurStatus": bjob[i].CurStatus,
+                    "CurText": bjob[i].CurText, "CurStatus": bjob[i].CurStatus,
                     "CurLevel": bjob[i].CurLevel, "TermiLevel": bjob[i].TermiLevel,
-                    "CurName": bjob[i].CurName, "StatusText": bjob[i].StatusText, 
+                    "CurName": bjob[i].CurName, "SendText": bjob[i].SendText, 
                 }
                 console.log("真率",objX);
                 sData.push( objX );
@@ -345,20 +317,20 @@ function shuffleWin(  BillNo ) {
             $('#listPrintViewDiv').html(htmlModel);
             var fillPrintModel = ({
                 htmlModel,
-                SNO_1,  BudItem_1  ,  ItemO_1  , Descip_1  , Measure_1  ,  Invent_1  , UniPrice_1  ,QuantAmt_1  ,SubTot_1  ,Delivway_1  , Vender_1  ,Underbur_1  ,DeptM_1  ,
-                SNO_2,  BudItem_2  ,  ItemO_2  , Descip_2  , Measure_2  ,  Invent_2  , UniPrice_2  ,QuantAmt_2  ,SubTot_2  ,Delivway_2  , Vender_2  ,Underbur_2  ,DeptM_2  ,
-                SNO_3,  BudItem_3  ,  ItemO_3  , Descip_3  , Measure_3  ,  Invent_3  , UniPrice_3  ,QuantAmt_3  ,SubTot_3  ,Delivway_3  , Vender_3  ,Underbur_3  ,DeptM_3  ,
-                SNO_4,  BudItem_4  ,  ItemO_4  , Descip_4  , Measure_4  ,  Invent_4  , UniPrice_4  ,QuantAmt_4  ,SubTot_4  ,Delivway_4  , Vender_4  ,Underbur_4  ,DeptM_4  ,
-                SNO_5,  BudItem_5  ,  ItemO_5  , Descip_5  , Measure_5  ,  Invent_5  , UniPrice_5  ,QuantAmt_5  ,SubTot_5  ,Delivway_5  , Vender_5  ,Underbur_5  ,DeptM_5  ,
-                SNO_6,  BudItem_6  ,  ItemO_6  , Descip_6  , Measure_6  ,  Invent_6  , UniPrice_6  ,QuantAmt_6  ,SubTot_6  ,Delivway_6  , Vender_6  ,Underbur_6  ,DeptM_6  ,
-                SNO_7,  BudItem_7  ,  ItemO_7  , Descip_7  , Measure_7  ,  Invent_7  , UniPrice_7  ,QuantAmt_7  ,SubTot_7  ,Delivway_7  , Vender_7  ,Underbur_7  ,DeptM_7  ,
-                SNO_8,  BudItem_8  ,  ItemO_8  , Descip_8  , Measure_8  ,  Invent_8  , UniPrice_8  ,QuantAmt_8  ,SubTot_8  ,Delivway_8  , Vender_8  ,Underbur_8  ,DeptM_8  ,
-                SNO_9,  BudItem_9  ,  ItemO_9  , Descip_9  , Measure_9  ,  Invent_9  , UniPrice_9  ,QuantAmt_9  ,SubTot_9  ,Delivway_9  , Vender_9  ,Underbur_9  ,DeptM_9  ,
-                SNO_10, BudItem_10 ,  ItemO_10 , Descip_10 , Measure_10 ,  Invent_10 , UniPrice_10 ,QuantAmt_10 ,SubTot_10 ,Delivway_10 , Vender_10 ,Underbur_10 ,DeptM_10 ,
+                SNO_1,  BudItem_1  ,  ItemO_1  ,  Measure_1  ,  Invent_1  , UniPrice_1  ,QuantAmt_1  ,SubTot_1  ,Delivway_1  , Vender_1  ,Underbur_1  , ApendType_1  ,DeptM_1  ,
+                SNO_2,  BudItem_2  ,  ItemO_2  ,  Measure_2  ,  Invent_2  , UniPrice_2  ,QuantAmt_2  ,SubTot_2  ,Delivway_2  , Vender_2  ,Underbur_2  , ApendType_2  ,DeptM_2  ,
+                SNO_3,  BudItem_3  ,  ItemO_3  ,  Measure_3  ,  Invent_3  , UniPrice_3  ,QuantAmt_3  ,SubTot_3  ,Delivway_3  , Vender_3  ,Underbur_3  , ApendType_3  ,DeptM_3  ,
+                SNO_4,  BudItem_4  ,  ItemO_4  ,  Measure_4  ,  Invent_4  , UniPrice_4  ,QuantAmt_4  ,SubTot_4  ,Delivway_4  , Vender_4  ,Underbur_4  , ApendType_4  ,DeptM_4  ,
+                SNO_5,  BudItem_5  ,  ItemO_5  ,  Measure_5  ,  Invent_5  , UniPrice_5  ,QuantAmt_5  ,SubTot_5  ,Delivway_5  , Vender_5  ,Underbur_5  , ApendType_5  ,DeptM_5  ,
+                SNO_6,  BudItem_6  ,  ItemO_6  ,  Measure_6  ,  Invent_6  , UniPrice_6  ,QuantAmt_6  ,SubTot_6  ,Delivway_6  , Vender_6  ,Underbur_6  , ApendType_6  ,DeptM_6  ,
+                SNO_7,  BudItem_7  ,  ItemO_7  ,  Measure_7  ,  Invent_7  , UniPrice_7  ,QuantAmt_7  ,SubTot_7  ,Delivway_7  , Vender_7  ,Underbur_7  , ApendType_7  ,DeptM_7  ,
+                SNO_8,  BudItem_8  ,  ItemO_8  ,  Measure_8  ,  Invent_8  , UniPrice_8  ,QuantAmt_8  ,SubTot_8  ,Delivway_8  , Vender_8  ,Underbur_8  , ApendType_8  ,DeptM_8  ,
+                SNO_9,  BudItem_9  ,  ItemO_9  ,  Measure_9  ,  Invent_9  , UniPrice_9  ,QuantAmt_9  ,SubTot_9  ,Delivway_9  , Vender_9  ,Underbur_9  , ApendType_9  ,DeptM_9  ,
+                SNO_10, BudItem_10 ,  ItemO_10 ,  Measure_10 ,  Invent_10 , UniPrice_10 ,QuantAmt_10 ,SubTot_10 ,Delivway_10 , Vender_10 ,Underbur_10 , ApendType_10 ,DeptM_10 ,
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, DeptName,  TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, DptName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
                 OppDate, DptDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
-                Status,
+                StatusOK,
                 }) => {
                 let newHtml = htmlModel
                 .replace(/SNO_1/, SNO_1)    .replace(/BudItem_1/,  BudItem_1 )
@@ -372,16 +344,16 @@ function shuffleWin(  BillNo ) {
                 .replace(/SNO_9/, SNO_9 )   .replace(/BudItem_9/,  BudItem_9 )
                 .replace(/SNO_10/, SNO_10)  .replace(/BudItem_10/, BudItem_10)
 
-                .replace(/ItemO_1/, ItemO_1)    .replace(/Descip_1/,  Descip_1 )
-                .replace(/ItemO_2/, ItemO_2)    .replace(/Descip_2/,  Descip_2 )
-                .replace(/ItemO_3/, ItemO_3)    .replace(/Descip_3/,  Descip_3 )
-                .replace(/ItemO_4/, ItemO_4)    .replace(/Descip_4/,  Descip_4 )
-                .replace(/ItemO_5/, ItemO_5 )   .replace(/Descip_5/,  Descip_5 )
-                .replace(/ItemO_6/, ItemO_6 )   .replace(/Descip_6/,  Descip_6 )
-                .replace(/ItemO_7/, ItemO_7 )   .replace(/Descip_7/,  Descip_7 )
-                .replace(/ItemO_8/, ItemO_8 )   .replace(/Descip_8/,  Descip_8 )
-                .replace(/ItemO_9/, ItemO_9 )   .replace(/Descip_9/,  Descip_9 )
-                .replace(/ItemO_10/, ItemO_10)  .replace(/Descip_10/, Descip_10)
+                .replace(/ItemO_1/, ItemO_1)    .replace(/ApendType_1/,  ApendType_1 )
+                .replace(/ItemO_2/, ItemO_2)    .replace(/ApendType_2/,  ApendType_2 )
+                .replace(/ItemO_3/, ItemO_3)    .replace(/ApendType_3/,  ApendType_3 )
+                .replace(/ItemO_4/, ItemO_4)    .replace(/ApendType_4/,  ApendType_4 )
+                .replace(/ItemO_5/, ItemO_5 )   .replace(/ApendType_5/,  ApendType_5 )
+                .replace(/ItemO_6/, ItemO_6 )   .replace(/ApendType_6/,  ApendType_6 )
+                .replace(/ItemO_7/, ItemO_7 )   .replace(/ApendType_7/,  ApendType_7 )
+                .replace(/ItemO_8/, ItemO_8 )   .replace(/ApendType_8/,  ApendType_8 )
+                .replace(/ItemO_9/, ItemO_9 )   .replace(/ApendType_9/,  ApendType_9 )
+                .replace(/ItemO_10/, ItemO_10)  .replace(/ApendType_10/, ApendType_10)
 
                 .replace(/Measure_1/, Measure_1)    .replace(/Invent_1/,  Invent_1 )
                 .replace(/Measure_2/, Measure_2)    .replace(/Invent_2/,  Invent_2 )
@@ -470,7 +442,7 @@ function shuffleWin(  BillNo ) {
                 .replace(/CeoDate/, CeoDate )   
                 .replace(/BodDate/, BodDate)
 
-                .replace(/Status/, Status)
+                .replace(/StatusOK/, StatusOK)
                ;
                 return newHtml;
             }
@@ -502,16 +474,16 @@ function shuffleWin(  BillNo ) {
                             BudItem_9:  sData[8].BudItem, SNO_9:  sData[8].SNO,
                             BudItem_10: sData[9].BudItem, SNO_10: sData[9].SNO,
 
-                            ItemO_1:  sData[0].ItemO, Descip_1:  sData[0].Descip,
-                            ItemO_2:  sData[1].ItemO, Descip_2:  sData[1].Descip,
-                            ItemO_3:  sData[2].ItemO, Descip_3:  sData[2].Descip,
-                            ItemO_4:  sData[3].ItemO, Descip_4:  sData[3].Descip,
-                            ItemO_5:  sData[4].ItemO, Descip_5:  sData[4].Descip,
-                            ItemO_6:  sData[5].ItemO, Descip_6:  sData[5].Descip,
-                            ItemO_7:  sData[6].ItemO, Descip_7:  sData[6].Descip,
-                            ItemO_8:  sData[7].ItemO, Descip_8:  sData[7].Descip,
-                            ItemO_9:  sData[8].ItemO, Descip_9:  sData[8].Descip,
-                            ItemO_10: sData[9].ItemO, Descip_10: sData[9].Descip,
+                            ItemO_1:  sData[0].ItemO, ApendType_1:  sData[0].ApendType,
+                            ItemO_2:  sData[1].ItemO, ApendType_2:  sData[1].ApendType,
+                            ItemO_3:  sData[2].ItemO, ApendType_3:  sData[2].ApendType,
+                            ItemO_4:  sData[3].ItemO, ApendType_4:  sData[3].ApendType,
+                            ItemO_5:  sData[4].ItemO, ApendType_5:  sData[4].ApendType,
+                            ItemO_6:  sData[5].ItemO, ApendType_6:  sData[5].ApendType,
+                            ItemO_7:  sData[6].ItemO, ApendType_7:  sData[6].ApendType,
+                            ItemO_8:  sData[7].ItemO, ApendType_8:  sData[7].ApendType,
+                            ItemO_9:  sData[8].ItemO, ApendType_9:  sData[8].ApendType,
+                            ItemO_10: sData[9].ItemO, ApendType_10: sData[9].ApendType,
 
                             Measure_1:  sData[0].Measure, Invent_1:  sData[0].Invent,
                             Measure_2:  sData[1].Measure, Invent_2:  sData[1].Invent,
@@ -600,7 +572,7 @@ function shuffleWin(  BillNo ) {
                             CeoDate:  sData[11].CeoDate, 
                             BodDate:  sData[11].BodDate, 
 
-                            Status:  StatusOK, 
+                            StatusOK:  sData[11].CurText, 
      
                         })
                         if (i === 0) {
@@ -614,28 +586,28 @@ function shuffleWin(  BillNo ) {
             createRpHtml(sData);
 
            
-            if(CurLevel =='1'){
+            if(CurLight =='1'){
                 $("#mandpt").addClass("fee-approval"); 
             }
-            if(CurLevel =='2'){
+            if(CurLight =='2'){
                 $("#manvip").addClass("fee-approval"); 
             }
-            if(CurLevel =='3'){
+            if(CurLight =='3'){
                 $("#manpur").addClass("fee-approval"); 
             }
-            if(CurLevel =='4'){
+            if(CurLight =='4'){
                 $("#manpex").addClass("fee-approval"); 
             }
-            if(CurLevel =='5'){
+            if(CurLight =='5'){
                 $("#mancfo").addClass("fee-approval"); 
             }
-            if(CurLevel =='6'){
+            if(CurLight =='6'){
                 $("#manpsd").addClass("fee-approval"); 
             }
-            if(CurLevel =='7'){
+            if(CurLight =='7'){
                 $("#manceo").addClass("fee-approval"); 
             }
-            if(CurLevel =='8'){
+            if(CurLight =='8'){
                 $("#manbod").addClass("fee-approval"); 
             }
             divHtml = '';
@@ -646,182 +618,7 @@ function shuffleWin(  BillNo ) {
         }
     })
 }
-function searchFile(mode) {
-    var qrybillno = $('#mainbillno').val();
-    const emdata = [
-    ]
-    let dataArr = [];
-    var reportType = 'CherryFee';
-    var arrange = 'search';
-    var DateB = $("#taskMakeDateB").val();
-    var DateE = $("#taskMakeDateE").val();
-    var taskData = '';
-    if (mode == '0') {
-        taskData = {
-            "reportType": reportType, "arrange": arrange,  
-            "CurWorkId":  sessionAID , "CurName": sessionName ,
-        };
-    }else if (mode == '1') {
-        taskData = {
-            "reportType": reportType, "arrange": arrange, 
-            "CurWorkId":  sessionAID , "CurName": '' ,
-        };
-    } else {
-        taskData = {
-            "reportType": reportType, "arrange": arrange, "weekbeg": DateB, "weekend": DateE ,
-            "CurWorkId":  sessionAID , "CurName": sessionName ,
-        };
-    }
-
-    $.ajax({
-        method: 'post',
-        data: taskData,
-        url: "/app/TMFinc/getRoute",
-        success: function (data) {
-            dataArr = data;
-            const json2 = JSON.stringify(dataArr);
-            const bjob = JSON.parse(json2);
-            // console.log("端装", json2, "机动", data.length);
-            for (var i = 0; i < dataArr.length; i++) {
-                var dataTTT = dataArr[i];
-                emdata.push(dataTTT);
-            }
-            var table = layui.table;
-            centerTable = table;
-            table = $.extend(table, { config: { checkName: 'checked' } });
-            table.render({
-                elem: '#test'
-                , data: emdata
-                , toolbar: '#toolbarDemo'
-                , defaultToolbar: ['filter', 'exports', 'print', {
-                    title: '提示'
-                    , layEvent: 'LAYTABLE_TIPS'
-                    , icon: 'layui-icon-tips'
-                }]
-                , width :1350
-                , title: '数据表'
-                , cols: [[
-                    { type: 'checkbox', fixed: 'left' }
-                    , { field: 'BillNo', title: '系统号', width: 140, sort: true }
-                    , { field: 'ListNo', title: '表单编号', width: 100 , sort: true }
-                    , { field: 'RequestDate', title: '申请日期', width: 120, sort: true  }
-                    , { field: 'ProjectNo', title: '计划案号', width: 100, sort: true  }
-                    , { field: 'ApplicNo', title: '申请单号', width: 90 }
-                    , { field: 'DeptName', title: '使用部门', width: 80 }
-                    , { field: 'StaffID', title: '提交人', width: 80 }
-                    , { field: 'StaffName', title: '提交人', width: 80 }
-                    , { field: 'TotalValue', title: '总金额', width: 70 }
-                    , { field: 'Currency', title: '币别', width: 70 }
-                    , { field: 'Payment', title: '付款方式', width: 70 }
-                    , { field: 'CurName', title: '审批人', width: 70 }
-                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200 }
-                ]]
-                , page: true
-            });
-            table.on('toolbar(test)', function (obj) {
-                objCenter = obj;
-                var checkStatus = table.checkStatus(obj.config.id);
-                switch (obj.event) {
-                    case 'viewSumary':
-                        var dataARR = (checkStatus.data);
-                        // console.log("z智阭", JSON.stringify(checkStatus));
-                        console.log("西阭", (dataARR[0].BillNo));
-                        CapBillNo =  dataARR[0].BillNo;
-                        shuffleA(  dataARR[0].BillNo );
-                        // <DIV STYLE="page-break-before:always">
-                        $('#kisswindow').modal('show');
-                        break;
-                    case 'massReject':
-                        break;
-                    case 'isAll':
-                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
-                        break;
-                    case 'LAYTABLE_TIPS':
-                        layer.alert('这是工具栏右侧自定义的一个图标按钮');
-                };
-            });
-            table.on('tool(test)', function (obj) {
-                var data = obj.data;
-                var Parts_BillNo = data.BillNo;
-                 
-                if (obj.event === 'analysis') {
-                    shuffleA( Parts_BillNo );
-                    CapBillNo = Parts_BillNo;
-                    // <DIV STYLE="page-break-before:always">
-                    $('#kisswindow').modal('show');
-                } else if (obj.event === 'approval') {
-                    layer.confirm('进行审批同意吗，请确认操作是否无误？', {
-                        btn: ['是', '否']
-                    }, function () {
-                        layer.msg('操作成功', { icon: 1 });
-                        var reportType = 'agreeFee';
-                        var taskData = {
-                            "reportType": reportType, "BillNo": Parts_BillNo, "CurWorkId":  sessionAID , "CurName": sessionName ,
-                        }
-                        layer.alert("同意此笔审批号" + Parts_BillNo);
-                        $.ajax({
-                            method: 'post',
-                            data: taskData,
-                            url: "/app/TMFinc/getRoute",
-                            success: function (result) {
-                                layer.confirm("申请文号" + result.BillNo + "已" + (result.Status), {
-                                    btn: ['知道了']
-                                }, function () {
-                                    var DateB = $("#taskMakeDateB").val();
-                                    var DateE = $("#taskMakeDateE").val();
-                                    var paramType = missType;
-                                    var paramClearA = encodeURI(encodeURI(Parts_BillNo)); 
-                                    console.log("双", missType, "夏", Parts_BillNo, "迎", DateB, "我", DateE);
-                                    window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + paramType + "&missA=" + paramClearA +   "&missC=" + DateB + "&missD=" + DateE + "&missE=" + mode + " ";
-                                });
-                            },
-                            error: function () {
-                            }
-                        })
-                    }, function () {
-                        layer.msg('无操作', { icon: 1 });
-                    });
-                } else if (obj.event === 'reject') {
-                    layer.confirm('进行审批驳回吗，请确认操作是否无误？', {
-                        btn: ['是', '否']
-                    }, function () {
-                        layer.msg('操作成功', { icon: 1 });
-                        var reportType = 'rejectFee';
-                        var taskData = {
-                            "reportType": reportType, "BillNo": Parts_BillNo, "CurWorkId":  sessionAID , "CurName": sessionName 
-                        }
-                        layer.alert("驳回此笔审批号" + Parts_BillNo);
-                        $.ajax({
-                            method: 'post',
-                            data: taskData,
-                            url: "/app/TMFinc/getRoute",
-                            success: function (result) {
-                                layer.confirm("申请文号" + result.BillNo + "已" + (result.Status), {
-                                    btn: ['知道了'] //按钮
-                                }, function () {
-                                    var DateB = $("#taskMakeDateB").val();
-                                    var DateE = $("#taskMakeDateE").val();
-                                    var paramType = missType;
-                                    var paramClearA = encodeURI(encodeURI(Parts_BillNo));
-                                    // console.log("双", missType, "夏", qrybillno, "雪", qryclass, "迎", DateB, "我", DateE);
-                                    window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + paramType + "&missA=" + paramClearA +  "&missC=" + DateB + "&missD=" + DateE + "&missE=" + mode + " ";
-                                });
-                            },
-                            error: function () {
-                            }
-                        })
-                    }, function () {
-                        layer.msg('无操作', { icon: 1 });
-                    });
-                } else if (obj.event === 'repeat') {   
-
-                }
-            });
-        },
-        error: function () {
-        }
-    })
-}
+ 
 
 $('#PrintClose').click(function () {
     $('#kisswindow').window('close');

@@ -25,6 +25,7 @@
 <script src="/public/print/print.js"></script>
 <!-- 预览 -->
 <script src="/arch/FnFee.js"></script>
+<script src="/arch/FnSubA.js"></script>
 
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
@@ -35,25 +36,26 @@
 	<div id="noprint" class="noprint">
 		<div class="divcontent">
 			<div id="handout_wrap_inner"></div>
-			<h1>历史记录查找</h1>
-			<label>文号:</label>
+			<h1>费用单据查找</h1>
+			<!-- <label>文号:</label>
 			<div class="layui-inline">
 				<input class="layui-input" name="BillNo" id="BillNo" value="" autocomplete="off">
 			</div>
 			<label>申请号:</label>
 			<div class="layui-inline">
 				<input class="layui-input" name="ApplicNo" id="ApplicNo" value="" autocomplete="off">
-			</div>
+			</div> -->
 			<label>模式:</label>
 			<select id="Pattern" name="Pattern" class="can-find-M140"></select>
-			<input type="button" id="SeaBtn" class="btn btn-info" value="查找" />
+			<button id="SeaBtn" class="btn btn-default">与我相关</button>
+			<button id="SeaAllBtn" class="btn btn-default">全部单据</button>
 			<!-- <input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" /> -->
 			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
-			<button id="BTNFitSearch" type="button" class="btn btn-info">操作</button>
+			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
 			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
-			<!-- <input type="button" id="DetailBtn" class="btn btn-info" value="解析" />
-			<input type="button" id="AlterBtn" class="btn btn-info" value="撤回" />
-			<input type="button" id="DraftBtn" class="btn btn-info" value="修改" /> -->
+			<input type="button" id="btn_apply" class="btn btn-info" onclick="apply_hmi();" value="送审" />
+			<!-- <input type="button" id="AlterBtn" class="btn btn-info" value="撤回" />
+			<input type="button" id="DraftBtn" class="btn btn-info" value="修改" />   -->
 			<hr>
 			<br />
 			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
@@ -118,19 +120,23 @@
 				</div><!-- /.modal -->
 			</div><!-- 总结 -->
 		</div><!-- /.modal -->
-	</div>	
-		<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
-			<!--数据呈现区-->
-			<table id="center_TB" class="table table-striped table-bordered">
-				<thead id="content">
+	</div>
+	<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+		<!--数据呈现区-->
+		<table id="center_TB" class="table table-striped table-bordered">
+			<thead id="content">
 
-				</thead>
-			</table>
-		</div>
+			</thead>
+		</table>
+	</div>
 	</div>
 	<div id="root" style="height: 100%"></div>
 	<script>
-		var missAType = '';
+		var missType = '';
+		var missAcute = '';
+		var missBcute = '';
+		var missCcute = '';
+		var missDcute = '';
 		var glbA = '';
 		var glbB = '';
 		var glbC = '';
@@ -155,8 +161,10 @@
 		var FieldJ = false;
 		var FieldK = false;
 		var storage = window.localStorage;
-		var hidata = localStorage.getItem("findcolor");
+		var hidata = localStorage.getItem("findXXX");
 		hidata = JSON.parse(hidata);
+		var sessionName = '';
+		var sessionOID = '';
 		let sData = [];
 		if (hidata != undefined && hidata != null) {
 			FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
@@ -175,6 +183,8 @@
 		var columnsData = [];
 		//页面加载函数---------------
 		$(document).ready(function () {
+			sessionName = "<%-locals.session.yjUser.Name%>";
+			sessionOID = "<%-locals.session.yjUser.OID%>";
 			layui.use(['form', 'layedit', 'laydate'], function () {
 				var form = layui.form
 					, layer = layui.layer
@@ -186,32 +196,19 @@
 					"DBTable": "auto_parts"
 				}
 
-				missAType = getQueryString("missA");
-				console.log("将心" + missAType);
-				var missAencode = decodeURI(missAType);
-
-				console.log("初心" + missAencode);
+				missType = getQueryString("missT");
+				console.log("将心glbT:" + missType);
+				missAcute = getQueryString("missA");
+				console.log("将心glbA:" + missAcute);
+				var missAencode = decodeURI(missAcute);
+ 
 				glbA = missAencode;
-				if (glbA == "" || glbA == 'null' || glbA == null || glbA.length < 0) {
-					glbA = '2020';
-				}
-				if (glbS == "" || glbS == 'null' || glbS == null || glbS.length < 0) {
-					glbS = 'A';
-				}
-				if (glbH == "" || glbH == 'null' || glbH == null || glbH.length < 0) {
-					glbH = 'Parts_Year';
-				}
 				columnsData = [
 
 				];
 				var contentSum = "";
 				var content = '<tr>'
-					+ '<th>栏位1</th>'
-					+ '<th>栏位1</th>'
-					+ '<th>栏位1</th>'
-					+ '<th>栏位1</th>'
-					+ '<th>栏位1</th>'
-
+					+ '<th></th>'
 					+ '</tr>';
 				contentSum += content;
 				$('#content').html(contentSum);
@@ -226,7 +223,9 @@
 				youoption.value = "2";
 				$("#SIGN").append(youoption);
 			});
+			$("#SeaBtn").addClass("active");
 			getpull();
+			$("#pdf-wrapper").css('visibility', 'hidden');
 		});
 
 		var DataPara = {
@@ -236,38 +235,16 @@
 		columnsData = [
 
 		];
-		function showDBDataByBill(DataPara, columnsData, BillNo, ApplicNo, Pattern) {
-
+		function showDBDataByBill(DataPara, columnsData, Pattern, StaffName) {
+			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
 			var orderBy = '';
-
-			var contentSum = "";
-			var content = '<tr>'
-				+ '<th></th>'
-				+ '<th>系统编号</th>'
-				+ '<th>预算项目</th>'
-				+ '<th>品名/说明</th>'
-				+ '<th>申请日期</th>'
-				+ '<th>计划案号</th>'
-				+ '<th>申请单编号</th>'
-				+ '<th>使用部门</th>'
-				+ '<th>申请人ID</th>'
-				+ '<th>总金额</th>'
-				// + '<th>币别</th>'
-				// + '<th>付款方式</th>'
-				+ '<th>打单日期</th>'
-				+ '<th>现在审批人</th>'
-				+ '<th>状态</th>'
-				+ '<th>申请说明</th>'
-				+ '</tr>';
-			contentSum += content;
-			$('#content').html(contentSum);
 			$("#center_TB").dataTable().fnDestroy();  //搞好thead
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
-			var Advstr = { "SIGN": signTxt, "BillNo": BillNo, "ApplicNo": ApplicNo, "Pattern": Pattern, "limit": limit };
-			$("#matchRec").html("查找条件:" + signTxt + "   " + BillNo + "   " + ApplicNo);
+			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
+			$("#matchRec").html("查找条件:" + signTxt);
 			var reportChannel = 'FeeHead';
 			var arrange = 'Lookup';
 			var taskData = { "reportType": reportChannel, "arrange": arrange };
@@ -276,8 +253,9 @@
 				data: taskData,
 				url: "/app/TMFinc/getRoute",
 				success: function (data) {
+					$('#content').html(data[1]);
 					let newColumns = [];
-					newColumns = data;
+					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
 					var taskData = { "reportType": reportType, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskData, newColumns);
@@ -287,36 +265,14 @@
 			})
 		}
 		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern) {
+			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
 			var orderBy = '';
-
-			var contentSum = "";
-			var content = '<tr>'
-				+ '<th></th>'
-				+ '<th>系统编号</th>'
-				+ '<th>预算项目</th>'
-				+ '<th>品名/说明</th>'
-				+ '<th>申请日期</th>'
-				+ '<th>计划案号</th>'
-				+ '<th>申请单编号</th>'
-				+ '<th>使用部门</th>'
-				+ '<th>申请人ID</th>'
-				+ '<th>总金额</th>'
-				// + '<th>币别</th>'
-				// + '<th>付款方式</th>'
-				+ '<th>打单日期</th>'
-				+ '<th>现在审批人</th>'
-				+ '<th>状态</th>'
-				+ '<th>申请说明</th>'
-				+ '</tr>';
-			contentSum += content;
-			$('#content').html(contentSum);
-			$("#center_TB").dataTable().fnDestroy();  //搞好thead
+			$("#center_TB").dataTable().fnDestroy();
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
 			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "limit": limit };
-			console.log("看精英小帅", Advstr);
 			var reportChannel = 'FeeHead';
 			var arrange = 'Lookup';
 			var taskData = { "reportType": reportChannel, "arrange": arrange };
@@ -325,9 +281,10 @@
 				data: taskData,
 				url: "/app/TMFinc/getRoute",
 				success: function (data) {
-					console.log("机车和平", data)
+					console.log("机车和平", data);
+					$('#content').html(data[1]);
 					let newColumns = [];
-					newColumns = data;
+					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
 					var taskType = { "reportType": reportType, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					console.log("审审....", taskType);
@@ -348,7 +305,7 @@
 					dataSrc: ''
 				},
 				columns: columnsData,
-				aaSorting: [1, 'desc'],
+				aaSorting: [0, 'desc'],
 				language: languageCN
 			});
 			var table = $('#center_TB').DataTable();
@@ -400,11 +357,8 @@
 			$("#center_TB").dataTable().fnDestroy();
 			var MakeDateB = $("#taskMakeDateB").val();
 			var MakeDateE = $("#taskMakeDateE").val();
-
+			Pattern = $('#Pattern').val();
 			reloadCol();
-			console.log("秋43", JSON.stringify(columnsData));
-			console.log("B理绪", MakeDateB);
-			console.log("E理绪", MakeDateE);
 			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern);
 		});
 
@@ -424,20 +378,89 @@
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				console.log("西阭", (billNo));
-				shuffleWin(billNo);
+				shuffleA(billNo);
 				$('#kisswindow').modal('show');
 			}
 		});
 		$('#SeaBtn').click(function () {
 			$("#center_TB").dataTable().fnDestroy();
-			var BillNo = $('#BillNo').val();
-			var ApplicNo = $('#ApplicNo').val();
 			Pattern = $('#Pattern').val();
 			var msource = '';
 			var morder = "";
 			reloadCol();
-			showDBDataByBill(DataPara, columnsData, BillNo, ApplicNo, Pattern);
+			showDBDataByBill(DataPara, columnsData, Pattern, sessionName);
+			$("#SeaBtn").addClass("active");
+			$("#SeaAllBtn").removeClass("active");
 		});
+		$('#SeaAllBtn').click(function () {
+			$("#center_TB").dataTable().fnDestroy();
+			Pattern = $('#Pattern').val();
+			var msource = '';
+			var morder = "";
+			reloadCol();
+			showDBDataByBill(DataPara, columnsData, Pattern, '');
+			$("#SeaAllBtn").addClass("active");
+			$("#SeaBtn").removeClass("active");
+		});
+		function apply_hmi() {
+
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				var SendText = dataSelect.SendText;
+				if (SendText != '保存') {
+					layer.msg('非保存状态 ， 此单不能送审', { icon: 1 });
+					return;
+				} else {
+					console.log("西阭", (billNo));
+					var SendStatus = '1';
+					layer.confirm('此单送出审批吗，请确认操作是否无误？', {
+						btn: ['是', '否']
+					}, function () {
+						layer.msg('操作成功', { icon: 1 });
+						var Basstr = {
+							"SendStatus": SendStatus, "hideBillNo": billNo
+						};
+						var reportType = 'applyBudget';
+						var arrange = 'confirm';
+						var taskData = {
+							"reportType": reportType, "arrange": arrange, "Basstr": Basstr
+						}
+						$.ajax({
+							method: 'post',
+							data: taskData,
+							url: "/app/TMFinc/getRoute",
+							success: function (data) {
+								console.log("会好", JSON.stringify(data));
+								if (data.status == 'Fail') {
+									layer.msg("讯息" + data.message);
+								} else if (data.status == 'OK') {
+									layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status), {
+										btn: ['知道了']
+									}, function () {
+										layer.msg('操作成功', { icon: 1 });
+										var DateB = $("#taskMakeDateB").val();
+										var DateE = $("#taskMakeDateE").val();
+										missAcute =  $('#Pattern').val();
+										window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+									});
+								}
+							},
+							error: function () {
+							}
+						})
+					}, function () {
+						layer.msg('无操作', { icon: 1 });
+					});
+				}
+
+			}
+
+
+		}
 		$('#PrintConfirm').click(function () {
 			Print('#listPrintViewDiv', {
 				onStart: function () {

@@ -23,10 +23,8 @@
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 <script src="/arch/FnFee.js"></script>
+<script src="/arch/FnSubA.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
-<!-- <script src="/banq/TMfun.js"></script>
-<script src="/banq/TMEvent.js"></script>
-<script src="/banq/power.js"></script> -->
 <script src="/bomq/utilFn.js"></script>
 <script src="/public/print/print.js"></script>
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
@@ -38,11 +36,13 @@
 		<div class="divcontent">
 			<div id="handout_wrap_inner"></div>
 			<h1>弘讯科技采购单审批</h1>
-			<label>审批号:</label>
+			<!-- <label>审批号:</label>
 			<div class="layui-inline">
 				<input class="layui-input" name="mainbillno" id="mainbillno" value="" autocomplete="off">
-			</div>
-			<input type="button" id="SeaBtn" onclick="searchFile('1')" class="btn btn-info" value="查找" />
+			</div> -->
+			<button id="SeaBtn" class="btn btn-default" onclick="searchFile('0')">与我相关</button>
+			<button id="SeaAllBtn" class="btn btn-default" onclick="searchFile('1')">全部单据</button>
+			<!-- <input type="button" id="SeaBtn" onclick="searchFile('1')" class="btn btn-info" value="查找" /> -->
 			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
 			<input type="button" id="SeaDateBtn" onclick="searchFile('2')" class="btn btn-info" value="查找" />
 			<hr>
@@ -57,7 +57,7 @@
         <!-- <button class="layui-btn layui-btn-normal" lay-event="massReject">批量审批驳回</button> -->
       </div>
     </script>
-	<table id="demo" lay-filter="test"></table>
+	<table id="demo" lay-filter="testbaby"></table>
 	<script type="text/html" id="barDemo">
       <a class="layui-btn layui-btn-xs" lay-event="approval">同意</a>
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reject">驳回</a>
@@ -135,11 +135,11 @@
 				var missDcute = '';
 				var centerTable = null;
 				var objCenter = null;
-				const empdata = [];
 				var sessionName = '';
 				var sessionAID = '';
 				var sessionOID = '';
 				let sData = [];
+				var CapBillNo = '';
 				$(document).ready(function () {
 					layui.use(['table', 'form', 'layedit', 'laydate'], function () {
 						sessionName = "<%-locals.session.yjUser.Name%>";
@@ -150,21 +150,14 @@
 						// 	chkPower(sessionOID);
 						// }
 						missType = getQueryString("missT");
-						//    console.log("妲己"+missType);
 						var missTencode = decodeURI(missType);
 						missAcute = getQueryString("missA");
-						//    console.log("将心"+missAcute);
 						var missAencode = decodeURI(missAcute);
-						//    console.log("初心"+missAencode);
 						missBcute = getQueryString("missB");
-						// console.log("将咖"+missBcute);
 						var missBencode = decodeURI(missBcute);
 						missCcute = getQueryString("missC");
-						// console.log("初咖" + missCcute);
 						missDcute = getQueryString("missD");
 						missmode = getQueryString("missE");
-						$("#mainbillno").val(missAcute);
-						$("#mainPclass").val(missBcute);
 						$("#taskMakeDateB").val(missCcute);
 						$("#taskMakeDateE").val(missDcute);
 						searchFile(missmode);
@@ -210,17 +203,17 @@
 					layer.confirm('进行审批同意吗，请确认操作是否无误？', {
 						btn: ['是', '否']
 					}, function () {
-						var checkStatus = centerTable.checkStatus(objCenter.config.id);
-						var dataARR = (checkStatus.data);
-						var selBillNo = dataARR[0].BillNo;
+						// var checkStatus = centerTable.checkStatus(objCenter.config.id); 
+						// var dataARR = (checkStatus.data);
+						// var selBillNo = dataARR[0].BillNo;
 						// console.log("艺仁",JSON.stringify(checkStatus));
-						// console.log("敏希", (selBillNo));
-						// layer.msg('操作成功', { icon: 1 });
+						// console.log("敏希", (objCenter.config.id));
+						console.log("朴垠", CapBillNo);
 						var reportType = 'agreeFee';
 						var taskData = {
-							"reportType": reportType, "BillNo": selBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
+							"reportType": reportType, "BillNo": CapBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
 						}
-						// layer.alert("同意此笔审批号" + selBillNo);
+						layer.alert("同意此笔审批号" + CapBillNo);
 						$('#kisswindow').modal('toggle');
 						$.ajax({
 							method: 'post',
@@ -249,17 +242,12 @@
 					layer.confirm('进行审批驳回吗，请确认操作是否无误？', {
 						btn: ['是', '否']
 					}, function () {
-						var checkStatus = centerTable.checkStatus(objCenter.config.id);
-						var dataARR = (checkStatus.data);
-						var selBillNo = dataARR[0].BillNo;
-						// console.log("艺仁",JSON.stringify(checkStatus));
-						// console.log("敏希", (selBillNo));
-						layer.msg('操作成功', { icon: 1 });
+						console.log("金詩", CapBillNo);
 						var reportType = 'rejectFee';
 						var taskData = {
-							"reportType": reportType, "BillNo": selBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
+							"reportType": reportType, "BillNo": CapBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
 						}
-						layer.alert("驳回此笔审批号" + selBillNo);
+						layer.alert("驳回此笔审批号" + CapBillNo);
 						$('#kisswindow').modal('toggle');
 						$.ajax({
 							method: 'post',

@@ -34,13 +34,15 @@ CREATE TABLE IF NOT EXISTS `bgu_purchdetail` (
   KEY `BillSN` (`BillNo`,`SNNo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- 正在导出表  toolsweb.bgu_purchdetail 的数据：~11 rows (大约)
+-- 正在导出表  toolsweb.bgu_purchdetail 的数据：~5 rows (大约)
 DELETE FROM `bgu_purchdetail`;
 /*!40000 ALTER TABLE `bgu_purchdetail` DISABLE KEYS */;
 INSERT INTO `bgu_purchdetail` (`DBID`, `BillNo`, `SNNo`, `BudgetItem`, `ItemNo`, `Description`, `Unit`, `Remain`, `UnitPrice`, `Quantity`, `Subtotal`, `Delivery`, `Supplier`, `Underburget`, `AppendType`, `Department`) VALUES
 	(38, '20210105094901', '1', 'A005##查新费用', '商業服務A', '454', '45', '54', '45', '55', '55', '20200521', '12', '2', '2', '2'),
 	(39, '20210105094901', '2', '', '商業服務B', '21', '12', '2413', '12', '123', '123', '20200521', '222', '2', '31', '131'),
-	(40, '20210105101529', '1', 'A001##劳保用品', '業服務1', '1231', '123', '123', '2', '21', '241', '20210125', '1', '132', '123', '123');
+	(40, '20210105101529', '1', 'A001##劳保用品', '業服務1', '1231', '123', '123', '2', '21', '241', '20210125', '1', '132', '123', '123'),
+	(41, '20210105110118', '1', 'A010##运输工具', '数据库连接', '123', '12', '12', '22', '22', '23', '20210225', '21', '123', '12', '12'),
+	(42, '20210105135574', '1', 'A003##董事会费股东会费', '12311', '1321', '32', '12', '123', '123', '123', '', '123', '132', '132', '132');
 /*!40000 ALTER TABLE `bgu_purchdetail` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.bgu_purchmain 结构
@@ -49,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `bgu_purchmain` (
   `DBID` int(11) NOT NULL AUTO_INCREMENT,
   `BillNo` char(20) COLLATE utf8_bin DEFAULT NULL,
   `ListNo` char(20) COLLATE utf8_bin DEFAULT NULL,
-  `RequestDate` char(20) COLLATE utf8_bin DEFAULT NULL,
+  `RequestDate` date DEFAULT NULL,
   `ProjectNo` char(20) COLLATE utf8_bin DEFAULT NULL,
   `ApplicNo` char(20) COLLATE utf8_bin DEFAULT NULL,
   `DeptName` char(20) COLLATE utf8_bin DEFAULT NULL,
@@ -64,12 +66,14 @@ CREATE TABLE IF NOT EXISTS `bgu_purchmain` (
   UNIQUE KEY `workID` (`BillNo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- 正在导出表  toolsweb.bgu_purchmain 的数据：~8 rows (大约)
+-- 正在导出表  toolsweb.bgu_purchmain 的数据：~4 rows (大约)
 DELETE FROM `bgu_purchmain`;
 /*!40000 ALTER TABLE `bgu_purchmain` DISABLE KEYS */;
 INSERT INTO `bgu_purchmain` (`DBID`, `BillNo`, `ListNo`, `RequestDate`, `ProjectNo`, `ApplicNo`, `DeptName`, `StaffID`, `StaffName`, `TotalValue`, `Currency`, `Payment`, `Explanation`, `EntryDate`) VALUES
-	(24, '20210105094901', 'A12555', '20210125', 'P1255', 'P23333', 'MIS', '1', '熊奇龙', '  125220', '  RMB', '  12', '  费用报销', '2021-01-05'),
-	(25, '20210105101529', 'B12345', '20210125', '45', 'P6666', 'MIS', '1', '熊奇龙', '  12548', '  12', '  12', '  業服務.UDP協議', '2021-01-05');
+	(24, '20210105094901', 'A12555', '2021-01-25', 'P1255', 'P23333', 'MIS', '1', '熊奇龙', '  125220', '  RMB', '  12', '  费用报销', '2021-01-05'),
+	(25, '20210105101529', 'B12345', '2021-01-25', '45', 'P6666', 'MIS', '1', '熊奇龙', '  12548', '  12', '  12', '  業服務.UDP協議', '2021-01-05'),
+	(26, '20210105110118', 'n2255', '2021-02-02', '1233', 'p12', 'MIS', '1', '熊奇龙', '  12333', '  12', '  213', '  数据库连接', '2021-01-05'),
+	(27, '20210105135574', 'A123123', '0000-00-00', '12', '12132', 'MIS', '1', '熊奇龙', '  123', '  123', '  123', '  123123', '2021-01-05');
 /*!40000 ALTER TABLE `bgu_purchmain` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.bgu_quota 结构
@@ -152,15 +156,17 @@ CREATE TABLE IF NOT EXISTS `bgu_rule` (
   UNIQUE KEY `workID` (`BillNo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- 正在导出表  toolsweb.bgu_rule 的数据：~10 rows (大约)
+-- 正在导出表  toolsweb.bgu_rule 的数据：~7 rows (大约)
 DELETE FROM `bgu_rule`;
 /*!40000 ALTER TABLE `bgu_rule` DISABLE KEYS */;
 INSERT INTO `bgu_rule` (`DBID`, `BillNo`, `EntryDate`, `GroupLabel`, `StaffID`, `StaffName`, `CurStatus`, `CurLevel`, `CurWorkId`, `CurName`, `TermiLevel`, `Status`, `StatusText`, `Track`, `Level1`, `OppWorkId`, `OppName`, `OppDate`, `Level2`, `DptWorkId`, `DptName`, `DptDate`, `Level3`, `VipWorkId`, `VipName`, `VipDate`, `Level4`, `PurWorkId`, `PurName`, `PurDate`, `Level5`, `PexWorkId`, `PexName`, `PexDate`, `Level6`, `CfoWorkId`, `CfoName`, `CfoDate`, `Level7`, `PsdWorkId`, `PsdName`, `PsdDate`, `Level8`, `CeoWorkId`, `CeoName`, `CeoDate`, `Level9`, `BodWorkId`, `BodName`, `BodDate`, `reason`) VALUES
 	(1, '20201222170482', '2020-12-24', 'MIS', '10099', '王启源', 'P', '1', '10022', '谢丽君', '6', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd"}]', 'Y', '10099', '王启源', '2020-12-28', 'N', '10022', '张勝勇', '2020-12-28', 'N', '10033', '周筱龙', '2020-12-28', 'N', '', '', NULL, 'N', '', '', NULL, 'N', '10066', '叶海萍', NULL, 'N', '10077', '俞田龙', NULL, 'N', '10090', '熊明惠', NULL, NULL, '10093', '熊钰麟', NULL, NULL),
 	(2, '20201225103088', '2020-12-24', 'MIS', '10099', '王启源', 'Q', '6', '10077', '俞田龙', '6', 1, '核准', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd"}]', 'Y', '10099', '王启源', '2020-12-28', 'Y', '10022', '张勝勇', '2020-12-29', 'N', '10033', '周筱龙', '2020-12-30', 'N', '10044', '谢丽君', NULL, 'N', '10055', '夏飞', NULL, 'N', '10066', '叶海萍', NULL, 'N', '10077', '俞田龙', NULL, 'N', '10090', '熊明惠', NULL, NULL, '10093', '熊钰麟', NULL, NULL),
 	(15, '20201230091040', '2020-12-25', 'MIS', '1', '熊奇龙', 'P', '2', '10001', '周筱龙', '8', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd"}]', NULL, '10099', '王启源', '2020-12-28', 'Y', '50004', '张胜勇', '2021-01-05', NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙', NULL, NULL, '10090', '熊明惠', NULL, NULL, '10093', '熊钰麟', NULL, NULL),
-	(30, '20210105094901', '2021-01-05', 'MIS', '1', '熊奇龙', 'P', '2', '10001', '周筱龙', '8', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd","Level7":"ceo","Level8":"bod"}]', NULL, '10099', '王启源', NULL, 'Y', '50004', '张光帷', '2021-01-05', NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉\r\n', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙\r\n', NULL, NULL, '10090', '熊明惠', NULL, NULL, '10093', '熊钰麟\r\n', NULL, NULL),
-	(31, '20210105101529', '2021-01-05', 'MIS', '1', '熊奇龙', 'P', '2', '10001', '周筱龙', '6', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd","Level7":"ceo","Level8":"bod"}]', NULL, '10099', '王启源', NULL, 'Y', '50004', '张光帷', '2021-01-05', NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉\r\n', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙\r\n', NULL, NULL, '', '', NULL, NULL, '', '', NULL, NULL);
+	(30, '20210105094901', '2021-01-05', 'MIS', '1', '熊奇龙', 'P', '2', '10001', '周筱龙', '8', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd","Level7":"ceo","Level8":"bod"}]', NULL, '10099', '王启源', NULL, 'Y', '50004', '张光帷', '2021-01-05', NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙\r\n', NULL, NULL, '10090', '熊明惠', NULL, NULL, '10093', '熊钰麟\r\n', NULL, NULL),
+	(31, '20210105101529', '2021-01-05', 'MIS', '1', '熊奇龙', 'P', '2', '10001', '周筱龙', '6', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd","Level7":"ceo","Level8":"bod"}]', NULL, '10099', '王启源', NULL, 'Y', '50004', '张光帷', '2021-01-05', NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙\r\n', NULL, NULL, '', '', NULL, NULL, '', '', NULL, NULL),
+	(32, '20210105110118', '2021-01-05', 'MIS', '1', '熊奇龙', 'P', '1', '50044', '张光帷', '6', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd","Level7":"ceo","Level8":"bod"}]', NULL, '10099', '王启源', NULL, 'Y', '50004', '张光帷', NULL, NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙\r\n', NULL, NULL, '', '', NULL, NULL, '', '', NULL, NULL),
+	(33, '20210105135574', '2021-01-05', 'MIS', '1', '熊奇龙', 'P', '2', '10001', '周筱龙', '6', 0, '审批中', '[{"Level1":"dpt","Level2":"vip","Level3":"pur","Level4":"pex","Level5":"cfo","Level6":"psd","Level7":"ceo","Level8":"bod"}]', NULL, '10099', '王启源', NULL, 'Y', '50004', '张光帷', '2021-01-05', NULL, '10001', '周筱龙', NULL, NULL, '50026', '曹欣卉\r\n', NULL, NULL, '10035', '乐晓雯', NULL, NULL, '10023', '叶海萍', NULL, NULL, '10080', '俞田龙\r\n', NULL, NULL, '', '', NULL, NULL, '', '', NULL, NULL);
 /*!40000 ALTER TABLE `bgu_rule` ENABLE KEYS */;
 
 -- 导出  表 toolsweb.bgu_rule_def 结构

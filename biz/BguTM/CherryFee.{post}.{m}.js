@@ -21,11 +21,11 @@ module.exports = function (sender) {
     
 	function QueryParts(  ) {
 		var filter = " 1=1 ";
-		var orderBy = '';
+		var orderBy = '  tba.BillNo  desc';
 		var limit = '5000';
 		var capacity = '';
 		let SQLExecute = "  SELECT tba.*,trul.CurName from  bgu_purchmain tba LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo  " +
-		" where  trul.CurName= ? and status ='0' " ;
+		" where trul.CurStatus ='P' and trul.SendStatus ='D' " ;
 		if (weekbeg != "" && weekbeg != "null" && weekbeg != undefined && weekbeg.length > 0) {
 		   console.log("...开始日", weekbeg);
 		   capacity += " AND tba.EntryDate >= " + "'" + weekbeg + "' ";
@@ -38,19 +38,19 @@ module.exports = function (sender) {
 		    console.log("...文号 <", queryBillNo,">");
 		    capacity += " AND tba.BillNo  = " + "'" + queryBillNo + "' ";
 		}
-		// if (CurName != "" && CurName != "null" && CurName != undefined && CurName.length > 0) {
-		// 	console.log("...查询人", CurName);
-		// 	capacity += " AND CurName = " + "'" + CurName + "' ";
-		//   }
+		if (CurName != "" && CurName != "null" && CurName != undefined && CurName.length > 0) {
+			console.log("...查询人", CurName);
+			capacity += " AND  trul.CurName = " + "'" + CurName + "' ";
+		  }
 		// if (filter != "" && filter != undefined) {
 		//     SQLExecute = SQLExecute + " WHERE " + filter;
 		// }
 		if (capacity != "" && capacity != undefined) {
 		  SQLExecute = SQLExecute + capacity;
 		}
-		// if (orderBy != "" && orderBy != undefined) {
-		//     SQLExecute = SQLExecute + " ORDER BY " + orderBy;
-		// }
+		if (orderBy != "" && orderBy != undefined) {
+		    SQLExecute = SQLExecute + " ORDER BY " + orderBy;
+		}
 		// if (limit != "" && limit != undefined) {
 		//     SQLExecute = SQLExecute + " LIMIT " + limit;
 		// }
