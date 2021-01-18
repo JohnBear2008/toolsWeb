@@ -48,6 +48,42 @@ function CaculateBasic() {
             }
       })
 }
+function FlowerBase() {
+      for (var i = 1; i < 11; i++) {
+            var youoption = document.createElement("option");
+            youoption.text =  "是" ;
+            youoption.id = "Underburget"+i;
+            youoption.name = "Underburget"+i;
+            youoption.value = "是" ;
+            $("#Underburget_"+i).append(youoption);
+            var youoption = document.createElement("option");
+            youoption.text =  "否" ;
+            youoption.id = "Underburget"+i;
+            youoption.name = "Underburget"+i;
+            youoption.value = "否" ;
+            $("#Underburget_"+i).append(youoption);
+      }
+      for (var i = 1; i < 11; i++) {
+            var youoption = document.createElement("option");
+            youoption.text =  "新增" ;
+            youoption.id = "AppendType"+i;
+            youoption.name = "AppendType"+i;
+            youoption.value = "新增" ;
+            $("#AppendType_"+i).append(youoption);
+            var youoption = document.createElement("option");
+            youoption.text =  "换新" ;
+            youoption.id = "AppendType"+i;
+            youoption.name = "AppendType"+i;
+            youoption.value = "换新" ;
+            $("#AppendType_"+i).append(youoption);
+            var youoption = document.createElement("option");
+            youoption.text =  "补遗" ;
+            youoption.id = "AppendType"+i;
+            youoption.name = "AppendType"+i;
+            youoption.value = "补遗" ;
+            $("#AppendType_"+i).append(youoption);
+      }
+}
 function FlowerBasic() {
       //applyPage
       let dataArr = [];
@@ -68,33 +104,6 @@ function FlowerBasic() {
                         youoption.name = "bellTime";
                         youoption.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
                         $("#BudgetItem_1").append(youoption);
-                        // var youoption_2 = document.createElement("option"); youoption_2.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_2.id = "bellTime"; youoption_2.name = "bellTime"; youoption_2.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_2").append(youoption_2);
-                        // var youoption_3 = document.createElement("option"); youoption_3.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_3.id = "bellTime"; youoption_3.name = "bellTime"; youoption_3.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_3").append(youoption_3);
-                        // var youoption_4 = document.createElement("option"); youoption_4.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_4.id = "bellTime"; youoption_4.name = "bellTime"; youoption_4.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_4").append(youoption_4);
-                        // var youoption_5 = document.createElement("option"); youoption_5.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_5.id = "bellTime"; youoption_5.name = "bellTime"; youoption_5.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_5").append(youoption_5);
-                        // var youoption_6 = document.createElement("option"); youoption_6.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_6.id = "bellTime"; youoption_6.name = "bellTime"; youoption_6.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_6").append(youoption_6);
-                        // var youoption_7 = document.createElement("option"); youoption_7.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_7.id = "bellTime"; youoption_7.name = "bellTime"; youoption_7.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_7").append(youoption_7);
-                        // var youoption_8 = document.createElement("option"); youoption_8.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_8.id = "bellTime"; youoption_8.name = "bellTime"; youoption_8.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_8").append(youoption_8);
-                        // var youoption_9 = document.createElement("option"); youoption_9.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_9.id = "bellTime"; youoption_9.name = "bellTime"; youoption_9.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_9").append(youoption_9);
-                        // var youoption_10 = document.createElement("option"); youoption_10.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        // youoption_10.id = "bellTime"; youoption_10.name = "bellTime"; youoption_10.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        // $("#BudgetItem_10").append(youoption_10);
                   }
 
             },

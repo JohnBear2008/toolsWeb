@@ -18,7 +18,7 @@ module.exports = function (sender) {
 		// //维修收费02
 		// templateCode:"smsTpl:adb893e7-288c-4348-95ef-0d0f6369e6fa",
 		//维修收费03
-		templateCode: "smsTpl:3ffad050-814a-40a7-8689-35430ceef9b7",
+		templateCode: "smsTpl:sms-tmpl-Gxyyaf75958",
 		contentVar: {
 			"count": "3",
 			"cost": "3000"

@@ -45,7 +45,7 @@ module.exports = function (sender) {
               SNNo = result[1][i].SNNo; SNNo = nulReplaceTxt(SNNo);
               BudgetItem = result[1][i].BudgetItem; BudgetItem = nulReplaceTxt(BudgetItem);
               ItemNo = result[1][i].ItemNo; ItemNo = nulReplaceTxt(ItemNo);
-              // Description = result[1][i].Description; Description = nulReplaceTxt(Description);
+              Description = result[1][i].Description; Description = nulReplaceTxt(Description);
               Unit = result[1][i].Unit; Unit = nulReplaceTxt(Unit);
               Remain = result[1][i].Remain; Remain = nulReplaceTxt(Remain);
               UnitPrice = result[1][i].UnitPrice; UnitPrice = nulReplaceTxt(UnitPrice);
@@ -62,7 +62,7 @@ module.exports = function (sender) {
               "SNNo": SNNo,
               "BudgetItem": BudgetItem,
               "ItemNo": ItemNo,
-              // "Description": Description,
+              "Description": Description,
               "Unit": Unit,
               "Remain": Remain,
               "UnitPrice": UnitPrice,

@@ -220,7 +220,7 @@ var config = {
         baidu: {
             ak: "3ZNfTt6yTX8X3ho5e364FeoE",
             sk: "h8tah3cAG3SzsFnllW8bobND35A1fzLs",
-            invokeId: 'f2VnoRb1-JQ9i-2s8Q'
+            invokeId: 'sms-sign-JSgSJi57835'//更新f2VnoRb1-JQ9i-2s8Q-> sms-sign-JSgSJi57835
         }
     }
 };

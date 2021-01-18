@@ -55,9 +55,9 @@ function shuffleA(  BillNo ) {
                 '</tr>' +
                 '<tr>' +
 
-                '<td width="50" height="25">SNO_1</td>' +
                 '<td width="50" height="25">BudItem_1</td>' +
                 '<td width="50" height="25">ItemO_1</td>' +
+                '<td width="50" height="25">Descip_1</td>' +
                 '<td width="50" height="25">Measure_1</td>' +
                 '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">UniPrice_1</td>' +
@@ -70,9 +70,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_1</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_2</td>' +
                 '<td width="50" height="25">BudItem_2</td>' +
-                '<td width="50" height="25">ItemO_2</td>' +
+                '<td width="50" height="25">ItemO_2</td>' +   
+                '<td width="50" height="25">Descip_2</td>' +
                 '<td width="50" height="25">Measure_2</td>' +
                 '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">UniPrice_2</td>' +
@@ -85,9 +85,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_2</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_3</td>' +
                 '<td width="50" height="25">BudItem_3</td>' +
                 '<td width="50" height="25">ItemO_3</td>' +
+                '<td width="50" height="25">Descip_3</td>' +
                 '<td width="50" height="25">Measure_3</td>' +
                 '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">UniPrice_3</td>' +
@@ -100,9 +100,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_4</td>' +
                 '<td width="50" height="25">BudItem_4</td>' +
                 '<td width="50" height="25">ItemO_4</td>' +
+                '<td width="50" height="25">Descip_4</td>' +
                 '<td width="50" height="25">Measure_4</td>' +
                 '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">UniPrice_4</td>' +
@@ -115,9 +115,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_4</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_5</td>' +
                 '<td width="50" height="25">BudItem_5</td>' +
                 '<td width="50" height="25">ItemO_5</td>' +
+                '<td width="50" height="25">Descip_5</td>' +
                 '<td width="50" height="25">Measure_5</td>' +
                 '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">UniPrice_5</td>' +
@@ -130,9 +130,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_5</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_6</td>' +
                 '<td width="50" height="25">BudItem_6</td>' +
                 '<td width="50" height="25">ItemO_6</td>' +
+                '<td width="50" height="25">Descip_6</td>' +
                 '<td width="50" height="25">Measure_6</td>' +
                 '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">UniPrice_6</td>' +
@@ -145,9 +145,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_6</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_7</td>' +
                 '<td width="50" height="25">BudItem_7</td>' +
                 '<td width="50" height="25">ItemO_7</td>' +
+                '<td width="50" height="25">Descip_7</td>' +
                 '<td width="50" height="25">Measure_7</td>' +
                 '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">UniPrice_7</td>' +
@@ -160,9 +160,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_7</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_8</td>' +
                 '<td width="50" height="25">BudItem_8</td>' +
                 '<td width="50" height="25">ItemO_8</td>' +
+                '<td width="50" height="25">Descip_8</td>' +
                 '<td width="50" height="25">Measure_8</td>' +
                 '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">UniPrice_8</td>' +
@@ -175,9 +175,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_8</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_9</td>' +
                 '<td width="50" height="25">BudItem_9</td>' +
                 '<td width="50" height="25">ItemO_9</td>' +
+                '<td width="50" height="25">Descip_9</td>' +
                 '<td width="50" height="25">Measure_9</td>' +
                 '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">UniPrice_9</td>' +
@@ -190,9 +190,9 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">DeptM_9</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">SNO_10</td>' +
                 '<td width="50" height="25">BudItem_10</td>' +
                 '<td width="50" height="25">ItemO_10</td>' +
+                '<td width="50" height="25">Descip_10</td>' +
                 '<td width="50" height="25">Measure_10</td>' +
                 '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">UniPrice_10</td>' +
@@ -262,6 +262,7 @@ function shuffleA(  BillNo ) {
                     "SNO" : bjob[i].SNNo, 
                     "BudItem" : bjob[i].BudgetItem, 
                     "ItemO": bjob[i].ItemNo, 
+                    "Descip": bjob[i].Description, 
                     "Measure": bjob[i].Unit,
                     "Invent": bjob[i].Remain,
                     "UniPrice": bjob[i].UnitPrice,
@@ -317,16 +318,16 @@ function shuffleA(  BillNo ) {
             $('#listPrintViewDiv').html(htmlModel);
             var fillPrintModel = ({
                 htmlModel,
-                SNO_1,  BudItem_1  ,  ItemO_1  ,  Measure_1  ,  Invent_1  , UniPrice_1  ,QuantAmt_1  ,SubTot_1  ,Delivway_1  , Vender_1  ,Underbur_1  , ApendType_1  ,DeptM_1  ,
-                SNO_2,  BudItem_2  ,  ItemO_2  ,  Measure_2  ,  Invent_2  , UniPrice_2  ,QuantAmt_2  ,SubTot_2  ,Delivway_2  , Vender_2  ,Underbur_2  , ApendType_2  ,DeptM_2  ,
-                SNO_3,  BudItem_3  ,  ItemO_3  ,  Measure_3  ,  Invent_3  , UniPrice_3  ,QuantAmt_3  ,SubTot_3  ,Delivway_3  , Vender_3  ,Underbur_3  , ApendType_3  ,DeptM_3  ,
-                SNO_4,  BudItem_4  ,  ItemO_4  ,  Measure_4  ,  Invent_4  , UniPrice_4  ,QuantAmt_4  ,SubTot_4  ,Delivway_4  , Vender_4  ,Underbur_4  , ApendType_4  ,DeptM_4  ,
-                SNO_5,  BudItem_5  ,  ItemO_5  ,  Measure_5  ,  Invent_5  , UniPrice_5  ,QuantAmt_5  ,SubTot_5  ,Delivway_5  , Vender_5  ,Underbur_5  , ApendType_5  ,DeptM_5  ,
-                SNO_6,  BudItem_6  ,  ItemO_6  ,  Measure_6  ,  Invent_6  , UniPrice_6  ,QuantAmt_6  ,SubTot_6  ,Delivway_6  , Vender_6  ,Underbur_6  , ApendType_6  ,DeptM_6  ,
-                SNO_7,  BudItem_7  ,  ItemO_7  ,  Measure_7  ,  Invent_7  , UniPrice_7  ,QuantAmt_7  ,SubTot_7  ,Delivway_7  , Vender_7  ,Underbur_7  , ApendType_7  ,DeptM_7  ,
-                SNO_8,  BudItem_8  ,  ItemO_8  ,  Measure_8  ,  Invent_8  , UniPrice_8  ,QuantAmt_8  ,SubTot_8  ,Delivway_8  , Vender_8  ,Underbur_8  , ApendType_8  ,DeptM_8  ,
-                SNO_9,  BudItem_9  ,  ItemO_9  ,  Measure_9  ,  Invent_9  , UniPrice_9  ,QuantAmt_9  ,SubTot_9  ,Delivway_9  , Vender_9  ,Underbur_9  , ApendType_9  ,DeptM_9  ,
-                SNO_10, BudItem_10 ,  ItemO_10 ,  Measure_10 ,  Invent_10 , UniPrice_10 ,QuantAmt_10 ,SubTot_10 ,Delivway_10 , Vender_10 ,Underbur_10 , ApendType_10 ,DeptM_10 ,
+                SNO_1,  BudItem_1  ,  ItemO_1  , Descip_1  , Measure_1  ,  Invent_1  , UniPrice_1  ,QuantAmt_1  ,SubTot_1  ,Delivway_1  , Vender_1  ,Underbur_1  , ApendType_1  ,DeptM_1  ,
+                SNO_2,  BudItem_2  ,  ItemO_2  , Descip_2  , Measure_2  ,  Invent_2  , UniPrice_2  ,QuantAmt_2  ,SubTot_2  ,Delivway_2  , Vender_2  ,Underbur_2  , ApendType_2  ,DeptM_2  ,
+                SNO_3,  BudItem_3  ,  ItemO_3  , Descip_3  , Measure_3  ,  Invent_3  , UniPrice_3  ,QuantAmt_3  ,SubTot_3  ,Delivway_3  , Vender_3  ,Underbur_3  , ApendType_3  ,DeptM_3  ,
+                SNO_4,  BudItem_4  ,  ItemO_4  , Descip_4  , Measure_4  ,  Invent_4  , UniPrice_4  ,QuantAmt_4  ,SubTot_4  ,Delivway_4  , Vender_4  ,Underbur_4  , ApendType_4  ,DeptM_4  ,
+                SNO_5,  BudItem_5  ,  ItemO_5  , Descip_5  , Measure_5  ,  Invent_5  , UniPrice_5  ,QuantAmt_5  ,SubTot_5  ,Delivway_5  , Vender_5  ,Underbur_5  , ApendType_5  ,DeptM_5  ,
+                SNO_6,  BudItem_6  ,  ItemO_6  , Descip_6  , Measure_6  ,  Invent_6  , UniPrice_6  ,QuantAmt_6  ,SubTot_6  ,Delivway_6  , Vender_6  ,Underbur_6  , ApendType_6  ,DeptM_6  ,
+                SNO_7,  BudItem_7  ,  ItemO_7  , Descip_7  , Measure_7  ,  Invent_7  , UniPrice_7  ,QuantAmt_7  ,SubTot_7  ,Delivway_7  , Vender_7  ,Underbur_7  , ApendType_7  ,DeptM_7  ,
+                SNO_8,  BudItem_8  ,  ItemO_8  , Descip_8  , Measure_8  ,  Invent_8  , UniPrice_8  ,QuantAmt_8  ,SubTot_8  ,Delivway_8  , Vender_8  ,Underbur_8  , ApendType_8  ,DeptM_8  ,
+                SNO_9,  BudItem_9  ,  ItemO_9  , Descip_9  , Measure_9  ,  Invent_9  , UniPrice_9  ,QuantAmt_9  ,SubTot_9  ,Delivway_9  , Vender_9  ,Underbur_9  , ApendType_9  ,DeptM_9  ,
+                SNO_10, BudItem_10 ,  ItemO_10 , Descip_10 , Measure_10 ,  Invent_10 , UniPrice_10 ,QuantAmt_10 ,SubTot_10 ,Delivway_10 , Vender_10 ,Underbur_10 , ApendType_10 ,DeptM_10 ,
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, DeptName,  TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, DptName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
                 OppDate, DptDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
@@ -343,6 +344,17 @@ function shuffleA(  BillNo ) {
                 .replace(/SNO_8/, SNO_8 )   .replace(/BudItem_8/,  BudItem_8 )
                 .replace(/SNO_9/, SNO_9 )   .replace(/BudItem_9/,  BudItem_9 )
                 .replace(/SNO_10/, SNO_10)  .replace(/BudItem_10/, BudItem_10)
+
+                .replace(/Descip_1/, Descip_1)    
+                .replace(/Descip_2/, Descip_2)    
+                .replace(/Descip_3/, Descip_3)    
+                .replace(/Descip_4/, Descip_4)    
+                .replace(/Descip_5/, Descip_5 )   
+                .replace(/Descip_6/, Descip_6 )   
+                .replace(/Descip_7/, Descip_7 )   
+                .replace(/Descip_8/, Descip_8 )   
+                .replace(/Descip_9/, Descip_9 )   
+                .replace(/Descip_10/, Descip_10)  
 
                 .replace(/ItemO_1/, ItemO_1)    .replace(/ApendType_1/,  ApendType_1 )
                 .replace(/ItemO_2/, ItemO_2)    .replace(/ApendType_2/,  ApendType_2 )
@@ -473,6 +485,17 @@ function shuffleA(  BillNo ) {
                             BudItem_8:  sData[7].BudItem, SNO_8:  sData[7].SNO,
                             BudItem_9:  sData[8].BudItem, SNO_9:  sData[8].SNO,
                             BudItem_10: sData[9].BudItem, SNO_10: sData[9].SNO,
+
+				            Descip_1:  sData[0].Descip,  
+                            Descip_2:  sData[1].Descip,  
+                            Descip_3:  sData[2].Descip,  
+                            Descip_4:  sData[3].Descip,  
+                            Descip_5:  sData[4].Descip,  
+                            Descip_6:  sData[5].Descip,  
+                            Descip_7:  sData[6].Descip,  
+                            Descip_8:  sData[7].Descip,  
+                            Descip_9:  sData[8].Descip,  
+                            Descip_10: sData[9].Descip,  
 
                             ItemO_1:  sData[0].ItemO, ApendType_1:  sData[0].ApendType,
                             ItemO_2:  sData[1].ItemO, ApendType_2:  sData[1].ApendType,
