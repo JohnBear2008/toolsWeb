@@ -395,7 +395,7 @@ module.exports = function(sender) {
             }
         );
     }
-    async  function funPage1A2(cb){
+    function funPage1A2(cb){
         var  dataav = [];
         function  allAA( cb2 ,stf){
             yjDBService.exec({
