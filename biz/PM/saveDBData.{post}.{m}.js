@@ -16,9 +16,6 @@ module.exports = function (sender) {
 	//   console.log("PM2333 test");
 	var obj = sender.req.body;
 
-
-	
-
 	// obj.emailContent = obj.emailContent.replace(/"/g, '')
 
 
