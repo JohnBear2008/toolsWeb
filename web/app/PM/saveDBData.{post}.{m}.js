@@ -1,10 +1,13 @@
 var yjBizService = global.yjRequire("yujiang.Foil").yjBizService;
-var yjPusher = yjRequire("yujiang.Foil").yjPusher;
-var path=require("path");
+// var yjPusher = yjRequire("yujiang.Foil").yjPusher;
+// var path=require("path");
 module.exports = function(sender) {
+
+    console.log("sender",sender.req.body);
     yjBizService.post({
         params : ["PM","saveDBData"],
-        query : sender.req.body,
+        // query : sender.req.body,
+        data: sender.req.body,
         success : function(data){
             sender.success(data);
         },

@@ -4,15 +4,28 @@
  * 
  * 
  * */
+
+
+
+
 module.exports = function (sender) {
 
 	var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
 	var yjDB = global.yjRequire("yujiang.Foil").yjDB;
-	//   console.log("get:"+JSON.stringify(sender.req.query));
-	//   console.log("PM2333 test");
-	var obj = sender.req.query;
 
-	var DBID = sender.req.query.DBID;
+	//   console.log("PM2333 test");
+	var obj = sender.req.body;
+
+
+	
+
+	// obj.emailContent = obj.emailContent.replace(/"/g, '')
+
+
+	console.log("obj", obj);
+
+
+	var DBID = obj.DBID;
 
 	if (DBID == "") {
 		//	    console.log("执行新增");
