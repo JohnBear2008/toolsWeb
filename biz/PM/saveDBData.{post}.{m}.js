@@ -46,8 +46,6 @@ module.exports = function (sender) {
 					} else {
 						tableData = tableData + "'" + obj[key] + "',";
 					}
-
-
 			}
 
 		}
@@ -55,13 +53,13 @@ module.exports = function (sender) {
 		tableTitle = tableTitle.substr(0, tableTitle.length - 1);
 		tableData = tableData.substr(0, tableData.length - 1);
 
-		var SQLInsert = "insert into `" + DBTable + "` (" + tableTitle + ") values " + "(" + tableData + ")";
+		var SQLReplace = "replace into `" + DBTable + "` (" + tableTitle + ") values " + "(" + tableData + ")";
 
-		//	console.log(SQLInsert)
-		//		console.log("SQLInsert:"+SQLInsert);
+		//	console.log(SQLReplace)
+		//		console.log("SQLReplace:"+SQLReplace);
 
 		yjDBService.exec({
-			sql: SQLInsert,
+			sql: SQLReplace,
 			parameters: [],
 			success: function (result) {
 

@@ -1,5 +1,4 @@
 //FnFee.js
- 
 function shuffleA(  BillNo ) {
     var reportType = 'BulletQuery';
     var arrange = 'popup';
@@ -54,7 +53,6 @@ function shuffleA(  BillNo ) {
                 '<td width="50" height="25">使用部门</td>' +
                 '</tr>' +
                 '<tr>' +
-
                 '<td width="50" height="25">BudItem_1</td>' +
                 '<td width="50" height="25">ItemO_1</td>' +
                 '<td width="50" height="25">Descip_1</td>' +
@@ -235,7 +233,7 @@ function shuffleA(  BillNo ) {
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppName</td>' +
-                '<td width="50"  colspan="1" height="25">DptName</td>' +
+                '<td width="50"  colspan="1" height="25">MagName</td>' +
                 '<td width="50"  colspan="2" height="25">VipName</td>' +
                 '<td width="50"  colspan="1" height="25">PurName</td>' +
                 '<td width="50"  colspan="1" height="25">PexName</td>' +
@@ -246,7 +244,7 @@ function shuffleA(  BillNo ) {
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppDate</td>' +
-                '<td width="50"  colspan="1" height="25">DptDate</td>' +
+                '<td width="50"  colspan="1" height="25">MagDate</td>' +
                 '<td width="50"  colspan="2" height="25">VipDate</td>' +
                 '<td width="50"  colspan="1" height="25">PurDate</td>' +
                 '<td width="50"  colspan="1" height="25">PexDate</td>' +
@@ -300,7 +298,7 @@ function shuffleA(  BillNo ) {
             for (let i = 11; i < 12; i++) {
                 var objX = {
                     "OppName": bjob[i].OppName, "OppDate": bjob[i].OppDate,
-                    "DptName": bjob[i].DptName, "DptDate": bjob[i].DptDate,
+                    "MagName": bjob[i].MagName, "MagDate": bjob[i].MagDate,
                     "VipName": bjob[i].VipName, "VipDate": bjob[i].VipDate,
                     "PurName": bjob[i].PurName, "PurDate": bjob[i].PurDate,
                     "PexName": bjob[i].PexName, "PexDate": bjob[i].PexDate,
@@ -329,8 +327,8 @@ function shuffleA(  BillNo ) {
                 SNO_9,  BudItem_9  ,  ItemO_9  , Descip_9  , Measure_9  ,  Invent_9  , UniPrice_9  ,QuantAmt_9  ,SubTot_9  ,Delivway_9  , Vender_9  ,Underbur_9  , ApendType_9  ,DeptM_9  ,
                 SNO_10, BudItem_10 ,  ItemO_10 , Descip_10 , Measure_10 ,  Invent_10 , UniPrice_10 ,QuantAmt_10 ,SubTot_10 ,Delivway_10 , Vender_10 ,Underbur_10 , ApendType_10 ,DeptM_10 ,
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, DeptName,  TotalV, Exchange, Pay_method, Explan, Entry_Date,
-                OppName, DptName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
-                OppDate, DptDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
+                OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
+                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
                 StatusOK,
                 }) => {
                 let newHtml = htmlModel
@@ -435,7 +433,7 @@ function shuffleA(  BillNo ) {
                 .replace(/Entry_Date/, Entry_Date)  
 
                 .replace(/OppName/, OppName)    
-                .replace(/DptName/, DptName)    
+                .replace(/MagName/, MagName)    
                 .replace(/VipName/, VipName)    
                 .replace(/PurName/, PurName)    
                 .replace(/PexName/, PexName )   
@@ -445,7 +443,7 @@ function shuffleA(  BillNo ) {
                 .replace(/BodName/, BodName)  
 
                 .replace(/OppDate/, OppDate)    
-                .replace(/DptDate/, DptDate)    
+                .replace(/MagDate/, MagDate)    
                 .replace(/VipDate/, VipDate)    
                 .replace(/PurDate/, PurDate)    
                 .replace(/PexDate/, PexDate )   
@@ -576,7 +574,7 @@ function shuffleA(  BillNo ) {
                             Entry_Date: "申请日期: "+sData[10].EntryDate, 
 
                             OppName:  sData[11].OppName, 
-                            DptName:  sData[11].DptName, 
+                            MagName:  sData[11].MagName, 
                             VipName:  sData[11].VipName, 
                             PurName:  sData[11].PurName, 
                             PexName:  sData[11].PexName, 
@@ -586,7 +584,7 @@ function shuffleA(  BillNo ) {
                             BodName:  sData[11].BodName, 
 
                             OppDate:  sData[11].OppDate, 
-                            DptDate:  sData[11].DptDate, 
+                            MagDate:  sData[11].MagDate, 
                             VipDate:  sData[11].VipDate, 
                             PurDate:  sData[11].PurDate, 
                             PexDate:  sData[11].PexDate, 

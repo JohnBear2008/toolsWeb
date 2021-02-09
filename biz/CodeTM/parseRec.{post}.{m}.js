@@ -46,23 +46,46 @@ module.exports = function(sender) {
 	  }
 	  console.log( "非凡", tokenA, tokenB, tokenC, tokenD , tokenE);
 	  console.log( "商业", tokenF, tokenG, tokenH, tokenI , tokenJ);
-	  console.log( "新闻", tokenK, tokenL, tokenM, tokenO , tokenP, tokenQ);
-    var sql_Page2A = " select * from auto_property where Parts_Rule=? and Parts_Class='A' and Parts_SEQ=?  "; 
-    var sql_Page2B = " select * from auto_property where Parts_Rule=? and Parts_Class='B' and Parts_SEQ=?  "; 
-    var sql_Page2C = " select * from auto_property where Parts_Rule=? and Parts_Class='C' and Parts_SEQ=?  "; 
-    var sql_Page2D = " select * from auto_property where Parts_Rule=? and Parts_Class='D' and Parts_SEQ=?  "; 
-    var sql_Page2E = " select * from auto_property where Parts_Rule=? and Parts_Class='E' and Parts_SEQ=?  "; 
-    var sql_Page2F = " select * from auto_property where Parts_Rule=? and Parts_Class='F' and Parts_SEQ=?  "; 
-    var sql_Page2G = " select * from auto_property where Parts_Rule=? and Parts_Class='G' and Parts_SEQ=?  "; 
-    var sql_Page2H = " select * from auto_property where Parts_Rule=? and Parts_Class='H' and Parts_SEQ=?  "; 
-    var sql_Page2I = " select * from auto_property where Parts_Rule=? and Parts_Class='I' and Parts_SEQ=?  "; 
-    var sql_Page2J = " select * from auto_property where Parts_Rule=? and Parts_Class='J' and Parts_SEQ=?  "; 
-    var sql_Page2K = " select * from auto_property where Parts_Rule=? and Parts_Class='K' and Parts_SEQ=?  "; 
-    var sql_Page2L = " select * from auto_property where Parts_Rule=? and Parts_Class='L' and Parts_SEQ=?  "; 
-    var sql_Page2M = " select * from auto_property where Parts_Rule=? and Parts_Class='M' and Parts_SEQ=?  "; 
-    var sql_Page2O = " select * from auto_property where Parts_Rule=? and Parts_Class='O' and Parts_SEQ=?  "; 
-    var sql_Page2P = " select * from auto_property where Parts_Rule=? and Parts_Class='P' and Parts_SEQ=?  "; 
-    var sql_Page2Q = " select * from auto_property where Parts_Rule=? and Parts_Class='Q' and Parts_SEQ=?  ";     var dataArr=[]; 
+    console.log( "新闻", tokenK, tokenL, tokenM, tokenO , tokenP, tokenQ);
+  // var sql_Page2A = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2B = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2C = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2D = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2E = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2F = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2G = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2H = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2I = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2J = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2K = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2L = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2M = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2O = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2P = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2Q = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2R = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2S = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2T = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+	// var sql_Page2U = " select PartsDesc as Parts_Desc from auto_nature where PartsRule='A' and PartsClass=? and  PartsPID=?  order by cast(PartsAttr as int) ASC ";
+
+
+    var sql_Page2A = " select * from auto_property where Parts_Class=? and Parts_Attr='A' and Parts_SEQ=?  "; 
+    var sql_Page2B = " select * from auto_property where Parts_Class=? and Parts_Attr='B' and Parts_SEQ=?  "; 
+    var sql_Page2C = " select * from auto_property where Parts_Class=? and Parts_Attr='C' and Parts_SEQ=?  "; 
+    var sql_Page2D = " select * from auto_property where Parts_Class=? and Parts_Attr='D' and Parts_SEQ=?  "; 
+    var sql_Page2E = " select * from auto_property where Parts_Class=? and Parts_Attr='E' and Parts_SEQ=?  "; 
+    var sql_Page2F = " select * from auto_property where Parts_Class=? and Parts_Attr='F' and Parts_SEQ=?  "; 
+    var sql_Page2G = " select * from auto_property where Parts_Class=? and Parts_Attr='G' and Parts_SEQ=?  "; 
+    var sql_Page2H = " select * from auto_property where Parts_Class=? and Parts_Attr='H' and Parts_SEQ=?  "; 
+    var sql_Page2I = " select * from auto_property where Parts_Class=? and Parts_Attr='I' and Parts_SEQ=?  "; 
+    var sql_Page2J = " select * from auto_property where Parts_Class=? and Parts_Attr='J' and Parts_SEQ=?  "; 
+    var sql_Page2K = " select * from auto_property where Parts_Class=? and Parts_Attr='K' and Parts_SEQ=?  "; 
+    var sql_Page2L = " select * from auto_property where Parts_Class=? and Parts_Attr='L' and Parts_SEQ=?  "; 
+    var sql_Page2M = " select * from auto_property where Parts_Class=? and Parts_Attr='M' and Parts_SEQ=?  "; 
+    var sql_Page2O = " select * from auto_property where Parts_Class=? and Parts_Attr='O' and Parts_SEQ=?  "; 
+    var sql_Page2P = " select * from auto_property where Parts_Class=? and Parts_Attr='P' and Parts_SEQ=?  "; 
+    var sql_Page2Q = " select * from auto_property where Parts_Class=? and Parts_Attr='Q' and Parts_SEQ=?  ";  
+    var dataArr=[]; 
     console.log("如来涨:" ,param1); 
    
  

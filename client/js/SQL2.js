@@ -46,8 +46,6 @@ SQLTableBillsBPT="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version A
 SQLTableBillsBPT_T="SELECT A.* FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.BTIDfrom AS PLDBTIDfrom,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan_t` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan_t` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion ) tbe LEFT JOIN  (SELECT tbd.*  FROM `ppm_bills_blueprint_t` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint_t` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion) tbf  ON tbe.BPID=tbf.BPTBPID) A";
 
 
-
-
 //SQLTableBillsBPT="SELECT G.*,A.*,CASE A.auditResult WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' ELSE '无方案' END " +
 //    "AS BPTAuditResultText FROM (SELECT * FROM (SELECT E.BPID AS PLDBPID,E.version AS PLDVersion,E.CTRName AS PLDCTRName,E.PGEMaker " +
 //    "AS PLDPGEMaker,E.MHEName AS PLDMHEName,E.model AS PLDModel,E.limitDate AS PLDLimitDate,E.OGNSystemVersion AS PLDOGNSystemVersion " +

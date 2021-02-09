@@ -10,16 +10,85 @@ module.exports = function (sender) {
 	var weekend = sender.req.query.weekend;
 	var CurWorkId = sender.req.query.CurWorkId;
 	var CurName = sender.req.query.CurName;
-	console.log("查询ID", CurWorkId);
+	console.log("安排", arrange);
 	console.log("查询人", CurName);
 
-	if (arrange == 'search') {
-	    QueryParts( );
-	} else {
-	    
+	if (arrange == 'Purch') {
+	      QueryPurch();
+	} if (arrange == 'Trip') {
+		QueryTrip();
+	}else {
+		QueryPurch();
 	}
-    
-	function QueryParts(  ) {
+	function QueryTrip(  ) {
+		var filter = " 1=1 ";
+		var orderBy = '  tba.BillNo  desc';
+		var limit = '5000';
+		var capacity = '';
+		let SQLExecute = "  SELECT tba.*,trul.CurName from  bgu_tripmain tba LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo  " +
+		" where trul.CurStatus ='P' and trul.SendStatus ='D' " ;
+		if (weekbeg != "" && weekbeg != "null" && weekbeg != undefined && weekbeg.length > 0) {
+		   console.log("...开始日", weekbeg);
+		   capacity += " AND tba.EntryDate >= " + "'" + weekbeg + "' ";
+		}
+		if (weekend != "" && weekend != "null" && weekend != undefined && weekend.length > 0) {
+		    console.log("...结束日", weekend);
+		    capacity += " AND tba.EntryDate <= " + "'" + weekend + "' ";
+		}
+		if (queryBillNo != "" && queryBillNo != "null" && queryBillNo != undefined && queryBillNo.length > 0) {
+		    console.log("...文号 <", queryBillNo,">");
+		    capacity += " AND tba.BillNo  = " + "'" + queryBillNo + "' ";
+		}
+		if (CurName != "" && CurName != "null" && CurName != undefined && CurName.length > 0) {
+			console.log("...查询人", CurName);
+			capacity += " AND  trul.CurName = " + "'" + CurName + "' ";
+		  }
+		// if (filter != "" && filter != undefined) {
+		//     SQLExecute = SQLExecute + " WHERE " + filter;
+		// }
+		if (capacity != "" && capacity != undefined) {
+		  SQLExecute = SQLExecute + capacity;
+		}
+		if (orderBy != "" && orderBy != undefined) {
+		    SQLExecute = SQLExecute + " ORDER BY " + orderBy;
+		}
+		// if (limit != "" && limit != undefined) {
+		//     SQLExecute = SQLExecute + " LIMIT " + limit;
+		// }
+	  console.log(" 吉木 :" , SQLExecute); 
+	  let paramelist = [CurName];
+	  let dataArr = [];
+	  yjDBService.exec({
+	    sql: SQLExecute,
+	    parameters: paramelist,
+	    rowsAsArray: true,
+	    success: function (result) {
+		var data = yjDB.dataSet2ObjectList(result.meta, result.rows);
+		for (var i = 0; i < data.length; i++) {
+		  var obj = {
+		    "BillNo": ((data[i].BillNo == null || data[i].BillNo == undefined) ? ('') : data[i].BillNo),
+		    "ApplicNo": ((data[i].ApplicNo == null || data[i].ApplicNo == undefined) ? ('') : data[i].ApplicNo),
+		    "BusiMan": ((data[i].BusiMan == null || data[i].BusiMan == undefined) ? ('') : data[i].BusiMan),
+		    "BusiArea": ((data[i].BusiArea == null || data[i].BusiArea == undefined) ? ('') : data[i].BusiArea),
+		    "LeaveDate": ((data[i].LeaveDate == null || data[i].LeaveDate == undefined) ? ('') : data[i].LeaveDate),
+		    "DeptName": ((data[i].DeptName == null || data[i].DeptName == undefined) ? ('') : data[i].DeptName),
+		    "StaffName": ((data[i].StaffName == null || data[i].StaffName == undefined) ? ('') : data[i].StaffName),
+		    "StaffID": ((data[i].StaffID == null || data[i].StaffID == undefined) ? ('') : data[i].StaffID),
+		    "IsOver": ((data[i].IsOver == null || data[i].IsOver == undefined) ? ('') : data[i].IsOver),
+		    "Overspend": ((data[i].Overspend == null || data[i].Overspend == undefined) ? ('') : data[i].Overspend),
+		    "EntryDate": ((data[i].EntryDate == null || data[i].EntryDate == undefined) ? ('') : data[i].EntryDate),
+		    "Explanation": ((data[i].Explanation == null || data[i].Explanation == undefined) ? ('') : data[i].Explanation),
+		    "CurName": ((data[i].CurName == null || data[i].CurName == undefined) ? ('') : data[i].CurName),
+		  };
+		  dataArr.push(obj);
+		}
+		sender.success(dataArr);
+		//  console.log("满川晴月",JSON.stringify(dataArr));
+	    },
+	    error: sender.error
+	  });
+	}
+	function QueryPurch(  ) {
 		var filter = " 1=1 ";
 		var orderBy = '  tba.BillNo  desc';
 		var limit = '5000';
@@ -51,10 +120,7 @@ module.exports = function (sender) {
 		if (orderBy != "" && orderBy != undefined) {
 		    SQLExecute = SQLExecute + " ORDER BY " + orderBy;
 		}
-		// if (limit != "" && limit != undefined) {
-		//     SQLExecute = SQLExecute + " LIMIT " + limit;
-		// }
-	  console.log(" 模特 :" , SQLExecute); 
+	//   console.log(" 模特 :" , SQLExecute); 
 	  let paramelist = [CurName];
 	  let dataArr = [];
 	  yjDBService.exec({
@@ -82,7 +148,6 @@ module.exports = function (sender) {
 		  dataArr.push(obj);
 		}
 		sender.success(dataArr);
-		 console.log("满川晴月",JSON.stringify(dataArr));
 	    },
 	    error: sender.error
 	  });

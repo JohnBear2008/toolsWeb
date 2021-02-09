@@ -11,9 +11,9 @@ module.exports = function (sender) {
 	var queryApplicNo = sender.req.query.ApplicNo;
 	var qryCurWorkId = sender.req.query.CurWorkId;
 	var qryCurName = sender.req.query.CurName;
-	console.log("查询ID", qryCurWorkId);
-	console.log("查询人", qryCurName);
-	console.log("查询号", BillNo);
+	console.log("同意ID", qryCurWorkId);
+	console.log("同意人", qryCurName);
+	console.log("同意号", BillNo);
 	QueryParts();
 	// HandleParts(queryBillNo , CurWorkId, CurName);
 	function QueryParts() {
@@ -48,8 +48,7 @@ module.exports = function (sender) {
 				for (var i = 0; i < data.length; i++) {
 					Track = data[i].Track;
 					var TrackUU = JSON.parse(Track);
-					console.log("别问我谁  ", Track);
-					console.log("矢发的  ", TrackUU);
+					// console.log("别问我谁  ", Track); 
 					CurLevel = data[i].CurLevel;
 					TermiLevel = data[i].TermiLevel;
 					CurWorkId = data[i].CurWorkId;
@@ -99,7 +98,7 @@ module.exports = function (sender) {
 						console.log("---------------推10推  ", nextjob);
 					}
 					if (curtjob == 'dpt') {
-						fixdate = "  DptDate ='" + EntryDate + "' ";
+						fixdate = "  MagDate ='" + EntryDate + "' ";
 						fixlv = "  Level2 ='Y' ";
 					}
 					if (curtjob == 'vip') {
@@ -130,7 +129,6 @@ module.exports = function (sender) {
 						fixdate = "  BodDate ='" + EntryDate + "' ";
 						fixlv = "  Level9 ='Y' ";
 					}
-					console.log("塞值8  ", fixdate);
 					if (nextjob == 'vip') {
 						nextWorkId = data[i].VipWorkId;
 						nextName = data[i].VipName;
@@ -166,11 +164,11 @@ module.exports = function (sender) {
 					console.log("生米煮熟  ", AppFlag);
 				} else {
 					CurStatus = 'P';
+					CurText = '审批'; 
 					console.log("翻盘进行....", AppFlag);
 				}
 				HandleParts(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, fixdate, fixlv);
 				console.log("妲己nextLevel", nextLevel);
-				console.log("妲己EntryDate", EntryDate);
 				console.log("妲己nextName", nextName);
 				console.log("妲己nextWorkId", nextWorkId);
 			},
@@ -180,7 +178,7 @@ module.exports = function (sender) {
 	function HandleParts(BillNo, CurStatus, CurText , CurLevel, CurWorkId, CurName, fixdate, fixlv) {
 		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? ," +
 			" " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
-		console.log("香月SQL:", SQL);
+		// console.log("香月SQL:", SQL);
 
 		yjDBService.exec({
 			sql: SQL,
@@ -196,40 +194,4 @@ module.exports = function (sender) {
 	}
 }
 
-			// `entryDate`, `groupLabel`, `staffID`, `staffName`, `curStatus`, `CurLevel`,
-			//  `TermiLevel`, `CurWorkId`, `CurName`, `Status`, `CurText`,
-			// `oppWorkId`,
-			// `oppName` ,
-			// `oppDate` ,
-			// `Level2` ,
-			// `dptWorkId`,
-			// `dptName` ,
-			// `DptDate` ,
-			// `Level3` ,
-			// `VipWorkId`,
-			// `VipDate` ,
-			// `VipName`,
-			// `Level4` ,
-			// `PurWorkId`,
-			// `PurName` ,
-			// `PurDate` ,
-			// `Level5` ,
-			// `PexWorkId`,
-			// `PexName` ,
-			// `PexDate` ,
-			// `Level6` ,
-			// `CfoWorkId`,
-			// `CfoName` ,
-			// `CfoDate` ,
-			// `Level7` ,
-			// `PsdWorkId`,
-			// `PsdName` ,
-			// `PsdDate` ,
-			// `Level8` ,
-			// `CeoWorkId`,
-			// `CeoName` ,
-			// `CeoDate` ,
-			// `Level9` ,
-			// `BodWorkId`,
-			// `BodName` ,
-			// `BodDate` ,
+			 

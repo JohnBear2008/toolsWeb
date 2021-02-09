@@ -32,11 +32,17 @@ module.exports = function (sender) {
 		case "ironSubject":
             url = ["BguTM", "ironSubject"];
             break;
+		case "applyTrip":
+            url = ["BguTM", "applyTrip"];
+            break;
 		case "applyBudget":
             url = ["BguTM", "applyBudget"];
             break;
 		case "BulletQuery":
             url = ["BguTM", "BulletQuery"];
+            break;
+		case "BulletTrip":
+            url = ["BguTM", "BulletTrip"];
             break;
 		case "CherryFee":
             url = ["BguTM", "CherryFee"];
@@ -53,6 +59,21 @@ module.exports = function (sender) {
 		case "FeeHisVisit":
             url = ["BguTM", "FeeHisVisit"];
             break;
+		case "EmployLook":
+            url = ["BguTM", "EmployLook"];
+            break;
+		case "EmployJob":
+            url = ["BguTM", "EmployJob"];
+            break;
+		case "createOrig":
+            url = ["BguTM", "createOrig"];
+            break;
+		case "HandleOrig":
+            url = ["BguTM", "HandleOrig"];
+            break;
+		case "FeeVisit":
+            url = ["BguTM", "FeeVisit"];
+            break;
         default:
             console.log("找不到Finc路由");
             break;
@@ -60,9 +81,8 @@ module.exports = function (sender) {
 
     yjBizService.post({
         params: url,
-        query: sender.req.body,
+        query: sender.req.body,// data: sender.req.body,   
         success: function (data) {
-            //                console.log("post方法路由:"+JSON.stringify(data));
             sender.success(data);
         },
         error: {}

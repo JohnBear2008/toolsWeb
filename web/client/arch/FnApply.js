@@ -100,7 +100,6 @@ function save_hmi() {
             "DeptName": DeptName, "StaffID": StaffID , "StaffName": StaffName, "TotalValue": TotalValue, "Currency": Currency,
             "Payment": Payment, "Explanation": Explanation, "hideBillNo": hideBillNo
       };
-
       var SNNo = '1';
       var BudgetItem = $('#BudgetItem_1').val();
       var ItemNo = $('#ItemNo_1').val();

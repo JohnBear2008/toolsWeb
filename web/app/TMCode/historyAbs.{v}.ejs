@@ -1,0 +1,633 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+
+<script src="/js/PM/PMfuns.js"></script>
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div id="noprint" class="noprint">
+	<div class="divcontent">
+		<div id="handout_wrap_inner"></div>
+		<h1>報废编码查找</h1>
+		<label>年份:</label>
+		<div class="layui-inline">
+			<input class="can-find-small" name="mainyear" id="mainyear" value="" autocomplete="off">
+		</div>
+		<label>原则:</label>
+		<div class="layui-inline">
+			<input class="can-find-small" name="mainrule" id="mainrule" value="" autocomplete="off">
+		</div>
+		<label>分类:</label>
+		<div class="layui-inline">
+			<input class="can-find-small" name="mainclass" id="mainclass" value="" autocomplete="off">
+		</div>
+		<label>编码号:</label>
+		<div class="layui-inline">
+			<input class="can-find-mid" name="mainpcode" id="mainpcode" value="" autocomplete="off">
+		</div>
+		<label>旧代码:</label>
+		<div class="layui-inline">
+			<input class="can-find-mid" name="mainpast" id="mainpast" value="" autocomplete="off">
+		</div>
+		<label>物料名称:</label>
+		<div class="layui-inline">
+			<input class="can-find-large" name="mainname" id="mainname" value="" autocomplete="off">
+		</div>
+
+		<input type="button" id="SeaBtn" onclick="searchFile()" class="btn btn-info" value="查找" />
+		<input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" />
+		<input type="button" id="DetailBtn" class="btn btn-info" value="解析" />
+		<hr>
+		<br />
+		<!-- 点击弹出窗口开始 -->
+		<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel"
+			aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog" style="width:65%">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="panel-title">物料号面板
+						<button id="BTNFormClose" type="button" class="btn btn-primary"
+									data-dismiss="modal">关闭</button></h3>
+					</div>
+					<div class="modal-body">
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h3 class="panel-title">物料基本信息与规格</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-horizontal" id="DivAnaly">
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label">新物料号:</label>
+										<div class="col-sm-4">
+											<input id="specNHead" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">类别:</label>
+										<div class="col-sm-4">
+											<input id="specOHead" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<!-- <label class="col-sm-1 control-label">检核:</label>
+										<div class="col-sm-4">
+											<input id="specCHead" class="form-control" type="text"
+												value="" disabled="true">
+										</div> -->
+										<label class="col-sm-1 control-label">EF码:</label>
+										<div class="col-sm-4">
+											<input id="specEF" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">型号:</label>
+										<div class="col-sm-4">
+											<input id="specModel" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">组合件:</label>
+										<div class="col-sm-4">
+											<input id="specAssem" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">基本单位:</label>
+										<div class="col-sm-4">
+											<input id="specUnitE" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">物料状态:</label>
+										<div class="col-sm-4">
+											<input id="specPhase" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">优先耗用:</label>
+										<div class="col-sm-4">
+											<input id="specPrior" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">备注:</label>
+										<div class="col-sm-4">
+											<input id="specReason" class="form-control"
+												type="text" value="" disabled="true">
+										</div>
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label"
+											for="name">规格详细:</label>
+										<div class="col-sm-8">
+											<textarea id="specList" class="can-drop-super"
+												width="500px" rows="18"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label"
+											for="name">提交人:</label>
+										<div class="col-sm-3 ">
+											<input id="specStaff" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label"
+											for="name">提交日期:</label>
+										<div class="col-sm-3 ">
+											<input id="specApplyDate" class="form-control"
+												type="text" value="" disabled="true">
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="BTNFormClose" type="button" class="btn btn-primary"
+							data-dismiss="modal">关闭</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div><!-- modal fade -->
+	</div>
+	<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+		<!--数据呈现区-->
+		<table id="center_TB" class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>原则</th>
+					<th>类别隐</th>
+					<th>类别</th>
+					<th>新编码</th>
+					<th>物料名称</th>
+					<th>旧代码</th>
+					<th>旧规格</th>
+					<th>审批号</th>
+					<th>申请人/主管</th>
+					<th>建立日</th>
+					<th>状态隐</th>
+					<th>EF/供应商</th>
+					<th>理由</th>
+					<th>EF码隐</th>
+					<th>供应商隐</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<!-- 点击弹出窗口开始 -->
+	<div id="DisplayWin" class="easyui-window" title="栏位设定" closed="true"
+		style="top:50px; left:1000px; width:400px;height:600px;">
+		<form style="padding:10px 50px;">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<br></br>
+					<span id="DispA" class="blue-label"> 中文类别 </span>
+					<input type="checkbox" name="BOXA" id="BOXA" title="中文类别" lay-filter="page_check">
+					<br></br>
+					<span id="DispB" class="blue-label"> 物料名称 </span>
+					<input type="checkbox" name="BOXB" id="BOXB" title="物料名称" lay-filter="page_check">
+					<br></br>
+					<span id="DispC" class="blue-label"> 旧代码 </span>
+					<input type="checkbox" name="BOXC" id="BOXC" title="旧代码" lay-filter="page_check">
+					<br></br>
+					<span id="DispD" class="blue-label"> 旧规格 </span>
+					<input type="checkbox" name="BOXD" id="BOXD" title="旧规格" lay-filter="page_check">
+					<br></br>
+					<span id="DispE" class="blue-label"> 审批号 </span>
+					<input type="checkbox" name="BOXE" id="BOXE" lay-filter="page_check">
+					<br></br>
+					<span id="DispF" class="blue-label"> 申请人/主管 </span>
+					<input type="checkbox" name="BOXF" id="BOXF" title="申请人" lay-filter="page_check">
+					<br></br>
+					<span id="DispG" class="blue-label"> 建立日 </span>
+					<input type="checkbox" name="BOXG" id="BOXG" title="建立日" lay-filter="page_check">
+					<br></br>
+					<span id="DispH" class="blue-label"> EF/供应商 </span>
+					<input type="checkbox" name="BOXH" id="BOXH" title="EF/供应商" lay-filter="page_check">
+					<br></br>
+					<span id="DispI" class="blue-label"> 备注 </span>
+					<input type="checkbox" name="BOXI" id="BOXI" title="备注" lay-filter="page_check">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label"></label>
+				<div class="col-sm-3 ">
+					<button id="DisplayOkBtn" type="button" class="btn btn-primary">确认</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- 点击窗口fin -->
+</div>
+<div id="root" style="height: 100%"></div>
+
+<script>
+	var missAType = '';
+	var glbchooseA = '';
+	var glbchooseB = '';
+	var glbchooseC = '';
+	var glbchooseD = '';
+	var glbchooseE = '';
+	var glbchooseF = '';
+	var FieldA = true;
+	var FieldB = true;
+	var FieldC = false;
+	var FieldD = false;
+	var FieldE = false;
+	var FieldF = true;
+	var FieldG = true;
+	var FieldH = true;
+	var FieldI = true;
+	var FieldJ = true;
+	var FieldK = true;
+	var storage = window.localStorage;
+	var hidata = localStorage.getItem("hisabsocolor");
+	hidata = JSON.parse(hidata);
+	if (hidata != undefined && hidata != null) {
+		FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
+		FieldB = ((hidata.B == null || hidata.B == undefined) ? (FieldB) : hidata.B);
+		FieldC = ((hidata.C == null || hidata.C == undefined) ? (FieldC) : hidata.C);
+		FieldD = ((hidata.D == null || hidata.D == undefined) ? (FieldD) : hidata.D);
+		FieldE = ((hidata.E == null || hidata.E == undefined) ? (FieldE) : hidata.E);
+		FieldF = ((hidata.F == null || hidata.F == undefined) ? (FieldF) : hidata.F);
+		FieldG = ((hidata.G == null || hidata.G == undefined) ? (FieldG) : hidata.G);
+		FieldH = ((hidata.H == null || hidata.H == undefined) ? (FieldH) : hidata.H);
+		FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
+		FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
+		FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
+		console.log("敏A希",FieldA ,"敏B希",FieldB);
+	}
+	var columnsData = [];
+	//页面加载函数---------------
+	$(document).ready(function () {
+
+		layui.use(['form', 'layedit', 'laydate'], function () {
+			var form = layui.form
+				, layer = layui.layer
+				, layedit = layui.layedit
+				, laydate = layui.laydate;
+
+			form.render();
+			var DataPara = {
+				"tableID": "#center_TB",
+				"DBTable": "auto_abs_parts"
+			}
+
+			missAType = getQueryString("missA");
+			console.log("将心" + missAType);
+			var missAencode = decodeURI(missAType);
+
+			console.log("初心" + missAencode);
+			glbchooseA = missAencode;
+			if (glbchooseA == "" || glbchooseA == 'null' || glbchooseA == null || glbchooseA.length < 0) {
+				glbchooseA = '2020';
+			}
+
+			columnsData = [
+				{ data: 'DBID', "visible": false },
+				{ data: 'Parts_Class', "visible": false },
+				{ data: 'Parts_Chi', "visible": FieldA },
+				{ data: 'Parts_Code' },
+				{ data: 'Parts_Name', "visible": FieldB },
+				{ data: 'Parts_Old_Code', "visible": FieldC },
+				{ data: 'Parts_Old_Name', "visible": FieldD },
+				{ data: 'BILL_ID', "visible": FieldE },
+				{ data: 'Combo_Staff', "visible": FieldF },
+				{ data: 'Parts_Apply_Date', "visible": FieldG },
+				{ data: 'Parts_Status', "visible": false },
+				{ data: 'Combo_Title', "visible": FieldH },
+				{ data: 'Reason', "visible": FieldI },
+				{ data: 'SMT_Title', "visible": false },
+				{ data: 'Supply_Title', "visible": false },
+			];
+
+			showDBDataSelf(DataPara, columnsData, glbchooseA, glbchooseB, glbchooseC, glbchooseD, glbchooseE, glbchooseF);
+			var table = $('#center_TB').DataTable();
+			$('#center_TB tbody').on('click', 'tr', function () {
+				$(this).removeClass('selected');
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});
+			$('#center_TB tbody').on('dblclick', 'tr', function () {
+				var table = $('#center_TB').DataTable();
+				var dataSelect = table.row('.selected').data();
+				var data = table.row(this).data();
+				var pclass = dataSelect.Parts_Class;
+				var billid = dataSelect.BILL_ID;
+				var pcode = dataSelect.Parts_Code;
+				var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+				var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+				var pname = dataSelect.Parts_Name;
+				var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+				analysisWin(pclass, pcode, poldcode, pname, poldname, fldEF);
+				$('#lovewindow').modal('show');
+			});
+		});
+
+
+	});
+
+	var DataPara = {
+		"tableID": "#center_TB",
+		"DBTable": "auto_abs_parts"
+	}
+	columnsData = [
+		{ data: 'DBID', "visible": false },
+		{ data: 'Parts_Class', "visible": false },
+		{ data: 'Parts_Chi', "visible": FieldA },
+		{ data: 'Parts_Code' },
+		{ data: 'Parts_Name', "visible": FieldB },
+		{ data: 'Parts_Old_Code', "visible": FieldC },
+		{ data: 'Parts_Old_Name', "visible": FieldD },
+		{ data: 'BILL_ID', "visible": FieldE },
+		{ data: 'Combo_Staff', "visible": FieldF },
+		{ data: 'Parts_Apply_Date', "visible": FieldG },
+		{ data: 'Parts_Status', "visible": false },
+		{ data: 'Combo_Title', "visible": FieldH },
+		{ data: 'Reason', "visible": FieldI },
+		{ data: 'SMT_Title', "visible": false },
+		{ data: 'Supply_Title', "visible": false },
+	];
+
+	//解析按钮----------
+	$('#DetailBtn').click(function () {
+		var table = $('#center_TB').DataTable();
+		var dataSelect = table.row('.selected').data();
+
+		if (dataSelect == undefined) {
+			alert("当前未选择任何数据,请先点击需要的数据行!");
+		} else {
+			var pclass = dataSelect.Parts_Class;
+			var choose = dataSelect.Parts_Class;
+			var pcode = dataSelect.Parts_Code;
+			var pname = dataSelect.Parts_Name;
+			var billid = dataSelect.BILL_ID;
+			var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+			var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+			var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+			analysisWin(pclass, pcode, poldcode, pname, poldname, fldEF);
+			$('#lovewindow').modal('show');
+
+		}
+	});
+	$('#ComfirmBtn').click(function () {
+		$('#pptwindow').window('close');
+	});
+	$('#DisplayBtn').click(function () {
+		if (FieldA) { $("#BOXA").prop("checked", true); } else { $("#BOXA").prop("checked", false); }
+		if (FieldB) { $("#BOXB").prop("checked", true); } else { $("#BOXB").prop("checked", false); }
+		if (FieldC) { $("#BOXC").prop("checked", true); } else { $("#BOXC").prop("checked", false); }
+		if (FieldD) { $("#BOXD").prop("checked", true); } else { $("#BOXD").prop("checked", false); }
+		if (FieldE) { $("#BOXE").prop("checked", true); } else { $("#BOXE").prop("checked", false); }
+		if (FieldF) { $("#BOXF").prop("checked", true); } else { $("#BOXF").prop("checked", false); }
+		if (FieldG) { $("#BOXG").prop("checked", true); } else { $("#BOXG").prop("checked", false); }
+		if (FieldH) { $("#BOXH").prop("checked", true); } else { $("#BOXH").prop("checked", false); }
+		if (FieldI) { $("#BOXI").prop("checked", true); } else { $("#BOXI").prop("checked", false); }
+		$('#DisplayWin').window('open');
+	});
+	$('#DisplayOkBtn').click(function () {
+		var AisChecked = $("#BOXA").is(":checked");
+		var BisChecked = $("#BOXB").is(":checked");
+		var CisChecked = $("#BOXC").is(":checked");
+		var DisChecked = $("#BOXD").is(":checked");
+		var EisChecked = $("#BOXE").is(":checked");
+		var FisChecked = $("#BOXF").is(":checked");
+		var GisChecked = $("#BOXG").is(":checked");
+		var HisChecked = $("#BOXH").is(":checked");
+		var IisChecked = $("#BOXI").is(":checked");
+		if (AisChecked) { FieldA = true; } else { FieldA = false; }
+		if (BisChecked) { FieldB = true; } else { FieldB = false; }
+		if (CisChecked) { FieldC = true; } else { FieldC = false; }
+		if (DisChecked) { FieldD = true; } else { FieldD = false; }
+		if (EisChecked) { FieldE = true; } else { FieldE = false; }
+		if (FisChecked) { FieldF = true; } else { FieldF = false; }
+		if (GisChecked) { FieldG = true; } else { FieldG = false; }
+		if (HisChecked) { FieldH = true; } else { FieldH = false; }
+		if (IisChecked) { FieldI = true; } else { FieldI = false; }
+		var data = {
+			A:  AisChecked,
+			B:  BisChecked,
+			C:  CisChecked,
+			D:  DisChecked,
+			E:  EisChecked,
+			F:  FisChecked,
+			G:  GisChecked,
+			H:  HisChecked,
+			I:  IisChecked,
+		}
+		localStorage.setItem("hisabsocolor", JSON.stringify(data));
+		$('#DisplayWin').window('close');
+	});
+	function showDBDataSelf(DataPara, columnsData, myear, mrule, mclass, mpcode, mpast, mname) {
+		var limit = '5000';
+		var filter = ' 1=1 ';
+		if (myear != "" && myear != "null" && myear != undefined && myear.length > 0) {
+			console.log("年份", myear);
+			filter += " AND  Parts_Year =" + "'" + myear + "'";
+		}
+		if (mrule != "" && mrule != "null" && mrule != undefined && mrule.length > 0) {
+			console.log("原则", mrule);
+			filter += " AND    Parts_Rule =" + "'" + mrule + "'";
+		}
+		if (mclass != "" && mclass != "null" && mclass != undefined && mclass.length > 0) {
+			console.log("类别", mclass);
+			filter += " AND    Parts_Class =" + "'" + mclass + "'";
+		}
+		if (mpcode != "" && mpcode != "null" && mpcode != undefined && mpcode.length > 0) {
+			console.log("编码", mpcode);
+			filter += "  AND   Parts_Code LIKE " + "'%" + mpcode + "%'";
+		}
+		if (mpast != "" && mpast != "null" && mpast != undefined && mpast.length > 0) {
+			console.log("旧代码", mpast);
+			filter += "  AND   Parts_Old_Code LIKE " + "'%" + mpast + "%'";
+		}
+		if (mname != "" && mname != "null" && mname != undefined && mname.length > 0) {
+			console.log("品名", mname);
+			filter += "  AND   Parts_Name LIKE " + "'%" + mname + "%'";
+		}
+		$("#center_TB").dataTable().fnDestroy();
+		var SQL3 = { "SQL": "SQLHistoryAbs", "filter": filter, "limit": limit };
+		$(DataPara.tableID).DataTable({
+			ajax: {
+				url: '/app/TMCode/getSQLDBData',
+				data: SQL3,
+				dataSrc: ''
+			},
+			columns: columnsData,
+			aaSorting: [1, 'desc'], //asc
+			language: languageCN
+
+		});
+		var table = $('#center_TB').DataTable();
+		$('#center_TB tbody').on('click', 'tr', function () {
+			$(this).removeClass('selected');
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
+		});
+		$('#center_TB tbody').on('dblclick', 'tr', function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			var data = table.row(this).data();
+			var pclass = dataSelect.Parts_Class;
+			var billid = dataSelect.BILL_ID;
+			var pcode = dataSelect.Parts_Code;
+			var pname = dataSelect.Parts_Name;
+			var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+			var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+			var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+			analysisWin(pclass, pcode, poldcode, pname, poldname, fldEF);
+			$('#lovewindow').modal('show');
+		});
+	}
+	function deleteFile(loadFn) {
+		//            var xhr = new XMLHttpRequest();
+		//            xhr.open("delete", "/system.files/"
+		//                + loadFn); 
+		//            xhr.send();
+
+	}
+	function reloadCol() {
+		columnsData = [
+			{ data: 'DBID', "visible": false },
+			{ data: 'Parts_Class', "visible": false },
+			{ data: 'Parts_Chi', "visible": FieldA },
+			{ data: 'Parts_Code' },
+			{ data: 'Parts_Name', "visible": FieldB },
+			{ data: 'Parts_Old_Code', "visible": FieldC },
+			{ data: 'Parts_Old_Name', "visible": FieldD },
+			{ data: 'BILL_ID', "visible": FieldE },
+			{ data: 'Combo_Staff', "visible": FieldF },
+			{ data: 'Parts_Apply_Date', "visible": FieldG },
+			{ data: 'Parts_Status', "visible": false },
+			{ data: 'Combo_Title', "visible": FieldH },
+			{ data: 'Reason', "visible": FieldI },
+			{ data: 'SMT_Title', "visible": false },
+			{ data: 'Supply_Title', "visible": false },
+		];
+	}
+	function analysisWin(pclass, pcode, poldcode, pname, poldname, fldEF) {
+		var reportType = 'analysisRec';
+		var taskData = { "reportType": reportType, "PartsClass": pclass, "PartsCode": pcode, "DBTable": "auto_abs_parts" };
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data) {
+				const json2 = JSON.stringify(data);
+				const bjob = JSON.parse(json2);
+				var opttxt = "旧代码: " + poldcode + "旧规格: " + poldname;
+				var EFList = fldEF.split('/');
+				// if (opttxt.length > 40) {
+				// 	$("#specOHead").addClass("win-green-small");
+				// } else if (opttxt.length > 30) {
+				// 	$("#specOHead").addClass("win-green-mid");
+				// } else {
+				// 	$("#specOHead").addClass("win-green-large");
+				// }
+				$("#specModel").val(bjob.Model);
+				$("#specAssem").val(bjob.Assembly);
+				$("#specUnitE").val(bjob.UnitE);
+				$("#specPhase").val(bjob.Phase);
+				$("#specPrior").val(bjob.Prior);
+				$("#specStaff").val(bjob.Staff);
+				$("#specApplyDate").val(bjob.ApplyDate);
+				$("#specOHead").val(opttxt);
+				$("#specNHead").val("编码: " + pcode + " 物料名称: " + pname);
+				$("#specEF").val("EF: " + EFList[0] + " 供应商: " + EFList[1]);
+				$("#specList").val(bjob.Value1 + bjob.Name1 + bjob.Value2 + bjob.Name2 + bjob.Value3 + bjob.Name3 + bjob.Value4 + bjob.Name4 + bjob.Value5 + bjob.Name5 + bjob.Value6 + bjob.Name6 + bjob.Value7 + bjob.Name7 + bjob.Value8 + bjob.Name8
+					+ bjob.Value9 + bjob.Name9 + bjob.Value10 + bjob.Name10 + bjob.Value11 + bjob.Name11 + bjob.Value12 + bjob.Name12 + bjob.Value13 + bjob.Name13 + bjob.Value14 + bjob.Name14 + bjob.Value15 + bjob.Name15
+					+ bjob.Value16 + bjob.Name16 + bjob.Value17 + bjob.Name17 + bjob.Value18 + bjob.Name18 + bjob.Value19 + bjob.Name19 + bjob.Value20 + bjob.Name20);
+				//  $("#specList").val(bjob.Value1+" ： "+bjob.Name1+"\n"+bjob.Value2+" ： "+bjob.Name2+"\n"+bjob.Value3+" ： "+bjob.Name3+"\n"+bjob.Value4+" ： "+bjob.Name4+"\n"+bjob.Value5+" ： "+bjob.Name5+"\n"+bjob.Value6+" ： "+bjob.Name6+"\n" +bjob.Value7+" ： "+bjob.Name7+"\n" +bjob.Value8+" ： "+bjob.Name8+"\n" 
+				//  +bjob.Value9+" ： "+bjob.Name9+"\n"+bjob.Value10+" ： "+bjob.Name10+"\n"+bjob.Value11+" ： "+bjob.Name11+"\n"+bjob.Value12+" ： "+bjob.Name12+"\n"+bjob.Value13+" ： "+bjob.Name13+"\n"+bjob.Value14+" ： "+bjob.Name14+"\n" +bjob.Value15+" ： "+bjob.Name15+"\n" 
+				//  +bjob.Value16+" ： "+bjob.Name16+"\n" +bjob.Value17+" ： "+bjob.Name17+"\n"+bjob.Value18+" ： "+bjob.Name18+"\n"+bjob.Value19+" ： "+bjob.Name19+"\n" +bjob.Value20+" ： "+bjob.Name20+"\n"); 
+			},
+			error: function () {
+			}
+		})
+	}
+	function parseRecord(pclass, pproperty) {
+		//	pproperty="a2-b1-c1-d3-e4-f5-g3";
+		//	pclass ="A1";
+		//	var result = parseA(pclass,pproperty);
+		//    alert("解析后"+result );
+
+		console.log("传入", pproperty);
+
+		var reportType = 'parseRec';
+		var taskData = { "reportType": reportType, "pclass": pclass, "pproperty": pproperty };
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data) {
+				console.log((data.Name1));
+				const json2 = JSON.stringify(data);
+				//                	const json = '{"param1":"宁波PM记录","Name1":"开关模插","Name2":"马达12w","Name3":"感应器","Name4":"线材器","Name5":"包材","Name6":"尺长3","Name7":"电流2","Name8":"电容4"}';
+				const bjob = JSON.parse(json2);
+				alert("属性1： " + bjob.Name1 + "\n" + "属性2： " + bjob.Name2 + "\n" + "属性3： " + bjob.Name3 + "\n" + "属性4： " + bjob.Name4 + "\n" + "属性5： " + bjob.Name5 + "\n" + "属性6： " + bjob.Name6 + "\n" + "属性7： " + bjob.Name7 + "\n" + "属性8： " + bjob.Name8 + "\n"
+					+ "属性9： " + bjob.Name9 + "\n" + "属性10： " + bjob.Name10 + "\n" + "属性11： " + bjob.Name11 + "\n" + "属性12： " + bjob.Name12 + "\n" + "属性13： " + bjob.Name13 + "\n" + "属性14： " + bjob.Name14 + "\n" + "属性15： " + bjob.Name15 + "\n" + "属性16： " + bjob.Name16 + "\n");
+			},
+			error: function () {
+			}
+		})
+	}
+	function deleteRecord(loadc) {
+		var reportType = 'delNouse';
+		var taskData = { "reportType": reportType, "Load_code": loadc };
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data, textStatus) {
+				alert(JSON.stringify(data));
+			},
+			error: function () {
+			}
+		})
+	}
+	function searchFile() {
+		$("#center_TB").dataTable().fnDestroy();
+		var myear = $('#mainyear').val();
+		var mrule = $('#mainrule').val();
+		var mclass = $('#mainclass').val();
+		var mpcode = $('#mainpcode').val();
+		var mpast = $('#mainpast').val();
+		var mname = $('#mainname').val();
+		reloadCol();
+		showDBDataSelf(DataPara, columnsData, myear, mrule, mclass, mpcode, mpast, mname);
+	}
+
+</script>

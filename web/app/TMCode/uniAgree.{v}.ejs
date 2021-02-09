@@ -1,0 +1,331 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- JS  -->
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/banq/cycleAgree.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<script src="/banq/power.js"></script>
+<!-- <script type="text/javascript" src="/js/jquery.media.js"></script> -->
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<link rel="stylesheet" href="/layui/v2.5.6/css/layui.css" media="all">
+<script src="/layui/v2.5.6/layui.all.js" charset="utf-8"></script>
+<script src="/layui/v2.5.6/layui.js" charset="utf-8"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div id="noprint" class="noprint">
+    <div class="divcontent">
+        <div id="handout_wrap_inner"></div>
+        <h1>弘讯科技编码批量审批</h1>
+        <label>审批号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" name="mainbillno" id="mainbillno" value="" autocomplete="off">
+        </div>
+        <label>类别:</label>
+        <div class="layui-inline">
+            <input class="layui-input" name="mainPclass" id="mainPclass" value="" autocomplete="off">
+        </div>
+        <input type="button" id="SeaBtn" onclick="searchFile('1')" class="btn btn-info" value="查找" />
+        <button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
+        <input type="button" id="SeaDateBtn" onclick="searchFile('2')" class="btn btn-info" value="查找" />
+        <!-- <button id="BTNFitSearch" type="button" class="btn btn-info">操作</button>
+        <input type="button" id="DetailBtn" class="btn btn-info" value="解析" />
+        <input type="button" id="DelBtn" class="btn btn-info" value="删除" /> -->
+        <hr>
+        <br />
+    </div>
+</div>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script type="text/html" id="toolbarDemo">
+      <div class="layui-btn-group userTable">
+        <button class="layui-btn layui-btn-danger" lay-event="massAgree">批量审批通过</button>
+        <button class="layui-btn layui-btn-normal" lay-event="massReject">批量审批驳回</button>
+        <!-- <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button> -->
+      </div>
+    </script>
+<table id="demo" lay-filter="test"></table>
+<script type="text/html" id="barDemo">
+      <a class="layui-btn layui-btn-xs" lay-event="repeat">重复</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="approval">同意</a>
+      <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="reject">驳回</a>
+      <a class="layui-btn  layui-btn-primary layui-btn-xs" lay-event="analysis">解析</a> 
+    </script>
+<!-- <input type="button" id="AgreeBtn" onclick="doubleChk()" class="btn btn-info" value="检核重复" />
+<input type="button" id="AgreeBtn" onclick="agreeFile()" class="btn btn-info" value="审批通过" />
+<input type="button" id="RejectBtn" onclick="rejectFile()" class="btn btn-info" value="审批驳回" /> -->
+<!-- 点击弹出窗口开始 -->
+<!-- <div id="pptwindow" class="easyui-window" title="规格" closed="true"
+style=" top:50px; left:800px; width:600px;height:640px;">
+    <form style="padding:10px 50px;">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-3 ">
+                    <input id="specNHead" class="win-green-large" type="text" value="">
+                </div>
+                <br></br>
+                <div class="col-sm-3 ">
+                    <input id="specEF" class="win-green-large" type="text" value="">
+                </div>
+                <br></br>
+                <div class="col-sm-3 ">
+                    <textarea id="specList" class="can-drop-super" width="500px" rows="18"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-3 ">
+                <button id="ComfirmBtn" type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div>
+    </form>
+</div> -->
+<!-- 点击窗口fin -->
+<!-- 点击弹出窗口开始 -->
+<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel" aria-hidden="true"
+	data-backdrop="static">
+	<div class="modal-dialog" style="width:65%">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="lovewindowLabel">物料号面板
+				<button id="BTNFormClose" type="button" class="btn btn-primary" data-dismiss="modal">关闭</button></h4>
+			</div>
+			<div class="modal-body">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">物料基本信息与规格</h3>
+					</div>
+
+					<div class="panel-body">
+
+						<div class="form-horizontal" id="DivAnaly">
+							<!-------------------------------------------------------------------------->
+							<div class="form-group">
+								<label class="col-sm-1 control-label">新物料号:</label>
+								<div class="col-sm-4">
+									<input id="specNHead" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">类别:</label>
+								<div class="col-sm-4">
+									<input id="specOHead" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<!-- <label class="col-sm-1 control-label">检核:</label>
+								<div class="col-sm-4">
+									<input id="specCHead" class="form-control" type="text" value=""
+										disabled="true">
+								</div> -->
+								<label class="col-sm-1 control-label">EF码:</label>
+								<div class="col-sm-4">
+									<input id="specEF" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">型号:</label>
+								<div class="col-sm-4">
+									<input id="specModel" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">组合件:</label>
+								<div class="col-sm-4">
+									<input id="specAssem" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">基本单位:</label>
+								<div class="col-sm-4">
+									<input id="specUnitE" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">物料状态:</label>
+								<div class="col-sm-4">
+									<input id="specPhase" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">优先耗用:</label>
+								<div class="col-sm-4">
+									<input id="specPrior" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">备注:</label>
+								<div class="col-sm-4">
+									<input id="specReason" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+
+							<!-------------------------------------------------------------------------->
+							<div class="form-group">
+								<label class="col-sm-1 control-label" for="name">规格详细:</label>
+								<div class="col-sm-8">
+									<textarea id="specList" class="can-drop-super" width="500px" rows="18"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label" for="name">提交人:</label>
+								<div class="col-sm-3 ">
+									<input id="specStaff" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label" for="name">提交日期:</label>
+								<div class="col-sm-3 ">
+									<input id="specApplyDate" class="form-control" type="text" value=""
+									disabled="true">
+								</div>
+							</div>
+							 
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="BTNFormClose" type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div><!-- modal fade -->
+
+<!-- 点击自定义过滤弹出的窗口 -->
+<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:800px;height:400px;">
+    <div class="form-horizontal">
+        <form style="padding:10px 50px;">
+            <div class="form-group">
+                <label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
+                <div class="col-sm-3 ">
+                    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
+                        data-link-field="taskMakeDateB" data-link-format="yyyy-mm-dd">
+                        <input id="taskMakeDateB" class="form-control " size="16" type="text" value="" readonly>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                    <input type="hidden" id="taskMakeDateB" value="" />
+                </div>
+                <div class="col-sm-3 ">
+                    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd"
+                        data-link-field="taskMakeDateE" data-link-format="yyyy-mm-dd">
+                        <input id="taskMakeDateE" class="form-control " size="16" type="text" value="" readonly>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                    <input type="hidden" id="taskMakeDateE" value="" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 点击窗口fin -->
+    <div class="form-group">
+        <label class="col-sm-2 control-label"></label>
+        <div class="col-sm-3 ">
+            <button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
+            <button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
+        </div>
+    </div>
+</div>
+<!-- fin 自定义过滤  -->
+<script>
+    var missmode = '';
+    var missType = '';
+    var missAcute = '';
+    var missBcute = '';
+    var missCcute = '';
+    var missDcute = '';
+    var centerTable = null;
+    var objCenter = null;
+    var sessionName = '';
+    $(document).ready(function () {
+        layui.use(['table', 'form', 'layedit', 'laydate'], function () {
+            // var form = layui.form
+            // 	, layer = layui.layer
+            // 	, layedit = layui.layedit
+            // 	, laydate = layui.laydate;
+            // form.render();
+            sessionName = "<%-locals.session.yjUser.Name%>";
+            console.log("如来涨:", sessionName);
+            let sessionAID = "<%-locals.session.yjUser.AID%>";
+            let sessionOID = "<%-locals.session.yjUser.OID%>";
+            if (sessionAID == 'tmCodeAdm' || sessionAID == 'Admin') {
+            } else {
+                chkPower(sessionOID);
+            }
+            missType = getQueryString("missT");
+            //    console.log("妲己"+missType);
+            var missTencode = decodeURI(missType);
+            missAcute = getQueryString("missA");
+            //    console.log("将心"+missAcute);
+            var missAencode = decodeURI(missAcute);
+            //    console.log("初心"+missAencode);
+            missBcute = getQueryString("missB");
+            // console.log("将咖"+missBcute);
+            var missBencode = decodeURI(missBcute);
+            missCcute = getQueryString("missC");
+            // console.log("初咖" + missCcute);
+            missDcute = getQueryString("missD");
+            missmode = getQueryString("missE");
+            $("#mainbillno").val(missAcute);
+            $("#mainPclass").val(missBcute);
+            $("#taskMakeDateB").val(missCcute);
+            $("#taskMakeDateE").val(missDcute);
+            console.log("肥咖" + missmode);
+            searchFile(missmode);
+        });
+    });
+    $('#BTNFitler').click(function () {
+        $('#DivFilter').window('open');
+        $('.form_date').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+        });
+        $("#BTNFitler").addClass("active")
+    });
+    $('#BTNFormClose').click(function () {
+		$('#lovewindow').window('close');
+	});
+    // $('#ComfirmBtn').click(function () {
+    //     $('#pptwindow').window('close');
+    // });
+    //过滤功能组 自定义过滤确认按钮-----NNN
+    $('#FilterComfirmBtnN').click(function () {
+        $('#DivFilter').window('close');
+    });
+    //过滤功能组 自定义过滤确认按钮-----
+    $('#FilterCancelBtnN').click(function () {
+        $("#taskMakeDateB").val("")
+        $("#taskMakeDateE").val("")
+    });
+    function doubleChk() {
+        var checkStatus = centerTable.checkStatus(objCenter.config.id);
+    }
+</script>

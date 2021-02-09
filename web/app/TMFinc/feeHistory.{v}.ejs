@@ -26,6 +26,7 @@
 <!-- 预览 -->
 <script src="/arch/FnFee.js"></script>
 <script src="/arch/FnSubA.js"></script>
+<script src="/arch/FnSubB.js"></script>
 
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
@@ -37,16 +38,10 @@
 		<div class="divcontent">
 			<div id="handout_wrap_inner"></div>
 			<h1>费用单据查找</h1>
-			<!-- <label>文号:</label>
-			<div class="layui-inline">
-				<input class="layui-input" name="BillNo" id="BillNo" value="" autocomplete="off">
-			</div>
-			<label>申请号:</label>
-			<div class="layui-inline">
-				<input class="layui-input" name="ApplicNo" id="ApplicNo" value="" autocomplete="off">
-			</div> -->
 			<label>模式:</label>
 			<select id="Pattern" name="Pattern" class="can-find-M140"></select>
+			<label>种类:</label>
+			<select id="CapMode" name="CapMode" class="can-find-M140"></select>
 			<button id="SeaBtn" class="btn btn-default">与我相关</button>
 			<button id="SeaAllBtn" class="btn btn-default">全部单据</button>
 			<!-- <input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" /> -->
@@ -147,6 +142,7 @@
 		var glbH = '';
 		var glbS = '';
 		var Pattern = '';
+		var CapMode= '';
 		var advSearch = '';
 		var selClass = '';
 		var FieldA = true;
@@ -200,6 +196,8 @@
 				console.log("将心glbT:" + missType);
 				missAcute = getQueryString("missA");
 				console.log("将心glbA:" + missAcute);
+				missBcute = getQueryString("missB");
+				console.log("将心glbB:" + missBcute);
 				var missAencode = decodeURI(missAcute);
  
 				glbA = missAencode;
@@ -224,7 +222,7 @@
 				$("#SIGN").append(youoption);
 			});
 			$("#SeaBtn").addClass("active");
-			getpull();
+			getpull();getDrop();
 			$("#pdf-wrapper").css('visibility', 'hidden');
 		});
 
@@ -235,7 +233,7 @@
 		columnsData = [
 
 		];
-		function showDBDataByBill(DataPara, columnsData, Pattern, StaffName) {
+		function showDBDataByBill(DataPara, columnsData, Pattern, CapMode, StaffName) {
 			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
@@ -246,8 +244,7 @@
 			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
 			$("#matchRec").html("查找条件:" + signTxt);
 			var reportChannel = 'FeeHead';
-			var arrange = 'Lookup';
-			var taskData = { "reportType": reportChannel, "arrange": arrange };
+			var taskData = { "reportType": reportChannel, "arrange": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -257,14 +254,14 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskData = { "reportType": reportType, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskData = { "reportType": reportType, "arrange": CapMode ,"filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskData, newColumns);
 				},
 				error: function () {
 				}
 			})
 		}
-		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern) {
+		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern , CapMode) {
 			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
@@ -272,10 +269,10 @@
 			$("#center_TB").dataTable().fnDestroy();
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
-			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "limit": limit };
+			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern,  "CapMode": CapMode, "limit": limit };
 			var reportChannel = 'FeeHead';
 			var arrange = 'Lookup';
-			var taskData = { "reportType": reportChannel, "arrange": arrange };
+			var taskData = { "reportType": reportChannel, "arrange": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -286,15 +283,13 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskType = { "reportType": reportType, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskType = { "reportType": reportType,  "arrange": CapMode , "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					console.log("审审....", taskType);
 					bornTable(taskType, newColumns);
 				},
 				error: function () {
 				}
 			})
-
-
 		}
 		function bornTable(taskData, columnsData) {
 			$(DataPara.tableID).DataTable({
@@ -319,16 +314,13 @@
 				}
 			});
 		}
-
 		function reloadCol() {
 			columnsData = [
 
 			];
 		}
 		$('#BTNFitler').click(function () {
-
 			$('#DivFilter').window('open');
-
 			$('.form_date').datetimepicker({
 				language: 'zh-CN',
 				weekStart: 1,
@@ -339,7 +331,6 @@
 				minView: 2,
 				forceParse: 0
 			});
-
 			$("#BTNGroupFilter").children().removeClass("active");
 			$("#BTNFitler").addClass("active")
 		});
@@ -358,10 +349,10 @@
 			var MakeDateB = $("#taskMakeDateB").val();
 			var MakeDateE = $("#taskMakeDateE").val();
 			Pattern = $('#Pattern').val();
+			CapMode = $('#CapMode').val();
 			reloadCol();
-			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern);
+			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern , CapMode);
 		});
-
 		$('#ResetBtn').click(function () {
 			$("#mainclass").html(""); $("#mainclass").val("");
 			$("#mateId").html(""); $("#mateId").val("");
@@ -378,27 +369,34 @@
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				console.log("西阭", (billNo));
-				shuffleA(billNo);
+				if(CapMode =='A'){
+					shuffleA(billNo);
+				}
+				if(CapMode =='B'){
+					shuffleB(billNo);
+				}
 				$('#kisswindow').modal('show');
 			}
 		});
 		$('#SeaBtn').click(function () {
 			$("#center_TB").dataTable().fnDestroy();
 			Pattern = $('#Pattern').val();
+			CapMode = $('#CapMode').val();
 			var msource = '';
 			var morder = "";
 			reloadCol();
-			showDBDataByBill(DataPara, columnsData, Pattern, sessionName);
+			showDBDataByBill(DataPara, columnsData, Pattern, CapMode, sessionName);
 			$("#SeaBtn").addClass("active");
 			$("#SeaAllBtn").removeClass("active");
 		});
 		$('#SeaAllBtn').click(function () {
 			$("#center_TB").dataTable().fnDestroy();
 			Pattern = $('#Pattern').val();
+			CapMode = $('#CapMode').val();
 			var msource = '';
 			var morder = "";
 			reloadCol();
-			showDBDataByBill(DataPara, columnsData, Pattern, '');
+			showDBDataByBill(DataPara, columnsData, Pattern, CapMode,  '');
 			$("#SeaAllBtn").addClass("active");
 			$("#SeaBtn").removeClass("active");
 		});
@@ -445,7 +443,8 @@
 										var DateB = $("#taskMakeDateB").val();
 										var DateE = $("#taskMakeDateE").val();
 										missAcute =  $('#Pattern').val();
-										window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+										missBcute =  $('#CapMode').val();
+										window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute +"&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
 									});
 								}
 							},
@@ -456,10 +455,7 @@
 						layer.msg('无操作', { icon: 1 });
 					});
 				}
-
 			}
-
-
 		}
 		$('#PrintConfirm').click(function () {
 			Print('#listPrintViewDiv', {

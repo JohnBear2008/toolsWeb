@@ -1,0 +1,172 @@
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+<!-- JS  -->
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<style media=print type="text/css">
+</style>
+<!-- 导入js库 -->
+<script type=text/javascript src="/banq/upExcel.js"></script>
+<!-- 导入datatables -->
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<!-- 导出报告EXCEL -->
+<script src="/public/report/js/xlsx.core.min.js"></script>
+<script src="/public/report/js/xlsx.full.min.js"></script>
+<!-- Layui -->
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/power.js"></script>
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<body>
+  <form class="layui-form" action=""></form>
+  <div style="z-index:999;position:absolute;left:5px;width:40px;height:40px;">
+    <img id="DivAuditImage" src="/images/logo.png">
+  </div>
+  <h1 style="margin-top:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+    上传各式物料属性Excel
+    &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  </h1>
+  <br />
+  <br /> 
+  <br />
+  <br />
+  <br />
+  <br />
+  <div class="btn-group" style="position:absolute;top:80px;left:140px">
+    <button type="text" class="btn btn-info" disabled="disabled">上传物料新编码Excel 
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</button>
+    <input type="file" name="myBody" multiple="multiple" id="fileToImp" class="btn  btn-primary"
+      onchange="fileImp();" />
+  </div>
+  <br />
+  <br /> 
+  <br />
+  <br />
+  <br />
+  <br />
+  <div class="btn-group" style="position:absolute;top:180px;left:140px">
+    <button type="text" class="btn btn-info" disabled="disabled">上传物料新编码(软件)Excel 
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</button>
+    <input type="file" name="myBody" multiple="multiple" id="fileToSoft" class="btn  btn-primary"
+      onchange="fileSoft();" />
+  </div>
+  <br />
+  <br />
+  <br />
+  <br />
+  <div class="btn-group" style="position:absolute;top:280px;left:140px">
+    <button type="text" class="btn btn-info" disabled="disabled">上传分类下拉表Excel 
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</button>
+    <input type="file" name="myHead" multiple="multiple" id="fileToNature" class="btn  btn-primary"
+      onchange="fileNature();" />
+  </div>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <div class="btn-group" style="position:absolute;top:380px;left:140px">
+    <button type="text" class="btn btn-info" disabled="disabled">上传分类总表Excel 
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</button>
+    <input type="file" name="myBody" multiple="multiple" id="fileToFeature" class="btn  btn-primary"
+      onchange="fileFeature();" />
+  </div>
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <div class="btn-group" style="position:absolute;top:480px;left:140px">
+    <button type="text" class="btn btn-info" disabled="disabled">上传EF码Excel 
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</button>
+    <input type="file" name="myBody" multiple="multiple" id="fileToEFCode" class="btn  btn-primary"
+      onchange="fileEFCode();" />
+    </div>
+  <br />
+  <br />
+  <br /> <br />
+  <br />
+  <br />
+  <br />
+  <div class="btn-group" style="position:absolute;top:580px;left:140px">
+    <button type="text" class="btn btn-info" disabled="disabled">上传供应商CCC码Excel 
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</button>
+    <input type="file" name="myBody" multiple="multiple" id="fileToCCC" class="btn  btn-primary"
+      onchange="fileCCC();" />
+  </div>
+  <script>
+    var carData;
+    let catlist = [];
+    var cnt = 0;
+    var sessionName = '';
+    $(document).ready(function () {
+      sessionName = "<%-locals.session.yjUser.Name%>";
+        console.log("如来涨:", sessionName);
+        let sessionAID = "<%-locals.session.yjUser.AID%>";
+        let sessionOID = "<%-locals.session.yjUser.OID%>";
+        if (sessionAID == 'tmCodeAdm' || sessionAID == 'Admin') {
+        } else {
+            chkPower(sessionOID);
+        }
+      layuse();
+
+      $("#file").change(function () {
+        if (!this.files) {
+          return;
+        }
+        var f = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var data = e.target.result;
+          if (rABS) {
+            wb = XLSX.read(btoa(fixdata(data)), {
+              type: 'base64'
+            });
+          } else {
+            wb = XLSX.read(data, {
+              type: 'binary'
+            });
+          }
+          // carData就是我们需要的JSON数据
+          carData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+          console.log("喊三次：", carData);
+          catlist.push(carData);
+          console.log("世禄：", JSON.stringify(catlist));
+          cnt++;
+        };
+        if (rABS) {
+          reader.readAsArrayBuffer(f);
+        } else {
+          reader.readAsBinaryString(f);
+        }
+      })
+    });
+	 
+	// $('#TuneBtn').click(function () {
+  //   var reportType = 'mediaTune';
+  //   var PartsClass = 'A3';
+  //   var PartsYear = '2019';
+	// 	var taskData = { "reportType": reportType  , "PartsYear": PartsYear , "PartsClass": PartsClass };
+	// 	$.ajax({
+	// 		method: 'post',
+	// 		data: taskData,
+	// 		url: "/app/TMCode/getRoute",
+	// 		success: function (data) {
+	// 			console.log("罗罗");
+	// 			const json2 = JSON.stringify(data);
+	// 			const bjob = JSON.parse(json2);
+ 	// 			},
+	// 		error: function () {
+	// 		}
+	// 	})
+	// });
+  </script>
+</body>

@@ -1,0 +1,517 @@
+<!-- CSS -->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css"> -->
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+
+<!-- <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" /> -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+<link href="/css/PM/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="/css/PM/bootstrap-select.min.css" />
+
+
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/DataTables-1.10.18/js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Bootstrap-3.3.7/js/bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/JSZip-2.5.0/jszip.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/dataTables.buttons.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.bootstrap.js"></script>
+<script type="text/javascript" src="/public/DataTablesExcel/Buttons-1.5.6/js/buttons.html5.js"></script>
+
+<!-- CSS -->
+
+<!-- <link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css"> -->
+
+
+<!-- JS  -->
+
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<script src="/js/PM/PMfunny.js"></script>
+
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+
+
+<script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div class="divcontent">
+	<h1>物料属性差异比对</h1>
+	<hr>
+
+	<!-- 操作区（按钮等） -->
+	<div class="lineitem">
+
+		<div class="layui-form-item">
+			<label class="green-label-test">编码一:</label>
+			<div class="layui-inline">
+				<input class="can-drop" name="pnewcode" id="pnewcode" value=""
+					autocomplete="off">
+			</div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<label class="green-label-test">编码二:</label>
+			<div class="layui-inline">
+				<input class="can-drop" name="poldcode" id="poldcode" size="40" value=""
+					autocomplete="off">
+			</div>
+			<button id="BTFind" class="btn btn-info">查找</button>
+		</div>
+	</div>
+	<br />
+	<table>
+		<tr>
+			<td>
+				<form id="qqtwindow" style="padding:10px 10px; left:600px; top:100px  ">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-3 ">
+								<input id="specNHead" class="win-green-large" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="specOHead" class="win-green-large" type="text" value="">
+							</div>
+							<!-- <br></br>
+							<div class="col-sm-3 ">
+								<input id="specEF" class="win-green-large" type="text" value="">
+							</div> -->
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="SaleS" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="SaleP" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale1" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale2" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale3" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale4" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale5" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale6" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale7" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale8" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale9" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale10" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale11" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale12" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale13" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale14" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale15" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale16" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale17" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale18" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale19" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Sale20" class="can-drop-super" type="text" value="">
+							</div>
+						</div>
+					</div>
+				</form>
+			</td>
+			<td>
+				<form id="pptwindow" style="padding:10px 10px;  left:600px; top:800px  ">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-3 ">
+								<input id="kbarNHead" class="win-green-large" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="kbarOHead" class="win-green-large" type="text" value="">
+							</div>
+							<!-- <br></br>
+							<div class="col-sm-3 ">
+								<input id="kbarEF" class="win-green-large" type="text" value="">
+							</div> -->
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="MarkS" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="MarkP" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark1" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark2" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark3" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark4" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark5" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark6" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark7" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark8" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark9" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark10" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark11" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark12" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark13" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark14" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark15" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark16" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark17" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark18" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark19" class="can-drop-super" type="text" value="">
+							</div>
+							<br></br>
+							<div class="col-sm-3 ">
+								<input id="Mark20" class="can-drop-super" type="text" value="">
+							</div>
+						</div>
+					</div>
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+<script>
+	//函数重新绑定事件
+	var missAType = '';
+	var missBType = '';
+	var missCType = '';
+	$(document).ready(function () {
+		var sessionName = "<%-locals.session.yjUser.Name%>";
+		//按钮:过滤本周
+		$('#BTNFitlerWeek').click(function () {
+
+		})
+		//页面加载后默认按周过滤
+		$('#BTNFitlerWeek').click();
+
+		$('#BTFind').click(function () {
+			var paramA = $("#pnewcode").val();
+			console.log("神流 ", paramA);
+			var paramB = $("#poldcode").val();
+			console.log("龙族 ", paramB);
+			var reportType = 'analysisRec';
+			var pcodeA = paramA;
+			var arrange = 'DiffProp';
+			var taskData = { "reportType": reportType, "arrange": arrange, "PartsCode": pcodeA, "DBTable": "auto_parts" };
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (data) {
+					const json2 = JSON.stringify(data);
+					const bjob = JSON.parse(json2);
+					var opttxt = "旧代码: " + bjob.PartsOldCode + "旧规格: " + bjob.PartsOldName;
+					if (opttxt.length > 40) {
+						$("#specOHead").addClass("win-green-small");
+					} else if (opttxt.length > 30) {
+						$("#specOHead").addClass("win-green-mid");
+					} else {
+						$("#specOHead").addClass("win-green-large");
+					}
+					$("#specOHead").val(opttxt);
+					$("#specNHead").val("类别: " + bjob.PartsClass + "  编码: " + bjob.PartsCode + " 物料名称: " + bjob.PartsName);
+					// $("#specEF").val("EF: " + bjob.SMTTitle + " 供应商: " + bjob.SupplyTitle);
+					$("#SaleS").val(bjob.ValueS + bjob.NameS);
+					$("#SaleP").val(bjob.ValueP + bjob.NameP);
+					$("#Sale1").val(bjob.Value1 + bjob.Name1);
+					$("#Sale2").val(bjob.Value2 + bjob.Name2);
+					$("#Sale3").val(bjob.Value3 + bjob.Name3);
+					$("#Sale4").val(bjob.Value4 + bjob.Name4);
+					$("#Sale5").val(bjob.Value5 + bjob.Name5);
+					$("#Sale6").val(bjob.Value6 + bjob.Name6);
+					$("#Sale7").val(bjob.Value7 + bjob.Name7);
+					$("#Sale8").val(bjob.Value8 + bjob.Name8);
+					$("#Sale9").val(bjob.Value9 + bjob.Name9);
+					$("#Sale10").val(bjob.Value10 + bjob.Name10);
+					$("#Sale11").val(bjob.Value11 + bjob.Name11);
+					$("#Sale12").val(bjob.Value12 + bjob.Name12);
+					$("#Sale13").val(bjob.Value13 + bjob.Name13);
+					$("#Sale14").val(bjob.Value14 + bjob.Name14);
+					$("#Sale15").val(bjob.Value15 + bjob.Name15);
+					$("#Sale16").val(bjob.Value16 + bjob.Name16);
+					$("#Sale17").val(bjob.Value17 + bjob.Name17);
+					$("#Sale18").val(bjob.Value18 + bjob.Name18);
+					$("#Sale19").val(bjob.Value19 + bjob.Name19);
+					$("#Sale20").val(bjob.Value20 + bjob.Name20);
+ 				},
+
+				error: function () {
+				}
+			})
+
+			var pcodeB = paramB;
+			var taskData = { "reportType": reportType, "arrange": arrange, "PartsCode": pcodeB, "DBTable": "auto_parts" };
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (data) {
+					const json2 = JSON.stringify(data);
+					const bjob = JSON.parse(json2);
+					var opttxt = "旧代码: " + bjob.PartsOldCode + "旧规格: " + bjob.PartsOldName;
+					if (opttxt.length > 40) {
+						$("#kbarOHead").addClass("win-green-small");
+					} else if (opttxt.length > 30) {
+						$("#kbarOHead").addClass("win-green-mid");
+					} else {
+						$("#kbarOHead").addClass("win-green-large");
+					}
+					$("#kbarOHead").val(opttxt);
+					$("#kbarNHead").val("类别: " + bjob.PartsClass + "  编码: " + bjob.PartsCode + " 物料名称: " + bjob.PartsName);
+					// $("#kbarEF").val("EF: " + bjob.SMTTitle + " 供应商: " + bjob.SupplyTitle);
+					$("#MarkS").val(bjob.ValueS + bjob.NameS);
+					$("#MarkP").val(bjob.ValueP + bjob.NameP);
+					$("#Mark1").val(bjob.Value1 + bjob.Name1);
+					$("#Mark2").val(bjob.Value2 + bjob.Name2);
+					$("#Mark3").val(bjob.Value3 + bjob.Name3);
+					$("#Mark4").val(bjob.Value4 + bjob.Name4);
+					$("#Mark5").val(bjob.Value5 + bjob.Name5);
+					$("#Mark6").val(bjob.Value6 + bjob.Name6);
+					$("#Mark7").val(bjob.Value7 + bjob.Name7);
+					$("#Mark8").val(bjob.Value8 + bjob.Name8);
+					$("#Mark9").val(bjob.Value9 + bjob.Name9);
+					$("#Mark10").val(bjob.Value10 + bjob.Name10);
+					$("#Mark11").val(bjob.Value11 + bjob.Name11);
+					$("#Mark12").val(bjob.Value12 + bjob.Name12);
+					$("#Mark13").val(bjob.Value13 + bjob.Name13);
+					$("#Mark14").val(bjob.Value14 + bjob.Name14);
+					$("#Mark15").val(bjob.Value15 + bjob.Name15);
+					$("#Mark16").val(bjob.Value16 + bjob.Name16);
+					$("#Mark17").val(bjob.Value17 + bjob.Name17);
+					$("#Mark18").val(bjob.Value18 + bjob.Name18);
+					$("#Mark19").val(bjob.Value19 + bjob.Name19);
+					$("#Mark20").val(bjob.Value20 + bjob.Name20);
+ 				},
+				error: function () {
+				}
+			})
+
+
+			var arrange = 'Contrast';
+			var taskData = { "reportType": reportType, "arrange": arrange, "PartsCodeA": pcodeA, "PartsCodeB": pcodeB, "DBTable": "auto_parts" };
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (data) {
+					const json2 = JSON.stringify(data);
+					const bjob = JSON.parse(json2);
+					var DivS  = data.DiverS ;
+					var DivP  = data.DiverP ;
+					var Div1  = data.Diver1 ;
+					var Div2  = data.Diver2 ;
+					var Div3  = data.Diver3 ;
+					var Div4  = data.Diver4 ;
+					var Div5  = data.Diver5 ;
+					var Div6  = data.Diver6 ;
+					var Div7  = data.Diver7 ;
+					var Div8  = data.Diver8 ;
+					var Div9  = data.Diver9 ;
+					var Div10 = data.Diver10;
+					var Div11 = data.Diver11;
+					var Div12 = data.Diver12;
+					var Div13 = data.Diver13;
+					var Div14 = data.Diver14;
+					var Div15 = data.Diver15;
+					var Div16 = data.Diver16;
+					var Div17 = data.Diver17;
+					var Div18 = data.Diver18;
+					var Div19 = data.Diver19;
+					var Div20 = data.Diver20;
+					console.log("金智1", Div1);
+					console.log("金智7", Div7);
+					if (DivS == '1') {
+						$("#SaleS").css("color", "#FF0000");$("#MarkS").css("color", "#228B22");
+					}
+					if (DivP == '1') {
+						$("#SaleP").css("color", "#FF0000");$("#MarkP").css("color", "#228B22");
+					}
+					if (Div1 == '1') {
+						$("#Sale1").css("color", "#FF0000");$("#Mark1").css("color", "#228B22");
+					}
+					if (Div2 == '1') {
+						$("#Sale2").css("color", "#FF0000");$("#Mark2").css("color", "#228B22");
+					}
+					if (Div3 == '1') {
+						$("#Sale3").css("color", "#FF0000");$("#Mark3").css("color", "#228B22");
+					}
+					if (Div4 == '1') {
+						$("#Sale4").css("color", "#FF0000");$("#Mark4").css("color", "#228B22");
+					}
+					if (Div5 == '1') {
+						$("#Sale5").css("color", "#FF0000");$("#Mark5").css("color", "#228B22");
+					}
+					if (Div6 == '1') {
+						$("#Sale6").css("color", "#FF0000");$("#Mark6").css("color", "#228B22");
+					}
+					if (Div7 == '1') {
+						$("#Sale7").css("color", "#FF0000");$("#Mark7").css("color", "#228B22");
+					}
+					if (Div8 == '1') {
+						$("#Sale8").css("color", "#FF0000");$("#Mark8").css("color", "#228B22");
+					}
+					if (Div9 == '1') {
+						$("#Sale9").css("color", "#FF0000");$("#Mark9").css("color", "#228B22");
+					}
+					if (Div10 == '1') {
+						$("#Sale10").css("color", "#FF0000");$("#Mark10").css("color", "#228B22");
+					}
+					if (Div11 == '1') {
+						$("#Sale11").css("color", "#FF0000");$("#Mark11").css("color", "#228B22");
+					}
+					if (Div12 == '1') {
+						$("#Sale12").css("color", "#FF0000");$("#Mark12").css("color", "#228B22");
+					}
+					if (Div13 == '1') {
+						$("#Sale13").css("color", "#FF0000");$("#Mark13").css("color", "#228B22");
+					}
+					if (Div14 == '1') {
+						$("#Sale14").css("color", "#FF0000");$("#Mark14").css("color", "#228B22");
+					}
+					if (Div15 == '1') {
+						$("#Sale15").css("color", "#FF0000");$("#Mark15").css("color", "#228B22");
+					}
+					if (Div16 == '1') {
+						$("#Sale16").css("color", "#FF0000");$("#Mark16").css("color", "#228B22");
+					}
+					if (Div17 == '1') {
+						$("#Sale17").css("color", "#FF0000");$("#Mark17").css("color", "#228B22");
+					}
+					if (Div18 == '1') {
+						$("#Sale18").css("color", "#FF0000");$("#Mark18").css("color", "#228B22");
+					}
+					if (Div19 == '1') {
+						$("#Sale19").css("color", "#FF0000");$("#Mark19").css("color", "#228B22");
+					}
+					if (Div20 == '1') {
+						$("#Sale20").css("color", "#FF0000");$("#Mark20").css("color", "#228B22");
+					}
+				},
+				error: function () {
+				}
+			})
+
+
+		});
+	});
+</script>

@@ -48,8 +48,8 @@ module.exports = function (sender) {
         var CurName = '';
         var OppWorkId = '';
         var OppName = '';
-        var DptWorkId = '';
-        var DptName = '';
+        var MagWorkId = '';
+        var MagName = '';
         var VipWorkId = '';
         var VipName = '';
         var PurWorkId = '';
@@ -103,8 +103,8 @@ module.exports = function (sender) {
                         } else {
                             OppWorkId = result[1][i].OppWorkId;
                             OppName = result[1][i].OppName;
-                            DptWorkId = result[1][i].DptWorkId;
-                            DptName = result[1][i].DptName;
+                            MagWorkId = result[1][i].MagWorkId;
+                            MagName = result[1][i].MagName;
                             VipWorkId = result[1][i].VipWorkId;
                             VipName = result[1][i].VipName;
                             if (BudgetType == 'A') {
@@ -125,8 +125,8 @@ module.exports = function (sender) {
                             } else {
 
                             }
-                            CurWorkId = DptWorkId;
-                            CurName = DptName;
+                            CurWorkId = MagWorkId;
+                            CurName = MagName;
                         }
                         if (result[2][i] == null || result[2][i] == undefined) {
                             Track = '[{"Level1":"adm","Level2":"dpt","Level3":"vip","Level4":"pur","Level5":"pEx","Level6":"cfo","Level7":"psd","Level8":"ceo","Level9":"bod"}]';
@@ -135,7 +135,7 @@ module.exports = function (sender) {
                             // console.log("導航條", result[1][i]);
                         }
                     }
-                    handleRule(TermiLevel, CurWorkId, CurName, OppWorkId, OppName, DptWorkId, DptName, VipWorkId, VipName, PurWorkId, PurName, PexWorkId, PexName,
+                    handleRule(TermiLevel, CurWorkId, CurName, OppWorkId, OppName, MagWorkId, MagName, VipWorkId, VipName, PurWorkId, PurName, PexWorkId, PexName,
                         CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track);
                 }
             });
@@ -143,8 +143,8 @@ module.exports = function (sender) {
             var StaffName = '周筱龙';
             let SQL2 = "select tvip.StaffID , tvip.StaffName ,tquo.UpperLimit from  bgu_staffs tba " +
                 "LEFT JOIN bgu_staffs tvip on tba.DeptLabel =tvip.DeptLabel and tvip.staffLevel='3' " +
-                "LEFT JOIN bgu_quota tquo on tvip.StaffName = tquo.StaffName  " +
-                "where tba.StaffName= ? ";
+                "LEFT JOIN bgu_credit tquo on tvip.StaffName = tquo.StaffName  " +
+                "where tba.StaffName = ? ";
             yjDBService.exec({
                 sql: SQL2,
                 parameters: [StaffName],
@@ -181,7 +181,7 @@ module.exports = function (sender) {
             // LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel = '9'
             // where  tba.staffName = '王启源'
 
-            " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as DptWorkId, tdpt.StaffName as DptName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
+            " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
                 " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
                 " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
                 " from  bgu_staffs tba  " +
@@ -196,8 +196,8 @@ module.exports = function (sender) {
                 " where  tba.StaffName= ?  ";
             var OppWorkId = StaffID;   
             var OppName = StaffName;
-            var DptWorkId = '';
-            var DptName = '';
+            var MagWorkId = '';
+            var MagName = '';
             var VipWorkId = '';
             var VipName = '';
             var PurWorkId = '';
@@ -227,8 +227,8 @@ module.exports = function (sender) {
                         console.log("瑜@@", retcode);
                     }
                     for (var i = 0; i < data.length; i++) {
-                        DptWorkId = data[i].DptWorkId;
-                        DptName = data[i].DptName;
+                        MagWorkId = data[i].MagWorkId;
+                        MagName = data[i].MagName;
                         VipWorkId = data[i].VipWorkId;
                         VipName = data[i].VipName;
                         PurWorkId = data[i].PurWorkId;
@@ -246,8 +246,8 @@ module.exports = function (sender) {
                         var temp = {
                             "OppWorkId": OppWorkId,
                             "OppName": OppName,
-                            "DptWorkId": DptWorkId,
-                            "DptName": DptName,
+                            "MagWorkId": MagWorkId,
+                            "MagName": MagName,
                             "VipWorkId": VipWorkId,
                             "VipName": VipName,
                             "PurWorkId": PurWorkId,
@@ -297,7 +297,7 @@ module.exports = function (sender) {
             });
         }
     }
-    function handleRule(TermiLevel, CurWorkId, CurName, OppWorkId, OppName, DptWorkId, DptName, VipWorkId, VipName, PurWorkId, PurName, PexWorkId, PexName,
+    function handleRule(TermiLevel, CurWorkId, CurName, OppWorkId, OppName, MagWorkId, MagName, VipWorkId, VipName, PurWorkId, PurName, PexWorkId, PexName,
         CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track) {
         let paramList = [];
         var UpperLimit = '';
@@ -313,13 +313,13 @@ module.exports = function (sender) {
 
         let SQLInsert = "INSERT INTO `bgu_rule` ( `billNo`,  `EntryDate` ,  `GroupLabel`, `StaffID`, `StaffName`,  " +
             " `CurStatus`, `CurText`,  `SendStatus`, `SendText`, `CurLevel`,  `TermiLevel`, `CurWorkId`, `CurName`," +
-            " `Track`, `OppWorkId`, `OppName`, `oppDate`,  `DptWorkId`, `DptName`, `VipWorkId`, `VipName`,  `PurWorkId`, " +
+            " `Track`, `OppWorkId`, `OppName`, `oppDate`,  `MagWorkId`, `MagName`, `VipWorkId`, `VipName`,  `PurWorkId`, " +
             " `PurName`,   `PexWorkId`, `PexName`,   `CfoWorkId`, `CfoName`,  `PsdWorkId`, `PsdName`,  " +
             "  `CeoWorkId`, `CeoName`,  `BodWorkId`, `BodName` )" +
             " Values (  '" + billNo + "',  '" + EntryDate + "' ,  '" + GroupLabel + "', '" + StaffID + "', '" + StaffName + "',  " +
             " '" + CurStatus + "', '" + CurText + "', '" + SendStatus + "', '" + SendText + "', '" + CurLevel + "', " +
             " '" + TermiLevel + "', '" + CurWorkId + "', '" + CurName + "',  " +
-            " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + DptWorkId + "', '" + DptName + "',  '" + VipWorkId + "', '" + VipName + "', " +
+            " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "',  '" + VipWorkId + "', '" + VipName + "', " +
             "    '" + PurWorkId + "',  '" + PurName + "',   '" + PexWorkId + "', '" + PexName + "',  '" + CfoWorkId + "', '" + CfoName + "',  " +
             "   '" + PsdWorkId + "', '" + PsdName + "'," +
             " '" + CeoWorkId + "', '" + CeoName + "', '" + BodWorkId + "', '" + BodName + "' ) ";

@@ -48,9 +48,7 @@ module.exports = function (sender) {
                 for (var i = 0; i < data.length; i++) {
                     Track = data[i].Track;
                     var TrackUU = JSON.parse(Track);
-                    console.log("别问我谁  ", Track);
-                    console.log("矢发的  ", TrackUU);
-                    console.log("矢纱夏  ", TrackUU[0].Level2);
+                    // console.log("别问我谁  ", Track); 
                     CurLevel = data[i].CurLevel;
                     TermiLevel = data[i].TermiLevel;
                     CurWorkId = data[i].CurWorkId;
@@ -100,38 +98,37 @@ module.exports = function (sender) {
                         console.log("---------------推10推  ", nextjob);
                     }
                     if (curtjob == 'dpt') {
-                        fixdate = "  dptDate ='" + EntryDate + "' ";
+                        fixdate = "  MagDate ='" + EntryDate + "' ";
                         fixlv = "  Level2 ='N' ";
                     }
                     if (curtjob == 'vip') {
-                        fixdate = "  vipDate ='" + EntryDate + "' ";
+                        fixdate = "  VipDate ='" + EntryDate + "' ";
                         fixlv = "  Level3 ='N' ";
                     }
                     if (curtjob == 'pur') {
-                        fixdate = "  purDate ='" + EntryDate + "' ";
+                        fixdate = "  PurDate ='" + EntryDate + "' ";
                         fixlv = "  Level4 ='N' ";
                     }
                     if (curtjob == 'pex') {
-                        fixdate = "  pexDate ='" + EntryDate + "' ";
+                        fixdate = "  PexDate ='" + EntryDate + "' ";
                         fixlv = "  Level5 ='N' ";
                     }
                     if (curtjob == 'cfo') {
-                        fixdate = "  cfoDate ='" + EntryDate + "' ";
+                        fixdate = "  CfoDate ='" + EntryDate + "' ";
                         fixlv = "  Level6 ='N' ";
                     }
                     if (curtjob == 'psd') {
-                        fixdate = "  psdDate ='" + EntryDate + "' ";
+                        fixdate = "  PsdDate ='" + EntryDate + "' ";
                         fixlv = "  Level7 ='N' ";
                     }
                     if (curtjob == 'ceo') {
-                        fixdate = "  ceoDate ='" + EntryDate + "' ";
+                        fixdate = "  CeoDate ='" + EntryDate + "' ";
                         fixlv = "  Level8 ='N' ";
                     }
                     if (curtjob == 'bod') {
-                        fixdate = "  bodDate ='" + EntryDate + "' ";
+                        fixdate = "  BodDate ='" + EntryDate + "' ";
                         fixlv = "  Level9 ='N' ";
                     }
-                    console.log("塞值8  ", fixdate);
                     if (nextjob == 'vip') {
                         nextWorkId = data[i].VipWorkId;
                         nextName = data[i].VipName;
@@ -168,7 +165,6 @@ module.exports = function (sender) {
 				 
                 HandleParts(BillNo,  CurText , CurStatus, fixdate, fixlv);
                 console.log("褒姒nextLevel", nextLevel);
-                console.log("褒姒EntryDate", EntryDate);
                 console.log("褒姒nextName", nextName);
                 console.log("褒姒nextWorkId", nextWorkId);
             },
@@ -178,7 +174,7 @@ module.exports = function (sender) {
     function HandleParts(BillNo,  CurText , CurStatus, fixdate, fixlv) {
         let SQL = "Update `bgu_rule` set   CurText = ?, CurStatus = ? , " +
             " " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
-        console.log("香月SQL:", SQL);
+        // console.log("香月SQL:", SQL);
 
         yjDBService.exec({
             sql: SQL,

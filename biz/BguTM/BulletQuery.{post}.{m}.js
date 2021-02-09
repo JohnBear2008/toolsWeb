@@ -75,6 +75,7 @@ module.exports = function (sender) {
               "Department": Department,
             };
             dataARR.push(obj2);
+            // console.log("推油:" + JSON.stringify(obj2));
           }
           if (result[0][0] == null || result[0][0] == undefined) {
           } else {
@@ -97,7 +98,7 @@ module.exports = function (sender) {
           }
           // console.log("定延:" + JSON.stringify(obj));
           var OppName = '';
-          var DptName = '';
+          var MagName = '';
           var VipName = '';
           var PurName = '';
           var PexName = '';
@@ -106,7 +107,7 @@ module.exports = function (sender) {
           var CeoName = '';
           var BodName = '';
           var OppDate = '';
-          var DptDate = '';
+          var MagDate = '';
           var VipDate = '';
           var PurDate = '';
           var PexDate = '';
@@ -123,7 +124,7 @@ module.exports = function (sender) {
           if (result[2][0] == null || result[2][0] == undefined) {
           } else {
             OppName = result[2][0].OppName; OppName = nulReplaceTxt(OppName); OppDate = result[2][0].OppDate; OppDate = nulReplaceTxt(OppDate);
-            DptName = result[2][0].DptName; DptName = nulReplaceTxt(DptName); DptDate = result[2][0].DptDate; DptDate = nulReplaceTxt(DptDate);
+            MagName = result[2][0].MagName; MagName = nulReplaceTxt(MagName); MagDate = result[2][0].MagDate; MagDate = nulReplaceTxt(MagDate);
             VipName = result[2][0].VipName; VipName = nulReplaceTxt(VipName); VipDate = result[2][0].VipDate; VipDate = nulReplaceTxt(VipDate);
             PurName = result[2][0].PurName; PurName = nulReplaceTxt(PurName); PurDate = result[2][0].PurDate; PurDate = nulReplaceTxt(PurDate);
             PexName = result[2][0].PexName; PexName = nulReplaceTxt(PexName); PexDate = result[2][0].PexDate; PexDate = nulReplaceTxt(PexDate);
@@ -138,7 +139,7 @@ module.exports = function (sender) {
           }
           var objX = {
             "OppName": OppName, "OppDate": OppDate,
-            "DptName": DptName, "DptDate": DptDate,
+            "MagName": MagName, "MagDate": MagDate,
             "VipName": VipName, "VipDate": VipDate,
             "PurName": PurName, "PurDate": PurDate,
             "PexName": PexName, "PexDate": PexDate,
@@ -260,8 +261,8 @@ module.exports = function (sender) {
       // var BillNo = '20201225103088';
       let SQL2 =
         " select  `BillNo` ,`entryDate` ,`groupLabel` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
-        " `CurName` ,`SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`DptWorkId` ,`DptName` ," +
-        " `DptDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
+        " `CurName` ,`SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`MagWorkId` ,`MagName` ," +
+        " `MagDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
         " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate`  from bgu_rule tba  " +
         " where tba.BillNo= ?   ";
@@ -277,7 +278,7 @@ module.exports = function (sender) {
             // console.log(  " 詩賢 ", data[i].OppName );
             var temp = {
               "Level1": data[i].Level1, "OppWorkId": data[i].OppWorkId, "OppName": data[i].OppName, "OppDate": data[i].OppDate,
-              "Level2": data[i].Level2, "DptWorkId": data[i].DptWorkId, "DptName": data[i].DptName, "DptDate": data[i].DptDate,
+              "Level2": data[i].Level2, "MagWorkId": data[i].MagWorkId, "MagName": data[i].MagName, "MagDate": data[i].MagDate,
               "Level3": data[i].Level3, "VipWorkId": data[i].VipWorkId, "VipName": data[i].VipName, "VipDate": data[i].VipDate,
               "Level4": data[i].Level4, "PurWorkId": data[i].PurWorkId, "PurName": data[i].PurName, "PurDate": data[i].PurDate,
               "Level5": data[i].Level5, "PexWorkId": data[i].PexWorkId, "PexName": data[i].PexName, "PexDate": data[i].PexDate,

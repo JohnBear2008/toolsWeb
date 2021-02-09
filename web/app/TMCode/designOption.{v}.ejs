@@ -1,0 +1,500 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+
+<script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/supplier.js"></script>
+<script src="/banq/energy.js"></script>
+<script src="/banq/wipeR.js"></script>
+<script src="/banq/wipeRpack.js"></script>
+<script src="/banq/Mizualert.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+<div>
+</div>
+<H1>弘讯科技编码属性下拉更改</H1>
+
+
+<div class="btn-group">
+	<label class="layui-form-label">产品设备</label>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		物料类别
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id="IllumA" name="IllumA">
+
+	</ul>
+</div>
+<div class="btn-group">
+	<label class="layui-form-label">电子电气原料</label>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		物料类别
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id="IllumE" name="IllumE">
+
+	</ul>
+</div>
+
+<div class="btn-group">
+	<label class="layui-form-label">配件连接线</label>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		物料类别
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id="IllumG" name="IllumG">
+
+	</ul>
+</div>
+<br></br>
+<div class="btn-group">
+	<label class="layui-form-label">包材配件伺服</label>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		物料类别
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id="IllumJ" name="IllumJ">
+
+	</ul>
+</div>
+<div class="btn-group">
+	<label class="layui-form-label">系统软件程序</label>
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		物料类别
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" id="IllumR" name="IllumR">
+
+	</ul>
+	<span id="pclass" class="green-label">.</span>
+	<input name="mainclass" id="mainclass" type="text" size="50" value="" style="visibility:hidden"> </input>
+	<input name="mainchi" id="mainchi" type="text" size="50" value="" style="visibility:hidden"> </input>
+</div>
+<br></br>
+<span id="rule-label" class="can-mini" style="visibility:hidden"></span>
+<input name="mainrule" id="mainrule" class="can-mini" width="0px" type="text" size="10" value="A"
+	style="visibility:hidden"> </input>
+<a class="btn btn-lg btn-info" id="bt_append" style="margin-left:30px" onclick="appendhmi();">属性添加</a>
+<a class="btn btn-lg btn-info" id="bt_refresh" style="margin-left:30px" onclick="refreshhmi();">属性修改</a>
+<a class="btn btn-lg btn-info" id="bt_remove" style="margin-left:30px" onclick="removehmi();">属性删除</a>
+<br></br>
+<span id="model-label" class="coffee-label"> 属性 </span>
+<input name="FixLabel" id="FixLabel" class="coffee-drop" width="150px" type="text" size="50" value=""> </input>
+<span id="model-label" class="coffee-label"> 旧属性键 </span>
+<input name="FixDesc" id="FixDesc" class="coffee-drop-large" width="150px" type="text" size="50" value=""> </input>
+<br></br>
+<span id="model-label" class="coffee-label"> 新属性键 </span>
+<input name="FixNewDesc" id="FixNewDesc" class="coffee-drop-large" width="150px" type="text" size="50" value="">
+</input>
+<!-- <br></br>
+<span id="classSupp" class="green-label" onclick="searchFile(this)"> 制造商 </span>
+<select id="soup" name="soup" class="can-drop"></select>
+<span id="classSMT" class="green-label" onclick="searchFile(this)"> 属性EF </span>
+<select id="beef" name="beef" class="can-drop"></select> -->
+<br></br>
+<span id="unitE-label" class="green-label" style="visibility:hidden" > 基本单位 </span>
+<select id="NewUnitE" name="NewUnitE" class="can-drop" style="visibility:hidden"></select>
+<input name="OldUnitE" id="OldUnitE" class="coffee-drop" style="visibility:hidden"  value=""> </input>
+<br></br>
+<span id="classA" class="blue-label" style="visibility:hidden"> 分类 </span>
+<select id="boat" name="boat" class="can-drop" style="visibility:hidden"></select>
+<span id="classB" class="blue-label" style="visibility:hidden"> 系列 </span>
+<select id="yacht" name="yacht" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classC" class="blue-label" style="visibility:hidden"> 归属 </span>
+<select id="sail" name="sail" class="can-drop" style="visibility:hidden"></select>
+<span id="classD" class="blue-label" style="visibility:hidden"> 厂家 </span>
+<select id="vessel" name="vessel" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classE" class="blue-label" style="visibility:hidden"> 定制规格 </span>
+<input name="tankerName" id="tankerName" class="can-mini" width="0px" type="text" size="50" value=""
+	style="visibility:hidden"> </input>
+<select id="tanker" name="tanker" class="can-drop" style="visibility:hidden"></select>
+<span id="classF" class="blue-label" style="visibility:hidden"> 版本 </span>
+<select id="marine" name="marine" class="can-drop" style="visibility:hidden"></select>
+
+<br></br>
+<span id="classG" class="blue-label" style="visibility:hidden"> 包装 </span>
+<select id="rocket" name="rocket" class="can-drop" style="visibility:hidden"></select>
+<span id="classH" class="blue-label" style="visibility:hidden"> 联轴器/键轴</span>
+<select id="zebra" name="zebra" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classI" class="blue-label" style="visibility:hidden"> 油泵分类</span>
+<select id="eleph" name="eleph" class="can-drop" style="visibility:hidden"></select>
+<span id="classJ" class="blue-label" style="visibility:hidden"> 油泵系列</span>
+<select id="eagle" name="eagle" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classK" class="blue-label" style="visibility:hidden"> 油泵型号</span>
+<select id="tiger" name="tiger" class="can-drop" style="visibility:hidden"></select>
+<span id="classL" class="blue-label" style="visibility:hidden"> 油泵排量</span>
+<select id="lion" name="lion" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classM" class="blue-label" style="visibility:hidden"> 进出油口方向</span>
+<select id="horse" name="horse" class="can-drop" style="visibility:hidden"></select>
+<span id="classO" class="blue-label" style="visibility:hidden"> 接线盒方向 </span>
+<select id="worm" name="worm" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classP" class="blue-label" style="visibility:hidden"> 出线方向 </span>
+<select id="hole" name="hole" class="can-drop" style="visibility:hidden"></select>
+<span id="classQ" class="blue-label" style="visibility:hidden"> 版本 </span>
+<select id="xman" name="xman" class="can-drop" style="visibility:hidden"></select>
+<br></br>
+<span id="classR" class="blue-label" style="visibility:hidden"> 包装 </span>
+<select id="quita" name="quita" class="can-drop" style="visibility:hidden"></select>
+<span id="classS" class="blue-label"> 属性18 </span>
+<select id="fox" name="fox" class="can-drop"></select>
+<br></br>
+<span id="classT" class="blue-label"> 属性19 </span>
+<select id="owl" name="owl" class="can-drop"></select>
+<span id="classU" class="blue-label"> 属性20 </span>
+<select id="deer" name="deer" class="can-drop"></select>
+<br></br>
+<script>
+	var despec = 'N/A';
+	let active = {};
+	var sessionName = '';
+	var FixNewCID = '';
+	var origUUU ='';
+	$(document).ready(function () {
+		layuse();
+		sessionName = "<%-locals.session.yjUser.Name%>";
+		$("#classS").css('visibility', 'hidden'); $("#fox").css('visibility', 'hidden');
+		$("#classT").css('visibility', 'hidden'); $("#owl").css('visibility', 'hidden');
+		$("#classU").css('visibility', 'hidden'); $("#deer").css('visibility', 'hidden');
+		getSupply(); IllumationA(); IllumationE(); IllumationG(); IllumationJ(); IllumationR();
+		missA = getQueryString("missA");
+		console.log("红露", missA);
+		if (missA == undefined) {
+		} else {
+			var obj = {};
+			Gold(missA, obj);
+			getUnitE(missA, obj);  
+		}
+		$("#specName").val(despec);
+	});
+	var PartsPID = '';
+	
+	$("#NewUnitE").bind("change", function () {
+		var datacol = $("#unitE-label").val();
+		var dataname = $(this).val();
+		PartsPID = '1';
+		$("#FixLabel").val(datacol);
+		var origUU = $("#OldUnitE").val();
+		console.log("欧之",origUU );
+		$("#FixDesc").html(origUU);	$("#FixDesc").val(origUU); 
+
+		var SuuuID = $('#NewUnitE').val();
+		var Suuuoption = $("#NewUnitE option:selected");
+		var Suuuindex = Suuuoption.val();
+		var SuuuTitle = Suuuoption.text();
+		FixNewCID = Suuuindex;
+		console.log("昂昂", Suuuindex ,"小昂昂",SuuuTitle);
+		$("#FixNewDesc").val(SuuuTitle);
+
+	});
+	$("#boat").bind("change", function () {
+		var datacol = $("#classA").val();
+		var dataname = $(this).val();
+		PartsPID = '2';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#yacht").bind("change", function () {
+		var datacol = $("#classB").val();
+		var dataname = $(this).val();
+		PartsPID = '3';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#sail").bind("change", function () {
+		var datacol = $("#classC").val();
+		var dataname = $(this).val();
+		PartsPID = '4';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#vessel").bind("change", function () {
+		var datacol = $("#classD").val();
+		var dataname = $(this).val();
+		PartsPID = '5';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#tanker").bind("change", function () {
+		var datacol = $("#classE").val();
+		var dataname = $(this).val();
+		PartsPID = '6';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#marine").bind("change", function () {
+		var datacol = $("#classF").val();
+		var dataname = $(this).val();
+		PartsPID = '7';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#rocket").bind("change", function () {
+		var datacol = $("#classG").val();
+		var dataname = $(this).val();
+		PartsPID = '8';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#zebra").bind("change", function () {
+		var datacol = $("#classH").val();
+		var dataname = $(this).val();
+		PartsPID = '9';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#eleph").bind("change", function () {
+		var datacol = $("#classI").val();
+		var dataname = $(this).val();
+		PartsPID = '10';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#eagle").bind("change", function () {
+		var datacol = $("#classJ").val();
+		var dataname = $(this).val();
+		PartsPID = '11';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#tiger").bind("change", function () {
+		var datacol = $("#classK").val();
+		var dataname = $(this).val();
+		PartsPID = '12';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#lion").bind("change", function () {
+		var datacol = $("#classL").val();
+		var dataname = $(this).val();
+		PartsPID = '13';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#horse").bind("change", function () {
+		var datacol = $("#classM").val();
+		var dataname = $(this).val();
+		PartsPID = '14';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#worm").bind("change", function () {
+		var datacol = $("#classO").val();
+		var dataname = $(this).val();
+		PartsPID = '15';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#hole").bind("change", function () {
+		var datacol = $("#classP").val();
+		var dataname = $(this).val();
+		PartsPID = '16';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#xman").bind("change", function () {
+		var datacol = $("#classQ").val();
+		var dataname = $(this).val();
+		PartsPID = '17';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#quita").bind("change", function () {
+		var datacol = $("#classR").val();
+		var dataname = $(this).val();
+		PartsPID = '18';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#fox").bind("change", function () {
+		var datacol = $("#classS").val();
+		var dataname = $(this).val();
+		PartsPID = '19';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#owl").bind("change", function () {
+		var datacol = $("#classT").val();
+		var dataname = $(this).val();
+		PartsPID = '20';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+	$("#deer").bind("change", function () {
+		var datacol = $("#classU").val();
+		var dataname = $(this).val();
+		PartsPID = '21';
+		$("#FixLabel").val(datacol);
+		$("#FixDesc").val(dataname);
+	});
+
+	function refreshhmi() {
+		var PartsYear = $('#mainyear').val();
+		var PartsRule = $('#mainrule').val();
+		var PartsClass = $('#mainclass').val();
+		var PartsChi = $('#mainchi').val();
+		var FixLabel = $('#FixLabel').val();
+		var FixDesc = $('#FixDesc').val();
+		var FixNewDesc = $('#FixNewDesc').val();
+		var reportType = 'eqpUpkeep';
+		var arrange = 'refresh';
+		var taskData = {
+			"reportType": reportType, "arrange": arrange, "PartsRule": PartsRule, "PartsClass": PartsClass,
+			"FixLabel": FixLabel, "FixDesc": FixDesc,  "FixNewCID": FixNewCID, "FixNewDesc": FixNewDesc, "PartsPID": PartsPID, "PartsChi": PartsChi
+		}
+		console.log("尼老师",JSON.stringify(taskData));
+		layer.confirm('此数据内容操作后无法还原，请确认操作是否无误！', {
+			btn: ['是', '否'] //按钮
+		}, function () {
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (dataArr) {
+					var obj = dataArr;
+					var retcode = dataArr.status;
+					var retmsg = '';
+					if (retcode == 'OK') {
+						retmsg = "新类别" + dataArr.PartsChi + "更新成功！"
+					}
+					if (retcode == 'FAIL') {
+						retmsg = "新类别" + dataArr.PartsChi + "更新不成功！"
+						console.log("奥客");
+					}
+					layer.confirm(retmsg, {
+						btn: ['是'] //按钮
+					}, function () {
+						layer.msg('操作成功', { icon: 1 });
+					});
+				},
+				error: function () {
+				}
+			})
+		}, function () {
+			layer.msg('无操作', { icon: 1 });
+		}); 
+	}
+	function removehmi() {
+		var PartsYear = $('#mainyear').val();
+		var PartsRule = $('#mainrule').val();
+		var PartsClass = $('#mainclass').val();
+		var PartsChi = $('#mainchi').val();
+		var FixLabel = $('#FixLabel').val();
+		var FixDesc = $('#FixDesc').val();
+		var FixNewDesc = $('#FixNewDesc').val(); 
+		
+		var reportType = 'eqpUpkeep'; 
+		var arrange = 'remove';
+		var taskData = {
+			"reportType": reportType, "arrange": arrange, "PartsRule": PartsRule, "PartsClass": PartsClass,
+			"FixLabel": FixLabel, "FixDesc": FixDesc, "FixNewCID": FixNewCID,  "FixNewDesc": FixNewDesc, "PartsPID": PartsPID, "PartsChi": PartsChi
+		}
+		console.log("尼老师",JSON.stringify(taskData));
+		layer.confirm('此数据内容操作后无法还原，请确认操作是否无误！', {
+			btn: ['是', '否'] //按钮
+		}, function () {
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (dataArr) {
+					var obj = dataArr;
+					var retcode = dataArr.status;
+					var retmsg = '';
+					if (retcode == 'OK') {
+						retmsg = "新类别" + dataArr.PartsChi + "更新成功！"
+					}
+					if (retcode == 'FAIL') {
+						retmsg = "新类别" + dataArr.PartsChi + "更新不成功！"
+						console.log("奥客");
+					}
+					layer.confirm(retmsg, {
+						btn: ['是'] //按钮
+					}, function () {
+						layer.msg('操作成功', { icon: 1 });
+					});
+				},
+				error: function () {
+				}
+			})
+		}, function () {
+			layer.msg('无操作', { icon: 1 });
+		}); 
+	}
+	function appendhmi() {
+		var PartsYear = $('#mainyear').val();
+		var PartsRule = $('#mainrule').val();
+		var PartsClass = $('#mainclass').val();
+		var PartsChi = $('#mainchi').val();
+		var FixLabel = $('#FixLabel').val();
+		var FixDesc = $('#FixDesc').val();
+		var FixNewDesc = $('#FixNewDesc').val();
+		var reportType = 'eqpUpkeep';
+		var arrange = 'append';
+		var taskData = {
+			"reportType": reportType, "arrange": arrange, "PartsRule": PartsRule, "PartsClass": PartsClass,
+			"FixLabel": FixLabel, "FixDesc": FixDesc, "FixNewCID": FixNewCID,  "FixNewDesc": FixNewDesc, "PartsPID": PartsPID, "PartsChi": PartsChi
+		}
+		console.log("尼老师",JSON.stringify(taskData));
+		layer.confirm('此数据内容操作后无法还原，请确认操作是否无误！', {
+			btn: ['是', '否'] //按钮
+		}, function () {
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (dataArr) {
+					var obj = dataArr;
+					var retcode = dataArr.status;
+					var retmsg = '';
+					if (retcode == 'OK') {
+						retmsg = "新类别" + dataArr.PartsChi + "更新成功！"
+					}
+					if (retcode == 'FAIL') {
+						retmsg = "新类别" + dataArr.PartsChi + "更新不成功！"
+						console.log("奥客");
+					}
+					layer.confirm(retmsg, {
+						btn: ['是'] //按钮
+					}, function () {
+						layer.msg('操作成功', { icon: 1 });
+					});
+				},
+				error: function () {
+				}
+			})
+		}, function () {
+			layer.msg('无操作', { icon: 1 });
+		}); 
+	}
+</script>

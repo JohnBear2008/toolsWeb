@@ -1,0 +1,867 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- JS  -->
+
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<script src="/banq/billpull.js"></script>
+<!-- <script type="text/javascript" src="/js/jquery.media.js"></script> -->
+
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div id="noprint" class="noprint">
+	<div class="divcontent">
+		<div id="handout_wrap_inner"></div>
+		<h1>历史记录查找</h1>
+		<label>审批号:</label>
+		<div class="layui-inline">
+			<input class="layui-input" name="billno" id="billno" value="" autocomplete="off">
+		</div>
+		<label>编码号:</label>
+		<div class="layui-inline">
+			<input class="layui-input" name="codeno" id="codeno" value="" autocomplete="off">
+		</div>
+		<label>模式:</label>
+		<select id="Pattern" name="Pattern" class="can-find-M140"></select>
+		<input type="button" id="SeaBtn" onclick="searchFile()" class="btn btn-info" value="查找" />
+		<input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" />
+		<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
+		<button id="BTNFitSearch" type="button" class="btn btn-info">操作</button>
+		<input type="button" id="DetailBtn" class="btn btn-info" value="解析" />
+		<input type="button" id="AlterBtn" class="btn btn-info" value="撤回" />
+		<input type="button" id="DraftBtn" class="btn btn-info" value="修改" />
+		<hr>
+		<br />
+		<!-- 点击自定义过滤弹出的窗口 -->
+		<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true" style="width:800px;height:400px;">
+			<form style="padding:10px 50px;">
+
+				<div class="form-horizontal">
+					<div class="form-group">
+
+						<label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
+						<div class="col-sm-3 ">
+							<div class="input-group date form_date " data-date=""
+								data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateB"
+								data-link-format="yyyy-mm-dd">
+								<input id="taskMakeDateB" class="form-control " size="16" type="text"
+									value="" readonly>
+								<span class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+							<input type="hidden" id="taskMakeDateB" value="" />
+						</div>
+
+						<div class="col-sm-3 ">
+
+							<div class="input-group date form_date " data-date=""
+								data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateE"
+								data-link-format="yyyy-mm-dd">
+								<input id="taskMakeDateE" class="form-control " size="16" type="text"
+									value="" readonly>
+								<span class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+							<input type="hidden" id="taskMakeDateE" value="" />
+						</div>
+					</div>
+			</form>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label"></label>
+			<div class="col-sm-3 ">
+				<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
+				<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
+			</div>
+
+		</div>
+	</div>
+	<!-- fin 自定义过滤  -->
+
+	<!-- 点击弹出窗口开始 -->
+	<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel"
+		aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:65%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="panel-title">物料号面板
+						<button id="BTNFormClose" type="button" class="btn btn-primary"
+							data-dismiss="modal">关闭</button></h3>
+				</div>
+				<div class="modal-body">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">物料基本信息与规格</h3>
+						</div>
+
+						<div class="panel-body">
+
+							<div class="form-horizontal" id="DivAnaly">
+								<!-------------------------------------------------------------------------->
+								<div class="form-group">
+									<label class="col-sm-1 control-label">新物料号:</label>
+									<div class="col-sm-4">
+										<input id="specNHead" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+									<label class="col-sm-1 control-label">类别:</label>
+									<div class="col-sm-4">
+										<input id="specOHead" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+								</div>
+								<div class="form-group">
+									<!-- <label class="col-sm-1 control-label">检核:</label>
+									<div class="col-sm-4">
+										<input id="specCHead" class="form-control" type="text"
+											value="" disabled="true">
+									</div> -->
+									<label class="col-sm-1 control-label">EF码:</label>
+									<div class="col-sm-4">
+										<input id="specEF" class="form-control" type="text" value=""
+											disabled="true">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-1 control-label">型号:</label>
+									<div class="col-sm-4">
+										<input id="specModel" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+									<label class="col-sm-1 control-label">组合件:</label>
+									<div class="col-sm-4">
+										<input id="specAssem" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-1 control-label">基本单位:</label>
+									<div class="col-sm-4">
+										<input id="specUnitE" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+									<label class="col-sm-1 control-label">物料状态:</label>
+									<div class="col-sm-4">
+										<input id="specPhase" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-1 control-label">优先耗用:</label>
+									<div class="col-sm-4">
+										<input id="specPrior" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+									<label class="col-sm-1 control-label">备注:</label>
+									<div class="col-sm-4">
+										<input id="specReason" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+								</div>
+
+								<!-------------------------------------------------------------------------->
+								<div class="form-group">
+									<label class="col-sm-1 control-label" for="name">规格详细:</label>
+									<div class="col-sm-8">
+										<textarea id="specList" class="can-drop-super" width="500px"
+											rows="18"></textarea>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-1 control-label" for="name">提交人:</label>
+									<div class="col-sm-3 ">
+										<input id="specStaff" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+									<label class="col-sm-1 control-label" for="name">提交日期:</label>
+									<div class="col-sm-3 ">
+										<input id="specApplyDate" class="form-control" type="text"
+											value="" disabled="true">
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="BTNFormClose" type="button" class="btn btn-primary"
+						data-dismiss="modal">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div><!-- modal fade -->
+	<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+		<!--数据呈现区-->
+		<table id="center_TB" class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>分类</th>
+					<th>年份</th>
+					<th>原则</th>
+					<th>记录</th>
+					<th>类别</th>
+					<th>审批号</th>
+					<th>暂时编码</th>
+					<th>物料名称</th>
+					<th>旧代码</th>
+					<th>建立日</th>
+					<th>审批</th>
+					<th>供应商</th>
+					<th>备注</th>
+					<th>批示</th>
+					<th>类别隐</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+	<!-- 点击弹出窗口开始 -->
+	<div id="DisplayWin" class="easyui-window" title="栏位设定" closed="true"
+		style="top:50px; left:1000px; width:400px;height:620px;">
+		<form style="padding:10px 50px;">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<br></br>
+					<span id="DispA" class="blue-label"> 年份 </span>
+					<input type="checkbox" name="BOXA" id="BOXA" title="中文类别" lay-filter="page_check">
+					<br></br>
+					<span id="DispB" class="blue-label"> 模式 </span>
+					<input type="checkbox" name="BOXB" id="BOXB" title="新物料名称" lay-filter="page_check">
+					<br></br>
+					<span id="DispC" class="blue-label"> 类别 </span>
+					<input type="checkbox" name="BOXC" id="BOXC" title="类别" lay-filter="page_check">
+					<br></br>
+					<span id="DispD" class="blue-label"> 审批号 </span>
+					<input type="checkbox" name="BOXD" id="BOXD" title="审批号" lay-filter="page_check">
+					<br></br>
+					<span id="DispE" class="blue-label"> 旧代码 </span>
+					<input type="checkbox" name="BOXE" id="BOXE" lay-filter="page_check">
+					<br></br>
+					<span id="DispF" class="blue-label"> 建立日 </span>
+					<input type="checkbox" name="BOXF" id="BOXF" title="建立日" lay-filter="page_check">
+					<br></br>
+					<span id="DispG" class="blue-label"> 草稿 </span>
+					<input type="checkbox" name="BOXG" id="BOXG" title="草稿" lay-filter="page_check">
+					<br></br>
+					<span id="DispH" class="blue-label"> 供应商 </span>
+					<input type="checkbox" name="BOXH" id="BOXH" title="EF/供应商" lay-filter="page_check">
+					<br></br>
+					<span id="DispI" class="blue-label"> 备注 </span>
+					<input type="checkbox" name="BOXI" id="BOXI" title="备注" lay-filter="page_check">
+					<br></br>
+					<span id="DispJ" class="blue-label"> 批示 </span>
+					<input type="checkbox" name="BOXJ" id="BOXJ" title="批示" lay-filter="page_check">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label"></label>
+				<div class="col-sm-3 ">
+					<button id="DisplayOkBtn" type="button" class="btn btn-primary">确认</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- 点击窗口fin -->
+</div>
+
+<div id="root" style="height: 100%"></div>
+
+<script>
+	var missType = '';
+	var missAcute = '';
+	var missBcute = '';
+	var missCcute = '';
+	var missDcute = '';
+	var Pattern = '';
+	var FieldA = true;
+	var FieldB = true;
+	var FieldC = true;
+	var FieldD = true;
+	var FieldE = false;
+	var FieldF = false;
+	var FieldG = true;
+	var FieldH = false;
+	var FieldI = false;
+	var FieldJ = false;
+	var FieldK = false;
+	var columnsData = [];
+	//页面加载函数---------------
+	$(document).ready(function () {
+
+		layui.use(['form', 'layedit', 'laydate'], function () {
+			var form = layui.form
+				, layer = layui.layer
+				, layedit = layui.layedit
+				, laydate = layui.laydate;
+
+			form.render();
+			var DataPara = {
+				"tableID": "#center_TB",
+				"DBTable": "auto_parts"
+			}
+			getBillpull();
+			missType = getQueryString("missT");
+			//    console.log("妲己"+missType);
+			var missTencode = decodeURI(missType);
+			missAcute = getQueryString("missA");
+			//    console.log("将心"+missAcute);
+			var missAencode = decodeURI(missAcute);
+			//    console.log("初心"+missAencode);
+
+			missBcute = getQueryString("missB");
+			// console.log("将咖"+missBcute);
+			var missBencode = decodeURI(missBcute);
+
+			missCcute = getQueryString("missC");
+			console.log("初咖" + missCcute);
+			missDcute = getQueryString("missD");
+			var storage = window.localStorage;
+			var hidata = localStorage.getItem("billcolor");
+			hidata = JSON.parse(hidata);
+			if (hidata != undefined && hidata != null) {
+				FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
+				FieldB = ((hidata.B == null || hidata.B == undefined) ? (FieldB) : hidata.B);
+				FieldC = ((hidata.C == null || hidata.C == undefined) ? (FieldC) : hidata.C);
+				FieldD = ((hidata.D == null || hidata.D == undefined) ? (FieldD) : hidata.D);
+				FieldE = ((hidata.E == null || hidata.E == undefined) ? (FieldE) : hidata.E);
+				FieldF = ((hidata.F == null || hidata.F == undefined) ? (FieldF) : hidata.F);
+				FieldG = ((hidata.G == null || hidata.G == undefined) ? (FieldG) : hidata.G);
+				FieldH = ((hidata.H == null || hidata.H == undefined) ? (FieldH) : hidata.H);
+				FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
+				FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
+				FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
+				console.log("敏A希", FieldA, "敏B希", FieldB);
+			}
+			columnsData = [
+				{ data: 'DBID', "visible": false },
+				{ data: 'Parts_Year', "visible": FieldA },
+				{ data: 'Parts_Rule', "visible": false },
+				{ data: 'RecType', "visible": FieldB },
+				{ data: 'Parts_Chi', "visible": FieldC },
+				{ data: 'BILL_ID', "visible": FieldD },
+				{ data: 'Parts_Code' },
+				{ data: 'Parts_Name' },
+				{ data: 'Parts_Old_Code', "visible": FieldE },
+				{ data: 'Parts_Apply_Date', "visible": FieldF },
+				{ data: 'Parts_Status', "visible": FieldG },
+				{ data: 'Combo_Title', "visible": FieldH },
+				{ data: 'Reason', "visible": FieldI },
+				{ data: 'Opinion', "visible": FieldJ },
+				{ data: 'Parts_Class', "visible": false },
+			];
+
+			if (missType == "" || missType == 'null' || missType == null || missType.length < 0) {
+				let DateRange = getDefault();
+				var weekbeg = '';
+				var weekend = '';
+				if (missCcute == "" || missCcute == 'null' || missCcute == null || missCcute.length < 0) {
+					weekbeg = DateRange[0].format("yyyy-MM-dd");
+					weekend = DateRange[1].format("yyyy-MM-dd");
+					console.log("预设本月开始:" + weekbeg + "到:" + weekend);
+					missCcute = weekbeg;
+					missDcute = weekend;
+				}
+				$("#taskMakeDateB").val(weekbeg);
+				$("#taskMakeDateE").val(weekend);
+				console.log("科比25", missDcute);
+				showDBDataSelf(DataPara, columnsData, missCcute, missDcute);
+			} else if (missType == "A") { //用日期查找
+				console.log("科比41", missCcute);
+				showDBDataSelf(DataPara, columnsData, missCcute, missDcute);
+			} else if (missType == "B") {//用编码查找
+				console.log("詹皇69", missAcute);
+				showDBDataByBill(DataPara, columnsData, missAcute, missBcute);
+			}
+			var table = $('#center_TB').DataTable();
+			$('#center_TB tbody').on('click', 'tr', function () {
+				$(this).removeClass('selected');
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});
+		});
+		$('#center_TB tbody').on('dblclick', 'tr', function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			var data = table.row(this).data();
+			var billid = dataSelect.BILL_ID;
+			var rectype = dataSelect.RecType;
+			var pclass = dataSelect.Parts_Class;
+			var pcode = dataSelect.Parts_Code; pcode = myTrim(pcode);
+			var pname = dataSelect.Parts_Name; pname = myTrim(pname);
+			var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+			var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+			var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+			analysisWin(pclass, rectype, billid, pcode, poldcode, pname, poldname, fldEF);
+			$('#lovewindow').modal('show');
+		});
+
+	});
+
+	var DataPara = {
+		"tableID": "#center_TB",
+		"DBTable": "auto_parts"
+	}
+
+	columnsData = [
+		{ data: 'DBID', "visible": false },
+		{ data: 'Parts_Year', "visible": FieldA },
+		{ data: 'Parts_Rule', "visible": false },
+		{ data: 'RecType', "visible": FieldB },
+		{ data: 'Parts_Chi', "visible": FieldC },
+		{ data: 'BILL_ID', "visible": FieldD },
+		{ data: 'Parts_Code' },
+		{ data: 'Parts_Name' },
+		{ data: 'Parts_Old_Code', "visible": FieldE },
+		{ data: 'Parts_Apply_Date', "visible": FieldF },
+		{ data: 'Parts_Status' },
+		{ data: 'Combo_Title', "visible": FieldH },
+		{ data: 'Reason', "visible": FieldI },
+		{ data: 'Opinion', "visible": FieldJ },
+		{ data: 'Parts_Class', "visible": false },
+	];
+
+	$('#BTNFitler').click(function () {
+
+		$('#DivFilter').window('open');
+
+		$('.form_date').datetimepicker({
+			language: 'zh-CN',
+			weekStart: 1,
+			todayBtn: 1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0
+		});
+
+		$("#BTNGroupFilter").children().removeClass("active");
+		$("#BTNFitler").addClass("active")
+	});
+
+	$('#BTNFitSearch').click(function () {
+		$("#center_TB").dataTable().fnDestroy();
+		var MakeDateB = $("#taskMakeDateB").val();
+		var MakeDateE = $("#taskMakeDateE").val();
+
+		reloadCol();
+		console.log("秋43", JSON.stringify(columnsData));
+		showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE);
+		var table = $('#center_TB').DataTable();
+		$('#center_TB tbody').on('click', 'tr', function () {
+			$(this).removeClass('selected');
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+				// console.log("你按了",table.row(this).data());
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+				// console.log("你没按",table.row(this).data());
+			}
+		});
+		$('#center_TB tbody').on('dblclick', 'tr', function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			var data = table.row(this).data();
+			var billid = dataSelect.BILL_ID;
+			var rectype = dataSelect.RecType;
+			var pclass = dataSelect.Parts_Class;
+			var pcode = dataSelect.Parts_Code; pcode = myTrim(pcode);
+			var pname = dataSelect.Parts_Name; pname = myTrim(pname);
+			var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+			var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+			var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+			analysisWin(pclass, rectype, billid, pcode, poldcode, pname, poldname, fldEF);
+			$('#lovewindow').modal('show');
+		});
+	});
+
+	//过滤功能组 自定义过滤确认按钮-----NNN
+	$('#FilterComfirmBtnN').click(function () {
+		$('#DivFilter').window('close');
+	});
+	//过滤功能组 自定义过滤确认按钮-----
+	$('#FilterCancelBtnN').click(function () {
+		$("#taskMakeDateB").val("")
+		$("#taskMakeDateE").val("")
+	});
+	$('#DisplayBtn').click(function () {
+		if (FieldA) { $("#BOXA").prop("checked", true); } else { $("#BOXA").prop("checked", false); }
+		if (FieldB) { $("#BOXB").prop("checked", true); } else { $("#BOXB").prop("checked", false); }
+		if (FieldC) { $("#BOXC").prop("checked", true); } else { $("#BOXC").prop("checked", false); }
+		if (FieldD) { $("#BOXD").prop("checked", true); } else { $("#BOXD").prop("checked", false); }
+		if (FieldE) { $("#BOXE").prop("checked", true); } else { $("#BOXE").prop("checked", false); }
+		if (FieldF) { $("#BOXF").prop("checked", true); } else { $("#BOXF").prop("checked", false); }
+		if (FieldG) { $("#BOXG").prop("checked", true); } else { $("#BOXG").prop("checked", false); }
+		if (FieldH) { $("#BOXH").prop("checked", true); } else { $("#BOXH").prop("checked", false); }
+		if (FieldI) { $("#BOXI").prop("checked", true); } else { $("#BOXI").prop("checked", false); }
+		if (FieldJ) { $("#BOXJ").prop("checked", true); } else { $("#BOXJ").prop("checked", false); }
+		$('#DisplayWin').window('open');
+	});
+	$('#DisplayOkBtn').click(function () {
+		var AisChecked = $("#BOXA").is(":checked");
+		var BisChecked = $("#BOXB").is(":checked");
+		var CisChecked = $("#BOXC").is(":checked");
+		var DisChecked = $("#BOXD").is(":checked");
+		var EisChecked = $("#BOXE").is(":checked");
+		var FisChecked = $("#BOXF").is(":checked");
+		var GisChecked = $("#BOXG").is(":checked");
+		var HisChecked = $("#BOXH").is(":checked");
+		var IisChecked = $("#BOXI").is(":checked");
+		var JisChecked = $("#BOXJ").is(":checked");
+		if (AisChecked) { FieldA = true; } else { FieldA = false; }
+		if (BisChecked) { FieldB = true; } else { FieldB = false; }
+		if (CisChecked) { FieldC = true; } else { FieldC = false; }
+		if (DisChecked) { FieldD = true; } else { FieldD = false; }
+		if (EisChecked) { FieldE = true; } else { FieldE = false; }
+		if (FisChecked) { FieldF = true; } else { FieldF = false; }
+		if (GisChecked) { FieldG = true; } else { FieldG = false; }
+		if (HisChecked) { FieldH = true; } else { FieldH = false; }
+		if (IisChecked) { FieldI = true; } else { FieldI = false; }
+		if (JisChecked) { FieldJ = true; } else { FieldJ = false; }
+		var data = {
+			A: AisChecked,
+			B: BisChecked,
+			C: CisChecked,
+			D: DisChecked,
+			E: EisChecked,
+			F: FisChecked,
+			G: GisChecked,
+			H: HisChecked,
+			I: IisChecked,
+			J: JisChecked,
+		}
+		localStorage.setItem("billcolor", JSON.stringify(data));
+		$('#DisplayWin').window('close');
+	});
+	//解析按钮----------
+	$('#DetailBtn').click(function () {
+		var table = $('#center_TB').DataTable();
+		var dataSelect = table.row('.selected').data();
+		if (dataSelect == undefined) {
+			layer.alert("当前未选择任何数据,请先点击需要的数据行!");
+		} else {
+			var billid = dataSelect.BILL_ID;
+			var pclass = dataSelect.Parts_Class;
+			var rectype = dataSelect.RecType;
+			var pcode = dataSelect.Parts_Code; pcode = myTrim(pcode);
+			var pname = dataSelect.Parts_Name; pname = myTrim(pname);
+			var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+			var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+			var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+			analysisWin(pclass, rectype, billid, pcode, poldcode, pname, poldname, fldEF);
+			$('#lovewindow').modal('show');
+		}
+	});
+	//过滤功能组 自定义过滤确认按钮-----NNN
+	$('#BTNFormClose').click(function () {
+		$('#lovewindow').window('close');
+	});
+	//删除按钮----------
+	$('#DraftBtn').click(function () {
+		var table = $('#center_TB').DataTable();
+		var dataSelect = table.row('.selected').data();
+		var RecType = dataSelect.Parts_Status;
+		console.log("柳秀", RecType);
+		if (dataSelect == undefined) {
+			layer.alert("当前未选择任何数据,请先点击需要删除的数据行!");
+		} else if (RecType != '草稿') {
+			layer.alert("非草稿不可修改,请先点击需要删除的数据行!");
+		} else {
+			layer.confirm(' 草稿再次修改，请确认操作是否无误？', {
+				btn: ['是', '否'] //按钮
+			}, function () {
+				layer.msg('操作成功', { icon: 1 });
+				var billchoose = dataSelect.BILL_ID;
+				var codechoose = dataSelect.Parts_Code;
+				var paramClearA = encodeURI(encodeURI(billchoose));
+				var paramClearB = encodeURI(encodeURI(codechoose));
+				window.location.href = "/app/TMCode/draftForm?missA=" + paramClearA + "&missB=" + paramClearB + " ";
+			}, function () {
+				layer.msg('无操作', { icon: 1 });
+			});
+		}
+	});
+	$('#AlterBtn').click(function () {
+		var table = $('#center_TB').DataTable();
+		var dataSelect = table.row('.selected').data();
+		if (dataSelect == undefined) {
+			layer.alert("当前未选择任何数据,请先点击需要删除的数据行!");
+		} else {
+			layer.confirm('此行数据内容操作后无法还原，请确认操作是否无误？', {
+				btn: ['是', '否'] //按钮
+			}, function () {
+				layer.msg('操作成功', { icon: 1 });
+				var billchoose = dataSelect.BILL_ID;
+				var codechoose = dataSelect.Parts_Code;
+
+				alterRecord(billchoose);
+				var paramClearA = encodeURI(encodeURI(billchoose));
+				var paramClearB = encodeURI(encodeURI(codechoose));
+				window.location.href = "/app/TMCode/billHistory?missA=" + paramClearA + "&missB=" + paramClearB + " ";
+
+			}, function () {
+				layer.msg('无操作', { icon: 1 });
+			});
+		}
+	});
+	// $('#DelBtn').click(function () {
+	// 	var table = $('#center_TB').DataTable();
+	// 	var dataSelect = table.row('.selected').data();
+	// 	if (dataSelect == undefined) {
+	// 		layer.alert("当前未选择任何数据,请先点击需要删除的数据行!");
+	// 	} else {
+	// 		layer.confirm('此行数据内容操作后无法还原，请确认操作是否无误？', {
+	// 			btn: ['是', '否'] //按钮
+	// 		}, function () {
+	// 			layer.msg('操作成功', { icon: 1 });
+	// 			var billchoose = dataSelect.BILL_ID;
+	// 			var codechoose = dataSelect.Parts_Code;
+
+	// 			//   layer.alert("机"+encodeURI(encodeURI(billchoose)));
+	// 			deleteRecord(billchoose);
+	// 			var paramClearA = encodeURI(encodeURI(billchoose));
+	// 			var paramClearB = encodeURI(encodeURI(codechoose));
+	// 			window.location.href = "/app/TMCode/billHistory?missA=" + paramClearA + "&missB=" + paramClearB + " ";
+
+	// 		}, function () {
+	// 			layer.msg('无操作', { icon: 1 });
+	// 		});
+	// 	}
+	// });
+	function reloadCol() {
+		columnsData = [
+			{ data: 'DBID', "visible": false },
+			{ data: 'Parts_Year', "visible": FieldA },
+			{ data: 'Parts_Rule', "visible": false },
+			{ data: 'RecType', "visible": FieldB },
+			{ data: 'Parts_Chi', "visible": FieldC },
+			{ data: 'BILL_ID', "visible": FieldD },
+			{ data: 'Parts_Code' },
+			{ data: 'Parts_Name' },
+			{ data: 'Parts_Old_Code', "visible": FieldE },
+			{ data: 'Parts_Apply_Date', "visible": FieldF },
+			{ data: 'Parts_Status' },
+			{ data: 'Combo_Title', "visible": FieldH },
+			{ data: 'Reason', "visible": FieldI },
+			{ data: 'Opinion', "visible": FieldJ },
+			{ data: 'Parts_Class', "visible": false },
+		];
+	}
+	function analysisWin(pclass, rectype, billid, pcode, poldcode, pname, poldname, fldEF) {
+		var reportType = 'analysisRec';
+		var taskData = null;
+		if (rectype == '编码记录') {
+			taskData = { "reportType": reportType, "PartsClass": pclass, "BILLID": billid, "PartsCode": pcode, "DBTable": "auto_rec_parts" };
+		} else if (rectype == '报废记录') {
+			taskData = { "reportType": reportType, "PartsClass": pclass, "BILLID": billid, "PartsCode": pcode, "DBTable": "auto_rec_abso" };
+		} else {
+			taskData = { "reportType": reportType, "PartsClass": pclass, "BILLID": billid, "PartsCode": pcode, "DBTable": "auto_rec_parts" };
+		}
+		console.log("猫万岁", taskData);
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data) {
+				const json2 = JSON.stringify(data);
+				const bjob = JSON.parse(json2);
+				var opttxt = "旧代码: " + poldcode + "旧规格: " + poldname;
+				var EFList = fldEF.split('/');
+				// if (opttxt.length > 40) {
+				// 	$("#specOHead").addClass("win-green-small");
+				// } else if (opttxt.length > 30) {
+				// 	$("#specOHead").addClass("win-green-mid");
+				// } else {
+				// 	$("#specOHead").addClass("win-green-large");
+				// }
+				$("#specModel").val(bjob.Model);
+				$("#specAssem").val(bjob.Assembly);
+				$("#specUnitE").val(bjob.UnitE);
+				$("#specPhase").val(bjob.Phase);
+				$("#specPrior").val(bjob.Prior);
+				$("#specStaff").val(bjob.Staff);
+				$("#specApplyDate").val(bjob.ApplyDate);
+
+				$("#specOHead").val(opttxt);
+				$("#specNHead").val("编码: " + pcode + " 物料名称: " + pname);
+				$("#specEF").val("EF: " + EFList[0] + " 供应商: " + EFList[1]);
+				$("#specList").val(bjob.Value1 + bjob.Name1 + bjob.Value2 + bjob.Name2 + bjob.Value3 + bjob.Name3 + bjob.Value4 + bjob.Name4 + bjob.Value5 + bjob.Name5 + bjob.Value6 + bjob.Name6 + bjob.Value7 + bjob.Name7 + bjob.Value8 + bjob.Name8
+					+ bjob.Value9 + bjob.Name9 + bjob.Value10 + bjob.Name10 + bjob.Value11 + bjob.Name11 + bjob.Value12 + bjob.Name12 + bjob.Value13 + bjob.Name13 + bjob.Value14 + bjob.Name14 + bjob.Value15 + bjob.Name15
+					+ bjob.Value16 + bjob.Name16 + bjob.Value17 + bjob.Name17 + bjob.Value18 + bjob.Name18 + bjob.Value19 + bjob.Name19 + bjob.Value20 + bjob.Name20);
+			},
+			error: function () {
+			}
+		})
+	}
+
+	function showDBDataByBill(DataPara, columnsData, bill_choose, code_choose) {
+		Pattern = $('#Pattern').val();
+		var SQL = '';
+		var flag1 = true;
+		var flag2 = true;
+		var rule = 'A';
+		if (bill_choose == "" || bill_choose == 'null' || bill_choose == null || bill_choose.length < 0) {
+			flag1 = false;
+		}
+		if (code_choose == "" || code_choose == 'null' || code_choose == null || code_choose.length < 0) {
+			flag2 = false;
+		}
+		if (flag1 == false && flag2 == false) {
+			if (Pattern == '1') {
+				SQL = "SQLBillHistAny";
+			} else {
+				SQL = "SQLAbsoHistAny";
+			}
+		} else {
+			if (Pattern == '1') {
+				SQL = "SQLBillHistory";
+			} else {
+				SQL = "SQLAbsoHistory";
+			}
+		}
+
+		var SQL3 = { "SQL": SQL, "weekbeg": bill_choose, "weekend": code_choose, "rule": rule };
+		// console.log("鷹羽", SQL,"澪", Pattern,"瓶" );
+		$(DataPara.tableID).DataTable({
+			ajax: {
+				url: '/app/TMCode/getSQLDBData',
+				data: SQL3,
+				dataSrc: ''
+			},
+			columns: columnsData,
+			aaSorting: [1, 'desc'],
+			language: languageCN
+		});
+
+	}
+	function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE) {
+		Pattern = $('#Pattern').val();
+		var SQL = '';
+		if (Pattern == '1') {
+			SQL = "SQLBillHistorySelf";
+		} else {
+			SQL = "SQLAbsoHistorySelf";
+		}
+		var SQL3 = { "SQL": SQL, "weekbeg": MakeDateB, "weekend": MakeDateE };
+		$(DataPara.tableID).DataTable({
+			ajax: {
+				url: '/app/TMCode/getSQLDBData',
+				data: SQL3,
+				dataSrc: ''
+			},
+			columns: columnsData,
+			aaSorting: [9, 'desc'], //asc
+			language: languageCN
+		});
+		var table = $('#center_TB').DataTable();
+		$('#center_TB tbody').on('click', 'tr', function () {
+			$(this).removeClass('selected');
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
+		});
+		$('#center_TB tbody').on('dblclick', 'tr', function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			var data = table.row(this).data();
+			var billid = dataSelect.BILL_ID;
+			var rectype = dataSelect.RecType;
+			var pclass = dataSelect.Parts_Class;
+			var pcode = dataSelect.Parts_Code;
+			var pname = dataSelect.Parts_Name;
+			var poldcode = dataSelect.Parts_Old_Code; poldcode = myTrim(poldcode);
+			var poldname = dataSelect.Parts_Old_Name; poldname = myTrim(poldname);
+			var fldEF = dataSelect.Combo_Title; fldEF = myTrim(fldEF);
+			analysisWin(pclass, rectype, billid, pcode, poldcode, pname, poldname, fldEF);
+			$('#lovewindow').modal('show');
+		});
+	}
+	function parseRecord(pclass, pproperty) {
+		console.log("传入", pproperty);
+		var reportType = 'parseRec';
+		var taskData = { "reportType": reportType, "pclass": pclass, "pproperty": pproperty };
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data) {
+				console.log((data.Name1));
+				const json2 = JSON.stringify(data);
+				//                	const json = '{"param1":"宁波PM记录","Name1":"开关模插","Name2":"马达12w","Name3":"感应器","Name4":"线材器","Name5":"包材","Name6":"尺长3","Name7":"电流2","Name8":"电容4"}';
+				const bjob = JSON.parse(json2);
+				layer.alert("属性1： " + bjob.Name1 + "\n" + "属性2： " + bjob.Name2 + "\n" + "属性3： " + bjob.Name3 + "\n" + "属性4： " + bjob.Name4 + "\n" + "属性5： " + bjob.Name5 + "\n" + "属性6： " + bjob.Name6 + "\n" + "属性7： " + bjob.Name7 + "\n" + "属性8： " + bjob.Name8 + "\n"
+					+ "属性9： " + bjob.Name9 + "\n" + "属性10： " + bjob.Name10 + "\n" + "属性11： " + bjob.Name11 + "\n" + "属性12： " + bjob.Name12 + "\n" + "属性13： " + bjob.Name13 + "\n" + "属性14： " + bjob.Name14 + "\n" + "属性15： " + bjob.Name15 + "\n" + "属性16： " + bjob.Name16 + "\n");
+			},
+			error: function () {
+			}
+		})
+	}
+	function alterRecord(billid) {
+		var reportType = 'alterDraft';
+		var taskData = { "reportType": reportType, "BILLID": billid };
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (result) {
+				layer.alert("此审批号 " + result.billid + " 已撤回 " + (result.status));
+			},
+			error: function () {
+			}
+		})
+	}
+	function deleteRecord(billid) {
+		var reportType = 'delNouse';
+		var taskData = { "reportType": reportType, "BILLID": billid };
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (result) {
+				layer.alert("此审批号 " + result.billid + " 已撤回 " + (result.status));
+			},
+			error: function () {
+			}
+		})
+	}
+	function searchFile() {
+		$("#center_TB").dataTable().fnDestroy();
+		var choosebill = $('#billno').val();
+		var choosecode = $('#codeno').val();
+		reloadCol();
+		console.log("春", JSON.stringify(columnsData));
+		showDBDataByBill(DataPara, columnsData, choosebill, choosecode);
+	}
+</script>

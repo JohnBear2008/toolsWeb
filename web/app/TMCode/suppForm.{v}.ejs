@@ -1,0 +1,639 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+
+
+<script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
+<script src="/banq/cycleSupp.js"></script>
+<script src="/banq/NeedRule.js"></script>
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/supplier.js"></script>
+<script src="/banq/pipe.js"></script>
+<script src="/banq/wipeR.js"></script>
+<script src="/banq/wipeRpack.js"></script>
+<script src="/banq/Mizualert.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<div>
+</div>
+<!-- <form class="layui-form" action=""> -->
+	<H1>弘讯科技制造商添加</H1>
+	<div class="layui-form-item">
+		<label id="newcode-label" class="green-label-test">编码:</label>
+		<div class="layui-inline">
+			<input class="can-drop" name="pnewcode" id="pnewcode" value="" autocomplete="off">
+		</div>
+		<label id="oldcode-label" class="green-label-test">旧代码:</label>
+		<div class="layui-inline">
+			<input name="poldcode" class="can-drop-large" id="poldcode" size="40" value="" autocomplete="off">
+		</div>
+	</div>
+	<label id="year-label" class="green-label-small" style="visibility:hidden">年份:</label>
+	<div class="layui-inline">
+		<input class="can-find-small" name="mainyear" id="mainyear" style="visibility:hidden" value=""
+			autocomplete="off">
+	</div>
+	<span id="rule-label" class="green-label-small" style="visibility:hidden">原则:</span>
+	<div class="layui-inline">
+		<input name="mainrule" id="mainrule" class="can-find-small" style="visibility:hidden" type="text" size="10"
+			value="A"> </input>
+	</div>
+		<span id="pclass" id="pclass" style="visibility:hidden" class="green-label-large">.</span>
+		<input name="mainclass" id="mainclass" type="text" size="50" value="" style="visibility:hidden"> </input>
+		<input name="mainchi" id="mainchi" type="text" size="50" value="" style="visibility:hidden"> </input>
+		<input name="mainpid" id="mainpid" type="text" size="50" value="" style="visibility:hidden"> </input>
+	</br>
+	<span id="specold-label" class="green-label" style="visibility:hidden"> 物料名称 </span>
+	<input name="specName" id="specName" class="can-drop-spec" style="visibility:hidden" width="400px" type="text"
+		size="50" value="">
+	</input>
+	<br></br>
+	<span id="model-label" class="green-label" style="visibility:hidden" > 型号 </span>
+	<input name="Model" id="Model" class="can-drop" style="visibility:hidden" width="150px" type="text" size="50" value="">
+	</input>
+	<span id="assembly-label" class="green-label" style="visibility:hidden" > 组合件 </span>
+	<select id="Assembly" name="Assembly" style="visibility:hidden" class="can-drop"></select>
+	<br></br>
+	<span id="unitE-label" class="green-label" style="visibility:hidden"> 基本单位 </span>
+	<input name="UnitE" id="UnitE" class="can-drop" style="visibility:hidden" width="150px" readonly='true' type="text"
+		size="50" value="">
+	</input>
+	<span id="phase-label" class="green-label" style="visibility:hidden"> 物料状态 </span>
+	<select id="Phase" name="Phase" class="can-drop" style="visibility:hidden"></select>
+	<br></br>
+	<span id="priority-label" class="green-label" style="visibility:hidden"> 优先耗用 </span>
+	<select id="Priority" name="Priority" class="can-drop" style="visibility:hidden"></select>
+	 <!-- </form> -->
+<br></br>
+<span id="classSupp" class="green-label" onclick="searchFile(this)" style="visibility:hidden" > 制造商 </span>
+<select id="soup" name="soup" class="can-drop"  style="visibility:hidden"></select>
+<span id="classSMT" class="green-label" onclick="searchFile(this)"  style="visibility:hidden" > 属性EF </span>
+<select id="beef" name="beef" class="can-drop"  style="visibility:hidden" disabled="true" ></select>
+<br></br>
+<span id="classA" class="blue-label" style="visibility:hidden" > 分类 </span>
+<select id="boat" name="boat" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classB" class="blue-label" style="visibility:hidden"> 系列 </span>
+<select id="yacht" name="yacht" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classB-br">
+	</br>
+</span>
+<span id="classC" class="blue-label" style="visibility:hidden"> 型号 </span>
+<select id="sail" name="sail" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classD" class="blue-label" style="visibility:hidden"> 厂家 </span>
+<select id="vessel" name="vessel" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classD-br">
+	</br>
+</span>
+<span id="classE" class="blue-label" style="visibility:hidden"> 定制规格 </span>
+<input name="tankerName" id="tankerName" class="can-mini" width="0px" type="text" size="50" value="" disabled="true"
+	style="visibility:hidden"   > </input>
+<select id="tanker" name="tanker" class="can-drop" style="visibility:hidden" ></select>
+<span id="classF" class="blue-label" style="visibility:hidden"> 版本 </span>
+<select id="marine" name="marine" class="can-drop" style="visibility:hidden"  disabled="true" ></select>
+<span id="classF-br">
+	</br>
+</span>
+<span id="classG" class="blue-label" style="visibility:hidden"> 包装 </span>
+<select id="rocket" name="rocket" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classH" class="blue-label" style="visibility:hidden"> 联轴器/键轴</span>
+<select id="zebra" name="zebra" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classH-br">
+	</br>
+</span>
+<span id="classI" class="blue-label" style="visibility:hidden"> 油泵分类</span>
+<select id="eleph" name="eleph" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classJ" class="blue-label" style="visibility:hidden"> 油泵系列</span>
+<select id="eagle" name="eagle" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classJ-br">
+	</br>
+</span>
+<span id="classK" class="blue-label" style="visibility:hidden"> 油泵型号</span>
+<select id="tiger" name="tiger" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classL" class="blue-label" style="visibility:hidden"> 油泵排量</span>
+<select id="lion" name="lion" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classL-br">
+	</br>
+</span>
+<span id="classM" class="blue-label" style="visibility:hidden"> 进出油口方向</span>
+<select id="horse" name="horse" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classO" class="blue-label" style="visibility:hidden"> 接线盒方向 </span>
+<select id="worm" name="worm" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classO-br">
+	</br>
+</span>
+<span id="classP" class="blue-label" style="visibility:hidden"> 出线方向 </span>
+<select id="hole" name="hole" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classQ" class="blue-label" style="visibility:hidden"> 版本 </span>
+<select id="xman" name="xman" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classQ-br">
+	</br>
+</span>
+<span id="classR" class="blue-label" style="visibility:hidden"> 包装 </span>
+<select id="quita" name="quita" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classS" class="blue-label" style="visibility:hidden"> 属性18 </span>
+<select id="fox" name="fox" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classS-br">
+	</br>
+</span>
+<span id="classT" class="blue-label" style="visibility:hidden"> 属性19 </span>
+<select id="owl" name="owl" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<span id="classU" class="blue-label" style="visibility:hidden"> 属性20 </span>
+<select id="deer" name="deer" class="can-drop" style="visibility:hidden" disabled="true" ></select>
+<br></br>
+<span id="reason-label" class="green-label-Verti" style="visibility:hidden"> 备注 </span>
+<textarea name="Reason" id="Reason" class="can-area-note" style="visibility:hidden" rows="2"></textarea>
+<a class="btn btn-lg btn-info" id="bt_preview" style="visibility:hidden" style="margin-left:30px"
+	onclick="preview();">预览</a>
+<a class="btn btn-lg btn-info" id="bt_approvalhmi" style="visibility:hidden" onclick="approvalhmi();">提交审批</a>
+<!-- <a class="btn btn-lg btn-info" id="bt_approvalhmi" style="margin-left:30px" style="visibility:hidden" onclick="approvalhmi();">提交审批</a> -->
+
+<!-- 点击弹出窗口开始 -->
+<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel" aria-hidden="true"
+	data-backdrop="static">
+	<div class="modal-dialog" style="width:65%">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="panel-title">物料号面板
+					<button id="BTNFormClose" type="button" class="btn btn-primary"
+						data-dismiss="modal">关闭</button></h3>
+			</div>
+			<div class="modal-body">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">物料基本信息与规格</h3>
+					</div>
+
+					<div class="panel-body">
+
+						<div class="form-horizontal" id="DivAnaly">
+							<!-------------------------------------------------------------------------->
+							<div class="form-group">
+								<label class="col-sm-1 control-label">新物料号:</label>
+								<div class="col-sm-4">
+									<input id="specNHead" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">类别:</label>
+								<div class="col-sm-4">
+									<input id="specOHead" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">检核:</label>
+								<div class="col-sm-4">
+									<input id="specCHead" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">EF码:</label>
+								<div class="col-sm-4">
+									<input id="specEF" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">型号:</label>
+								<div class="col-sm-4">
+									<input id="specModel" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">组合件:</label>
+								<div class="col-sm-4">
+									<input id="specAssem" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">基本单位:</label>
+								<div class="col-sm-4">
+									<input id="specUnitE" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">物料状态:</label>
+								<div class="col-sm-4">
+									<input id="specPhase" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">优先耗用:</label>
+								<div class="col-sm-4">
+									<input id="specPrior" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+								<label class="col-sm-1 control-label">备注:</label>
+								<div class="col-sm-4">
+									<input id="specReason" class="form-control" type="text" value=""
+										disabled="true">
+								</div>
+							</div>
+
+							<!-------------------------------------------------------------------------->
+							<div class="form-group">
+								<label class="col-sm-1 control-label" for="name">规格详细:</label>
+								<div class="col-sm-8">
+									<textarea id="specList" class="can-drop-super" width="500px"
+										rows="18"></textarea>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="BTNFormClose" type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div><!-- modal fade -->
+<script>
+	var missAType = '';
+	var missBType = '';
+	var missCType = '';
+	let active = {};
+	var sessionName = '';
+	$(document).ready(function () {
+		layuse();
+		sessionName = "<%-locals.session.yjUser.Name%>";
+		missAType = getQueryString("missA");
+		missBType = getQueryString("missB");
+		missCType = getQueryString("missC");
+		console.log("将A幂" + missAType);
+		console.log("将B幂" + missBType);
+		console.log("将C幂" + missCType);
+		//    var missAencode= decodeURI(missAType);
+		//    console.log("初幂"+missAencode);
+		var DH_class = "B1";
+		var DH_class_til = "B1电机+油泵";
+		var chooseCode = missAType; 
+		var chooseOld = missBType;
+		var reportType = 'callDup';
+		var taskData = { "reportType": reportType, "PartsCode": chooseCode, "PartsOldCode": chooseOld }
+		//     alert("提交此编码"+JSON.stringify(taskData));
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data) {
+				var obj = data;
+				DH_class = obj.parts_class;
+				if (DH_class.startsWith("A")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("B")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("C")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("D")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("E")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("F")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("G")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("H")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("J")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("K")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("L")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("Q")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("R")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("S")) {
+					Gold(DH_class, obj);
+				}
+				if (DH_class.startsWith("U")) {
+					Gold(DH_class, obj);
+				}
+				console.log("佟梨", JSON.stringify(obj));
+				getSupply(obj); getSMT(DH_class, obj);
+				getPack(DH_class, obj);
+				$("#year-label").css('visibility', 'visible');
+				$("#mainyear").css('visibility', 'visible');
+				$("#pclass").css('visibility', 'visible');
+				$("#mainrule").css('visibility', 'visible');
+				$("#rule-label").css('visibility', 'visible');
+				$("#spec-label").css('visibility', 'visible');
+				$("#specName").css('visibility', 'visible');
+				$("#specold-label").css('visibility', 'visible');
+				$("#specOldName").css('visibility', 'visible');
+				$("#model-label").css('visibility', 'visible');
+				$("#Model").css('visibility', 'visible');
+				$("#assembly-label").css('visibility', 'visible');
+				$("#Assembly").css('visibility', 'visible');
+				$("#unitE-label").css('visibility', 'visible');
+				$("#UnitE").css('visibility', 'visible');
+				$("#phase-label").css('visibility', 'visible');
+				$("#Phase").css('visibility', 'visible');
+				$("#priority-label").css('visibility', 'visible');
+				$("#Priority").css('visibility', 'visible');
+				$("#reason-label").css('visibility', 'visible');
+				$("#Reason").css('visibility', 'visible');
+				$("#bt_preview").css('visibility', 'visible');
+				$("#bt_approvalhmi").css('visibility', 'visible');
+				$("#classSupp").css('visibility', 'visible');
+				$("#soup").css('visibility', 'visible');
+				$("#classA").css('visibility', 'visible');
+				$("#boat").css('visibility', 'visible');
+				$("#classB").css('visibility', 'visible');
+				$("#yacht").css('visibility', 'visible');
+				$("#classC").css('visibility', 'visible');
+				$("#sail").css('visibility', 'visible');
+				$("#classD").css('visibility', 'visible');
+				$("#vessel").css('visibility', 'visible');
+				$("#pclass").html(obj.parts_class + obj.parts_chi);
+				$("#mainclass").val(obj.parts_class);
+				$("#mainchi").val(obj.parts_chi);
+				$("#Model").val(obj.Model);
+				$("#Assembly").val(obj.Assembly);
+				$("#mainpid").val(obj.pid);
+				$("#mainyear").val('2020');
+				$("#poldcode").val(obj.parts_old_code);
+				$("#pnewcode").val(obj.parts_code);
+				$("#specName").val(obj.parts_name);
+				$("#specOldName").val(obj.parts_old_name);
+				$("#mainrule").val(obj.parts_rule);
+				$("#tankerName").val(obj.SoftNo);
+				$("#soup").val(obj.supply_id);
+			},
+			error: function () {
+			}
+		})
+	});
+	layui.use(['form', 'layedit', 'laydate'], function () {
+		var form = layui.form
+			, layer = layui.layer
+			, layedit = layui.layedit
+			, laydate = layui.laydate;
+		form.render();
+	});
+	function preview() {
+		analysisWin();
+		// $('#pptwindow').window('open');
+		$('#lovewindow').modal('show');
+	}
+	$('#BTNFormClose').click(function () {
+		$('#lovewindow').window('close');
+	});
+	function analysisWin() {
+		var BILLID = '20200131_F11';
+		var PartsYear = $('#mainyear').val();
+		var PartsRule = $('#mainrule').val();
+		var PartsClass = $('#mainclass').val();
+		var PartsChi = $('#mainchi').val();
+		var PartsOldCode = $('#poldcode').val();
+		let now = new Date();
+		var PartsApplyDate = now.Format("yyyy-MM-dd");
+		var PartsLimitDate = '2025-07-31';
+		var Partsstatus = '0';
+		var Staff = sessionName;
+		var SupplyID = $('#soup').val();
+		var suppoption = $("#soup option:selected");
+		var Supplyindex = suppoption.val();
+		var SupplyTitle = suppoption.text();
+
+		var SMTID = $('#beef').val();
+		var beefoption = $("#beef option:selected");
+		var SMTindex = beefoption.val();
+		var SMTTitle = beefoption.text();
+
+		var Property = '';
+		var boat = $('#boat').val(); boat = nulchk(boat);
+		var yacht = $('#yacht').val(); yacht = nulchk(yacht);
+		var sail = $('#sail').val(); sail = nulchk(sail);
+		var vessel = $('#vessel').val(); vessel = nulchk(vessel);
+		var tanker = $('#tanker').val(); tanker = nulchk(tanker);
+		var Soft_No = $('#tankerName').val(); tankerName = nulchk(tankerName);
+		var marine = $('#marine').val(); marine = nulchk(marine);
+		var rocket = $('#rocket').val(); rocket = nulchk(rocket);
+		var zebra = $('#zebra').val(); zebra = nulchk(zebra);
+		var eleph = $('#eleph').val(); eleph = nulchk(eleph);
+		var eagle = $('#eagle').val(); eagle = nulchk(eagle);
+		var tiger = $('#tiger').val(); tiger = nulchk(tiger);
+		var lion = $('#lion').val(); lion = nulchk(lion);
+		var horse = $('#horse').val(); horse = nulchk(horse);
+		var worm = $('#worm').val(); worm = nulchk(worm);
+		var hole = $('#hole').val(); hole = nulchk(hole);
+		var xman = $('#xman').val(); xman = nulchk(xman);
+		var quita = $('#quita').val(); quita = nulchk(quita);
+		Property = boat + "/" + yacht + "/" + sail + "/" + vessel + "/" + tanker + "/" + marine + "/" +
+			rocket + "/" + zebra + "/" + eleph + "/" + eagle + "/" + tiger + "/" + lion + "/" + horse + "/" + worm + "/" + hole + "/" + xman + "/" + quita;
+		var Prop1 = $('#boat').val();
+		var Prop2 = $('#yacht').val();
+		var Prop3 = $('#sail').val();
+		var Prop4 = $('#vessel').val();
+		var Prop5 = $('#tanker').val();
+		var Prop6 = $('#marine').val();
+		var Prop7 = $('#rocket').val();
+		var Prop8 = $('#zebra').val();
+		var Prop9 = $('#eleph').val();
+		var Prop10 = $('#eagle').val();
+		var Prop11 = $('#tiger').val();
+		var Prop12 = $('#lion').val();
+		var Prop13 = $('#horse').val();
+		var Prop14 = $('#worm').val();
+		var Prop15 = $('#hole').val();
+		var Prop16 = $('#xman').val();
+		var Prop17 = $('#quita').val();
+		var Prop18 = $('#fox').val();
+		var Prop19 = $('#owl').val();
+		var Prop20 = $('#deer').val();
+		PreViewCargo(PartsClass);
+		var Cargo = $('#specName').val();
+
+		var Model = $('#Model').val();
+		var Assembly = $('#Assembly').val();
+		var UnitE = $('#UnitE').val();
+		var Phase = $('#Phase').val();
+		var Priority = $('#Priority').val();
+		console.log("矢代",SupplyID,"宵",SMTID);
+		var reportType = 'analysisRec';
+		var taskData = {
+			"Parts_Prop1": Prop1, "Parts_Prop2": Prop2, "Parts_Prop3": Prop3, "Parts_Prop4": Prop4, "Parts_Prop5": Prop5,
+			"Parts_Prop6": Prop6, "Parts_Prop7": Prop7, "Parts_Prop8": Prop8, "Parts_Prop9": Prop9, "Parts_Prop10": Prop10,
+			"Parts_Prop11": Prop11, "Parts_Prop12": Prop12, "Parts_Prop13": Prop13, "Parts_Prop14": Prop14, "Parts_Prop15": Prop15,
+			"Parts_Prop16": Prop16, "Parts_Prop17": Prop17, "Parts_Prop18": Prop18, "Parts_Prop19": Prop19, "Parts_Prop20": Prop20,
+			"Soft_No": Soft_No, "reportType": reportType, "PartsClass": PartsClass, "SupplyID": SupplyID, "SupplyTitle": SupplyTitle,
+			"SMTID": SMTID, "SMTTitle": SMTTitle, "Model": Model, "Assembly": Assembly, "UnitE": UnitE, "Phase": Phase, "Priority": Priority,
+			"DBTable": "virtual"
+		}
+		Prop1 = (Prop1 == null || Prop1 == undefined) ? ('' + '\n') : Prop1 + '\n';
+		Prop2 = (Prop2 == null || Prop2 == undefined) ? ('' + '\n') : Prop2 + '\n';
+		Prop3 = (Prop3 == null || Prop3 == undefined) ? ('' + '\n') : Prop3 + '\n';
+		Prop4 = (Prop4 == null || Prop4 == undefined) ? ('' + '\n') : Prop4 + '\n';
+		Prop5 = (Prop5 == null || Prop5 == undefined) ? ('' + '\n') : Prop5 + '\n';
+		Prop6 = (Prop6 == null || Prop6 == undefined) ? ('' + '\n') : Prop6 + '\n';
+		Prop7 = (Prop7 == null || Prop7 == undefined) ? ('' + '\n') : Prop7 + '\n';
+		Prop8 = (Prop8 == null || Prop8 == undefined) ? ('' + '\n') : Prop8 + '\n';
+		Prop9 = (Prop9 == null || Prop9 == undefined) ? ('' + '\n') : Prop9 + '\n';
+		Prop10 = (Prop10 == null || Prop10 == undefined) ? ('' + '\n') : Prop10 + '\n';
+		Prop11 = (Prop11 == null || Prop11 == undefined) ? ('' + '\n') : Prop11 + '\n';
+		Prop12 = (Prop12 == null || Prop12 == undefined) ? ('' + '\n') : Prop12 + '\n';
+		Prop13 = (Prop13 == null || Prop13 == undefined) ? ('' + '\n') : Prop13 + '\n';
+		Prop14 = (Prop14 == null || Prop14 == undefined) ? ('' + '\n') : Prop14 + '\n';
+		Prop15 = (Prop15 == null || Prop15 == undefined) ? ('' + '\n') : Prop15 + '\n';
+		Prop16 = (Prop16 == null || Prop16 == undefined) ? ('' + '\n') : Prop16 + '\n';
+		Prop17 = (Prop17 == null || Prop17 == undefined) ? ('' + '\n') : Prop17 + '\n';
+		Prop18 = (Prop18 == null || Prop18 == undefined) ? ('' + '\n') : Prop18 + '\n';
+		Prop19 = (Prop19 == null || Prop19 == undefined) ? ('' + '\n') : Prop19 + '\n';
+		Prop20 = (Prop20 == null || Prop20 == undefined) ? ('' + '\n') : Prop20 + '\n';
+		$.ajax({
+			method: 'post',
+			data: taskData,
+			url: "/app/TMCode/getRoute",
+			success: function (data, textStatus) {
+				console.log("壟族", JSON.stringify(data));
+				const json2 = JSON.stringify(data);
+				const bjob = JSON.parse(json2);
+				$("#specNHead").val("编码:未知 " + " 物料名称: " + PartsName);
+				$("#specOHead").val(" 类别: " + PartsChi + PartsClass);
+				$("#specCHead").val(" 有无重复: " + bjob.status);
+				$("#specEF").val("EF: " + SMTTitle + " 供应商: " + SupplyTitle);
+				$("#specModel").val(Model);
+				$("#specAssem").val(Assembly);
+				$("#specUnitE").val(UnitE);
+				$("#specPhase").val(Phase);
+				$("#specPriority").val(Priority);
+				$("#specList").val(bjob.Value1 + Prop1 + bjob.Value2 + Prop2 + bjob.Value3 + Prop3 + bjob.Value4 + Prop4 + bjob.Value5 + Prop5 + bjob.Value6 + Prop6 + bjob.Value7 + Prop7 + bjob.Value8 + Prop8
+					+ bjob.Value9 + Prop9 + bjob.Value10 + Prop10 + bjob.Value11 + Prop11 + bjob.Value12 + Prop12 + bjob.Value13 + Prop13 + bjob.Value14 + Prop14 + bjob.Value15 + Prop15
+					+ bjob.Value16 + Prop16 + bjob.Value17 + Prop17 + bjob.Value18 + Prop18 + bjob.Value19 + Prop19 + bjob.Value20 + Prop20);
+			},
+			error: function () {
+				layer.alert("不成功");
+			}
+		})
+	}
+	function approvalhmi() {
+		var BILLID = '20200131_F11';
+		var PartsYear = $('#mainyear').val();
+		var PartsRule = $('#mainrule').val();
+		var PartsClass = $('#mainclass').val();
+		var PartsChi = $('#mainchi').val();
+		var Model = $('#Model').val();
+		var Assembly = $('#Assembly').val();
+		var PID = $('#mainpid').val();
+		var PartsOldCode = $('#poldcode').val();
+		var PartsCode = $('#pnewcode').val();
+		let now = new Date();
+		var PartsApplyDate = now.Format("yyyy-MM-dd");
+		var PartsLimitDate = '2025-07-31';
+		var Partsstatus = '7';
+		var Staff = sessionName;
+		var SupplyID = $('#soup').val();
+		var suppoption = $("#soup option:selected");
+		var Supplyindex = suppoption.val();
+		var SupplyTitle = suppoption.text();
+		var SMTID = $('#beef').val();
+		var beefoption = $("#beef option:selected");
+		var SMTindex = beefoption.val();
+		var SMTTitle = beefoption.text();
+		var Property = '';
+		var boat = $('#boat').val(); boat = nulchk(boat);
+		var yacht = $('#yacht').val(); yacht = nulchk(yacht);
+		var sail = $('#sail').val(); sail = nulchk(sail);
+		var vessel = $('#vessel').val(); vessel = nulchk(vessel);
+		var tanker = $('#tanker').val(); tanker = nulchk(tanker);
+		var Soft_No = $('#tankerName').val(); tankerName = nulchk(tankerName);
+		var marine = $('#marine').val(); marine = nulchk(marine);
+		var rocket = $('#rocket').val(); rocket = nulchk(rocket);
+		var zebra = $('#zebra').val(); zebra = nulchk(zebra);
+		var eleph = $('#eleph').val(); eleph = nulchk(eleph);
+		var eagle = $('#eagle').val(); eagle = nulchk(eagle);
+		var tiger = $('#tiger').val(); tiger = nulchk(tiger);
+		var lion = $('#lion').val(); lion = nulchk(lion);
+		var horse = $('#horse').val(); horse = nulchk(horse);
+		var worm = $('#worm').val(); worm = nulchk(worm);
+		var hole = $('#hole').val(); hole = nulchk(hole);
+		var xman = $('#xman').val(); xman = nulchk(xman);
+		var quita = $('#quita').val(); quita = nulchk(quita);
+		Property = boat + "/" + yacht + "/" + sail + "/" + vessel + "/" + tanker + "/" + marine + "/" +
+			rocket + "/" + zebra + "/" + eleph + "/" + eagle + "/" + tiger + "/" + lion + "/" + horse + "/" + worm + "/" + hole + "/" + xman + "/" + quita;
+		var Parts_Prop1 = $('#boat').val();
+		var Parts_Prop2 = $('#yacht').val();
+		var Parts_Prop3 = $('#sail').val();
+		var Parts_Prop4 = $('#vessel').val();
+		var Parts_Prop5 = $('#tanker').val();
+		var Parts_Prop6 = $('#marine').val();
+		var Parts_Prop7 = $('#rocket').val();
+		var Parts_Prop8 = $('#zebra').val();
+		var Parts_Prop9 = $('#eleph').val();
+		var Parts_Prop10 = $('#eagle').val();
+		var Parts_Prop11 = $('#tiger').val();
+		var Parts_Prop12 = $('#lion').val();
+		var Parts_Prop13 = $('#horse').val();
+		var Parts_Prop14 = $('#worm').val();
+		var Parts_Prop15 = $('#hole').val();
+		var Parts_Prop16 = $('#xman').val();
+		var Parts_Prop17 = $('#quita').val();
+		var Parts_Prop18 = $('#fox').val();
+		var Parts_Prop19 = $('#owl').val();
+		var Parts_Prop20 = $('#deer').val();
+		if (PartsClass == 'R1' || PartsClass == 'R2' || PartsClass == 'R3') {
+			if (SoftValid(Soft_No, "软件日期")) {
+				layer.alert("软件日期Ok!" + Soft_No);
+
+			} else {
+				//    layer.alert("软件日期不对，请检查!");
+				return;
+			}
+		}
+		if (Inputcheck(PartsChi, "类别")) {
+			if (NeedRulecheck( PartsClass)) {
+				layer.alert("必要Ok!");
+			} else {
+				layer.alert("必要不对，请检查!");
+				return;
+			}
+		} else {
+			layer.alert("类别不对，请检查!");
+			return;
+		}
+	}
+	 
+</script>

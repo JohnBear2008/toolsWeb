@@ -24,6 +24,7 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/arch/FnFee.js"></script>
 <script src="/arch/FnSubA.js"></script>
+<script src="/arch/FnSubB.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 <script src="/bomq/utilFn.js"></script>
 <script src="/public/print/print.js"></script>
@@ -35,26 +36,20 @@
 	<div id="noprint" class="noprint">
 		<div class="divcontent">
 			<div id="handout_wrap_inner"></div>
-			<h1>弘讯科技采购单审批</h1>
-			<!-- <label>审批号:</label>
-			<div class="layui-inline">
-				<input class="layui-input" name="mainbillno" id="mainbillno" value="" autocomplete="off">
-			</div> -->
-			<button id="SeaBtn" class="btn btn-default" onclick="searchFile('0')">与我相关</button>
-			<button id="SeaAllBtn" class="btn btn-default" onclick="searchFile('1')">全部单据</button>
-			<!-- <input type="button" id="SeaBtn" onclick="searchFile('1')" class="btn btn-info" value="查找" /> -->
+			<h1>弘讯科技费用审批</h1>
+			<button id="SeaAllBtn" class="btn btn-default" onclick="searchFile('0')">采购单</button>
+			<button id="SeaAllBtn" class="btn btn-default" onclick="searchTravel('0')">出差报销</button>
 			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
-			<input type="button" id="SeaDateBtn" onclick="searchFile('2')" class="btn btn-info" value="查找" />
+			<input type="button" id="SeaDateBtn" onclick="searchByDate()" class="btn btn-info" value="查找" />
 			<hr>
-			<br />
 		</div>
 	</div>
 	<table class="layui-hide" id="test" lay-filter="test"></table>
 	<script type="text/html" id="toolbarDemo">
       <div class="layui-btn-group userTable">
 		<label>操&nbsp;&nbsp;&nbsp;&nbsp;作: </label>
-        <button class="layui-btn layui-btn-normal" lay-event="viewSumary">预览</button>
-        <!-- <button class="layui-btn layui-btn-normal" lay-event="massReject">批量审批驳回</button> -->
+	  <button class="layui-btn layui-btn-normal" lay-event="viewSumary">预览</button>
+	  	 <span id="matchRec" class="fee-match-search"></span>
       </div>
     </script>
 	<table id="demo" lay-filter="testbaby"></table>
@@ -140,6 +135,8 @@
 				var sessionOID = '';
 				let sData = [];
 				var CapBillNo = '';
+				var CapMode = '';
+				var CapDate = '0';  //0 NoDate, 1 Date
 				$(document).ready(function () {
 					layui.use(['table', 'form', 'layedit', 'laydate'], function () {
 						sessionName = "<%-locals.session.yjUser.Name%>";
@@ -149,9 +146,9 @@
 						// } else {
 						// 	chkPower(sessionOID);
 						// }
-						missType = getQueryString("missT");
+						missType = getQueryString("missT");  //use by FormType 采购 差旅
 						var missTencode = decodeURI(missType);
-						missAcute = getQueryString("missA");
+						missAcute = getQueryString("missA");  //use by choose Date
 						var missAencode = decodeURI(missAcute);
 						missBcute = getQueryString("missB");
 						var missBencode = decodeURI(missBcute);
@@ -160,7 +157,14 @@
 						missmode = getQueryString("missE");
 						$("#taskMakeDateB").val(missCcute);
 						$("#taskMakeDateE").val(missDcute);
-						searchFile(missmode);
+						console.log("表单：", missType);
+						console.log("选日期：", missAcute);
+						if(missType =='A'){
+						      searchFile('0');
+						}
+						if(missType =='B'){
+							searchTravel('0');
+						}
 					});
 				});
 				$('#BTNFitler').click(function () {
@@ -208,7 +212,8 @@
 						// var selBillNo = dataARR[0].BillNo;
 						// console.log("艺仁",JSON.stringify(checkStatus));
 						// console.log("敏希", (objCenter.config.id));
-						console.log("朴垠", CapBillNo);
+						console.log("敏米", CapBillNo);
+						console.log("敏希", CapMode);
 						var reportType = 'agreeFee';
 						var taskData = {
 							"reportType": reportType, "BillNo": CapBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
@@ -226,9 +231,9 @@
 									layer.msg('操作成功', { icon: 1 });
 									var DateB = $("#taskMakeDateB").val();
 									var DateE = $("#taskMakeDateE").val();
-									var paramType = missType;
+									missType = CapMode;
 									var paramClearA = encodeURI(encodeURI(result.BillNo));
-									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + paramType + "&missA=" + paramClearA + "&missC=" + DateB + "&missD=" + DateE + " ";
+									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + missType + "&missA=" + CapDate + "&missC=" + DateB + "&missD=" + DateE + " ";
 								});
 							},
 							error: function () {
@@ -243,6 +248,7 @@
 						btn: ['是', '否']
 					}, function () {
 						console.log("金詩", CapBillNo);
+						console.log("金詩", CapMode);
 						var reportType = 'rejectFee';
 						var taskData = {
 							"reportType": reportType, "BillNo": CapBillNo, "CurWorkId": sessionAID, "CurName": sessionName,
@@ -260,9 +266,9 @@
 									layer.msg('操作成功', { icon: 1 });
 									var DateB = $("#taskMakeDateB").val();
 									var DateE = $("#taskMakeDateE").val();
-									var paramType = missType;
+									missType = CapMode;
 									var paramClearA = encodeURI(encodeURI(result.BillNo));
-									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + paramType + "&missA=" + paramClearA + "&missC=" + DateB + "&missD=" + DateE + " ";
+									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + missType + "&missA=" + CapDate + "&missC=" + DateB + "&missD=" + DateE + " ";
 								});
 							},
 							error: function () {

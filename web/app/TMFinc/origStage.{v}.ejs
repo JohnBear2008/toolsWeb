@@ -1,0 +1,426 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<!-- date picker -->
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- 预览 -->
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<script src="/arch/roleSet.js"></script>
+<script src="/bomq/utilFn.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+	<div id="noprint" class="noprint">
+		<div class="divcontent">
+			<div id="handout_wrap_inner"></div>
+			<h1>创建组织</h1>
+			<!-- <select id="Pattern" name="Pattern" class="can-find-M140"></select> -->
+			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
+			<input type="button" id="DeptBtn" class="btn btn-info" value="建立部門" />
+			<input type="button" id="GroupBtn" class="btn btn-info" value="建立课组" />
+			<input type="button" id="DeleteBtn" class="btn btn-info" value="删除" />
+			<hr>
+
+		</div>
+	</div><!-- modal fade -->
+	<!-- 过滤器弹出开始 -->
+	<div class="modal fade" id="kisswindow" tabindex="-1" role="dialog" aria-labelledby="kisswindowLabel"
+		aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:65%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="panel-title">过滤器</h3>
+				</div>
+				<div class="modal-body">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title"></h3>
+						</div>
+						<div class="panel-body">
+							<br />
+							<div class="form-group">
+								<label class="col-sm-1 control-label">部門名</label>
+								<div class="col-sm-3">
+									<input id="DeptName" class="form-control" type="text" value="">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="FormAYES" type="button" class="btn btn-primary"
+						data-dismiss="modal">确认</button>
+					<button id="FormAClose" type="button" class="btn btn-primary"
+						data-dismiss="modal">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div><!-- modal fade -->
+	<div class="modal fade" id="momowindow" tabindex="-1" role="dialog" aria-labelledby="momowindowLabel"
+		aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:65%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="panel-title">过滤器</h3>
+				</div>
+				<div class="modal-body">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title"></h3>
+						</div>
+						<div class="panel-body">
+							<br />
+							<div class="form-group">
+								<label class="col-sm-1 control-label">部門列表</label>
+								<div class="col-sm-3">
+									<select id="DeptCombo" class="form-control" type="text"
+										value=""></select>
+								</div>
+								<label class="col-sm-1 control-label">组别</label>
+								<div class="col-sm-3">
+									<input id="GroupName" class="form-control" type="text" value="">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="FormBYES" type="button" class="btn btn-primary"
+						data-dismiss="modal">确认</button>
+					<button id="FormBClose" type="button" class="btn btn-primary"
+						data-dismiss="modal">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div><!-- modal fade -->
+	<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+		<!--数据呈现区-->
+		<table id="center_TB" class="table table-striped table-bordered">
+			<thead id="content">
+
+			</thead>
+		</table>
+	</div>
+	</div>
+	<div id="root" style="height: 100%"></div>
+	<script>
+		var missType = '';
+		var missAcute = '';
+		var missBcute = '';
+		var missCcute = '';
+		var missDcute = '';
+		var glbA = '';
+		var glbB = '';
+		var glbC = '';
+		var glbD = '';
+		var glbE = '';
+		var glbF = '';
+		var glbG = '';
+		var glbH = '';
+		var glbS = '';
+		var Pattern = '';
+		var advSearch = '';
+		var selClass = '';
+		var FieldA = true;
+		var FieldB = true;
+		var FieldC = true;
+		var FieldD = true;
+		var FieldE = false;
+		var FieldF = false;
+		var FieldG = false;
+		var FieldH = true;
+		var FieldI = false;
+		var FieldJ = false;
+		var FieldK = false;
+		var storage = window.localStorage;
+		var hidata = localStorage.getItem("findLu");
+		hidata = JSON.parse(hidata);
+		var sessionName = '';
+		var sessionOID = '';
+		let sData = [];
+		if (hidata != undefined && hidata != null) {
+			FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
+			FieldB = ((hidata.B == null || hidata.B == undefined) ? (FieldB) : hidata.B);
+			FieldC = ((hidata.C == null || hidata.C == undefined) ? (FieldC) : hidata.C);
+			FieldD = ((hidata.D == null || hidata.D == undefined) ? (FieldD) : hidata.D);
+			FieldE = ((hidata.E == null || hidata.E == undefined) ? (FieldE) : hidata.E);
+			FieldF = ((hidata.F == null || hidata.F == undefined) ? (FieldF) : hidata.F);
+			FieldG = ((hidata.G == null || hidata.G == undefined) ? (FieldG) : hidata.G);
+			FieldH = ((hidata.H == null || hidata.H == undefined) ? (FieldH) : hidata.H);
+			FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
+			FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
+			FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
+		}
+		var columnsData = [];
+		//页面加载函数---------------
+		$(document).ready(function () {
+			sessionName = "<%-locals.session.yjUser.Name%>";
+			sessionOID = "<%-locals.session.yjUser.OID%>";
+			layui.use(['form', 'layedit', 'laydate'], function () {
+				var form = layui.form
+					, layer = layui.layer
+					, layedit = layui.layedit
+					, laydate = layui.laydate;
+				form.render();
+				var DataPara = {
+					"tableID": "#center_TB",
+					"DBTable": "auto_parts"
+				}
+				missType = getQueryString("missT");
+				missAcute = getQueryString("missA");
+				var missAencode = decodeURI(missAcute);
+				glbA = missAencode;
+				columnsData = [
+					{ data: 'DBID', "visible": false },
+					{ data: 'StaffId', "visible": true, "width": "15%" },
+					{ data: 'StaffName', "visible": true, "width": "15%" },
+					{ data: 'BudgetYear', "visible": true, "width": "15%" },
+					{ data: 'UpperLimit', "visible": true, "width": "15%" },
+					{ data: 'UseAmount', "visible": true, "width": "15%" },
+					{ data: 'Accumulate', "visible": true, "width": "15%" }, 
+					{ data: 'RequestDate', "visible": true, "width": "15%" },
+				];
+				var youoption = document.createElement("option");
+				youoption.id = "SIGN";
+				youoption.name = "SIGN";
+				youoption.text = "AND";
+				youoption.value = "1";
+				$("#SIGN").append(youoption);
+				youoption = document.createElement("option");
+				youoption.text = "OR";
+				youoption.value = "2";
+				$("#SIGN").append(youoption);
+			});
+			$("#SeaBtn").addClass("active");
+			OrigList();
+			var contentSum = "";
+			var content = '<tr>'
+				+ '<th>系统ID</th>'
+				+ '<th>职工ID</th>'
+				+ '<th>名称</th>'
+				+ '<th>年度</th>'
+				+ '<th>额度上限</th>'
+				+ '<th>已使用</th>'
+				+ '<th>累计</th>'
+				+ '<th>需求日期</th>'
+				+ '</tr>';
+			contentSum += content;
+			$('#content').html(contentSum);
+			Pattern = $('#Pattern').val();
+			reloadCol();
+			showDBDataSelf(DataPara, columnsData, Pattern);
+			$("#pdf-wrapper").css('visibility', 'visible');
+		});
+
+		var DataPara = {
+			"tableID": "#center_TB",
+			"DBTable": "auto_parts"
+		}
+		columnsData = [
+
+		];
+		function showDBDataSelf(DataPara, columnsData, Pattern) {
+			$("#pdf-wrapper").css('visibility', 'visible');
+			var limit = '5000';
+			var filter = ' 1=1 ';
+			var orderBy = '';
+			$("#center_TB").dataTable().fnDestroy();
+			var signoption = $("#SIGN option:selected");
+			var signTxt = signoption.text();
+			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "limit": limit };
+			var reportChannel = 'FeeHead';
+			var arrange = 'LookOrig';
+			var taskData = { "reportType": reportChannel, "arrange": arrange };
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMFinc/getRoute",
+				success: function (data) {
+					console.log("机车和平", data);
+					$('#content').html(data[1]);
+					let newColumns = [];
+					newColumns = data[0];
+					var reportType = 'FeeVisit';
+					var taskType = { "reportType": reportType, "arrange": arrange, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					console.log("审审....", taskType);
+					bornTable(taskType, newColumns);
+				},
+				error: function () {
+				}
+			})
+		}
+		function bornTable(taskData, columnsData) {
+			$(DataPara.tableID).DataTable({
+				ajax: {
+					method: 'post',
+					data: taskData,
+					url: "/app/TMFinc/getRoute",
+					dataSrc: ''
+				},
+				columns: columnsData,
+				aaSorting: [0, 'desc'],
+				language: languageCN
+			});
+			var table = $('#center_TB').DataTable();
+			$('#center_TB tbody').on('click', 'tr', function () {
+				$(this).removeClass('selected');
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});
+		}
+		function reloadCol() {
+			columnsData = [
+			];
+		}
+		$('#BTNFitSearch').click(function () {
+			$("#center_TB").dataTable().fnDestroy();
+			Pattern = $('#Pattern').val();
+			reloadCol();
+			showDBDataSelf(DataPara, columnsData, Pattern);
+		});
+		$('#DeptBtn').click(function () {
+			$('#kisswindow').modal('show');
+		});
+		$('#GroupBtn').click(function () {
+			$('#momowindow').modal('show');
+		});
+		$('#DeleteBtn').click(function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				layer.confirm('此数据内容操作后无法还原，请确认操作是否无误！', {
+					btn: ['是', '否'] //按钮
+				}, function () {
+					var DeptName = dataSelect.DeptName;
+					var GroupName = dataSelect.GroupName;
+					console.log("=舔=", DeptName, GroupName);
+					layer.msg('操作' + GroupName, { icon: 1 });
+					var reportType = 'createOrig';
+					var arrange = 'eraseMode';
+					var taskData = {
+						"reportType": reportType, "arrange": arrange, "DeptName": DeptName, "GroupName": GroupName
+					}
+					$.ajax({
+						method: 'post',
+						data: taskData,
+						url: "/app/TMFinc/getRoute",
+						success: function (data) {
+							console.log("会好", JSON.stringify(data));
+							if (data.status == 'Fail') {
+								layer.msg("讯息" + data.message);
+							} else if (data.status == 'OK') {
+								layer.confirm("删除组织" + data.OrigName + "已完成" + (data.status), {
+									btn: ['知道了']
+								}, function () {
+									layer.msg('操作成功', { icon: 1 });
+									missAcute = $('#Pattern').val();
+									window.location.href = "/app/TMFinc/origStage?missT=" + missType + "&missA=" + missAcute + " ";
+								});
+							}
+						},
+						error: function () {
+						}
+					})
+				}, function () {
+					layer.msg('无操作', { icon: 1 });
+				});
+			}
+		});
+		$('#FormAClose').click(function () {
+			$('#kisswindow').modal('close');
+		});
+		$('#FormBClose').click(function () {
+			$('#momowindow').modal('close');
+		});
+		$('#FormAYES').click(function () {
+			var DeptName = $('#DeptName').val();
+			var reportType = 'createOrig';
+			var arrange = 'classDept';
+			var taskData = {
+				"reportType": reportType, "arrange": arrange, "DeptName": DeptName
+			}
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMFinc/getRoute",
+				success: function (data) {
+					console.log("会好", JSON.stringify(data));
+					if (data.status == 'Fail') {
+						layer.msg("讯息" + data.message);
+					} else if (data.status == 'OK') {
+						layer.confirm("创建组织" + data.OrigName + "已完成" + (data.status), {
+							btn: ['知道了']
+						}, function () {
+							layer.msg('操作成功', { icon: 1 });
+							missAcute = $('#Pattern').val();
+							window.location.href = "/app/TMFinc/origStage?missT=" + missType + "&missA=" + missAcute + " ";
+						});
+					}
+				},
+				error: function () {
+				}
+			})
+		});
+		$('#FormBYES').click(function () {
+			var DeptCombo = $('#DeptCombo').val();
+			let PropList = [];
+			if (DeptCombo != "" && DeptCombo != undefined) {
+				PropList = DeptCombo.split('##');
+				for (var ki = 0; ki < PropList.length; ki++) {
+					var DeptID = PropList[0];
+					var DeptValue = PropList[1];
+				}
+			}
+			var GroupName = $('#GroupName').val();
+			var reportType = 'createOrig';
+			var arrange = 'classGroup';
+			var taskData = {
+				"reportType": reportType, "arrange": arrange, "DeptID": DeptID, "DeptValue": DeptValue, "GroupName": GroupName
+			}
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMFinc/getRoute",
+				success: function (data) {
+					console.log("会好", JSON.stringify(data));
+					if (data.status == 'Fail') {
+						layer.msg("讯息" + data.message);
+					} else if (data.status == 'OK') {
+						layer.confirm("创建组织" + data.OrigName + "已完成" + (data.status), {
+							btn: ['知道了']
+						}, function () {
+							layer.msg('操作成功', { icon: 1 });
+							missAcute = $('#Pattern').val();
+							window.location.href = "/app/TMFinc/origStage?missT=" + missType + "&missA=" + missAcute + " ";
+						});
+					}
+				},
+				error: function () {
+				}
+			})
+		});
+	</script>

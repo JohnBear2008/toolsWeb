@@ -3,32 +3,32 @@
  *导入方式：var Array = require("./Array"); var Array = new Array();
  */
 
- Array.prototype.delRepeat = function () {
+//  Array.prototype.delRepeat = function () {
 
-        var temp = {}, len = this.length;
+//         var temp = {}, len = this.length;
 
-        for (var i = 0; i < len; i++) {
+//         for (var i = 0; i < len; i++) {
 
-            var tmp = this[i];
+//             var tmp = this[i];
 
-            if (!temp.hasOwnProperty(tmp)) {//hasOwnProperty用来判断一个对象是否有你给出名称的属性或对象
+//             if (!temp.hasOwnProperty(tmp)) { 
 
-                temp[this[i]] = "yes";
+//                 temp[this[i]] = "yes";
 
-            }
+//             }
 
-        }
+//         }
 
-        len = 0;
+//         len = 0;
 
-        var tempArr = [];
+//         var tempArr = [];
 
-        for (var i in temp) {
+//         for (var i in temp) {
 
-            tempArr[len++] = i;
+//             tempArr[len++] = i;
 
-        }
+//         }
 
-        return tempArr;
+//         return tempArr;
 
-    }
+//     }

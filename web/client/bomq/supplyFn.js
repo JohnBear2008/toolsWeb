@@ -159,3 +159,15 @@ function getpull() {
       youoption.value = "F";
       $("#Pattern").append(youoption);
 }
+function getDrop() {
+      var youoption = document.createElement("option");
+      youoption.id = "CapMode";
+      youoption.name = "CapMode";
+      youoption.text = "采购";
+      youoption.value = "A";
+      $("#CapMode").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "出差";
+      youoption.value = "B";
+      $("#CapMode").append(youoption);
+}

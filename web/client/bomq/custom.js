@@ -26,39 +26,39 @@ function getTermi() {
   })
 }
 //7566要下拉是不可能的
-function getBusiPart() {
-  let dataArr = [];
-  var reportType = 'goldBusi';
-  var arrange = 'business';
-  var taskData = { "reportType": reportType, "arrange": arrange };
-  $.ajax({
-    method: 'post',
-    data: taskData,
-    url: "/app/TMSale/getRoute",
-    success: function (data) {
-      dataArr = data;
-      //  console.log("美猴王", JSON.stringify(dataArr) );
-      var youoption = document.createElement("option");
-      youoption.text = "-";
-      youoption.id = "optBusiPart";
-      youoption.name = "optBusiPart";
-      youoption.value = "";
-      $("#optBusiPart").append(youoption);
-      for (var i = 0; i < dataArr.length; i++) {
-        var youoption = document.createElement("option");
-        youoption.text = dataArr[i].CU_ID + "-" + dataArr[i].CU_Name;
-        youoption.id = "optBusiPart";
-        youoption.name = "optBusiPart";
-        youoption.value = dataArr[i].CU_ID;
-        if (youoption.text == "-") { youoption.selected = "selected"; }
-        $("#optBusiPart").append(youoption);
-      }
+// function getBusiPart() {
+//   let dataArr = [];
+//   var reportType = 'goldBusi';
+//   var arrange = 'business';
+//   var taskData = { "reportType": reportType, "arrange": arrange };
+//   $.ajax({
+//     method: 'post',
+//     data: taskData,
+//     url: "/app/TMSale/getRoute",
+//     success: function (data) {
+//       dataArr = data;
+//       //  console.log("美猴王", JSON.stringify(dataArr) );
+//       var youoption = document.createElement("option");
+//       youoption.text = "-";
+//       youoption.id = "optBusiPart";
+//       youoption.name = "optBusiPart";
+//       youoption.value = "";
+//       $("#optBusiPart").append(youoption);
+//       for (var i = 0; i < dataArr.length; i++) {
+//         var youoption = document.createElement("option");
+//         youoption.text = dataArr[i].CU_ID + "-" + dataArr[i].CU_Name;
+//         youoption.id = "optBusiPart";
+//         youoption.name = "optBusiPart";
+//         youoption.value = dataArr[i].CU_ID;
+//         if (youoption.text == "-") { youoption.selected = "selected"; }
+//         $("#optBusiPart").append(youoption);
+//       }
 
-    },
-    error: function () {
-    }
-  })
-}
+//     },
+//     error: function () {
+//     }
+//   })
+// }
 function CritBacBusi() {
   let dataArr = [];
   var reportType = 'starWar';
@@ -96,7 +96,6 @@ function CritAdvBusi(prodID, prodNM) {
     url: "/app/TMSale/getRoute",
     success: function (data) {
       dataArr = data;
-      // console.log("定延", JSON.stringify(dataArr));
       $("#LifeValue").val(); $("#LifeValue").html("");
       for (var i = 0; i < dataArr.length; i++) {
         var youoption = document.createElement("option");
@@ -122,7 +121,6 @@ function CritBacPers() {
     url: "/app/TMSale/getRoute",
     success: function (data) {
       dataArr = data;
-      // console.log("俞定延", JSON.stringify(dataArr));
       for (var i = 0; i < dataArr.length; i++) {
         var youoption = document.createElement("option");
         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
@@ -148,7 +146,6 @@ function FincBacPers() {
     url: "/app/TMFinc/getRoute",
     success: function (data) {
       dataArr = data;
-      // console.log("俞定延", JSON.stringify(dataArr));
       for (var i = 0; i < dataArr.length; i++) {
         var youoption = document.createElement("option");
         youoption.text = dataArr[i].ProductID + " 姓名: " + dataArr[i].ProductName;
@@ -174,37 +171,10 @@ function CritAdvPers(prodID, prodNM) {
     url: "/app/TMSale/getRoute",
     success: function (data) {
       dataArr = data;
-      console.log("定延", JSON.stringify(dataArr));
       $("#FishValue").val(); $("#FishValue").html("");
       for (var i = 0; i < dataArr.length; i++) {
         var youoption = document.createElement("option");
         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-        youoption.id = "fishtime";
-        youoption.name = "fishtime";
-        youoption.value = dataArr[i].ProductID + "##" + dataArr[i].ProductName;
-        $("#FishValue").append(youoption);
-      }
-    },
-    error: function () {
-    }
-  })
-}
-function FincAdvPers(prodID, prodNM) {
-  let dataArr = [];
-  var reportType = 'starWar';
-  var arrange = 'AdvFinc';
-  var taskData = { "reportType": reportType, "arrange": arrange, "prodID": prodID, "prodNM": prodNM };
-  $.ajax({
-    method: 'post',
-    data: taskData,
-    url: "/app/TMFinc/getRoute",
-    success: function (data) {
-      dataArr = data;
-      console.log("定延", JSON.stringify(dataArr));
-      $("#FishValue").val(); $("#FishValue").html("");
-      for (var i = 0; i < dataArr.length; i++) {
-        var youoption = document.createElement("option");
-        youoption.text = dataArr[i].ProductID + " 姓名: " + dataArr[i].ProductName;
         youoption.id = "fishtime";
         youoption.name = "fishtime";
         youoption.value = dataArr[i].ProductID + "##" + dataArr[i].ProductName;

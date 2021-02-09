@@ -1,0 +1,704 @@
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
+
+<style type="text/css">
+	h1 {
+		color: #71b0d4;
+	}
+</style>
+<script src="/js/sweetalert.min.js"></script>
+<script src="/public/funs.js"></script>
+<script src="/banq/TMfun.js"></script>
+<script src="/banq/TMEvent.js"></script>
+<script src="/banq/supplier.js"></script>
+<script src="/banq/pipe.js"></script> 
+<script src="/banq/wipeR.js"></script> 
+<script src="/banq/wipeRpack.js"></script> 
+<!-- <script src="/banq/wipeA.js"></script>
+<script src="/banq/wipeB.js"></script>
+<script src="/banq/wipeC.js"></script>
+<script src="/banq/wipeD.js"></script>
+<script src="/banq/wipeE.js"></script>
+<script src="/banq/wipeF.js"></script>
+<script src="/banq/wipeG.js"></script>
+<script src="/banq/wipeH.js"></script>
+<script src="/banq/wipeJ.js"></script>
+<script src="/banq/wipeK.js"></script>
+<script src="/banq/wipeL.js"></script>
+<script src="/banq/wipeQ.js"></script>
+<script src="/banq/wipeU.js"></script>
+<script src="/banq/wipeR.js"></script>
+<script src="/banq/wipeRpack.js"></script>
+<script src="/banq/wipeS.js"></script>
+<script src="/banq/wipeU.js"></script> -->
+<script src="/banq/Mizualert.js"></script>
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+<div class="divcontent">
+	<div id="handout_wrap_inner"></div>
+	<h1>属性显示规则设定</h1>
+	<label>类别:</label>
+	<div class="layui-inline">
+		<input class="layui-input" name="mainclass" id="mainclass" value="A1" autocomplete="off">
+	</div>
+	<label>显示:</label>
+	<div class="layui-inline">
+		<input class="can-drop-super" name="mainpower" id="mainpower" value="">
+	</div>
+	<br />
+	<br />
+	<input type="button" id="confirmBtn" class="btn btn-info" value="新设定确认" />
+	<input type="button" id="currentBtn" class="btn btn-info" value="取回当前" />
+	<input type="button" id="defaultBtn" class="btn btn-info" value="回复预设" />
+	<hr>
+	<br />
+	<div class="btn-group">
+		<label class="layui-form-label">物料类别A~D</label>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			物料类别
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a id="A1" href="#">A1控制器</a></li>
+			<li><a id="A2" href="#">A2人机界面</a></li>
+			<li><a id="A3" href="#">A3变频/驱动器</a></li>
+			<li><a id="A4" href="#">A4电机</a></li>
+			<li><a id="A5" href="#">A5油泵</a></li>
+			<li><a id="B1" href="#">B1电机+油泵</a></li>
+			<li><a id="B2" href="#">B2电机+减速机</a></li>
+			<li><a id="B3" href="#">B3组件盒</a></li>
+			<li><a id="B4" href="#">B4电控箱/柜</a></li>
+			<li><a id="B5" href="#">B5新能源柜</a></li>
+			<li><a id="C1" href="#">C1机械手</a></li>
+			<li><a id="C2" href="#">C2机器人</a></li>
+			<li><a id="C3" href="#">C3热流道</a></li>
+			<li><a id="D1" href="#">D1代加工单板</a></li>
+			<li><a id="D2" href="#">D2驱动器单板</a></li>
+			<li><a id="D3" href="#">D3新能源单板</a></li>
+		</ul>
+	</div>
+	<div class="btn-group">
+		<label class="layui-form-label">物料类别E~F</label>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			物料类别
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a id="E1" href="#">E1PCB光板</a></li>
+			<li><a id="E2" href="#">E2电阻</a></li>
+			<li><a id="E3" href="#">E3电容</a></li>
+			<li><a id="E4" href="#">E4电感</a></li>
+			<li><a id="E5" href="#">E5磁珠</a></li>
+			<li><a id="E6" href="#">E6二极管</a></li>
+			<li><a id="E7" href="#">E7晶体管</a></li>
+			<li><a id="E8" href="#">E8集成电路IC</a></li>
+			<li><a id="E9" href="#">E9半导体模块</a></li>
+			<li><a id="EA" href="#">EA电源模块</a></li>
+			<li><a id="EB" href="#">EB发光器件</a></li>
+			<li><a id="EC" href="#">EC电声器件</a></li>
+			<li><a id="ED" href="#">ED晶振</a></li>
+			<li><a id="EE" href="#">EE电池</a></li>
+			<li><a id="EF" href="#">EF按钮开关</a></li>
+			<li><a id="EG" href="#">EG继电器</a></li>
+			<li><a id="EH" href="#">EH保险熔断</a></li>
+			<li><a id="EJ" href="#">EJ板载变压器</a></li>
+			<li><a id="EK" href="#">EK连接器</a></li>
+			<li><a id="EM" href="#">EM液晶</a></li>
+			<li><a id="EN" href="#">EN触屏</a></li>
+			<li><a id="EP" href="#">EP面膜</a></li>
+			<li><a id="F1" href="#">F1电子尺</a></li>
+			<li><a id="F2" href="#">F2编码器</a></li>
+			<li><a id="F3" href="#">F3阀</a></li>
+			<li><a id="F4" href="#">F4传感器</a></li>
+			<li><a id="F5" href="#">F5电抗器</a></li>
+			<li><a id="F6" href="#">F6滤波器</a></li>
+			<li><a id="F7" href="#">F7磁环/突波</a></li>
+			<li><a id="F8" href="#">F8刹车电阻</a></li>
+			<li><a id="F9" href="#">F9压电盘</a></li>
+			<li><a id="FA" href="#">FA开关电源</a></li>
+			<li><a id="FB" href="#">FB变压器</a></li>
+			<li><a id="FC" href="#">FC断路器</a></li>
+			<li><a id="FD" href="#">FD接触器</a></li>
+			<li><a id="FE" href="#">FE工业开关按钮指示灯</a></li>
+			<li><a id="FF" href="#">FF配电保护</a></li>
+			<li><a id="FG" href="#">FG风扇</a></li>
+			<li><a id="FH" href="#">FH互感器</a></li>
+			<!-- <li><a id="FJ" href="#">FJ导轨端子</a></li>
+	<li><a id="FK" href="#">FK工业连接器</a></li>
+	<li><a id="FL" href="#">FLUPS电源</a></li>	 -->
+		</ul>
+	</div>
+	<br></br>
+	<div class="btn-group">
+		<label class="layui-form-label">物料类别G~H</label>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			物料类别
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a id="G1" href="#">G1丝杆/导轨</a></li>
+			<li><a id="G2" href="#">G2减速机</a></li>
+			<li><a id="G3" href="#">G3皮带轮</a></li>
+			<li><a id="G4" href="#">G4皮带</a></li>
+			<li><a id="G5" href="#">G5机柜/机箱/机架</a></li>
+			<li><a id="G6" href="#">G6结构件</a></li>
+			<li><a id="G7" href="#">G7散热器</a></li>
+			<li><a id="G8" href="#">G8紧固件</a></li>
+			<li><a id="G9" href="#">G9轴环</a></li>
+			<li><a id="GA" href="#">GA法兰</a></li>
+			<li><a id="GB" href="#">GB联轴器</a></li>
+			<li><a id="GC" href="#">GC轴套</a></li>
+			<li><a id="GD" href="#">GD轴承</a></li>
+			<li><a id="GE" href="#">GE亚克力</a></li>
+			<li><a id="GF" href="#">GF视窗玻璃</a></li>
+			<li><a id="GG" href="#">GG泡棉</a></li>
+			<li><a id="GH" href="#">GH橡胶圈垫片</a></li>
+			<li><a id="GI" href="#">GI支架</a></li>
+			<li><a id="H1" href="#">H1动力线</a></li>
+			<li><a id="H2" href="#">H2编码器反馈线</a></li>
+			<li><a id="H3" href="#">H3连接线</a></li>
+			<li><a id="H4" href="#">H4通讯线</a></li>
+			<li><a id="H5" href="#">H5冷压接端子</a></li>
+			<li><a id="H6" href="#">H6线配件</a></li>
+			<li><a id="H7" href="#">H7线原材</a></li>
+		</ul>
+	</div>
+	<div class="btn-group">
+		<label class="layui-form-label">物料类别J~S</label>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			物料类别
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a id="J1" href="#">J1包装箱</a></li>
+			<li><a id="J2" href="#">J2包装袋</a></li>
+			<li><a id="J3" href="#">J3缓冲材料</a></li>
+			<li><a id="J4" href="#">J4说明书</a></li>
+			<li><a id="J5" href="#">J5零件包</a></li>
+			<li><a id="J6" href="#">J6生产辅料</a></li>
+			<li><a id="J7" href="#">J7工装治具</a></li>
+			<li><a id="J8" href="#">J8挂账用</a></li>
+			<li><a id="K1" href="#">K1代加工设备</a></li>
+			<li><a id="K2" href="#">K2代加工产品</a></li>
+			<li><a id="K3" href="#">K3代加工单板</a></li>
+			<li><a id="L1" href="#">L1油泵维修备件</a></li>
+			<li><a id="L2" href="#">L2机械手非标治具</a></li>
+			<li><a id="L3" href="#">L3农机相关</a></li>
+			<li><a id="U1" href="#">U1电控成套</a></li>
+			<li><a id="U2" href="#">U2伺服成套</a></li>
+			<li><a id="U3" href="#">U3电控+伺服成套</a></li>
+			<li><a id="U4" href="#">U4伺服+机械成套</a></li>
+			<li><a id="U5" href="#">U5电控+伺服+机械成套</a></li>
+			<li><a id="R1" href="#">R1电控成套</a></li>
+			<li><a id="R2" href="#">R2伺服产品配套程式</a></li>
+			<li><a id="R3" href="#">R3新能源产品配套程式</a></li>
+			<li><a id="S1" href="#">S1管理系统软件</a></li>
+		</ul>
+	</div>
+	<div id="root" style="height: 100%"></div>
+	<br></br>
+	<span id="classSupp" class="green-label" onclick="searchFile(this)"> 制造商 </span>
+	<span id="classSMT" class="green-label" onclick="searchFile(this)"> 属性EF </span>
+	<br></br>
+	<span id="classA" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classB" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classC" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classD" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classE" class="blue-label" onclick="searchFile(this)"> </span>
+
+	<span id="classF" class="blue-label" onclick="searchFile(this)"> </span>
+
+	<br></br>
+	<span id="classG" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classH" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classI" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classJ" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classK" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classL" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classM" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classO" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classP" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classQ" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classR" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classS" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<span id="classT" class="blue-label" onclick="searchFile(this)"> </span>
+	<span id="classU" class="blue-label" onclick="searchFile(this)"> </span>
+	<br></br>
+	<script>
+
+		//页面加载函数---------------
+		$(document).ready(function () {
+			layui.use(['form', 'layedit', 'laydate'], function () {
+				var form = layui.form
+					, layer = layui.layer
+					, layedit = layui.layedit
+					, laydate = layui.laydate;
+				form.render();
+			});
+
+		});
+		$('#defaultBtn').click(function () {
+			var PartsClass = $('#mainclass').val();
+			var reportType = 'goldMaster';
+			var arrange = 'defaultSpec';
+			var taskData = {
+				"reportType": reportType, "arrange": arrange, "PartsClass": PartsClass
+			}
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (dataArr) {
+					for (var i = 0; i < dataArr.length; i++) {
+						var value = dataArr[i].FetchSpec;
+						$("#mainpower").val(value);
+					}
+				},
+				error: function () {
+				}
+			})
+		});
+		$('#currentBtn').click(function () {
+			var PartsClass = $('#mainclass').val();
+			var reportType = 'goldMaster';
+			var arrange = 'currentSpec';
+			var taskData = {
+				"reportType": reportType, "arrange": arrange, "PartsClass": PartsClass
+			}
+			$.ajax({
+				method: 'post',
+				data: taskData,
+				url: "/app/TMCode/getRoute",
+				success: function (dataArr) {
+					for (var i = 0; i < dataArr.length; i++) {
+						var value = dataArr[i].FetchSpec;
+						$("#mainpower").val(value);
+					}
+				},
+				error: function () {
+				}
+			})
+		});
+		$('#confirmBtn').click(function () {
+			var PartsClass = $('#mainclass').val();
+			var DesignSpec = $('#mainpower').val();
+			layer.confirm('此数据内容操作后无法还原，请确认操作是否无误！', {
+				btn: ['是', '否'] //按钮
+			}, function () {
+				var reportType = 'setupDesign';
+				var Arrange = 'Spec';
+				var taskData = {
+					"reportType": reportType, "Arrange": Arrange, "PartsClass": PartsClass, "DesignSpec": DesignSpec
+				}
+				$.ajax({
+					method: 'post',
+					data: taskData,
+					url: "/app/TMCode/getRoute",
+					success: function (result) {
+						layer.alert("属性显示规则设定成功！ ");
+						console.log("双", JSON.stringify(result));
+
+					},
+					error: function () {
+					}
+				})
+			}, function () {
+				layer.msg('无操作', { icon: 1 });
+			});
+
+		});
+		var obj = {};
+		$('#A1').click(function () {
+		$("#mainpower").val("");Gold("A1", obj); $("#pclass").html("A1控制器"); $("#mainclass").val("A1"); $("#mainchi").val("控制器");
+	});
+	$('#A2').click(function () {
+		$("#mainpower").val(""); Gold("A2", obj); $("#pclass").html("A2人机界面"); $("#mainclass").val("A2"); $("#mainchi").val("人机界面");
+	});
+	$('#A3').click(function () {
+		$("#mainpower").val(""); Gold("A3", obj); $("#pclass").html("A3变频/驱动器"); $("#mainclass").val("A3"); $("#mainchi").val("变频/驱动器");
+	});
+	$('#A4').click(function () {
+		$("#mainpower").val(""); Gold("A4", obj); $("#pclass").html("A4电机"); $("#mainclass").val("A4"); $("#mainchi").val("电机");
+	});
+	$('#A5').click(function () {
+		$("#mainpower").val(""); Gold("A5", obj); $("#pclass").html("A5油泵"); $("#mainclass").val("A5"); $("#mainchi").val("油泵");
+	});
+	$('#B1').click(function () {
+		$("#mainpower").val(""); Gold("B1", obj); $("#pclass").html("B1电机+油泵"); $("#mainclass").val("B1"); $("#mainchi").val("电机+油泵");
+	});
+	$('#B2').click(function () {
+		$("#mainpower").val(""); Gold("B2", obj); $("#pclass").html("B2电机+减速机"); $("#mainclass").val("B2"); $("#mainchi").val("电机+减速机");
+	});
+	$('#B3').click(function () {
+		$("#mainpower").val(""); Gold("B3", obj); $("#pclass").html("B3组件盒"); $("#mainclass").val("B3"); $("#mainchi").val("组件盒");
+	});
+	$('#B4').click(function () {
+		$("#mainpower").val(""); Gold("B4", obj); $("#pclass").html("B4电控箱/柜"); $("#mainclass").val("B4"); $("#mainchi").val("电控箱/柜");
+	});
+	$('#B5').click(function () {
+		$("#mainpower").val(""); Gold("B5", obj); $("#pclass").html("B5新能源柜"); $("#mainclass").val("B5"); $("#mainchi").val("新能源柜");
+	});
+	$('#C1').click(function () {
+		$("#mainpower").val(""); Gold("C1", obj); $("#pclass").html("C1机械手"); $("#mainclass").val("C1"); $("#mainchi").val("机械手");
+	});
+	$('#C2').click(function () {
+		$("#mainpower").val(""); Gold("C2", obj); $("#pclass").html("C2机器人"); $("#mainclass").val("C2"); $("#mainchi").val("机器人");
+	});
+	$('#C3').click(function () {
+		$("#mainpower").val(""); Gold("C3", obj); $("#pclass").html("C3热流道"); $("#mainclass").val("C3"); $("#mainchi").val("热流道");
+	});
+	$('#C4').click(function () {
+		$("#mainpower").val(""); Gold("C4", obj); $("#pclass").html("C4输送带"); $("#mainclass").val("C4"); $("#mainchi").val("输送带");
+	});
+	$('#D1').click(function () {
+		$("#mainpower").val(""); Gold("D1", obj); $("#pclass").html("D1电控单板"); $("#mainclass").val("D1"); $("#mainchi").val("电控单板");
+	});
+	$('#D2').click(function () {
+		$("#mainpower").val(""); Gold("D2", obj); $("#pclass").html("D2驱动器单板"); $("#mainclass").val("D2"); $("#mainchi").val("驱动器单板");
+	});
+	$('#D3').click(function () {
+		$("#mainpower").val(""); Gold("D3", obj); $("#pclass").html("D3驱动器单板"); $("#mainclass").val("D3"); $("#mainchi").val("驱动器单板");
+	});
+	$('#D3').click(function () {
+		$("#mainpower").val(""); Gold("D3", obj); $("#pclass").html("D3新能源单板"); $("#mainclass").val("D3"); $("#mainchi").val("新能源单板");
+	});
+	$('#D4').click(function () {
+		$("#mainpower").val(""); Gold("D4", obj); $("#pclass").html("D4IOT单板"); $("#mainclass").val("D4"); $("#mainchi").val("IOT单板");
+	});
+	$('#D5').click(function () {
+		$("#mainpower").val(""); Gold("D5", obj); $("#pclass").html("D5智能楼宇单板"); $("#mainclass").val("D5"); $("#mainchi").val("智能楼宇单板");
+	});
+	$('#D6').click(function () {
+		$("#mainpower").val(""); Gold("D6", obj); $("#pclass").html("D6智慧农业单板"); $("#mainclass").val("D6"); $("#mainchi").val("智慧农业单板");
+	});
+	$('#D7').click(function () {
+		$("#mainpower").val(""); Gold("D7", obj); $("#pclass").html("D7新能源物流单板"); $("#mainclass").val("D7"); $("#mainchi").val("新能源物流单板");
+	});
+	$('#E1').click(function () {
+		$("#mainpower").val(""); Gold("E1", obj); $("#pclass").html("E1PCB光板"); $("#mainclass").val("E1"); $("#mainchi").val("PCB光板");
+	});
+	$('#E2').click(function () {
+		$("#mainpower").val(""); Gold("E2", obj); $("#pclass").html("E2电阻"); $("#mainclass").val("E2"); $("#mainchi").val("电阻");
+	});
+	$('#E3').click(function () {
+		$("#mainpower").val(""); Gold("E3", obj); $("#pclass").html("E3电容"); $("#mainclass").val("E3"); $("#mainchi").val("电容");
+	});
+	$('#E4').click(function () {
+		$("#mainpower").val(""); Gold("E4", obj); $("#pclass").html("E4电感"); $("#mainclass").val("E4"); $("#mainchi").val("电感");
+	});
+	$('#E5').click(function () {
+		$("#mainpower").val(""); Gold("E5", obj); $("#pclass").html("E5磁珠"); $("#mainclass").val("E5"); $("#mainchi").val("磁珠");
+	});
+	$('#E6').click(function () {
+		$("#mainpower").val(""); Gold("E6", obj); $("#pclass").html("E6二极管"); $("#mainclass").val("E6"); $("#mainchi").val("二极管");
+	});
+	$('#E7').click(function () {
+		$("#mainpower").val(""); Gold("E7", obj); $("#pclass").html("E7晶体管"); $("#mainclass").val("E7"); $("#mainchi").val("晶体管");
+	});
+	$('#E8').click(function () {
+		$("#mainpower").val(""); Gold("E8", obj); $("#pclass").html("E8集成电路IC"); $("#mainclass").val("E8"); $("#mainchi").val("集成电路IC");
+	});
+	$('#E9').click(function () {
+		$("#mainpower").val(""); Gold("E9", obj); $("#pclass").html("E9半导体模块"); $("#mainclass").val("E9"); $("#mainchi").val("半导体模块");
+	});
+	$('#EA').click(function () {
+		$("#mainpower").val(""); Gold("EA", obj); $("#pclass").html("EA电源模块"); $("#mainclass").val("EA"); $("#mainchi").val("电源模块");
+	});
+	$('#EB').click(function () {
+		$("#mainpower").val(""); Gold("EB", obj); $("#pclass").html("EB发光器件"); $("#mainclass").val("EB"); $("#mainchi").val("发光器件");
+	});
+	$('#EC').click(function () {
+		$("#mainpower").val(""); Gold("EC", obj); $("#pclass").html("EC电声器件"); $("#mainclass").val("EC"); $("#mainchi").val("电声器件");
+	});
+	$('#ED').click(function () {
+		$("#mainpower").val(""); Gold("ED", obj); $("#pclass").html("ED晶振"); $("#mainclass").val("ED"); $("#mainchi").val("晶振");
+	});
+	$('#EE').click(function () {
+		$("#mainpower").val(""); Gold("EE", obj); $("#pclass").html("EE电池"); $("#mainclass").val("EE"); $("#mainchi").val("电池");
+	});
+	$('#EF').click(function () {
+		$("#mainpower").val(""); Gold("EF", obj); $("#pclass").html("EF按钮开关"); $("#mainclass").val("EF"); $("#mainchi").val("按钮");
+	});
+	$('#EG').click(function () {
+		$("#mainpower").val(""); Gold("EG", obj); $("#pclass").html("EG继电器"); $("#mainclass").val("EG"); $("#mainchi").val("继电器");
+	});
+	$('#EH').click(function () {
+		$("#mainpower").val(""); Gold("EH", obj); $("#pclass").html("EH保险熔断"); $("#mainclass").val("EH"); $("#mainchi").val("保险熔断");
+	});
+	$('#EJ').click(function () {
+		$("#mainpower").val(""); GoldE("EJ", obj); $("#pclass").html("EJ板载变压器"); $("#mainclass").val("EJ"); $("#mainchi").val("板载变压器");
+	});
+	$('#EK').click(function () {
+		$("#mainpower").val(""); Gold("EK", obj); $("#pclass").html("EK连接器"); $("#mainclass").val("EK"); $("#mainchi").val("连接器");
+	});
+	$('#EM').click(function () {
+		$("#mainpower").val(""); Gold("EM", obj); $("#pclass").html("EM液晶"); $("#mainclass").val("EM"); $("#mainchi").val("液晶");
+	});
+	$('#EN').click(function () {
+		$("#mainpower").val(""); Gold("EN", obj); $("#pclass").html("EN触屏"); $("#mainclass").val("EN"); $("#mainchi").val("触屏");
+	});
+	$('#EP').click(function () {
+		$("#mainpower").val(""); Gold("EP", obj); $("#pclass").html("EP面膜"); $("#mainclass").val("EP"); $("#mainchi").val("面膜");
+	});
+	$('#F1').click(function () {
+		$("#mainpower").val(""); Gold("F1", obj); $("#pclass").html("F1电子尺"); $("#mainclass").val("F1"); $("#mainchi").val("电子尺");
+	});
+	$('#F2').click(function () {
+		$("#mainpower").val(""); Gold("F2", obj); $("#pclass").html("F2编码器"); $("#mainclass").val("F2"); $("#mainchi").val("编码器");
+	});
+	$('#F3').click(function () {
+		$("#mainpower").val(""); Gold("F3", obj); $("#pclass").html("F3阀"); $("#mainclass").val("F3"); $("#mainchi").val("阀");
+	});
+	$('#F4').click(function () {
+		$("#mainpower").val(""); Gold("F4", obj); $("#pclass").html("F4传感器"); $("#mainclass").val("F4"); $("#mainchi").val("传感器");
+	});
+	$('#F5').click(function () {
+		$("#mainpower").val(""); Gold("F5", obj); $("#pclass").html("F5电抗滤波"); $("#mainclass").val("F5"); $("#mainchi").val("电抗滤波");
+	});
+	$('#F6').click(function () {
+		$("#mainpower").val(""); Gold("F6", obj); $("#pclass").html("F6磁环/突波"); $("#mainclass").val("F6"); $("#mainchi").val("磁环/突波");
+	});
+	$('#F7').click(function () {
+		$("#mainpower").val(""); Gold("F7", obj); $("#pclass").html("F7刹车电阻"); $("#mainclass").val("F7"); $("#mainchi").val("刹车电阻");
+	});
+	$('#F8').click(function () {
+		$("#mainpower").val(""); Gold("F8", obj); $("#pclass").html("F8压电盘"); $("#mainclass").val("F8"); $("#mainchi").val("压电盘");
+	});
+	$('#F9').click(function () {
+		$("#mainpower").val(""); Gold("F9", obj); $("#pclass").html("F9开关电源"); $("#mainclass").val("F9"); $("#mainchi").val("开关电源");
+	});
+	$('#FA').click(function () {
+		$("#mainpower").val(""); Gold("FA", obj); $("#pclass").html("FA变压器"); $("#mainclass").val("FA"); $("#mainchi").val("变压器");
+	});
+	$('#FB').click(function () {
+		$("#mainpower").val(""); Gold("FB", obj); $("#pclass").html("FB低压配电器件"); $("#mainclass").val("FB"); $("#mainchi").val("低压配电器件");
+	});
+	$('#FC').click(function () {
+		$("#mainpower").val(""); Gold("FC", obj); $("#pclass").html("FC工业开关按钮指示灯"); $("#mainclass").val("FC"); $("#mainchi").val("工业开关按钮指示灯");
+	});
+	$('#FD').click(function () {
+		$("#mainpower").val(""); Gold("FD", obj); $("#pclass").html("FD风扇"); $("#mainclass").val("FD"); $("#mainchi").val("风扇");
+	});
+	$('#FE').click(function () {
+		$("#mainpower").val(""); Gold("FE", obj); $("#pclass").html("FE互感器"); $("#mainclass").val("FE"); $("#mainchi").val("互感器");
+	});
+	$('#FF').click(function () {
+		$("#mainpower").val(""); Gold("FF", obj); $("#pclass").html("FF导轨端子"); $("#mainclass").val("FF"); $("#mainchi").val("导轨端子");
+	});
+	$('#FG').click(function () {
+		$("#mainpower").val(""); Gold("FG", obj); $("#pclass").html("FG工业连接器"); $("#mainclass").val("FG"); $("#mainchi").val("工业连接器");
+	});
+	$('#FH').click(function () {
+		$("#mainpower").val(""); Gold("FH", obj); $("#pclass").html("FHUPS电源"); $("#mainclass").val("FH"); $("#mainchi").val("UPS电源");
+	});
+	$('#FJ').click(function () {
+		$("#mainpower").val(""); Gold("FJ", obj); $("#pclass").html("FJ导轨端子"); $("#mainclass").val("FJ"); $("#mainchi").val("导轨端子");
+	});
+	$('#FK').click(function () {
+		$("#mainpower").val(""); Gold("FK", obj); $("#pclass").html("FK工业连接器"); $("#mainclass").val("FK"); $("#mainchi").val("工业连接器");
+	});
+	$('#FL').click(function () {
+		$("#mainpower").val(""); Gold("FL", obj); $("#pclass").html("FLUPS电源"); $("#mainclass").val("FL"); $("#mainchi").val("UPS电源");
+	});
+	$('#G1').click(function () {
+		$("#mainpower").val(""); Gold("G1", obj); $("#pclass").html("G1丝杆/导轨"); $("#mainclass").val("G1"); $("#mainchi").val("丝杆/导轨");
+	});
+	$('#G2').click(function () {
+		$("#mainpower").val(""); Gold("G2", obj); $("#pclass").html("G2减速机"); $("#mainclass").val("G2"); $("#mainchi").val("减速机");
+	});
+	$('#G3').click(function () {
+		$("#mainpower").val(""); Gold("G3", obj); $("#pclass").html("G3皮带轮"); $("#mainclass").val("G3"); $("#mainchi").val("皮带轮");
+	});
+	$('#G4').click(function () {
+		$("#mainpower").val(""); Gold("G4", obj); $("#pclass").html("G4皮带"); $("#mainclass").val("G4"); $("#mainchi").val("皮带");
+	});
+	$('#G5').click(function () {
+		$("#mainpower").val(""); Gold("G5", obj); $("#pclass").html("G5机柜/机箱/机架"); $("#mainclass").val("G5"); $("#mainchi").val("机柜/机箱/机架");
+	});
+	$('#G6').click(function () {
+		$("#mainpower").val(""); Gold("G6", obj); $("#pclass").html("G6结构件"); $("#mainclass").val("G6"); $("#mainchi").val("结构件");
+	});
+	$('#G7').click(function () {
+		$("#mainpower").val(""); Gold("G7", obj); $("#pclass").html("G7散热器"); $("#mainclass").val("G7"); $("#mainchi").val("散热器");
+	});
+	$('#G8').click(function () {
+		$("#mainpower").val(""); Gold("G8", obj); $("#pclass").html("G8紧固件"); $("#mainclass").val("G8"); $("#mainchi").val("紧固件");
+	});
+	$('#G9').click(function () {
+		$("#mainpower").val(""); Gold("G9", obj); $("#pclass").html("G9轴环"); $("#mainclass").val("G9"); $("#mainchi").val("轴环");
+	});
+	$('#GA').click(function () {
+		$("#mainpower").val(""); Gold("GA", obj); $("#pclass").html("GA法兰"); $("#mainclass").val("GA"); $("#mainchi").val("法兰");
+	});
+	$('#GB').click(function () {
+		$("#mainpower").val(""); Gold("GB", obj); $("#pclass").html("GB联轴器"); $("#mainclass").val("GB"); $("#mainchi").val("联轴器");
+	});
+	$('#GC').click(function () {
+		$("#mainpower").val(""); Gold("GC", obj); $("#pclass").html("GC润滑系统"); $("#mainclass").val("GC"); $("#mainchi").val("润滑系统");
+	});
+	$('#GD').click(function () {
+		$("#mainpower").val(""); Gold("GD", obj); $("#pclass").html("GD轴承"); $("#mainclass").val("GD"); $("#mainchi").val("轴承");
+	});
+	$('#GE').click(function () {
+		$("#mainpower").val(""); Gold("GE", obj); $("#pclass").html("GE亚克力"); $("#mainclass").val("GE"); $("#mainchi").val("亚克力");
+	});
+	$('#GF').click(function () {
+		$("#mainpower").val(""); Gold("GF", obj); $("#pclass").html("GF视窗玻璃"); $("#mainclass").val("GF"); $("#mainchi").val("视窗玻璃");
+	});
+	$('#GG').click(function () {
+		$("#mainpower").val(""); Gold("GG", obj); $("#pclass").html("GG泡棉"); $("#mainclass").val("GG"); $("#mainchi").val("泡棉");
+	});
+	$('#GH').click(function () {
+		$("#mainpower").val(""); Gold("GH", obj); $("#pclass").html("GH密封圈"); $("#mainclass").val("GH"); $("#mainchi").val("密封圈");
+	});
+	$('#GJ').click(function () {
+		$("#mainpower").val(""); Gold("GJ", obj); $("#pclass").html("GJ支架"); $("#mainclass").val("GJ"); $("#mainchi").val("支架");
+	});
+	$('#GK').click(function () {
+		$("#mainpower").val(""); Gold("GK", obj); $("#pclass").html("GK电控箱配件"); $("#mainclass").val("GK"); $("#mainchi").val("电控箱配件");
+	});
+	$('#GL').click(function () {
+		$("#mainpower").val(""); Gold("GL", obj); $("#pclass").html("GL管接头"); $("#mainclass").val("GL"); $("#mainchi").val("管接头");
+	});
+	$('#H1').click(function () {
+		$("#mainpower").val(""); Gold("H1", obj); $("#pclass").html("H1动力线"); $("#mainclass").val("H1"); $("#mainchi").val("动力线");
+	});
+	$('#H2').click(function () {
+		$("#mainpower").val(""); Gold("H2", obj); $("#pclass").html("H2编码器反馈线"); $("#mainclass").val("H2"); $("#mainchi").val("编码器反馈线");
+	});
+	$('#H3').click(function () {
+		$("#mainpower").val(""); Gold("H3", obj); $("#pclass").html("H3连接线"); $("#mainclass").val("H3"); $("#mainchi").val("连接线");
+	});
+	$('#H4').click(function () {
+		$("#mainpower").val(""); Gold("H4", obj); $("#pclass").html("H4通讯线"); $("#mainclass").val("H4"); $("#mainchi").val("通讯线");
+	});
+	$('#H5').click(function () {
+		$("#mainpower").val(""); Gold("H5", obj); $("#pclass").html("H5冷压接端子"); $("#mainclass").val("H5"); $("#mainchi").val("冷压接端子");
+	});
+	$('#H6').click(function () {
+		$("#mainpower").val(""); Gold("H6", obj); $("#pclass").html("H6线配件"); $("#mainclass").val("H6"); $("#mainchi").val("线配件");
+	});
+	$('#H7').click(function () {
+		$("#mainpower").val(""); Gold("H7", obj); $("#pclass").html("H7线原材"); $("#mainclass").val("H7"); $("#mainchi").val("线原材");
+	});
+	$('#J1').click(function () {
+		$("#mainpower").val(""); Gold("J1", obj); $("#pclass").html("J1包装箱"); $("#mainclass").val("J1"); $("#mainchi").val("包装箱");
+	});
+	$('#J2').click(function () {
+		$("#mainpower").val(""); Gold("J2", obj); $("#pclass").html("J2包装袋"); $("#mainclass").val("J2"); $("#mainchi").val("包装袋");
+	});
+	$('#J3').click(function () {
+		$("#mainpower").val(""); Gold("J3", obj); $("#pclass").html("J3缓冲材料"); $("#mainclass").val("J3"); $("#mainchi").val("缓冲材料");
+	});
+	$('#J4').click(function () {
+		$("#mainpower").val(""); Gold("J4", obj); $("#pclass").html("J4说明书"); $("#mainclass").val("J4"); $("#mainchi").val("说明书");
+	});
+	$('#J5').click(function () {
+		$("#mainpower").val(""); Gold("J5", obj); $("#pclass").html("J5零件包"); $("#mainclass").val("J5"); $("#mainchi").val("零件包");
+	});
+	$('#J6').click(function () {
+		$("#mainpower").val(""); Gold("J6", obj); $("#pclass").html("J6生产辅料"); $("#mainclass").val("J6"); $("#mainchi").val("生产辅料");
+	});
+	$('#J7').click(function () {
+		$("#mainpower").val(""); Gold("J7", obj); $("#pclass").html("J7工装治具"); $("#mainclass").val("J7"); $("#mainchi").val("工装治具");
+	});
+	$('#J8').click(function () {
+		$("#mainpower").val(""); Gold("J8", obj); $("#pclass").html("J8配件"); $("#mainclass").val("J8"); $("#mainchi").val("配件");
+	});
+	$('#J9').click(function () {
+		$("#mainpower").val(""); Gold("J9", obj); $("#pclass").html("J9资产"); $("#mainclass").val("J9"); $("#mainchi").val("资产");
+	});
+	$('#K1').click(function () {
+		$("#mainpower").val(""); Gold("K1", obj); $("#pclass").html("K1代加工设备"); $("#mainclass").val("K1"); $("#mainchi").val("代加工设备");
+	});
+	$('#K2').click(function () {
+		$("#mainpower").val(""); Gold("K2", obj); $("#pclass").html("K2代加工产品"); $("#mainclass").val("K2"); $("#mainchi").val("代加工产品");
+	});
+	$('#K3').click(function () {
+		$("#mainpower").val(""); Gold("K3", obj); $("#pclass").html("K3代加工单板"); $("#mainclass").val("K3"); $("#mainchi").val("代加工单板");
+	});
+	$('#L1').click(function () {
+		$("#mainpower").val(""); Gold("L1", obj); $("#pclass").html("L1油泵维修备件"); $("#mainclass").val("L1"); $("#mainchi").val("油泵维修备件");
+	});
+	$('#L2').click(function () {
+		$("#mainpower").val(""); Gold("L2", obj); $("#pclass").html("L2机械手非标治具"); $("#mainclass").val("L2"); $("#mainchi").val("机械手非标治具");
+	});
+	$('#L3').click(function () {
+		$("#mainpower").val(""); Gold("L3", obj); $("#pclass").html("L3农机相关"); $("#mainclass").val("L3"); $("#mainchi").val("农机相关");
+	});
+	$('#L4').click(function () {
+		$("#mainpower").val(""); Gold("L4", obj); $("#pclass").html("L4电机维修备件"); $("#mainclass").val("L4"); $("#mainchi").val("电机维修备件");
+	});
+	$('#Q1').click(function () {
+		$("#mainpower").val(""); Gold("Q1", obj); $("#pclass").html("Q1挂账类"); $("#mainclass").val("Q1"); $("#mainchi").val("挂账类");
+	});
+	$('#U1').click(function () {
+		$("#mainpower").val(""); Gold("U1", obj); $("#pclass").html("U1电控成套"); $("#mainclass").val("U1"); $("#mainchi").val("电控成套");
+	});
+	$('#U2').click(function () {
+		$("#mainpower").val(""); Gold("U2", obj); $("#pclass").html("U2伺服成套"); $("#mainclass").val("U2"); $("#mainchi").val("伺服成套");
+	});
+	$('#U3').click(function () {
+		$("#mainpower").val(""); Gold("U3", obj); $("#pclass").html("U3电控+伺服成套"); $("#mainclass").val("U3"); $("#mainchi").val("电控+伺服成套");
+	});
+	$('#U4').click(function () {
+		$("#mainpower").val(""); Gold("U4", obj); $("#pclass").html("U4伺服+机械成套"); $("#mainclass").val("U4"); $("#mainchi").val("伺服+机械成套");
+	});
+	$('#U5').click(function () {
+		$("#mainpower").val(""); Gold("U5", obj); $("#pclass").html("U5电控+伺服+机械成套"); $("#mainclass").val("U5"); $("#mainchi").val("电控+伺服+机械成套");
+	});
+	$('#R1').click(function () {
+		$("#mainpower").val(""); Gold("R1", obj); $("#pclass").html("R1电控产品配套程式"); $("#mainclass").val("R1"); $("#mainchi").val("电控产品配套程式");
+	});
+	$('#R2').click(function () {
+		$("#mainpower").val(""); Gold("R2", obj); $("#pclass").html("R2伺服产品配套程式"); $("#mainclass").val("R2"); $("#mainchi").val("伺服产品配套程式");
+	});
+	$('#R3').click(function () {
+		$("#mainpower").val(""); Gold("R3", obj); $("#pclass").html("R3新能源产品配套程式"); $("#mainclass").val("R3"); $("#mainchi").val("新能源产品配套程式");
+	});
+	$('#R4').click(function () {
+		$("#mainpower").val(""); Gold("R4", obj); $("#pclass").html("R4橡塑产品配套程式"); $("#mainclass").val("R4"); $("#mainchi").val("橡塑产品配套程式");
+	});
+	$('#S1').click(function () {
+		$("#mainpower").val(""); Gold("S1", obj); $("#pclass").html("S1管理系统软件"); $("#mainclass").val("S1"); $("#mainchi").val("管理系统软件");
+	});
+		function searchFile(obj) {
+			layer.alert("设定属性 " + (obj.value));
+			let temp = $("#mainpower").val();
+			$("#mainpower").val(temp + obj.value + "\\\\");
+		} 	
+	</script>

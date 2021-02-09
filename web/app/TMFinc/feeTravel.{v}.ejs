@@ -20,7 +20,6 @@
 <script src="/js/PM/tableExport.js"></script>
 
 <script src="/js/PM/PMfuns.js"></script>
-<script src="/banq/TMEvent.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
 <link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
@@ -29,315 +28,459 @@
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
-
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
-<script src="/arch/FnApply.js"></script>
+<script src="/arch/sendTrip.js"></script>
 <script src="/bomq/supplyFn.js"></script>
 <script src="/bomq/utilFn.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
-
-  <H1>弘讯科技差旅费用申请</H1>
-  <span id="spec-label" class="fee-label-mid" style=""> 表单编号： </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 计划案号： </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 申请日期 </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 申请部门： </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 申请单编号 </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 项目 </span>
   </br>
-  <input name="ListNo" id="ListNo" class="fee-drop-mid" style="" type="text" value="">
-  </input>
-  <input name="ProjectNo" id="ProjectNo" class="fee-drop-mid" style="" type="text" value="">
-  </input>
-  <button id="BTNFitler" type="button" class="btn btn-default">选取</button>
-  <input name="RequestDate" id="RequestDate" class="fee-drop-date" style="" type="text" value="">
-  </input>
-  <input name="deptName" id="deptName" class="fee-drop-mid" style="" type="text" value="MIS">
-  </input>
-  <input name="ApplicNo" id="ApplicNo" class="fee-drop-mid" style="" type="text" value="">
-  </input>
-  <select id="BudgetItem_1" name="BudgetItem_1" class="fee-drop-mid"></select>
-  </br>
-  <span id="spec-label" class="fee-label-large" style=""> 申请说明 </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 总金额 </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 币别 </span>
-  <span id="spec-label" class="fee-label-mid" style=""> 付款方式 </span>
-  </br>
-  <textarea name="Explanation" id="Explanation" class="fee-drop-large" style="" rows="2">
-  </textarea>
-  <textarea name="TotalValue" id="TotalValue" class="fee-drop-mid" style="" rows="2" type="text" value="">
-  </textarea>
-  <textarea name="Currency" id="Currency" class="fee-drop-mid" style="" rows="2" type="text" value="">
-  </textarea>
-  <textarea name="payment" id="payment" class="fee-drop-mid" style="" rows="2" type="text" value="">
-  </textarea>
-  </br>
-  <span id="spec-label" class="fee-label" style="">  出发地 </span>
-  <span id="specold-label" class="fee-label" style=""> 目地地 </span>
-  <span id="model-label" class="fee-label" style="">  使用公升 </span>
-  <span id="assembly-label" class="fee-label" style=""> 金额 </span>
-  <span id="phase-label" class="fee-label" style=""> 里程数 </span>
-  <span id="unitE-label" class="fee-label" style=""> 事由 </span>
-  <span id="priority-label" class="fee-label" style=""> 人员 </span>
-  <span id="priority-label" class="fee-label" style=""> 小计 </span>
-  <span id="priority-label" class="fee-label" style=""> 日期 </span>
-  <span id="priority-label" class="fee-label" style=""> 厂商 </span>
-  <span id="priority-label" class="fee-label" style=""> 是否预算 </span>
-  <span id="priority-label" class="fee-label" style=""> 使用部门 </span>
-  </br>
-  <input name="ItemNo_1" id="ItemNo_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_1" id="Description_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_1" id="Unit_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_1" id="Remain_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_1" id="UnitPrice_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_1" id="Quantity_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_1" id="Subtotal_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_1" id="Delivery_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_1" id="Supplier_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_1" id="Underburget_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_1" id="AppendType_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_1" id="Department_1" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_2" id="ItemNo_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_2" id="Description_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_2" id="Unit_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_2" id="Remain_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_2" id="UnitPrice_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_2" id="Quantity_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_2" id="Subtotal_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_2" id="Delivery_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_2" id="Supplier_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_2" id="Underburget_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_2" id="AppendType_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_2" id="Department_2" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_3" id="ItemNo_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_3" id="Description_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_3" id="Unit_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_3" id="Remain_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_3" id="UnitPrice_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_3" id="Quantity_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_3" id="Subtotal_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_3" id="Delivery_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_3" id="Supplier_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_3" id="Underburget_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_3" id="AppendType_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_3" id="Department_3" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_4" id="ItemNo_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_4" id="Description_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_4" id="Unit_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_4" id="Remain_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_4" id="UnitPrice_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_4" id="Quantity_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_4" id="Subtotal_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_4" id="Delivery_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_4" id="Supplier_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_4" id="Underburget_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_4" id="AppendType_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_4" id="Department_4" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_5" id="ItemNo_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_5" id="Description_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_5" id="Unit_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_5" id="Remain_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_5" id="UnitPrice_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_5" id="Quantity_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_5" id="Subtotal_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_5" id="Delivery_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_5" id="Supplier_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_5" id="Underburget_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_5" id="AppendType_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_5" id="Department_5" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_6" id="ItemNo_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_6" id="Description_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_6" id="Unit_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_6" id="Remain_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_6" id="UnitPrice_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_6" id="Quantity_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_6" id="Subtotal_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_6" id="Delivery_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_6" id="Supplier_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_6" id="Underburget_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_6" id="AppendType_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_6" id="Department_6" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_7" id="ItemNo_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_7" id="Description_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_7" id="Unit_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_7" id="Remain_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_7" id="UnitPrice_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_7" id="Quantity_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_7" id="Subtotal_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_7" id="Delivery_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_7" id="Supplier_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_7" id="Underburget_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_7" id="AppendType_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_7" id="Department_7" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_8" id="ItemNo_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_8" id="Description_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_8" id="Unit_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_8" id="Remain_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_8" id="UnitPrice_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_8" id="Quantity_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_8" id="Subtotal_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_8" id="Delivery_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_8" id="Supplier_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_8" id="Underburget_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_8" id="AppendType_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_8" id="Department_8" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="ItemNo_9" id="ItemNo_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_9" id="Description_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Unit_9" id="Unit_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_9" id="Remain_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_9" id="UnitPrice_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_9" id="Quantity_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_9" id="Subtotal_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_9" id="Delivery_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_9" id="Supplier_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_9" id="Underburget_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="AppendType_9" id="AppendType_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Department_9" id="Department_9" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  </br>
-  <input name="AppendType_10" id="AppendType_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="ItemNo_10" id="ItemNo_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Description_10" id="Description_10" class="fee-drop" style="" width="150px" type="text" size="50"
-    value="">
-  </input>
-  <input name="Unit_10" id="Unit_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Remain_10" id="Remain_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="UnitPrice_10" id="UnitPrice_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Quantity_10" id="Quantity_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Subtotal_10" id="Subtotal_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Delivery_10" id="Delivery_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Supplier_10" id="Supplier_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
-  <input name="Underburget_10" id="Underburget_10" class="fee-drop" style="" width="150px" type="text" size="50"
-    value="">
-  </input>
-  <input name="Department_10" id="Department_10" class="fee-drop" style="" width="150px" type="text" size="50" value="">
-  </input>
   <div class="layui-form-item">
-    <a class="btn btn-lg btn-info" id="btn_apply" style="margin-left:30px" onclick="apply_hmi();">送出申请</a>
+    <a class="layui-btn layui-btn-info" id="btn_apply_A" style="margin-left:30px">採&nbsp;&nbsp;&nbsp;&nbsp;购</a>
+    <a class="layui-btn layui-btn-info" id="btn_apply_B" style="margin-left:30px">差&nbsp;&nbsp;&nbsp;&nbsp;旅</a>
+    <a class="layui-btn layui-btn-info" id="btn_apply_C" style="margin-left:30px">私车公用</a>
+    <a class="layui-btn layui-btn-info" id="btn_apply_D" style="margin-left:30px">修&nbsp;缮&nbsp;费</a>
+  </div>
+  <table width="1000" border="3" style="margin-left:30px" align="center">
+    <input type="hidden" id="TotalValue" value="" />
+    <tr>
+      <td width="50" colspan="8" height="20" align="center">
+        <h4>国内外出差报销汇总及补贴申请表</h4> 
+      </td>
+      <td width="50" colspan="1" height="20" align="center">
+        版本3
+      </td>
+    </tr>
+    <tr>
+      <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">表单编号<input name="ApplicNo" id="ApplicNo" type="text"
+          size="20" class="feeSubCol" value=""> </td>
+          <input type="hidden" id="hideBillNo" value="" />
+          <input type="hidden" id="Version" value="3" />
+          <input type="hidden" id="Subject" value="出差单" />
+      <td width="50" class="feeSubCol" colspan="4" height="30"> </td>
+      <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">部門<input name="DptName" id="DptName" type="text"
+          size="20" class="feetitel" value="">
+      </td>
+    </tr>
+    <tr>
+      <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">出 差 人： <input name="BusiMan" id="BusiMan" type="text"
+          size="20" class="feeSubCol" value=""> </td>
+      <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">出差地区： <input name="BusiArea" id="BusiArea" type="text"
+          size="20" class="feetitel" value="">
+      </td>
+    </tr>
+    <tr>
+      <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">出发时间 <input name="LeaveDate" id="LeaveDate" type="date"
+          size="20" class="feeSubCol" value=""> <input name="LeaveHour" id="LeaveHour" type="text" size="5"
+          class="feeSubCol" value="">时 <input name="LeaveMin" id="LeaveMin" type="text" size="5" class="feeSubCol"
+          value="">分</td>
+      <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">返回时间 <input name="BackDate" id="BackDate" type="date"
+          size="20" class="feetitel" value="">
+        <input name="BackHour" id="BackHour" type="text" size="5" class="feeSubCol" value="">时 <input name="BackMin"
+          id="BackMin" type="text" size="5" class="feeSubCol" value="">分
+      </td>
+    </tr>
+    <tr>
+      <td width="50" colspan="9" align="center">
+        <h4>出差内容报告：</h4>
+      </td>
+    </tr>
+    <tr>
+      <td width="50" class="feeSubCol">日期</td>
+      <td width="50" class="feeSubCol">接洽人</td>
+      <td width="50" class="feeSubCol" colspan="6">工作重点/内容</td>
+      <td width="50" class="feeSubCol">备注</td>
+    </tr>
+    <tr>
+      <td width="50" height="30"><input name="TripDate_15" id="TripDate_15" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="TripCust_15" id="TripCust_15" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30" colspan="6"><input name="TripRept_15" id="TripRept_15" type="text" size="50" value=""
+          class="feebigfield"></input></td>
+      <td width="50" height="30"><input name="TripNote_15" id="TripNote_15" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30"><input name="TripDate_16" id="TripDate_16" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="TripCust_16" id="TripCust_16" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30" colspan="6"><input name="TripRept_16" id="TripRept_16" type="text" size="50" value=""
+          class="feebigfield"></input></td>
+      <td width="50" height="30"><input name="TripNote_16" id="TripNote_16" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30"><input name="TripDate_17" id="TripDate_17" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="TripCust_17" id="TripCust_17" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30" colspan="6"><input name="TripRept_17" id="TripRept_17" type="text" size="50" value=""
+          class="feebigfield"></input></td>
+      <td width="50" height="30"><input name="TripNote_17" id="TripNote_17" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30"><input name="TripDate_18" id="TripDate_18" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="TripCust_18" id="TripCust_18" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30" colspan="6"><input name="TripRept_18" id="TripRept_18" type="text" size="50" value=""
+          class="feebigfield"></input></td>
+      <td width="50" height="30"><input name="TripNote_18" id="TripNote_18" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+        <td width="50" height="30"><input name="TripDate_19" id="TripDate_19" type="date" value=""
+            class="travel-date"></input></td>
+        <td width="50" height="30"><input name="TripCust_19" id="TripCust_19" type="text" size="10" value=""
+            class="feefield"></input></td>
+        <td width="50" height="30" colspan="6"><input name="TripRept_19" id="TripRept_19" type="text" size="50" value=""
+            class="feebigfield"></input></td>
+        <td width="50" height="30"><input name="TripNote_19" id="TripNote_19" type="text" size="10" value=""
+            class="feefield"></input></td>
+      </tr>
+    <tr>
+      <td width="50" colspan="9" align="center">
+        <h4>出差费用日支明细：</h4>
+      </td>
+    </tr>
+    <tr>
+      <td id="manOP" width="50" class="feeSubCol" colspan="1">日 期</td>
+      <td width="50" height="30"><input name="LiveDateA" id="LiveDateA" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="LiveDateB" id="LiveDateB" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="LiveDateC" id="LiveDateC" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="LiveDateD" id="LiveDateD" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="LiveDateE" id="LiveDateE" type="date" value=""
+          class="travel-date"></input></td>
+      <td width="50" height="30"><input name="LiveDateF" id="LiveDateF" type="date" value=""
+          class="travel-date"></input></td>
+      <td id="mancfo" width="50" class="feeSubCol" colspan="1">共计</td>
+      <td id="manpsd" width="50" class="feeSubCol" colspan="1">其中进项税</td>
+    </tr>
+    <tr>
+      <td width="50" height="30">出发地 </td>
+      <td width="50" height="30"><input name="TrafficA_0" id="TrafficA_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_0" id="TrafficB_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_0" id="TrafficC_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_0" id="TrafficD_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_0" id="TrafficE_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_0" id="TrafficF_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_0" id="TicTotal_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_0" id="InputVAT_0" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">目的地 </td>
+      <td width="50" height="30"><input name="TrafficA_1" id="TrafficA_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_1" id="TrafficB_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_1" id="TrafficC_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_1" id="TrafficD_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_1" id="TrafficE_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_1" id="TrafficF_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_1" id="TicTotal_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_1" id="InputVAT_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">机票/机场税 </td>
+      <td width="50" height="30"><input name="TrafficA_2" id="TrafficA_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_2" id="TrafficB_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_2" id="TrafficC_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_2" id="TrafficD_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_2" id="TrafficE_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_2" id="TrafficF_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_2" id="TicTotal_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_2" id="InputVAT_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">汽车费 </td>
+      <td width="50" height="30"><input name="TrafficA_3" id="TrafficA_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_3" id="TrafficB_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_3" id="TrafficC_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_3" id="TrafficD_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_3" id="TrafficE_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_3" id="TrafficF_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_3" id="TicTotal_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_3" id="InputVAT_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">火车费 </td>
+      <td width="50" height="30"><input name="TrafficA_4" id="TrafficA_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_4" id="TrafficB_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_4" id="TrafficC_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_4" id="TrafficD_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_4" id="TrafficE_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_4" id="TrafficF_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_4" id="TicTotal_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_4" id="InputVAT_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">船泊费 </td>
+      <td width="50" height="30"><input name="TrafficA_5" id="TrafficA_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_5" id="TrafficB_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_5" id="TrafficC_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_5" id="TrafficD_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_5" id="TrafficE_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_5" id="TrafficF_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_5" id="TicTotal_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_5" id="InputVAT_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">计程车费 </td>
+      <td width="50" height="30"><input name="TrafficA_6" id="TrafficA_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_6" id="TrafficB_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_6" id="TrafficC_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_6" id="TrafficD_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_6" id="TrafficE_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_6" id="TrafficF_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_6" id="TicTotal_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_6" id="InputVAT_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">租车 </td>
+      <td width="50" height="30"><input name="TrafficA_7" id="TrafficA_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_7" id="TrafficB_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_7" id="TrafficC_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_7" id="TrafficD_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_7" id="TrafficE_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_7" id="TrafficF_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_7" id="TicTotal_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_7" id="InputVAT_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">过路/桥费 </td>
+      <td width="50" height="30"><input name="TrafficA_8" id="TrafficA_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_8" id="TrafficB_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_8" id="TrafficC_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_8" id="TrafficD_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_8" id="TrafficE_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_8" id="TrafficF_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_8" id="TicTotal_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_8" id="InputVAT_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">住宿费 </td>
+      <td width="50" height="30"><input name="TrafficA_9" id="TrafficA_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_9" id="TrafficB_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_9" id="TrafficC_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_9" id="TrafficD_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_9" id="TrafficE_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_9" id="TrafficF_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_9" id="TicTotal_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_9" id="InputVAT_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">酒店名称 </td>
+      <td width="50" height="30" colspan="4"><input name="HotelName" id="HotelName" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30" colspan="2">酒店电话</td>
+      <td width="50" height="30" colspan="2"><input name="HotelTel" id="HotelTel" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">早 餐补贴 </td>
+      <td width="50" height="30"><input name="TrafficA_10" id="TrafficA_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_10" id="TrafficB_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_10" id="TrafficC_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_10" id="TrafficD_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_10" id="TrafficE_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_10" id="TrafficF_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_10" id="TicTotal_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_10" id="InputVAT_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">午 餐补贴 </td>
+      <td width="50" height="30"><input name="TrafficA_11" id="TrafficA_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_11" id="TrafficB_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_11" id="TrafficC_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_11" id="TrafficD_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_11" id="TrafficE_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_11" id="TrafficF_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_11" id="TicTotal_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_11" id="InputVAT_11" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">晚 餐补贴 </td>
+      <td width="50" height="30"><input name="TrafficA_12" id="TrafficA_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_12" id="TrafficB_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_12" id="TrafficC_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_12" id="TrafficD_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_12" id="TrafficE_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_12" id="TrafficF_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_12" id="TicTotal_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_12" id="InputVAT_12" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">其他费用 </td>
+      <td width="50" height="30"><input name="TrafficA_13" id="TrafficA_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_13" id="TrafficB_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_13" id="TrafficC_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_13" id="TrafficD_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_13" id="TrafficE_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_13" id="TrafficF_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_13" id="TicTotal_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_13" id="InputVAT_13" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">当日小计 </td>
+      <td width="50" height="30"><input name="TrafficA_14" id="TrafficA_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficB_14" id="TrafficB_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficC_14" id="TrafficC_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficD_14" id="TrafficD_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficE_14" id="TrafficE_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TrafficF_14" id="TrafficF_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="TicTotal_14" id="TicTotal_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="30"><input name="InputVAT_14" id="InputVAT_14" type="text" size="10" value=""
+          class="feefield"></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">备注 </td>
+      <td width="50" height="30" colspan="8" ><input name="Explanation" id="Explanation" type="text" size="200" value=""
+          class="feebigfield" ></input></td>
+    </tr>
+    <tr>
+      <td width="50" height="30">是否有超支 </td>
+      <td width="50" height="30" colspan="2"><select id="IsOver" name="IsOver" class="feefield"></select></td>
+      <td width="50" height="30" colspan="2"> 超支额度</td>
+      <td width="50" height="30" colspan="4"><input name="Overspend" id="Overspend" type="text" size="40" value=""
+          class="feefield"></input>元</td>
+    </tr>
+    <tr>
+      <td width="50" height="30">申请人 </td>
+      <td width="50" height="30" colspan="2"> </td>
+      <td width="50" height="30"> 审核：</td>
+      <td width="50" height="30" colspan="2"> </td>
+      <td width="50" height="30"> 批准：</td>
+      <td width="50" height="30" colspan="2"> </td>
+    </tr>
+  </table>
+  </br>
+  <div class="layui-form-item">
+    <a class="btn btn-lg btn-info" id="btn_save" style="margin-left:300px" onclick="save_hmi();">保存</a>
+    <a class="btn btn-lg btn-info" id="btn_apply" style="margin-left:50px" onclick="apply_hmi();">送出申请</a>
   </div>
   <!-- 点击自定义过滤弹出的窗口 -->
   <div id="DivFilter" class="easyui-window" title="日期选择" closed="true" style="width:800px;height:400px;">
@@ -364,22 +507,22 @@
       </div>
     </div>
   </div>
-   <!-- 点击自定义过滤Fin -->
+  <!-- 点击自定义过滤Fin -->
   <script>
 
     var sessionName = '';
     var sessionOID = '';
+    var sessionAID = '';
     //页面加载函数---------------
     $(document).ready(function () {
       sessionName = "<%-locals.session.yjUser.Name%>";
       sessionOID = "<%-locals.session.yjUser.OID%>";
+      sessionAID = "<%-locals.session.yjUser.AID%>";
       layui.use(['form', 'layedit', 'laydate'], function () {
         var form = layui.form
           , layer = layui.layer
           , layedit = layui.layedit
           , laydate = layui.laydate;
-
-
         //	        var laydate = layui.laydate;
         var DivDate = laydate.render({
           elem: '#Bill_Apply_Date',//选择器结束时间
@@ -398,10 +541,25 @@
 
         form.render();
         FlowerBasic();
+        FlowerBase();
+        let now = new Date();
+        var defaultDate = now.Format("yyyy-MM-dd");
+        $('#RequestDate').val(defaultDate);
 
-
+        var youoption = document.createElement("option");
+        youoption.text = "是";
+        youoption.id = "IsOver"  ;
+        youoption.name = "IsOver"  ;
+        youoption.value = "是";
+        $("#IsOver" ).append(youoption);
+        var youoption = document.createElement("option");
+        youoption.text = "否";
+        youoption.id = "IsOver"  ;
+        youoption.name = "IsOver"  ;
+        youoption.value = "否";
+        $("#IsOver" ).append(youoption);
       });
-
+      addCacuFeeListener();
     });
 
     $('#BTNFitler').click(function () {
@@ -419,41 +577,34 @@
       $("#BTNFitler").addClass("active")
     });
 
-    $('#SQLBtn').click(function () {
-      var reportType = '1231321321';
-      var taskData = { "reportType": reportType };
-      $.ajax({
-        method: 'post',
-        data: taskData,
-        url: "/app/Bear/getRoute",
-        success: function (data) {
-          const json2 = JSON.stringify(data);
-          const bjob = JSON.parse(json2);
-          console.log("夏米 ", json2);
-        },
-        error: function () {
-        }
-      })
+    $('#btn_apply_A').click(function () {
+      window.location.href = '/app/TMFinc/feeApplyForm';
+    });
+    $('#btn_apply_B').click(function () {
+      window.location.href = '/app/TMFinc/feeTravel';
+    });
+    $('#btn_apply_C').click(function () {
+      alert("尚未完成！");
+      // window.location.href = '/app/bear/Level3Tree';
+    });
+    $('#btn_apply_D').click(function () {
+      alert("尚未完成！");
+      // window.location.href = '/app/bear/BearTest2';
     });
     function apply_fee() {
       layer.msg('的确很重要', { icon: 1 });
     }
-    function get_Max(SNtxt) {
-      layer.msg('的确很重要' + SNtxt, { icon: 1 });
-      var BType = '';
-      if (SNtxt == '1') { BType = $('#BudgetItem_1').val(); }
-      if (SNtxt == '2') { BType = $('#BudgetItem_2').val(); }
-      if (SNtxt == '3') { BType = $('#BudgetItem_3').val(); }
-      if (SNtxt == '4') { BType = $('#BudgetItem_4').val(); }
-      if (SNtxt == '5') { BType = $('#BudgetItem_5').val(); }
-      if (SNtxt == '6') { BType = $('#BudgetItem_6').val(); }
-      if (SNtxt == '7') { BType = $('#BudgetItem_7').val(); }
-      if (SNtxt == '8') { BType = $('#BudgetItem_8').val(); }
-      if (SNtxt == '9') { BType = $('#BudgetItem_9').val(); }
-      if (SNtxt == '10') { BType = $('#BudgetItem_10').val(); }
-
-
-      FlowerMoney(SNtxt, BType);
+    var paramList ="#TrafficA_0 ,#TrafficA_1 ,#TrafficA_2 ,#TrafficA_3 ,#TrafficA_4 ,#TrafficA_5 ,#TrafficA_6 ,#TrafficA_7 , #TrafficA_8 ,#TrafficA_9 ,#TrafficA_10,#TrafficA_11,#TrafficA_12,#TrafficA_13,#TrafficA_14, "+
+    "#TrafficB_0 ,#TrafficB_1 ,#TrafficB_2 ,#TrafficB_3 ,#TrafficB_4 ,#TrafficB_5 ,#TrafficB_6 ,#TrafficB_7 ,#TrafficB_8 ,#TrafficB_9 ,#TrafficB_10,#TrafficB_11,#TrafficB_12,#TrafficB_13,#TrafficB_14,"+
+    "#TrafficC_0 ,#TrafficC_1 ,#TrafficC_2 ,#TrafficC_3 ,#TrafficC_4 ,#TrafficC_5 ,#TrafficC_6 ,#TrafficC_7 ,#TrafficC_8 ,#TrafficC_9 ,#TrafficC_10,#TrafficC_11,#TrafficC_12,#TrafficC_13,#TrafficC_14,"+
+    "#TrafficD_0 ,#TrafficD_1 ,#TrafficD_2 ,#TrafficD_3 ,#TrafficD_4 ,#TrafficD_5 ,#TrafficD_6 ,#TrafficD_7 ,#TrafficD_8 ,#TrafficD_9 ,#TrafficD_10,#TrafficD_11,#TrafficD_12,#TrafficD_13,#TrafficD_14,"+
+    "#TrafficE_0 ,#TrafficE_1 ,#TrafficE_2 ,#TrafficE_3 ,#TrafficE_4 ,#TrafficE_5 ,#TrafficE_6 ,#TrafficE_7 ,#TrafficE_8 ,#TrafficE_9 ,#TrafficE_10,#TrafficE_11,#TrafficE_12,#TrafficE_13,#TrafficE_14,"+
+    "#TrafficF_0 ,#TrafficF_1 ,#TrafficF_2 ,#TrafficF_3 ,#TrafficF_4 ,#TrafficF_5 ,#TrafficF_6 ,#TrafficF_7 ,#TrafficF_8 ,#TrafficF_9 ,#TrafficF_10,#TrafficF_11,#TrafficF_12,#TrafficF_13,#TrafficF_14";
+    const addCacuFeeListener = () => {
+      $(paramList)
+        .on("change", function () {
+          view_hmi();
+        });
     }
     $('#FilterComfirmBtnN').click(function () {
       $('#DivFilter').window('close');
@@ -462,6 +613,6 @@
     });
     //过滤功能组 自定义过滤确认按钮-----
     $('#FilterCancelBtnN').click(function () {
-      $("#taskMakeDateB").val("") 
+      $("#taskMakeDateB").val("")
     });
   </script>

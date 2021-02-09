@@ -6,23 +6,22 @@ module.exports = function(sender) {
 
     var path = sender.req.query.hyperpath;    
     var fname = sender.req.query.hyperfname;   
-    
-    var Load_code = sender.req.query.Load_code;   
-    console.log("成佛 post:"+JSON.stringify(sender.req.query.Load_code)); 
+    var BILLID = sender.req.query.BILLID;   
+    console.log("笑 post:"+ BILLID); 
  
-    let SQLInsert="Delete From `auto_parts` where Parts_Code = ?" ;
+    let SQLInsert="Delete From `auto_rec_parts` where BILL_ID = ?" ;
   
     console.log("SQLDelete:"+SQLInsert);
 
-//yjDBService.exec({
-//    sql: SQLInsert,
-//    parameters: [Load_code],
-//    success:  function(result) {
-// // console.log("result:"+JSON.stringify(result));
-//    	sender.success(result);
-//    },
-//    error: {},
-//});
+yjDBService.exec({
+   sql: SQLInsert,
+   parameters: [BILLID],
+   success:  function(result) {
+    var retcode={"status":"OK","billid": BILLID };
+    sender.success(retcode);
+   },
+   error: {},
+});
  
 
 };

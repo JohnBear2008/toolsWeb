@@ -22,46 +22,53 @@ module.exports = function (sender) {
 	var queryApplicNo = Advstr.ApplicNo;
 	var Pattern = Advstr.Pattern;
 	var queryStaffName = Advstr.StaffName;
+	var arrange = sender.req.query.arrange;
 	console.log("酒:", queryBillNo, "日:", queryApplicNo, "金:", Pattern);
-	HandleRecord();
-	function HandleRecord() {
+	if (arrange == 'A') {
+		HandleRecordA();
+	}
+	if (arrange == 'B') {
+		HandleRecordB();
+	}
+	
+	function HandleRecordA() {
 		var filter = " 1=1 ";
 		var orderBy = '';
 		var limit = '5000';
 		var capacity = '';
 		var SQLExecute =
-		" SELECT  A.`DBID`, A.`BillNo`,  A.`ListNo`, A.`Subject` , A.`RequestDate`,  A.`ProjectNo`, A. `ApplicNo`,  " +
-		" A.`DeptName`, A.`StaffID`, A.`StaffName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
-		"  A.`EntryDate`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
-		" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.BudgetItem " +
-		"  from  bgu_purchmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
-		"  LEFT JOIN bgu_purchdetail tdtl on A.billNo =tdtl.billNo  AND tdtl.SNNo = '1'  ";
+			" SELECT  A.`DBID`, A.`BillNo`,  A.`ListNo`, A.`Subject` , A.`RequestDate`,  A.`ProjectNo`, A. `ApplicNo`,  " +
+			" A.`DeptName`, A.`StaffID`, A.`StaffName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
+			"  A.`EntryDate`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
+			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.BudgetItem " +
+			"  from  bgu_purchmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
+			"  LEFT JOIN bgu_purchdetail tdtl on A.billNo =tdtl.billNo  AND tdtl.SNNo = '1'  ";
 		if (weekbeg != "" && weekbeg != "null" && weekbeg != undefined && weekbeg.length > 0) {
-			console.log("...开始日", weekbeg);
+			// console.log("...开始日", weekbeg);
 			capacity += " AND A.EntryDate >= " + "'" + weekbeg + "' ";
 		}
 		if (weekend != "" && weekend != "null" && weekend != undefined && weekend.length > 0) {
-			console.log("...结束日", weekend);
+			// console.log("...结束日", weekend);
 			capacity += " AND A.EntryDate <= " + "'" + weekend + "' ";
 		}
 		if (queryBillNo != "" && queryBillNo != "null" && queryBillNo != undefined && queryBillNo.length > 0) {
-			console.log("...文号 <", queryBillNo, ">");
+			// console.log("...文号 <", queryBillNo, ">");
 			capacity += " AND A.BillNo  = " + "'" + queryBillNo + "' ";
 		}
 		if (queryApplicNo != "" && queryApplicNo != "null" && queryApplicNo != undefined && queryApplicNo.length > 0) {
-			console.log("...申请号 <", queryApplicNo, ">");
+			// console.log("...申请号 <", queryApplicNo, ">");
 			capacity += " AND A.ApplicNo  = " + "'" + queryApplicNo + "' ";
 		}
 		if (queryStaffName != "" && queryStaffName != "null" && queryStaffName != undefined && queryStaffName.length > 0) {
-			console.log("...本人 <", queryStaffName, ">");
+			// console.log("...本人 <", queryStaffName, ">");
 			capacity += " AND (A.StaffName  = " + "'" + queryStaffName + "' OR trul.CurName  = " + "'" + queryStaffName + "' ) ";
 		}
 		if (Pattern != "" && Pattern != "null" && Pattern != undefined && Pattern.length > 0) {
-			console.log("...状态 <", Pattern, ">");
+			// console.log("...状态 <", Pattern, ">");
 			capacity += " AND (trul.CurStatus  = " + "'" + Pattern + "' OR trul.SendStatus  = " + "'" + Pattern + "' )  ";
 		}
 		if (filter != "" && filter != undefined) {
-		    SQLExecute = SQLExecute + " WHERE " + filter;
+			SQLExecute = SQLExecute + " WHERE " + filter;
 		}
 		if (capacity != "" && capacity != undefined) {
 			SQLExecute = SQLExecute + capacity;
@@ -78,7 +85,103 @@ module.exports = function (sender) {
 		if (resultCheckSQL) {
 			console.log("接受到含有非法关键字的SQL:" + SQLExecute);
 		} else {
-			console.log("和平精英小帅", SQLExecute); 
+			console.log("和平精英小帅");
+			yjDBService.exec({
+				sql: SQLExecute,
+				parameters: paramList,
+				rowsAsArray: false,
+				success: function (data) {
+					for (var i = 0; i < data.length; i++) {
+						var obj = {
+							"DBID": data[i].DBID,
+							"BillNo": data[i].BillNo,
+							"Subject": data[i].Subject,
+							"BudgetItem": data[i].BudgetItem,
+							"ListNo": data[i].ListNo,
+							"ProjectNo": data[i].ProjectNo,
+							"ApplicNo": data[i].ApplicNo,
+							"DeptName": data[i].DeptName,
+							"StaffID": data[i].StaffID,
+							"StaffName": data[i].StaffName,
+							"TotalValue": data[i].TotalValue,
+							"Currency": data[i].Currency,
+							"Payment": data[i].Payment,
+							"EntryDate": data[i].EntryDate,
+							"RequestDate": data[i].RequestDate,
+							"CurName": data[i].CurName,
+							"CurText": data[i].CurText,
+							"SendText": data[i].SendText,
+							"Explanation": (data[i].Explanation).length > 8 ? (data[i].Explanation.substring(0, 8)) : data[i].Explanation,
+						}
+						dataArr.push(obj);
+					}
+					var dump = JSON.stringify(dataArr);
+					if (dump.length > 100) {
+						console.log("采购单:" + dump.substring(0, 100));
+					} else {
+						console.log("采购单:" + JSON.stringify(dataArr));
+					}
+					sender.success(dataArr);
+				},
+				error: sender.error
+			});
+		}
+	}
+	function HandleRecordB() {
+		var filter = " 1=1 ";
+		var orderBy = '';
+		var limit = '5000';
+		var capacity = '';
+		var SQLExecute =
+			" SELECT  A.`DBID`, A.`BillNo`, A.`ApplicNo`, A.`Subject` , A.`BusiMan`, A.`BusiArea`, A.`LeaveDate`, A.`StaffID`, A.`StaffName`, A.`DeptName`, " +
+			"  A.`IsOver`, A. `Overspend`,   " +
+			"  A.`EntryDate`, A.`Explanation`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
+			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.TicTotal " +
+			"  from  bgu_tripmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
+			"  LEFT JOIN bgu_tripdetail tdtl on A.billNo =tdtl.billNo  AND tdtl.SNNo = '1'  ";
+		if (weekbeg != "" && weekbeg != "null" && weekbeg != undefined && weekbeg.length > 0) {
+			// console.log("...开始日", weekbeg);
+			capacity += " AND A.EntryDate >= " + "'" + weekbeg + "' ";
+		}
+		if (weekend != "" && weekend != "null" && weekend != undefined && weekend.length > 0) {
+			// console.log("...结束日", weekend);
+			capacity += " AND A.EntryDate <= " + "'" + weekend + "' ";
+		}
+		if (queryBillNo != "" && queryBillNo != "null" && queryBillNo != undefined && queryBillNo.length > 0) {
+			// console.log("...文号 <", queryBillNo, ">");
+			capacity += " AND A.BillNo  = " + "'" + queryBillNo + "' ";
+		}
+		if (queryApplicNo != "" && queryApplicNo != "null" && queryApplicNo != undefined && queryApplicNo.length > 0) {
+			// console.log("...申请号 <", queryApplicNo, ">");
+			capacity += " AND A.ApplicNo  = " + "'" + queryApplicNo + "' ";
+		}
+		if (queryStaffName != "" && queryStaffName != "null" && queryStaffName != undefined && queryStaffName.length > 0) {
+			capacity += " AND (A.StaffName  = " + "'" + queryStaffName + "' OR trul.CurName  = " + "'" + queryStaffName + "' ) ";
+		}
+		if (Pattern != "" && Pattern != "null" && Pattern != undefined && Pattern.length > 0) {
+			// console.log("...状态 <", Pattern, ">");
+			capacity += " AND (trul.CurStatus  = " + "'" + Pattern + "' OR trul.SendStatus  = " + "'" + Pattern + "' )  ";
+		}
+		if (filter != "" && filter != undefined) {
+			SQLExecute = SQLExecute + " WHERE " + filter;
+		}
+		if (capacity != "" && capacity != undefined) {
+			SQLExecute = SQLExecute + capacity;
+		}
+		if (limit != "" && limit != undefined) {
+			SQLExecute = SQLExecute + " LIMIT " + limit;
+		}
+		var banWord1 = new RegExp("delete");
+		var banWord2 = new RegExp("update");
+		var banWord3 = new RegExp("insert");
+		var resultCheckSQL = banWord1.test(SQLExecute) || banWord2.test(SQLExecute) || banWord3.test(SQLExecute);
+		var dataArr = [];
+		var paramList = [];
+		if (resultCheckSQL) {
+			console.log("接受到含有非法关键字的SQL:" + SQLExecute);
+		} else {
+			console.log("啊依金");
+			// console.log("和平啊依金", SQLExecute);
 			yjDBService.exec({
 				sql: SQLExecute,
 				parameters: paramList,
@@ -89,30 +192,29 @@ module.exports = function (sender) {
 						var obj = {
 							"DBID": data[i].DBID,
 							"BillNo": data[i].BillNo,
-							"BudgetItem": data[i].BudgetItem,
-							"ListNo": data[i].ListNo,
 							"Subject": data[i].Subject,
-							"ProjectNo": data[i].ProjectNo,
 							"ApplicNo": data[i].ApplicNo,
-							"DeptName": data[i].DeptName,
+							"BusiMan": data[i].BusiMan,
+							"BusiArea": data[i].BusiArea,
+							"LeaveDate": data[i].LeaveDate,
 							"StaffID": data[i].StaffID,
 							"StaffName": data[i].StaffName,
-							"TotalValue": data[i].TotalValue,
-							"Currency": data[i].Currency,
-							"Payment": data[i].Payment,
-							"EntryDate": data[i].EntryDate,
+							"DeptName": data[i].DeptName,
+							"IsOver": data[i].IsOver,
+							"Overspend": data[i].Overspend,
 							"CurName": data[i].CurName,
 							"CurText": data[i].CurText,
 							"SendText": data[i].SendText,
+							"EntryDate": data[i].EntryDate,
 							"Explanation": (data[i].Explanation).length > 8 ? (data[i].Explanation.substring(0, 8)) : data[i].Explanation,
 						}
 						dataArr.push(obj);
 					}
 					var dump = JSON.stringify(dataArr);
 					if (dump.length > 100) {
-						console.log("裕姝:" + dump.substring(0, 100));
+						console.log("出差单:" + dump.substring(0, 100));
 					} else {
-						console.log("裕姝:" + JSON.stringify(dataArr));
+						console.log("出差单:" + JSON.stringify(dataArr));
 					}
 					sender.success(dataArr);
 				},
@@ -120,5 +222,4 @@ module.exports = function (sender) {
 			});
 		}
 	}
-
 };
