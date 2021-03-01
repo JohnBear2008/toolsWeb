@@ -102,8 +102,8 @@ function FlowerBasic() {
                         youoption.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
                         youoption.id = "bellTime";
                         youoption.name = "bellTime";
-                        youoption.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Secon;
-                        $("#BudgetItem_1").append(youoption);
+                        youoption.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Prime+ "##"+ dataArr[i].Sub_Secon;
+                        $("#BudgetCombo_1").append(youoption);
                   }
 
             },
@@ -170,4 +170,26 @@ function getDrop() {
       youoption.text = "出差";
       youoption.value = "B";
       $("#CapMode").append(youoption);
+}
+ 
+function obtLogGroup(loginName) { 
+      let dataArr = [];
+      var reportType = 'ironSubject';
+      var arrange = 'findDept';
+      var taskData = { "reportType": reportType, "arrange": arrange , "loginName": loginName  };
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMFinc/getRoute",
+            success: function (data) {
+                  dataArr = data;
+                  // console.log("螺丝",JSON.stringify(dataArr));
+                  sessDept = dataArr[0].DeptLabel;
+                  sessGroup = dataArr[0].GroupLabel;
+                  $("#hideDeptName").val(sessDept);  
+                  $("#GroupName").val(sessGroup);  
+            },
+            error: function () {
+            }
+      })   
 }

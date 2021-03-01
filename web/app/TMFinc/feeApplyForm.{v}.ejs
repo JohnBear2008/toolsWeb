@@ -19,7 +19,7 @@
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
 
-<script src="/js/PM/PMfuns.js"></script> 
+<script src="/js/PM/PMfuns.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
 <link rel="stylesheet" type="text/css" href="/css/MSTools/divContent.css">
@@ -30,7 +30,8 @@
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
-<script src="/arch/FnApply.js"></script>
+<script src="/arch/sendPurch.js"></script>
+<script src="/arch/loadA.js"></script>
 <script src="/bomq/supplyFn.js"></script>
 <script src="/bomq/utilFn.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -54,200 +55,303 @@
         <h3>NINGBO TECHMATION CO.,LTD.</h3>
       </td>
       <td colspan="3" bgcolor="#FAF0E6" align="center">表单编号:<input name="ListNo" id="ListNo" type="text" size="20"
-          class="feetitel"  value=""> </td>
+          class="feetitel" value=""> </td>
       <input type="hidden" id="hideBillNo" value="" />
+      <input type="hidden" id="hideDeptName" value="" />
+      <input type="hidden" id="hideflowRole" value="" />
     </tr>
     <tr>
       <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">计划案号：<input name="ProjectNo" id="ProjectNo" type="text"
-          size="20"  class="feetitel" value=""> </td>
+          size="20" class="feetitel" value=""> </td>
       <td width="50" rowspan="2" colspan="5" height="25" align="center">
         <h3>采购申请单</h3>
       </td>
       <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">
         申请日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input name="RequestDate" id="RequestDate" type="date"  class="feetitel" size="20" value="">
+        <input name="RequestDate" id="RequestDate" type="date" class="feetitel" size="20" value="">
       </td>
     </tr>
     <tr>
-      <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">使用部门:&nbsp;&nbsp; <input name="DeptName" id="DeptName"
-          type="text" size="20"  class="feetitel" value=""> </td>
+      <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">使用部门:&nbsp;&nbsp; <input id="GroupName" name="GroupName"
+          type="text" class="feeDrop" size="20" class="feeSubCol" value="" readonly></input></td>
       <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">申请单编号: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input name="ApplicNo" id="ApplicNo" type="text" size="20" class="feetitel"  value=""> </td>
+        <input name="ApplicNo" id="ApplicNo" type="text" size="20" class="feetitel" value="">
+      </td>
     </tr>
     <tr>
-      <td width="50" >预算项目</td>
-      <td width="50"  class="feeSubCol" >品名/服务</td>
-      <td width="50"  class="feeSubCol" >型号/说明</td>
-      <td width="50"  class="feeSubCol" >单位</td>
-      <td width="50"  class="feeSubCol" >库存</td>
-      <td width="50"  class="feeSubCol" >单价</td>
-      <td width="50"  class="feeSubCol" >数量</td>
-      <td width="50"  class="feeSubCol" >小计</td>
-      <td width="50"  class="feeSubCol" >交期</td>
-      <td width="50"  class="feeSubCol" >供货商</td>
-      <td width="50"  class="feeSubCol" >是否预算内</td>
-      <td width="50"  class="feeSubCol" >新增/换/补遗</td>
-      <td width="50"  class="feeSubCol" >使用部门</td>
+      <td width="50">预算项目</td>
+      <td width="50" class="feeSubCol">品名/服务</td>
+      <td width="50" class="feeSubCol">型号/说明</td>
+      <td width="50" class="feeSubCol">单位</td>
+      <td width="50" class="feeSubCol">库存</td>
+      <td width="50" class="feeSubCol">单价</td>
+      <td width="50" class="feeSubCol">数量</td>
+      <td width="50" class="feeSubCol">小计</td>
+      <td width="50" class="feeSubCol">交期</td>
+      <td width="50" class="feeSubCol">供货商</td>
+      <td width="50" class="feeSubCol">是否预算内</td>
+      <td width="50" class="feeSubCol">新增/换/补遗</td>
+      <td width="50" class="feeSubCol">使用部门</td>
     </tr>
     <tr>
-      <td width="50" height="25"><select id="BudgetItem_1" name="BudgetItem_1" class="fee-drop"></select></td>
-      <td width="50" height="25"><input name="ItemNo_1" id="ItemNo_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_1" id="Descript_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_1" id="Unit_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_1" id="Remain_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_1" id="UnitPrice_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_1" id="Quantity_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_1" id="Subtotal_1" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_1" id="Delivery_1" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_1" id="Supplier_1" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_1" name="Underburget_1" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_1" name="AppendType_1" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_1" id="Department_1" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><select id="BudgetCombo_1" name="BudgetCombo_1" class="feeDrop"></select></td>
+      <td width="50" height="25"><input name="ItemNo_1" id="ItemNo_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_1" id="Descript_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_1" id="Unit_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_1" id="Remain_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_1" id="UnitPrice_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_1" id="Quantity_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_1" id="Subtotal_1" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_1" id="Delivery_1" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_1" id="Supplier_1" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_1" name="Underburget_1" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_1" name="AppendType_1" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_1" id="Department_1" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_2" id="ItemNo_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_2" id="Descript_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_2" id="Unit_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_2" id="Remain_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_2" id="UnitPrice_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_2" id="Quantity_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_2" id="Subtotal_2" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_2" id="Delivery_2" type="date" size="20" value="" class="fee-date-inp"  ></input></td>
-      <td width="50" height="25"><input name="Supplier_2" id="Supplier_2" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_2" name="Underburget_2" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_2" name="AppendType_2" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_2" id="Department_2" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_2" id="ItemNo_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_2" id="Descript_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_2" id="Unit_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_2" id="Remain_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_2" id="UnitPrice_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_2" id="Quantity_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_2" id="Subtotal_2" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_2" id="Delivery_2" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_2" id="Supplier_2" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_2" name="Underburget_2" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_2" name="AppendType_2" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_2" id="Department_2" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_3" id="ItemNo_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_3" id="Descript_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_3" id="Unit_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_3" id="Remain_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_3" id="UnitPrice_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_3" id="Quantity_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_3" id="Subtotal_3" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_3" id="Delivery_3" type="date" size="20" value="" class="fee-date-inp"  ></input></td>
-      <td width="50" height="25"><input name="Supplier_3" id="Supplier_3" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_3" name="Underburget_3" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_3" name="AppendType_3" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_3" id="Department_3" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_3" id="ItemNo_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_3" id="Descript_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_3" id="Unit_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_3" id="Remain_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_3" id="UnitPrice_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_3" id="Quantity_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_3" id="Subtotal_3" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_3" id="Delivery_3" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_3" id="Supplier_3" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_3" name="Underburget_3" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_3" name="AppendType_3" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_3" id="Department_3" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_4" id="ItemNo_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_4" id="Descript_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_4" id="Unit_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_4" id="Remain_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_4" id="UnitPrice_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_4" id="Quantity_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_4" id="Subtotal_4" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_4" id="Delivery_4" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_4" id="Supplier_4" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_4" name="Underburget_4" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_4" name="AppendType_4" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_4" id="Department_4" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_4" id="ItemNo_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_4" id="Descript_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_4" id="Unit_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_4" id="Remain_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_4" id="UnitPrice_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_4" id="Quantity_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_4" id="Subtotal_4" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_4" id="Delivery_4" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_4" id="Supplier_4" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_4" name="Underburget_4" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_4" name="AppendType_4" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_4" id="Department_4" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_5" id="ItemNo_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_5" id="Descript_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_5" id="Unit_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_5" id="Remain_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_5" id="UnitPrice_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_5" id="Quantity_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_5" id="Subtotal_5" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_5" id="Delivery_5" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_5" id="Supplier_5" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_5" name="Underburget_5" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_5" name="AppendType_5" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_5" id="Department_5" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_5" id="ItemNo_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_5" id="Descript_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_5" id="Unit_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_5" id="Remain_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_5" id="UnitPrice_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_5" id="Quantity_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_5" id="Subtotal_5" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_5" id="Delivery_5" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_5" id="Supplier_5" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_5" name="Underburget_5" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_5" name="AppendType_5" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_5" id="Department_5" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_6" id="ItemNo_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_6" id="Descript_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_6" id="Unit_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_6" id="Remain_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_6" id="UnitPrice_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_6" id="Quantity_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_6" id="Subtotal_6" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_6" id="Delivery_6" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_6" id="Supplier_6" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_6" name="Underburget_6" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_6" name="AppendType_6" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_6" id="Department_6" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_6" id="ItemNo_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_6" id="Descript_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_6" id="Unit_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_6" id="Remain_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_6" id="UnitPrice_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_6" id="Quantity_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_6" id="Subtotal_6" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_6" id="Delivery_6" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_6" id="Supplier_6" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_6" name="Underburget_6" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_6" name="AppendType_6" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_6" id="Department_6" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_7" id="ItemNo_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_7" id="Descript_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_7" id="Unit_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_7" id="Remain_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_7" id="UnitPrice_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_7" id="Quantity_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_7" id="Subtotal_7" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_7" id="Delivery_7" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_7" id="Supplier_7" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_7" name="Underburget_7" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_7" name="AppendType_7" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_7" id="Department_7" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_7" id="ItemNo_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_7" id="Descript_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_7" id="Unit_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_7" id="Remain_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_7" id="UnitPrice_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_7" id="Quantity_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_7" id="Subtotal_7" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_7" id="Delivery_7" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_7" id="Supplier_7" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_7" name="Underburget_7" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_7" name="AppendType_7" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_7" id="Department_7" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_8" id="ItemNo_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_8" id="Descript_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_8" id="Unit_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_8" id="Remain_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_8" id="UnitPrice_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_8" id="Quantity_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_8" id="Subtotal_8" type="text" size="10" value=""  class="feefield" readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_8" id="Delivery_8" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_8" id="Supplier_8" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_8" name="Underburget_8" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_8" name="AppendType_8" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_8" id="Department_8" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_8" id="ItemNo_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_8" id="Descript_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_8" id="Unit_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_8" id="Remain_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_8" id="UnitPrice_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_8" id="Quantity_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_8" id="Subtotal_8" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_8" id="Delivery_8" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_8" id="Supplier_8" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_8" name="Underburget_8" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_8" name="AppendType_8" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_8" id="Department_8" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_9" id="ItemNo_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_9" id="Descript_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_9" id="Unit_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_9" id="Remain_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_9" id="UnitPrice_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Quantity_9" id="Quantity_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_9" id="Subtotal_9" type="text" size="10" value=""  class="feefield"readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_9" id="Delivery_9" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_9" id="Supplier_9" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_9" name="Underburget_9" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_9" name="AppendType_9" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_9" id="Department_9" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_9" id="ItemNo_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_9" id="Descript_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_9" id="Unit_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_9" id="Remain_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_9" id="UnitPrice_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Quantity_9" id="Quantity_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_9" id="Subtotal_9" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_9" id="Delivery_9" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_9" id="Supplier_9" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_9" name="Underburget_9" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_9" name="AppendType_9" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_9" id="Department_9" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
       <td width="50" height="25"> </td>
-      <td width="50" height="25"><input name="ItemNo_10" id="ItemNo_10" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Descript_10" id="Descript_10" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Unit_10" id="Unit_10" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Remain_10" id="Remain_10" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="UnitPrice_10" id="UnitPrice_10" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="ItemNo_10" id="ItemNo_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Descript_10" id="Descript_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Unit_10" id="Unit_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Remain_10" id="Remain_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="UnitPrice_10" id="UnitPrice_10" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
-      <td width="50" height="25"><input name="Quantity_10" id="Quantity_10" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><input name="Subtotal_10" id="Subtotal_10" type="text" size="10" value=""  class="feefield"readonly></input></td>
-      <td width="50" height="25"><input name="Delivery_10" id="Delivery_10" type="date" size="20" value="" class="fee-date-inp" ></input></td>
-      <td width="50" height="25"><input name="Supplier_10" id="Supplier_10" type="text" size="10" value="" class="feefield"></input></td>
-      <td width="50" height="25"><select id="Underburget_10" name="Underburget_10" class="feefield"></select></td> 
-      <td width="50" height="25"><select id="AppendType_10" name="AppendType_10" class="feefield"></select></td> 
-      <td width="50" height="25"><input name="Department_10" id="Department_10" type="text" size="10" value="" class="feefield"></input>
+      <td width="50" height="25"><input name="Quantity_10" id="Quantity_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><input name="Subtotal_10" id="Subtotal_10" type="text" size="10" value=""
+          class="feefield" readonly></input></td>
+      <td width="50" height="25"><input name="Delivery_10" id="Delivery_10" type="date" size="20" value=""
+          class="fee-date-inp"></input></td>
+      <td width="50" height="25"><input name="Supplier_10" id="Supplier_10" type="text" size="10" value=""
+          class="feefield"></input></td>
+      <td width="50" height="25"><select id="Underburget_10" name="Underburget_10" class="feefield"></select></td>
+      <td width="50" height="25"><select id="AppendType_10" name="AppendType_10" class="feefield"></select></td>
+      <td width="50" height="25"><input name="Department_10" id="Department_10" type="text" size="10" value=""
+          class="feefield"></input>
       </td>
     </tr>
     <tr>
@@ -256,45 +360,54 @@
       </td>
       <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">总金额</td>
       <td width="50" bgcolor="#FAF0E6" colspan="3" height="25"><input name="TotalValue" id="TotalValue"
-          bgcolor="#FAF0E6" type="text" size="30" value=""  class="feetitel"  readonly></td>
+          bgcolor="#FAF0E6" type="text" size="30" value="" class="feetitel" readonly></td>
     </tr>
     <tr>
       <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">币别</td>
       <td width="50" bgcolor="#FAF0E6" colspan="3" height="25"><input name="Currency" id="Currency" bgcolor="#FAF0E6"
-          type="text" size="30" value="RMB" class="feetitel" ></td>
+          type="text" size="30" value="RMB" class="feetitel"></td>
     </tr>
     <tr>
       <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">付款方式</td>
       <td width="50" bgcolor="#FAF0E6" colspan="3" height="25"><input name="Payment" id="Payment" bgcolor="#FAF0E6"
-          type="text" size="30" value="" class="feetitel" ></td>
+          type="text" size="30" value="" class="feetitel"></td>
     </tr>
     <tr>
-      <td width="50" colspan="5" bgcolor="#FAF0E6"  height="25">说明： <br />
+      <td width="50" colspan="5" bgcolor="#FAF0E6" height="25">说明： <br />
         1.上表各项内容需详填 <br />
         2.本单若用于产品原物料的采购，须填写“库存”列；用于工具类采购，须填写“新增/换新/补偿”列
       </td>
     </tr>
     <tr>
-      <td id="manOP" width="50"  class="feeSubCol" colspan="1" >申请人</td>
-      <td id="mandpt" width="50" class="feeSubCol" colspan="1" >部门主管</td>
-      <td id="manvip" width="50" class="feeSubCol" colspan="2" >副总</td>
-      <td id="manpur" width="50" class="feeSubCol" colspan="1" >采购承办人</td>
-      <td id="manpex" width="50" class="feeSubCol" colspan="1" >采购主管</td>
-      <td id="mancfo" width="50" class="feeSubCol" colspan="2" >财务总监</td>
-      <td id="manpsd" width="50" class="feeSubCol" colspan="2" >总经理</td>
-      <td id="manceo" width="50" class="feeSubCol" colspan="2" >集团CEO</td>
-      <td id="manbod" width="50" class="feeSubCol" colspan="1" >董事长</td>
+      <td id="manOP" width="50" class="feeSubCol" colspan="1">申请人</td>
+      <td id="mandpt" width="50" class="feeSubCol" colspan="1">部门主管</td>
+      <td id="manvip" width="50" class="feeSubCol" colspan="2">副总</td>
+      <td id="manpur" width="50" class="feeSubCol" colspan="1">采购承办人</td>
+      <td id="manpex" width="50" class="feeSubCol" colspan="1">采购主管</td>
+      <td id="mancfo" width="50" class="feeSubCol" colspan="2">财务总监</td>
+      <td id="manpsd" width="50" class="feeSubCol" colspan="2">总经理</td>
+      <td id="manceo" width="50" class="feeSubCol" colspan="2">集团CEO</td>
+      <td id="manbod" width="50" class="feeSubCol" colspan="1">董事长</td>
     </tr>
     <tr>
-      <td width="50" colspan="1" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="1" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="2" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="1" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="1" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="2" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="2" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="2" class="feeSubCol" height="25"></td>
-      <td width="50" colspan="1" class="feeSubCol" height="25"></td>
+      <td width="50" colspan="1" class="feeSubCol" height="25"><input name="OppName" id="OppName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="1" class="feeSubCol" height="25"><input name="MagName" id="MagName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="2" class="feeSubCol" height="25"><input name="VipName" id="VipName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="1" class="feeSubCol" height="25"><input name="PurName" id="PurName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="1" class="feeSubCol" height="25"><input name="PexName" id="PexName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="2" class="feeSubCol" height="25"><input name="CfoName" id="CfoName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="2" class="feeSubCol" height="25"><input name="PsdName" id="PsdName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="2" class="feeSubCol" height="25"><input name="CeoName" id="CeoName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
+      <td width="50" colspan="1" class="feeSubCol" height="25"><input name="BodName" id="BodName" bgcolor="#FAF0E6"
+          type="text" size="30" value="" class="feefield" readonly></td>
     </tr>
     <tr>
       <td width="50" colspan="1" class="feeSubCol" height="25"></td>
@@ -344,7 +457,11 @@
     var sessionName = '';
     var sessionOID = '';
     var sessionAID = '';
-    //页面加载函数---------------
+    var sessGroup = '';
+    var sessDept = '';
+    var missAType = '';
+    var missTType = ''; 
+    var edituse = 'C'; 
     $(document).ready(function () {
       sessionName = "<%-locals.session.yjUser.Name%>";
       sessionOID = "<%-locals.session.yjUser.OID%>";
@@ -354,32 +471,31 @@
           , layer = layui.layer
           , layedit = layui.layedit
           , laydate = layui.laydate;
-
-
-        //	        var laydate = layui.laydate;
         var DivDate = laydate.render({
           elem: '#Bill_Apply_Date',//选择器结束时间
           type: 'date',
-          //	            min:Ndate,//设置min默认最小值
-          //	            max:VidDate,
         });
 
         var DivDate2 = laydate.render({
           elem: '#Bill_Limit_Date',//选择器结束时间
           type: 'date',
-          //            min:Ndate,//设置min默认最小值
-          //            max:VidDate,
-        });
-        //	        form.render('radio');
-
+        }); 
         form.render();
         FlowerBasic();
         FlowerBase();
+        obtLogGroup(sessionName);
         let now = new Date();
         var defaultDate = now.Format("yyyy-MM-dd");
         $('#RequestDate').val(defaultDate);
+        missTType = getQueryString("missT");
+        missAType = getQueryString("missA");
+        if(missTType == 'Mdy'){
+          edituse = 'U';
+          loadCaseA(missAType) ;
+        }
       });
       addCacuFeeListener();
+      addGroupListener();
     });
 
     $('#BTNFitler').click(function () {
@@ -415,10 +531,16 @@
       layer.msg('的确很重要', { icon: 1 });
     }
     const addCacuFeeListener = () => {
-        $("#UnitPrice_1, #UnitPrice_2, #UnitPrice_3, #UnitPrice_4, #UnitPrice_5, #UnitPrice_6, #UnitPrice_7, #UnitPrice_8, #UnitPrice_9, #UnitPrice_10,#Quantity_1, #Quantity_2, #Quantity_3, #Quantity_4, #Quantity_5, #Quantity_6, #Quantity_7, #Quantity_8, #Quantity_9, #Quantity_10")
-            .on("change", function () {
-              view_hmi();
-            });
+      $("#UnitPrice_1, #UnitPrice_2, #UnitPrice_3, #UnitPrice_4, #UnitPrice_5, #UnitPrice_6, #UnitPrice_7, #UnitPrice_8, #UnitPrice_9, #UnitPrice_10,#Quantity_1, #Quantity_2, #Quantity_3, #Quantity_4, #Quantity_5, #Quantity_6, #Quantity_7, #Quantity_8, #Quantity_9, #Quantity_10")
+        .on("change", function () {
+          view_hmi();
+        });
+    }
+    const addGroupListener = () => {
+      $("#GroupName,#BudgetCombo_1")
+        .on("change", function () {
+          winPurch();
+        });
     }
     $('#FilterComfirmBtnN').click(function () {
       $('#DivFilter').window('close');

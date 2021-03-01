@@ -304,13 +304,12 @@ module.exports = function (sender) {
             }
             datas.push(temp)
           }
-
-          var dump = JSON.stringify(datas);
-          if (dump.length > 50) {
-            console.log("暻频:" + dump.substring(0, 50));
-          } else {
-            console.log("暻频:" + JSON.stringify(datas));
-          }
+          // var dump = JSON.stringify(datas);
+          // if (dump.length > 50) {
+          //   console.log("暻频:" + dump.substring(0, 50));
+          // } else {
+          //   console.log("暻频:" + JSON.stringify(datas));
+          // }
           cb(null, datas);
         },
         error: sender.error
@@ -349,12 +348,6 @@ module.exports = function (sender) {
               "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "CurText": data[i].CurText,
             }
             datas.push(temp)
-          }
-          var dump = JSON.stringify(datas);
-          if (dump.length > 100) {
-            console.log("荒井:" + dump.substring(0, 100));
-          } else {
-            console.log("暖菜:" + JSON.stringify(datas));
           }
           cb(null, datas);
         },

@@ -24,7 +24,6 @@
 <!-- 打印 -->
 <script src="/public/print/print.js"></script>
 <!-- 预览 -->
-<script src="/arch/FnFee.js"></script>
 <script src="/arch/FnSubA.js"></script>
 <script src="/arch/FnSubB.js"></script>
 
@@ -49,6 +48,7 @@
 			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
 			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
 			<input type="button" id="btn_apply" class="btn btn-info" onclick="apply_hmi();" value="送审" />
+			<input type="button" id="MdfyBtn" class="btn btn-info" value="编辑" />
 			<!-- <input type="button" id="AlterBtn" class="btn btn-info" value="撤回" />
 			<input type="button" id="DraftBtn" class="btn btn-info" value="修改" />   -->
 			<hr>
@@ -142,7 +142,7 @@
 		var glbH = '';
 		var glbS = '';
 		var Pattern = '';
-		var CapMode= '';
+		var CapMode = '';
 		var advSearch = '';
 		var selClass = '';
 		var FieldA = true;
@@ -199,7 +199,7 @@
 				missBcute = getQueryString("missB");
 				console.log("将心glbB:" + missBcute);
 				var missAencode = decodeURI(missAcute);
- 
+
 				glbA = missAencode;
 				columnsData = [
 
@@ -222,7 +222,7 @@
 				$("#SIGN").append(youoption);
 			});
 			$("#SeaBtn").addClass("active");
-			getpull();getDrop();
+			getpull(); getDrop();
 			$("#pdf-wrapper").css('visibility', 'hidden');
 		});
 
@@ -254,14 +254,14 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskData = { "reportType": reportType, "arrange": CapMode ,"filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskData = { "reportType": reportType, "arrange": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskData, newColumns);
 				},
 				error: function () {
 				}
 			})
 		}
-		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern , CapMode) {
+		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode) {
 			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
@@ -269,7 +269,7 @@
 			$("#center_TB").dataTable().fnDestroy();
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
-			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern,  "CapMode": CapMode, "limit": limit };
+			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "CapMode": CapMode, "limit": limit };
 			var reportChannel = 'FeeHead';
 			var arrange = 'Lookup';
 			var taskData = { "reportType": reportChannel, "arrange": CapMode };
@@ -278,13 +278,11 @@
 				data: taskData,
 				url: "/app/TMFinc/getRoute",
 				success: function (data) {
-					console.log("机车和平", data);
 					$('#content').html(data[1]);
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskType = { "reportType": reportType,  "arrange": CapMode , "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
-					console.log("审审....", taskType);
+					var taskType = { "reportType": reportType, "arrange": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskType, newColumns);
 				},
 				error: function () {
@@ -351,7 +349,7 @@
 			Pattern = $('#Pattern').val();
 			CapMode = $('#CapMode').val();
 			reloadCol();
-			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern , CapMode);
+			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode);
 		});
 		$('#ResetBtn').click(function () {
 			$("#mainclass").html(""); $("#mainclass").val("");
@@ -369,10 +367,10 @@
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				console.log("西阭", (billNo));
-				if(CapMode =='A'){
+				if (CapMode == 'A') {
 					shuffleA(billNo);
 				}
-				if(CapMode =='B'){
+				if (CapMode == 'B') {
 					shuffleB(billNo);
 				}
 				$('#kisswindow').modal('show');
@@ -396,12 +394,41 @@
 			var msource = '';
 			var morder = "";
 			reloadCol();
-			showDBDataByBill(DataPara, columnsData, Pattern, CapMode,  '');
+			showDBDataByBill(DataPara, columnsData, Pattern, CapMode, '');
 			$("#SeaAllBtn").addClass("active");
 			$("#SeaBtn").removeClass("active");
 		});
-		function apply_hmi() {
+		$('#MdfyBtn').click(function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				var SendText = dataSelect.SendText;
+				if (SendText != '保存') {
+					layer.msg('非保存状态 ， 此单不能送审', { icon: 1 });
+					return;
+				} else {
+					layer.confirm(billNo + '进入编辑作业，请确认操作是否无误？', {
+						btn: ['是', '否']
+					}, function () {
+						var paramClearA = encodeURI(encodeURI(billNo)); 
+						var paramType = 'Mdy'; 
+						if(CapMode=='A'){
+							window.location.href = "/app/TMFinc/feeApplyForm?missT="+ paramType  + "&missA=" + paramClearA  +  " ";
+						}
+						if(CapMode=='B'){
+							window.location.href = "/app/TMFinc/feeTravel?missT="+ paramType  + "&missA=" + paramClearA  +  " ";
+						}
+					}, function () {
+						layer.msg('无操作', { icon: 1 });
+					});
+				}
 
+			}
+		});
+		function apply_hmi() {
 			var table = $('#center_TB').DataTable();
 			var dataSelect = table.row('.selected').data();
 			if (dataSelect == undefined) {
@@ -442,9 +469,9 @@
 										layer.msg('操作成功', { icon: 1 });
 										var DateB = $("#taskMakeDateB").val();
 										var DateE = $("#taskMakeDateE").val();
-										missAcute =  $('#Pattern').val();
-										missBcute =  $('#CapMode').val();
-										window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute +"&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+										missAcute = $('#Pattern').val();
+										missBcute = $('#CapMode').val();
+										window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
 									});
 								}
 							},
@@ -467,8 +494,6 @@
 				}
 			})
 		});
-		$('#PrintClose').click(function () {
-			$('#kisswindow').window('close');
-		});
+
 
 	</script>

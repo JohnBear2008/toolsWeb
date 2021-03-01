@@ -5,6 +5,7 @@ module.exports = function (sender) {
 	var Pattern =Advstr.Pattern;
 	var StaffName =Advstr.StaffName;
 	var StaffLevel =Advstr.StaffLevel;
+	var StaffRole =Advstr.StaffRole;
 	var PowerLabel =Advstr.PowerLabel;
 	var GroupSQL = '';
 	var DeptSQL = '';
@@ -13,6 +14,7 @@ module.exports = function (sender) {
 	console.log("霖霖Level", StaffLevel);
 	console.log("霖霖Power", PowerLabel); 
 	console.log("霖霖Pattern", Pattern); 
+	console.log("霖霖StaffRole", StaffRole); 
 	if (Pattern == 'Dept') {  //部門
 		DeptSQL =  " DeptLabel = '" + PowerLabel + "' "; 
 	}
@@ -61,7 +63,7 @@ module.exports = function (sender) {
 		});
 	}
 	function JobSet( StaffName) {
-		let SQLInsert = "Update `bgu_staffs` set StaffLevel = '" + StaffLevel + "', "+ DeptSQL +" "+ GroupSQL +" " +
+		let SQLInsert = "Update `bgu_staffs` set StaffLevel = '" + StaffLevel + "', StaffRole = '" + StaffRole + "', "+ DeptSQL +" "+ GroupSQL +" " +
 		" where  StaffName=? ";
 		console.log("改跑車 :" , SQLInsert);
 		yjDBService.exec({

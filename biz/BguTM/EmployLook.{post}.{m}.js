@@ -9,7 +9,6 @@ module.exports = function (sender) {
 	function MgrJob() {
 		let SQLMgr =
 			" select `DBID`, `StaffUser`, `StaffLevel` , `StaffName`, `StaffRole` ,`DeptLabel` , `GroupLabel` from bgu_staffs tba where Status = '1'  Order By StaffLevel ASC ";
-		console.log("大分韩:" ,SQLMgr  );
 		yjDBService.exec({
 			sql: SQLMgr,
 			parameters: [ ],

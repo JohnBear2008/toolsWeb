@@ -10,14 +10,16 @@ module.exports = function (sender) {
   var arrange = sender.req.query.arrange;
   var weekbeg = sender.req.query.weekbeg;
   var weekend = sender.req.query.weekend;
+  var FlowBudget = sender.req.query.FlowBudget;
+  var FlowVip = sender.req.query.FlowVip;
+  console.log("常乐 ", qryBillNo, FlowVip, FlowBudget);
   var orderBy = '';
   var limit = '500';
   var capacity = '';
   funAsync(qryBillNo);
   function funAsync(qryBillNo) {
-    console.log("常乐-------------", (qryBillNo));
     var dataARR = [];
-    async.parallel([PopupMain, PopupDetail, PopupAudit],
+    async.parallel([PopupMain, PopupDetail, PopupAudit, PopupCredit],
       function (err, result) {
         if (err) {
 
@@ -82,6 +84,9 @@ module.exports = function (sender) {
             var obj = {
               "BillNo": result[0][0].BillNo,
               "ListNo": result[0][0].ListNo,
+              "Subject": result[0][0].Subject,
+              "BudgetCID": result[0][0].BudgetCID,
+              "BudgetItem": result[0][0].BudgetItem,
               "RequestDate": result[0][0].RequestDate,
               "ProjectNo": result[0][0].ProjectNo,
               "ApplicNo": result[0][0].ApplicNo,
@@ -132,7 +137,7 @@ module.exports = function (sender) {
             PsdName = result[2][0].PsdName; PsdName = nulReplaceTxt(PsdName); PsdDate = result[2][0].PsdDate; PsdDate = nulReplaceTxt(PsdDate);
             CeoName = result[2][0].CeoName; CeoName = nulReplaceTxt(CeoName); CeoDate = result[2][0].CeoDate; CeoDate = nulReplaceTxt(CeoDate);
             BodName = result[2][0].BodName; BodName = nulReplaceTxt(BodName); BodDate = result[2][0].BodDate; BodDate = nulReplaceTxt(BodDate);
-            SendStatus = result[2][0].SendStatus; SendStatus = nulReplaceTxt(SendStatus); 
+            SendStatus = result[2][0].SendStatus; SendStatus = nulReplaceTxt(SendStatus);
             CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
             CurLevel = result[2][0].CurLevel; CurLevel = nulReplaceTxt(CurLevel); TermiLevel = result[2][0].TermiLevel; TermiLevel = nulReplaceTxt(TermiLevel);
             CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); CurText = result[2][0].CurText; CurText = nulReplaceTxt(CurText);
@@ -151,13 +156,18 @@ module.exports = function (sender) {
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
             "CurName": CurName, "CurText": CurText,
           };
-          var dumpX = JSON.stringify(objX);
-          if (dumpX.length > 50) {
-            console.log("井桃:" + dumpX.substring(0, 50));
-          } else {
-            console.log("井桃:" + JSON.stringify(objX));
-          }
           dataARR.push(objX);
+          var objW = {
+            "CreditA": result[3][0].CreditA,
+            "CreditB": result[3][0].CreditB,
+            "CreditC": result[3][0].CreditC,
+            "CreditD": result[3][0].CreditD,
+            // "CreditA": '项目预算已超过：',  
+            // "CreditB": '预算5000已用5000：',  
+            // "CreditC": '副总额度未超过：',  
+            // "CreditD": '额度3500已用2500',  
+          }
+          dataARR.push(objW);
           sender.success(dataARR);
           var dump = JSON.stringify(dataARR);
           // if (dump.length > 1000) {
@@ -174,7 +184,6 @@ module.exports = function (sender) {
         " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` ,  `AppendType` ,`Department` " +
         " from bgu_purchdetail tba  " +
         " where tba.BillNo= ?  Order By SNNo ";
-      console.log("DDD韩效:", qryBillNo);
       yjDBService.exec({
         sql: SQL2,
         parameters: [qryBillNo],
@@ -202,12 +211,6 @@ module.exports = function (sender) {
             }
             datas.push(temp)
           }
-          var dump = JSON.stringify(datas);
-          if (dump.length > 500) {
-            console.log("世禄:" + dump.substring(0, 500));
-          } else {
-            console.log("金禄:" + JSON.stringify(datas));
-          }
           cb(null, datas);
         },
         error: sender.error
@@ -216,7 +219,7 @@ module.exports = function (sender) {
     function PopupMain(cb) {
       // var BillNo = '20201225093185';
       let SQL2 =
-        " select  `BillNo` , `ListNo` , `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
+        " select  `Subject`, `BudgetCID` , `BudgetItem`, `BillNo` , `ListNo` , `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
         "`DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
         " from bgu_purchmain tba  " +
         " where tba.BillNo= ?   ";
@@ -231,6 +234,9 @@ module.exports = function (sender) {
             var temp = {
               "BillNo": data[i].BillNo,
               "ListNo": data[i].ListNo,
+              "Subject": data[i].Subject,
+              "BudgetCID": data[i].BudgetCID,
+              "BudgetItem": data[i].BudgetItem,
               "RequestDate": data[i].RequestDate,
               "ProjectNo": data[i].ProjectNo,
               "ApplicNo": data[i].ApplicNo,
@@ -245,7 +251,6 @@ module.exports = function (sender) {
             }
             datas.push(temp)
           }
-
           // var dump = JSON.stringify(datas);
           // if (dump.length > 100) {
           //   console.log("彩暻:" + dump.substring(0, 100));
@@ -265,7 +270,7 @@ module.exports = function (sender) {
         " `MagDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
         " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate`  from bgu_rule tba  " +
-        " where tba.BillNo= ?   ";
+        " where tba.BillNo= ? ";
       yjDBService.exec({
         sql: SQL2,
         parameters: [qryBillNo],
@@ -291,21 +296,85 @@ module.exports = function (sender) {
             }
             datas.push(temp)
           }
-          var dump = JSON.stringify(datas);
-          if (dump.length > 100) {
-            console.log("荒井:" + dump.substring(0, 100));
-          } else {
-            console.log("暖菜:" + JSON.stringify(datas));
+          cb(null, datas);
+        },
+        error: sender.error
+      });
+    }
+    function PopupCredit(cb) {
+      let SQL2 =
+        " select AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ?   " +
+        " Union " +
+        " select UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
+      // console.log("柳惠濬:", SQL2);
+      // console.log("柳惠濬:",  FlowBudget, FlowVip);
+      var itemAllow = '';
+      var itemAccu = '';
+      var itemSurp = '';
+      var itemIsOver = '';
+      var vvipAllow = '';
+      var vvipAccu = '';
+      var vvipSurp = '';
+      var vvipIsOver = '';
+      yjDBService.exec({
+        sql: SQL2,
+        parameters: [FlowBudget, FlowVip],
+        rowsAsArray: true,
+        success: function (r) {
+          var datas = [];
+          var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+          for (var i = 0; i < data.length; i++) {
+            if (data[i] != null && data[i] != undefined) {
+              if (i == 0) {
+                itemAllow = data[0].AllowValue; itemAllow = nulReplace0(itemAllow);
+                itemAccu = data[0].Accumulate; itemAccu = nulReplace0(itemAccu);
+                itemSurp = data[0].Surplus; itemSurp = nulReplace0(itemSurp);
+                itemIsOver = data[0].IsOver; 
+              }
+              if (i == 1) {
+                vvipAllow = data[1].AllowValue; vvipAllow = nulReplace0(vvipAllow);
+                vvipAccu = data[1].Accumulate; vvipAccu = nulReplace0(vvipAccu);
+                vvipSurp = data[1].Surplus; vvipSurp = nulReplace0(vvipSurp);
+                vvipIsOver = data[1].IsOver;  
+              }
+            } else {
+
+            }
           }
+          itemMsg = '项目预算未超过：';
+          vvipMsg = '副总额度未超过：';
+          itemSurp = parseInt(itemSurp, 10);
+          if (itemIsOver == 'Y') {
+            itemMsg = '项目预算已超过：';
+          }
+          if (vvipIsOver == 'Y') {
+            vvipMsg = '副总额度已超过：';
+          }
+          var temp = {
+            "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
+          }
+          datas.push(temp);
+          console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
+          // var dump = JSON.stringify(datas);
+          // if (dump.length > 500) {
+          //   console.log("彩瑛:" + dump.substring(0, 500));
+          // } else {
+          //   console.log("彩瑛:" + JSON.stringify(datas));
+          // }
           cb(null, datas);
         },
         error: sender.error
       });
     }
   }
+  function nulReplaceTxt(passTxt) {
+    var ret = '';
+    ret = (passTxt == null || passTxt == undefined) ? ('') : passTxt;
+    return ret;
+  }
+  function nulReplace0(passTxt) {
+    var ret = '';
+    ret = (passTxt == null || passTxt == undefined) ? ('0') : passTxt;
+    return ret;
+  }
 }
-function nulReplaceTxt(passTxt) {
-  var ret = '';
-  ret = (passTxt == null || passTxt == undefined) ? ('') : passTxt;
-  return ret;
-} 

@@ -14,6 +14,7 @@ function shuffleB(  BillNo ) {
             sData = [];
             let htmlModel = '';
             let CurLevel = '';
+            let CurText = bjob[21].CurText;
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
         '<table width="1000" border="3" border = "1" > ' +
@@ -26,13 +27,13 @@ function shuffleB(  BillNo ) {
         '    </td> ' +
         '  </tr> ' +
         '  <tr> ' +
-        '    <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">表单编号ApplicNo  </td> ' +
-        '    <td width="50" class="coffee-drop" align="center" colspan="5" height="30">StatusOK </td> ' +
-        '    <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">部門 DeptName </td> ' +
+        '    <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">表单编号 ApplicNo  </td> ' +
+        '    <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">部門 DeptName </td> ' +
+        '    <td width="50"  bgcolor="#FAF0E6" align="center" colspan="1" height="30"><img src="watermark"  /> </td> ' +
         '  </tr> ' +
         '  <tr> ' +
         '    <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">出 差: BusiMan  </td> ' +
-        '    <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">出差地区：BusiArea</td> ' +
+        '    <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">出差地区：BusiArea </td> ' +
         '  </tr> ' +
         '  <tr> ' +
         '    <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">LeaveDate 出发时间 LeaveHour 时 LeaveMin 分</td> ' +
@@ -292,6 +293,14 @@ function shuffleB(  BillNo ) {
             '  </tr> ' +
             '</table> ' +
                 '</DIV>';
+                var watermark = "";
+                if (CurText == '核准') {
+                    watermark = "/images/BudgetYes.png";
+                } else if (CurText == '退回') {
+                    watermark = "/images/BudgetNo.png";
+                } else {
+                    watermark = "/images/BudgetPend.png";
+                }
             for (let i = 0; i < 20; i++) {
                 objT = {
                     "SNNo": bjob[i].SNNo,
@@ -418,7 +427,6 @@ function shuffleB(  BillNo ) {
                 .replace(/SNNo_17/, SNNo_17)  .replace(/TrafficA_17/, TrafficA_17)
                 .replace(/SNNo_18/, SNNo_18)  .replace(/TrafficA_18/, TrafficA_18)
                 .replace(/SNNo_19/, SNNo_19)  .replace(/TrafficA_19/, TrafficA_19)
-
                
                 .replace(/TrafficB_0/,  TrafficB_0 )
                 .replace(/TrafficB_1/,  TrafficB_1 )
@@ -703,6 +711,7 @@ function shuffleB(  BillNo ) {
                 .replace(/BodDate/, BodDate)
 
                 .replace(/StatusOK/, StatusOK)
+                .replace(/watermark/, watermark)
                ;
                 return newHtml;
             }
@@ -933,6 +942,6 @@ function shuffleB(  BillNo ) {
         }
     })
 }
-$('#PrintClose').click(function () {
-    $('#kisswindow').window('close');
-});
+// $('#PrintClose').click(function () {
+//     $('#kisswindow').window('close');
+// });

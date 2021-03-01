@@ -19,7 +19,32 @@ function inputCheckFee(obj, errItem) {
       return ret;
 
 }
-function view_hmi() {
+function winTrip() {
+      var GroupName = $('#GroupName').val();
+      var reportType = 'AcquireChain';
+      var oppOID = sessionOID;
+      var OppName = sessionName;
+      var arrange = 'RuleTrip';
+      var taskData = {
+            "reportType": reportType, "arrange": arrange, "GroupName": GroupName , "oppOID": oppOID , "OppName": OppName
+      }
+      console.log("鷹羽澪",taskData );
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMFinc/getRoute",
+            success: function (data) {
+                  if( data[0]!=null && data[0]!=undefined){
+                        $("#OppName").val(data[0].OppName);
+                        $("#MagName").val(data[0].MagName);
+                        $("#VipName").val(data[0].VipName);
+                  }
+            },
+            error: function () {
+            }
+      })
+}
+function view_dsp() {
       var GrandTmp = 0;
       var columnA = 0;
       var columnB = 0;
@@ -99,7 +124,7 @@ function view_hmi() {
       }
       $('#TicTotal_14').val(GrandTmp);
 }
-function apply_hmi() {
+function apply_dsp() {
       var SendStatus = '1';
       layer.confirm('此单送出审批吗，请确认操作是否无误？', {
             btn: ['是', '否']
@@ -139,16 +164,18 @@ function apply_hmi() {
       });
 
 }
-function save_hmi() {
-      view_hmi();
+function save_dsp() {
+      view_dsp();
       var SendStatus = '0';
       var hideBillNo = $('#hideBillNo').val();
       var ApplicNo = $('#ApplicNo').val();
       var Version = $('#Version').val();
-      var Subject = $('#Subject').val();
+      var Subject ='差旅费'; 
       var BusiMan = $('#BusiMan').val();
       var BusiArea = $('#BusiArea').val();
-      var DeptName = $('#DeptName').val();
+      var GroupName = $('#GroupName').val();
+      var DeptName = $('#hideDeptName').val();
+      var flowRole = $('#hideflowRole').val();  
       var StaffID = sessionOID;
       var StaffName = sessionName;
       var TotalValue = $('#TotalValue').val();
@@ -172,13 +199,13 @@ function save_hmi() {
       var Overspend = $('#Overspend').val();
       var Advstr = {
             "SendStatus": SendStatus, "ApplicNo": ApplicNo, "Subject": Subject, "Version": Version, "BusiMan": BusiMan, "BusiArea": BusiArea,
-            "DeptName": DeptName, "StaffID": StaffID, "StaffName": StaffName, "TotalValue": TotalValue, "LeaveDate": LeaveDate,
+            "GroupName": GroupName, "DeptName": DeptName, "StaffID": StaffID, "StaffName": StaffName, "flowRole": flowRole , "TotalValue": TotalValue, "LeaveDate": LeaveDate,
             "LeaveHour": LeaveHour, "LeaveMin": LeaveMin, "BackDate": BackDate, "BackHour": BackHour, "BackMin": BackMin,
             "LiveDateA": LiveDateA, "LiveDateB": LiveDateB, "LiveDateC": LiveDateC, "LiveDateD": LiveDateD,
             "LiveDateE": LiveDateE, "LiveDateF": LiveDateF, "Explanation": Explanation, "Overspend": Overspend,
             "IsOver": IsOver, "HotelName": HotelName, "HotelTel": HotelTel, "Overspend": Overspend, "hideBillNo": hideBillNo
       };
-      console.log("李秀晶", Advstr);
+      // console.log("李秀晶", Advstr);
       let sData = [];
       for (let i = 0; i <= 19; i++) {
             var SNNo = '' + i;
@@ -225,7 +252,7 @@ function save_hmi() {
       var reportType = 'applyTrip';
       var arrange = 'saveSend';
       var taskData = {
-            "reportType": reportType, "arrange": arrange, "Advstr": Advstr, "sData": sData
+            "reportType": reportType, "arrange": arrange, "Advstr": Advstr, "edituse": edituse ,"sData": sData
       }
       $.ajax({
             method: 'post',
@@ -247,5 +274,4 @@ function save_hmi() {
             error: function () {
             }
       })
-
 }

@@ -87,6 +87,18 @@ function PersonLevel() {
 		youoption.value = '4';
 		$("#LevelValue").append(youoption);
 		var youoption = document.createElement("option");
+		youoption.text = '资讯承办人';
+		youoption.id = "StaffLevel";
+		youoption.name = "StaffLevel";
+		youoption.value = '4';
+		$("#LevelValue").append(youoption);
+		var youoption = document.createElement("option");
+		youoption.text = '行政承办人';
+		youoption.id = "StaffLevel";
+		youoption.name = "StaffLevel";
+		youoption.value = '4';
+		$("#LevelValue").append(youoption);
+		var youoption = document.createElement("option");
 		youoption.text = '采购主管';
 		youoption.id = "StaffLevel";
 		youoption.name = "StaffLevel";

@@ -7,15 +7,39 @@ module.exports = function (sender) {
 
 	let now = new Date();
 	var EntryDate = now.Format("yyyyMMdd");
+	var BudYear = now.Format("yyyy");
 	var BillNo = sender.req.query.BillNo;
+	var TotalValue = sender.req.query.TotalValue;
 	var queryApplicNo = sender.req.query.ApplicNo;
 	var qryCurWorkId = sender.req.query.CurWorkId;
 	var qryCurName = sender.req.query.CurName;
-	console.log("同意ID", qryCurWorkId);
-	console.log("同意人", qryCurName);
-	console.log("同意号", BillNo);
+	var qryCurJob = sender.req.query.CurJob;
+	var Formkind = sender.req.query.Formkind;
+	console.log("同意人", qryCurName, "号", BillNo, "金额", TotalValue, "表单", Formkind, "年", BudYear, "作", qryCurJob);
+	var IsBothOver = 'N';  //项目&副总皆超过为 Y
+	var IsVipOver = 'N';  //副总超过为 Y
+	var IsOver = 'N';  //项目超过为 Y
+	var CurStatus = '';
+	var CurText = '';
+	var CurLevel = '';
+	var TermiLevel = '';
+	var nextLevel = '';
+	var nextWorkId = '';
+	var nextName = '';
+	var fixdate = '';
+	var fixlv = '';
+	var VipName = '';
+	var VipWorkId = '';
+	var RequestDate = '';
+	var TotalValue = 0;
+	var DeptName = '';
+	var GroupName = '';
+	var FlowCeoWorkId = '';
+	var FlowCeoName = '';
+	var FlowBodWorkId = '';
+	var FlowBodName = '';
+	var CurJob = qryCurJob;
 	QueryParts();
-	// HandleParts(queryBillNo , CurWorkId, CurName);
 	function QueryParts() {
 		var filter = " 1=1 ";
 		var orderBy = '';
@@ -30,21 +54,10 @@ module.exports = function (sender) {
 			rowsAsArray: true,
 			success: function (result) {
 				var data = yjDB.dataSet2ObjectList(result.meta, result.rows);
-				var nextLevel = '';
-				var nextjob = '';
-				var curtjob = '';
-				var nextWorkId = '';
-				var nextName = '';
+				// BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, fixdate, fixlv
+				var nowtjob = '';
 				let Track = [];
-				var TermiLevel = '';
-				var CurLevel = '';
-				var CurWorkId = '';
-				var CurName = '';
-				var CurStatus = '';
-				var CurText = '';
 				var AppFlag = 0;
-				var fixdate = '';
-				var fixlv = '';
 				for (var i = 0; i < data.length; i++) {
 					Track = data[i].Track;
 					var TrackUU = JSON.parse(Track);
@@ -52,80 +65,84 @@ module.exports = function (sender) {
 					CurLevel = data[i].CurLevel;
 					TermiLevel = data[i].TermiLevel;
 					CurWorkId = data[i].CurWorkId;
+					CurJob = data[i].CurJob;
+					VipName = data[i].VipName;
+					VipWorkId = data[i].VipWorkId;
 					CurName = data[i].CurName;
+					RequestDate = data[i].EntryDate; RequestDate = nulReplaceDate(RequestDate);
 					nextLevel = parseInt(CurLevel) + 1;
-					if (CurLevel == TermiLevel) {   
+					if (CurLevel == TermiLevel) {
 						AppFlag = 1;
 					}
 					if (nextLevel == 2) {
-						curtjob = TrackUU[0].Level1;  //dpt
+						nowtjob = TrackUU[0].Level1;  //dpt
 						nextjob = TrackUU[0].Level2;  //vip
 						console.log("-----------------推2推推  ", nextjob);
 					}
 					if (nextLevel == 3) {
-						curtjob = TrackUU[0].Level2;  //dpt
+						nowtjob = TrackUU[0].Level2;  //dpt
 						nextjob = TrackUU[0].Level3;  //vip
 						console.log("---------------推3推推  ", nextjob);
 					}
 					if (nextLevel == 4) {
-						curtjob = TrackUU[0].Level3;
+						nowtjob = TrackUU[0].Level3;
 						nextjob = TrackUU[0].Level4;
 						console.log("---------------推4推推  ", nextjob);
 					}
 					if (nextLevel == 5) {
-						curtjob = TrackUU[0].Level4;
+						nowtjob = TrackUU[0].Level4;
 						nextjob = TrackUU[0].Level5;
 						console.log("---------------推5推  ", nextjob);
 					}
 					if (nextLevel == 6) {
-						curtjob = TrackUU[0].Level5;
+						nowtjob = TrackUU[0].Level5;
 						nextjob = TrackUU[0].Level6;
 						console.log("---------------推6推  ", nextjob);
 					}
 					if (nextLevel == 7) {
-						curtjob = TrackUU[0].Level6;
+						nowtjob = TrackUU[0].Level6;
 						nextjob = TrackUU[0].Level7;
-						console.log("---------------推7推  ", nextjob);
+						console.log("---------------推7推  ", nextjob);   
 					}
 					if (nextLevel == 8) {
-						curtjob = TrackUU[0].Level7;
+						nowtjob = TrackUU[0].Level7;
 						nextjob = TrackUU[0].Level8;
 						console.log("---------------推8推  ", nextjob);
 					}
 					if (nextLevel == 9) {
-						curtjob = TrackUU[0].Level8;
+						nowtjob = TrackUU[0].Level8;
 						nextjob = TrackUU[0].Level9;
 						console.log("---------------推10推  ", nextjob);
 					}
-					if (curtjob == 'dpt') {
+					if (nowtjob == 'dpt') {
 						fixdate = "  MagDate ='" + EntryDate + "' ";
 						fixlv = "  Level2 ='Y' ";
 					}
-					if (curtjob == 'vip') {
+					if (nowtjob == 'vip') {
 						fixdate = "  VipDate ='" + EntryDate + "' ";
 						fixlv = "  Level3 ='Y' ";
 					}
-					if (curtjob == 'pur') {
+					if (nowtjob == 'pur') {
 						fixdate = "  PurDate ='" + EntryDate + "' ";
 						fixlv = "  Level4 ='Y' ";
 					}
-					if (curtjob == 'pex') {
+					if (nowtjob == 'pex') {
 						fixdate = "  PexDate ='" + EntryDate + "' ";
 						fixlv = "  Level5 ='Y' ";
 					}
-					if (curtjob == 'cfo') {
+					if (nowtjob == 'cfo') {
 						fixdate = "  CfoDate ='" + EntryDate + "' ";
 						fixlv = "  Level6 ='Y' ";
 					}
-					if (curtjob == 'psd') {
+					if (nowtjob == 'psd') {
 						fixdate = "  PsdDate ='" + EntryDate + "' ";
 						fixlv = "  Level7 ='Y' ";
 					}
-					if (curtjob == 'ceo') {
+					if (nowtjob == 'ceo') {
 						fixdate = "  CeoDate ='" + EntryDate + "' ";
 						fixlv = "  Level8 ='Y' ";
 					}
-					if (curtjob == 'bod') {
+					if (nowtjob == 'bod') {
 						fixdate = "  BodDate ='" + EntryDate + "' ";
 						fixlv = "  Level9 ='Y' ";
 					}
@@ -160,38 +177,348 @@ module.exports = function (sender) {
 				}
 				if (AppFlag == 1) {
 					CurStatus = 'Q';
-					CurText = '核准'; 
+					CurText = '核准';
 					console.log("生米煮熟  ", AppFlag);
+					if (Formkind == '采购单') {
+						console.log(" 我要采购单  ", CurJob);
+						if (CurJob == 'ceo') {
+							console.log("~~~CEO 只改状态 ");
+							HandleRule(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv);
+						} else {
+							console.log(" 查预算 ",CurJob);
+							qryPurch(BillNo);
+						}
+					} else {
+						HandleRule(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv);
+					}
 				} else {
 					CurStatus = 'P';
-					CurText = '审批'; 
+					CurText = '审批';
 					console.log("翻盘进行....", AppFlag);
+					HandleRule(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv);
 				}
-				HandleParts(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, fixdate, fixlv);
-				console.log("妲己nextLevel", nextLevel);
-				console.log("妲己nextName", nextName);
-				console.log("妲己nextWorkId", nextWorkId);
+				// console.log("妲己nextLevel", nextLevel);
+				// console.log("妲己nextName", nextName);
+				// console.log("妲己nextWorkId", nextWorkId);
 			},
 			error: sender.error
 		});
 	}
-	function HandleParts(BillNo, CurStatus, CurText , CurLevel, CurWorkId, CurName, fixdate, fixlv) {
-		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? ," +
-			" " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
-		// console.log("香月SQL:", SQL);
-
+	//得 TotalValue BudgetItem DeptName
+	function qryPurch(BillNo) {
+		let SQLExecute = "  SELECT  * from bgu_purchmain tba  where  tba.billNo= ?   ";
+		let paramelist = [BillNo];
+		let dataArr = [];
 		yjDBService.exec({
-			sql: SQL,
-			parameters: [CurStatus, CurText , CurLevel, CurWorkId, CurName, BillNo],
+			sql: SQLExecute,
+			parameters: paramelist,
 			rowsAsArray: true,
 			success: function (result) {
-				var retcode = { "Status": "OK", "message": "审批完成", "BillNo": BillNo };
-				sender.success(retcode);
-				console.log("进那 ", retcode);
+				var data = yjDB.dataSet2ObjectList(result.meta, result.rows);
+				var Subject = '';
+				var BudgetCID = '';
+				var BudgetItem = '';
+				for (var i = 0; i < data.length; i++) {
+					Subject = data[i].Subject;
+					BudgetCID = data[i].BudgetCID;
+					BudgetItem = data[i].BudgetItem;
+					TotalValue = data[i].TotalValue; TotalValue = nulReplace0(TotalValue);
+					TotalValue = parseInt(TotalValue, 10);
+					DeptName = data[i].DeptName;
+					GroupName = data[i].GroupName;
+					console.log("瀑布圖", BudgetCID, TotalValue, DeptName);
+				}
+				qryQuota(BillNo, Subject, BudYear, BudgetCID, BudgetItem, DeptName, TotalValue);
 			},
 			error: sender.error
 		});
 	}
-}
+	//得 AllowMoney Accumulate
+	function qryQuota(BillNo, Subject, BudYear, BudgetCID, BudgetItem, DeptName, TotalValue) {
+		console.log("栗惠美", BudgetCID, BudYear, DeptName);
+		let SQLExecute = "  SELECT  * from bgu_quota tba  where  tba.BudgetCID= ?  and  tba.BudYear= ?  and  tba.DeptName= ?    ";
+		let paramelist = [BudgetCID, BudYear, DeptName];
+		yjDBService.exec({
+			sql: SQLExecute,
+			parameters: paramelist,
+			rowsAsArray: true,
+			success: function (result) {
+				var data = yjDB.dataSet2ObjectList(result.meta, result.rows);
+				var AllowMoney = 0;
+				var Accumulate = 0;
+				var SNNO = '';
+				var qryIsOver = '';
+				for (var i = 0; i < data.length; i++) {
+					AllowMoney = data[i].AllowMoney;
+					AllowMoney = nulReplace0(AllowMoney);
+					AllowMoney = parseInt(AllowMoney, 10);
+					Accumulate = data[i].Accumulate;
+					Accumulate = nulReplace0(Accumulate);
+					Accumulate = parseInt(Accumulate, 10);
+					SNNO = data[i].SNNO;
+					qryIsOver = data[i].IsOver;
+					console.log("误差宽度", AllowMoney, Accumulate, qryIsOver);
+				}
+				let now = new Date();
+				var labDate = now.Format("yyyyMMdd");
+				RequestDate = labDate;
+				if (qryIsOver == 'N') {
+					console.log("项目没超过");
+					HandleQuota(BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate);
+					HandleQuotaDtl(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue);
+				} else {
+					console.log("秒杀了");
+					qryCredit(0, TotalValue );
+				}
+			},
+			error: sender.error
+		});
+	}
+	//计算 Accumulate UseMoney 由 TotalValue  AllowMoney
+	function HandleQuota(BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate) {
+		AllowMoney = nulReplace0(AllowMoney);
+		AllowMoney = parseInt(AllowMoney, 10);
+		TotalValue = nulReplace0(TotalValue); TotalValue = parseInt(TotalValue, 10);
+		Accumulate = nulReplace0(Accumulate);
+		Accumulate = parseInt(Accumulate, 10) + TotalValue;
+		SNNO = nulReplace0(SNNO); SNNO = parseInt(SNNO, 10) + 1;
+		IsOver = 'N';
+		console.log();
+		var bufferTot = 0;
+		var diffMoney = 0;
+		if (Accumulate > AllowMoney) {
+			IsOver = 'Y';
+			bufferTot = Accumulate;
+			diffMoney = bufferTot - AllowMoney;
+			Accumulate = AllowMoney;
+			var Surplus = 0;
+		} else {
+			var Surplus = AllowMoney - Accumulate;
+		}
+		console.log("公孙离TotalValue", TotalValue, "AllowMoney", AllowMoney, "公孙离 Accumulate", Accumulate);
+		if (IsOver == 'N') {
+			HandleRule(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv);
+		} else {
+			console.log("捕刀了", bufferTot, diffMoney);
+			qryCredit(bufferTot, diffMoney);
+		}
+		var SQLUPt = "Update `bgu_quota` set Accumulate =? , IsOver =?, Surplus =? , SNNO  =?   " +
+			" where  BudgetCID= ? and BudYear =? ";
+		let paramList = [Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear];
+		yjDBService.exec({
+			sql: SQLUPt,
+			parameters: paramList,
+			rowsAsArray: true,
+			success: function (result) {
+				console.log("HandleQuota:", result);
+			},
+			error: sender.error
+		});
+	}
+	function HandleQuotaDtl(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue) {
+		console.log("殿昌 ", Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue);
+		var SQLInsert = "INSERT INTO `bgu_quotadetail` " +
+			"(`Subject`, `BudgetCID` , `BudgetItem` , `BudYear` , `RequestDate`,`BillNo`, `SNNO` , `DeptName` , `TotalValue`   ) " +
+			"  VALUES (?,?,?,?,?,?,?,?,?   )";
+		let paramList = [Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue];
+		yjDBService.exec({
+			sql: SQLInsert,
+			parameters: paramList,
+			rowsAsArray: true,
+			success: function (result) {
+				// console.log("目汇:", result);
+			},
+			error: sender.error
+		});
+	}
+	function HandleRule(BillNo, CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob, fixdate, fixlv) {
+		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? , CurJob = ? ," +
+			" " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
+		yjDBService.exec({
+			sql: SQL,
+			parameters: [CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob ,BillNo],
+			rowsAsArray: true,
+			success: function (result) {
+				console.log("流泪:", CurName , CurJob);
+				if (CurStatus == 'Q') {
+					NoticeNotOver();
+				} else {
+					NoticePending();
+				}
+			},
+			error: sender.error
+		});
+	}
+	function qryCredit(bufferTot, diffMoney) {
+		let SQLExecute = "  SELECT  * from bgu_credit tba  where  tba.StaffName= ?  and  tba.BudYear= ?      ";
+		console.log("查信用", VipName, BudYear, diffMoney);
+		let paramelist = [VipName, BudYear];
+		yjDBService.exec({
+			sql: SQLExecute,
+			parameters: paramelist,
+			rowsAsArray: true,
+			success: function (result) {
+				var data = yjDB.dataSet2ObjectList(result.meta, result.rows);
+				var UpperLimit = 0;
+				var Accumulate = 0;
+				var Surplus = 0;
+				var SNNO = 0;
+				for (var i = 0; i < data.length; i++) {
+					UpperLimit = data[i].UpperLimit; UpperLimit = nulReplace0(UpperLimit); UpperLimit = parseInt(UpperLimit, 10);
+					Accumulate = data[i].Accumulate; Accumulate = nulReplace0(Accumulate);
+					Accumulate += diffMoney;
+					SNNO = data[i].SNNO; SNNO = nulReplace0(SNNO); SNNO = parseInt(SNNO, 10);
+					SNNO = SNNO + 1;
+					if (Accumulate > UpperLimit) {
+						IsVipOver = 'Y';
+						Surplus = 0;
+					} else {
+						Surplus = UpperLimit - Accumulate;
+					}
+					console.log("查信用", VipName, BudYear, Accumulate);
+				}
+				console.log("现在是：",CurJob);
+				if (CurJob == 'bod') {
+					UpdateCredit(Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear);
+					UpdateCreditDetail(VipWorkId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney);
+					if (IsVipOver == 'Y') {
+						NoticeOver();
+					} else {
+						NoticeNotOver();
+					}
+					console.log("老板审批过了………………",IsVipOver);
+					HandleRule(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv);
+				} else if (CurJob == 'psd') {
+					MakeupRule(BillNo, nextLevel, nextWorkId, nextName, nextjob ,fixdate, fixlv);
+				}
+			},
+			error: sender.error
+		});
+	}
+	function UpdateCredit(Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear) {
+		console.log("秋昭贞--------------", Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear);
+		var SQLUPt = "Update `bgu_credit` set Accumulate =? , Surplus =? , IsOver =?,  SNNO  =?   " +
+			" where  StaffName = ? and  BudYear =?  ";
+		let paramList = [Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear];
+		yjDBService.exec({
+			sql: SQLUPt,
+			parameters: paramList,
+			rowsAsArray: true,
+			success: function (result) {
+				console.log("秋昭贞:", result);
+			},
+			error: sender.error
+		});
+	}
+	function UpdateCreditDetail(VipWorkId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney) {
+		console.log("苞娜 ", VipWorkId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney);
+		// SNNO ,diffMoney 
+		var SQLInsert = "INSERT INTO `bgu_creditdetail` " +
+			"( `StaffId` , `StaffName` ,  `BudYear` , `RequestDate` ,`BillNo` , `SNNO` , `TotalValue`   ) " +
+			"  VALUES (?,?,?,?,?,?,?  )";
+		let paramList = [VipWorkId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney];
+		yjDBService.exec({
+			sql: SQLInsert,
+			parameters: paramList,
+			rowsAsArray: true,
+			success: function (result) {
 
-			 
+			},
+			error: sender.error
+		});
+	}
+	function MakeupRule(BillNo, CurLevel, CurWorkId, CurName, CurJob, fixdate, fixlv) {
+		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? , CurJob = ? ," +
+			" " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
+		// console.log("柳下濬 ", SQL);
+		yjDBService.exec({
+			sql: SQL,
+			parameters: [CurStatus, CurText, CurLevel, CurWorkId, CurName,  CurJob , BillNo],
+			rowsAsArray: true,
+			success: function (result) {
+				if (IsVipOver == 'Y') {
+					CurStatus = 'P';
+					CurText = '审批';
+					console.log("虞姬 ");
+					seeAudit(BillNo, CurLevel, CurStatus, CurText);
+					NoticeOver();
+				} else {
+					if (CurStatus == 'Q') {
+						CurStatus = 'Q';
+						CurText = '核准';
+						NoticeNotOver();
+					} else {
+						NoticePending();
+					}
+				}
+			},
+			error: sender.error
+		});
+	}
+	function seeAudit(BillNo, CurLevel, CurStatus, CurText) {
+		console.log(" 市直", DeptName, GroupName);
+		let SQL4 =
+			" select tceo.staffID as CeoWorkId, tceo.staffName as CeoName, tbod.staffID as BodWorkId, tbod.staffName as BodName from  bgu_staffs tba " +
+			" LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%' , tba.DeptLabel , '%') and tceo.staffLevel='8' " +
+			" LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%' , tba.DeptLabel , '%') and tbod.staffLevel='9' " +
+			"  where tba.DeptLabel=? and tba.StaffLevel='1'  ";
+		yjDBService.exec({
+			sql: SQL4,
+			parameters: [DeptName],
+			rowsAsArray: true,
+			success: function (r) {
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					FlowCeoWorkId = data[i].CeoWorkId;
+					FlowCeoName = data[i].CeoName;
+					FlowBodWorkId = data[i].BodWorkId;
+					FlowBodName = data[i].BodName;
+				}
+				AddAudit(BillNo, CurLevel, TermiLevel, FlowCeoWorkId, FlowCeoName, FlowBodWorkId, FlowBodName);
+			},
+			error: sender.error
+		});
+	}
+	function AddAudit(BillNo, CurLevel, TermiLevel, FlowCeoWorkId, FlowCeoName, FlowBodWorkId, FlowBodName) {
+		console.log(" 任多荣 ", CurLevel, FlowCeoWorkId, FlowCeoName, FlowCeoWorkId, FlowCeoName, FlowBodWorkId, FlowBodName, BillNo);
+		var CurStatus = 'P';
+		var CurText = '审批';
+		var TermiLevel = parseInt(TermiLevel) + 2;
+		let SQL = "Update `bgu_rule` set CurStatus = ? , CurText = ? , CurLevel = ? , TermiLevel = ? , CurWorkId = ? , CurName = ? ," +
+			" CeoWorkId = ? ,  CeoName = ? ,  BodWorkId = ? ,  BodName = ?   where  BillNo=?  ";
+		yjDBService.exec({
+			sql: SQL,
+			parameters: [CurStatus, CurText, CurLevel, TermiLevel, FlowCeoWorkId, FlowCeoName, FlowCeoWorkId, FlowCeoName, FlowBodWorkId, FlowBodName, BillNo],
+			rowsAsArray: true,
+			success: function (result) {
+				console.log("露娜", nextLevel, FlowCeoWorkId, FlowCeoName, BillNo);
+			},
+			error: sender.error
+		});
+	}
+	function NoticePending() {
+		var retcode = { "Status": "OK", "message": "此关审批完成", "BillNo": BillNo };
+		sender.success(retcode);
+		console.log("同意完成-继续", retcode);
+	}
+	function NoticeNotOver() {
+		var retcode = { "Status": "OK", "message": "核准完成，额度未超过", "BillNo": BillNo };
+		sender.success(retcode);
+		console.log("同意完成-不超", retcode);
+	}
+	function NoticeOver() {
+		var retcode = { "Status": "OK", "message": "核准完成! 请注意，额度已超过", "BillNo": BillNo };
+		sender.success(retcode);
+		console.log("~同意完成-超 ", retcode);
+	}
+	function nulReplaceDate(passTxt) {
+		var ret = '';
+		ret = (passTxt == null || passTxt == undefined || passTxt == '') ? (null) : passTxt;
+		return ret;
+	}
+	function nulReplace0(passTxt) {
+		var ret = '';
+		ret = (passTxt == null || passTxt == undefined) ? ('0') : passTxt;
+		return ret;
+	}
+}

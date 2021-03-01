@@ -14,19 +14,55 @@ module.exports = function (sender) {
   if (arrange == 'LookCredit') {
     LookCredit();
   }
+  if (arrange == 'LookQuota') {
+    LookQuota();
+  }
+  function LookQuota() {
+    var obj = {};
+    var dataARR = [];
+    var columnsData = [];
+    columnsData = [
+      { data: 'DBID', "visible": false },
+      { data: 'BudgetCID', "visible": true, "width": "15%" },
+      { data: 'BudgetItem', "visible": true, "width": "15%" },
+      { data: 'DeptName', "visible": true, "width": "15%" },
+      { data: 'BudYear', "visible": true, "width": "15%" },
+      { data: 'IsOver', "visible": true, "width": "15%" },
+      { data: 'AllowMoney', "visible": true, "width": "15%" },
+      { data: 'Accumulate', "visible": true, "width": "15%" },
+      { data: 'Surplus', "visible": true, "width": "15%" },
+    ];
+    dataARR[0] = columnsData;
+    var contentSum = "";
+    var content = '<tr>'
+      + '<th>系统号</th>'
+      + '<th>项目号</th>'
+      + '<th>预算项目</th>'
+      + '<th>部門</th>'
+      + '<th>年度</th>'
+      + '<th>超支</th>'
+      + '<th>额度上限</th>'
+      + '<th>累计</th>'
+      + '<th>剩餘</th>'
+      + '</tr>';
+    contentSum += content;
+    dataARR[1] = contentSum;
+    sender.success(dataARR);
+  }
   function LookCredit() {
     var obj = {};
     var dataARR = [];
     var columnsData = [];
     columnsData = [
       { data: 'DBID', "visible": false },
-      { data: 'StaffId', "visible": true, "width": "10%" },
-      { data: 'StaffName', "visible": true, "width": "10%" },
-      { data: 'BudgetYear', "visible": true, "width": "10%" },
-      { data: 'UpperLimit', "visible": true, "width": "10%" },
-      { data: 'UseAmount', "visible": true, "width": "10%" },
-      { data: 'Accumulate', "visible": true, "width": "10%" },
-      { data: 'RequestDate', "visible": true, "width": "10%" },
+      { data: 'StaffId', "visible": true, "width": "12%" },
+      { data: 'StaffName', "visible": true, "width": "12%" },
+      { data: 'DeptName', "visible": true, "width": "12%" },
+      { data: 'BudYear', "visible": true, "width": "12%" },
+      { data: 'IsOver', "visible": true, "width": "12%" },
+      { data: 'UpperLimit', "visible": true, "width": "12%" },
+      { data: 'Accumulate', "visible": true, "width": "12%" },
+      { data: 'Surplus', "visible": true, "width": "12%" },
     ];
     dataARR[0] = columnsData;
     var contentSum = "";
@@ -34,11 +70,12 @@ module.exports = function (sender) {
       + '<th>系统ID</th>'
       + '<th>职工ID</th>'
       + '<th>名称</th>'
+      + '<th>部門</th>'
       + '<th>年度</th>'
+      + '<th>超支</th>'
       + '<th>额度上限</th>'
-      + '<th>已使用</th>'
       + '<th>累计</th>'
-      + '<th>需求日期</th>'
+      + '<th>剩餘</th>'
       + '</tr>';
     contentSum += content;
     dataARR[1] = contentSum;
@@ -77,6 +114,7 @@ module.exports = function (sender) {
     columnsData = [
       { data: 'DBID', "visible": false },
       { data: 'BillNo', "visible": true, "width": "6%" },
+      { data: 'Formkind', "visible": false  },
       { data: 'Subject', "visible": true, "width": "6%" },
       { data: 'BudgetItem', "visible": true, "width": "12%" },
       { data: 'ListNo', "visible": true, "width": "6%" },
@@ -98,6 +136,7 @@ module.exports = function (sender) {
       + '<th></th>'
       + '<th>系统编号</th>'
       + '<th>表单种类</th>'
+      + '<th>预算科目</th>'
       + '<th>预算项目</th>'
       + '<th>品名/说明</th>'
       + '<th>计划案号</th>'
@@ -148,6 +187,7 @@ module.exports = function (sender) {
     columnsData = [
       { data: 'DBID', "visible": false },
       { data: 'BillNo', "visible": true, "width": "6%" },
+      { data: 'Formkind', "visible": false  },
       { data: 'ApplicNo', "visible": true, "width": "6%" },
       { data: 'Subject', "visible": true, "width": "6%" },
       { data: 'BusiMan', "visible": true, "width": "6%" },
@@ -170,6 +210,7 @@ module.exports = function (sender) {
       + '<th>系统编号</th>'
       + '<th>申请单号</th>'
       + '<th>表单种类</th>'
+      + '<th>预算科目</th>' 
       + '<th>出差人</th>'
       + '<th>出差地区</th>'
       + '<th>出发时间</th>'

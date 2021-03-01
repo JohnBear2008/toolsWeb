@@ -25,6 +25,7 @@
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<script src="/arch/roleSet.js"></script>
 <script src="/arch/creditLook.js"></script>
 <script src="/bomq/utilFn.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
@@ -34,8 +35,15 @@
 			<h1>预算额度使用表</h1>
 			<label>年份:</label>
 			<div class="layui-inline">
-				<input class="can-find-small" name="mainYear" id="mainYear" value="" autocomplete="off">
+				<input class="can-find-M140" name="mainYear" id="mainYear" value="" autocomplete="off">
 			</div>
+			<label>部門:</label>
+			<div class="layui-inline">
+				<select id="DeptCombo" class="can-find-M140" type="text"
+				value=""></select>
+			</div>
+			<label>预算分类:</label>
+			<select id="mainkind" name="mainkind" class="can-find-M140"></select>
 			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
 			<hr>
 		</div>
@@ -66,6 +74,7 @@
 		var glbH = '';
 		var glbS = '';
 		var Pattern = '';
+		var Formkind = '';
 		var advSearch = '';
 		var selClass = '';
 		var FieldA = true;
@@ -123,18 +132,18 @@
 					{ data: 'StaffName', "visible": true, "width": "10%" },
 					{ data: 'BudgetYear', "visible": true, "width": "10%" },
 					{ data: 'UpperLimit', "visible": true, "width": "10%" },
-					{ data: 'UseAmount', "visible": true, "width": "10%" },
+					{ data: 'Accumulate', "visible": true, "width": "10%" },
 				];
 				var youoption = document.createElement("option");
-				youoption.id = "SIGN";
-				youoption.name = "SIGN";
-				youoption.text = "AND";
-				youoption.value = "1";
-				$("#SIGN").append(youoption);
+				youoption.id = "mainkind";
+				youoption.name = "mainkind";
+				youoption.text = "项目预算";
+				youoption.value = "0";
+				$("#mainkind").append(youoption);
 				youoption = document.createElement("option");
-				youoption.text = "OR";
-				youoption.value = "2";
-				$("#SIGN").append(youoption);
+				youoption.text = "副总预算";
+				youoption.value = "1";
+				$("#mainkind").append(youoption);
 			});
 			$("#SeaBtn").addClass("active");
 			var contentSum = "";
@@ -145,11 +154,14 @@
 				+ '<th>课组名称</th>'
 				+ '<th>地区</th>'
 				+ '<th>描述</th>'
+				+ '<th>描述</th>'
+				+ '<th>描述</th>'
 				+ '</tr>';
 			contentSum += content;
 			$('#content').html(contentSum);
 			Pattern = $('#Pattern').val();
 			reloadCol();
+			OrigList();
 			showDBDataSelf(DataPara, columnsData, Pattern);
 			$("#pdf-wrapper").css('visibility', 'visible');
 		});
@@ -161,31 +173,43 @@
 		columnsData = [
 
 		];
-		function showDBDataSelf(DataPara, columnsData, Pattern) {
+		function showDBDataSelf(DataPara, columnsData, Pattern  ) {
 			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
 			var orderBy = '';
 			$("#center_TB").dataTable().fnDestroy();
-			var signoption = $("#SIGN option:selected");
-			var signTxt = signoption.text();
 			var BudYear = $('#mainYear').val();
-			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "BudYear": BudYear, "limit": limit };
+			var DeptCombo = $('#DeptCombo').val();
+			let PropList = [];
+			if (DeptCombo != "" && DeptCombo != undefined) {
+				PropList = DeptCombo.split('##');
+				for (var ki = 0; ki < PropList.length; ki++) {
+					var DeptID = PropList[0];
+					var DeptName = PropList[1];
+				}
+			}
+			var Formkind = $('#mainkind').val();
 			var reportChannel = 'FeeHead';
-			var arrange = 'LookCredit';
+			if(Formkind =='0'){
+				var arrange = 'LookQuota';
+			}else if(Formkind =='1'){
+				var arrange = 'LookCredit';
+			}
+			var Advstr = {  "Pattern": Pattern, "Formkind": Formkind ,"BudYear": BudYear ,"DeptName": DeptName, "limit": limit };
 			var taskData = { "reportType": reportChannel, "arrange": arrange };
+			console.log("裴虎",taskData);
 			$.ajax({
 				method: 'post',
 				data: taskData,
 				url: "/app/TMFinc/getRoute",
 				success: function (data) {
-					console.log("机车和平", data);
 					$('#content').html(data[1]);
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeVisit';
 					var taskType = { "reportType": reportType, "arrange": arrange, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
-					console.log("审审....", taskType);
+					// console.log("嬴政",taskType);
 					bornTable(taskType, newColumns);
 				},
 				error: function () {
@@ -221,8 +245,8 @@
 		}
 		$('#BTNFitSearch').click(function () {
 			$("#center_TB").dataTable().fnDestroy();
-			Pattern = $('#Pattern').val();
+			Pattern = $('#Pattern').val(); 
 			reloadCol();
-			showDBDataSelf(DataPara, columnsData, Pattern);
+			showDBDataSelf(DataPara, columnsData, Pattern );
 		});
 	</script>

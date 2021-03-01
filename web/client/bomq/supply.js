@@ -123,7 +123,7 @@ function CriteriaBasic() {
                         youoption.id = "lifetime";
                         youoption.name = "lifetime";
                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#LifeValue").append(youoption);
+                        $("#OnlyValue").append(youoption);
                   }
 
             },
@@ -143,14 +143,14 @@ function CriteriaAdv(prodID , prodNM  ){
             url: "/app/TMErp/getRoute",
             success: function (data) {
                   dataArr = data;
-                  $("#LifeValue").val(); $("#LifeValue").html("");
+                  $("#OnlyValue").val(); $("#OnlyValue").html("");
                   for (var i = 0; i < dataArr.length; i++) {
                         var youoption = document.createElement("option");
                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
                         youoption.id = "lifetime";
                         youoption.name = "lifetime";
                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#LifeValue").append(youoption);
+                        $("#OnlyValue").append(youoption);
                   }
             },
             error: function () {
@@ -208,3 +208,28 @@ function CriteriaAdv9(prodID , prodNM  ){
             }
       })
 }
+// function CriteriaAdv9(prodID , prodNM  ){
+//       let dataArr = [];
+//       var reportType = 'StarGate';
+//       var arrange = 'Adv';
+//       var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   $("#LifeValue").val(); $("#LifeValue").html("");
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#LifeValue").append(youoption);
+//                   }
+//             },
+//             error: function () {
+//             }
+//       })
+// }

@@ -12,7 +12,7 @@
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Bootstrap-3.3.7/css/bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/DataTables-1.10.18/css/dataTables.bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="/public/DataTablesExcel/Buttons-1.5.6/css/buttons.bootstrap.css" />
- 
+
 <!-- JS  -->
 <script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
@@ -21,10 +21,10 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
- 
+
 <!-- easyui对话框 -->
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
- 
+
 
 <style type="text/css">
     h1 {
@@ -105,10 +105,8 @@
         </div>
         <br />
         <br />
-        <input type="button" id="ConfirmBtn" class="btn btn-lg btn-info" style="margin-left:60px"
-            value="确认送出" />
-        <input type="button" id="CurrentBtn" class="btn btn-lg btn-info" style="margin-left:180px"
-            value="取回预设" />
+        <input type="button" id="ConfirmBtn" class="btn btn-lg btn-info" style="margin-left:60px" value="确认送出" />
+        <input type="button" id="CurrentBtn" class="btn btn-lg btn-info" style="margin-left:180px" value="取回预设" />
         <div id="DelivFilter" class="easyui-window" title="人员职位" closed="true" style="width:1000px;height:500px;">
             <form style="padding:10px 50px;">
                 <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
@@ -177,9 +175,12 @@
                 }
                 var EmpValue = $('#EmpValue').val();
                 var LevelValue = $('#LevelValue').val();
+                var Leveloption = $("#LevelValue option:selected");
+                var Levelindex = Leveloption.val();
+                var LevelText = Leveloption.text();
                 var PowerLabel = $('#PowerLabel').val();
                 var Advstr = {
-                    "StaffName": EmpValue, "StaffLevel": LevelValue, "PowerLabel": PowerLabel, "Pattern": Pattern
+                    "StaffName": EmpValue, "StaffLevel": LevelValue, "StaffRole" : LevelText , "PowerLabel": PowerLabel, "Pattern": Pattern
                 };
                 layer.confirm('此数据内容操作后无法还原，请确认操作是否无误！', {
                     btn: ['是', '否'] //按钮
@@ -267,13 +268,13 @@
                     "DBTable": "auto_parts"
                 }
                 columnsData = [
-                    { data: 'DBID', "visible": false    },
-                    { data: 'PersonUser', "visible": true , "width": "8%"  },
-                    { data: 'StaffLevel', "visible": false  , "width": "10%"},
-                    { data: 'PersonName', "visible": true  , "width": "10%"},
-                    { data: 'StaffRole', "visible": true  , "width": "10%"},
-                    { data: 'DeptLabel', "visible": true , "width": "50%" },
-                    { data: 'GroupLabel', "visible": true  , "width": "25%"},
+                    { data: 'DBID', "visible": false },
+                    { data: 'PersonUser', "visible": true, "width": "8%" },
+                    { data: 'StaffLevel', "visible": false, "width": "10%" },
+                    { data: 'PersonName', "visible": true, "width": "10%" },
+                    { data: 'StaffRole', "visible": true, "width": "10%" },
+                    { data: 'DeptLabel', "visible": true, "width": "50%" },
+                    { data: 'GroupLabel', "visible": true, "width": "25%" },
                 ];
                 var contentSum = "";
                 var content = '<tr>'

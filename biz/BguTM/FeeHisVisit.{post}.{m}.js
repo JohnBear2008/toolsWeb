@@ -13,7 +13,7 @@ module.exports = function (sender) {
 	if (connectionOptions) {
 		connection = yjDBServiceUtil.extractConnectionOptions(connectionOptions);
 	}
-	var Pattern = sender.req.query.Pattern;
+	// var Pattern = sender.req.query.Pattern;
 	var Advstr = sender.req.query.Advstr;
 	console.log("雪儿:", Advstr);
 	var weekbeg = Advstr.weekbeg;
@@ -37,7 +37,7 @@ module.exports = function (sender) {
 		var limit = '5000';
 		var capacity = '';
 		var SQLExecute =
-			" SELECT  A.`DBID`, A.`BillNo`,  A.`ListNo`, A.`Subject` , A.`RequestDate`,  A.`ProjectNo`, A. `ApplicNo`,  " +
+			" SELECT  A.`DBID`, A.`BillNo`,  A.`ListNo`, A.`Formkind` ,A.`Subject` , A.`RequestDate`,  A.`ProjectNo`, A. `ApplicNo`,  " +
 			" A.`DeptName`, A.`StaffID`, A.`StaffName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
 			"  A.`EntryDate`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
 			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.BudgetItem " +
@@ -85,7 +85,6 @@ module.exports = function (sender) {
 		if (resultCheckSQL) {
 			console.log("接受到含有非法关键字的SQL:" + SQLExecute);
 		} else {
-			console.log("和平精英小帅");
 			yjDBService.exec({
 				sql: SQLExecute,
 				parameters: paramList,
@@ -95,6 +94,7 @@ module.exports = function (sender) {
 						var obj = {
 							"DBID": data[i].DBID,
 							"BillNo": data[i].BillNo,
+							"Formkind": data[i].Formkind,
 							"Subject": data[i].Subject,
 							"BudgetItem": data[i].BudgetItem,
 							"ListNo": data[i].ListNo,
@@ -133,7 +133,7 @@ module.exports = function (sender) {
 		var limit = '5000';
 		var capacity = '';
 		var SQLExecute =
-			" SELECT  A.`DBID`, A.`BillNo`, A.`ApplicNo`, A.`Subject` , A.`BusiMan`, A.`BusiArea`, A.`LeaveDate`, A.`StaffID`, A.`StaffName`, A.`DeptName`, " +
+			" SELECT  A.`DBID`, A.`BillNo`, A.`ApplicNo`, A.Formkind ,A.`Subject` , A.`BusiMan`, A.`BusiArea`, A.`LeaveDate`, A.`StaffID`, A.`StaffName`, A.`DeptName`, " +
 			"  A.`IsOver`, A. `Overspend`,   " +
 			"  A.`EntryDate`, A.`Explanation`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
 			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.TicTotal " +
@@ -180,8 +180,6 @@ module.exports = function (sender) {
 		if (resultCheckSQL) {
 			console.log("接受到含有非法关键字的SQL:" + SQLExecute);
 		} else {
-			console.log("啊依金");
-			// console.log("和平啊依金", SQLExecute);
 			yjDBService.exec({
 				sql: SQLExecute,
 				parameters: paramList,
@@ -192,6 +190,7 @@ module.exports = function (sender) {
 						var obj = {
 							"DBID": data[i].DBID,
 							"BillNo": data[i].BillNo,
+							"Formkind": data[i].Formkind,
 							"Subject": data[i].Subject,
 							"ApplicNo": data[i].ApplicNo,
 							"BusiMan": data[i].BusiMan,

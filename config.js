@@ -1,5 +1,10 @@
 let yjSecurity = require('./yjSecurity')
 
+var fs = require("fs");
+
+
+
+
 let pwe = 'VcboyQ87LTLpDlGDKpyn100KpZ003cFMn+f4UkTpB0Dr6SNii2CLS5WGLXMYzD0wXgs3lkar/SticR1LBCcFbox9Vz6lzk3qKydzxkpaDz54uBxuDYyQR9KxB2eDhXEnFyr8K9Jp0Xr03NmcQ3lIXldwCXSfcqXgKH+u7bnVAeTeow74gYrLkLfx+UXyn98JQNk0ead5Y/CmO9fi6/qC9AJPFsPaERAde0wlx8L/znokyZlP35/+7Vwd1YqHGwYjWwe1Boka3dJ289rE5vigIkVXPxcyEHcIqtLGtTAnRHMuc4R8j+NSQC+z0y3ygTuXFqc5Ppge5Nvu7TC6hwW2Nw=='
 let pweT9 = 'TVaX3EUu8YLju8UV/9keI26SATPqYyRw8QtfTn5aOWofEa0KEfBPE6qxtas1vw7KzjRDkY5yuZupa+ZYToglYy6socUR5jUOQzuM+lZNTiXrIGcog9jerMI/RFVNqWTBdkmOpTiO3gOKLtUuOAz+MHU3Vnq2unsi1lKEvEc5g3v9ML6C846csqtn+Ql1mepcErTBMylS64MPTpWTp2L+4UeBES0/a/Hj+yQ4nd4SC1SECz9/0wJZjPcZBXYpk7mkTYzq646PgpAIdWqUmk7SY4gW2BNjwXbG4+gdoQ/34R+oAxv/K86x++wVnJi3Wulp+zyk1UoPaaRFjbLrONgENw=='
 console.log(yjSecurity["Diffie-Hellman"].decrypt(pwe));
@@ -64,6 +69,9 @@ var g_dbConenctions = {
 };
 var config = {
     port: 2019,
+    // potocols: ['http'],
+    port_https: 443,
+    potocols: ['http', 'https'],
     biz_Connection: {
         engine: "remote.superagent",
         //        engine: "remote.restify",
@@ -119,12 +127,18 @@ var config = {
             "/app/PM/linkPage",
             // "/app/PM/billsRequest"
         ],
-        // bodyParser: {
-        //     urlencoded: {
-        //         limit: "10mb",
-        //         parameterLimit: 1000000
-        //     }
-        // }
+        ca: {
+            //私钥文件路径
+            keyPath: path.join(__dirname, './cert/server_no_passwd.key'),
+            //证书文件路径
+            certPath: path.join(__dirname, './cert/server.crt')
+        },
+        bodyParser: {
+            urlencoded: {
+                limit: "10mb",
+                parameterLimit: 1000000
+            }
+        }
     },
     theme: {
         layout: {
