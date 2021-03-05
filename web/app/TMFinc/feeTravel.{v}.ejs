@@ -48,7 +48,7 @@
                 <input type="hidden" id="TotalValue" value="" />
                 <tr>
                         <td width="50" colspan="8" height="20" align="center">
-                                <h4>国内外出差报销汇总及补贴申请表</h4>
+                                <h4>国内外出差申请汇总及补贴申请表</h4>
                         </td>
                         <td width="50" colspan="1" height="20" align="center">
                                 版本3
@@ -56,11 +56,12 @@
                 </tr>
                 <tr>
                         <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">表单编号<input name="ApplicNo"
-                                        id="ApplicNo" type="text" size="20" class="feeSubCol" value=""> </td>
+                                        id="ApplicNo" type="text" size="20" class="feeSubCol" value="系统" readonly> </td>
                         <input type="hidden" id="hideBillNo" value="" />
                         <input type="hidden" id="Version" value="3" />
                         <input type="hidden" id="hideDeptName" value="" />
                         <input type="hidden" id="hideflowRole" value="" />
+                        <input type="hidden" id="hidePhone" value="" />
                         <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">课组：
                                 <input id="GroupName" name="GroupName" type="text" class="feeDrop" size="20"
                                 class="feeSubCol" value="" readonly></input>
@@ -577,7 +578,6 @@
                         addCacuFeeListener();
                         addGroupListener();
                 });
-
                 $('#BTNFitler').click(function () {
                         $('#DivFilter').window('open');
                         $('.form_date').datetimepicker({

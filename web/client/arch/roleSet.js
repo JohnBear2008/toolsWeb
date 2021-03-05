@@ -4,7 +4,7 @@ function PersonNJob() {
 	var prodNM = '';
 	let dataArr = [];
 	var reportType = 'EmployLook';
-	var arrange = 'MgrJob';
+	var arrange = 'ReadJob';
 	var taskData = { "reportType": reportType, "arrange": arrange, "prodID": prodID, "prodNM": prodNM };
 	$.ajax({
 	  method: 'post',
@@ -15,38 +15,10 @@ function PersonNJob() {
 	    $("#EmpValue").val(); $("#EmpValue").html("");
 	    for (var i = 0; i < dataArr.length; i++) {
 		var youoption = document.createElement("option");
-		// youoption.text = dataArr[i].PersonUser + " " + dataArr[i].PersonName+  " 职位：" + dataArr[i].StaffRole+ " 部門: " + dataArr[i].DeptLabel+ " 课组: " + dataArr[i].GroupLabel;
-		youoption.text = dataArr[i].PersonUser + " " + dataArr[i].PersonName+  " " + dataArr[i].StaffRole;
+		youoption.text = dataArr[i].StaffUser + " " + dataArr[i].StaffName ;
 		youoption.id = "fishtime";
 		youoption.name = "fishtime";
-		youoption.value = dataArr[i].PersonName;
-		$("#EmpValue").append(youoption);
-	    }
-	  },
-	  error: function () {
-	  }
-	})
-}
-function PersonList() {
-	var prodID = ''; 
-	var prodNM = '';
-	let dataArr = [];
-	var reportType = 'EmployLook';
-	var arrange = 'MgrJob';
-	var taskData = { "reportType": reportType, "arrange": arrange, "prodID": prodID, "prodNM": prodNM };
-	$.ajax({
-	  method: 'post',
-	  data: taskData,
-	  url: "/app/TMFinc/getRoute",
-	  success: function (data) {
-	    dataArr = data;
-	    $("#EmpValue").val(); $("#EmpValue").html("");
-	    for (var i = 0; i < dataArr.length; i++) {
-		var youoption = document.createElement("option");
-		youoption.text = dataArr[i].PersonUser + " 姓名: " + dataArr[i].PersonName;
-		youoption.id = "fishtime";
-		youoption.name = "fishtime";
-		youoption.value = dataArr[i].PersonName;
+		youoption.value = dataArr[i].StaffID+ "##" + dataArr[i].StaffUser+ "##" + dataArr[i].StaffName+ "##" + dataArr[i].Mobiles;
 		$("#EmpValue").append(youoption);
 	    }
 	  },
@@ -142,6 +114,12 @@ function OrigList() {
             success: function (data) {
                   dataArr = data;
                   console.log("高瑛欣",JSON.stringify(dataArr));
+			var youoption = document.createElement("option");
+			youoption.text = '-请选择-';
+			youoption.id = "bellTime";
+			youoption.name = "bellTime";
+			youoption.value =  ''+"##"+'';
+			$("#DeptCombo").append(youoption);
                   for (var i = 0; i < dataArr.length; i++) {
 				var youoption = document.createElement("option");
                         youoption.text = dataArr[i].Record_Name;
@@ -235,3 +213,30 @@ function aluminium(selectValue, obj) {
             }
       })
 } 
+// function PersonList() {
+// 	var prodID = ''; 
+// 	var prodNM = '';
+// 	let dataArr = [];
+// 	var reportType = 'EmployLook';
+// 	var arrange = 'MgrJob';
+// 	var taskData = { "reportType": reportType, "arrange": arrange, "prodID": prodID, "prodNM": prodNM };
+// 	$.ajax({
+// 	  method: 'post',
+// 	  data: taskData,
+// 	  url: "/app/TMFinc/getRoute",
+// 	  success: function (data) {
+// 	    dataArr = data;
+// 	    $("#EmpValue").val(); $("#EmpValue").html("");
+// 	    for (var i = 0; i < dataArr.length; i++) {
+// 		var youoption = document.createElement("option");
+// 		youoption.text = dataArr[i].PersonUser + " 姓名: " + dataArr[i].PersonName;
+// 		youoption.id = "fishtime";
+// 		youoption.name = "fishtime";
+// 		youoption.value = dataArr[i].PersonName;
+// 		$("#EmpValue").append(youoption);
+// 	    }
+// 	  },
+// 	  error: function () {
+// 	  }
+// 	})
+// }

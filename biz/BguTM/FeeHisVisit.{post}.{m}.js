@@ -15,7 +15,6 @@ module.exports = function (sender) {
 	}
 	// var Pattern = sender.req.query.Pattern;
 	var Advstr = sender.req.query.Advstr;
-	console.log("雪儿:", Advstr);
 	var weekbeg = Advstr.weekbeg;
 	var weekend = Advstr.weekend;
 	var queryBillNo = Advstr.BillNo;
@@ -23,7 +22,7 @@ module.exports = function (sender) {
 	var Pattern = Advstr.Pattern;
 	var queryStaffName = Advstr.StaffName;
 	var arrange = sender.req.query.arrange;
-	console.log("酒:", queryBillNo, "日:", queryApplicNo, "金:", Pattern);
+	// console.log("酒:", queryBillNo, "日:", queryApplicNo, "金:", Pattern);
 	if (arrange == 'A') {
 		HandleRecordA();
 	}
@@ -209,12 +208,12 @@ module.exports = function (sender) {
 						}
 						dataArr.push(obj);
 					}
-					var dump = JSON.stringify(dataArr);
-					if (dump.length > 100) {
-						console.log("出差单:" + dump.substring(0, 100));
-					} else {
-						console.log("出差单:" + JSON.stringify(dataArr));
-					}
+					// var dump = JSON.stringify(dataArr);
+					// if (dump.length > 100) {
+					// 	console.log("出差单:" + dump.substring(0, 100));
+					// } else {
+					// 	console.log("出差单:" + JSON.stringify(dataArr));
+					// }
 					sender.success(dataArr);
 				},
 				error: sender.error

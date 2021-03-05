@@ -354,7 +354,7 @@ module.exports = function (sender) {
             "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
           }
           datas.push(temp);
-          console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
+          // console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
           // var dump = JSON.stringify(datas);
           // if (dump.length > 500) {
           //   console.log("彩瑛:" + dump.substring(0, 500));

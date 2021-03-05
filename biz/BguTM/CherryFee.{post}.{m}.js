@@ -82,11 +82,11 @@ module.exports = function (sender) {
 				}
 				sender.success(dataArr);
 				var dump = JSON.stringify(dataArr);
-				// if (dump.length > 100) {
-				// 	console.log("子弹:" + dump.substring(0, 100));
-				// } else {
-				// 	console.log("子弹:" + JSON.stringify(dataArr));
-				// }
+				if (dump.length > 100) {
+					console.log("子弹:" + dump.substring(0, 100));
+				} else {
+					console.log("子弹:" + JSON.stringify(dataArr));
+				}
 			},
 			error: sender.error
 		});
@@ -126,6 +126,7 @@ module.exports = function (sender) {
 		if (orderBy != "" && orderBy != undefined) {
 			SQLExecute = SQLExecute + " ORDER BY " + orderBy;
 		}
+		  console.log(" 张良 :" , CurName); 
 		//   console.log(" 模特 :" , SQLExecute); 
 		let paramelist = [CurName];
 		let dataArr = [];
@@ -157,8 +158,15 @@ module.exports = function (sender) {
 						"BudgetItem": ((data[i].BudgetItem == null || data[i].BudgetItem == undefined) ? ('') : data[i].BudgetItem),
 					};
 					dataArr.push(obj);
+					// var dump = JSON.stringify(dataArr);
+					// if (dump.length > 100) {
+					// 	console.log("子:" + dump.substring(0, 100));
+					// } else {
+					// 	console.log("子:" + JSON.stringify(dataArr));
+					// }
 				}
 				sender.success(dataArr);
+
 			},
 			error: sender.error
 		});

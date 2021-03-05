@@ -76,7 +76,10 @@ module.exports = function (sender) {
                   break;
             case "AcquireChain":
                   url = ["BguTM", "AcquireChain"];
-                  break; 
+                  break;
+            case "DingSpeak":
+                  url = ["BguTM", "DingSpeak"];
+                  break;             
             default:
                   console.log("找不到Finc路由");
                   break;

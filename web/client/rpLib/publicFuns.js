@@ -482,8 +482,10 @@ const loadSubDataTable = async (i) => {
 const loadBootStrapSelector = async ({
     elementId,
     sqlParams,
-    initValue
+    initValue,
+
 }) => {
+
 
 
     $('#' + elementId).empty(); //清空原有选项
@@ -528,6 +530,9 @@ const loadBootStrapSelector = async ({
         error: function () {}
     })
 }
+
+
+
 
 
 /**

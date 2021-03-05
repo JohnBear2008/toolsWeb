@@ -5,6 +5,10 @@ const getCustomerSelector =
 const getStaffSelector = "select staffName as value,staffName as option,pinyin as token from `rp_staffs`"
 const getProductSelector =
 	"select productId as value,productId as option,productName as token from `rp_products`"
+
+const getT9ProductSelector =
+	"select MaterialSpec as value,MaterialSpec+','+MaterialName as selectOption,MaterialId as token from comMaterialGroup"
+
 const getTestItemSelector = "select testItem as value,testItem as option,testFee as token from `rp_testitems`"
 const getOptionSelector =
 	"select optionValue as value,optionText as option,optionText as token from `rp_selectoroptions`";
@@ -21,6 +25,7 @@ const getStoreProductSelector = "select * from ( select ta.warehouseId,ta.stockN
 const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"
 const getProduct = "select * from `rp_products`"
+const getT9Prouct = "select * from comMaterialGroup"
 const getPartInfo = "select * from ( select ta.productId,ta.partId,ta.partName,ta.num,tb.price,tc.productDescription as partDescription from `rp_partlocations` ta left join `rp_partsfee` tb on ta.partId=tb.partId left join `rp_products` tc on ta.partId=tc.productId) A"
 const getStockNum = "select * from (select PID,stockNum,ta.warehouseId,warehouseName from `rp_warehouse` ta left join `rp_warehouseslist` tb on ta.warehouseId=tb.warehouseId) A"
 

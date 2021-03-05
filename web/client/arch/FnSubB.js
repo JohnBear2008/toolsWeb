@@ -20,7 +20,7 @@ function shuffleB(  BillNo ) {
         '<table width="1000" border="3" border = "1" > ' +
         '  <tr> ' +
         '    <td width="50" colspan="8"  height="30" align="center"  > ' +
-        '      <h3>国内外出差报销汇总及补贴申请表</h3> ' +
+        '      <h3>国内外出差申请汇总及补贴申请表</h3> ' +
         '    </td> ' +
         '    <td width="50" colspan="1"  height="30" align="center"  > ' +
         '      版本3 ' +
@@ -317,7 +317,7 @@ function shuffleB(  BillNo ) {
                     "TripRept": bjob[i].TripRept,
                     "TripNote": bjob[i].TripNote,
                 }
-                if(i>14 && i< 20){
+                if(i>14 && i< 15){
                     console.log( "夏目理绪" ,bjob[i].TripDate); 
                 }
                 sData.push( objT );

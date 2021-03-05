@@ -97,6 +97,12 @@ function FlowerBasic() {
             success: function (data) {
                   dataArr = data;
                   // console.log("高瑛欣",JSON.stringify(dataArr));
+                  var youoption = document.createElement("option");
+                  youoption.text =   "--请选择--"  ;
+                  youoption.id = "bellTime";
+                  youoption.name = "bellTime";
+                  youoption.value = '请选择';
+                  $("#BudgetCombo_1").append(youoption);
                   for (var i = 0; i < dataArr.length; i++) {
                         var youoption = document.createElement("option");
                         youoption.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
@@ -184,10 +190,12 @@ function obtLogGroup(loginName) {
             success: function (data) {
                   dataArr = data;
                   // console.log("螺丝",JSON.stringify(dataArr));
-                  sessDept = dataArr[0].DeptLabel;
-                  sessGroup = dataArr[0].GroupLabel;
+                  var sessDept = dataArr[0].DeptLabel;
+                  var sessGroup = dataArr[0].GroupLabel;
+                  var sessRole = dataArr[0].StaffRole;
                   $("#hideDeptName").val(sessDept);  
                   $("#GroupName").val(sessGroup);  
+                  $("#hideflowRole").val(sessRole);  
             },
             error: function () {
             }

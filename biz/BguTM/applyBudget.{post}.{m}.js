@@ -1,5 +1,5 @@
 require("../../client/js/Date.js");
-require("../../client/js/funs.js"); 
+require("../../client/js/funs.js");
 
 module.exports = function (sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
@@ -14,24 +14,30 @@ module.exports = function (sender) {
         swift = '0' + swift;
     }
     var ApplyDate = now.Format("yyyyMMdd");
+    var ApplyYear = now.Format("yyyy");
     var BILLDate = now.Format("yyyyMMddHHmm") + swift;
     var BillNo = BILLDate + "";
     var Formkind = "采购单";
     var TESTstaffUser = 'wqy';
     var flowGroup = '';
-    var flowDept = ''; 
-    var flowRole = ''; 
+    var flowDept = '';
+    var flowRole = '';
+    var FlowVip = '';
+    var FlowCID = '';
+    var flowphone = '';
     var qryDept = '';
     var qryGroup = '';
     if (arrange == 'confirm') {
         uptRuleStatus();
     } else if (arrange == 'saveSend') {
         var Advstr = sender.req.query.Advstr;
-        var ListNo = Advstr.ListNo;
+        var yjFun = require("./yjFun");
+        let pwYY = yjFun.ExchYear(ApplyYear);
+        var MD = now.Format("MMdd");
+        var ListNo = pwYY + MD + swift + 'PL';
+        var ApplicNo = pwYY + MD + swift + 'PA';
         var RequestDate = Advstr.RequestDate;
         var ProjectNo = Advstr.ProjectNo;
-        var ApplicNo = Advstr.ApplicNo;
-        flowRole = Advstr.flowRole;
         qryDept = Advstr.DeptName;
         let DeptList = [];
         if (qryDept != "" && qryDept != undefined) {
@@ -53,8 +59,8 @@ module.exports = function (sender) {
         var EntryDate = now.Format("yyyyMMdd");
         var hideBillNo = Advstr.hideBillNo;
         if (edituse == 'U') {
-            BillNo = hideBillNo ;
-            console.log(" 心魔叫嚣", BillNo );
+            BillNo = hideBillNo;
+            console.log(" 心魔叫嚣", BillNo);
         }
         validOrig();
     } else if (arrange == 'loadSend') {
@@ -82,9 +88,9 @@ module.exports = function (sender) {
         } else {
             StaffRole = "采购承办人";
         }
-        console.log("刘备", StaffRole, "露娜", flowGroup, flowDept );
+        console.log("刘备", StaffRole, "露娜", flowGroup, flowDept);
         let SQL3 =
-            " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
+            " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
             " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
             " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
             " from  bgu_staffs tba  " +
@@ -96,7 +102,7 @@ module.exports = function (sender) {
             " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
             " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
             " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
-            " where  tba.DeptLabel =? and tba.StaffLevel='1'   ";
+            " where  tba.DeptLabel =? and tba.StaffLevel='1'  and tba.StaffName=?   ";
         var OppWorkId = StaffID;
         var OppName = StaffName;
         var MagName = '';
@@ -107,15 +113,18 @@ module.exports = function (sender) {
         var PsdName = '';
         var CeoName = '';
         var BodName = '';
-        var Flag = '1'; 
+        var Flag = '1';
+  
         yjDBService.exec({
             sql: SQL3,
-            parameters: [flowGroup, flowDept],  //不可以有多个部門 软体部,工程部
+            parameters: [flowGroup, flowDept, OppName],
             rowsAsArray: true,
             success: function (r) {
                 var datas = [];
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                console.log("漫漫古道", data.length);
                 for (var i = 0; i < data.length; i++) {
+                    flowphone = data[i].Mobiles;
                     MagName = data[i].MagName;
                     VipName = data[i].VipName;
                     PurName = data[i].PurName;
@@ -124,45 +133,53 @@ module.exports = function (sender) {
                     PsdName = data[i].PsdName;
                     CeoName = data[i].CeoName;
                     BodName = data[i].BodName;
-                    console.log("裴擒虎", MagName,VipName,PurName,PexName,CfoName,PsdName,CeoName,BodName);
+                    console.log("裴擒虎", MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName);
                 }
-                if (MagName != "" && MagName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (MagName != "" && MagName != undefined) {
+                    if(MagName == StaffName){
+                        flowRole = '部门主管';
+                        console.log("姜子牙", flowRole);
+                    }
+                } else {
+                    Flag = '0';
                 }
-                if (VipName != "" && VipName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (VipName != "" && VipName != undefined) {
+                    if(VipName ==StaffName){
+                        flowRole = '副总';
+                        console.log("妲己", flowRole);
+                    }
+                } else {
+                    Flag = '0';
                 }
-                if (PurName != "" && PurName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (PurName != "" && PurName != undefined) {
+                } else {
+                    Flag = '0';
                 }
-                if (PexName != "" && PexName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (PexName != "" && PexName != undefined) {
+                } else {
+                    Flag = '0';
                 }
-                if (CfoName != "" && CfoName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (CfoName != "" && CfoName != undefined) {
+                } else {
+                    Flag = '0';
                 }
-                if (PsdName != "" && PsdName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (PsdName != "" && PsdName != undefined) {
+                } else {
+                    Flag = '0';
                 }
-                if (CeoName != "" && CeoName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (CeoName != "" && CeoName != undefined) {
+                } else {
+                    Flag = '0';
                 }
-                if (BodName != "" && BodName != undefined ) {
-                }else{
-                    Flag = '0'; 
+                if (BodName != "" && BodName != undefined) {
+                } else {
+                    Flag = '0';
                 }
                 if (Flag == '0') {
                     var retcode = { "status": "Fail", "message": "送审不成功，审批人不完整", "BillNo": BillNo };
                     sender.success(retcode);
-                    console.log("裴擒虎", retcode);
-                }else{
+                    console.log("裴虎", retcode);
+                } else {
                     clearMain();
                 }
             },
@@ -180,8 +197,10 @@ module.exports = function (sender) {
         var OppName = '';
         var MagWorkId = '';
         var MagName = '';
+        var MagDate = '';
         var VipWorkId = '';
         var VipName = '';
+        var VipDate = '';
         var PurWorkId = '';
         var PurName = '';
         var PexWorkId = '';
@@ -200,7 +219,7 @@ module.exports = function (sender) {
         var Subject = sData[0].Subject;
         var BudgetCID = sData[0].BudgetCID;
         if (BudgetCID != null && BudgetCID != undefined) {
-            var BudgetBID = BudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0");
+            var BudgetBID = BudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0"); FlowCID = BudgetCID;
             var BudgetType = BudgetCID.substring(0, 1); BudgetCID = nulReplaceWord(BudgetCID, "0");
         }
         console.log(">>>AB：", BudgetType, ">>>科目：", BudgetCID, ">>>承办：", BudgetBID);
@@ -221,7 +240,7 @@ module.exports = function (sender) {
                                 if (BudgetType == 'B') {
                                     TermiLevel = '8';
                                 }
-                                console.log(">>>超过预算", UpperLimit, "崔崔", BudgetType);
+                                // console.log(">>>超过预算", UpperLimit, "崔崔", BudgetType);
                             } else {
                                 if (BudgetType == 'A') {
                                     TermiLevel = '4';
@@ -229,7 +248,7 @@ module.exports = function (sender) {
                                 if (BudgetType == 'B') {
                                     TermiLevel = '6';
                                 }
-                                console.log("<<<未达预算", UpperLimit, "崔崔", BudgetType);
+                                // console.log("<<<未达预算", UpperLimit, "崔崔", BudgetType);
                             }
                         }
                         if (result[1][i] == null || result[1][i] == undefined) {
@@ -258,9 +277,42 @@ module.exports = function (sender) {
                             } else {
 
                             }
-                            CurWorkId = MagWorkId;
-                            CurName = MagName;
-                            CurJob = 'dpt';
+                            var CurLevel = '1';
+                            if (flowRole == '副总' || flowRole == '总经理' || flowRole == '财务总监'  || flowRole == 'CEO' || flowRole == '董事长' ) {
+                                if (BudgetType == 'B') {
+                                    CurJob = 'pur';
+                                    CurWorkId = PurWorkId ;
+                                    CurName = PurName;
+                                }else{
+                                    CurJob = 'cfo';
+                                    CurWorkId = CfoWorkId ;
+                                    CurName = CfoName;
+                                }
+                                VipDate = ApplyDate;
+                                MagDate = ApplyDate;
+                                CurLevel = '3';
+                            }else if (flowRole == '部门主管') {
+                                CurWorkId = VipWorkId ;
+                                CurName = VipName;
+                                VipDate = nulReplaceDate(VipDate);
+                                MagDate = ApplyDate;
+                                CurJob = 'vip';
+                                CurLevel = '2';
+                            }else if (flowRole == '文员') {
+                                CurWorkId = MagWorkId;
+                                CurName = MagName;
+                                VipDate = nulReplaceDate(VipDate);
+                                MagDate = nulReplaceDate(MagDate);
+                                CurJob = 'dpt';
+                                CurLevel = '1';
+                            }else {
+                                CurWorkId = MagWorkId;
+                                CurName = MagName;
+                                VipDate = nulReplaceDate(VipDate);
+                                MagDate = nulReplaceDate(MagDate);
+                                CurJob = 'dpt';
+                                CurLevel = '1';
+                            }
                         }
                         if (result[2][i] == null || result[2][i] == undefined) {
                             Track = '[{"Level1":"adm","Level2":"dpt","Level3":"vip","Level4":"pur","Level5":"pEx","Level6":"cfo","Level7":"psd","Level8":"ceo","Level9":"bod"}]';
@@ -268,8 +320,8 @@ module.exports = function (sender) {
                             Track = result[2][i].Track;
                             // console.log("導航條", result[1][i]);
                         }
-                    }
-                    handleRule(TermiLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, VipWorkId, VipName, PurWorkId, PurName, PexWorkId, PexName,
+                    }                    
+                    handleRule(TermiLevel, CurLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, MagDate, VipWorkId, VipName, VipDate ,PurWorkId, PurName, PexWorkId, PexName,
                         CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track);
                 }
             });
@@ -309,23 +361,23 @@ module.exports = function (sender) {
                 StaffRole = "采购承办人";
             }
             let SQL3 =
-                // select tba.staffID, tba.staffName, tdpt.staffID, tdpt.staffName, tvip.staffID, tvip.staffName
-                // , tpur.staffID, tpur.staffName, tpex.staffID, tpex.staffName, tcfo.staffID, tcfo.staffName
-                // , tpsd.staffID, tpsd.staffName, tceo.staffID, tceo.staffName, tbod.staffID, tbod.staffName
+                // select tba.staffID, tba.staffName, tdpt.staffID , tdpt.staffName ,tvip.staffID , tvip.staffName
+                // ,tpur.staffID , tpur.staffName,tpex.staffID , tpex.staffName,tcfo.staffID , tcfo.staffName
+                // ,tpsd.staffID , tpsd.staffName,tceo.staffID , tceo.staffName ,tbod.staffID , tbod.staffName 
                 // from  bgu_staffs tba
-                // LEFT JOIN bgu_staffs tdpt on tba.groupLabel = tdpt.groupLabel and tdpt.staffLevel = '2'
-                // LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel = '3'
-                // LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel = '4' and tpur.StaffRole='资讯承办人'
-                // LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel = '5'
-                // LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel = '6'
-                // LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel = '7'
-                // LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel = '8'
-                // LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel = '9'
-                // where  tba.DeptLabel =? and tba.StaffLevel='1'
+                // LEFT JOIN bgu_staffs tdpt on '财务组' = tdpt.GroupLabel and tdpt.staffLevel='2'  
+                // LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tdpt.DeptLabel, '%') and tvip.staffLevel='3'
+                // LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tpur.staffLevel='4' and tpur.StaffRole='采购承办人'
+                // LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tpex.staffLevel='5' 
+                // LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tcfo.staffLevel='6'
+                // LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tpsd.staffLevel='7'
+                // LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tceo.staffLevel='8'
+                // LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tbod.staffLevel='9'
+                // where tba.DeptLabel ='财务部'  and tba.StaffLevel='1'  
 
-                " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
-                " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
-                " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
+                " select tba.Mobiles as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles as MagWorkId, tdpt.StaffName as MagName,tvip.Mobiles as VipWorkId, tvip.StaffName as VipName" +
+                " ,tpur.Mobiles as PurWorkId, tpur.StaffName as PurName,tpex.Mobiles as PexWorkId, tpex.StaffName as PexName,tcfo.Mobiles as CfoWorkId, tcfo.StaffName as CfoName" +
+                " ,tpsd.Mobiles as PsdWorkId, tpsd.StaffName as PsdName,tceo.Mobiles as CeoWorkId, tceo.StaffName as CeoName,tbod.Mobiles as BodWorkId, tbod.StaffName as BodName " +
                 " from  bgu_staffs tba  " +
                 " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
                 " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
@@ -354,7 +406,7 @@ module.exports = function (sender) {
             var CeoName = '';
             var BodWorkId = '';
             var BodName = '';
-            
+
             yjDBService.exec({
                 sql: SQL3,
                 parameters: [flowGroup, flowDept],
@@ -438,31 +490,29 @@ module.exports = function (sender) {
             });
         }
     }
-    function handleRule(TermiLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, VipWorkId, VipName, PurWorkId, PurName, PexWorkId, PexName,
+    function handleRule(TermiLevel, CurLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, MagDate, VipWorkId, VipName, VipDate ,PurWorkId, PurName, PexWorkId, PexName,
         CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track) {
         let paramList = [];
         var UpperLimit = '';
         var flagLimit = 'N';
         var BudgetType = 'A';
         var EntryDate = ApplyDate;
-        var GroupLabel = flowGroup;
         var CurStatus = 'P';
         var CurText = '审批';
-        var CurLevel = '1';
         var SendStatus = 'K';
         var SendText = '保存';
 
-        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,  `GroupLabel`, `StaffID`, `StaffName`,  " +
+        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,  `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
             " `CurStatus`, `CurText`,  `SendStatus`, `SendText`, `CurLevel`,  `TermiLevel`, `CurWorkId`, `CurName`, `CurJob` ," +
-            " `Track`, `OppWorkId`, `OppName`, `oppDate`,  `MagWorkId`, `MagName`, `VipWorkId`, `VipName`,  `PurWorkId`, " +
+            " `Track`, `OppWorkId`, `OppName`, `OppDate`,  `MagWorkId`, `MagName` , `MagDate` , `VipWorkId`, `VipName`,  `VipDate` ,  `PurWorkId`, " +
             " `PurName`,   `PexWorkId`, `PexName`,   `CfoWorkId`, `CfoName`,  `PsdWorkId`, `PsdName`,  " +
             "  `CeoWorkId`, `CeoName`,  `BodWorkId`, `BodName` )" +
-            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + GroupLabel + "', '" + StaffID + "', '" + StaffName + "',  " +
+            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + flowGroup + "', '" + flowDept + "','" + StaffID + "', '" + StaffName + "',  " +
             " '" + CurStatus + "', '" + CurText + "', '" + SendStatus + "', '" + SendText + "', '" + CurLevel + "', " +
             " '" + TermiLevel + "', '" + CurWorkId + "', '" + CurName + "','" + CurJob + "',  " +
-            " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "',  '" + VipWorkId + "', '" + VipName + "', " +
-            "    '" + PurWorkId + "',  '" + PurName + "',   '" + PexWorkId + "', '" + PexName + "',  '" + CfoWorkId + "', '" + CfoName + "',  " +
-            "   '" + PsdWorkId + "', '" + PsdName + "'," +
+            " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "', " + MagDate + " , " +
+            " '" + VipWorkId + "', '" + VipName + "', " + VipDate + " ,  '" + PurWorkId + "',  '" + PurName + "',   '" + PexWorkId + "', '" + PexName + "'," +
+            "  '" + CfoWorkId + "', '" + CfoName + "', '" + PsdWorkId + "', '" + PsdName + "'," +
             " '" + CeoWorkId + "', '" + CeoName + "', '" + BodWorkId + "', '" + BodName + "' ) ";
 
         yjDBService.exec({
@@ -471,8 +521,8 @@ module.exports = function (sender) {
             rowsAsArray: true,
             success: function (result) {
                 // var data=yjDB.dataSet2ObjectList(result.meta,result.rows);
-                console.log(result);
-                var retcode = { "status": "OK", "message": "送审完成", "BillNo": BillNo };
+                console.log("不知道你的名字",result);
+                var retcode = { "status": "OK", "message": "送审完成", "BillNo": BillNo, "Phone": flowphone };
                 sender.success(retcode);
                 console.log("昭@@", retcode);
             },
@@ -480,7 +530,7 @@ module.exports = function (sender) {
         });
 
     }
-    function saveDetail() {
+    function saveDetail(Underburget) {
         var sData = sender.req.query.sData;
         for (var i = 0; i < sData.length; i++) {
             var SNNo = sData[i].SNNo;
@@ -495,7 +545,7 @@ module.exports = function (sender) {
             var Subtotal = sData[i].Subtotal;
             var Delivery = sData[i].Delivery; Delivery = nulReplaceDate(Delivery);
             var Supplier = sData[i].Supplier;
-            var Underburget = sData[i].Underburget;
+            // var Underburget = sData[i].Underburget;
             var AppendType = sData[i].AppendType;
             var Department = sData[i].Department;
             let paramList = [BillNo, SNNo, BudgetCID, BudgetItem, ItemNo, Descript, Unit,
@@ -568,23 +618,82 @@ module.exports = function (sender) {
             rowsAsArray: true,
             success: function (result) {
                 // var data=yjDB.dataSet2ObjectList(result.meta,result.rows);
-                saveDetail();
+
+                PopupCredit();
+            },
+            error: sender.error
+        });
+    }
+    function PopupCredit() {
+        let SQL2 =
+            " select AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ?   " +
+            " Union " +
+            " select UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where DeptName = ?   ";
+        // console.log("鲁班七号:", FlowCID, qryDept);
+        var itemIsOver = '';
+        var vvipIsOver = '';
+        yjDBService.exec({
+            sql: SQL2,
+            parameters: [FlowCID, qryDept],
+            rowsAsArray: true,
+            success: function (r) {
+                var datas = [];
+                var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i] != null && data[i] != undefined) {
+                        if (i == 0) {
+                            itemIsOver = data[0].IsOver;
+                        }
+                        if (i == 1) {
+                            vvipIsOver = data[1].IsOver;
+                        }
+                    } else {
+
+                    }
+                }
+                var Underburget = "否";
+                if (itemIsOver == 'Y' && vvipIsOver == 'Y') {
+                    Underburget = "是";
+                } else {
+                    Underburget = "否";
+                }
+                saveDetail(Underburget);
             },
             error: sender.error
         });
     }
     function uptRuleStatus() {
         var Basstr = sender.req.query.Basstr;
-        var hideBillNo = Basstr.hideBillNo;
-        console.log('送修', hideBillNo);
+        var BillNo = Basstr.hideBillNo;
+        var DeptName = Basstr.DeptName;
+        var GroupName = Basstr.GroupName;
+        var StaffName = Basstr.StaffName;
+        var idleRole = Basstr.flowRole;
+        var idlephone = Basstr.hidePhone;
+        // var mobiles = ['17051095060'] ;
+        var mobiles = [];
+        mobiles.push(idlephone);
+        console.log('送修', BillNo, " TEL:", mobiles);
+        if (BillNo != '' && BillNo != undefined) {
+
+        } else {
+            var retcode = { "status": "Fail", "message": "送审已完成，不可再次送审\n" };
+            sender.success(retcode);
+            console.log("司", retcode);
+            return;
+        }
         var SQLInsert = "Update `bgu_rule` set SendStatus  = 'D'  , SendText  = '送出' where BillNo= ?";
         yjDBService.exec({
             sql: SQLInsert,
-            parameters: [hideBillNo],
+            parameters: [BillNo],
             success: function (result) {
-                var retcode = { "status": "OK", "message": "送审完成", "BillNo": hideBillNo };
+                var Msg = "采购单送审" + "\n文号: " + BillNo + "\n部門: " + DeptName + "\n课组: " + GroupName + "\n文员: " + StaffName + "\n职位: " + idleRole;
+                // console.log("町町发送 ", Msg);
+                var yjDing = require("./yjDing");
+                let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
+                var retcode = { "status": "OK", "message": "送审完成\n" + pw, "BillNo": BillNo };
                 sender.success(retcode);
-                console.log("懿@@", retcode);
+                console.log("懿", retcode);
             },
             error: {},
         });
@@ -648,3 +757,18 @@ module.exports = function (sender) {
 // LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tbod.staffLevel='9'
 // where  tdpt.DeptLabel LIKE '%软体部%' and tdpt.StaffLevel='2' 
 // and'MIS'  =tdpt.groupLabel and tdpt.staffLevel='2'
+
+
+// " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
+// " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
+// " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
+// " from  bgu_staffs tba  " +
+// " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
+// " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
+// " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' and tpur.StaffRole='" + StaffRole + "' " +
+// " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
+// " LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' " +
+// " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
+// " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
+// " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
+// " where  tba.DeptLabel =? and tba.StaffLevel='1'   ";

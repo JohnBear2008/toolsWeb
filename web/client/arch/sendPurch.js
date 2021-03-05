@@ -45,6 +45,7 @@ function winPurch() {
       var taskData = {
             "reportType": reportType, "arrange": arrange, "BudgetCID": BudgetCID, "BudgetItem": BudgetItem, "DeptName": DeptName, "GroupName": GroupName, "oppOID": oppOID, "OppName": OppName
       }
+      // console.log("百里玄策", taskData );
       $.ajax({
             method: 'post',
             data: taskData,
@@ -85,19 +86,36 @@ function view_hmi() {
                         sumTemp = parseInt(sumTemp + parval, 10);
                   }
             }
-            console.log("野弘", sumTemp);
       }
       $('#TotalValue').val(sumTemp);
 }
 function apply_hmi() {
+      var DeptName = $('#hideDeptName').val();
+      var GroupName = $('#GroupName').val();
+      var flowRole = $('#hideflowRole').val(); 
+      if(DeptName!=null ||DeptName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
+      if(GroupName!=null ||GroupName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
+      var StaffName = sessionName;
       var SendStatus = '1';
       layer.confirm('此单送出审批吗，请确认操作是否无误？', {
             btn: ['是', '否']
       }, function () {
             layer.msg('操作成功', { icon: 1 });
             var hideBillNo = $('#hideBillNo').val();
+            var hidePhone = $('#hidePhone').val();
             var Basstr = {
-                  "SendStatus": SendStatus, "hideBillNo": hideBillNo , "edituse": edituse
+                  "SendStatus": SendStatus, "hideBillNo": hideBillNo , "hidePhone": hidePhone , "edituse": edituse, "DeptName": DeptName, 
+                  "GroupName": GroupName,  "StaffName": StaffName, "flowRole": flowRole  
             };
             var reportType = 'applyBudget';
             var arrange = 'confirm';
@@ -111,10 +129,11 @@ function apply_hmi() {
                   success: function (data) {
                         console.log("会好", JSON.stringify(data));
                         $("#hideBillNo").val('');
+                        $("#hidePhone").val('');
                         if (data.status == 'Fail') {
                               layer.msg("讯息" + data.message);
                         } else if (data.status == 'OK') {
-                              layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status), {
+                              layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status)+"\n讯息" + (data.message), {
                                     btn: ['知道了']
                               }, function () {
                                     layer.msg('操作成功', { icon: 1 });
@@ -129,6 +148,16 @@ function apply_hmi() {
       });
 
 }
+// function DingDing() {
+//       var phone = '1505213225'; 
+//       var DeptName = '软体部'; 
+//       var GroupName = 'MIS'; 
+//       var FormKind = '采购单'; 
+//       var CurText = '核准'; 
+//       var CurName = '俞田龙';  
+//       var Advstr = { "DeptName": DeptName, "GroupName": GroupName,  "FormKind": FormKind, "CurText": CurText, "CurName": CurName };
+//       putDing( Advstr);
+// }
 function save_hmi() {
       view_hmi();
       var SendStatus = '0';
@@ -151,6 +180,19 @@ function save_hmi() {
             "DeptName": DeptName, "GroupName": GroupName, "StaffID": StaffID, "StaffName": StaffName, "flowRole": flowRole , "TotalValue": TotalValue, "Currency": Currency,
             "Payment": Payment, "Explanation": Explanation, "hideBillNo": hideBillNo
       };
+      if(DeptName!=null ||DeptName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
+      if(GroupName!=null ||GroupName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
+      console.log("不知火舞",Advstr);
       var SNNo = '1';
       var ItemNo = $('#ItemNo_1').val();
       var Descript = $('#Descript_1').val();
@@ -165,7 +207,6 @@ function save_hmi() {
       var AppendType = $('#AppendType_1').val();
       var Department = $('#Department_1').val();
       let sData = [];
-
       for (let i = 1; i <= 10; i++) {
             var SNNo = '' + i;
             if (i == 1) {
@@ -216,7 +257,17 @@ function save_hmi() {
             };
             sData.push(StepStr);
       }
-
+      if(  BudgetCombo=='请选择'   ){
+            layer.alert("请选择项目！");
+            return;
+      }else{
+            if(  Subject!=undefined   ){
+            }else{
+                  layer.alert("请选择项目！!");
+                  return;
+            }
+            layer.alert("项目OK");          
+      }
       if (inputCheckFee(TotalValue, "总金额")) {
             layer.alert("总金额" + "Ok!");
       } else {
@@ -234,6 +285,7 @@ function save_hmi() {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   $("#hideBillNo").val(data.BillNo);
+                  $("#hidePhone").val(data.Phone);
                   if (data.status == 'Fail') {
                         layer.msg("讯息" + data.message);
                   } else if (data.status == 'OK') {

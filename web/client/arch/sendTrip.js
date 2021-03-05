@@ -100,8 +100,7 @@ function view_dsp() {
             }
             sumTemp = SUmOFA + SUmOFB + SUmOFC + SUmOFD + SUmOFE + SUmOFF;
             if (sumTemp != '' && sumTemp != '0' && sumTemp != 'NaN' && sumTemp != undefined) {
-                  $('#TicTotal_' + i).val(sumTemp);  //bug
-                  console.log("野弘", sumTemp, "机车", i);
+                  $('#TicTotal_' + i).val(sumTemp);   
             }
       }
       if (columnA != '' && columnA != 'NaN' && columnA != undefined) {
@@ -125,14 +124,32 @@ function view_dsp() {
       $('#TicTotal_14').val(GrandTmp);
 }
 function apply_dsp() {
+      var DeptName = $('#hideDeptName').val();
+      var GroupName = $('#GroupName').val();
+      var flowRole = $('#hideflowRole').val(); 
+      var StaffName = sessionName;
       var SendStatus = '1';
+      if(DeptName!=null ||DeptName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
+      if(GroupName!=null ||GroupName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
       layer.confirm('此单送出审批吗，请确认操作是否无误？', {
             btn: ['是', '否']
       }, function () {
             layer.msg('操作成功', { icon: 1 });
             var hideBillNo = $('#hideBillNo').val();
+            var hidePhone = $('#hidePhone').val();
             var Basstr = {
-                  "SendStatus": SendStatus, "hideBillNo": hideBillNo
+                  "SendStatus": SendStatus, "hideBillNo": hideBillNo , "hidePhone": hidePhone ,
+                  "DeptName": DeptName, "GroupName": GroupName,  "StaffName": StaffName, "flowRole": flowRole  
             };
             var reportType = 'applyTrip';
             var arrange = 'confirm';
@@ -146,10 +163,11 @@ function apply_dsp() {
                   success: function (data) {
                         console.log("可新", JSON.stringify(data));
                         $("#hideBillNo").val('');
+                        $("#hidePhone").val('');
                         if (data.status == 'Fail') {
                               layer.msg("讯息" + data.message);
                         } else if (data.status == 'OK') {
-                              layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status), {
+                              layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status)+"\n讯息" + (data.message), {
                                     btn: ['知道了']
                               }, function () {
                                     layer.msg('操作成功', { icon: 1 });
@@ -206,6 +224,18 @@ function save_dsp() {
             "IsOver": IsOver, "HotelName": HotelName, "HotelTel": HotelTel, "Overspend": Overspend, "hideBillNo": hideBillNo
       };
       // console.log("李秀晶", Advstr);
+      if(DeptName!=null ||DeptName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
+      if(GroupName!=null ||GroupName!=undefined ){
+
+      }else{
+            layer.alert("帐号没有文员角色，请设定!");
+            return;
+      }
       let sData = [];
       for (let i = 0; i <= 19; i++) {
             var SNNo = '' + i;
@@ -237,9 +267,9 @@ function save_dsp() {
                   "TripRept": TripRept,
                   "TripNote": TripNote,
             };
-            if (i > 14 && i < 19) {
-                  console.log("子瑜", JSON.stringify(StepStr));
-            }
+            // if (i > 14 && i < 19) {
+            //       console.log("子瑜", JSON.stringify(StepStr));
+            // }
             sData.push(StepStr);
       }
 
@@ -261,6 +291,7 @@ function save_dsp() {
             success: function (data) {
                   console.log("可欣", JSON.stringify(data));
                   $("#hideBillNo").val(data.BillNo);
+                  $("#hidePhone").val(data.Phone);
                   if (data.status == 'Fail') {
                         layer.msg("讯息" + data.message);
                   } else if (data.status == 'OK') {
@@ -275,3 +306,13 @@ function save_dsp() {
             }
       })
 }
+// function DingDing() {
+//       var phone = '1505213225'; 
+//       var DeptName = '软体部'; 
+//       var GroupName = 'MIS'; 
+//       var FormKind = '出差单'; 
+//       var CurText = '申批'; 
+//       var CurName = '张光帷';  
+//       var Advstr = { "DeptName": DeptName, "GroupName": GroupName,  "FormKind": FormKind, "CurText": CurText, "CurName": CurName };
+//       putDing( Advstr);
+// }

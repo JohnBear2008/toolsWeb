@@ -26,7 +26,6 @@
 <!-- 预览 -->
 <script src="/arch/FnSubA.js"></script>
 <script src="/arch/FnSubB.js"></script>
-
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
@@ -191,13 +190,10 @@
 					"tableID": "#center_TB",
 					"DBTable": "auto_parts"
 				}
-
 				missType = getQueryString("missT");
-				console.log("将心glbT:" + missType);
+				console.log("漫漫古道:" + sessionName);
 				missAcute = getQueryString("missA");
-				console.log("将心glbA:" + missAcute);
 				missBcute = getQueryString("missB");
-				console.log("将心glbB:" + missBcute);
 				var missAencode = decodeURI(missAcute);
 
 				glbA = missAencode;
@@ -311,6 +307,20 @@
 					$(this).addClass('selected');
 				}
 			});
+
+			$('#center_TB tbody').on('dblclick', 'tr', function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			var data = table.row(this).data();
+			var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				if (CapMode == 'A') {
+					shuffleA(billNo);
+				}
+				if (CapMode == 'B') {
+					shuffleB(billNo);
+				}
+				$('#kisswindow').modal('show');	
+		});
 		}
 		function reloadCol() {
 			columnsData = [
@@ -406,26 +416,30 @@
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				var SendText = dataSelect.SendText;
+				var StaffName = dataSelect.StaffName;
 				if (SendText != '保存') {
-					layer.msg('非保存状态 ， 此单不能送审', { icon: 1 });
+					layer.msg('非保存状态 ， 此单不能修改', { icon: 1 });
 					return;
-				} else {
-					layer.confirm(billNo + '进入编辑作业，请确认操作是否无误？', {
-						btn: ['是', '否']
-					}, function () {
-						var paramClearA = encodeURI(encodeURI(billNo)); 
-						var paramType = 'Mdy'; 
-						if(CapMode=='A'){
-							window.location.href = "/app/TMFinc/feeApplyForm?missT="+ paramType  + "&missA=" + paramClearA  +  " ";
-						}
-						if(CapMode=='B'){
-							window.location.href = "/app/TMFinc/feeTravel?missT="+ paramType  + "&missA=" + paramClearA  +  " ";
-						}
-					}, function () {
-						layer.msg('无操作', { icon: 1 });
-					});
 				}
-
+				// console.log("是转瞬即逝的东西",sessionName , StaffName)
+				if (sessionName != StaffName) {
+					layer.msg('非本人操作 ， 此单不能修改', { icon: 1 });
+					return;
+				}
+				layer.confirm(billNo + '进入编辑作业，请确认操作是否无误？', {
+					btn: ['是', '否']
+				}, function () {
+					var paramClearA = encodeURI(encodeURI(billNo));
+					var paramType = 'Mdy';
+					if (CapMode == 'A') {
+						window.location.href = "/app/TMFinc/feeApplyForm?missT=" + paramType + "&missA=" + paramClearA + " ";
+					}
+					if (CapMode == 'B') {
+						window.location.href = "/app/TMFinc/feeTravel?missT=" + paramType + "&missA=" + paramClearA + " ";
+					}
+				}, function () {
+					layer.msg('无操作', { icon: 1 });
+				});
 			}
 		});
 		function apply_hmi() {
@@ -436,52 +450,56 @@
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				var SendText = dataSelect.SendText;
+				var StaffName = dataSelect.StaffName;
 				if (SendText != '保存') {
 					layer.msg('非保存状态 ， 此单不能送审', { icon: 1 });
 					return;
-				} else {
-					console.log("西阭", (billNo));
-					var SendStatus = '1';
-					layer.confirm('此单送出审批吗，请确认操作是否无误？', {
-						btn: ['是', '否']
-					}, function () {
-						layer.msg('操作成功', { icon: 1 });
-						var Basstr = {
-							"SendStatus": SendStatus, "hideBillNo": billNo
-						};
-						var reportType = 'applyBudget';
-						var arrange = 'confirm';
-						var taskData = {
-							"reportType": reportType, "arrange": arrange, "Basstr": Basstr
-						}
-						$.ajax({
-							method: 'post',
-							data: taskData,
-							url: "/app/TMFinc/getRoute",
-							success: function (data) {
-								console.log("会好", JSON.stringify(data));
-								if (data.status == 'Fail') {
-									layer.msg("讯息" + data.message);
-								} else if (data.status == 'OK') {
-									layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status), {
-										btn: ['知道了']
-									}, function () {
-										layer.msg('操作成功', { icon: 1 });
-										var DateB = $("#taskMakeDateB").val();
-										var DateE = $("#taskMakeDateE").val();
-										missAcute = $('#Pattern').val();
-										missBcute = $('#CapMode').val();
-										window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
-									});
-								}
-							},
-							error: function () {
-							}
-						})
-					}, function () {
-						layer.msg('无操作', { icon: 1 });
-					});
 				}
+				if (sessionName != StaffName) {
+					layer.msg('非本人提交 ， 此单不能送审', { icon: 1 });
+					return;
+				}
+				console.log("西阭", (billNo));
+				var SendStatus = '1';
+				layer.confirm('此单送出审批吗，请确认操作是否无误？', {
+					btn: ['是', '否']
+				}, function () {
+					layer.msg('操作成功', { icon: 1 });
+					var Basstr = {
+						"SendStatus": SendStatus, "hideBillNo": billNo
+					};
+					var reportType = 'applyBudget';
+					var arrange = 'confirm';
+					var taskData = {
+						"reportType": reportType, "arrange": arrange, "Basstr": Basstr
+					}
+					$.ajax({
+						method: 'post',
+						data: taskData,
+						url: "/app/TMFinc/getRoute",
+						success: function (data) {
+							console.log("会好", JSON.stringify(data));
+							if (data.status == 'Fail') {
+								layer.msg("讯息" + data.message);
+							} else if (data.status == 'OK') {
+								layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status), {
+									btn: ['知道了']
+								}, function () {
+									layer.msg('操作成功', { icon: 1 });
+									var DateB = $("#taskMakeDateB").val();
+									var DateE = $("#taskMakeDateE").val();
+									missAcute = $('#Pattern').val();
+									missBcute = $('#CapMode').val();
+									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+								});
+							}
+						},
+						error: function () {
+						}
+					})
+				}, function () {
+					layer.msg('无操作', { icon: 1 });
+				});
 			}
 		}
 		$('#PrintConfirm').click(function () {
@@ -494,6 +512,4 @@
 				}
 			})
 		});
-
-
 	</script>

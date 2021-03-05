@@ -22,7 +22,7 @@ module.exports = function (sender) {
 	}
 	function findDept() {
 		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
-		" where tba.StaffName = ? ";
+		" where tba.StaffName = ? and StaffLevel = '1' ";
 		yjDBService.exec({
 			sql: SQLqry,
 			parameters: [loginName],
@@ -51,7 +51,7 @@ module.exports = function (sender) {
 					}
 					datas.push(temp)
 				}
-				// var dump = JSON.stringify(datas);
+				var dump = JSON.stringify(datas);
 				// if (dump.length > 100) {
 				// 	console.log("姑瑛:" + dump.substring(0, 100));
 				// } else {

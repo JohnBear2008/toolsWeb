@@ -1,3 +1,23 @@
+//我的钉钉消息-----------
+function putDing(Advstr) {
+    var reportType = 'DingSpeak';
+    var arrange = 'BudGroup';
+    var taskData = {
+          "reportType": reportType, "arrange": arrange,  "Advstr": Advstr
+    }
+    $.ajax({
+        method: 'post',
+        url: "/app/TMFinc/getRoute",
+        data: taskData,
+        success: function(data, textStatus) {
+            alert("成功数据:" + JSON.stringify(data));
+           
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            
+        }
+    });
+}
 function myTrim(x) {
 	if(x!=null){
 		x= x.replace("\\","");

@@ -3,6 +3,8 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<!-- 导入T9 js库 -->
+<script type="text/javascript" src="/rpLib/t9PublicFuns.js"></script>
 
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
@@ -2192,8 +2194,11 @@
         //主表过滤器
         mainTableFilter = '';
 
-
-
+        // //t9 接口测试
+        // getT9DataBySql({
+        //     to: 'rp',
+        //     sql: 'getProductsSelector',
+        // })
 
         //初始化子表
         loadDataSubTable({
@@ -3372,10 +3377,18 @@
         })
 
 
-        loadBootStrapSelector({
+
+        // loadBootStrapSelector({
+        //     elementId: 'rp_recordbillsForm-productId',
+        //     sqlParams: {
+        //          sql: 'getProductSelector'        
+        //     },
+        // })
+        loadT9BootStrapSelector({
             elementId: 'rp_recordbillsForm-productId',
             sqlParams: {
-                sql: 'getProductSelector'
+                // sql: 'getProductSelector'
+                sql: 'getT9ProductSelector'
             },
         })
 
