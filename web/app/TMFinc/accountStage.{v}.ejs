@@ -25,128 +25,132 @@
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
 
 <style type="text/css">
-    h1 {
-        color: #698B22;
-    }
+	h1 {
+		color: #698B22;
+	}
 
-    .CssLargeField {
-        font-size: 16px;
-        font-family: Consolas;
-        background: #EEE9E9;
-        color: #8B8682;
-        width: 500px;
-        height: 40px;
-    }
+	.CssLargeField {
+		font-size: 16px;
+		font-family: Consolas;
+		background: #EEE9E9;
+		color: #8B8682;
+		width: 500px;
+		height: 40px;
+	}
 
-    .CssManyBox {
-        font-size: 16px;
-        font-family: Consolas;
-        background: #EEE9E9;
-        color: #8B8682;
-    }
+	.CssManyBox {
+		font-size: 16px;
+		font-family: Consolas;
+		background: #EEE9E9;
+		color: #8B8682;
+	}
 </style>
 
 
 <!-- 加载foil外框架 -->
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
-    <!-- 定义html元素 -->
-    <div class="rpContent">
+	<!-- 定义html元素 -->
+	<div class="rpContent">
 
-        <!-- 按钮：用于打开模态框 -->
-        <div class="layui-form-item">
-            <a class="layui-btn layui-btn-info" id="btn_apply_B" style="margin-left:180px">帐号建立</a>
-            <a class="layui-btn layui-btn-info" id="btn_apply_A" style="margin-left:60px">部門-角色</a>
-        </div>
-        <h2>人员帐号建立</h2>
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <div class="page-header">
-                </div>
-            </div>
-        </div>
+		<!-- 按钮：用于打开模态框 -->
+		<div class="layui-form-item">
+			<a class="layui-btn layui-btn-info" id="btn_apply_B" style="margin-left:180px">帐号建立</a>
+			<a class="layui-btn layui-btn-info" id="btn_apply_A" style="margin-left:60px">部門-角色</a>
+		</div>
+		<h2>人员帐号建立</h2>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="page-header">
+				</div>
+			</div>
+		</div>
 
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <!-- 定义基础模块数据表 -->
-                <table id="bgu_staffs" class=" table table-striped table-bordered" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>编号</th>
-                            <th>帐号</th>
-                            <th>姓名</th>
-                            <!-- <th>角色</th>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<!-- 定义基础模块数据表 -->
+				<table id="bgu_staffs" class=" table table-striped table-bordered" style="width:100%">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>帐号</th>
+							<th>姓名</th>
+							<!-- <th>角色</th>
                             <th>状态</th> -->
-                            <th>手机</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <!-- 模态框（Modal） -->
-        <div class="modal fade" id="bgu_staffsModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" style="width: 65%;">
-                <!-- 按钮触发模态框 -->
-                <button class="btn btn-primary" data-toggle="modal" data-target="#bgu_staffsModal"
-                    id="bgu_staffsModalOpen" style="display: none;">
-                    开始演示模态框
-                </button>
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                            &times;
-                        </button>
-                        <h4 class="modal-title">
-                            信息
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <!-- 表单面板 -->
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <form class="form-horizontal" role="form" id='bgu_staffsForm'>
-                                    <input id="bgu_staffsForm-DBID" type="hidden" value="">
-                                    <div class="form-group">
-                                        <label class="col-sm-1 control-label">职工编号</label>
-                                        <div class="col-sm-5">
-                                            <input class="form-control" id="bgu_staffsForm-StaffID" type="text"
-                                                value="该输入框获得焦点...">
-                                        </div>
-                                        <label class="col-sm-1 control-label">系统帐号</label>
-                                        <div class="col-sm-5">
-                                            <input class="form-control" id="bgu_staffsForm-StaffUser" type="text"
-                                                value="该输入框获得焦点...">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-1 control-label">人员姓名</label>
-                                        <div class="col-sm-5">
-                                            <input class="form-control" id="bgu_staffsForm-StaffName" type="text"
-                                                value="该输入框获得焦点...">
-                                        </div>
-                                        <label class="col-sm-1 control-label">手机</label>
-                                        <div class="col-sm-5">
-                                            <input class="form-control" id="bgu_staffsForm-Mobiles" type="text"
-                                                value="该输入框获得焦点...">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <!-- <label class="col-sm-1 control-label">状态</label>
+							<th>手机</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="bgu_staffsModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" style="width: 65%;">
+				<!-- 按钮触发模态框 -->
+				<button class="btn btn-primary" data-toggle="modal" data-target="#bgu_staffsModal"
+					id="bgu_staffsModalOpen" style="display: none;">
+					开始演示模态框
+				</button>
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title">
+							信息
+						</h4>
+					</div>
+					<div class="modal-body">
+						<!-- 表单面板 -->
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<form class="form-horizontal" role="form" id='bgu_staffsForm'>
+									<input id="bgu_staffsForm-DBID" type="hidden" value="">
+									<div class="form-group">
+										<label class="col-sm-1 control-label">职工编号</label>
+										<div class="col-sm-5">
+											<input class="form-control"
+												id="bgu_staffsForm-StaffID" type="text"
+												value="该输入框获得焦点...">
+										</div>
+										<label class="col-sm-1 control-label">系统帐号</label>
+										<div class="col-sm-5">
+											<input class="form-control"
+												id="bgu_staffsForm-StaffUser" type="text"
+												value="该输入框获得焦点...">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">人员姓名</label>
+										<div class="col-sm-5">
+											<input class="form-control"
+												id="bgu_staffsForm-StaffName" type="text"
+												value="该输入框获得焦点...">
+										</div>
+										<label class="col-sm-1 control-label">手机</label>
+										<div class="col-sm-5">
+											<input class="form-control"
+												id="bgu_staffsForm-Mobiles" type="text"
+												value="该输入框获得焦点...">
+										</div>
+									</div>
+									<div class="form-group">
+										<!-- <label class="col-sm-1 control-label">状态</label>
                                         <div class="col-sm-5">
                                             <select id="bgu_staffsForm-Status" class="selectpicker"
                                                 data-dropup-auto="true">
                                                 <option>2</option>
                                             </select>
                                         </div> -->
-                                           <!-- <label class="col-sm-1 control-label">角色</label>
+										<!-- <label class="col-sm-1 control-label">角色</label>
                                         <div class="col-sm-5">
                                             <select id="bgu_staffsForm-StaffRole" class="selectpicker"
                                                 data-dropup-auto="true">
                                                 <option>文员</option>
                                             </select>
                                         </div> -->
-                                        <!-- <label class="col-sm-1 control-label">角色</label>
+										<!-- <label class="col-sm-1 control-label">角色</label>
                                         <div class="col-sm-5">
                                             <select id="bgu_staffsForm-StaffRole" class="selectpicker"
                                                 data-dropup-auto="true">
@@ -163,62 +167,97 @@
                                                 <option>董事长</option>
                                             </select>
                                         </div> -->
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="bgu_staffsSave">
-                            保存
-                        </button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" id="bgu_staffsModalClose">关闭
-                        </button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal -->
-        </div>
-    </div>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            loadDataTable({
-                elementId: 'bgu_staffs',
-                sqlParams: {
-                    tableId: 'bgu_staffs',
-                    filter: ' Status !=\'1\' '
-                },
-                dtParams: {
-                    columns: [
-                        {
-                            data: 'StaffID'
-                        },
-                        {
-                            data: 'StaffUser'
-                        },
-                        {
-                            data: 'StaffName'
-                        },
-                        // {
-                        //     data: 'StaffRole',
-                        // },
-                        // {
-                        //     data: 'Status',
-                        // },
-                        {
-                            data: 'Mobiles',
-                        }
-                    ],
-                }
-            })
-        });
-        $('#btn_apply_A').click(function () {
-            window.location.href = '/app/TMFinc/roleStage';
-        });
-        $('#btn_apply_B').click(function () {
-            window.location.href = '/app/TMFinc/accountStage';
-        });
-        $("#bgu_staffsForm-StaffRole").value('文员');
-        $("#bgu_staffsForm-Status").value('2');
-    </script>
-    </script>
-    </script>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="bgu_staffsSave">
+							保存
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							id="bgu_staffsModalClose">关闭
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+	</div>
+	<script type="text/javascript">
+		var sessionName = '';
+		$(document).ready(function () {
+			sessionName = "<%-locals.session.yjUser.Name%>";
+			loadDataTable({
+				elementId: 'bgu_staffs',
+				sqlParams: {
+					tableId: 'bgu_staffs',
+					filter: ' Status !=\'1\' '
+				},
+				dtParams: {
+					columns: [
+						{
+							data: 'StaffID'
+						},
+						{
+							data: 'StaffUser'
+						},
+						{
+							data: 'StaffName'
+						},
+						// {
+						//     data: 'StaffRole',
+						// },
+						// {
+						//     data: 'Status',
+						// },
+						{
+							data: 'Mobiles',
+						}
+					],
+				}
+			})
+		});
+		$('#bgu_staffsSave').click(function () {
+			function timer(time) {
+				setTimeout(function () {
+					var StaffID = $('#bgu_staffsForm-StaffID').val();
+					var StaffUser = $('#bgu_staffsForm-StaffUser').val();
+					var StaffName = $('#bgu_staffsForm-StaffName').val();
+					var Mobiles = $('#bgu_staffsForm-Mobiles').val();
+					var Advstr = {
+						"LastModify": sessionName,
+						"StaffID": StaffID,
+						"StaffUser": StaffUser,
+						"StaffName": StaffName,
+						"Mobiles": Mobiles,
+					};
+					var reportType = 'EmployJob';
+					var Arrange = 'CreatePeople';
+					var taskData = {
+						"reportType": reportType, "Arrange": Arrange, "Advstr": Advstr
+					}
+					console.log("蹂躏脑筋不好的老爷爷", Advstr);
+					$.ajax({
+						method: 'post',
+						data: taskData,
+						url: "/app/TMFinc/getRoute",
+						success: function (result) {
+							console.log("吕布");
+						},
+						error: function () {
+						}
+					})
+				}, time);
+			}
+			timer(5000);
+		});
+		$('#btn_apply_A').click(function () {
+			window.location.href = '/app/TMFinc/roleStage';
+		});
+		$('#btn_apply_B').click(function () {
+			window.location.href = '/app/TMFinc/accountStage';
+		});
+	</script>
+	</script>
+	</script>

@@ -80,6 +80,9 @@ module.exports = function (sender) {
             case "DingSpeak":
                   url = ["BguTM", "DingSpeak"];
                   break;             
+            case "AnnualRpt":
+                  url = ["BguTM", "AnnualRpt"];
+                  break;             
             default:
                   console.log("找不到Finc路由");
                   break;

@@ -108,7 +108,7 @@ function ReverseBasic9() {
 }
 function CriteriaBasic() {
       let dataArr = [];
-      var reportType = 'StarGate';
+      var reportType = 'StarCate';
       var arrange = 'Basic';
       var taskData = { "reportType": reportType, "arrange": arrange };
       $.ajax({

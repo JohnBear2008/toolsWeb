@@ -20,6 +20,7 @@ module.exports = function (sender) {
 	var DeptLabel = Advstr.PowerLabel;
 	var GroupLabel = Advstr.RingLabel;
 	var StaffRole = Advstr.StaffRole;
+	var LastModify = Advstr.LastModify;
 	var GroupSQL = '';
 	var DeptSQL = '';
 	var Arrange = sender.req.query.Arrange;
@@ -40,26 +41,47 @@ module.exports = function (sender) {
 	if (Arrange == 'JobReset') {
 		JobReset(StaffName, StaffLevel);
 	}
+	if (Arrange == 'CreatePeople') {
+		var Advstr = sender.req.query.Advstr;
+		var LastModify = Advstr.LastModify;
+		var StaffID = Advstr.StaffID;
+		var StaffUser = Advstr.StaffUser;
+		var StaffName = Advstr.StaffName;
+		var Mobiles = Advstr.Mobiles;
+		CreatePeople(LastModify ,StaffID, StaffUser, StaffName, Mobiles );
+	}
+	function CreatePeople(LastModify ,StaffID, StaffUser, StaffName, Mobiles ) {
+		// console.log("只相信本能",LastModify ,StaffID, StaffUser, StaffName, Mobiles);
+		let SQL = "Update `bgu_staffs` set  LastModify = ?  where  StaffID =? and StaffUser =? and StaffName =? and Mobiles =?  ";
+		yjDBService.exec({
+			sql: SQL,
+			parameters: [LastModify ,StaffID, StaffUser, StaffName, Mobiles ],
+			rowsAsArray: true,
+			success: function (result) {
+			},
+			error: sender.error
+		});
+	}
 	function JobReach(StaffName, StaffLevel) {
-		if(StaffLevel !=null || StaffLevel !=undefined || StaffLevel !='' ){
+		if (StaffLevel != null || StaffLevel != undefined || StaffLevel != '') {
 
-		}else {
+		} else {
 			StaffLevel = '0';
 		}
-	
+
 		var SQLqry = " select tba.DeptLabel , tba.GroupLabel from  bgu_staffs tba where StaffName = ? and StaffLevel =? ";
 		yjDBService.exec({
 			sql: SQLqry,
-			parameters: [StaffName ,StaffLevel],
+			parameters: [StaffName, StaffLevel],
 			success: function (r) {
 				var datas = []
 				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
 				for (var i = 0; i < data.length; i++) {
-						var temp = {
-							"DeptLabel": data[i].DeptLabel,
-							"GroupLabel": data[i].GroupLabel,
-						}
-					 
+					var temp = {
+						"DeptLabel": data[i].DeptLabel,
+						"GroupLabel": data[i].GroupLabel,
+					}
+
 					datas.push(temp)
 				}
 				// var dump = JSON.stringify(datas);
@@ -77,16 +99,16 @@ module.exports = function (sender) {
 		var SQLInsert = "";
 		if (StaffLevel != null && StaffLevel != undefined) {
 			if (StaffLevel == '1') {
-				  SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
+				SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
 					" where  StaffName=? ";
 			} else {
-				  SQLInsert = "Delete from `bgu_staffs` where StaffName=? and  StaffLevel =? and  StaffLevel !='1' ";
+				SQLInsert = "Delete from `bgu_staffs` where StaffName=? and  StaffLevel =? and  StaffLevel !='1' ";
 			}
 		} else {
-			 SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
-			" where  StaffName=? ";
+			SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
+				" where  StaffName=? ";
 		}
-		console.log("露:", SQLInsert," 密 ", StaffLevel);
+		console.log("露:", SQLInsert, " 密 ", StaffLevel);
 		let paramList = [StaffName, StaffLevel];
 		yjDBService.exec({
 			sql: SQLInsert,
@@ -129,17 +151,17 @@ module.exports = function (sender) {
 	}
 	function JobSetPlug(StaffName) {
 		var SQLInsert = "INSERT INTO `bgu_staffs` " +
-			"(`StaffID`, `StaffUser`, `StaffName`, `StaffLevel`, `DeptLabel`, `DeptDefault`, `GroupLabel`, `GroupDefault`, `StaffRole`, `Mobiles`, `Status`, `StatusText` ) " +
-			"  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?   )";
+			"(`StaffID`, `StaffUser`, `StaffName`, `StaffLevel`, `DeptLabel`, `DeptDefault`, `GroupLabel`, `GroupDefault`, `StaffRole`, `Mobiles`, `Status`, `StatusText` , `LastModify`) " +
+			"  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?  )";
 		var Status = '';
-		if(StaffRole=='文员'){
+		if (StaffRole == '文员') {
 			Status = '0';
-		}else{
+		} else {
 			Status = '1';
 		}
 		var StatusText = '正常';
-		console.log("露娜:", StaffID, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText);
-		let paramList = [StaffID, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText];
+		console.log("露娜:", StaffID, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText,LastModify);
+		let paramList = [StaffID, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText,LastModify];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,

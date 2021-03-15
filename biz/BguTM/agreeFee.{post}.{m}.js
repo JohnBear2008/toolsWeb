@@ -379,7 +379,8 @@ module.exports = function (sender) {
 			" " + tundate + " " + tunlv + "   " + fixdate + "  " + fixlv + " where  BillNo=?  ";
 		//  console.log("后羿:", tundate ,"后羿",tunlv); 
 		//  console.log("宫本武藏:", fixdate ,fixlv); 
-		 console.log("武则天:", CurLevel); 
+		 console.log("武则天:", CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob, BillNo); 
+		 console.log("无悔:", SQL); 
 		Flowphone = CurWorkId;
 		yjDBService.exec({
 			sql: SQL,
@@ -637,7 +638,10 @@ module.exports = function (sender) {
 						NoticeNotOver();
 					}
 					console.log("老板审批过了………………", IsVipOver);
-					HandleRule(BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv);
+					console.log("何以缘起", fixdate);
+					console.log("何以缘起", fixdate);
+
+					HandleRule("0",BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv);
 				} else if (CurJob == 'psd') {
 					if (IsVipOver == 'Y') {
 						 

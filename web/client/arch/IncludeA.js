@@ -82,8 +82,12 @@ function searchFile(mode) {
                   switch (obj.event) {
                       case 'viewSumary':
                           var dataARR = (checkStatus.data);
-                          // console.log("z智阭", JSON.stringify(checkStatus));
-                          console.log("西阭", (dataARR[0].BillNo,dataARR[0].VipName));
+                        //   console.log("Y息发", (dataARR[0].BillNo ));
+                        //   console.log("X息发", ( dataARR[0].VipName));
+                        //   console.log("X息发", ( data.length));
+                        //   for (var i = 0; i < data.length; i++) {
+                        //     console.log("美园", dataARR[i].BillNo);
+                        //   }
                           CapBillNo = dataARR[0].BillNo;
                           CapSubject = dataARR[0].Subject;
                           CapCurJob = data[0].CurJob;

@@ -27,14 +27,17 @@
 <div class="rpContent">
 
     <!-- 按钮：用于打开模态框 -->
-
-    <!-- <div class="row clearfix">
+    <!-- 
+    <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
-                <h1>基础信息-故障分类</h1>
+                <h1>基础信息-产品信息</h1>
             </div>
         </div>
     </div> -->
+
+
+
 
 
     <div class="row clearfix">
@@ -42,14 +45,16 @@
 
 
             <!-- 定义基础模块数据表 -->
-            <table id="rp_faultClasses" class=" table table-striped table-bordered" style="width:100%">
+            <table id="rp_products" class=" table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
-                        <th>故障编号</th>
-                        <th>故障类别</th>
-                        <th>故障名称</th>
-                        <th>排序码</th>
-                        <th>创建人</th>
+                        <th>产品编号</th>
+                        <th>产品名称</th>
+                        <th>系统类别</th>
+                        <th>产品类别</th>
+                        <th>系统分类</th>
+                        <th>所属部件</th>
+
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -64,13 +69,13 @@
 
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="rp_faultClassesModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="rp_productsModal" tabindex="-1" role="dialog" aria-hidden="true">
 
         <div class="modal-dialog" style="width: 65%;">
 
             <!-- 按钮触发模态框 -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_faultClassesModal"
-                id="rp_faultClassesModalOpen" style="display: none;">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_productsModal"
+                id="rp_productsModalOpen" style="display: none;">
                 开始演示模态框
             </button>
             <div class="modal-content">
@@ -79,7 +84,7 @@
                         &times;
                     </button>
                     <h4 class="modal-title">
-                        故障分类
+                        产品信息
                     </h4>
 
 
@@ -94,20 +99,20 @@
                         <div class="panel-body">
 
 
-                            <form class="form-horizontal" role="form" id='rp_faultClassesForm'>
+                            <form class="form-horizontal" role="form" id='rp_productsForm'>
 
-                                <input id="rp_faultClassesForm-DBID" type="hidden" value="">
+                                <input id="rp_productsForm-DBID" type="hidden" value="">
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">故障编号</label>
+                                    <label class="col-sm-1 control-label">产品编号</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_faultClassesForm-faultId" type="text"
+                                        <input class="form-control" id="rp_productsForm-productId" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
-                                    <label class="col-sm-1 control-label">故障类型</label>
+                                    <label class="col-sm-1 control-label">产品名称</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_faultClassesForm-faultClass" type="text"
+                                        <input class="form-control" id="rp_productsForm-productName" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
@@ -117,45 +122,73 @@
 
                                 <div class="form-group">
 
-                                    <label class="col-sm-1 control-label">故障名称</label>
+                                    <label class="col-sm-1 control-label">产品描述</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_faultClassesForm-faultName" type="text"
+                                        <input class="form-control" id="rp_productsForm-productDescription" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
-                                    <label class="col-sm-1 control-label">英文名称</label>
+                                    <label class="col-sm-1 control-label">系统类别</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_faultClassesForm-faultNameEN" type="text"
+                                        <input class="form-control" id="rp_productsForm-systemClass" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label">排序码</label>
+
+
+                                    <label class="col-sm-1 control-label">所属部件</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_faultClassesForm-orderId" type="text"
+                                        <input class="form-control" id="rp_productsForm-partBelong" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
+
+                                    <label class="col-sm-1 control-label">系统分类</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-systemType" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">产品类别</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-productClass" type="text"
+                                            value="该输入框获得焦点...">
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label">单位</label>
+                                    <div class="col-sm-5">
+                                        <input class="form-control" id="rp_productsForm-unit" type="text"
+                                            value="该输入框获得焦点...">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
 
                                     <label class="col-sm-1 control-label">创建人</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_faultClassesForm-creater" type="text"
+                                        <input class="form-control" id="rp_productsForm-creater" type="text"
                                             value="该输入框获得焦点...">
                                     </div>
 
 
-                                </div>
-
-
-
-                                <div class="form-group">
                                     <label class="col-sm-1 control-label">有效性</label>
                                     <div class="col-sm-5">
-                                        <select id="rp_faultClassesForm-effective" class="selectpicker"
+                                        <select id="rp_productsForm-effective" class="selectpicker"
                                             data-dropup-auto="true">
                                             <option>是</option>
                                             <option>否</option>
                                         </select>
+
                                     </div>
                                 </div>
 
@@ -167,9 +200,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_faultClassesModalClose">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="rp_productsModalClose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary" id="rp_faultClassesSave">
+                    <button type="button" class="btn btn-primary" id="rp_productsSave">
                         保存
                     </button>
                 </div>
@@ -181,56 +214,36 @@
 </div>
 
 
-
-
-
-
-
 <script type="text/javascript">
     $(document).ready(function () {
 
 
         //加载表格
         loadDataTable({
-            elementId: 'rp_faultClasses',
+            elementId: 'rp_products',
             sqlParams: {
-                tableId: 'rp_faultClasses',
+                tableId: 'rp_products',
                 filter: ''
             },
             dtParams: {
                 columns: [{
-                        data: 'faultId'
+                        data: 'productId'
                     },
                     {
-                        data: 'faultClass'
+                        data: 'productName'
                     }, {
-                        data: 'faultName'
+                        data: 'systemClass',
                     }, {
-                        data: 'orderId',
+                        data: 'partBelong',
                     }, {
-                        data: 'creater',
+                        data: 'systemType',
+                    }, {
+                        data: 'productClass',
                     }
                 ],
             }
         })
 
-
-
-
-        // loadBootStrapSelector({
-        //     elementId: 'customerArea',
-        //     sqlParams: {
-        //         sql: 'getRegionSelector'
-        //     },
-        //     // initValue:'中国,北京'
-        // })
-
-        // loadDatePicker({
-        //     elementId: 'saveTimeStamp',
-        //     params: {
-        //         endDate: '2019-12-30'
-        //     }
-        // })
 
 
 

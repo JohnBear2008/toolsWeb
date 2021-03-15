@@ -938,16 +938,28 @@ const getBillDataTableConfig = ({
     // console.log("getBillDataTableConfig i:" + JSON.stringify(i));
 
     //定义各类参数模版
+    let ajaxParams = {
+        url: '/app/RP/lib/ajaxGet',
+        data: {
+            sql: 'sqlId',
+            params: {}
+        },
+        dataSrc: ''
+    }
+
+
+
     //常用sql语句ajax模版
     let dtConfigNormal = {
-        ajax: {
-            url: '/app/RP/lib/ajaxGet',
-            data: {
-                sql: 'sqlId',
-                params: {}
-            },
-            dataSrc: ''
-        },
+        // ajax: {
+        //     url: '/app/RP/lib/ajaxGet',
+        //     data: {
+        //         sql: 'sqlId',
+        //         params: {}
+        //     },
+        //     dataSrc: ''
+        // },
+        ajax: ajaxParams,
         columns: [],
         order: [], //初始排序
         aLengthMenu: [
@@ -2078,3 +2090,128 @@ const getStockNums = async (PIDArr) => {
     return stockArr
 
 }
+
+
+// /**
+//  * @description: 定义dataTable 生成参数
+//  * @param {*}
+//  * @return {*}
+//  */
+// const dataTableConfig = ({
+//     elementId,
+//     tableData,
+//     config
+// }) => {
+//     //c
+
+
+
+//     //d
+//     let defaultConfig = {
+//         columns: [],
+//         select: true, //允许多选操作
+//         bStateSave: true, //刷新保存当前页码
+//         // dom: 'Bfrtlip',
+//         dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+//             "<'row'<'col-sm-12'tr>>" +
+//             "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+//         buttons: [
+//             'colvis',
+//             'excel',
+//             'csv',
+//             'print',
+//             'copy',
+//         ],
+//         language: languageCN
+//     }
+
+//     let o
+//     try {
+//         defaultConfig.elementId = elementId;
+//         defaultConfig.data = tableData;
+//         for (const p in config) {
+//             if (config.hasOwnProperty(p)) {
+//                 defaultConfig.params[p] = config[p];
+//             }
+//         }
+//         o = defaultConfig;
+
+//     } catch (error) {
+//         console.log('function dataTableConfig error', error);
+//     }
+
+//     //r
+//     return o
+// }
+
+
+// /**
+//  * @description: 加载dataTable 版本V2
+//  * @param {*}
+//  * @return {*}
+//  */
+// const loadDataTableV2 = async ({
+//     elementId,
+//     tableData,
+//     config
+// }) => {
+//     //c
+
+//     //d
+//     try {
+//         let diyConfig = dataTableConfig({
+//             elementId,
+//             tableData,
+//             config
+//         })
+//         let table = $('#' + elementId).DataTable(diyConfig);
+//         $('#' + elementId + ' tbody').on('dblclick', 'tr', function () {
+//             let table = $('#' + elementId).DataTable();
+//             table.$('tr.selected').removeClass('selected');
+//             $(this).addClass('selected');
+//             let dataSelect = table.row('.selected').data();
+//             //清空Form原有数据
+//             initFormInputs({
+//                 formId: elementId + 'Form'
+//             })
+//             //填写div匹配数据
+//             fillFormInputs({
+//                 formId: elementId + 'Form',
+//                 params: dataSelect
+//             })
+//             //打开面板
+//             $('#' + elementId + 'ModalOpen').click();
+
+//         });
+
+//         //保存按钮
+//         $('#' + elementId + 'Save').click(function () {
+//             let formData = getFormData({
+//                 formId: elementId + 'Form'
+//             })
+
+//             let sqlParams = {
+//                 sql: 'replace',
+//                 params: formData
+//             }
+
+//             let i = {
+//                 elementId: elementId,
+//                 sqlParams: sqlParams
+//             }
+
+//             // console.log('save i:' + JSON.stringify(i));
+//             updateDataTable(i);
+
+//         })
+
+//         // 关闭事件重置选中datatable选中,避免显示错误
+//         $('#' + elementId + 'Modal').on('hidden.bs.modal', function () {
+//             table.$('tr.selected').removeClass('selected');
+//         })
+
+//     } catch (error) {
+//         console.error('loadDataTableV2', error);
+//     }
+
+// }

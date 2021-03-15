@@ -42,13 +42,13 @@
 
     <!-- 按钮：用于打开模态框 -->
 
-    <div class="row clearfix">
+    <!-- <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="page-header">
                 <h1>工作流程-维修申请单</h1>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
     <div class="row clearfix">
@@ -1367,7 +1367,12 @@
             }
         })
 
-        // console.log('r1:' + JSON.stringify(r1));
+        // let r1 = await getT9DataBySql({
+        //     sql: 'getMaterial',
+        //     params: [productId]
+        // })
+
+        console.log('r1:' + JSON.stringify(r1));
         let r2 = r1[0]
         delete r2.productId;
         // console.log('r2:' + JSON.stringify(r2));
@@ -2177,6 +2182,8 @@
     }
 
 
+
+
     $(document).ready(function () {
 
         // alert(parseInt(''))
@@ -2194,11 +2201,7 @@
         //主表过滤器
         mainTableFilter = '';
 
-        // //t9 接口测试
-        // getT9DataBySql({
-        //     to: 'rp',
-        //     sql: 'getProductsSelector',
-        // })
+ 
 
         //初始化子表
         loadDataSubTable({
@@ -3378,19 +3381,19 @@
 
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_recordbillsForm-productId',
-        //     sqlParams: {
-        //          sql: 'getProductSelector'        
-        //     },
-        // })
-        loadT9BootStrapSelector({
+        loadBootStrapSelector({
             elementId: 'rp_recordbillsForm-productId',
             sqlParams: {
-                // sql: 'getProductSelector'
-                sql: 'getT9ProductSelector'
+                sql: 'getProductSelector'
             },
         })
+
+        // loadT9BootStrapSelector({
+        //     elementId: 'rp_recordbillsForm-productId',
+        //     sqlParams: {
+        //         sql: 'getT9ProductSelector'
+        //     },
+        // })
 
 
 

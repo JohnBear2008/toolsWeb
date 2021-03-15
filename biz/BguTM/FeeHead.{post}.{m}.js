@@ -35,15 +35,15 @@ module.exports = function (sender) {
     dataARR[0] = columnsData;
     var contentSum = "";
     var content = '<tr>'
-      + '<th>系统号</th>'
-      + '<th>项目号</th>'
-      + '<th>预算项目</th>'
-      + '<th>部門</th>'
-      + '<th>年度</th>'
-      + '<th>超支</th>'
-      + '<th>额度上限</th>'
-      + '<th>累计</th>'
-      + '<th>剩餘</th>'
+      + '<th width="100">系统号</th>'
+      + '<th width="100">项目号</th>'
+      + '<th width="100">预算项目</th>'
+      + '<th width="100">部門</th>'
+      + '<th width="100">年度</th>'
+      + '<th width="100">超支</th>'
+      + '<th width="100">额度上限</th>'
+      + '<th width="100">累计</th>'
+      + '<th width="100">剩餘</th>'
       + '</tr>';
     contentSum += content;
     dataARR[1] = contentSum;
