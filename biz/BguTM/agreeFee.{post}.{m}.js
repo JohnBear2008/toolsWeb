@@ -14,8 +14,9 @@ module.exports = function (sender) {
 	var qryCurWorkId = sender.req.query.CurWorkId;
 	var qryCurName = sender.req.query.CurName;
 	var qryCurJob = sender.req.query.CurJob;
+	var qryCurPhone = sender.req.query.CurPhone;
 	var Formkind = sender.req.query.Formkind;
-	console.log("同意人", qryCurName, "号", BillNo, "金额", TotalValue, "表单", Formkind, "年", BudYear, "作", qryCurJob);
+	console.log("同意人", qryCurName , "釘釘 ", qryCurPhone, "文", BillNo, "金额", TotalValue, "表单", Formkind,  "作", qryCurJob);
 	var IsBothOver = 'N';  //项目&副总皆超过为 Y
 	var IsVipOver = 'N';  //副总超过为 Y
 	var IsOver = 'N';  //项目超过为 Y
@@ -305,8 +306,8 @@ module.exports = function (sender) {
 				RequestDate = labDate;
 				if (qryIsOver == 'N') {
 					console.log("项目没超过");
-					HandleQuota(BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate);
-					HandleQuotaDtl(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue);
+					HandleQuota(BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate, DeptName);
+					HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue);
 				} else {
 					console.log("秒杀了");
 					qryCredit(0, TotalValue);
@@ -316,7 +317,7 @@ module.exports = function (sender) {
 		});
 	}
 	//计算 Accumulate UseMoney 由 TotalValue  AllowMoney
-	function HandleQuota(BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate) {
+	function HandleQuota(BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate, DeptName) {
 		AllowMoney = nulReplace0(AllowMoney);
 		AllowMoney = parseInt(AllowMoney, 10);
 		TotalValue = nulReplace0(TotalValue); TotalValue = parseInt(TotalValue, 10);
@@ -339,26 +340,25 @@ module.exports = function (sender) {
 		console.log("公孙离TotalValue", TotalValue, "AllowMoney", AllowMoney, "公孙离 Accumulate", Accumulate);
 
 		if (IsOver == 'N') {
-			 
 			HandleRule("0" ,BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv);
 		} else {
 			console.log("捕刀了", bufferTot, diffMoney);
 			qryCredit(bufferTot, diffMoney);
 		}
 		var SQLUPt = "Update `bgu_quota` set Accumulate =? , IsOver =?, Surplus =? , SNNO  =?   " +
-			" where  BudgetCID= ? and BudYear =? ";
-		let paramList = [Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear];
+			" where  BudgetCID= ? and BudYear =? and DeptName =? ";
+		let paramList = [Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear, DeptName];
 		yjDBService.exec({
 			sql: SQLUPt,
 			parameters: paramList,
 			rowsAsArray: true,
 			success: function (result) {
-				console.log("HandleQuota:", result);
+				// console.log("唯朕独尊:", result);
 			},
 			error: sender.error
 		});
 	}
-	function HandleQuotaDtl(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue) {
+	function HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue) {
 		console.log("殿昌 ", Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue);
 		var SQLInsert = "INSERT INTO `bgu_quotadetail` " +
 			"(`Subject`, `BudgetCID` , `BudgetItem` , `BudYear` , `RequestDate`,`BillNo`, `SNNO` , `DeptName` , `TotalValue`   ) " +
@@ -375,12 +375,21 @@ module.exports = function (sender) {
 		});
 	}
 	function HandleRule(Twins, BillNo, CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob, fixdate, fixlv, tundate, tunlv) {
+		if(CurName != null && CurName!=undefined && CurName!=''){
+
+		}else{
+			CurName =qryCurName;
+		}
+		if(CurWorkId != null && CurWorkId!=undefined && CurWorkId!=''){
+
+		}else{
+			CurWorkId =qryCurPhone;
+		}
 		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? , CurJob = ? ," +
 			" " + tundate + " " + tunlv + "   " + fixdate + "  " + fixlv + " where  BillNo=?  ";
 		//  console.log("后羿:", tundate ,"后羿",tunlv); 
 		//  console.log("宫本武藏:", fixdate ,fixlv); 
 		 console.log("武则天:", CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob, BillNo); 
-		 console.log("无悔:", SQL); 
 		Flowphone = CurWorkId;
 		yjDBService.exec({
 			sql: SQL,
@@ -638,7 +647,7 @@ module.exports = function (sender) {
 						NoticeNotOver();
 					}
 					console.log("老板审批过了………………", IsVipOver);
-					console.log("何以缘起", fixdate);
+					console.log("何以缘起", tundate);
 					console.log("何以缘起", fixdate);
 
 					HandleRule("0",BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv);
@@ -689,7 +698,18 @@ module.exports = function (sender) {
 	function MakeupRule(BillNo, CurLevel, CurWorkId, CurName, CurJob, fixdate, fixlv) {
 		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? , CurJob = ? ," +
 			" " + fixdate + "  " + fixlv + "  where  BillNo=?  ";
-		// console.log("柳下濬 ", CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob, BillNo);
+ //审批同意改為CurWorkId, CurName 自己 
+		if(CurName != null && CurName!=undefined && CurName!=''){
+
+		}else{
+			CurName =qryCurName;
+		}
+		if(CurWorkId != null && CurWorkId!=undefined && CurWorkId!=''){
+
+		}else{
+			CurWorkId =qryCurPhone;
+		}
+		console.log("柳下濬 ", CurStatus, CurText, CurLevel, "眼", CurWorkId, "眼", CurName, "柳", CurJob, BillNo);
 		Flowphone = CurWorkId;
 		yjDBService.exec({
 			sql: SQL,
@@ -718,7 +738,7 @@ module.exports = function (sender) {
 	function seeAudit(BillNo, CurLevel, CurStatus, CurText) {
 		console.log(" 市直", DeptName, GroupName);
 		let SQL4 =
-			" select tceo.staffID as CeoWorkId, tceo.staffName as CeoName, tbod.staffID as BodWorkId, tbod.staffName as BodName from  bgu_staffs tba " +
+			" select tceo.Mobiles as CeoWorkId, tceo.staffName as CeoName, tbod.Mobiles as BodWorkId, tbod.staffName as BodName from  bgu_staffs tba " +
 			" LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%' , tba.DeptLabel , '%') and tceo.staffLevel='8' " +
 			" LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%' , tba.DeptLabel , '%') and tbod.staffLevel='9' " +
 			"  where tba.DeptLabel=? and tba.StaffLevel='1'  ";

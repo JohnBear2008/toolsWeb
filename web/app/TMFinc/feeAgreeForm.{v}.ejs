@@ -20,8 +20,6 @@
 <!-- date picker -->
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-<!-- watermark -->
-<script src="/good/jquery.watermark.js"></script>
 <style type="text/css">
 	 
 </style>
@@ -54,6 +52,8 @@
 			<hr>
 		</div>
 	</div>
+      <input type="hidden" id="hideDeptName" value="" />
+      <input type="hidden" id="hidePhone" value="" />
 	<table class="layui-hide" id="test" lay-filter="test"></table>
 	<script type="text/html" id="toolbarDemo">
       <div class="layui-btn-group userTable">
@@ -141,12 +141,14 @@
 				var sessionName = '';
 				var sessionAID = '';
 				var sessionOID = '';
+				var Dingphone = '';
 				let sData = [];
 				var CapBillNo = '';
 				var CapTotalValue = '';
 				var CapCurJob = '';
 				var CapSubject = '';
 				var CapMode = '';
+				var CapPhone = '';
 				var Formkind = '';
 				var CapDate = '0';  //0 NoDate, 1 Date
 				$(document).ready(function () {
@@ -169,16 +171,6 @@
 						missmode = getQueryString("missE");
 						$("#taskMakeDateB").val(missCcute);
 						$("#taskMakeDateE").val(missDcute);
-						console.log("表单：", missType);
-						console.log("选日期：", missAcute);
-						// $('#iloveu').watermark({
-						// 	texts: ["这是测试", "这是测试2"], //水印文字
-						// 	textColor: "#d2d2d2", //文字颜色
-						// 	textFont: '14px 微软雅黑', //字体
-						// 	width: 200, //水印文字的水平间距
-						// 	height: 200,  //水印文字的高度间距（低于文字高度会被替代）
-						// 	textRotate: -30 //-90到0， 负数值，不包含-90
-						// })
 						if (missType == 'A') {
 							searchFile('0');
 						}
@@ -230,16 +222,16 @@
 					}, function () {
 						// var checkStatus = centerTable.checkStatus(objCenter.config.id); 
 						// var dataARR = (checkStatus.data);
-						// var selBillNo = dataARR[0].BillNo;
 						// console.log("艺仁",JSON.stringify(checkStatus));
 						// console.log("敏希", (objCenter.config.id));
-						console.log("敏米", CapBillNo);
-						console.log("敏希", CapMode);
-						console.log("穷希", CapCurJob);
+						console.log("张良", CapPhone,"张良");
 						var reportType = 'agreeFee';
 						var taskData = {
-							"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject, "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob
+							"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject,
+							"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
+							"CurPhone": CapPhone,
 						}
+						console.log("到达胜利之前", taskData);
 						layer.alert("同意此笔审批号" + CapBillNo);
 						$('#kisswindow').modal('toggle');
 						$.ajax({
@@ -273,7 +265,9 @@
 						console.log("金詩", CapMode);
 						var reportType = 'rejectFee';
 						var taskData = {
-							"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject, "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob
+							"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject, 
+							"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, 
+							"CurJob": CapCurJob ,"CurPhone": CapPhone,
 						}
 						layer.alert("驳回此笔审批号" + CapBillNo);
 						$('#kisswindow').modal('toggle');

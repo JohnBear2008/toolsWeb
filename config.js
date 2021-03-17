@@ -134,11 +134,13 @@ var config = {
             certPath: path.join(__dirname, './cert/server.crt')
         },
         bodyParser: {
+            json:{limit:"100mb"},
             urlencoded: {
-                limit: "10mb",
-                parameterLimit: 1000000
+                limit: "100mb",
+                parameterLimit: 100000000
             }
-        }
+        },
+        // isAllowCrossDomain: true, //PayloadTooLargeError: request entity too large 解决
     },
     theme: {
         layout: {

@@ -11,9 +11,7 @@ module.exports = function (sender) {
     var queryApplicNo = sender.req.query.ApplicNo;
     var qryCurWorkId = sender.req.query.CurWorkId;
     var qryCurName = sender.req.query.CurName;
-    console.log("查询ID", qryCurWorkId);
-    console.log("查询人", qryCurName);
-    console.log("查询号", BillNo);
+    console.log("查询ID", qryCurWorkId,"查询人", qryCurName,"查询号", BillNo);
     QueryParts();
     function QueryParts() {
         var filter = " 1=1 ";
@@ -161,7 +159,7 @@ module.exports = function (sender) {
 
                 CurStatus = 'R';
                 CurText = '退回';
-                console.log("赔了夫人....",BillNo, CurText, CurStatus, fixdate, fixlv);
+                console.log("退回了....",BillNo, CurText, CurStatus, fixdate, fixlv);
 
                 HandleRule(BillNo, CurText, CurStatus, fixdate, fixlv);
             },
@@ -184,7 +182,6 @@ module.exports = function (sender) {
     function NoticeEvery() {
         var retcode = { "Status": "OK", "message": "此单驳回不准", "BillNo": BillNo };
         sender.success(retcode);
-        console.log("吴宣仪 ", retcode);
     }
 }
 

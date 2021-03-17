@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-02 10:16:51
+ * @LastEditTime: 2021-03-17 09:13:56
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
+ */
 const prefix = 'https://172.16.3.49:8000';
 
 const getUrl = (type) => {
@@ -23,7 +31,8 @@ const getUrl = (type) => {
 
 const getT9Data = async ({
     to,
-    type
+    type,
+    UID
 }) => {
     //c-params
     if (!to && type) {
@@ -32,20 +41,18 @@ const getT9Data = async ({
     }
     //d-get
 
-    let materialId = 'AA1-A000001-003'
     let res = await $.ajax({
         method: 'get',
         url: getUrl(type),
         data: {
             to,
-            materialId
+            UID
         },
         success: function (data) {
-            console.log("getT9DataBySql data:", data);
             return data;
         },
         error: function (error) {
-            console.log("getT9DataBySql error:", error);
+            return error;
         }
     });
 

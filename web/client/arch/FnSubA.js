@@ -16,8 +16,10 @@ function shuffleA(BillNo) {
             let htmlModel = '';
             let CurLight = bjob[11].CurLevel;
             let CurText = bjob[11].CurText;
+            var CurJob = bjob[11].CurJob;
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
+                '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:640px;">' +
                 '<table width = "1000" border = "1"  > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="3" height="50" align="center"><img src="/images/techmation.png" /></td>' +
@@ -203,13 +205,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">DeptM_10</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" rowspan="4" colspan="5" height="25">申请说明： <br/>  ' +
+                '<td width="50" rowspan="4" colspan="5" height="25">  <br/>  ' +
                 '<textarea class="fee-drop-super" width="1200" rows="5" readonly>Explan</textarea></td> ' +
-                '<td width="50" rowspan="4" colspan="3" height="25">额度控管： <br/>  ' +
-                ' CreditA <br/>  ' +
-                ' CreditB <br/>  ' +
-                ' CreditC <br/>  ' +
-                ' CreditD </td> ' +
+                '<td width="50" rowspan="4" colspan="3" height="25">  <br/>  ' +
+                '   <br/>  ' +
+                '   <br/>  ' +
+                '   <br/>  ' +
+                '   </td> ' +
                 '<td width="50" colspan="2" height="25">总金额</td>' +
                 '<td width="50" colspan="3" height="25">TotalV</td>' +
                 '</tr>' +
@@ -638,33 +640,39 @@ function shuffleA(BillNo) {
                 }
             }
             createRpHtml(sData);
-            if (CurLight == '1') {
+            if (CurJob == 'dpt') {
                 $("#mandpt").addClass("fee-approval");
             }
-            if (CurLight == '2') {
+            if (CurJob == 'vip') {
                 $("#manvip").addClass("fee-approval");
             }
-            if (CurLight == '3') {
+            if (CurJob == 'pur') {
                 $("#manpur").addClass("fee-approval");
             }
-            if (CurLight == '4') {
+            if (CurJob == 'pex') {
                 $("#manpex").addClass("fee-approval");
             }
-            if (CurLight == '5') {
+            if (CurJob == 'cfo') {
                 $("#mancfo").addClass("fee-approval");
             }
-            if (CurLight == '6') {
+            if (CurJob == 'psd') {
                 $("#manpsd").addClass("fee-approval");
             }
-            if (CurLight == '7') {
+            if (CurJob == 'ceo') {
                 $("#manceo").addClass("fee-approval");
             }
-            if (CurLight == '8') {
+            if (CurJob == 'bod') {
                 $("#manbod").addClass("fee-approval");
             }
             divHtml = '';
             newHtml = '';
             htmlModel = '';
+            if (CurText == '核准') {
+                waterAy({ 'firstblood': '核准', 'secondblood': '总经理' } );
+            }
+            if (CurText == '退回') {
+                waterBy({ 'firstblood': '驳回', 'secondblood': '总经理' } );
+            }
         },
         error: function () {
         }
@@ -682,16 +690,14 @@ function VegasA(BillNo, FlowBudget, FlowVip) {
         success: function (data) {
             const json2 = JSON.stringify(data);
             const bjob = JSON.parse(json2);
-        
-            console.log("加里", bjob[10].StaffName);
-            console.log("李在希", bjob[11].CurLevel);
+            // console.log("李在希", bjob[11].CurLevel);
             sData = [];
             let htmlModel = '';
             let CurLight = bjob[11].CurLevel;
             let CurText = bjob[11].CurText;
+            var CurJob = bjob[11].CurJob;
             $('#listPrintViewDiv').html('');
-            htmlModel = '' +
-                '' +
+            htmlModel = 
                 '<table width = "1000" border = "1"  > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="3" height="50" align="center"><img src="/images/techmation.png" /></td>' +
@@ -1310,29 +1316,28 @@ function VegasA(BillNo, FlowBudget, FlowVip) {
                 }
             }
             createRpHtml(sData);
-
-            if (CurLight == '1') {
+            if (CurJob == 'dpt') {
                 $("#mandpt").addClass("fee-approval");
             }
-            if (CurLight == '2') {
+            if (CurJob == 'vip') {
                 $("#manvip").addClass("fee-approval");
             }
-            if (CurLight == '3') {
+            if (CurJob == 'pur') {
                 $("#manpur").addClass("fee-approval");
             }
-            if (CurLight == '4') {
+            if (CurJob == 'pex') {
                 $("#manpex").addClass("fee-approval");
             }
-            if (CurLight == '5') {
+            if (CurJob == 'cfo') {
                 $("#mancfo").addClass("fee-approval");
             }
-            if (CurLight == '6') {
+            if (CurJob == 'psd') {
                 $("#manpsd").addClass("fee-approval");
             }
-            if (CurLight == '7') {
+            if (CurJob == 'ceo') {
                 $("#manceo").addClass("fee-approval");
             }
-            if (CurLight == '8') {
+            if (CurJob == 'bod') {
                 $("#manbod").addClass("fee-approval");
             }
             divHtml = '';
@@ -1342,8 +1347,30 @@ function VegasA(BillNo, FlowBudget, FlowVip) {
         error: function () {
         }
     })
-}
-
-$('#PrintClose').click(function () {
-    $('#kisswindow').window('close');
-});
+} 
+function waterAy(settings) {
+    var obj=JSON.stringify(settings);
+    var result =settings.firstblood;
+    var opinion =settings.secondblood;
+    $('#waterAy').watermark({
+        texts: [result, ''], //水印文字
+        textColor: "#9ACD32", //文字颜色
+        textFont: '24px 微软雅黑', //字体
+        width: 150, //水印文字的水平间距
+        height: 400,  //水印文字的高度间距（低于文字高度会被替代）
+        textRotate: -30 //-90到0， 负数值，不包含-90
+    })
+}  
+function waterBy(settings) {
+    var obj=JSON.stringify(settings);
+    var result =settings.firstblood;
+    var opinion =settings.secondblood;
+    $('#waterAy').watermark({
+        texts: [result, ''], //水印文字
+        textColor: "#8B4726", //文字颜色
+        textFont: '24px 微软雅黑', //字体
+        width: 150, //水印文字的水平间距
+        height: 400,  //水印文字的高度间距（低于文字高度会被替代）
+        textRotate: -30 //-90到0， 负数值，不包含-90
+    })
+}  

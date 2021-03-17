@@ -263,7 +263,7 @@ const createSql = (i) => {
 					if (!n[p]) {
 						replaceValueN = replaceValueN + "null,";
 					} else {
-						replaceValueN = replaceValueN + "'" + n[p] + "',";
+						replaceValueN = replaceValueN + "'" + n[p].replace(/'/g, '') + "',";//删除特殊符号
 					}
 				}
 
@@ -441,6 +441,7 @@ const createSql = (i) => {
 			if (i.params) {
 
 				if (i.params.tableId) {
+					console.log('excuteSql11111', excuteSql);
 					excuteSql = excuteSql.replace(/tableId/, i.params.tableId)
 				}
 				if (i.params.filter) {

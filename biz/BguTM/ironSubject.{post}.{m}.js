@@ -48,15 +48,16 @@ module.exports = function (sender) {
 						"DeptLabel": flowDept,
 						"GroupLabel": flowGroup,
 						"StaffRole": data[i].StaffRole,
+						"Mobiles": data[i].Mobiles,
 					}
 					datas.push(temp)
 				}
 				var dump = JSON.stringify(datas);
-				// if (dump.length > 100) {
-				// 	console.log("姑瑛:" + dump.substring(0, 100));
-				// } else {
-				// 	console.log("姑瑛:" + JSON.stringify(datas));
-				// }
+				if (dump.length > 100) {
+					console.log("姑瑛:" + dump.substring(0, 100));
+				} else {
+					console.log("姑瑛:" + JSON.stringify(datas));
+				}
 				sender.success(datas);
 			},
 			error: {},

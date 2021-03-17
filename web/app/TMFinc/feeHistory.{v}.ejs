@@ -31,6 +31,7 @@
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
 <script src="/bomq/supplyFn.js"></script>
 <script src="/bomq/utilFn.js"></script>
+<script src="/good/jquery.watermark.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 	<div id="noprint" class="noprint">
 		<div class="divcontent">
@@ -108,7 +109,7 @@
 						<div class="modal-footer">
 							<button id="PrintConfirm" type="button" class="btn btn-info">打印</button>
 							<button id="PrintClose" type="button" class="btn btn-primary"
-								data-dismiss="modal">关闭</button>
+							data-dismiss="modal">关闭</button>
 						</div>
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal -->
@@ -126,6 +127,7 @@
 	</div>
 	<div id="root" style="height: 100%"></div>
 	<script>
+		var href =  "/app/TMFinc/feeHistory";
 		var missType = '';
 		var missAcute = '';
 		var missBcute = '';
@@ -142,7 +144,7 @@
 		var glbS = '';
 		var Pattern = '';
 		var CapMode = '';
-		var advSearch = '';
+		var CurName = '';
 		var selClass = '';
 		var FieldA = true;
 		var FieldB = true;

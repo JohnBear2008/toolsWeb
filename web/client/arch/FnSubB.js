@@ -17,6 +17,7 @@ function shuffleB(  BillNo ) {
             let CurText = bjob[21].CurText;
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
+        '<div id=\'waterAy\' style="left:200px;top:0px;width:950px;height:1050px;">' +
         '<table width="1000" border="3" border = "1" > ' +
         '  <tr> ' +
         '    <td width="50" colspan="8"  height="30" align="center"  > ' +
@@ -292,7 +293,7 @@ function shuffleB(  BillNo ) {
             '    <td width="50" height="30" colspan="2"> VipDate</td> ' +
             '  </tr> ' +
             '</table> ' +
-                '</DIV>';
+            '</DIV>';
                 var watermark = "";
                 if (CurText == '核准') {
                     watermark = "/images/BudgetYes.png";
@@ -937,11 +938,40 @@ function shuffleB(  BillNo ) {
             divHtml = '';
             newHtml = '';
             htmlModel = '';
+            if (CurText == '核准') {
+                waterAy({ 'firstblood': '核准', 'secondblood': '总经理' } );
+            }
+            if (CurText == '退回') {
+                waterBy({ 'firstblood': '驳回', 'secondblood': '总经理' } );
+            }
         },
         error: function () {
         }
     })
 }
-// $('#PrintClose').click(function () {
-//     $('#kisswindow').window('close');
-// });
+function waterAy(settings) {
+    var obj=JSON.stringify(settings);
+    var result =settings.firstblood;
+    var opinion =settings.secondblood;
+    $('#waterAy').watermark({
+        texts: [result, ''], //水印文字
+        textColor: "#9ACD32", //文字颜色
+        textFont: '24px 微软雅黑', //字体
+        width: 250, //水印文字的水平间距
+        height: 400,  //水印文字的高度间距（低于文字高度会被替代）
+        textRotate: -30 //-90到0， 负数值，不包含-90
+    })
+}  
+function waterBy(settings) {
+    var obj=JSON.stringify(settings);
+    var result =settings.firstblood;
+    var opinion =settings.secondblood;
+    $('#waterAy').watermark({
+        texts: [result, ''], //水印文字
+        textColor: "#8B4726", //文字颜色
+        textFont: '24px 微软雅黑', //字体
+        width: 250, //水印文字的水平间距
+        height: 400,  //水印文字的高度间距（低于文字高度会被替代）
+        textRotate: -30 //-90到0， 负数值，不包含-90
+    })
+}  

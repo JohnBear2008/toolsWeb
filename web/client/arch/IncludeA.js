@@ -1,5 +1,4 @@
 function searchFile(mode) {
-      console.log("夏天夏天");
       CapMode = 'A'; Formkind = '采购单';
       CapDate = '0';
       var qrybillno = $('#mainbillno').val();
@@ -72,6 +71,7 @@ function searchFile(mode) {
                       , { field: 'Payment', title: '付款', width: 70 }
                       , { field: 'CurName', title: '审批人', width: 90, sort: true }
                       , { field: 'CurJob', title: '职位', width: 0, hide: true }
+                      , { field: 'CurPhone', title: '釘釘', width: 0, hide: true }
                       , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 160 }
                   ]]
                   , page: true
@@ -82,15 +82,12 @@ function searchFile(mode) {
                   switch (obj.event) {
                       case 'viewSumary':
                           var dataARR = (checkStatus.data);
-                        //   console.log("Y息发", (dataARR[0].BillNo ));
-                        //   console.log("X息发", ( dataARR[0].VipName));
-                        //   console.log("X息发", ( data.length));
-                        //   for (var i = 0; i < data.length; i++) {
-                        //     console.log("美园", dataARR[i].BillNo);
-                        //   }
+                        //   console.log("品宫", (dataARR.length));
+                          console.log("泰熙", (dataARR[0].CurPhone));
                           CapBillNo = dataARR[0].BillNo;
                           CapSubject = dataARR[0].Subject;
-                          CapCurJob = data[0].CurJob;
+                          CapCurJob = dataARR[0].CurJob;
+                          CapPhone = dataARR[0].CurPhone;
                           var BudgetItem = dataARR[0].BudgetItem;
                           var VipName = dataARR[0].VipName;
                           VegasA(dataARR[0].BillNo ,BudgetItem , VipName );
@@ -115,6 +112,8 @@ function searchFile(mode) {
                   var BudgetItem = data.BudgetItem;
                   var VipName = data.VipName;
                   CapCurJob = data.CurJob;
+                  CapPhone = data.CurPhone;
+                  console.log("都市闲情", (CapPhone));
                   if (obj.event === 'analysis') {
                       VegasA(Parts_BillNo , BudgetItem , VipName   );
                       CapBillNo = Parts_BillNo;
@@ -128,9 +127,11 @@ function searchFile(mode) {
                           var reportType = 'agreeFee';
                           var taskData = {
                               "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": Formkind, "Subject": CapSubject,
-                              "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob
-                          }
+                              "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
+                              "CurPhone": CapPhone,
+                            }
                           layer.alert("同意此笔审批号" + Parts_BillNo);
+                          console.log("下立",taskData);
                           $.ajax({
                               method: 'post',
                               data: taskData,
@@ -161,7 +162,8 @@ function searchFile(mode) {
                           var reportType = 'rejectFee';
                           var taskData = {
                               "reportType": reportType, "BillNo": Parts_BillNo, "Subject": CapSubject, "TotalValue": CapTotalValue, 
-                              "CurWorkId": sessionAID, "CurName": sessionName ,"CurJob": CapCurJob
+                              "CurWorkId": sessionAID, "CurName": sessionName ,"CurJob": CapCurJob,
+                              "CurPhone": CapPhone
                           }
                           layer.alert("驳回此笔审批号" + Parts_BillNo);
                           $.ajax({

@@ -22,7 +22,7 @@ module.exports = function (sender) {
 		var orderBy = '  tba.BillNo  desc';
 		var limit = '5000';
 		var capacity = '';
-		let SQLExecute = "  SELECT tba.*,trul.CurName, trul.CurJob ,trul.VipName from  bgu_tripmain tba LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo  " +
+		let SQLExecute = "  SELECT tba.*, trul.CurWorkId, trul.CurName, trul.CurJob ,trul.VipName from  bgu_tripmain tba LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo  " +
 			" where trul.CurStatus ='P' and trul.SendStatus ='D' ";
 		if (weekbeg != "" && weekbeg != "null" && weekbeg != undefined && weekbeg.length > 0) {
 			capacity += " AND tba.EntryDate >= " + "'" + weekbeg + "' ";
@@ -76,17 +76,18 @@ module.exports = function (sender) {
 						"TotalValue": ((data[i].TotalValue == null || data[i].TotalValue == undefined) ? ('') : data[i].TotalValue),
 						"Explanation": ((data[i].Explanation == null || data[i].Explanation == undefined) ? ('') : data[i].Explanation),
 						"CurJob": ((data[i].CurJob == null || data[i].CurJob == undefined) ? ('') : data[i].CurJob),
+						"CurPhone": ((data[i].CurWorkId == null || data[i].CurWorkId == undefined) ? ('') : data[i].CurWorkId),
 						"CurName": ((data[i].CurName == null || data[i].CurName == undefined) ? ('') : data[i].CurName),
 					};
 					dataArr.push(obj);
 				}
 				sender.success(dataArr);
-				var dump = JSON.stringify(dataArr);
-				if (dump.length > 100) {
-					console.log("子弹:" + dump.substring(0, 100));
-				} else {
-					console.log("子弹:" + JSON.stringify(dataArr));
-				}
+				// var dump = JSON.stringify(dataArr);
+				// if (dump.length > 100) {
+				// 	console.log("子弹:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("子弹:" + JSON.stringify(dataArr));
+				// }
 			},
 			error: sender.error
 		});
@@ -97,7 +98,7 @@ module.exports = function (sender) {
 		var limit = '5000';
 		var capacity = '';
 		let SQLExecute =
-			" SELECT tba.*, trul.CurName , trul.CurJob , trul.VipName ,tdel.BudgetItem from  bgu_purchmain tba " +
+			" SELECT tba.*, trul.CurWorkId, trul.CurName , trul.CurJob , trul.VipName ,tdel.BudgetItem from  bgu_purchmain tba " +
 			" LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo   " +
 			" LEFT JOIN bgu_purchdetail tdel on tdel.BillNo  =tba.BillNo  and SNNo='1' " +
 			" where trul.CurStatus ='P' and trul.SendStatus ='D' ";
@@ -126,7 +127,7 @@ module.exports = function (sender) {
 		if (orderBy != "" && orderBy != undefined) {
 			SQLExecute = SQLExecute + " ORDER BY " + orderBy;
 		}
-		  console.log(" 张良 :" , CurName); 
+		  console.log(" 胜利 :" , CurName); 
 		//   console.log(" 模特 :" , SQLExecute); 
 		let paramelist = [CurName];
 		let dataArr = [];
@@ -155,18 +156,18 @@ module.exports = function (sender) {
 						"Explanation": ((data[i].Explanation == null || data[i].Explanation == undefined) ? ('') : data[i].Explanation),
 						"CurName": ((data[i].CurName == null || data[i].CurName == undefined) ? ('') : data[i].CurName),
 						"CurJob": ((data[i].CurJob == null || data[i].CurJob == undefined) ? ('') : data[i].CurJob),
+						"CurPhone": ((data[i].CurWorkId == null || data[i].CurWorkId == undefined) ? ('') : data[i].CurWorkId),
 						"BudgetItem": ((data[i].BudgetItem == null || data[i].BudgetItem == undefined) ? ('') : data[i].BudgetItem),
 					};
 					dataArr.push(obj);
 					// var dump = JSON.stringify(dataArr);
-					// if (dump.length > 100) {
-					// 	console.log("子:" + dump.substring(0, 100));
+					// if (dump.length > 1000) {
+					// 	console.log("瑜子:" + dump.substring(0, 1000));
 					// } else {
-					// 	console.log("子:" + JSON.stringify(dataArr));
+					// 	console.log("瑜子:" + JSON.stringify(dataArr));
 					// }
 				}
 				sender.success(dataArr);
-
 			},
 			error: sender.error
 		});

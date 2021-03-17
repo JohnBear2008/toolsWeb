@@ -71,6 +71,7 @@ function searchTravel(mode) {
                       , { field: 'CurName', title: '审批人', width: 100, sort: true }
                       , { field: 'CurJob', title: '职位', width: 0, hide: true }
                       , { field: 'TotalValue', title: '总金额', width: 110 }
+                      , { field: 'CurPhone', title: '釘釘', width: 0, hide: true }
                       , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200 }
                   ]]
                   , page: true
@@ -82,11 +83,12 @@ function searchTravel(mode) {
                       case 'viewSumary':
                           var dataARR = (checkStatus.data);
                           // console.log("z智阭", JSON.stringify(checkStatus));
-                          console.log("西阭", (dataARR[0].BillNo));
+                          console.log("西阭", (dataARR[0].CurPhone));
                           CapBillNo = dataARR[0].BillNo;
                           CapTotalValue = dataARR[0].TotalValue;
                           CapSubject = dataARR[0].Subject;
-                          CapCurJob = data[0].CurJob;
+                          CapCurJob = dataARR[0].CurJob;
+                          CapPhone = dataARR[0].CurPhone;
                           shuffleB(dataARR[0].BillNo);
                           // <DIV STYLE="page-break-before:always">
                           $('#kisswindow').modal('show');
@@ -107,6 +109,7 @@ function searchTravel(mode) {
                   CapTotalValue = data.TotalValue;
                   CapSubject = data.Subject;
                   CapCurJob = data.CurJob;
+                  CapPhone = data.CurPhone;
                   if (obj.event === 'analysis') {
                       shuffleB(Parts_BillNo);
                       CapBillNo = Parts_BillNo;
@@ -119,7 +122,8 @@ function searchTravel(mode) {
                           var reportType = 'agreeFee';
                           var taskData = {
                               "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": Formkind, "Subject": CapSubject,
-                               "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob
+                               "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
+                               "CurPhone": CapPhone,
                           }
                           layer.alert("同意此笔审批号" + Parts_BillNo);
                           $.ajax({
@@ -150,7 +154,9 @@ function searchTravel(mode) {
                       }, function () {
                           var reportType = 'rejectFee';
                           var taskData = {
-                              "reportType": reportType, "BillNo": Parts_BillNo, "Subject": CapSubject, "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob
+                              "reportType": reportType, "BillNo": Parts_BillNo, "Subject": CapSubject,  "TotalValue": CapTotalValue,
+                               "CurWorkId": sessionAID, "CurName": sessionName,  "CurJob": CapCurJob,
+                               "CurPhone": CapPhone,
                           }
                           layer.alert("驳回此笔审批号" + Parts_BillNo);
                           $.ajax({

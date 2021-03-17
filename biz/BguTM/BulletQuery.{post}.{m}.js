@@ -126,6 +126,7 @@ module.exports = function (sender) {
           var TermiLevel = '';
           var CurName = '';
           var CurText = '';
+          var CurJob = '';
           if (result[2][0] == null || result[2][0] == undefined) {
           } else {
             OppName = result[2][0].OppName; OppName = nulReplaceTxt(OppName); OppDate = result[2][0].OppDate; OppDate = nulReplaceTxt(OppDate);
@@ -141,6 +142,7 @@ module.exports = function (sender) {
             CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
             CurLevel = result[2][0].CurLevel; CurLevel = nulReplaceTxt(CurLevel); TermiLevel = result[2][0].TermiLevel; TermiLevel = nulReplaceTxt(TermiLevel);
             CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); CurText = result[2][0].CurText; CurText = nulReplaceTxt(CurText);
+            CurJob = result[2][0].CurJob; CurJob = nulReplaceTxt(CurJob); 
           }
           var objX = {
             "OppName": OppName, "OppDate": OppDate,
@@ -155,6 +157,7 @@ module.exports = function (sender) {
             "SendStatus": SendStatus, "CurStatus": CurStatus,
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
             "CurName": CurName, "CurText": CurText,
+            "CurJob": CurJob, 
           };
           dataARR.push(objX);
           var objW = {
@@ -170,11 +173,11 @@ module.exports = function (sender) {
           dataARR.push(objW);
           sender.success(dataARR);
           var dump = JSON.stringify(dataARR);
-          // if (dump.length > 1000) {
-          //   console.log("陆钰:" + dump.substring(0, 1000));
-          // } else {
-          //   console.log("陆钰:" + JSON.stringify(dataARR));
-          // }
+          if (dump.length > 1000) {
+            console.log("鲁班:" + dump.substring(0, 1000));
+          } else {
+            console.log("鲁班:" + JSON.stringify(dataARR));
+          }
         }
       });
     function PopupDetail(cb) {
@@ -266,7 +269,7 @@ module.exports = function (sender) {
       // var BillNo = '20201225103088';
       let SQL2 =
         " select  `BillNo` ,`entryDate` ,`groupLabel` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
-        " `CurName` ,`SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`MagWorkId` ,`MagName` ," +
+        " `CurName` , `CurJob` , `SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`MagWorkId` ,`MagName` ," +
         " `MagDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
         " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate`  from bgu_rule tba  " +
@@ -293,6 +296,7 @@ module.exports = function (sender) {
               "Level9": data[i].Level9, "BodWorkId": data[i].BodWorkId, "BodName": data[i].BodName, "BodDate": data[i].BodDate,
               "BillNo": data[i].BillNo, "SendStatus": data[i].SendStatus, "CurStatus": data[i].CurStatus, "CurLevel": data[i].CurLevel,
               "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "CurText": data[i].CurText,
+              "CurJob": data[i].CurJob,
             }
             datas.push(temp)
           }

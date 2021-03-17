@@ -39,9 +39,6 @@
     </div> -->
 
     <div>
-        <button type="button" class="btn btn-primary" id="syncErpDataButton">
-            同步ERP
-        </button>
         <button type="button" style="display: none;" id="rp_productsNew">
             新增
         </button>
@@ -114,13 +111,6 @@
                             <form class="form-horizontal" role="form" id='rp_productsForm'>
 
                                 <input id="rp_productsForm-DBID" type="hidden" value="">
-
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label">UID</label>
-                                    <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_productsForm-UID"></p>
-                                    </div>
-                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">产品编号</label>
@@ -253,6 +243,7 @@
 
     //表dt参数
     const mainDtParams = {
+        // dtConfig: 'dtConfigDataFull',
         dtConfig: 'dtConfigFull',
         // bStateSave: true, //true刷新保存当前页码,搜索信息
         columns: mainColumnsArray
@@ -270,7 +261,6 @@
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             let dataSelect = table.row('.selected').data();
-            // console.log('dataSelect', dataSelect);
 
             //初始化并填写form内inputs
             initAndFillFormInputs({
@@ -285,6 +275,8 @@
     }
     //主表加载数据函数;
     const loadBillMainTable = async () => {
+
+        // console.log('loadBillMainTable MainTableData', MainTableData);
         //初始化主表
         loadBillDataTable({
             elementId: 'rp_products',
@@ -295,7 +287,9 @@
                     orderBy: 'saveTimeStamp desc'
                 }
             },
-            dtParams: mainDtParams
+            sqlParams: "",
+            dtParams: mainDtParams,
+            // tableData: MainTableData,
         })
     }
 
@@ -317,7 +311,7 @@
         //check-选中检查
         let table = $('#rp_products').DataTable();
         let rowsSelect = table.rows('.selected').data();
-        console.log('rowsSelect', rowsSelect);
+        // console.log('rowsSelect', rowsSelect);
 
         if (rowsSelect.length === 0) {
             alert('请先选中需要删除的产品')
@@ -334,8 +328,10 @@
 
         //do-删除产品
         let DBIDArr = []
+        let rowsSelectArr = []
         for (let i = 0; i < rowsSelect.length; i++) {
             DBIDArr.push(rowsSelect[i].DBID)
+            rowsSelectArr.push(rowsSelect[i])
         }
 
         let r1 = await postDBData({
@@ -348,14 +344,21 @@
 
         //return-结果提醒
         if (r1.affectedRows > 0) {
+            MainTableData = getUpdateArr({
+                type: 'delete',
+                mainArr: MainTableData,
+                infoArr: rowsSelectArr,
+                keys: ['DBID']
+            })
+            //return-重载表格
+            // loadBillMainTable();
+
+            MainTable.ajax.reload();
             alert('删除成功')
         } else {
             alert('出现错误')
         }
-        //return-重载表格
-        // loadBillMainTable();
 
-        MainTable.ajax.reload() //内置函数重加载
 
     }
 
@@ -398,10 +401,13 @@
 
 
 
+
+
         //有备注时记录备注人
         if (mainFormData.data[0].remark) {
             mainFormData.data[0].remarker = sessionName
         }
+
 
         console.log('mainFormData:' + JSON.stringify(mainFormData));
 
@@ -411,88 +417,69 @@
         })
 
         if (r1.affectedRows > 0) {
+            if (mainFormData.data.DBID) {
+                MainTableData = getUpdateArr({
+                    type: 'update',
+                    mainArr: MainTableData,
+                    infoArr: mainFormData.data,
+                    keys: ['DBID']
+                })
+                loadBillMainTable();
+            } else {
+                initMainTableData();
+            }
+
+
             alert('保存成功!')
 
             // $('#rp_productsModal').modal('hide');多层modal存在失效问题,改用click关闭
             $('#rp_productsModalClose').click()
 
-            // loadBillMainTable();
 
-            MainTable.ajax.reload()
         } else {
             alert('出现错误!')
         }
 
     }
 
-    const syncErpData = async () => {
-        let T9Data = await getT9Data({
-            to: 'RP',
-            type: 'material',
-
-        })
-        console.log('T9Data', T9Data);
-
-        let MainTableData = MainTable.rows().data();
-        let RPData = []
-        for (let i = 0; i < MainTableData.length; i++) {
-            RPData.push(MainTableData[i]);
-
-        }
-        console.log('RPData', RPData);
-
-        for (const n of T9Data) {
-            let match = false
-            for (let m of RPData) {
-                if (m.productId === n.productId) {
-                    match = true
-                    for (const p in m) {
-                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
-                            m[p] = n[p]
-                        }
-                    }
-                    break;
-                }
-            }
-            if (!match) {
-
-            }
-        }
-        console.log('newRPData', RPData);
-
-
-        let r1 = await postDBData({
-            sql: 'replace',
+    const initMainTableData = async () => {
+        MainTableData = await getDataBySql({
+            sql: 'sqlTableSelect',
             params: {
                 tableId: 'rp_products',
-                data: RPData,
-                key: 'productId'
+                orderBy: 'saveTimeStamp desc'
             }
         })
+        // console.log('MainTableData11111', MainTableData);
 
-        console.log('r1', r1);
+
+        loadBillMainTable();
     }
 
 
 
 
     $(document).ready(function () {
+        getT9Data({
+            to: 'RP',
+            type: 'material'
+        })
+
+        //定义主表数据全局变量
+        MainTableData = []
 
 
 
         //初始化主表
-        loadBillMainTable();
+        // initMainTableData()
+        loadBillMainTable()
 
-        MainTable = $('#rp_products').DataTable()
+
+        let MainTable = $('#rp_products').DataTable()
+
 
         //添加主表监听
         addMainTableListener();
-
-
-        //同步ERP按钮
-        $('#syncErpDataButton').click(function () {
-            syncErpData();
-        })
 
 
         //产品新增按钮

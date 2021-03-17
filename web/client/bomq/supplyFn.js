@@ -189,13 +189,15 @@ function obtLogGroup(loginName) {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  // console.log("螺丝",JSON.stringify(dataArr));
+                  console.log("螺丝",JSON.stringify(dataArr));
                   var sessDept = dataArr[0].DeptLabel;
                   var sessGroup = dataArr[0].GroupLabel;
                   var sessRole = dataArr[0].StaffRole;
+                  var Mobiles = dataArr[0].Mobiles;
                   $("#hideDeptName").val(sessDept);  
                   $("#GroupName").val(sessGroup);  
                   $("#hideflowRole").val(sessRole);  
+                  $("#hidePhone").val(Mobiles);  
             },
             error: function () {
             }

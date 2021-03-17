@@ -6,8 +6,13 @@ module.exports = function (sender) {
 	var EmpValue = Advstr.EmpValue;
 	let PropList = [];
 	var StaffID = '';
+	var StaffID_Clone = '';
 	var StaffUser = '';
 	var StaffName = '';
+	var DeptLabel = Advstr.PowerLabel;
+	var GroupLabel = Advstr.RingLabel;
+	var StaffRole = Advstr.StaffRole;
+	var LastModify = Advstr.LastModify;
 	var Mobiles = '';
 	if (EmpValue != "" && EmpValue != undefined) {
 		PropList = EmpValue.split('##');
@@ -17,15 +22,28 @@ module.exports = function (sender) {
 		Mobiles = PropList[3];
 	}
 	var StaffLevel = Advstr.StaffLevel;
-	var DeptLabel = Advstr.PowerLabel;
-	var GroupLabel = Advstr.RingLabel;
-	var StaffRole = Advstr.StaffRole;
-	var LastModify = Advstr.LastModify;
+	var PurLabel = '0';
+	if (StaffLevel != 1) {
+		if (StaffLevel == 4) {
+			if (StaffRole == "资讯承办人") {
+				PurLabel = "1";
+			} else if (StaffRole == "行政承办人") {
+				PurLabel = "2";
+			} else {
+				PurLabel = "0";
+			}
+			StaffID_Clone = StaffID + StaffLevel + PurLabel ;
+		}else{
+			StaffID_Clone = StaffID + StaffLevel;
+		}
+	} else {
+		StaffID_Clone = StaffID;
+	}
 	var GroupSQL = '';
 	var DeptSQL = '';
 	var Arrange = sender.req.query.Arrange;
-	console.log("霖霖是：", EmpValue, "喜");
-	console.log("霖霖是：", StaffName, StaffID, StaffLevel, DeptLabel, StaffID, Mobiles, "悲");
+	console.log("霖霖是：", EmpValue, "喜", StaffRole);
+	console.log("霖霖是：", StaffName, StaffID, StaffLevel, DeptLabel, StaffID_Clone , Mobiles , "悲");
 	if (Pattern == 'Dept') {  //部門
 		DeptSQL = " DeptLabel = '" + DeptLabel + "' ";
 	}
@@ -48,14 +66,47 @@ module.exports = function (sender) {
 		var StaffUser = Advstr.StaffUser;
 		var StaffName = Advstr.StaffName;
 		var Mobiles = Advstr.Mobiles;
-		CreatePeople(LastModify ,StaffID, StaffUser, StaffName, Mobiles );
+		CreatePeople(LastModify, StaffID, StaffUser, StaffName, Mobiles);
 	}
-	function CreatePeople(LastModify ,StaffID, StaffUser, StaffName, Mobiles ) {
-		// console.log("只相信本能",LastModify ,StaffID, StaffUser, StaffName, Mobiles);
-		let SQL = "Update `bgu_staffs` set  LastModify = ?  where  StaffID =? and StaffUser =? and StaffName =? and Mobiles =?  ";
+	if (Arrange == 'UpdatePeople') {
+		var Advstr = sender.req.query.Advstr;
+		var LastModify = Advstr.LastModify;
+		var StaffID = Advstr.StaffID;
+		var StaffUser = Advstr.StaffUser;
+		var StaffName = Advstr.StaffName;
+		var Mobiles = Advstr.Mobiles;
+		UpdatePeople(LastModify, StaffID, StaffUser, StaffName, Mobiles);
+	}
+	//nouse
+	function CreatePeople(LastModify, StaffID, StaffUser, StaffName, Mobiles) {
+		var SQLInsert = "INSERT INTO `bgu_staffs` " +
+			"(`StaffID`, `StaffUser`, `StaffName`, `StaffLevel` , `StaffRole`, `Mobiles`, `Status`, `StatusText` , `LastModify`) " +
+			"  VALUES (?,?,?,?,?,?,?,?,? )";
+
+		var StaffLevel = '1';
+		var Status = '0';
+		var StaffRole = '文员';
+		var StatusText = '正常';
+		console.log("蔡文姬:", StaffID, StaffUser, StaffName, StaffLevel, StaffRole, Mobiles, Status, StatusText, LastModify);
+		let paramList = [StaffID, StaffUser, StaffName, StaffLevel, StaffRole, Mobiles, Status, StatusText, LastModify];
+		yjDBService.exec({
+			sql: SQLInsert,
+			parameters: paramList,
+			rowsAsArray: true,
+			success: function (result) {
+				console.log("蔡文姬:", result);
+				var retcode = { "status": "OK" };
+				sender.success(retcode);
+			},
+			error: sender.error
+		});
+	}
+	function UpdatePeople(LastModify, StaffID, StaffUser, StaffName, Mobiles) {
+		console.log("只相信本能", LastModify, StaffID, StaffUser, StaffName, Mobiles);
+		let SQL = "Update `bgu_staffs` set  LastModify = ?  where    StaffUser =? and StaffName =?    ";
 		yjDBService.exec({
 			sql: SQL,
-			parameters: [LastModify ,StaffID, StaffUser, StaffName, Mobiles ],
+			parameters: [LastModify, StaffUser, StaffName, Mobiles],
 			rowsAsArray: true,
 			success: function (result) {
 			},
@@ -136,14 +187,15 @@ module.exports = function (sender) {
 		// });
 	}
 	function JobSet(StaffName) {
-		var SQLInsert = "Delete from `bgu_staffs` where StaffName=? and  StaffRole =? ";
-		let paramList = [StaffName, StaffRole];
+		var SQLInsert = "Delete from `bgu_staffs` where StaffID =? ";
+		console.log("鲁班七号:",  StaffID_Clone);
+		let paramList = [ StaffID_Clone];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,
 			rowsAsArray: true,
 			success: function (result) {
-				console.log("露娜:", result);
+				console.log("鲁班七号:", result);
 				JobSetPlug(StaffName);
 			},
 			error: sender.error
@@ -160,14 +212,16 @@ module.exports = function (sender) {
 			Status = '1';
 		}
 		var StatusText = '正常';
-		console.log("露娜:", StaffID, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText,LastModify);
-		let paramList = [StaffID, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText,LastModify];
+		console.log("露娜:", StaffID_Clone, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText, LastModify);
+		let paramList = [StaffID_Clone, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText, LastModify];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,
 			rowsAsArray: true,
 			success: function (result) {
 				console.log("露娜:", result);
+				var retcode = { "status": "OK" };
+				sender.success(retcode);
 			},
 			error: sender.error
 		});

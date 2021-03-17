@@ -909,7 +909,8 @@ const updateDataTable = async (i) => {
 const loadBillDataTable = async ({
     elementId, //元素id
     sqlParams, //sql参数
-    dtParams //表格参数
+    dtParams, //表格参数
+    tableData //直接赋值表数据
 }) => {
 
     $('#' + elementId).DataTable().destroy(); //销毁原数据表格,防止加载错误
@@ -917,7 +918,8 @@ const loadBillDataTable = async ({
     let r1 = getBillDataTableConfig({
         elementId,
         sqlParams,
-        dtParams
+        dtParams,
+        tableData
     });
     // console.log('r1:' + JSON.stringify(r1));
     $('#' + elementId).DataTable(r1);
@@ -933,9 +935,15 @@ const loadBillDataTable = async ({
 const getBillDataTableConfig = ({
     elementId, //元素id
     sqlParams, //sql参数
-    dtParams //表参数
+    dtParams, //表参数
+    tableData, //表数据,直接用数据生成表格时使用
 }) => {
-    // console.log("getBillDataTableConfig i:" + JSON.stringify(i));
+    // console.log("getBillDataTableConfig i:" +
+    //     'elementId', elementId, //元素id
+    //     'sqlParams', sqlParams, //sql参数
+    //     'dtParams', dtParams, //表参数
+    //     'tableData', tableData, //表数据,直接用数据生成表格时使用
+    // );
 
     //定义各类参数模版
     let ajaxParams = {
@@ -947,18 +955,90 @@ const getBillDataTableConfig = ({
         dataSrc: ''
     }
 
+    let buttonsParams = [{
+            text: '新增',
+            action: function () {
+
+                // 取消选择
+                this.rows().deselect();
+                //自动按下隐藏的自定义新增按钮
+                $('#' + elementId + 'New').click();
+
+            }
+        },
+        {
+            text: '删除',
+            action: function () {
+
+
+                //自定义删除
+
+                if ($('#' + elementId + 'Delete').length > 0) {
+                    $('#' + elementId + 'Delete').click()
+                } else {
+                    let DBIDArray = []
+                    let dataSelected = this.rows({
+                        selected: true
+                    }).data();
+                    for (let n = 0; n < dataSelected.length; n++) {
+                        console.log(JSON.stringify(dataSelected[n]));
+                        DBIDArray.push(dataSelected[n].DBID)
+                    }
+                    // console.log(DBIDArray);
+
+                    if (DBIDArray.length > 0) {
+                        if (confirm('删除后无法恢复,请再次确认!')) {
+                            let sqlParams = {
+                                sql: 'delete',
+                                params: {
+                                    tableId: sqlParams.params.tableId,
+                                    data: DBIDArray
+                                }
+                            }
+                            let updateDataTableI = {
+                                elementId: elementId,
+                                sqlParams: sqlParams
+                            }
+                            updateDataTable(updateDataTableI);
+                        }
+                    } else {
+                        alert('请点击表格,至少选中一条数据!')
+                    }
+
+                }
+
+            }
+
+
+
+        },
+        'colvis',
+        'excel',
+        // 'csv', 
+        // 'print',
+        'copy',
+        {
+            text: '全选',
+            action: function () {
+                this.rows({
+                    page: 'current'
+                }).select();
+            }
+        }, {
+            text: '取消全选',
+            action: function () {
+                this.rows({
+                    page: 'current'
+                }).deselect();
+            }
+        },
+
+    ]
+
 
 
     //常用sql语句ajax模版
     let dtConfigNormal = {
-        // ajax: {
-        //     url: '/app/RP/lib/ajaxGet',
-        //     data: {
-        //         sql: 'sqlId',
-        //         params: {}
-        //     },
-        //     dataSrc: ''
-        // },
         ajax: ajaxParams,
         columns: [],
         order: [], //初始排序
@@ -979,14 +1059,7 @@ const getBillDataTableConfig = ({
 
     //常用sql语句ajax 简单模版
     let dtConfigSimple = {
-        ajax: {
-            url: '/app/RP/lib/ajaxGet',
-            data: {
-                sql: 'sqlId',
-                params: {}
-            },
-            dataSrc: ''
-        },
+        ajax: ajaxParams,
         columns: [],
         bAutoWidth: true, //自动列宽
         dom: "<'row'<'col-sm-12'tr>>",
@@ -994,27 +1067,8 @@ const getBillDataTableConfig = ({
     }
 
 
-    //常用data直接赋值模版
-    let dtConfigData = {
-        data: [],
-        columns: [],
-        // select: false, //不允许多选操作
-        // bStateSave: true, //刷新保存当前页码
-        // dom: 'Bfrtlip',
-        // bAutoWidth: true, //自动列宽
-        dom: "<'row'<'col-sm-12'tr>>", //定义datatable组件位置
-        language: languageCN
-    }
-
     let dtConfigFull = {
-        ajax: {
-            url: '/app/RP/lib/ajaxGet',
-            data: {
-                sql: 'sqlId',
-                params: {}
-            },
-            dataSrc: ''
-        },
+        ajax: ajaxParams,
         columns: [],
         order: [], //初始排序
         select: true, //允许多选操作
@@ -1031,87 +1085,44 @@ const getBillDataTableConfig = ({
         dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
-        buttons: [{
-                text: '新增',
-                action: function () {
-
-                    // 取消选择
-                    this.rows().deselect();
-                    //自动按下隐藏的自定义新增按钮
-                    $('#' + elementId + 'New').click();
-
-                }
-            },
-            {
-                text: '删除',
-                action: function () {
-
-
-                    //自定义删除
-
-                    if ($('#' + elementId + 'Delete').length > 0) {
-                        $('#' + elementId + 'Delete').click()
-                    } else {
-                        let DBIDArray = []
-                        let dataSelected = this.rows({
-                            selected: true
-                        }).data();
-                        for (let n = 0; n < dataSelected.length; n++) {
-                            console.log(JSON.stringify(dataSelected[n]));
-                            DBIDArray.push(dataSelected[n].DBID)
-                        }
-                        // console.log(DBIDArray);
-
-                        if (DBIDArray.length > 0) {
-                            if (confirm('删除后无法恢复,请再次确认!')) {
-                                let sqlParams = {
-                                    sql: 'delete',
-                                    params: {
-                                        tableId: sqlParams.params.tableId,
-                                        data: DBIDArray
-                                    }
-                                }
-                                let updateDataTableI = {
-                                    elementId: elementId,
-                                    sqlParams: sqlParams
-                                }
-                                updateDataTable(updateDataTableI);
-                            }
-                        } else {
-                            alert('请点击表格,至少选中一条数据!')
-                        }
-
-                    }
-
-                }
-
-
-
-            },
-            'colvis',
-            'excel',
-            // 'csv', 
-            // 'print',
-            'copy',
-            {
-                text: '全选',
-                action: function () {
-                    this.rows({
-                        page: 'current'
-                    }).select();
-                }
-            }, {
-                text: '取消全选',
-                action: function () {
-                    this.rows({
-                        page: 'current'
-                    }).deselect();
-                }
-            },
-
-        ],
+        buttons: buttonsParams,
         language: languageCN
 
+    }
+
+    let dtConfigDataFull = {
+        data: [],
+        columns: [],
+        order: [], //初始排序
+        select: true, //允许多选操作
+        bAutoWidth: true, //自动列宽
+        bStateSave: false, //true刷新保存当前页码,搜索信息
+        aLengthMenu: [
+            [5, 10, 25],
+            [5, 10, 25]
+        ], //设置每页显示数据条数的下拉选项
+        iDisplayLength: 10, //每页初始显示5条记录
+        // ordering:false,//禁止排序
+        order: [], //禁止初始排序
+        // dom: 'Bfrtlip',
+        dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
+        buttons: buttonsParams,
+        language: languageCN
+
+    }
+
+    //常用data直接赋值模版
+    let dtConfigData = {
+        data: [],
+        columns: [],
+        // select: false, //不允许多选操作
+        // bStateSave: true, //刷新保存当前页码
+        // dom: 'Bfrtlip',
+        // bAutoWidth: true, //自动列宽
+        dom: "<'row'<'col-sm-12'tr>>", //定义datatable组件位置
+        language: languageCN
     }
 
 
@@ -1122,6 +1133,9 @@ const getBillDataTableConfig = ({
     switch (dtParams.dtConfig) {
         case 'dtConfigFull':
             dtConfig = dtConfigFull;
+            break;
+        case 'dtConfigDataFull':
+            dtConfig = dtConfigDataFull;
             break;
         case 'dtConfigData':
             dtConfig = dtConfigData;
@@ -1135,10 +1149,10 @@ const getBillDataTableConfig = ({
     }
 
     //修改参数
-
     if (dtParams.data) {
         dtConfig.data = dtParams.data;
     }
+
 
     if (sqlParams) {
         if (sqlParams.sqlId) {
@@ -1156,8 +1170,16 @@ const getBillDataTableConfig = ({
 
     }
 
+    //增加tableData赋值
+    // console.log('11111', tableData);
+    if (dtParams.dtConfig === 'dtConfigDataFull' && tableData) {
+        // console.log('22222', tableData);
+        dtConfig.data = tableData
+    }
+
 
     o = dtConfig;
+    // console.log('getBillDataTableConfig o', o);
 
     return o;
 
@@ -2092,126 +2114,102 @@ const getStockNums = async (PIDArr) => {
 }
 
 
-// /**
-//  * @description: 定义dataTable 生成参数
-//  * @param {*}
-//  * @return {*}
-//  */
-// const dataTableConfig = ({
-//     elementId,
-//     tableData,
-//     config
-// }) => {
-//     //c
+/**
+ *判断对象数据类型,是对象或数组
+ *
+ * @param {*} obj
+ * @returns
+ */
+const typeObj = (obj) => {
+    let type = Object.prototype.toString.call(obj);
+    let typeResult = '';
+    switch (type) {
+        case '[object Array]':
+            typeResult = 'Array'
+            break;
+        case '[object Object]':
+            typeResult = 'Object'
+            break;
+        case '[object String]':
+            typeResult = 'String'
+            break;
+        default:
+            typeResult = false
+            break;
 
+    }
+    return typeResult
 
+}
 
-//     //d
-//     let defaultConfig = {
-//         columns: [],
-//         select: true, //允许多选操作
-//         bStateSave: true, //刷新保存当前页码
-//         // dom: 'Bfrtlip',
-//         dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
-//             "<'row'<'col-sm-12'tr>>" +
-//             "<'row'<'col-sm-2'l><'col-sm-3'i><'col-sm-7'p>>", //定义datatable组件位置
-//         buttons: [
-//             'colvis',
-//             'excel',
-//             'csv',
-//             'print',
-//             'copy',
-//         ],
-//         language: languageCN
-//     }
+/**
+ * @description: 通用数组更新函数,用一个数组数据更新原有数组数据,常用于datatable主表数据替换
+ * @param {*} type 类型 包括update,replace,delete
+ * @param {*} mainArr 主数组
+ * @param {*} infoArr 参照数组
+ * @param {*} keys  主键,
+ * @return {*}
+ */
+const getUpdateArr = ({
+    type,
+    mainArr,
+    infoArr,
+    keys
+}) => {
+    console.log('getUpdateArr', type,
+        mainArr,
+        infoArr,
+        keys);
+    //c
+    if (!type && mainArr && infoArr && keys) {
+        console.log("getUpdateArr  type,mainArr,infoArr,keys 参数中存在空参数");
+        return
+    }
 
-//     let o
-//     try {
-//         defaultConfig.elementId = elementId;
-//         defaultConfig.data = tableData;
-//         for (const p in config) {
-//             if (config.hasOwnProperty(p)) {
-//                 defaultConfig.params[p] = config[p];
-//             }
-//         }
-//         o = defaultConfig;
+    if (typeObj(mainArr) !== 'Array' ||
+        typeObj(infoArr) !== 'Array' ||
+        typeObj(keys) !== 'Array') {
+        console.log("getUpdateArr  mainArr,infoArr,keys 参数中存在非数组");
+        return
+    }
 
-//     } catch (error) {
-//         console.log('function dataTableConfig error', error);
-//     }
+    //d
+    for (const info of infoArr) {
+        for (let i = 0; i < mainArr.length; i++) {
+            let match = true;
+            for (const key of keys) {
+                match = match && mainArr[i][key] == info[key] //用模糊匹配
+            }
+            if (match) {
 
-//     //r
-//     return o
-// }
+                console.log('get match');
+                switch (type) {
+                    case 'update':
+                        for (const p in info) {
+                            console.log(p);
+                            if (Object.hasOwnProperty.call(info, p) && Object.hasOwnProperty.call(mainArr[i], p)) {
+                                console.log('替换属性');
+                                mainArr[i][p] = info[p];
+                            }
+                        }
+                        break;
+                    case 'replace':
+                        mainArr[i] = info;
+                        break;
+                    case 'delete':
+                        mainArr.splice(i, 1)
+                        break;
+                    default:
+                        console.log('无效的type 类型');
+                        break;
+                }
 
+            }
 
-// /**
-//  * @description: 加载dataTable 版本V2
-//  * @param {*}
-//  * @return {*}
-//  */
-// const loadDataTableV2 = async ({
-//     elementId,
-//     tableData,
-//     config
-// }) => {
-//     //c
+        }
 
-//     //d
-//     try {
-//         let diyConfig = dataTableConfig({
-//             elementId,
-//             tableData,
-//             config
-//         })
-//         let table = $('#' + elementId).DataTable(diyConfig);
-//         $('#' + elementId + ' tbody').on('dblclick', 'tr', function () {
-//             let table = $('#' + elementId).DataTable();
-//             table.$('tr.selected').removeClass('selected');
-//             $(this).addClass('selected');
-//             let dataSelect = table.row('.selected').data();
-//             //清空Form原有数据
-//             initFormInputs({
-//                 formId: elementId + 'Form'
-//             })
-//             //填写div匹配数据
-//             fillFormInputs({
-//                 formId: elementId + 'Form',
-//                 params: dataSelect
-//             })
-//             //打开面板
-//             $('#' + elementId + 'ModalOpen').click();
-
-//         });
-
-//         //保存按钮
-//         $('#' + elementId + 'Save').click(function () {
-//             let formData = getFormData({
-//                 formId: elementId + 'Form'
-//             })
-
-//             let sqlParams = {
-//                 sql: 'replace',
-//                 params: formData
-//             }
-
-//             let i = {
-//                 elementId: elementId,
-//                 sqlParams: sqlParams
-//             }
-
-//             // console.log('save i:' + JSON.stringify(i));
-//             updateDataTable(i);
-
-//         })
-
-//         // 关闭事件重置选中datatable选中,避免显示错误
-//         $('#' + elementId + 'Modal').on('hidden.bs.modal', function () {
-//             table.$('tr.selected').removeClass('selected');
-//         })
-
-//     } catch (error) {
-//         console.error('loadDataTableV2', error);
-//     }
-
-// }
+    }
+    //r
+    console.log('mainArr', mainArr);
+    return mainArr
+}
