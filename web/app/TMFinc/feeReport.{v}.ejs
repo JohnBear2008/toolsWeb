@@ -1,0 +1,185 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<!-- 导入instascan 二维码扫描库 -->
+<script type="text/javascript" src="/rpLib/instascan/instascan.min.js"></script>
+
+<!-- 导入echarts-->
+<script type="text/javascript" src="/rpLib/echarts/echarts.min.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+	<div id="noprint" class="noprint">
+		<div class="divcontent">
+			<br></br>
+			<!-- 功能组按钮 -->
+			<div class="well">
+				<button id='btnReports' type="button" class="btn btn-info">报表</button>
+			</div>
+			<!-- 模态框报表（Modal） -->
+			<div class="modal fade" id="reportsModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog" style="width: 65%;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								&times;
+							</button>
+							<h4 class="modal-title">
+								报表
+							</h4>
+						</div>
+						<div class="modal-body">
+							<div class="panel panel-info">
+								<div class="panel-body">
+									<ul id="myTab" class="nav nav-tabs">
+										<li class="active">
+											<a href="#home" data-toggle="tab">
+												项目
+											</a>
+										</li>
+										<li><a href="#ios" data-toggle="tab">额度</a></li>
+
+									</ul>
+									<div id="myTabContent" class="tab-content">
+										<div class="tab-pane fade in active" id="home">
+											<p>
+											<div id="echartDemo1"
+												style="width: 600px;height:400px;"></div>
+											</p>
+										</div>
+										<div class="tab-pane fade" id="ios">
+											<p>
+											<div id="echartDemo2"
+												style="width: 600px;height:400px;"></div>
+											</p>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+
+
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal -->
+				</div>
+				<!-- 模态框报表 fin -->
+
+				<script>
+					var ValueA = [];
+					var SeriesA = [];
+					var pieB = [];
+					//画图
+					const echartCreate = (elementId, option) => {
+						// 基于准备好的dom，初始化echarts实例
+						let myChart = echarts.init(document.getElementById(elementId));
+						// 使用刚指定的配置项和数据显示图表。
+						myChart.setOption(option);
+					}
+					//页面加载函数---------------
+					$(document).ready(function () {
+					});
+					//报表
+					$('#btnReports').click(function () {
+						var reportType = 'AnnualChart';
+						var taskData = { "reportType": reportType };
+						$.ajax({
+							method: 'post',
+							data: taskData,
+							url: "/app/TMFinc/getRoute",
+							success: function (data) {
+								let dataArrA = [];
+								let dataArrB = [];
+								const json2 = JSON.stringify(data);
+								const bjob = JSON.parse(json2);
+								console.log("夏重", json2);
+								if (data.length == 0) {
+									console.log("不想");
+								} else {
+									dataArrA = data[0];
+									dataArrB = data[1];
+									for (var i = 0; i < dataArrA.length; i++) {
+										   // data[0] 是 {"Series":"修缮费","Dollar":521420}
+										console.log("好的", JSON.stringify(dataArrA));
+										SeriesA.push(dataArrA[i].Series);
+										ValueA.push(dataArrA[i].Dollar);
+									}
+									pieB =dataArrB;
+									for (var i = 0; i < dataArrB.length; i++) {
+										console.log("可的", JSON.stringify(dataArrB));
+									}
+								}
+								PaintAll();
+							},
+							error: function () {
+							}
+						})
+					})
+					function PaintAll() {
+						$('#reportsModal').modal('show');
+						// demo1指定图表的配置项和数据
+						let option1 = {
+							title: {
+								text: '2021年项目费用申请金额'
+							},
+							tooltip: {},
+							legend: {
+								data: ['部門消耗']
+							},
+							xAxis: {
+								data: SeriesA
+							},
+							yAxis: {},
+							series: [{
+								name: '金额',
+								type: 'bar',
+								data: ValueA
+							}]
+						};
+
+						echartCreate('echartDemo1', option1);
+						option2 = {
+							title: {
+								text: '2021年各部門费用占比'
+							},
+							tooltip: {},
+							series: {
+								type: 'pie',
+								data: pieB
+							}
+						}
+						echartCreate('echartDemo2', option2);
+					}
+					$('#PopBtn').click(function () {
+						layer.alert('内容');
+						layer.msg('的确很重要', { icon: 1 });
+					});
+				</script>
+				<!-- pieB = [{
+					name: 'A',
+					value: 1212
+				},
+				{
+					name: 'B',
+					value: 2323
+				},
+				{
+					name: 'C',
+					value: 1919
+				}
+				]; -->

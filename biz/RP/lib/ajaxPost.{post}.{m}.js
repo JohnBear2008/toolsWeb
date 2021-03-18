@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-04 15:01:33
- * @LastEditTime: 2021-03-17 12:43:39
+ * @LastEditTime: 2021-03-17 15:55:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\biz\RP\lib\ajaxPost.{post}.{m}.js
@@ -19,7 +19,7 @@ module.exports = function (sender) {
 
     // let r1 = sender.req.query
     let r1 = sender.req.body
-    console.log('r1', r1);
+    // console.log('r1', r1);
 
     let sql = sqlObj.createSql(r1);
 

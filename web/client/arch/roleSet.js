@@ -113,7 +113,6 @@ function OrigList() {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  console.log("高瑛欣",JSON.stringify(dataArr));
 			var youoption = document.createElement("option");
 			youoption.text = '-请选择-';
 			youoption.id = "bellTime";
@@ -144,7 +143,6 @@ function magnLab2() {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  console.log("高瑛欣",JSON.stringify(dataArr));
 			$("#customerShort").val(); $("#customerShort").html("");
 			for (var i = 0; i < dataArr.length; i++) {
 				var tempVal = dataArr[i].Record_Name;
@@ -166,7 +164,6 @@ function magnesium(selectValue, obj) {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  console.log("高瑛欣",JSON.stringify(dataArr));
                   // for (var i = 0; i < dataArr.length; i++) {
 			// 	if( dataArr[0] !=undefined){
 			// 		$("#classSupp").val(dataArr[0].Record_Name);
@@ -198,7 +195,6 @@ function aluminium(selectValue, obj) {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  console.log("高瑛欣",JSON.stringify(dataArr));
 			$("#GroupValue").val(); $("#GroupValue").html("");
 			for (var i = 0; i < dataArr.length; i++) {
 			  var youoption = document.createElement("option");

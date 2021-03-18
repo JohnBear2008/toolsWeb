@@ -20,13 +20,14 @@ function inputCheckFee(obj, errItem) {
 
 }
 function winTrip() {
+      var DeptName = $('#hideDeptName').val();
       var GroupName = $('#GroupName').val();
       var reportType = 'AcquireChain';
       var oppOID = sessionOID;
       var OppName = sessionName;
       var arrange = 'RuleTrip';
       var taskData = {
-            "reportType": reportType, "arrange": arrange, "GroupName": GroupName , "oppOID": oppOID , "OppName": OppName
+            "reportType": reportType, "arrange": arrange, "DeptName": DeptName, "GroupName": GroupName , "oppOID": oppOID , "OppName": OppName
       }
       console.log("鷹羽澪",taskData );
       $.ajax({
@@ -170,6 +171,7 @@ function apply_dsp() {
                               layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status)+"\n讯息" + (data.message), {
                                     btn: ['知道了']
                               }, function () {
+                                    window.location.href = '/app/TMFinc/feeApplyForm';
                                     layer.msg('操作成功', { icon: 1 });
                               });
                         }

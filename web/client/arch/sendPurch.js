@@ -63,6 +63,10 @@ function winPurch() {
                         $("#PsdName").val(data[0].PsdName);
                         $("#CeoName").val(data[0].CeoName);
                         $("#BodName").val(data[0].BodName);
+                        $("#CreditA").val(data[0].CreditA);
+                        $("#CreditB").val(data[0].CreditB);
+                        $("#CreditC").val(data[0].CreditC);
+                        $("#CreditD").val(data[0].CreditD);
                   }
             },
             error: function () {
@@ -137,6 +141,7 @@ function apply_hmi() {
                                     btn: ['知道了']
                               }, function () {
                                     layer.msg('操作成功', { icon: 1 });
+                                    window.location.href = '/app/TMFinc/feeApplyForm';
                               });
                         }
                   },

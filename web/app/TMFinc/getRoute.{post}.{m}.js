@@ -83,6 +83,9 @@ module.exports = function (sender) {
             case "AnnualRpt":
                   url = ["BguTM", "AnnualRpt"];
                   break;             
+            case "AnnualChart":
+                  url = ["BguTM", "AnnualChart"];
+                  break;             
             default:
                   console.log("找不到Finc路由");
                   break;

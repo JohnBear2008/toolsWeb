@@ -12,6 +12,7 @@ module.exports = function (sender) {
   var weekend = sender.req.query.weekend;
   var FlowBudget = sender.req.query.FlowBudget;
   var FlowVip = sender.req.query.FlowVip;
+  var FlowDept = sender.req.query.FlowDept; 
   console.log("常乐 ", qryBillNo, FlowVip, FlowBudget);
   var orderBy = '';
   var limit = '500';
@@ -307,39 +308,40 @@ module.exports = function (sender) {
     }
     function PopupCredit(cb) {
       let SQL2 =
-        " select AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ?   " +
-        " Union " +
-        " select UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
-      // console.log("柳惠濬:", SQL2);
-      // console.log("柳惠濬:",  FlowBudget, FlowVip);
-      var itemAllow = '';
-      var itemAccu = '';
-      var itemSurp = '';
+      " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+      " Union " +
+      " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
+    // console.log("柳惠濬:", SQL2);
+      console.log("柳惠濬:",  FlowBudget, "亚",FlowDept ,"瑟", FlowVip);
+      var itemAllow = '0';
+      var itemAccu = '0';
+      var itemSurp = '0';
       var itemIsOver = '';
-      var vvipAllow = '';
-      var vvipAccu = '';
-      var vvipSurp = '';
+      var vvipAllow = '0';
+      var vvipAccu = '0';
+      var vvipSurp = '0';
       var vvipIsOver = '';
       yjDBService.exec({
         sql: SQL2,
-        parameters: [FlowBudget, FlowVip],
+        parameters: [FlowBudget, FlowDept , FlowVip],
         rowsAsArray: true,
         success: function (r) {
           var datas = [];
           var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
           for (var i = 0; i < data.length; i++) {
             if (data[i] != null && data[i] != undefined) {
-              if (i == 0) {
-                itemAllow = data[0].AllowValue; itemAllow = nulReplace0(itemAllow);
-                itemAccu = data[0].Accumulate; itemAccu = nulReplace0(itemAccu);
-                itemSurp = data[0].Surplus; itemSurp = nulReplace0(itemSurp);
-                itemIsOver = data[0].IsOver; 
+              var Rank = data[i].Rank;
+              if (Rank == 'A') {
+                itemAllow = data[i].AllowValue; itemAllow = nulReplace0(itemAllow);
+                itemAccu = data[i].Accumulate; itemAccu = nulReplace0(itemAccu);
+                itemSurp = data[i].Surplus; itemSurp = nulReplace0(itemSurp);
+                itemIsOver = data[i].IsOver; 
               }
-              if (i == 1) {
-                vvipAllow = data[1].AllowValue; vvipAllow = nulReplace0(vvipAllow);
-                vvipAccu = data[1].Accumulate; vvipAccu = nulReplace0(vvipAccu);
-                vvipSurp = data[1].Surplus; vvipSurp = nulReplace0(vvipSurp);
-                vvipIsOver = data[1].IsOver;  
+              if (Rank == 'B') {
+                vvipAllow = data[i].AllowValue; vvipAllow = nulReplace0(vvipAllow);
+                vvipAccu = data[i].Accumulate; vvipAccu = nulReplace0(vvipAccu);
+                vvipSurp = data[i].Surplus; vvipSurp = nulReplace0(vvipSurp);
+                vvipIsOver = data[i].IsOver;  
               }
             } else {
 
@@ -358,13 +360,13 @@ module.exports = function (sender) {
             "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
           }
           datas.push(temp);
-          // console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
-          // var dump = JSON.stringify(datas);
-          // if (dump.length > 500) {
-          //   console.log("彩瑛:" + dump.substring(0, 500));
-          // } else {
-          //   console.log("彩瑛:" + JSON.stringify(datas));
-          // }
+          console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
+          var dump = JSON.stringify(datas);
+          if (dump.length > 500) {
+            console.log("达摩:" + dump.substring(0, 500));
+          } else {
+            console.log("达摩:" + JSON.stringify(datas));
+          }
           cb(null, datas);
         },
         error: sender.error

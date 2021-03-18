@@ -90,7 +90,8 @@ function searchFile(mode) {
                           CapPhone = dataARR[0].CurPhone;
                           var BudgetItem = dataARR[0].BudgetItem;
                           var VipName = dataARR[0].VipName;
-                          VegasA(dataARR[0].BillNo ,BudgetItem , VipName );
+                          var DeptName = dataARR[0].DeptName;
+                          VegasA(dataARR[0].BillNo ,BudgetItem ,DeptName, VipName );
                           // <DIV STYLE="page-break-before:always">
                           $('#kisswindow').modal('show');
                           $("#matchRec").html("采购单审批:");
@@ -111,11 +112,12 @@ function searchFile(mode) {
                   var CapSubject = data.Subject;
                   var BudgetItem = data.BudgetItem;
                   var VipName = data.VipName;
+                  var DeptName = data.DeptName;
                   CapCurJob = data.CurJob;
                   CapPhone = data.CurPhone;
                   console.log("都市闲情", (CapPhone));
                   if (obj.event === 'analysis') {
-                      VegasA(Parts_BillNo , BudgetItem , VipName   );
+                      VegasA(Parts_BillNo , BudgetItem , DeptName, VipName   );
                       CapBillNo = Parts_BillNo;
                       // <DIV STYLE="page-break-before:always">
                       $('#kisswindow').modal('show');

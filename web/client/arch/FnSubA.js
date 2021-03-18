@@ -1,4 +1,3 @@
-//FnFee.js
 function shuffleA(BillNo) {
     var reportType = 'BulletQuery';
     var arrange = 'popup';
@@ -678,10 +677,10 @@ function shuffleA(BillNo) {
         }
     })
 }
-function VegasA(BillNo, FlowBudget, FlowVip) {
+function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
     var reportType = 'BulletQuery';
     var arrange = 'popup';
-    var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo, "FlowVip": FlowVip, "FlowBudget": FlowBudget };
+    var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo, "FlowDept": FlowDept,  "FlowVip": FlowVip, "FlowBudget": FlowBudget };
     // console.log("李白", taskData);
     $.ajax({
         method: 'post',

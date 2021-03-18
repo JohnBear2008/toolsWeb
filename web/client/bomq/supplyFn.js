@@ -96,7 +96,6 @@ function FlowerBasic() {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  // console.log("高瑛欣",JSON.stringify(dataArr));
                   var youoption = document.createElement("option");
                   youoption.text =   "--请选择--"  ;
                   youoption.id = "bellTime";
