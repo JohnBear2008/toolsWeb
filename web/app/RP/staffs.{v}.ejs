@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/t9PublicFuns.js"></script>
 
 
 <!-- 导入datatables -->
@@ -44,6 +45,9 @@
 
 
     <div>
+        <button type="button" class="btn btn-primary" id="syncErpDataButton">
+            同步ERP
+        </button>
         <button type="button" style="display: none;" id="rp_staffsNew">
             新增
         </button>
@@ -125,6 +129,13 @@
                                 <input id="rp_staffsForm-DBID" type="hidden" value="">
 
                                 <div class="form-group">
+                                    <label class="col-sm-1 control-label">UID</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_staffsForm-UID"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <label class="col-sm-1 control-label">人员编号</label>
                                     <div class="col-sm-5">
                                         <input class="form-control" id="rp_staffsForm-staffId" type="text"
@@ -159,6 +170,8 @@
 
 
 
+
+
                                 <div class="form-group">
 
                                     <label class="col-sm-1 control-label">职位</label>
@@ -180,6 +193,14 @@
                                 </div>
 
                                 <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">性别</label>
+                                    <div class="col-sm-5">
+
+                                        <select id="rp_staffsForm-sex" class="selectpicker form-control"
+                                            data-live-search="true" data-size="5">
+                                        </select>
+                                    </div>
 
 
                                     <label class="col-sm-1 control-label">国家地区</label>
@@ -269,7 +290,7 @@
 
                                     <label class="col-sm-1 control-label">备注</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="rp_customersForm-remark" type="text" value="">
+                                        <input class="form-control" id="rp_staffsForm-remark" type="text" value="">
                                     </div>
                                 </div>
 
@@ -442,7 +463,8 @@
             // $('#rp_staffsModal').modal('hide');多层modal存在失效问题,改用click关闭
             $('#rp_staffsModalClose').click()
 
-            loadBillMainTable();
+            // loadBillMainTable();
+            MainTable.ajax.reload()
         } else {
             alert('出现错误!')
         }
@@ -477,6 +499,70 @@
         });
     }
 
+    const syncErpData = async () => {
+        let T9Data = await getT9Data({
+            to: 'RP',
+            type: 'person',
+
+        })
+        console.log('T9Data', T9Data);
+
+        let MainTableData = MainTable.rows().data();
+        let RPData = []
+        for (let i = 0; i < MainTableData.length; i++) {
+            RPData.push(MainTableData[i]);
+
+        }
+        console.log('RPData', RPData);
+
+        for (const n of T9Data) {
+            let match = false
+            for (let m of RPData) {
+                if (m.staffName === n.staffName) {
+                    match = true
+                    for (const p in m) {
+                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+                            switch (p) {
+                                case 'staffId':
+                                    m[p] = n['UID']
+                                    break;
+                                case 'birthday':
+                                    m[p] = dateFormat(new Date(n[p]), 'yyyy-mm-dd');
+                                    break;
+                                default:
+                                    m[p] = n[p]
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            //不存在的物料如何处理,预留
+            if (!match) {
+                RPData.push(n)
+            }
+        }
+        console.log('newRPData', RPData);
+
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: {
+                tableId: 'rp_staffs',
+                data: RPData,
+                key: 'DBID'
+            }
+        })
+
+        console.log('r1', r1);
+        if (r1) {
+            MainTable.ajax.reload()
+            alert('同步完成')
+
+        }
+    }
+
 
 
 
@@ -488,6 +574,13 @@
 
         //添加主表监听
         addMainTableListener();
+
+        MainTable = $('#rp_staffs').DataTable()
+
+        //同步ERP按钮
+        $('#syncErpDataButton').click(function () {
+            syncErpData();
+        })
 
 
         //客户新增按钮
@@ -519,6 +612,16 @@
             // initValue:'中国,北京'
         })
 
+        loadBootStrapSelector({
+            elementId: 'rp_staffsForm-sex',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="性别"',
+                    orderBy: 'orderId'
+                }
+            },
+        })
 
 
         loadBootStrapSelector({

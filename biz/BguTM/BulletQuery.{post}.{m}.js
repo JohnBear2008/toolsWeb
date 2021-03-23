@@ -173,12 +173,12 @@ module.exports = function (sender) {
           }
           dataARR.push(objW);
           sender.success(dataARR);
-          var dump = JSON.stringify(dataARR);
-          if (dump.length > 1000) {
-            console.log("鲁班:" + dump.substring(0, 1000));
-          } else {
-            console.log("鲁班:" + JSON.stringify(dataARR));
-          }
+          // var dump = JSON.stringify(dataARR);
+          // if (dump.length > 1000) {
+          //   console.log("鲁班:" + dump.substring(0, 1000));
+          // } else {
+          //   console.log("鲁班:" + JSON.stringify(dataARR));
+          // }
         }
       });
     function PopupDetail(cb) {
@@ -311,8 +311,7 @@ module.exports = function (sender) {
       " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ? and DeptName = ?  " +
       " Union " +
       " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
-    // console.log("柳惠濬:", SQL2);
-      console.log("柳惠濬:",  FlowBudget, "亚",FlowDept ,"瑟", FlowVip);
+      // console.log("柳惠濬:",  FlowBudget, "亚",FlowDept ,"瑟", FlowVip);
       var itemAllow = '0';
       var itemAccu = '0';
       var itemSurp = '0';
@@ -361,12 +360,12 @@ module.exports = function (sender) {
           }
           datas.push(temp);
           console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
-          var dump = JSON.stringify(datas);
-          if (dump.length > 500) {
-            console.log("达摩:" + dump.substring(0, 500));
-          } else {
-            console.log("达摩:" + JSON.stringify(datas));
-          }
+          // var dump = JSON.stringify(datas);
+          // if (dump.length > 500) {
+          //   console.log("达摩:" + dump.substring(0, 500));
+          // } else {
+          //   console.log("达摩:" + JSON.stringify(datas));
+          // }
           cb(null, datas);
         },
         error: sender.error

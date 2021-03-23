@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/t9PublicFuns.js"></script>
 
 
 <!-- 导入datatables -->
@@ -40,6 +41,9 @@
     </div> -->
 
     <div>
+        <button type="button" class="btn btn-primary" id="syncErpDataButton">
+            同步ERP
+        </button>
         <button type="button" style="display: none;" id="rp_customersNew">
             新增
         </button>
@@ -116,6 +120,13 @@
                             <form class="form-horizontal" role="form" id='rp_customersForm'>
 
                                 <!-- <input id="rp_customersForm-DBID" type="hidden" value=""> -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">UID</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_customersForm-UID"></p>
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">客户编号</label>
@@ -339,7 +350,7 @@
         data: 'customerShortName'
     }, {
         data: 'customerName',
-        visible: false
+        // visible: false
     }, {
         data: 'customerType',
         visible: false
@@ -353,7 +364,7 @@
         visible: false
     }, {
         data: 'isInland',
-        visible: false
+        // visible: false
     }, {
         data: 'customerArea',
         visible: false
@@ -368,13 +379,13 @@
         visible: false
     }, {
         data: 'workPhone',
-        visible: false
+        // visible: false
     }, {
         data: 'fax',
-        visible: false
+        // visible: false
     }, {
         data: 'zipCode',
-        visible: false
+        // visible: false
     }, {
         data: 'email',
         visible: false
@@ -506,7 +517,8 @@
             alert('出现错误')
         }
         //return-重载表格
-        loadBillMainTable();
+        // loadBillMainTable();
+        MainTable.ajax.reload()
 
     }
 
@@ -627,7 +639,8 @@
             // $('#rp_customersModal').modal('hide');多层modal存在失效问题,改用click关闭
             $('#rp_customersModalClose').click()
 
-            loadBillMainTable();
+            // loadBillMainTable();
+            MainTable.ajax.reload()
         } else {
             alert('出现错误!')
         }
@@ -650,6 +663,59 @@
         });
     }
 
+    const syncErpData = async () => {
+        let T9Data = await getT9Data({
+            to: 'RP',
+            type: 'customer',
+
+        })
+        console.log('T9Data', T9Data);
+
+        let MainTableData = MainTable.rows().data();
+        let RPData = []
+        for (let i = 0; i < MainTableData.length; i++) {
+            RPData.push(MainTableData[i]);
+
+        }
+        console.log('RPData', RPData);
+
+        for (const n of T9Data) {
+            let match = false
+            for (let m of RPData) {
+                if (m.customerName === n.customerName) {
+                    match = true
+                    for (const p in m) {
+                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+                            m[p] = n[p]
+                        }
+                    }
+                    break;
+                }
+            }
+            //不存在的物料如何处理,预留
+            if (!match) {
+                RPData.push(n)
+            }
+        }
+        console.log('newRPData', RPData);
+
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: {
+                tableId: 'rp_customers',
+                data: RPData,
+                key: 'DBID'
+            }
+        })
+
+        console.log('r1', r1);
+        if (r1) {
+            MainTable.ajax.reload()
+            alert('同步完成')
+        }
+    }
+
 
     $(document).ready(function () {
 
@@ -659,8 +725,16 @@
         //初始化主表
         loadBillMainTable();
 
+        MainTable = $('#rp_customers').DataTable()
+
         //添加主表监听
         addMainTableListener();
+
+
+        //同步ERP按钮
+        $('#syncErpDataButton').click(function () {
+            syncErpData();
+        })
 
 
         //客户新增按钮

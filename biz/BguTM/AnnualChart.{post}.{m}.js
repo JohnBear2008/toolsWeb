@@ -67,12 +67,12 @@ module.exports = function (sender) {
                     }
                     dataARR.push(result[1]);
                     sender.success(dataARR);
-                    var dump = JSON.stringify(dataARR);
-                    if (dump.length > 1000) {
-                        console.log("鲁班:" + dump.substring(0, 1000));
-                    } else {
-                        console.log("鲁班:" + JSON.stringify(dataARR));
-                    }
+                    // var dump = JSON.stringify(dataARR);
+                    // if (dump.length > 1000) {
+                    //     console.log("鲁班:" + dump.substring(0, 1000));
+                    // } else {
+                    //     console.log("鲁班:" + JSON.stringify(dataARR));
+                    // }
                 }
             });
         function PopupDetail(cb) {

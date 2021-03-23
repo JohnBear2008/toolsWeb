@@ -446,8 +446,6 @@ module.exports = function (sender) {
 			  " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ? and DeptName = ?  " +
 			  " Union " +
 			  " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
-			console.log("柳惠濬:",  flowBudgetItem, FlowVip);
-
 			var itemAllow = '0';
 			var itemAccu = '0';
 			var itemSurp = '0';
@@ -478,18 +476,6 @@ module.exports = function (sender) {
 					vvipSurp = data[i].Surplus; vvipSurp = nulReplace0(vvipSurp);
 					vvipIsOver = data[i].IsOver;  
 				}
-				//   if (i == 0) {
-				//     itemAllow = data[0].AllowValue; itemAllow = nulReplace0(itemAllow);
-				//     itemAccu = data[0].Accumulate; itemAccu = nulReplace0(itemAccu);
-				//     itemSurp = data[0].Surplus; itemSurp = nulReplace0(itemSurp);
-				//     itemIsOver = data[0].IsOver; 
-				//   }
-				//   if (i == 1) {
-				//     vvipAllow = data[1].AllowValue; vvipAllow = nulReplace0(vvipAllow);
-				//     vvipAccu = data[1].Accumulate; vvipAccu = nulReplace0(vvipAccu);
-				//     vvipSurp = data[1].Surplus; vvipSurp = nulReplace0(vvipSurp);
-				//     vvipIsOver = data[1].IsOver;  
-				//   }
 				} else {
 		
 				}
@@ -508,12 +494,12 @@ module.exports = function (sender) {
 			    }
 			    datas.push(temp);
 			    console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
-			    var dump = JSON.stringify(datas);
-			    if (dump.length > 500) {
-			      console.log("廉颇:" + dump.substring(0, 500));
-			    } else {
-			      console.log("廉颇:" + JSON.stringify(datas));
-			    }
+			//     var dump = JSON.stringify(datas);
+			//     if (dump.length > 500) {
+			//       console.log("廉颇:" + dump.substring(0, 500));
+			//     } else {
+			//       console.log("廉颇:" + JSON.stringify(datas));
+			//     }
 			    cb(null, datas);
 			  },
 			  error: sender.error

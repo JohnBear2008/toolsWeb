@@ -1,7 +1,7 @@
 //selector sql
 const getRegionSelector = "SELECT mername AS value,mername AS option,pinyin as token FROM `region`"
 const getCustomerSelector =
-	"SELECT customerShortName AS value,customerShortName AS option, CONCAT_WS(',',customerId,customerShortName,contact,mobilePhone,address)as token FROM `rp_customers`"
+	"select * from (SELECT customerShortName AS value,customerShortName AS option,customerType, CONCAT_WS(',',customerId,customerShortName,contact,mobilePhone,address)as token FROM `rp_customers` where customerShortName is not null) A"
 const getStaffSelector = "select staffName as value,staffName as option,pinyin as token from `rp_staffs`"
 const getProductSelector =
 	"select productId as value,productId as option,productName as token from `rp_products`"
@@ -183,7 +183,7 @@ const createSql = (i) => {
 	let excuteSql = "";
 	switch (i.sql) {
 		case "select":
-			console.log('i:' + JSON.stringify(i));
+			// console.log('i:' + JSON.stringify(i));
 			excuteSql = "select * from `" + i.params.tableId + "`"
 			if (i.params.filter) {
 				excuteSql = excuteSql + " where " + i.params.filter
@@ -194,7 +194,7 @@ const createSql = (i) => {
 			}
 			break;
 		case "insert":
-			console.log("insert:" + JSON.stringify(i.params));
+			// console.log("insert:" + JSON.stringify(i.params));
 			let insertTitles = ""
 			let insertParamArr = [];
 			for (const p in i.params.data[0]) {
@@ -238,10 +238,10 @@ const createSql = (i) => {
 			} else {
 				excuteSql = "insert into `" + i.params.tableId + "` " + insertTitles + " values " + insertValues;
 			}
-			console.log('excuteSql:' + excuteSql);
+			// console.log('excuteSql:' + excuteSql);
 			break;
 		case "replace":
-			console.log("11111111:" + JSON.stringify(i.params));
+			// console.log("11111111:" + JSON.stringify(i.params));
 			let replaceTitles = ""
 			let replaceParamArr = [];
 			for (const p in i.params.data[0]) {
@@ -263,7 +263,7 @@ const createSql = (i) => {
 					if (!n[p]) {
 						replaceValueN = replaceValueN + "null,";
 					} else {
-						replaceValueN = replaceValueN + "'" + n[p].replace(/'/g, '') + "',";//删除特殊符号
+						replaceValueN = replaceValueN + "'" + n[p].replace(/'/g, '') + "',"; //删除特殊符号
 					}
 				}
 
@@ -294,7 +294,7 @@ const createSql = (i) => {
 			}
 			deleteDBIDS = deleteDBIDS.substr(0, deleteDBIDS.length - 1);
 			deleteDBIDS = "(" + deleteDBIDS + ")";
-			console.log('deleteDBIDS:' + deleteDBIDS);
+			// console.log('deleteDBIDS:' + deleteDBIDS);
 			excuteSql = "delete from `" + i.params.tableId + "` where DBID in " + deleteDBIDS;
 			break;
 
@@ -303,7 +303,7 @@ const createSql = (i) => {
 			let updateKeys = "";
 			let updateStatement = "";
 
-			console.log('isarray1111', Array.isArray(key)) //true
+			// console.log('isarray1111', Array.isArray(key)) //true
 
 			//多关键字更新
 
@@ -337,7 +337,7 @@ const createSql = (i) => {
 				updateStatement = updateStatement.substr(0, updateStatement.length - 1);
 
 				updateKeys = "(" + keyValues + ")";
-				console.log('updateKeys:' + updateKeys);
+				// console.log('updateKeys:' + updateKeys);
 				let keys = ""
 				for (const n of key) {
 					keys = keys + n + ","
@@ -377,7 +377,7 @@ const createSql = (i) => {
 
 				updateKeys = updateKeys.substr(0, updateKeys.length - 1);
 				updateKeys = "(" + updateKeys + ")";
-				console.log('updateKeys:' + updateKeys);
+				// console.log('updateKeys:' + updateKeys);
 				excuteSql = "update `" + i.params.tableId + "` set " + updateStatement + " where " + key + " in " + updateKeys;
 			}
 
@@ -385,7 +385,7 @@ const createSql = (i) => {
 			break;
 
 		case "updateNum":
-			console.log("3333:" + JSON.stringify(i.params));
+			// console.log("3333:" + JSON.stringify(i.params));
 
 			let tableId = i.params.tableId;
 			let keyTitles = i.params.keyTitles;
@@ -441,7 +441,7 @@ const createSql = (i) => {
 			if (i.params) {
 
 				if (i.params.tableId) {
-					console.log('excuteSql11111', excuteSql);
+					// console.log('excuteSql11111', excuteSql);
 					excuteSql = excuteSql.replace(/tableId/, i.params.tableId)
 				}
 				if (i.params.filter) {
@@ -450,12 +450,12 @@ const createSql = (i) => {
 				if (i.params.orderBy) {
 					excuteSql = excuteSql + " order by " + i.params.orderBy
 				}
-				console.log("default excuteSql:" + excuteSql);
+				// console.log("default excuteSql:" + excuteSql);
 			}
 			break;
 	}
 
-	console.log("excuteSql last:" + excuteSql);
+	// console.log("excuteSql last:" + excuteSql);
 	return excuteSql;
 }
 

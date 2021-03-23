@@ -629,7 +629,6 @@ module.exports = function (sender) {
             " select AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ?   " +
             " Union " +
             " select UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where DeptName = ?   ";
-        // console.log("鲁班七号:", FlowCID, qryDept);
         var itemIsOver = '';
         var vvipIsOver = '';
         yjDBService.exec({
@@ -679,7 +678,7 @@ module.exports = function (sender) {
         } else {
             var retcode = { "status": "Fail", "message": "送审已完成，不可再次送审\n" };
             sender.success(retcode);
-            console.log("司", retcode);
+            console.log("不良送审", retcode);
             return;
         }
         var SQLInsert = "Update `bgu_rule` set SendStatus  = 'D'  , SendText  = '送出' where BillNo= ?";

@@ -455,8 +455,9 @@
                 }
             }
             //不存在的物料如何处理,预留
-            // if (!match) {
-            // }
+            if (!match) {
+                RPData.push(n)
+            }
         }
         console.log('newRPData', RPData);
 
@@ -471,6 +472,10 @@
         })
 
         console.log('r1', r1);
+        if (r1) {
+            MainTable.ajax.reload()
+            alert('同步完成')
+        }
     }
 
 

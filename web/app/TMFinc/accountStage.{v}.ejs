@@ -190,25 +190,40 @@
         dtParams: mainDtParams
       })
     }
-    // const checkDuplicateCustomer = async () => {
+    const checkDuplicateCustomer = async () => {
 
-    //   let bguStaffID = $('#bgu_staffsForm-StaffID').val();
+      let bguStaffID = $('#bgu_staffsForm-StaffID').val();
 
-    //   let filter = "";
-    //   if (bguStaffID) {
-    //     filter = filter + ' StaffID="' + bguStaffID + '"';
-    //   }
-   
-    //   let rs = await getDataBySql({
-    //     sql: 'getbgustaffs',
-    //     params: {
-    //       filter: filter
-    //     }
-    //   })
+      let filter = "";
+      if (bguStaffID) {
+        filter = filter + ' StaffID="' + bguStaffID + '" ';
+      }
+      let rs = await getMyDataBySql({
+        sql: 'sqlTableSelect',
+        params: {
+          tableId: 'bgu_staffs',
+          filter: filter
+        }
+      })
 
-    //   console.log('checkDuplicateCustomer', rs);
-    //   return rs
-    // }
+      console.log('checkDuplicateCustomer', rs);
+      return rs
+    }
+    const getMyDataBySql = async (i) => {
+
+      let o;
+      o = await $.ajax({
+        method: 'get',
+        url: '/app/RP/lib/ajaxGet',
+        data: i,
+        success: function (data) {
+          console.log("getmyDataBySql data:" + JSON.stringify(data));
+          return data;
+        },
+        error: function () { }
+      })
+      return o;
+    }
 
     //新增客户 
     const addCustomer = async () => {
@@ -260,17 +275,17 @@
     //保存客户
     const saveCustomer = async () => {
       //校验重复数据
-      // let duplicateRows = await checkDuplicateCustomer();
-      // if (duplicateRows.length > 0) {
-      //   let duplicateIds = '';
-      //   for (const row of duplicateRows) {
-      //     duplicateIds = duplicateIds + row.StaffID + ',';
-      //   }
-      //   duplicateIds = duplicateIds.substring(0, duplicateIds.length - 1);
-      //   if (!confirm('检测到可能和以下客户编号:' + duplicateIds + ' 包含重复信息,是否继续')) {
-      //     return
-      //   }
-      // }
+      let duplicateRows = await checkDuplicateCustomer();
+      if (duplicateRows.length > 0) {
+        let duplicateIds = '';
+        for (const row of duplicateRows) {
+          duplicateIds = duplicateIds + row.StaffID + ',';
+        }
+        duplicateIds = duplicateIds.substring(0, duplicateIds.length - 1);
+        if (!confirm('检测到可能和以下客户编号:' + duplicateIds + ' 包含重复信息,是否继续')) {
+          return
+        }
+      }
       //检查保存条件
       if (!$('#bgu_staffsForm-StaffID').val()) {
         // alert('职工编号未填!')

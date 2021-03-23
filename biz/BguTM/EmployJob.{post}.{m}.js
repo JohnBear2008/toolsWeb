@@ -188,14 +188,12 @@ module.exports = function (sender) {
 	}
 	function JobSet(StaffName) {
 		var SQLInsert = "Delete from `bgu_staffs` where StaffID =? ";
-		console.log("鲁班七号:",  StaffID_Clone);
 		let paramList = [ StaffID_Clone];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,
 			rowsAsArray: true,
 			success: function (result) {
-				console.log("鲁班七号:", result);
 				JobSetPlug(StaffName);
 			},
 			error: sender.error

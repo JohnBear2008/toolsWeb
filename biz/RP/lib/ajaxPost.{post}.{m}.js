@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-04 15:01:33
- * @LastEditTime: 2021-03-17 15:55:39
+ * @LastEditTime: 2021-03-19 08:53:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\biz\RP\lib\ajaxPost.{post}.{m}.js
@@ -9,7 +9,7 @@
 require("./js/Date");
 const sqlObj = require("./sql");
 
-console.log("sqlObj:" + JSON.stringify(sqlObj));
+// console.log("sqlObj:" + JSON.stringify(sqlObj));
 
 module.exports = function (sender) {
     var yjDBService = global.yjRequire("yujiang.Foil").yjDBService

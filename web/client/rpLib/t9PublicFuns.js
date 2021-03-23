@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-02 10:16:51
- * @LastEditTime: 2021-03-17 09:13:56
+ * @LastEditTime: 2021-03-22 15:40:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
@@ -19,6 +19,13 @@ const getUrl = (type) => {
         case 'material':
             apiUrl = 'getMaterial'
             break;
+        case 'customer':
+            apiUrl = 'getCustomer'
+            break;
+        case 'person':
+            apiUrl = 'getPerson'
+            break;
+
 
         default:
             console.log("无法识别type");
