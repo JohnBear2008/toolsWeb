@@ -452,10 +452,17 @@
 
         console.log('mainFormData:' + JSON.stringify(mainFormData));
 
+        //检查pinyin是否为空自动补齐
+        if (!mainFormData.data[0].pinyin) {
+            mainFormData.data[0].pinyin = Pinyin.GetJP(mainFormData.data[0].staffName).toUpperCase()
+        }
+
+
         let r1 = await postDBData({
             sql: 'replace',
             params: mainFormData
         })
+
 
         if (r1.affectedRows > 0) {
             alert('保存成功!')

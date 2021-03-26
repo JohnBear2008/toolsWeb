@@ -1,0 +1,493 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/rpLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+
+<script type="text/javascript" src="/rpLib/t9PublicFuns.js"></script>
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/rpLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/rpLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/rpLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入datatimepicker -->
+<link href="/rpLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/rpLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <!-- <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>基础信息-产品信息</h1>
+            </div>
+        </div>
+    </div> -->
+
+    <div>
+        <button type="button" class="btn btn-primary" id="syncErpDataButton">
+            同步ERP
+        </button>
+        <button type="button" style="display: none;" id="rp_partlocationsNew">
+            新增
+        </button>
+        <button type="button" style="display: none;" id="rp_partlocationsDelete">
+            删除
+        </button>
+    </div>
+
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+
+            <!-- 定义基础模块数据表 -->
+            <table id="rp_partlocations" class=" table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>BOM编号</th>
+                        <th>产品编号</th>
+                        <th>产品名称</th>
+                        <th>用量</th>
+                        <th>安装点</th>
+                        <th>备注</th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="rp_partlocationsModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog" style="width: 65%;">
+
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#rp_partlocationsModal"
+                id="rp_partlocationsModalOpen" style="display: none;">
+                开始演示模态框
+            </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        产品信息
+                    </h4>
+
+
+                </div>
+                <div class="modal-body">
+
+
+
+
+                    <!-- 表单面板 -->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+
+                            <form class="form-horizontal" role="form" id='rp_partlocationsForm'>
+
+                                <input id="rp_partlocationsForm-DBID" type="hidden" value="">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">BOM编号</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_partlocationsForm-productId"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">产品编号</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_partlocationsForm-partId"></p>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-1 control-label">产品名称</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_partlocationsForm-partName"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">用量</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_partlocationsForm-num"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">安装点</label>
+                                    <div class="col-sm-11">
+                                        <p class="form-control-static"
+                                            style="word-wrap: break-word;word-break: break-all; overflow: hidden;"
+                                            id="rp_partlocationsForm-locations"></p>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">备注</label>
+                                    <div class="col-sm-11">
+                                        <p class="form-control-static" id="rp_partlocationsForm-remark"></p>
+                                    </div>
+
+                                </div>
+
+
+
+
+
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="rp_partlocationsModalClose">关闭
+                    </button>
+                    <!-- <button type="button" class="btn btn-primary" id="rp_partlocationsSave">
+                        保存
+                    </button> -->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    const mainColumnsArray = [{
+            data: 'productId'
+        },
+        {
+            data: 'partId'
+        }, {
+            data: 'partName',
+        }, {
+            data: 'num',
+        }, {
+            data: 'locations',
+        }, {
+            data: 'remark',
+            visible: false
+        }
+    ]
+
+    //表dt参数
+    const mainDtParams = {
+        dtConfig: 'dtConfigFull',
+        // bStateSave: true, //true刷新保存当前页码,搜索信息
+        columns: mainColumnsArray,
+        buttons: [],
+        aLengthMenu: [
+            [20, 50, 100],
+            [20, 50, 100]
+        ], //设置每页显示数据条数的下拉选项
+        iDisplayLength: 20, //每页初始显示5条记录
+    }
+
+
+    //添加主表监听器,定义双击打开事件
+
+    const addMainTableListener = () => {
+        //定义主表双击事件
+        $('#rp_partlocations tbody').on('dblclick', 'tr', function () {
+
+            //设定选中
+            let table = $('#rp_partlocations').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+            // console.log('dataSelect', dataSelect);
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'rp_partlocationsForm',
+                params: dataSelect
+            })
+
+            //打开面板
+            $('#rp_partlocationsModal').modal('show');
+
+        });
+    }
+    //主表加载数据函数;
+    const loadBillMainTable = async () => {
+        //初始化主表
+        loadBillDataTable({
+            elementId: 'rp_partlocations',
+            sqlParams: {
+                sqlId: 'sqlTableSelect',
+                params: {
+                    tableId: 'rp_partlocations',
+                    orderBy: 'productId desc'
+                }
+            },
+            dtParams: mainDtParams
+        })
+    }
+
+    //新增产品 
+    const addProduct = async () => {
+        clearFormInputs({
+            formId: 'rp_partlocationsForm'
+        })
+
+        //设置初始值
+
+        //打开面板
+        $('#rp_partlocationsModalOpen').click();
+
+    }
+
+    const deleteProduct = async () => {
+
+        //check-选中检查
+        let table = $('#rp_partlocations').DataTable();
+        let rowsSelect = table.rows('.selected').data();
+        console.log('rowsSelect', rowsSelect);
+
+        if (rowsSelect.length === 0) {
+            alert('请先选中需要删除的产品')
+            return
+        }
+
+        //check-系统产品是否包含检查
+        for (let i = 0; i < rowsSelect.length; i++) {
+            if (rowsSelect[i].isSystemOption === '是') {
+                alert('选中产品中包含系统产品,无法删除')
+                return
+            }
+        }
+
+        //do-删除产品
+        let DBIDArr = []
+        for (let i = 0; i < rowsSelect.length; i++) {
+            DBIDArr.push(rowsSelect[i].DBID)
+        }
+
+        let r1 = await postDBData({
+            sql: 'delete',
+            params: {
+                tableId: 'rp_partlocations',
+                data: DBIDArr
+            }
+        })
+
+        //return-结果提醒
+        if (r1.affectedRows > 0) {
+            alert('删除成功')
+        } else {
+            alert('出现错误')
+        }
+        //return-重载表格
+        // loadBillMainTable();
+
+        MainTable.ajax.reload() //内置函数重加载
+
+    }
+
+
+
+
+
+    // //保存产品
+    // const saveProduct = async () => {
+    //     //检查是否为系统产品
+    //     if ($('#rp_partlocationsForm-isSystemOption').text() === '是') {
+    //         alert('系统产品不允许修改!')
+    //         return
+    //     }
+
+    //     //检查保存条件
+    //     if (!$('#rp_partlocationsForm-productId').val()) {
+    //         alert('产品编号未填!')
+    //         return
+    //     }
+
+
+
+    //     // //校验重复数据
+    //     // let duplicateRows = await checkDuplicateProduct();
+    //     // if (duplicateRows.length > 0) {
+    //     //     let duplicateIds = '';
+    //     //     for (const row of duplicateRows) {
+    //     //         duplicateIds = duplicateIds + row.ProductId + ',';
+    //     //     }
+    //     //     duplicateIds = duplicateIds.substring(0, duplicateIds.length - 1);
+    //     //     if (!confirm('检测到可能和以下产品编号:' + duplicateIds + ' 包含重复信息,是否继续')) {
+    //     //         return
+    //     //     }
+    //     // }
+
+    //     let mainFormData = getPostFormData({
+    //         formId: 'rp_partlocationsForm'
+    //     })
+
+
+
+    //     //有备注时记录备注人
+    //     if (mainFormData.data[0].remark) {
+    //         mainFormData.data[0].remarker = sessionName
+    //     }
+
+    //     console.log('mainFormData:' + JSON.stringify(mainFormData));
+
+    //     let r1 = await postDBData({
+    //         sql: 'replace',
+    //         params: mainFormData
+    //     })
+
+    //     if (r1.affectedRows > 0) {
+    //         alert('保存成功!')
+
+    //         // $('#rp_partlocationsModal').modal('hide');多层modal存在失效问题,改用click关闭
+    //         $('#rp_partlocationsModalClose').click()
+
+    //         // loadBillMainTable();
+
+    //         MainTable.ajax.reload()
+    //     } else {
+    //         alert('出现错误!')
+    //     }
+
+    // }
+
+    const syncErpData = async () => {
+        let T9Data = await getT9Data({
+            to: 'RP',
+            type: 'material',
+
+        })
+        console.log('T9Data', T9Data);
+
+        let MainTableData = MainTable.rows().data();
+        let RPData = []
+        for (let i = 0; i < MainTableData.length; i++) {
+            RPData.push(MainTableData[i]);
+
+        }
+        console.log('RPData', RPData);
+
+        for (const n of T9Data) {
+            let match = false
+            for (let m of RPData) {
+                if (m.productId === n.productId) {
+                    match = true
+                    for (const p in m) {
+                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+                            m[p] = n[p]
+                        }
+                    }
+                    break;
+                }
+            }
+            //不存在的物料如何处理,预留
+            if (!match) {
+                RPData.push(n)
+            }
+        }
+        console.log('newRPData', RPData);
+
+
+        let r1 = await postDBData({
+            sql: 'replace',
+            params: {
+                tableId: 'rp_partlocations',
+                data: RPData,
+                key: 'productId'
+            }
+        })
+
+        console.log('r1', r1);
+        if (r1) {
+            MainTable.ajax.reload()
+            alert('同步完成')
+        }
+    }
+
+
+
+
+    $(document).ready(function () {
+
+
+
+        //初始化主表
+        loadBillMainTable();
+
+        MainTable = $('#rp_partlocations').DataTable()
+
+        //添加主表监听
+        addMainTableListener();
+
+
+        //同步ERP按钮
+        $('#syncErpDataButton').click(function () {
+            syncErpData();
+        })
+
+
+        //产品新增按钮
+        $('#rp_partlocationsNew').click(function () {
+            addProduct();
+        })
+
+        //产品新增按钮
+        $('#rp_partlocationsDelete').click(function () {
+            deleteProduct();
+        })
+
+        // //表单保存按钮
+        // $('#rp_partlocationsSave').click(function () {
+        //     saveProduct();
+        // })
+
+
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#rp_partlocationsModal').on('hidden.bs.modal', function () {
+            let table = $('#rp_partlocations').DataTable();
+            table.$('tr.selected').removeClass('selected');
+
+
+        })
+
+
+    });
+</script>

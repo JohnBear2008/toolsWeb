@@ -38,7 +38,7 @@
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 <!-- 定义html元素 -->
-<div class="rpContent">
+<div class="rpContent" id="rpContentDiv">
 
     <!-- 按钮：用于打开模态框 -->
 
@@ -1535,7 +1535,7 @@
             // console.log('r1:' + JSON.stringify(r1));
             //重置客户信息改变状态
             customerDataChanged = false
-            
+
             customerData = r1[0]; //将查询结果赋给全局变量
 
 
@@ -2079,7 +2079,7 @@
 
         //补齐联系人待选项
         let contacts = [];
-        console.log('customerData',customerData);
+        console.log('customerData', customerData);
         if (!customerData.contacts) {
             contacts.push({
                 name: customerData.contact,
@@ -2186,7 +2186,17 @@
 
 
 
+
+
+
+
     $(document).ready(function () {
+
+        //自动缩放比例
+        var t = window.devicePixelRatio // 获取下载的缩放 125% -> 1.25    150% -> 1.5
+        document.body.style.zoom = 0.8 / t; // 就去修改页面的缩放比例80%
+
+
 
         // alert(parseInt(''))
         //定义全局变量,当前用户名
@@ -2203,7 +2213,7 @@
         //主表过滤器
         mainTableFilter = '';
 
- 
+
 
         //初始化子表
         loadDataSubTable({
