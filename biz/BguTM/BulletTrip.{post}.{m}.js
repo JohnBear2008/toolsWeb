@@ -128,6 +128,7 @@ module.exports = function (sender) {
           var PsdDate = '';
           var CeoDate = '';
           var BodDate = '';
+          var Reason = '';
           var SendStatus = '';
           var CurStatus = '';
           var CurLevel = '';
@@ -146,6 +147,7 @@ module.exports = function (sender) {
             CeoName = result[2][0].CeoName; CeoName = nulReplaceTxt(CeoName); CeoDate = result[2][0].CeoDate; CeoDate = nulReplaceTxt(CeoDate);
             BodName = result[2][0].BodName; BodName = nulReplaceTxt(BodName); BodDate = result[2][0].BodDate; BodDate = nulReplaceTxt(BodDate);
             SendStatus = result[2][0].SendStatus; SendStatus = nulReplaceTxt(SendStatus);
+            Reason = result[2][0].Reason; Reason = nulReplaceTxt(Reason);
             CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
             CurLevel = result[2][0].CurLevel; CurLevel = nulReplaceTxt(CurLevel); TermiLevel = result[2][0].TermiLevel; TermiLevel = nulReplaceTxt(TermiLevel);
             CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); CurText = result[2][0].CurText; CurText = nulReplaceTxt(CurText);
@@ -160,24 +162,25 @@ module.exports = function (sender) {
             "PsdName": PsdName, "PsdDate": PsdDate,
             "CeoName": CeoName, "CeoDate": CeoDate,
             "BodName": BodName, "BodDate": BodDate,
+            "Reason": Reason, 
             "SendStatus": SendStatus, "CurStatus": CurStatus,
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
             "CurName": CurName, "CurText": CurText,
           };
-          // var dumpX = JSON.stringify(objX);
-          // if (dumpX.length > 50) {
-          //   console.log("大凉:" + dumpX.substring(0, 50));
-          // } else {
-          //   console.log("大凉:" + JSON.stringify(objX));
-          // }
+          var dumpX = JSON.stringify(objX);
+          if (dumpX.length > 500) {
+            console.log("大凉:" + dumpX.substring(0, 500));
+          } else {
+            console.log("大凉:" + JSON.stringify(objX));
+          }
           dataARR.push(objX);
           sender.success(dataARR);
-          var dump = JSON.stringify(dataARR);
-          if (dump.length > 100) {
-            console.log("海钰:" + dump.substring(0, 100));
-          } else {
-            console.log("海钰:" + JSON.stringify(dataARR));
-          }
+          // var dump = JSON.stringify(dataARR);
+          // if (dump.length > 100) {
+          //   console.log("海钰:" + dump.substring(0, 100));
+          // } else {
+          //   console.log("海钰:" + JSON.stringify(dataARR));
+          // }
         }
       });
     function PopupDetail(cb) {
@@ -322,7 +325,7 @@ module.exports = function (sender) {
         " `CurName` ,`SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`MagWorkId` ,`MagName` ," +
         " `MagDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
-        " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate`  from bgu_rule tba  " +
+        " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate` ,`Reason`  from bgu_rule tba  " +
         " where tba.BillNo= ?   ";
       yjDBService.exec({
         sql: SQL2,
@@ -344,6 +347,7 @@ module.exports = function (sender) {
               "Level7": data[i].Level7, "PsdWorkId": data[i].PsdWorkId, "PsdName": data[i].PsdName, "PsdDate": data[i].PsdDate,
               "Level8": data[i].Level8, "CeoWorkId": data[i].CeoWorkId, "CeoName": data[i].CeoName, "CeoDate": data[i].CeoDate,
               "Level9": data[i].Level9, "BodWorkId": data[i].BodWorkId, "BodName": data[i].BodName, "BodDate": data[i].BodDate,
+              "Reason": data[i].Reason,
               "BillNo": data[i].BillNo, "SendStatus": data[i].SendStatus, "CurStatus": data[i].CurStatus, "CurLevel": data[i].CurLevel,
               "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "CurText": data[i].CurText,
             }

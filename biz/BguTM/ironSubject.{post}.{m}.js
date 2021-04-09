@@ -1,3 +1,4 @@
+require("../../client/js/Date.js");
 module.exports = function (sender) {
 //ironSubject
 	var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
@@ -16,9 +17,47 @@ module.exports = function (sender) {
 	if (arrange == 'findOrigDtl') {
 		findOrigDtl();
 	}
+	if (arrange == 'OrigLinkDtl') {
+		OrigLinkDtl();
+	}
 	if (arrange == 'findDept') {
 		var loginName = sender.req.query.loginName;
 		findDept();
+	}
+	if (arrange == 'LinkDept') {
+		var loginName = sender.req.query.loginName;
+		LinkDept();
+	}
+	function LinkDept() {
+		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
+		" where tba.StaffName = ? and StaffLevel = '1' ";
+		yjDBService.exec({
+			sql: SQLqry,
+			parameters: [loginName],
+			success: function (r) {
+				var datas = []
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					var qryDept = data[i].DeptLabel;
+					var qryGroup = data[i].GroupLabel;
+					var temp = {
+						"DeptLabel": qryDept,
+						"GroupLabel": qryGroup,
+						"StaffRole": data[i].StaffRole,
+						"Mobiles": data[i].Mobiles,
+					}
+					datas.push(temp)
+				}
+				var dump = JSON.stringify(datas);
+				// if (dump.length > 100) {
+				// 	console.log("姑瑛:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("姑瑛:" + JSON.stringify(datas));
+				// }
+				sender.success(datas);
+			},
+			error: {},
+		});
 	}
 	function findDept() {
 		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
@@ -52,12 +91,12 @@ module.exports = function (sender) {
 					}
 					datas.push(temp)
 				}
-				var dump = JSON.stringify(datas);
-				if (dump.length > 100) {
-					console.log("姑瑛:" + dump.substring(0, 100));
-				} else {
-					console.log("姑瑛:" + JSON.stringify(datas));
-				}
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 100) {
+				// 	console.log("姑瑛:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("姑瑛:" + JSON.stringify(datas));
+				// }
 				sender.success(datas);
 			},
 			error: {},
@@ -76,6 +115,33 @@ module.exports = function (sender) {
 					var temp = {
 						"Record_CID": data[i].GroupID,
 						"Record_Name": data[i].GroupName,
+					}
+					datas.push(temp)
+				}
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 100) {
+				// 	console.log("昭瑛:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("昭瑛:" + JSON.stringify(datas));
+				// }
+				sender.success(datas);
+			},
+			error: {},
+		});
+	}
+	function OrigLinkDtl() {
+		var SQLqry = " select tba.`DeptID` , tba.`DeptName` , tdtl.GroupID , tdtl.GroupName  from  bgu_orig tba " +
+		" LEFT JOIN bgu_orig_detail tdtl on tba.DeptName  = tdtl.DeptName ";
+		yjDBService.exec({
+			sql: SQLqry,
+			parameters: [],
+			success: function (r) {
+				var datas = []
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					var temp = {
+						"Record_CID":  data[i].DeptID+"-"+data[i].GroupID,
+						"Record_Name":  data[i].DeptName+"-"+data[i].GroupName,
 					}
 					datas.push(temp)
 				}
@@ -118,7 +184,7 @@ module.exports = function (sender) {
 		});
 	}
 	function HandleSupp() {
-		var SQLqry = " select Subject , BudgetItem, BudgetCID from bgu_Subject  ";
+		var SQLqry = " select Subject , BudgetItem, BudgetCID from bgu_Subject order By Subject ";
 		var dataArr = [];
 		yjDBService.exec({
 			sql: SQLqry,

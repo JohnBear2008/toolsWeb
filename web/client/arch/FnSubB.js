@@ -15,6 +15,8 @@ function shuffleB(  BillNo ) {
             let htmlModel = '';
             let CurLevel = '';
             let CurText = bjob[21].CurText;
+            var Answer = bjob[21].Reason;
+            console.log("也从愚昧中苏醒", Answer);
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
         '<div id=\'waterAy\' style="left:200px;top:0px;width:950px;height:1050px;">' +
@@ -292,6 +294,10 @@ function shuffleB(  BillNo ) {
             '    <td width="50" height="30"  >  </td> ' +
             '    <td width="50" height="30" colspan="2"> VipDate</td> ' +
             '  </tr> ' +
+            '  <tr>' +
+            '    <td  id=\"reaLabel\" width="50"  colspan="1" height="25"></td>' +
+            '    <td  width="50"  colspan="9" height="25">Reason</td>' +
+            '  </tr>' +
             '</table> ' +
             '</DIV>';
                 var watermark = "";
@@ -367,6 +373,7 @@ function shuffleB(  BillNo ) {
                     "PsdName": bjob[i].PsdName, "PsdDate": bjob[i].PsdDate,
                     "CeoName": bjob[i].CeoName, "CeoDate": bjob[i].CeoDate,
                     "BodName": bjob[i].BodName, "BodDate": bjob[i].BodDate,
+                    "Reason": bjob[i].Reason,
                     "CurText": bjob[i].CurText, "CurStatus": bjob[i].CurStatus,
                     "CurLevel": bjob[i].CurLevel, "TermiLevel": bjob[i].TermiLevel,
                     "CurName": bjob[i].CurName, "SendText": bjob[i].SendText, 
@@ -404,7 +411,7 @@ function shuffleB(  BillNo ) {
                 HotelTel   ,   EntryDate   ,   BillStatus   ,
 
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
-                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
+                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
                 StatusOK,
                 }) => {
                 let newHtml = htmlModel
@@ -710,6 +717,7 @@ function shuffleB(  BillNo ) {
                 .replace(/PsdDate/, PsdDate )   
                 .replace(/CeoDate/, CeoDate )   
                 .replace(/BodDate/, BodDate)
+                .replace(/Reason/, Reason)
 
                 .replace(/StatusOK/, StatusOK)
                 .replace(/watermark/, watermark)
@@ -922,6 +930,7 @@ function shuffleB(  BillNo ) {
                             PsdDate:  sData[21].PsdDate, 
                             CeoDate:  sData[21].CeoDate, 
                             BodDate:  sData[21].BodDate, 
+                            Reason: sData[21].Reason,
 
                             StatusOK:  sData[21].CurText, 
      
@@ -935,6 +944,16 @@ function shuffleB(  BillNo ) {
                 }
             }
             createRpHtml(sData);
+            if ( Answer != undefined && Answer != null && Answer != '') {
+                $("#reaLabel").addClass("fee-approval");
+                $("#reaLabel").html("退回理由");
+                console.log("琴一把");
+            }else{
+                $("#reaLabel").html("");
+                $("#reaLabel").val("");
+                $("#reaLabel").removeClass("fee-approval");
+                console.log("潦倒布衣一身",Answer);
+            }
             divHtml = '';
             newHtml = '';
             htmlModel = '';

@@ -47,6 +47,7 @@ function winTrip() {
 }
 function view_dsp() {
       var GrandTmp = 0;
+      var GrandInp = 0;
       var columnA = 0;
       var columnB = 0;
       var columnC = 0;
@@ -59,6 +60,14 @@ function view_dsp() {
       var SUmOFD = 0;
       var SUmOFE = 0;
       var SUmOFF = 0;
+      let InpTax = [];
+      let Rate = [];
+      for (let i = 0; i <= 13; i++) {
+            InpTax[i] = 0;
+      }
+      for (let i = 0; i <= 13; i++) {
+            Rate[i] = 0.05;
+      }
       var sumTemp = 0;
       for (let i = 0; i <= 13; i++) {
             var TrafficA = $('#TrafficA_' + i).val();
@@ -75,33 +84,37 @@ function view_dsp() {
             SUmOFF = 0;
             sumTemp = 0;
             if (TrafficA != '' && TrafficA != 'NaN' && TrafficA != undefined) {
-                  SUmOFA = parseInt(TrafficA, 10);
+                  SUmOFA = parseInt(TrafficA, 10); 
                   columnA += SUmOFA; GrandTmp += SUmOFA;
                   // console.log("田田",columnA,"之字",i);
             }
             if (TrafficB != '' && TrafficB != 'NaN' && TrafficB != undefined) {
-                  SUmOFB = parseInt(TrafficB, 10);
+                  SUmOFB = parseInt(TrafficB, 10); 
                   columnB += SUmOFB; GrandTmp += SUmOFB;
             }
             if (TrafficC != '' && TrafficC != 'NaN' && TrafficC != undefined) {
-                  SUmOFC = parseInt(TrafficC, 10);
+                  SUmOFC = parseInt(TrafficC, 10); 
                   columnC += SUmOFC; GrandTmp += SUmOFC;
             }
             if (TrafficD != '' && TrafficD != 'NaN' && TrafficD != undefined) {
-                  SUmOFD = parseInt(TrafficD, 10);
+                  SUmOFD = parseInt(TrafficD, 10); 
                   columnD += SUmOFD; GrandTmp += SUmOFD;
             }
             if (TrafficE != '' && TrafficE != 'NaN' && TrafficE != undefined) {
-                  SUmOFE = parseInt(TrafficE, 10);
+                  SUmOFE = parseInt(TrafficE, 10); 
                   columnE += SUmOFE; GrandTmp += SUmOFE;
             }
             if (TrafficF != '' && TrafficF != 'NaN' && TrafficF != undefined) {
-                  SUmOFF = parseInt(TrafficF, 10);
+                  SUmOFF = parseInt(TrafficF, 10); 
                   columnF += SUmOFF; GrandTmp += SUmOFF;
             }
             sumTemp = SUmOFA + SUmOFB + SUmOFC + SUmOFD + SUmOFE + SUmOFF;
             if (sumTemp != '' && sumTemp != '0' && sumTemp != 'NaN' && sumTemp != undefined) {
                   $('#TicTotal_' + i).val(sumTemp);   
+                  var inpTemp = sumTemp*( Rate[i]);   
+                  var inpTax = inpTemp.toFixed(1); 
+                  GrandInp += inpTemp;
+                  $('#InputVAT_' + i).val(inpTax);   
             }
       }
       if (columnA != '' && columnA != 'NaN' && columnA != undefined) {
@@ -123,11 +136,13 @@ function view_dsp() {
             $('#TrafficF_14').val(columnF);
       }
       $('#TicTotal_14').val(GrandTmp);
+      GrandInp = GrandInp.toFixed(1); 
+      $('#InputVAT_14').val(GrandInp);
 }
 function apply_dsp() {
       var DeptName = $('#hideDeptName').val();
       var GroupName = $('#GroupName').val();
-      var flowRole = $('#hideflowRole').val(); 
+      var FlowRole = $('#hideFlowRole').val(); 
       var StaffName = sessionName;
       var SendStatus = '1';
       if(DeptName!=null ||DeptName!=undefined ){
@@ -150,7 +165,7 @@ function apply_dsp() {
             var hidePhone = $('#hidePhone').val();
             var Basstr = {
                   "SendStatus": SendStatus, "hideBillNo": hideBillNo , "hidePhone": hidePhone ,
-                  "DeptName": DeptName, "GroupName": GroupName,  "StaffName": StaffName, "flowRole": flowRole  
+                  "DeptName": DeptName, "GroupName": GroupName,  "StaffName": StaffName, "FlowRole": FlowRole  
             };
             var reportType = 'applyTrip';
             var arrange = 'confirm';
@@ -195,7 +210,7 @@ function save_dsp() {
       var BusiArea = $('#BusiArea').val();
       var GroupName = $('#GroupName').val();
       var DeptName = $('#hideDeptName').val();
-      var flowRole = $('#hideflowRole').val();  
+      var FlowRole = $('#hideFlowRole').val();  
       var StaffID = sessionOID;
       var StaffName = sessionName;
       var TotalValue = $('#TotalValue').val();
@@ -219,7 +234,7 @@ function save_dsp() {
       var Overspend = $('#Overspend').val();
       var Advstr = {
             "SendStatus": SendStatus, "ApplicNo": ApplicNo, "Subject": Subject, "Version": Version, "BusiMan": BusiMan, "BusiArea": BusiArea,
-            "GroupName": GroupName, "DeptName": DeptName, "StaffID": StaffID, "StaffName": StaffName, "flowRole": flowRole , "TotalValue": TotalValue, "LeaveDate": LeaveDate,
+            "GroupName": GroupName, "DeptName": DeptName, "StaffID": StaffID, "StaffName": StaffName, "FlowRole": FlowRole , "TotalValue": TotalValue, "LeaveDate": LeaveDate,
             "LeaveHour": LeaveHour, "LeaveMin": LeaveMin, "BackDate": BackDate, "BackHour": BackHour, "BackMin": BackMin,
             "LiveDateA": LiveDateA, "LiveDateB": LiveDateB, "LiveDateC": LiveDateC, "LiveDateD": LiveDateD,
             "LiveDateE": LiveDateE, "LiveDateF": LiveDateF, "Explanation": Explanation, "Overspend": Overspend,
@@ -300,7 +315,8 @@ function save_dsp() {
                         layer.confirm("申请文号" + data.BillNo + "已保存" + (data.status), {
                               btn: ['知道了']
                         }, function () {
-                              layer.msg('操作成功', { icon: 1 });
+                              // layer.msg('操作成功', { icon: 1 });
+                              apply_dsp();
                         });
                   }
             },

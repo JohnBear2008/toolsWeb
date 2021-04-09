@@ -57,12 +57,11 @@
 
 
             <!-- 定义基础模块数据表 -->
-            <table id="rp_partlocations" class=" table table-striped table-bordered" style="width:100%">
+            <table id="rp_partlocations" class=" table table-striped table-bordered" style="width:100%;">
                 <thead>
                     <tr>
-                        <th>BOM编号</th>
+                        <th width="150px">BOM编号</th>
                         <th>产品编号</th>
-                        <th>产品名称</th>
                         <th>用量</th>
                         <th>安装点</th>
                         <th>备注</th>
@@ -195,8 +194,6 @@
         },
         {
             data: 'partId'
-        }, {
-            data: 'partName',
         }, {
             data: 'num',
         }, {
@@ -390,46 +387,46 @@
     const syncErpData = async () => {
         let T9Data = await getT9Data({
             to: 'RP',
-            type: 'material',
+            type: 'installInfo',
 
         })
         console.log('T9Data', T9Data);
 
-        let MainTableData = MainTable.rows().data();
-        let RPData = []
-        for (let i = 0; i < MainTableData.length; i++) {
-            RPData.push(MainTableData[i]);
+        // let MainTableData = MainTable.rows().data();
+        // let RPData = []
+        // for (let i = 0; i < MainTableData.length; i++) {
+        //     RPData.push(MainTableData[i]);
 
-        }
-        console.log('RPData', RPData);
+        // }
+        // console.log('RPData', RPData);
 
-        for (const n of T9Data) {
-            let match = false
-            for (let m of RPData) {
-                if (m.productId === n.productId) {
-                    match = true
-                    for (const p in m) {
-                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
-                            m[p] = n[p]
-                        }
-                    }
-                    break;
-                }
-            }
-            //不存在的物料如何处理,预留
-            if (!match) {
-                RPData.push(n)
-            }
-        }
-        console.log('newRPData', RPData);
+        // for (const n of T9Data) {
+        //     let match = false
+        //     for (let m of RPData) {
+        //         if (m.productId === n.productId) {
+        //             match = true
+        //             for (const p in m) {
+        //                 if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+        //                     m[p] = n[p]
+        //                 }
+        //             }
+        //             break;
+        //         }
+        //     }
+        //     //不存在的物料如何处理,预留
+        //     if (!match) {
+        //         RPData.push(n)
+        //     }
+        // }
+        // console.log('newRPData', RPData);
 
 
         let r1 = await postDBData({
             sql: 'replace',
             params: {
                 tableId: 'rp_partlocations',
-                data: RPData,
-                key: 'productId'
+                data: T9Data,
+                // key: 'productId'
             }
         })
 

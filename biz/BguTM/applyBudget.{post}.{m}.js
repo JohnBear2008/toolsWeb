@@ -7,6 +7,7 @@ module.exports = function (sender) {
     var async = require("async");
     var arrange = sender.req.query.arrange;
     var edituse = sender.req.query.edituse;
+    var editmoney = sender.req.query.editmoney;
     let now = new Date();
     var swift = Math.random(100) * 100;
     swift = swift.toFixed(0);
@@ -16,17 +17,21 @@ module.exports = function (sender) {
     var ApplyDate = now.Format("yyyyMMdd");
     var ApplyYear = now.Format("yyyy");
     var BILLDate = now.Format("yyyyMMddHHmm") + swift;
+	var EntryDate = now.Format("yyyyMMdd");
+	var BudYear = now.Format("yyyy");
+    var BudMonth = now.Format("MM");
     var BillNo = BILLDate + "";
     var Formkind = "采购单";
-    var TESTstaffUser = 'wqy';
-    var flowGroup = '';
-    var flowDept = '';
-    var flowRole = '';
+    var FlowGroup = '';
+    var FlowDept = '';
+    var FlowRole = '';
     var FlowVip = '';
     var FlowCID = '';
+    var FlowItem = '';
     var flowphone = '';
     var qryDept = '';
     var qryGroup = '';
+    var IsAuditChange = 'N';
     if (arrange == 'confirm') {
         uptRuleStatus();
     } else if (arrange == 'saveSend') {
@@ -42,13 +47,13 @@ module.exports = function (sender) {
         let DeptList = [];
         if (qryDept != "" && qryDept != undefined) {
             DeptList = qryDept.split(',');
-            flowDept = DeptList[0];
+            FlowDept = DeptList[0];
         }
         qryGroup = Advstr.GroupName;
         let GroupList = [];
         if (qryGroup != "" && qryGroup != undefined) {
             GroupList = qryGroup.split(',');
-            flowGroup = GroupList[0];
+            FlowGroup = GroupList[0];
         }
         var StaffID = Advstr.StaffID;
         var StaffName = Advstr.StaffName;
@@ -58,18 +63,24 @@ module.exports = function (sender) {
         var Explanation = Advstr.Explanation;
         var EntryDate = now.Format("yyyyMMdd");
         var hideBillNo = Advstr.hideBillNo;
-        if (edituse == 'U') {
+     
+        if (editmoney == 'U') {
             BillNo = hideBillNo;
-            console.log(" 心魔叫嚣", BillNo);
+            console.log("肩挑凡世", BillNo);
+            clearMoney();
+        }else{
+            if (edituse == 'U') {
+                BillNo = hideBillNo;
+                console.log(" 心魔叫嚣", BillNo);
+            }
+            validOrig();
         }
-        validOrig();
-    } else if (arrange == 'loadSend') {
-        loadSend();
     } else {
 
     }
+
     function validOrig() {
-        // if (flowRole != '文员') {
+        // if (FlowRole != '文员') {
         //     var retcode = { "status": "Fail", "message": "送审不成功，送审人必须为文员", "BillNo": BillNo };
         //     sender.success(retcode);
         //     console.log("嬴政虎", retcode);
@@ -77,8 +88,10 @@ module.exports = function (sender) {
         // }
         var sData = sender.req.query.sData;
         var BudgetCID = sData[0].BudgetCID;
+        FlowItem = sData[0].BudgetItem;
         if (BudgetCID != null && BudgetCID != undefined) {
             var BudgetBID = BudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0");
+            FlowCID = BudgetCID;
         }
         var StaffRole = "采购承办人";
         if (BudgetBID == "1") {
@@ -88,13 +101,14 @@ module.exports = function (sender) {
         } else {
             StaffRole = "采购承办人";
         }
-        console.log("刘备", StaffRole, "露娜", flowGroup, flowDept);
+        console.log("刘备", StaffRole, "露娜", FlowGroup, FlowDept, FlowCID, FlowItem);
         let SQL3 =
             " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
             " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
             " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
             " from  bgu_staffs tba  " +
-            " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
+            // " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
+            " LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '"+FlowGroup+"', '%')  and tdpt.staffLevel='2' " +
             " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
             " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' and tpur.StaffRole='" + StaffRole + "' " +
             " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
@@ -114,10 +128,10 @@ module.exports = function (sender) {
         var CeoName = '';
         var BodName = '';
         var Flag = '1';
-  
+
         yjDBService.exec({
             sql: SQL3,
-            parameters: [flowGroup, flowDept, OppName],
+            parameters: [ FlowDept, OppName],
             rowsAsArray: true,
             success: function (r) {
                 var datas = [];
@@ -136,17 +150,17 @@ module.exports = function (sender) {
                     console.log("裴擒虎", MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName);
                 }
                 if (MagName != "" && MagName != undefined) {
-                    if(MagName == StaffName){
-                        flowRole = '部门主管';
-                        console.log("姜子牙", flowRole);
+                    if (MagName == StaffName) {
+                        FlowRole = '部门主管';
+                        console.log("姜子牙", FlowRole);
                     }
                 } else {
                     Flag = '0';
                 }
                 if (VipName != "" && VipName != undefined) {
-                    if(VipName ==StaffName){
-                        flowRole = '副总';
-                        console.log("妲己", flowRole);
+                    if (VipName == StaffName) {
+                        FlowRole = '副总';
+                        console.log("妲己", FlowRole);
                     }
                 } else {
                     Flag = '0';
@@ -232,7 +246,7 @@ module.exports = function (sender) {
                             UpperLimit = '0';
                         } else {
                             UpperLimit = result[0][i].UpperLimit;
-                            if (TotalValue > UpperLimit) {  //超过预算
+                            if (  IsAuditChange=='Y') {  //超过预算
                                 flagLimit = 'Y';
                                 if (BudgetType == 'A') {
                                     TermiLevel = '6';
@@ -240,7 +254,7 @@ module.exports = function (sender) {
                                 if (BudgetType == 'B') {
                                     TermiLevel = '8';
                                 }
-                                // console.log(">>>超过预算", UpperLimit, "崔崔", BudgetType);
+                                console.log(">>>超过预算", UpperLimit, "项目", BudgetType);
                             } else {
                                 if (BudgetType == 'A') {
                                     TermiLevel = '4';
@@ -248,7 +262,7 @@ module.exports = function (sender) {
                                 if (BudgetType == 'B') {
                                     TermiLevel = '6';
                                 }
-                                // console.log("<<<未达预算", UpperLimit, "崔崔", BudgetType);
+                                // console.log("<<<未达预算", UpperLimit, "项目", BudgetType);
                             }
                         }
                         if (result[1][i] == null || result[1][i] == undefined) {
@@ -278,34 +292,34 @@ module.exports = function (sender) {
 
                             }
                             var CurLevel = '1';
-                            if (flowRole == '副总' || flowRole == '总经理' || flowRole == '财务总监'  || flowRole == 'CEO' || flowRole == '董事长' ) {
+                            if (FlowRole == '副总' || FlowRole == '总经理' || FlowRole == '财务总监' || FlowRole == 'CEO' || FlowRole == '董事长') {
                                 if (BudgetType == 'B') {
                                     CurJob = 'pur';
-                                    CurWorkId = PurWorkId ;
+                                    CurWorkId = PurWorkId;
                                     CurName = PurName;
-                                }else{
+                                } else {
                                     CurJob = 'cfo';
-                                    CurWorkId = CfoWorkId ;
+                                    CurWorkId = CfoWorkId;
                                     CurName = CfoName;
                                 }
                                 VipDate = ApplyDate;
                                 MagDate = ApplyDate;
                                 CurLevel = '3';
-                            }else if (flowRole == '部门主管') {
-                                CurWorkId = VipWorkId ;
+                            } else if (FlowRole == '部门主管') {
+                                CurWorkId = VipWorkId;
                                 CurName = VipName;
                                 VipDate = nulReplaceDate(VipDate);
                                 MagDate = ApplyDate;
                                 CurJob = 'vip';
                                 CurLevel = '2';
-                            }else if (flowRole == '文员') {
+                            } else if (FlowRole == '文员') {
                                 CurWorkId = MagWorkId;
                                 CurName = MagName;
                                 VipDate = nulReplaceDate(VipDate);
                                 MagDate = nulReplaceDate(MagDate);
                                 CurJob = 'dpt';
                                 CurLevel = '1';
-                            }else {
+                            } else {
                                 CurWorkId = MagWorkId;
                                 CurName = MagName;
                                 VipDate = nulReplaceDate(VipDate);
@@ -320,429 +334,646 @@ module.exports = function (sender) {
                             Track = result[2][i].Track;
                             // console.log("導航條", result[1][i]);
                         }
-                    }                    
-                    handleRule(TermiLevel, CurLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, MagDate, VipWorkId, VipName, VipDate ,PurWorkId, PurName, PexWorkId, PexName,
+                    }
+                    handleRule(TermiLevel, CurLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, MagDate, VipWorkId, VipName, VipDate, PurWorkId, PurName, PexWorkId, PexName,
                         CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track);
                 }
             });
         function FunLimit(cb) {
-            var StaffName = '周筱龙';
-            let SQL2 = "select tvip.StaffID , tvip.StaffName ,tquo.UpperLimit from  bgu_staffs tba " +
-                "LEFT JOIN bgu_staffs tvip on tba.DeptLabel =tvip.DeptLabel and tvip.staffLevel='3' " +
-                "LEFT JOIN bgu_credit tquo on tvip.StaffName = tquo.StaffName  " +
-                "where tba.StaffName = ? ";
-            yjDBService.exec({
-                sql: SQL2,
-                parameters: [StaffName],
-                rowsAsArray: true,
-                success: function (r) {
-                    var datas = [];
-                    var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                    for (var i = 0; i < data.length; i++) {
-                        UpperLimit = data[i].UpperLimit;
-                        var temp = {
-                            "UpperLimit": UpperLimit,
-                        }
-                        // console.log("仔延:" + JSON.stringify(temp));
-                        datas.push(temp)
-                    }
-                    cb(null, datas);
-                },
-                error: sender.error
-            });
-        }
-        function FunOrig(cb) {
-            var StaffRole = "采购承办人";
-            if (BudgetBID == "1") {
-                StaffRole = "资讯承办人";
-            } else if (BudgetBID == "2") {
-                StaffRole = "行政承办人";
-            } else {
-                StaffRole = "采购承办人";
+            var sData = sender.req.query.sData;
+            var IsQuoOver ='N';
+            for (var i = 0; i < sData.length; i++) {
+                if(sData[i].Remain == '0'){
+                    IsQuoOver ='Y';
+                }
             }
-            let SQL3 =
-                // select tba.staffID, tba.staffName, tdpt.staffID , tdpt.staffName ,tvip.staffID , tvip.staffName
-                // ,tpur.staffID , tpur.staffName,tpex.staffID , tpex.staffName,tcfo.staffID , tcfo.staffName
-                // ,tpsd.staffID , tpsd.staffName,tceo.staffID , tceo.staffName ,tbod.staffID , tbod.staffName 
-                // from  bgu_staffs tba
-                // LEFT JOIN bgu_staffs tdpt on '财务组' = tdpt.GroupLabel and tdpt.staffLevel='2'  
-                // LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tdpt.DeptLabel, '%') and tvip.staffLevel='3'
-                // LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tpur.staffLevel='4' and tpur.StaffRole='采购承办人'
-                // LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tpex.staffLevel='5' 
-                // LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tcfo.staffLevel='6'
-                // LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tpsd.staffLevel='7'
-                // LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tceo.staffLevel='8'
-                // LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%' , tdpt.DeptLabel , '%') and tbod.staffLevel='9'
-                // where tba.DeptLabel ='财务部'  and tba.StaffLevel='1'  
-
-                " select tba.Mobiles as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles as MagWorkId, tdpt.StaffName as MagName,tvip.Mobiles as VipWorkId, tvip.StaffName as VipName" +
-                " ,tpur.Mobiles as PurWorkId, tpur.StaffName as PurName,tpex.Mobiles as PexWorkId, tpex.StaffName as PexName,tcfo.Mobiles as CfoWorkId, tcfo.StaffName as CfoName" +
-                " ,tpsd.Mobiles as PsdWorkId, tpsd.StaffName as PsdName,tceo.Mobiles as CeoWorkId, tceo.StaffName as CeoName,tbod.Mobiles as BodWorkId, tbod.StaffName as BodName " +
-                " from  bgu_staffs tba  " +
-                " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
-                " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
-                " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' and tpur.StaffRole='" + StaffRole + "' " +
-                " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
-                " LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' " +
-                " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
-                " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
-                " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
-                " where  tba.DeptLabel =? and tba.StaffLevel='1'   ";
-            var OppWorkId = StaffID;
-            var OppName = StaffName;
-            var MagWorkId = '';
-            var MagName = '';
-            var VipWorkId = '';
-            var VipName = '';
-            var PurWorkId = '';
-            var PurName = '';
-            var PexWorkId = '';
-            var PexName = '';
-            var CfoWorkId = '';
-            var CfoName = '';
-            var PsdWorkId = '';
-            var PsdName = '';
-            var CeoWorkId = '';
-            var CeoName = '';
-            var BodWorkId = '';
-            var BodName = '';
-
+            let SQLExecute =
+                " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota " +
+                " where BudgetItem =? and BudYear = ? and DeptName = ?  " +
+                " Union " +
+                " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_buffer " +
+                " where  BffType = 'A' and BudYear =? and BudMonth = ? "  ;
+            let paramelist = [FlowItem, BudYear, FlowDept, BudYear, BudMonth];
+            console.log("控股" , FlowItem, BudYear , FlowDept , BudYear , BudMonth)
             yjDBService.exec({
-                sql: SQL3,
-                parameters: [flowGroup, flowDept],
+                sql: SQLExecute,
+                parameters: paramelist,
                 rowsAsArray: true,
-                success: function (r) {
+                success: function (result) {
+                    var data = yjDB.dataSet2ObjectList(result.meta, result.rows);
+                    var UpperLimit = 0;
+                    var UpperLimitB = 0;
+                    var Surplus = 0;
+                    var qryAIsOver = '';
+                    var qryBIsOver = '';
                     var datas = [];
-                    var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                    if (data.length == 0) {
-                        var retcode = { "status": "Fail", "message": "送审不成功，没有使用者", "BillNo": BillNo };
-                        sender.success(retcode);
-                        console.log("瑜@@", retcode);
-                    }
                     for (var i = 0; i < data.length; i++) {
-                        MagWorkId = data[i].MagWorkId;
-                        MagName = data[i].MagName;
-                        VipWorkId = data[i].VipWorkId;
-                        VipName = data[i].VipName;
-                        PurWorkId = data[i].PurWorkId;
-                        PurName = data[i].PurName;
-                        PexWorkId = data[i].PexWorkId;
-                        PexName = data[i].PexName;
-                        CfoWorkId = data[i].CfoWorkId;
-                        CfoName = data[i].CfoName;
-                        PsdWorkId = data[i].PsdWorkId;
-                        PsdName = data[i].PsdName;
-                        CeoWorkId = data[i].CeoWorkId;
-                        CeoName = data[i].CeoName;
-                        BodWorkId = data[i].BodWorkId;
-                        BodName = data[i].BodName;
-                        var temp = {
-                            "OppWorkId": OppWorkId,
-                            "OppName": OppName,
-                            "MagWorkId": MagWorkId,
-                            "MagName": MagName,
-                            "VipWorkId": VipWorkId,
-                            "VipName": VipName,
-                            "PurWorkId": PurWorkId,
-                            "PurName": PurName,
-                            "PexWorkId": PexWorkId,
-                            "PexName": PexName,
-                            "CfoWorkId": CfoWorkId,
-                            "CfoName": CfoName,
-                            "PsdWorkId": PsdWorkId,
-                            "PsdName": PsdName,
-                            "CeoWorkId": CeoWorkId,
-                            "CeoName": CeoName,
-                            "BodWorkId": BodWorkId,
-                            "BodName": BodName,
+                        var Rank = data[i].Rank;
+                        if (Rank == 'A') {
+                            qryAIsOver = data[i].IsOver;
+                            Surplus = data[i].Surplus;
+                            Surplus = nulReplace0(Surplus);
+                            Surplus = parseInt(Surplus, 10);
+                            UpperLimit = Surplus;
                         }
-                        datas.push(temp)
-                        // console.log("研雨:" + JSON.stringify(temp));
-                    }
-                    cb(null, datas);
-                },
-                error: sender.error
-            });
-        }
-        function FunSubject(cb) {
-            console.log("A或B:", BudgetType);
-            var Track = '';
-            let SQL4 =
-                " select Track from  bgu_rule_def where RuleType =?  ";
-            yjDBService.exec({
-                sql: SQL4,
-                parameters: [BudgetType],
-                rowsAsArray: true,
-                success: function (r) {
-                    var datas = [];
-                    var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                    for (var i = 0; i < data.length; i++) {
-                        Track = data[i].Track;
-                        var temp = {
-                            "Track": Track,
+                        if (Rank == 'B') {
+                            qryBIsOver = data[i].IsOver;
+                            Surplus = data[i].Surplus;
+                            Surplus = nulReplace0(Surplus);
+                            Surplus = parseInt(Surplus, 10);
+                            UpperLimitB = Surplus;
                         }
-                        // console.log("看延:" + JSON.stringify(temp));
-                        datas.push(temp);
                     }
+                    let now = new Date();
+                    var labDate = now.Format("yyyyMMdd");
+                    RequestDate = labDate;
+                    // if (IsQuoOver == 'Y' && qryAIsOver == 'Y' && qryBIsOver == 'Y' ) {
+                    if (IsQuoOver == 'Y'  && qryBIsOver == 'Y' ) {
+                        IsAuditChange = 'Y';
+                    }
+                    console.log("双飞:" ,IsQuoOver,"求", qryAIsOver ,"天", qryBIsOver);
+                    var temp = {
+                        "UpperLimit": UpperLimit,
+                        "UpperLimitB": UpperLimitB,
+                        "IsAuditChange": IsAuditChange,
+                    }
+                    console.log("飞翼:" + JSON.stringify(temp));
+                    datas.push(temp)
                     cb(null, datas);
-                },
-                error: sender.error
+                }
             });
+    }
+    function FunOrig(cb) {
+        var StaffRole = "采购承办人";
+        if (BudgetBID == "1") {
+            StaffRole = "资讯承办人";
+        } else if (BudgetBID == "2") {
+            StaffRole = "行政承办人";
+        } else {
+            StaffRole = "采购承办人";
         }
-    }
-    function handleRule(TermiLevel, CurLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, MagDate, VipWorkId, VipName, VipDate ,PurWorkId, PurName, PexWorkId, PexName,
-        CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track) {
-        let paramList = [];
-        var UpperLimit = '';
-        var flagLimit = 'N';
-        var BudgetType = 'A';
-        var EntryDate = ApplyDate;
-        var CurStatus = 'P';
-        var CurText = '审批';
-        var SendStatus = 'K';
-        var SendText = '保存';
-
-        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,  `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
-            " `CurStatus`, `CurText`,  `SendStatus`, `SendText`, `CurLevel`,  `TermiLevel`, `CurWorkId`, `CurName`, `CurJob` ," +
-            " `Track`, `OppWorkId`, `OppName`, `OppDate`,  `MagWorkId`, `MagName` , `MagDate` , `VipWorkId`, `VipName`,  `VipDate` ,  `PurWorkId`, " +
-            " `PurName`,   `PexWorkId`, `PexName`,   `CfoWorkId`, `CfoName`,  `PsdWorkId`, `PsdName`,  " +
-            "  `CeoWorkId`, `CeoName`,  `BodWorkId`, `BodName` )" +
-            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + flowGroup + "', '" + flowDept + "','" + StaffID + "', '" + StaffName + "',  " +
-            " '" + CurStatus + "', '" + CurText + "', '" + SendStatus + "', '" + SendText + "', '" + CurLevel + "', " +
-            " '" + TermiLevel + "', '" + CurWorkId + "', '" + CurName + "','" + CurJob + "',  " +
-            " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "', " + MagDate + " , " +
-            " '" + VipWorkId + "', '" + VipName + "', " + VipDate + " ,  '" + PurWorkId + "',  '" + PurName + "',   '" + PexWorkId + "', '" + PexName + "'," +
-            "  '" + CfoWorkId + "', '" + CfoName + "', '" + PsdWorkId + "', '" + PsdName + "'," +
-            " '" + CeoWorkId + "', '" + CeoName + "', '" + BodWorkId + "', '" + BodName + "' ) ";
+        let SQL3 =
+            " select tba.Mobiles as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles as MagWorkId, tdpt.StaffName as MagName,tvip.Mobiles as VipWorkId, tvip.StaffName as VipName" +
+            " ,tpur.Mobiles as PurWorkId, tpur.StaffName as PurName,tpex.Mobiles as PexWorkId, tpex.StaffName as PexName,tcfo.Mobiles as CfoWorkId, tcfo.StaffName as CfoName" +
+            " ,tpsd.Mobiles as PsdWorkId, tpsd.StaffName as PsdName,tceo.Mobiles as CeoWorkId, tceo.StaffName as CeoName,tbod.Mobiles as BodWorkId, tbod.StaffName as BodName " +
+            " from  bgu_staffs tba  " +
+            " LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '"+FlowGroup+"', '%')  and tdpt.staffLevel='2' " +
+            " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
+            " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' and tpur.StaffRole='" + StaffRole + "' " +
+            " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
+            " LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' " +
+            " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
+            " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
+            " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
+            " where  tba.DeptLabel =? and tba.StaffLevel='1'   ";
+        var OppWorkId = StaffID;
+        var OppName = StaffName;
+        var MagWorkId = '';
+        var MagName = '';
+        var VipWorkId = '';
+        var VipName = '';
+        var PurWorkId = '';
+        var PurName = '';
+        var PexWorkId = '';
+        var PexName = '';
+        var CfoWorkId = '';
+        var CfoName = '';
+        var PsdWorkId = '';
+        var PsdName = '';
+        var CeoWorkId = '';
+        var CeoName = '';
+        var BodWorkId = '';
+        var BodName = '';
 
         yjDBService.exec({
-            sql: SQLInsert,
-            parameters: paramList,
+            sql: SQL3,
+            parameters: [ FlowDept],
             rowsAsArray: true,
-            success: function (result) {
-                // var data=yjDB.dataSet2ObjectList(result.meta,result.rows);
-                console.log("不知道你的名字",result);
-                var retcode = { "status": "OK", "message": "送审完成", "BillNo": BillNo, "Phone": flowphone };
-                sender.success(retcode);
-                console.log("昭@@", retcode);
-            },
-            error: sender.error
-        });
-
-    }
-    function saveDetail(Underburget) {
-        var sData = sender.req.query.sData;
-        for (var i = 0; i < sData.length; i++) {
-            var SNNo = sData[i].SNNo;
-            var BudgetCID = sData[i].BudgetCID;
-            var BudgetItem = sData[i].BudgetItem;
-            var ItemNo = sData[i].ItemNo;
-            var Descript = sData[i].Descript;
-            var Unit = sData[i].Unit;
-            var Remain = sData[i].Remain;
-            var UnitPrice = sData[i].UnitPrice;
-            var Quantity = sData[i].Quantity;
-            var Subtotal = sData[i].Subtotal;
-            var Delivery = sData[i].Delivery; Delivery = nulReplaceDate(Delivery);
-            var Supplier = sData[i].Supplier;
-            // var Underburget = sData[i].Underburget;
-            var AppendType = sData[i].AppendType;
-            var Department = sData[i].Department;
-            let paramList = [BillNo, SNNo, BudgetCID, BudgetItem, ItemNo, Descript, Unit,
-                Remain, UnitPrice, Quantity, Subtotal, Delivery, Supplier, Underburget, AppendType, Department];
-            if (ItemNo != "" && ItemNo != undefined) {
-                var SQLInsert = "INSERT INTO `bgu_purchdetail` (  `BillNo` , `SNNo`  , `BudgetCID` , `BudgetItem` , `ItemNo`  , `Description` , `Unit`   ,  " +
-                    " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` , `AppendType`, `Department` ) " +
-                    "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?  )";
-                yjDBService.exec({
-                    sql: SQLInsert,
-                    parameters: paramList,
-                    rowsAsArray: true,
-                    success: function (result) {
-                        console.log("saveDetail:", result);
-                        saveRule();
-                    },
-                    error: sender.error
-                });
-            }
-        }
-    }
-    function clearMain() {
-        let SQLDelete1 = "Delete From `bgu_purchmain` where BillNo=?   ";
-        let SQLDelete2 = "Delete From `bgu_purchdetail` where BillNo=?   ";
-        let SQLDelete3 = "Delete From `bgu_rule` where BillNo=?   ";
-
-        yjDBService.exec({
-            sql: SQLDelete1,
-            parameters: [hideBillNo],
-            success: function (result) {
-
-                yjDBService.exec({
-                    sql: SQLDelete2,
-                    parameters: [hideBillNo],
-                    success: function (result2) {
-
-                        yjDBService.exec({
-                            sql: SQLDelete3,
-                            parameters: [hideBillNo],
-                            rowsAsArray: true,
-                            success: function (result) {
-                                saveMain();
-                            },
-                            error: sender.error
-                        });
-                    },
-                    error: {},
-                });
-            },
-            error: {},
-        });
-    }
-    function saveMain() {
-        var sData = sender.req.query.sData;
-        var BudgetCID = sData[0].BudgetCID;
-        var Subject = sData[0].Subject;
-        var BudgetItem = sData[0].BudgetItem;
-        // console.log("竹風青庭", Subject);
-        // console.log("竹風青庭", BudgetCID);
-        let paramList = [BillNo, Formkind, Subject, BudgetCID, BudgetItem, ListNo,
-            RequestDate, ProjectNo, ApplicNo, flowDept, flowGroup,
-            StaffID, StaffName, TotalValue, Currency, Payment,
-            Explanation, EntryDate];
-        var SQLInsert = "INSERT INTO `bgu_purchmain` ( `BillNo` , `Formkind` , `Subject` , `BudgetCID` , `BudgetItem` , `ListNo` ,  `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-            "`DeptName` , `GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate`  ) " +
-            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?  )";
-        yjDBService.exec({
-            sql: SQLInsert,
-            parameters: paramList,
-            rowsAsArray: true,
-            success: function (result) {
-                // var data=yjDB.dataSet2ObjectList(result.meta,result.rows);
-
-                PopupCredit();
+            success: function (r) {
+                var datas = [];
+                var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                if (data.length == 0) {
+                    var retcode = { "status": "Fail", "message": "送审不成功，没有使用者", "BillNo": BillNo };
+                    sender.success(retcode);
+                    console.log("瑜@@", retcode);
+                }
+                for (var i = 0; i < data.length; i++) {
+                    MagWorkId = data[i].MagWorkId;
+                    MagName = data[i].MagName;
+                    VipWorkId = data[i].VipWorkId;
+                    VipName = data[i].VipName;
+                    PurWorkId = data[i].PurWorkId;
+                    PurName = data[i].PurName;
+                    PexWorkId = data[i].PexWorkId;
+                    PexName = data[i].PexName;
+                    CfoWorkId = data[i].CfoWorkId;
+                    CfoName = data[i].CfoName;
+                    PsdWorkId = data[i].PsdWorkId;
+                    PsdName = data[i].PsdName;
+                    CeoWorkId = data[i].CeoWorkId;
+                    CeoName = data[i].CeoName;
+                    BodWorkId = data[i].BodWorkId;
+                    BodName = data[i].BodName;
+                    var temp = {
+                        "OppWorkId": OppWorkId,
+                        "OppName": OppName,
+                        "MagWorkId": MagWorkId,
+                        "MagName": MagName,
+                        "VipWorkId": VipWorkId,
+                        "VipName": VipName,
+                        "PurWorkId": PurWorkId,
+                        "PurName": PurName,
+                        "PexWorkId": PexWorkId,
+                        "PexName": PexName,
+                        "CfoWorkId": CfoWorkId,
+                        "CfoName": CfoName,
+                        "PsdWorkId": PsdWorkId,
+                        "PsdName": PsdName,
+                        "CeoWorkId": CeoWorkId,
+                        "CeoName": CeoName,
+                        "BodWorkId": BodWorkId,
+                        "BodName": BodName,
+                    }
+                    datas.push(temp)
+                    // console.log("研雨:" + JSON.stringify(temp));
+                }
+                cb(null, datas);
             },
             error: sender.error
         });
     }
-    function PopupCredit() {
-        let SQL2 =
-            " select AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ?   " +
-            " Union " +
-            " select UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where DeptName = ?   ";
-        var itemIsOver = '';
-        var vvipIsOver = '';
+    function FunSubject(cb) {
+        console.log("A或B:", BudgetType);
+        var Track = '';
+        let SQL4 =
+            " select Track from  bgu_rule_def where RuleType =?  ";
         yjDBService.exec({
-            sql: SQL2,
-            parameters: [FlowCID, qryDept],
+            sql: SQL4,
+            parameters: [BudgetType],
             rowsAsArray: true,
             success: function (r) {
                 var datas = [];
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                 for (var i = 0; i < data.length; i++) {
-                    if (data[i] != null && data[i] != undefined) {
-                        if (i == 0) {
-                            itemIsOver = data[0].IsOver;
-                        }
-                        if (i == 1) {
-                            vvipIsOver = data[1].IsOver;
-                        }
-                    } else {
-
+                    Track = data[i].Track;
+                    var temp = {
+                        "Track": Track,
                     }
+                    // console.log("看延:" + JSON.stringify(temp));
+                    datas.push(temp);
                 }
-                var Underburget = "否";
-                if (itemIsOver == 'Y' && vvipIsOver == 'Y') {
-                    Underburget = "是";
-                } else {
-                    Underburget = "否";
-                }
-                saveDetail(Underburget);
+                cb(null, datas);
             },
             error: sender.error
         });
-    }
-    function uptRuleStatus() {
-        var Basstr = sender.req.query.Basstr;
-        var BillNo = Basstr.hideBillNo;
-        var DeptName = Basstr.DeptName;
-        var GroupName = Basstr.GroupName;
-        var StaffName = Basstr.StaffName;
-        var idleRole = Basstr.flowRole;
-        var idlephone = Basstr.hidePhone;
-        // var mobiles = ['17051095060'] ;
-        var mobiles = [];
-        mobiles.push(idlephone);
-        console.log('送修', BillNo, " TEL:", mobiles);
-        if (BillNo != '' && BillNo != undefined) {
-
-        } else {
-            var retcode = { "status": "Fail", "message": "送审已完成，不可再次送审\n" };
-            sender.success(retcode);
-            console.log("不良送审", retcode);
-            return;
-        }
-        var SQLInsert = "Update `bgu_rule` set SendStatus  = 'D'  , SendText  = '送出' where BillNo= ?";
-        yjDBService.exec({
-            sql: SQLInsert,
-            parameters: [BillNo],
-            success: function (result) {
-                var Msg = "采购单送审" + "\n文号: " + BillNo + "\n部門: " + DeptName + "\n课组: " + GroupName + "\n文员: " + StaffName + "\n职位: " + idleRole;
-                // console.log("町町发送 ", Msg);
-                var yjDing = require("./yjDing");
-                let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
-                var retcode = { "status": "OK", "message": "送审完成\n" + pw, "BillNo": BillNo };
-                sender.success(retcode);
-                console.log("懿", retcode);
-            },
-            error: {},
-        });
-    }
-    function nulReplaceTxt(passTxt) {
-        var ret = '';
-        ret = (passTxt == null || passTxt == undefined) ? ('') : passTxt;
-        return ret;
-    }
-    function nulReplaceWord(passTxt, WordTxt) {
-        var ret = '';
-        WordTxt = (WordTxt == null || WordTxt == undefined) ? ('') : WordTxt;
-        ret = (passTxt == null || passTxt == undefined) ? (WordTxt) : passTxt;
-        return ret;
-    }
-    function validInput() {
-        if (isNaN(RequestDate) && !isNaN(Date.parse(RequestDate))) {
-            // console.log("data是日期格式！");
-            clearMain();
-        } else {
-            var retcode = { "status": "Fail", "message": "审批不成功", "BillNo": BillNo };
-            sender.success(retcode);
-            console.log("错误@@日期格式", retcode);
-        }
-    }
-    function seeflowDept() {
-        let SQL4 =
-            " select GroupName ,DeptName from bgu_orig_detail where GroupName = ?  ";
-        yjDBService.exec({
-            sql: SQL4,
-            parameters: [GroupName],
-            rowsAsArray: true,
-            success: function (r) {
-                var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                for (var i = 0; i < data.length; i++) {
-                    flowDept = data[i].DeptName;
-                    flowGroup = data[i].GroupName;
-                }
-                clearMain();
-            },
-            error: sender.error
-        });
-    }
-    function nulReplaceDate(passTxt) {
-        var ret = '';
-        ret = (passTxt == null || passTxt == undefined || passTxt == '') ? (null) : passTxt;
-        return ret;
     }
 }
+function handleRule(TermiLevel, CurLevel, CurWorkId, CurName, CurJob, OppWorkId, OppName, MagWorkId, MagName, MagDate, VipWorkId, VipName, VipDate, PurWorkId, PurName, PexWorkId, PexName,
+    CfoWorkId, CfoName, PsdWorkId, PsdName, CeoWorkId, CeoName, BodWorkId, BodName, Track) {
+    let paramList = [];
+    var UpperLimit = '';
+    var flagLimit = 'N';
+    var BudgetType = 'A';
+    var EntryDate = ApplyDate;
+    var CurStatus = 'P';
+    var CurText = '审批';
+    var SendStatus = 'K';
+    var SendText = '保存';
 
+    let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,  `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
+        " `CurStatus`, `CurText`,  `SendStatus`, `SendText`, `CurLevel`,  `TermiLevel`, `CurWorkId`, `CurName`, `CurJob` ," +
+        " `Track`, `OppWorkId`, `OppName`, `OppDate`,  `MagWorkId`, `MagName` , `MagDate` , `VipWorkId`, `VipName`,  `VipDate` ,  `PurWorkId`, " +
+        " `PurName`,   `PexWorkId`, `PexName`,   `CfoWorkId`, `CfoName`,  `PsdWorkId`, `PsdName`,  " +
+        "  `CeoWorkId`, `CeoName`,  `BodWorkId`, `BodName` )" +
+        " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + FlowGroup + "', '" + FlowDept + "','" + StaffID + "', '" + StaffName + "',  " +
+        " '" + CurStatus + "', '" + CurText + "', '" + SendStatus + "', '" + SendText + "', '" + CurLevel + "', " +
+        " '" + TermiLevel + "', '" + CurWorkId + "', '" + CurName + "','" + CurJob + "',  " +
+        " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "', " + MagDate + " , " +
+        " '" + VipWorkId + "', '" + VipName + "', " + VipDate + " ,  '" + PurWorkId + "',  '" + PurName + "',   '" + PexWorkId + "', '" + PexName + "'," +
+        "  '" + CfoWorkId + "', '" + CfoName + "', '" + PsdWorkId + "', '" + PsdName + "'," +
+        " '" + CeoWorkId + "', '" + CeoName + "', '" + BodWorkId + "', '" + BodName + "' ) ";
+
+    yjDBService.exec({
+        sql: SQLInsert,
+        parameters: paramList,
+        rowsAsArray: true,
+        success: function (result) {
+            var retcode = { "status": "OK", "message": "送审完成", "BillNo": BillNo, "Phone": flowphone };
+            sender.success(retcode);
+            // console.log("昭@@", retcode);
+        },
+        error: sender.error
+    });
+
+}
+function saveDetail() {
+    var sData = sender.req.query.sData;
+    var EntryDate = ApplyDate;
+    for (var i = 0; i < sData.length; i++) {
+        var SNNo = sData[i].SNNo;
+        var Subject = sData[i].Subject;
+        var BudgetCID = sData[i].BudgetCID;
+        var BudgetItem = sData[i].BudgetItem;
+        var ItemNo = sData[i].ItemNo;
+        var Descript = sData[i].Descript;
+        var Unit = sData[i].Unit;
+        var Remain = sData[i].Remain;
+        var UnitPrice = sData[i].UnitPrice;
+        var Quantity = sData[i].Quantity;
+        var Subtotal = sData[i].Subtotal;
+        var Delivery = sData[i].Delivery; Delivery = nulReplaceDate(Delivery);
+        var Supplier = sData[i].Supplier;
+        // var Underburget = sDigit[i];
+        var Underburget = ((sData[i].Remain == '0') ? ('否') : ('是'));
+        var AppendType = sData[i].AppendType;
+        var Department = sData[i].Department;
+        let paramList = [BillNo, SNNo, Subject, BudgetCID, BudgetItem, ItemNo, Descript, Unit,
+            Remain, UnitPrice, Quantity, Subtotal, Delivery, Supplier, Underburget, AppendType, Department, EntryDate];
+        if (ItemNo != "" && ItemNo != undefined) {
+            var SQLInsert = "INSERT INTO `bgu_purchdetail` (  `BillNo` , `SNNo`  , `Subject` , `BudgetCID` , `BudgetItem` , `ItemNo`  , `Description` , `Unit`   ,  " +
+                " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` , `AppendType`, `Department` , `EntryDate`) " +
+                "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?  )";
+            yjDBService.exec({
+                sql: SQLInsert,
+                parameters: paramList,
+                rowsAsArray: true,
+                success: function (result) {
+                  console.log("拳握初心:", result);
+                },
+                error: sender.error
+            });
+        }
+    }
+    if (editmoney == 'U') {
+        var retcode = { "status": "OK", "message": "采购修该金额完成", "BillNo": BillNo, "Phone": flowphone };
+        sender.success(retcode);
+    }else{
+        saveRule();
+    }
+}
+function clearMoney() {
+    var uData = sender.req.query.uData;
+    console.log("身为君主就是这么任性",uData);
+    // let SQLDelete1 = "Delete From `bgu_purchmain` where BillNo=?   ";
+    let SQLDelete2 = "Delete From `bgu_purchdetail` where BillNo=?   ";
+    yjDBService.exec({
+        sql: SQLDelete2,
+        parameters: [hideBillNo],
+        success: function (result2) {
+            uptMain();           
+        },
+        error: {},
+    });
+}
+function clearMain() {
+    let SQLDelete1 = "Delete From `bgu_purchmain` where BillNo=?   ";
+    let SQLDelete2 = "Delete From `bgu_purchdetail` where BillNo=?   ";
+    let SQLDelete3 = "Delete From `bgu_rule` where BillNo=?   ";
+
+    yjDBService.exec({
+        sql: SQLDelete1,
+        parameters: [hideBillNo],
+        success: function (result) {
+
+            yjDBService.exec({
+                sql: SQLDelete2,
+                parameters: [hideBillNo],
+                success: function (result2) {
+
+                    yjDBService.exec({
+                        sql: SQLDelete3,
+                        parameters: [hideBillNo],
+                        rowsAsArray: true,
+                        success: function (result) {
+                            saveMain();
+                        },
+                        error: sender.error
+                    });
+                },
+                error: {},
+            });
+        },
+        error: {},
+    });
+}
+function uptMain() {
+    var sData = sender.req.query.sData;
+    var BudgetCID = sData[0].BudgetCID;
+    var Subject = sData[0].Subject;
+    var BudgetItem = sData[0].BudgetItem;
+    console.log("时间", TotalValue ,"和波浪",BudgetItem);
+    let SQL = "Update `bgu_purchmain` set  Subject = ?,  BudgetCID = ?, BudgetItem = ?, ListNo = ?, RequestDate = ?, " +
+    " ProjectNo = ?, ApplicNo = ?,TotalValue = ?,Currency = ?,Payment = ?, Explanation = ?   where    BillNo =?     ";
+    yjDBService.exec({
+        sql: SQL,
+        parameters: [Subject, BudgetCID, BudgetItem, ListNo, RequestDate, ProjectNo, ApplicNo,
+        TotalValue, Currency, Payment, Explanation,  BillNo],
+        rowsAsArray: true,
+        success: function (result) {
+            saveDetail();
+        },
+        error: sender.error
+    });
+
+    
+}
+function saveMain() {
+    var sData = sender.req.query.sData;
+    var BudgetCID = sData[0].BudgetCID;
+    var Subject = sData[0].Subject;
+    var BudgetItem = sData[0].BudgetItem;
+    // console.log("竹風青庭", Subject);
+    // console.log("竹風青庭", BudgetCID);
+    let paramList = [BillNo, Formkind, Subject, BudgetCID, BudgetItem, ListNo,
+        RequestDate, ProjectNo, ApplicNo, FlowDept, FlowGroup,
+        StaffID, StaffName, TotalValue, Currency, Payment,
+        Explanation, EntryDate];
+    var SQLInsert = "INSERT INTO `bgu_purchmain` ( `BillNo` , `Formkind` , `Subject` , `BudgetCID` , `BudgetItem` , `ListNo` ,  `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
+        "`DeptName` , `GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate`  ) " +
+        "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?  )";
+    yjDBService.exec({
+        sql: SQLInsert,
+        parameters: paramList,
+        rowsAsArray: true,
+        success: function (result) {
+            // var data=yjDB.dataSet2ObjectList(result.meta,result.rows);
+            console.log("是种罪孽:", result);
+            saveDetail();
+        },
+        error: sender.error
+    });
+}
+
+function uptRuleStatus() {
+    var Basstr = sender.req.query.Basstr;
+    var BillNo = Basstr.hideBillNo;
+    var DeptName = Basstr.DeptName;
+    var GroupName = Basstr.GroupName;
+    var StaffName = Basstr.StaffName;
+    var idleRole = Basstr.FlowRole;
+    var idlephone = Basstr.hidePhone;
+    // var mobiles = ['17051095060'] ;
+    var mobiles = [];
+    mobiles.push(idlephone);
+    console.log('何以缘起何以缘起', BillNo, " TEL:", mobiles);
+    if (BillNo != '' && BillNo != undefined) {
+
+    } else {
+        var retcode = { "status": "Fail", "message": "送审已完成，不可再次送审\n" };
+        sender.success(retcode);
+        console.log("不良送审", retcode);
+        return;
+    }
+    var SQLInsert = "Update `bgu_rule` set SendStatus  = 'D'  , SendText  = '送出' where BillNo= ?";
+    yjDBService.exec({
+        sql: SQLInsert,
+        parameters: [BillNo],
+        success: function (result) {
+            var Msg = "采购单送审" + "\n文号: " + BillNo + "\n部門: " + DeptName + "\n课组: " + GroupName + "\n文员: " + StaffName + "\n职位: " + idleRole;
+            // console.log("町町发送 ", Msg);
+            var yjDing = require("./yjDing");
+            let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
+            var retcode = { "status": "OK", "message": "送审完成\n" + pw, "BillNo": BillNo };
+            sender.success(retcode);
+            console.log("懿", retcode);
+        },
+        error: {},
+    });
+}
+function nulReplaceTxt(passTxt) {
+    var ret = '';
+    ret = (passTxt == null || passTxt == undefined) ? ('') : passTxt;
+    return ret;
+}
+function nulReplaceWord(passTxt, WordTxt) {
+    var ret = '';
+    WordTxt = (WordTxt == null || WordTxt == undefined) ? ('') : WordTxt;
+    ret = (passTxt == null || passTxt == undefined) ? (WordTxt) : passTxt;
+    return ret;
+}
+function validInput() {
+    if (isNaN(RequestDate) && !isNaN(Date.parse(RequestDate))) {
+        clearMain();
+    } else {
+        var retcode = { "status": "Fail", "message": "审批不成功", "BillNo": BillNo };
+        sender.success(retcode);
+        console.log("错误@@日期格式", retcode);
+    }
+}
+function seeFlowDept() {
+    let SQL4 =
+        " select GroupName ,DeptName from bgu_orig_detail where GroupName = ?  ";
+    yjDBService.exec({
+        sql: SQL4,
+        parameters: [GroupName],
+        rowsAsArray: true,
+        success: function (r) {
+            var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+            for (var i = 0; i < data.length; i++) {
+                FlowDept = data[i].DeptName;
+                FlowGroup = data[i].GroupName;
+            }
+            clearMain();
+        },
+        error: sender.error
+    });
+}
+function nulReplaceDate(passTxt) {
+    var ret = '';
+    ret = (passTxt == null || passTxt == undefined || passTxt == '') ? (null) : passTxt;
+    return ret;
+}
+function nulReplace0(passTxt) {
+    var ret = '';
+    ret = (passTxt == null || passTxt == undefined) ? ('0') : passTxt;
+    return ret;
+}
+}
+// function PopupCredit() {
+//     var count = 0;
+//     let sDigit = [];
+//     let EmbBgu = [];
+//     var Underburget = "是";
+//     var sData = sender.req.query.sData;
+//     for (var i = 0; i < sData.length; i++) {
+//         sDigit[i] = "否";
+//         var BudgetItem = sData[i].BudgetItem;
+//         if (BudgetItem != undefined && BudgetItem != '') {
+//             EmbBgu[i] = BudgetItem;
+//             console.log("无忧", EmbBgu[i]);
+//         } else {
+
+//         }
+//     }
+//     let SQL2 =
+//         " select 'A' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'B' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'C' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'D' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'E' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'F' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'G' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'H' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'I' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+//     " Union select 'J' as Rank, IsOver,BudgetItem from bgu_quota where BudgetItem = ? and DeptName = ?  " ;
+//     var itemIsOver = '';
+//     var itemNulOver = '';
+//     yjDBService.exec({
+//         sql: SQL2,
+//         parameters: [EmbBgu[0], qryDept, EmbBgu[1], qryDept, EmbBgu[2], qryDept, EmbBgu[3], qryDept, EmbBgu[4], qryDept,
+//         EmbBgu[5], qryDept, EmbBgu[6], qryDept, EmbBgu[7], qryDept, EmbBgu[8], qryDept, EmbBgu[9], qryDept],
+//         rowsAsArray: true,
+//         success: function (r) {
+//             var datas = [];
+//             var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+//             for (var i = 0; i < data.length; i++) {
+//                 var Rank = data[i].Rank;
+//                 if (Rank == 'A') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[0] = Underburget;
+//                     console.log("A序--", count, "超吗？", sDigit[0]);
+//                 }
+//                 if (Rank == 'B') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[1] = Underburget;
+//                     console.log("B序--", count, "超吗？", sDigit[1]);
+//                 }
+//                 if (Rank == 'C') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[2] = Underburget;
+//                     console.log("C序--", count, "超吗？", sDigit[2]);
+//                 }
+//                 if (Rank == 'D') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[3] = Underburget;
+//                     console.log("D序--", count, "超吗？", sDigit[3]);
+//                 }
+//                 if (Rank == 'E') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[4] = Underburget;
+//                     console.log("E序--", count, "超吗？", sDigit[4]);
+//                 }
+//                 if (Rank == 'F') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[5] = Underburget;
+//                     console.log("F序--", count, "超吗？", sDigit[5]);
+//                 }
+//                 if (Rank == 'G') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[6] = Underburget;
+//                     console.log("序--", count, "超吗？", sDigit[6]);
+//                 }
+//                 if (Rank == 'H') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[7] = Underburget;
+//                     console.log("序--", count, "超吗？", sDigit[7]);
+//                 }
+//                 if (Rank == 'I') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[8] = Underburget;
+//                     console.log("序--", count, "超吗？", sDigit[8]);
+//                 }
+//                 if (Rank == 'J') {
+//                     itemIsOver = data[0].IsOver;
+//                     if (itemIsOver == 'Y' || itemIsOver == '') {
+//                         itemNulOver = 'Y';
+//                         console.log("项目没算", itemNulOver);
+//                     }
+//                     if (itemNulOver == 'Y') {
+//                         Underburget = "否";
+//                     } else {
+//                         Underburget = "是";
+//                     }
+//                     sDigit[9] = Underburget;
+//                     console.log("序--", count, "超吗？", sDigit[9]);
+//                 }
+
+//             }
+//           saveDetail(Underburget, sDigit);
+//         },
+//         error: sender.error
+//     });
+// }
 // select  tdpt.staffID , tdpt.staffName ,tvip.staffID , tvip.staffName
 // ,tpur.staffID , tpur.staffName,tpex.staffID , tpex.staffName,tcfo.staffID , tcfo.staffName
 // ,tpsd.staffID , tpsd.staffName,tceo.staffID , tceo.staffName ,tbod.staffID , tbod.staffName 
@@ -771,3 +1002,5 @@ module.exports = function (sender) {
 // " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
 // " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
 // " where  tba.DeptLabel =? and tba.StaffLevel='1'   ";
+
+            // " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +

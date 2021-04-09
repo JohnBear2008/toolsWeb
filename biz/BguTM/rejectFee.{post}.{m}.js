@@ -11,9 +11,17 @@ module.exports = function (sender) {
     var queryApplicNo = sender.req.query.ApplicNo;
     var qryCurWorkId = sender.req.query.CurWorkId;
     var qryCurName = sender.req.query.CurName;
+    var qryReason = sender.req.query.Reason;
+    var arrange = sender.req.query.arrange;
     console.log("查询ID", qryCurWorkId,"查询人", qryCurName,"查询号", BillNo);
-    QueryParts();
-    function QueryParts() {
+    if (arrange == 'ReturnBill') {
+        ReturnBill();
+	}
+    if (arrange == 'VoidBill') {
+		VoidBill();
+	}
+   
+    function ReturnBill() {
         var filter = " 1=1 ";
         var orderBy = '';
         var limit = '5000';
@@ -159,19 +167,35 @@ module.exports = function (sender) {
 
                 CurStatus = 'R';
                 CurText = '退回';
-                console.log("退回了....",BillNo, CurText, CurStatus, fixdate, fixlv);
+                console.log("退回了....",BillNo, CurText, CurStatus, qryReason , fixdate, fixlv);
 
-                HandleRule(BillNo, CurText, CurStatus, fixdate, fixlv);
+                HandleRule(BillNo, CurText, CurStatus, qryReason , fixdate, fixlv);
             },
             error: sender.error
         });
     }
-    function HandleRule(BillNo, CurText, CurStatus, fixdate, fixlv) {
-        let SQL = "Update `bgu_rule` set   CurText = ?, CurStatus = ? , " +
+    function VoidBill(  ) {
+        var CurText ='作废';
+        var CurStatus ='F';
+        let SQL = "Update `bgu_rule` set CurText = ?, CurStatus = ? , Reason = ?  " +
+            "   where  BillNo=?  ";
+            console.log("作废作废作废作废",SQL);
+        yjDBService.exec({
+            sql: SQL,
+            parameters: [CurText, CurStatus, qryReason , BillNo],
+            rowsAsArray: true,
+            success: function (result) {
+                NoticeMsg();
+            },
+            error: sender.error
+        });
+    }
+    function HandleRule(BillNo, CurText, CurStatus, qryReason ,  fixdate, fixlv) {
+        let SQL = "Update `bgu_rule` set   CurText = ?, CurStatus = ? , Reason = ?, " +
             " " + fixdate + " , " + fixlv + "  where  BillNo=?  ";
         yjDBService.exec({
             sql: SQL,
-            parameters: [CurText, CurStatus, BillNo],
+            parameters: [CurText, CurStatus, qryReason , BillNo],
             rowsAsArray: true,
             success: function (result) {
                 NoticeEvery();
@@ -181,6 +205,10 @@ module.exports = function (sender) {
     }
     function NoticeEvery() {
         var retcode = { "Status": "OK", "message": "此单驳回不准", "BillNo": BillNo };
+        sender.success(retcode);
+    }
+    function NoticeMsg() {
+        var retcode = { "Status": "OK", "message": "此单作废成功", "BillNo": BillNo };
         sender.success(retcode);
     }
 }

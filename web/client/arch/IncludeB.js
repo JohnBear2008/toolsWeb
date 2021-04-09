@@ -92,7 +92,7 @@ function searchTravel(mode) {
                           shuffleB(dataARR[0].BillNo);
                           // <DIV STYLE="page-break-before:always">
                           $('#kisswindow').modal('show');
-                          $("#matchRec").html("出差报销审批:");
+                          $("#matchRec").html("出差申请审批:");
                           break;
                       case 'massReject':
                           break;
@@ -152,9 +152,10 @@ function searchTravel(mode) {
                       layer.confirm('进行审批驳回吗，请确认操作是否无误？', {
                           btn: ['是', '否']
                       }, function () {
-                          var reportType = 'rejectFee';
+                        var arrange = 'ReturnBill';
+                        var reportType = 'rejectFee';
                           var taskData = {
-                              "reportType": reportType, "BillNo": Parts_BillNo, "Subject": CapSubject,  "TotalValue": CapTotalValue,
+                              "reportType": reportType,  "arrange": arrange, "BillNo": Parts_BillNo, "Subject": CapSubject,  "TotalValue": CapTotalValue,
                                "CurWorkId": sessionAID, "CurName": sessionName,  "CurJob": CapCurJob,
                                "CurPhone": CapPhone,
                           }

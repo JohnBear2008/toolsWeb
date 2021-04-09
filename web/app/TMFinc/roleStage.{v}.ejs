@@ -117,7 +117,6 @@
         <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
           <table id="center_TB" class="table table-striped table-bordered">
             <thead id="content">
-
             </thead>
           </table>
         </div>
@@ -330,12 +329,9 @@
       $('#SetDptBtn').click(function () {
         var DeptValue = $('#DeptValue').val();
         if (lockOP == '1') {
-          if (DeptValue.length > 1) {
-            layer.msg('文员只能选一个组,一个部門', { icon: 1 });
-            $("#PowerLabel").val("");
-          } else {
-            $("#PowerLabel").val(DeptValue);
-          }
+         
+          $("#PowerLabel").val(DeptValue);
+         
         } else {
           $("#PowerLabel").val(DeptValue);
         }
@@ -347,12 +343,12 @@
         var GroupValue = $('#GroupValue').val();
         console.log("中子", GroupValue);
         if (lockOP == '1') {
-          if (GroupValue.length > 1) {
-            layer.msg('文员只能选一个组,一个部門', { icon: 1 });
-            $("#RingLabel").val("");
-          } else {
+      //     if (GroupValue.length > 1) {
+      //       layer.msg('文员只能选一个组,一个部門', { icon: 1 });
+      //       $("#RingLabel").val("");
+      //     } else {
             $("#RingLabel").val(GroupValue);
-          }
+      //     }
         } else {
           $("#RingLabel").val(GroupValue);
         }
@@ -363,10 +359,10 @@
       $('#LevelValue').click(function () {
         lockOP = $('#LevelValue').val();
         if (lockOP == '1') {
-          layer.msg('文员只能选一个组,一个部門', { icon: 1 });
+          // layer.msg('文员只能选一个组,一个部門', { icon: 1 });
           $("#PowerLabel").val("");
         } else {
-          // layer.msg('操作层级：第' + lockOP + '级', { icon: 1 });
+		      $("#PowerLabel").val("");
         }
       });
       function showDBDataSelf() {

@@ -16,41 +16,42 @@ function shuffleA(BillNo) {
             let CurLight = bjob[11].CurLevel;
             let CurText = bjob[11].CurText;
             var CurJob = bjob[11].CurJob;
+            var Answer = bjob[11].Reason;
+            console.log("延希延希延希延希", Answer);
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
                 '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:640px;">' +
-                '<table width = "1000" border = "1"  > ' +
+                '<table width = "1100" border = "1"  > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="3" height="50" align="center"><img src="/images/techmation.png" /></td>' +
-                '<td  colspan="7" align="center"><h3>宁波弘讯科技股份有限公司</h3></td>' +
+                '<td  colspan="6" align="center"><h3>宁波弘讯科技股份有限公司</h3></td>' +
                 '<td  colspan="3" align="center" class="coffee-drop" ><img src="watermark"  /></td> ' +
                 '</tr>' +
                 '<tr>' +
-                '<td  colspan="7" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
+                '<td  colspan="6" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
                 '<td  colspan="3" align="center" > List_No</td> ' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="3" height="25">Proj_No</td>' +
-                '<td width="50" rowspan ="2" colspan="5" height="25">采购申请单</td>' +
+                '<td width="50" rowspan ="2" colspan="5" height="25" class="feeDrop" align="center">  采购申请单 </td>' +
                 '<td width="50" colspan="5" height="25">ReqDate</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="3" height="25">DeptName</td>' +
+                '<td width="50" colspan="3" height="25">GroupName</td>' +
                 '<td width="50" colspan="5" height="25">Applic_No</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">预算项目</td>' +
-                '<td width="50" height="25">品名/服务</td>' +
+                '<td width="50" height="25" class="feeMcell">预算项目</td>' +
+                '<td width="50" height="25" class="feeMcell">品名/服务</td>' +
                 '<td width="50" height="25">型号/说明</td>' +
                 '<td width="50" height="25">单位</td>' +
-                '<td width="50" height="25">库存</td>' +
                 '<td width="50" height="25">单价</td>' +
                 '<td width="50" height="25">数量</td>' +
                 '<td width="50" height="25">小计</td>' +
                 '<td width="50" height="25">交期</td>' +
                 '<td width="50" height="25">供货商</td>' +
+                '<td width="50" height="25">剩余额度</td>' +
                 '<td width="50" height="25">是否预算内</td>' +
-                '<td width="50" height="25">新增/换新/补遗</td>' +
                 '<td width="50" height="25">使用部门</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -58,14 +59,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_1</td>' +
                 '<td width="50" height="25">Descip_1</td>' +
                 '<td width="50" height="25">Measure_1</td>' +
-                '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">UniPrice_1</td>' +
                 '<td width="50" height="25">QuantAmt_1</td>' +
                 '<td width="50" height="25">SubTot_1</td>' +
                 '<td width="50" height="25">Delivway_1</td>' +
                 '<td width="50" height="25">Vender_1</td>' +
+                '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">Underbur_1</td>' +
-                '<td width="50" height="25">ApendType_1</td>' +
                 '<td width="50" height="25">DeptM_1</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -73,14 +73,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_2</td>' +
                 '<td width="50" height="25">Descip_2</td>' +
                 '<td width="50" height="25">Measure_2</td>' +
-                '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">UniPrice_2</td>' +
                 '<td width="50" height="25">QuantAmt_2</td>' +
                 '<td width="50" height="25">SubTot_2</td>' +
                 '<td width="50" height="25">Delivway_2</td>' +
                 '<td width="50" height="25">Vender_2</td>' +
+                '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">Underbur_2</td>' +
-                '<td width="50" height="25">ApendType_2</td>' +
                 '<td width="50" height="25">DeptM_2</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -88,14 +87,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_3</td>' +
                 '<td width="50" height="25">Descip_3</td>' +
                 '<td width="50" height="25">Measure_3</td>' +
-                '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">UniPrice_3</td>' +
                 '<td width="50" height="25">QuantAmt_3</td>' +
                 '<td width="50" height="25">SubTot_3</td>' +
                 '<td width="50" height="25">Delivway_3</td>' +
                 '<td width="50" height="25">Vender_3</td>' +
+                '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">Underbur_3</td>' +
-                '<td width="50" height="25">ApendType_3</td>' +
                 '<td width="50" height="25">DeptM_3</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -103,14 +101,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_4</td>' +
                 '<td width="50" height="25">Descip_4</td>' +
                 '<td width="50" height="25">Measure_4</td>' +
-                '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">UniPrice_4</td>' +
                 '<td width="50" height="25">QuantAmt_4</td>' +
                 '<td width="50" height="25">SubTot_4</td>' +
                 '<td width="50" height="25">Delivway_4</td>' +
                 '<td width="50" height="25">Vender_4</td>' +
+                '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">Underbur_4</td>' +
-                '<td width="50" height="25">ApendType_4</td>' +
                 '<td width="50" height="25">DeptM_4</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -118,14 +115,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_5</td>' +
                 '<td width="50" height="25">Descip_5</td>' +
                 '<td width="50" height="25">Measure_5</td>' +
-                '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">UniPrice_5</td>' +
                 '<td width="50" height="25">QuantAmt_5</td>' +
                 '<td width="50" height="25">SubTot_5</td>' +
                 '<td width="50" height="25">Delivway_5</td>' +
                 '<td width="50" height="25">Vender_5</td>' +
+                '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">Underbur_5</td>' +
-                '<td width="50" height="25">ApendType_5</td>' +
                 '<td width="50" height="25">DeptM_5</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -133,14 +129,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_6</td>' +
                 '<td width="50" height="25">Descip_6</td>' +
                 '<td width="50" height="25">Measure_6</td>' +
-                '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">UniPrice_6</td>' +
                 '<td width="50" height="25">QuantAmt_6</td>' +
                 '<td width="50" height="25">SubTot_6</td>' +
                 '<td width="50" height="25">Delivway_6</td>' +
                 '<td width="50" height="25">Vender_6</td>' +
+                '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">Underbur_6</td>' +
-                '<td width="50" height="25">ApendType_6</td>' +
                 '<td width="50" height="25">DeptM_6</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -148,14 +143,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_7</td>' +
                 '<td width="50" height="25">Descip_7</td>' +
                 '<td width="50" height="25">Measure_7</td>' +
-                '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">UniPrice_7</td>' +
                 '<td width="50" height="25">QuantAmt_7</td>' +
                 '<td width="50" height="25">SubTot_7</td>' +
                 '<td width="50" height="25">Delivway_7</td>' +
                 '<td width="50" height="25">Vender_7</td>' +
+                '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">Underbur_7</td>' +
-                '<td width="50" height="25">ApendType_7</td>' +
                 '<td width="50" height="25">DeptM_7</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -163,14 +157,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_8</td>' +
                 '<td width="50" height="25">Descip_8</td>' +
                 '<td width="50" height="25">Measure_8</td>' +
-                '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">UniPrice_8</td>' +
                 '<td width="50" height="25">QuantAmt_8</td>' +
                 '<td width="50" height="25">SubTot_8</td>' +
                 '<td width="50" height="25">Delivway_8</td>' +
                 '<td width="50" height="25">Vender_8</td>' +
+                '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">Underbur_8</td>' +
-                '<td width="50" height="25">ApendType_8</td>' +
                 '<td width="50" height="25">DeptM_8</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -178,14 +171,13 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_9</td>' +
                 '<td width="50" height="25">Descip_9</td>' +
                 '<td width="50" height="25">Measure_9</td>' +
-                '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">UniPrice_9</td>' +
                 '<td width="50" height="25">QuantAmt_9</td>' +
                 '<td width="50" height="25">SubTot_9</td>' +
                 '<td width="50" height="25">Delivway_9</td>' +
                 '<td width="50" height="25">Vender_9</td>' +
+                '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">Underbur_9</td>' +
-                '<td width="50" height="25">ApendType_9</td>' +
                 '<td width="50" height="25">DeptM_9</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -193,71 +185,76 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">ItemO_10</td>' +
                 '<td width="50" height="25">Descip_10</td>' +
                 '<td width="50" height="25">Measure_10</td>' +
-                '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">UniPrice_10</td>' +
                 '<td width="50" height="25">QuantAmt_10</td>' +
                 '<td width="50" height="25">SubTot_10</td>' +
                 '<td width="50" height="25">Delivway_10</td>' +
                 '<td width="50" height="25">Vender_10</td>' +
+                '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">Underbur_10</td>' +
-                '<td width="50" height="25">ApendType_10</td>' +
                 '<td width="50" height="25">DeptM_10</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" rowspan="4" colspan="5" height="25">  <br/>  ' +
-                '<textarea class="fee-drop-super" width="1200" rows="5" readonly>Explan</textarea></td> ' +
-                '<td width="50" rowspan="4" colspan="3" height="25">  <br/>  ' +
+                '<td width="50" rowspan="4" colspan="6" height="25">申请说明： <br/>  ' +
+                '<textarea   class="fee-drop-super" rows="6" readonly>Explan</textarea></td> ' +
+                '<td width="50" rowspan="4" class="fee-credit" colspan="3" height="25">  <br/>  ' +
                 '   <br/>  ' +
                 '   <br/>  ' +
                 '   <br/>  ' +
                 '   </td> ' +
-                '<td width="50" colspan="2" height="25">总金额</td>' +
-                '<td width="50" colspan="3" height="25">TotalV</td>' +
+                '<td width="50" colspan="1" height="25">总金额</td>' +
+                '<td width="50" colspan="2" height="25">TotalV</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="2" height="25">币别</td>' +
-                '<td width="50" colspan="3" height="25">Exchange</td>' +
+                '<td width="50" colspan="1" height="25">币别</td>' +
+                '<td width="50" colspan="2" height="25">Exchange</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="2" height="25">付款方式</td>' +
-                '<td width="50" colspan="3" height="25">Pay_method</td>' +
+                '<td width="50" colspan="1" height="25">付款方式</td>' +
+                '<td width="50" colspan="2" height="25">Pay_method</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="5" height="25">说明： <br/>' +
+                '<td width="50" colspan="4" height="25" class="fee-credit" >说明： <br/>' +
                 '1.上表各项内容需详填 <br/>' +
-                '2.本单若用于产品原物料的采购，须填写“库存”列；用于工具类采购，须填写“新增/换新/补偿”列</td>' + '</tr>' +
+                '2.额度为0需填写说明</td>' + '</tr>' +
+                '</table>' +
+                '<table width = "1100" border = "1"  > ' +
                 '<tr>' +
                 '<td id=\"manOP\" width="50"  colspan="1" height="25">申请人</td>' +
                 '<td id=\"mandpt\" width="50"  colspan="1" height="25">部门主管</td>' +
-                '<td id=\"manvip\" width="50"  colspan="2" height="25">副总</td>' +
+                '<td id=\"manvip\" width="50"  colspan="1" height="25">副总</td>' +
                 '<td id=\"manpur\" width="50"  colspan="1" height="25">采购承办人</td>' +
                 '<td id=\"manpex\" width="50"  colspan="1" height="25">采购主管</td>' +
-                '<td id=\"mancfo\" width="50"  colspan="2" height="25">财务总监</td>' +
-                '<td id=\"manpsd\" width="50"  colspan="2" height="25">总经理</td>' +
-                '<td id=\"manceo\" width="50"  colspan="2" height="25">集团CEO</td>' +
+                '<td id=\"mancfo\" width="50"  colspan="1" height="25">财务总监</td>' +
+                '<td id=\"manpsd\" width="50"  colspan="1" height="25">总经理</td>' +
+                '<td id=\"manceo\" width="50"  colspan="1" height="25">集团CEO</td>' +
                 '<td id=\"manbod\" width="50"  colspan="1" height="25">董事长</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppName</td>' +
                 '<td width="50"  colspan="1" height="25">MagName</td>' +
-                '<td width="50"  colspan="2" height="25">VipName</td>' +
+                '<td width="50"  colspan="1" height="25">VipName</td>' +
                 '<td width="50"  colspan="1" height="25">PurName</td>' +
                 '<td width="50"  colspan="1" height="25">PexName</td>' +
-                '<td width="50"  colspan="2" height="25">CfoName</td>' +
-                '<td width="50"  colspan="2" height="25">PsdName</td>' +
-                '<td width="50"  colspan="2" height="25">CeoName</td>' +
+                '<td width="50"  colspan="1" height="25">CfoName</td>' +
+                '<td width="50"  colspan="1" height="25">PsdName</td>' +
+                '<td width="50"  colspan="1" height="25">CeoName</td>' +
                 '<td width="50"  colspan="1" height="25">BodName</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppDate</td>' +
                 '<td width="50"  colspan="1" height="25">MagDate</td>' +
-                '<td width="50"  colspan="2" height="25">VipDate</td>' +
+                '<td width="50"  colspan="1" height="25">VipDate</td>' +
                 '<td width="50"  colspan="1" height="25">PurDate</td>' +
                 '<td width="50"  colspan="1" height="25">PexDate</td>' +
-                '<td width="50"  colspan="2" height="25">CfoDate</td>' +
-                '<td width="50"  colspan="2" height="25">PsdDate</td>' +
-                '<td width="50"  colspan="2" height="25">CeoDate</td>' +
+                '<td width="50"  colspan="1" height="25">CfoDate</td>' +
+                '<td width="50"  colspan="1" height="25">PsdDate</td>' +
+                '<td width="50"  colspan="1" height="25">CeoDate</td>' +
                 '<td width="50"  colspan="1" height="25">BodDate</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td  id=\"reaLabel\" width="50"  colspan="1" height="25"></td>' +
+                '<td  width="50"  colspan="9" height="25">Reason</td>' +
                 '</tr>' +
                 '</table>' +
                 '</DIV>';
@@ -265,6 +262,8 @@ function shuffleA(BillNo) {
             var watermark = "";
             if (CurText == '核准') {
                 watermark = "/images/BudgetYes.png";
+            } else if (CurText == '作废') {
+                watermark = "/images/BudgetVoid.png";
             } else if (CurText == '退回') {
                 watermark = "/images/BudgetNo.png";
             } else {
@@ -298,6 +297,7 @@ function shuffleA(BillNo) {
                     "ProjectNo": bjob[i].ProjectNo,
                     "ApplicNo": bjob[i].ApplicNo,
                     "DeptName": bjob[i].DeptName,
+                    "GroupName": bjob[i].GroupName,
                     "StaffID": bjob[i].StaffID,
                     "StaffName": bjob[i].StaffName,
                     "TotalValue": bjob[i].TotalValue,
@@ -321,6 +321,7 @@ function shuffleA(BillNo) {
                     "PsdName": bjob[i].PsdName, "PsdDate": bjob[i].PsdDate,
                     "CeoName": bjob[i].CeoName, "CeoDate": bjob[i].CeoDate,
                     "BodName": bjob[i].BodName, "BodDate": bjob[i].BodDate,
+                    "Reason": bjob[i].Reason,
                     "CurText": bjob[i].CurText, "CurStatus": bjob[i].CurStatus,
                     "CurLevel": bjob[i].CurLevel, "TermiLevel": bjob[i].TermiLevel,
                     "CurName": bjob[i].CurName, "SendText": bjob[i].SendText,
@@ -351,9 +352,9 @@ function shuffleA(BillNo) {
                 SNO_8, BudItem_8, ItemO_8, Descip_8, Measure_8, Invent_8, UniPrice_8, QuantAmt_8, SubTot_8, Delivway_8, Vender_8, Underbur_8, ApendType_8, DeptM_8,
                 SNO_9, BudItem_9, ItemO_9, Descip_9, Measure_9, Invent_9, UniPrice_9, QuantAmt_9, SubTot_9, Delivway_9, Vender_9, Underbur_9, ApendType_9, DeptM_9,
                 SNO_10, BudItem_10, ItemO_10, Descip_10, Measure_10, Invent_10, UniPrice_10, QuantAmt_10, SubTot_10, Delivway_10, Vender_10, Underbur_10, ApendType_10, DeptM_10,
-                Bill_No, List_No, ReqDate, Proj_No, Applic_No, DeptName, TotalV, Exchange, Pay_method, Explan, Entry_Date,
+                Bill_No, List_No, ReqDate, Proj_No, Applic_No, GroupName, TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
-                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
+                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
                 StatusOK, CreditA, CreditB, CreditC, CreditD
             }) => {
                 let newHtml = htmlModel
@@ -450,7 +451,7 @@ function shuffleA(BillNo) {
                     .replace(/ReqDate/, ReqDate)
                     .replace(/Proj_No/, Proj_No)
                     .replace(/Applic_No/, Applic_No)
-                    .replace(/DeptName/, DeptName)
+                    .replace(/GroupName/, GroupName)
                     .replace(/TotalV/, TotalV)
                     .replace(/Exchange/, Exchange)
                     .replace(/Pay_method/, Pay_method)
@@ -476,6 +477,7 @@ function shuffleA(BillNo) {
                     .replace(/PsdDate/, PsdDate)
                     .replace(/CeoDate/, CeoDate)
                     .replace(/BodDate/, BodDate)
+                    .replace(/Reason/, Reason)
 
                     .replace(/StatusOK/, StatusOK)
                     .replace(/CreditA/, CreditA)
@@ -596,7 +598,7 @@ function shuffleA(BillNo) {
                             ReqDate: "申请日期: " + sData[10].RequestDate,
                             Proj_No: "计划案号: " + sData[10].ProjectNo,
                             Applic_No: "申请单编号: " + sData[10].ApplicNo,
-                            DeptName: "部門: " + sData[10].DeptName,
+                            GroupName: "部門: " + sData[10].GroupName,
                             TotalV: sData[10].TotalValue,
                             Exchange: sData[10].Currency,
                             Pay_method: sData[10].Payment,
@@ -622,6 +624,7 @@ function shuffleA(BillNo) {
                             PsdDate: sData[11].PsdDate,
                             CeoDate: sData[11].CeoDate,
                             BodDate: sData[11].BodDate,
+                            Reason: sData[11].Reason,
 
                             StatusOK: sData[11].CurText,
                             CreditA: sData[12].CreditA,
@@ -639,6 +642,16 @@ function shuffleA(BillNo) {
                 }
             }
             createRpHtml(sData);
+            if ( Answer != undefined && Answer != null && Answer != '') {
+                $("#reaLabel").addClass("fee-approval");
+                $("#reaLabel").html("退回理由");
+                console.log("琴一把");
+            }else{
+                $("#reaLabel").html("");
+                $("#reaLabel").val("");
+                $("#reaLabel").removeClass("fee-approval");
+                console.log("潦倒布衣一身");
+            }
             if (CurJob == 'dpt') {
                 $("#mandpt").addClass("fee-approval");
             }
@@ -672,6 +685,9 @@ function shuffleA(BillNo) {
             if (CurText == '退回') {
                 waterBy({ 'firstblood': '驳回', 'secondblood': '总经理' } );
             }
+            if (CurText == '作废') {
+                waterCy({ 'firstblood': '作废', 'secondblood': '总经理' } );
+            }
         },
         error: function () {
         }
@@ -689,46 +705,46 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
         success: function (data) {
             const json2 = JSON.stringify(data);
             const bjob = JSON.parse(json2);
-            // console.log("李在希", bjob[11].CurLevel);
             sData = [];
             let htmlModel = '';
             let CurLight = bjob[11].CurLevel;
             let CurText = bjob[11].CurText;
             var CurJob = bjob[11].CurJob;
+            var Answer = bjob[11].Reason;
+            console.log("李在希", bjob[11].Reason);
             $('#listPrintViewDiv').html('');
             htmlModel = 
-                '<table width = "1000" border = "1"  > ' +
+                '<table width = "1100" border = "1" > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="3" height="50" align="center"><img src="/images/techmation.png" /></td>' +
-                '<td  colspan="7" align="center"><h3>宁波弘讯科技股份有限公司</h3></td>' +
+                '<td  colspan="6" align="center"><h3>宁波弘讯科技股份有限公司</h3></td>' +
                 '<td  colspan="3" align="center" class="coffee-drop" ><img src="watermark"  /></td> ' +
                 '</tr>' +
                 '<tr>' +
-                '<td  colspan="7" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
+                '<td  colspan="6" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
                 '<td  colspan="3" align="center" > List_No</td> ' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="3" height="25">Proj_No</td>' +
-                '<td width="50" rowspan ="2" colspan="5" height="25">采购申请单</td>' +
-                '<td width="50" colspan="5" height="25">ReqDate</td>' +
+                '<td width="50" rowspan ="2" colspan="5" height="25" class="feeDrop" align="center">  采购申请单 </td>' +
+                '<td width="50" colspan="4" height="25">ReqDate</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="3" height="25">DeptName</td>' +
+                '<td width="50" colspan="3" height="25">GroupName</td>' +
                 '<td width="50" colspan="5" height="25">Applic_No</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25">预算项目</td>' +
-                '<td width="50" height="25">品名/服务</td>' +
+                '<td width="50" height="25" class="feeMcell">预算项目</td>' +
+                '<td width="50" height="25" class="feeMcell">品名/服务</td>' +
                 '<td width="50" height="25">型号/说明</td>' +
                 '<td width="50" height="25">单位</td>' +
-                '<td width="50" height="25">库存</td>' +
                 '<td width="50" height="25">单价</td>' +
                 '<td width="50" height="25">数量</td>' +
                 '<td width="50" height="25">小计</td>' +
                 '<td width="50" height="25">交期</td>' +
                 '<td width="50" height="25">供货商</td>' +
+                '<td width="50" height="25">剩余额度</td>' +
                 '<td width="50" height="25">是否预算内</td>' +
-                '<td width="50" height="25">新增/换新/补遗</td>' +
                 '<td width="50" height="25">使用部门</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -736,14 +752,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_1</td>' +
                 '<td width="50" height="25">Descip_1</td>' +
                 '<td width="50" height="25">Measure_1</td>' +
-                '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">UniPrice_1</td>' +
                 '<td width="50" height="25">QuantAmt_1</td>' +
                 '<td width="50" height="25">SubTot_1</td>' +
                 '<td width="50" height="25">Delivway_1</td>' +
                 '<td width="50" height="25">Vender_1</td>' +
+                '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">Underbur_1</td>' +
-                '<td width="50" height="25">ApendType_1</td>' +
                 '<td width="50" height="25">DeptM_1</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -751,14 +766,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_2</td>' +
                 '<td width="50" height="25">Descip_2</td>' +
                 '<td width="50" height="25">Measure_2</td>' +
-                '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">UniPrice_2</td>' +
                 '<td width="50" height="25">QuantAmt_2</td>' +
                 '<td width="50" height="25">SubTot_2</td>' +
                 '<td width="50" height="25">Delivway_2</td>' +
                 '<td width="50" height="25">Vender_2</td>' +
+                '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">Underbur_2</td>' +
-                '<td width="50" height="25">ApendType_2</td>' +
                 '<td width="50" height="25">DeptM_2</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -766,14 +780,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_3</td>' +
                 '<td width="50" height="25">Descip_3</td>' +
                 '<td width="50" height="25">Measure_3</td>' +
-                '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">UniPrice_3</td>' +
                 '<td width="50" height="25">QuantAmt_3</td>' +
                 '<td width="50" height="25">SubTot_3</td>' +
                 '<td width="50" height="25">Delivway_3</td>' +
                 '<td width="50" height="25">Vender_3</td>' +
+                '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">Underbur_3</td>' +
-                '<td width="50" height="25">ApendType_3</td>' +
                 '<td width="50" height="25">DeptM_3</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -781,14 +794,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_4</td>' +
                 '<td width="50" height="25">Descip_4</td>' +
                 '<td width="50" height="25">Measure_4</td>' +
-                '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">UniPrice_4</td>' +
                 '<td width="50" height="25">QuantAmt_4</td>' +
                 '<td width="50" height="25">SubTot_4</td>' +
                 '<td width="50" height="25">Delivway_4</td>' +
                 '<td width="50" height="25">Vender_4</td>' +
+                '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">Underbur_4</td>' +
-                '<td width="50" height="25">ApendType_4</td>' +
                 '<td width="50" height="25">DeptM_4</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -796,14 +808,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_5</td>' +
                 '<td width="50" height="25">Descip_5</td>' +
                 '<td width="50" height="25">Measure_5</td>' +
-                '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">UniPrice_5</td>' +
                 '<td width="50" height="25">QuantAmt_5</td>' +
                 '<td width="50" height="25">SubTot_5</td>' +
                 '<td width="50" height="25">Delivway_5</td>' +
                 '<td width="50" height="25">Vender_5</td>' +
+                '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">Underbur_5</td>' +
-                '<td width="50" height="25">ApendType_5</td>' +
                 '<td width="50" height="25">DeptM_5</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -811,14 +822,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_6</td>' +
                 '<td width="50" height="25">Descip_6</td>' +
                 '<td width="50" height="25">Measure_6</td>' +
-                '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">UniPrice_6</td>' +
                 '<td width="50" height="25">QuantAmt_6</td>' +
                 '<td width="50" height="25">SubTot_6</td>' +
                 '<td width="50" height="25">Delivway_6</td>' +
                 '<td width="50" height="25">Vender_6</td>' +
+                '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">Underbur_6</td>' +
-                '<td width="50" height="25">ApendType_6</td>' +
                 '<td width="50" height="25">DeptM_6</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -826,14 +836,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_7</td>' +
                 '<td width="50" height="25">Descip_7</td>' +
                 '<td width="50" height="25">Measure_7</td>' +
-                '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">UniPrice_7</td>' +
                 '<td width="50" height="25">QuantAmt_7</td>' +
                 '<td width="50" height="25">SubTot_7</td>' +
                 '<td width="50" height="25">Delivway_7</td>' +
                 '<td width="50" height="25">Vender_7</td>' +
+                '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">Underbur_7</td>' +
-                '<td width="50" height="25">ApendType_7</td>' +
                 '<td width="50" height="25">DeptM_7</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -841,14 +850,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_8</td>' +
                 '<td width="50" height="25">Descip_8</td>' +
                 '<td width="50" height="25">Measure_8</td>' +
-                '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">UniPrice_8</td>' +
                 '<td width="50" height="25">QuantAmt_8</td>' +
                 '<td width="50" height="25">SubTot_8</td>' +
                 '<td width="50" height="25">Delivway_8</td>' +
                 '<td width="50" height="25">Vender_8</td>' +
+                '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">Underbur_8</td>' +
-                '<td width="50" height="25">ApendType_8</td>' +
                 '<td width="50" height="25">DeptM_8</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -856,14 +864,13 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_9</td>' +
                 '<td width="50" height="25">Descip_9</td>' +
                 '<td width="50" height="25">Measure_9</td>' +
-                '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">UniPrice_9</td>' +
                 '<td width="50" height="25">QuantAmt_9</td>' +
                 '<td width="50" height="25">SubTot_9</td>' +
                 '<td width="50" height="25">Delivway_9</td>' +
                 '<td width="50" height="25">Vender_9</td>' +
+                '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">Underbur_9</td>' +
-                '<td width="50" height="25">ApendType_9</td>' +
                 '<td width="50" height="25">DeptM_9</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -871,71 +878,76 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 '<td width="50" height="25">ItemO_10</td>' +
                 '<td width="50" height="25">Descip_10</td>' +
                 '<td width="50" height="25">Measure_10</td>' +
-                '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">UniPrice_10</td>' +
                 '<td width="50" height="25">QuantAmt_10</td>' +
                 '<td width="50" height="25">SubTot_10</td>' +
                 '<td width="50" height="25">Delivway_10</td>' +
                 '<td width="50" height="25">Vender_10</td>' +
+                '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">Underbur_10</td>' +
-                '<td width="50" height="25">ApendType_10</td>' +
                 '<td width="50" height="25">DeptM_10</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" rowspan="4" colspan="5" height="25">申请说明： <br/>  ' +
-                '<textarea class="fee-drop-super" width="1200" rows="5" readonly>Explan</textarea></td> ' +
-                '<td width="50" rowspan="4" colspan="3" height="25">额度控管： <br/>  ' +
+                '<td width="50" rowspan="4" colspan="6" height="25">申请说明： <br/>  ' +
+                '<textarea   class="fee-drop-super" rows="6" readonly>Explan</textarea></td> ' +
+                '<td width="50" rowspan="4" class="fee-credit" colspan="3" height="25">额度控管： <br/>  ' +
                 ' CreditA <br/>  ' +
                 ' CreditB <br/>  ' +
                 ' CreditC <br/>  ' +
                 ' CreditD </td> ' +
-                '<td width="50" colspan="2" height="25">总金额</td>' +
-                '<td width="50" colspan="3" height="25">TotalV</td>' +
+                '<td width="50" colspan="1" height="25">总金额</td>' +
+                '<td width="50" colspan="2" height="25">TotalV</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="2" height="25">币别</td>' +
-                '<td width="50" colspan="3" height="25">Exchange</td>' +
+                '<td width="50" colspan="1" height="25">币别</td>' +
+                '<td width="50" colspan="2" height="25">Exchange</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="2" height="25">付款方式</td>' +
-                '<td width="50" colspan="3" height="25">Pay_method</td>' +
+                '<td width="50" colspan="1" height="25">付款方式</td>' +
+                '<td width="50" colspan="2" height="25">Pay_method</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" colspan="5" height="25">说明： <br/>' +
+                '<td width="50" colspan="4" class="fee-credit" height="25">说明： <br/>' +
                 '1.上表各项内容需详填 <br/>' +
-                '2.本单若用于产品原物料的采购，须填写“库存”列；用于工具类采购，须填写“新增/换新/补偿”列</td>' + '</tr>' +
+                '2.额度为0需填写说明</td>' + '</tr>' +
+                '</table>' +
+                '<table width = "1100" border = "1"   > ' +
                 '<tr>' +
                 '<td id=\"manOP\" width="50"  colspan="1" height="25">申请人</td>' +
                 '<td id=\"mandpt\" width="50"  colspan="1" height="25">部门主管</td>' +
-                '<td id=\"manvip\" width="50"  colspan="2" height="25">副总</td>' +
+                '<td id=\"manvip\" width="50"  colspan="1" height="25">副总</td>' +
                 '<td id=\"manpur\" width="50"  colspan="1" height="25">采购承办人</td>' +
                 '<td id=\"manpex\" width="50"  colspan="1" height="25">采购主管</td>' +
-                '<td id=\"mancfo\" width="50"  colspan="2" height="25">财务总监</td>' +
-                '<td id=\"manpsd\" width="50"  colspan="2" height="25">总经理</td>' +
-                '<td id=\"manceo\" width="50"  colspan="2" height="25">集团CEO</td>' +
+                '<td id=\"mancfo\" width="50"  colspan="1" height="25">财务总监</td>' +
+                '<td id=\"manpsd\" width="50"  colspan="1" height="25">总经理</td>' +
+                '<td id=\"manceo\" width="50"  colspan="1" height="25">集团CEO</td>' +
                 '<td id=\"manbod\" width="50"  colspan="1" height="25">董事长</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppName</td>' +
                 '<td width="50"  colspan="1" height="25">MagName</td>' +
-                '<td width="50"  colspan="2" height="25">VipName</td>' +
+                '<td width="50"  colspan="1" height="25">VipName</td>' +
                 '<td width="50"  colspan="1" height="25">PurName</td>' +
                 '<td width="50"  colspan="1" height="25">PexName</td>' +
-                '<td width="50"  colspan="2" height="25">CfoName</td>' +
-                '<td width="50"  colspan="2" height="25">PsdName</td>' +
-                '<td width="50"  colspan="2" height="25">CeoName</td>' +
+                '<td width="50"  colspan="1" height="25">CfoName</td>' +
+                '<td width="50"  colspan="1" height="25">PsdName</td>' +
+                '<td width="50"  colspan="1" height="25">CeoName</td>' +
                 '<td width="50"  colspan="1" height="25">BodName</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppDate</td>' +
                 '<td width="50"  colspan="1" height="25">MagDate</td>' +
-                '<td width="50"  colspan="2" height="25">VipDate</td>' +
+                '<td width="50"  colspan="1" height="25">VipDate</td>' +
                 '<td width="50"  colspan="1" height="25">PurDate</td>' +
                 '<td width="50"  colspan="1" height="25">PexDate</td>' +
-                '<td width="50"  colspan="2" height="25">CfoDate</td>' +
-                '<td width="50"  colspan="2" height="25">PsdDate</td>' +
-                '<td width="50"  colspan="2" height="25">CeoDate</td>' +
+                '<td width="50"  colspan="1" height="25">CfoDate</td>' +
+                '<td width="50"  colspan="1" height="25">PsdDate</td>' +
+                '<td width="50"  colspan="1" height="25">CeoDate</td>' +
                 '<td width="50"  colspan="1" height="25">BodDate</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td  id=\"reaLabel\" width="50"  colspan="1" height="25"></td>' +
+                '<td  width="50"  colspan="9" height="25">Reason</td>' +
                 '</tr>' +
                 '</table>' +
                 '</DIV>';
@@ -943,6 +955,8 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
             var watermark = "";
             if (CurText == '核准') {
                 watermark = "/images/BudgetYes.png";
+            } else if (CurText == '作废') {
+                watermark = "/images/BudgetVoid.png";
             } else if (CurText == '退回') {
                 watermark = "/images/BudgetNo.png";
             } else {
@@ -975,7 +989,7 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                     "RequestDate": bjob[i].RequestDate,
                     "ProjectNo": bjob[i].ProjectNo,
                     "ApplicNo": bjob[i].ApplicNo,
-                    "DeptName": bjob[i].DeptName,
+                    "GroupName": bjob[i].GroupName,
                     "StaffID": bjob[i].StaffID,
                     "StaffName": bjob[i].StaffName,
                     "TotalValue": bjob[i].TotalValue,
@@ -998,6 +1012,7 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                     "PsdName": bjob[i].PsdName, "PsdDate": bjob[i].PsdDate,
                     "CeoName": bjob[i].CeoName, "CeoDate": bjob[i].CeoDate,
                     "BodName": bjob[i].BodName, "BodDate": bjob[i].BodDate,
+                    "Reason": bjob[i].Reason,  
                     "CurText": bjob[i].CurText, "CurStatus": bjob[i].CurStatus,
                     "CurLevel": bjob[i].CurLevel, "TermiLevel": bjob[i].TermiLevel,
                     "CurName": bjob[i].CurName, "SendText": bjob[i].SendText,
@@ -1027,9 +1042,9 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 SNO_8, BudItem_8, ItemO_8, Descip_8, Measure_8, Invent_8, UniPrice_8, QuantAmt_8, SubTot_8, Delivway_8, Vender_8, Underbur_8, ApendType_8, DeptM_8,
                 SNO_9, BudItem_9, ItemO_9, Descip_9, Measure_9, Invent_9, UniPrice_9, QuantAmt_9, SubTot_9, Delivway_9, Vender_9, Underbur_9, ApendType_9, DeptM_9,
                 SNO_10, BudItem_10, ItemO_10, Descip_10, Measure_10, Invent_10, UniPrice_10, QuantAmt_10, SubTot_10, Delivway_10, Vender_10, Underbur_10, ApendType_10, DeptM_10,
-                Bill_No, List_No, ReqDate, Proj_No, Applic_No, DeptName, TotalV, Exchange, Pay_method, Explan, Entry_Date,
+                Bill_No, List_No, ReqDate, Proj_No, Applic_No, GroupName, TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
-                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate,
+                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
                 StatusOK, CreditA, CreditB, CreditC, CreditD
             }) => {
                 let newHtml = htmlModel
@@ -1126,7 +1141,7 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                     .replace(/ReqDate/, ReqDate)
                     .replace(/Proj_No/, Proj_No)
                     .replace(/Applic_No/, Applic_No)
-                    .replace(/DeptName/, DeptName)
+                    .replace(/GroupName/, GroupName)
                     .replace(/TotalV/, TotalV)
                     .replace(/Exchange/, Exchange)
                     .replace(/Pay_method/, Pay_method)
@@ -1152,6 +1167,7 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                     .replace(/PsdDate/, PsdDate)
                     .replace(/CeoDate/, CeoDate)
                     .replace(/BodDate/, BodDate)
+                    .replace(/Reason/, Reason)
 
                     .replace(/StatusOK/, StatusOK)
                     .replace(/CreditA/, CreditA)
@@ -1167,8 +1183,8 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 if (sData.length > 0) {
                     let divHtml = '';
                     let newHtml = '';
-                    // console.log("f--------------是对", sData[10].BillNo);
-                    console.log("金世禄", sData.length);
+                    console.log(" -------------是对", sData[11].Reason);
+                    // console.log("金世禄", sData.length);
 
                     for (let i = 0; i < sData.length; i++) { //sData.length 会重复累加视窗
                         const element = sData[i];
@@ -1272,7 +1288,7 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                             ReqDate: "申请日期: " + sData[10].RequestDate,
                             Proj_No: "计划案号: " + sData[10].ProjectNo,
                             Applic_No: "申请单编号: " + sData[10].ApplicNo,
-                            DeptName: "部門: " + sData[10].DeptName,
+                            GroupName: "部門: " + sData[10].GroupName,
                             TotalV: sData[10].TotalValue,
                             Exchange: sData[10].Currency,
                             Pay_method: sData[10].Payment,
@@ -1298,6 +1314,7 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                             PsdDate: sData[11].PsdDate,
                             CeoDate: sData[11].CeoDate,
                             BodDate: sData[11].BodDate,
+                            Reason: sData[11].Reason,
 
                             StatusOK: sData[11].CurText,
                             CreditA: sData[12].CreditA,
@@ -1315,6 +1332,16 @@ function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
                 }
             }
             createRpHtml(sData);
+            if ( Answer != undefined && Answer != null && Answer != '') {
+                $("#reaLabel").addClass("fee-approval");
+                $("#reaLabel").html("退回理由");
+                console.log("琴一把");
+            }else{
+                $("#reaLabel").html("");
+                $("#reaLabel").val("");
+                $("#reaLabel").removeClass("fee-approval");
+                console.log("潦倒布衣一身");
+            }
             if (CurJob == 'dpt') {
                 $("#mandpt").addClass("fee-approval");
             }
@@ -1373,3 +1400,16 @@ function waterBy(settings) {
         textRotate: -30 //-90到0， 负数值，不包含-90
     })
 }  
+function waterCy(settings) {
+    var obj=JSON.stringify(settings);
+    var result =settings.firstblood;
+    var opinion =settings.secondblood;
+    $('#waterAy').watermark({
+        texts: [result, ''], //水印文字
+        textColor: "#EE7600", //文字颜色
+        textFont: '24px 微软雅黑', //字体
+        width: 150, //水印文字的水平间距
+        height: 400,  //水印文字的高度间距（低于文字高度会被替代）
+        textRotate: -30 //-90到0， 负数值，不包含-90
+    })
+} 

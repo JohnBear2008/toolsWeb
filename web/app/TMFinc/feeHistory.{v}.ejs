@@ -49,8 +49,8 @@
 			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
 			<input type="button" id="btn_apply" class="btn btn-info" onclick="apply_hmi();" value="送审" />
 			<input type="button" id="MdfyBtn" class="btn btn-info" value="编辑" />
-			<!-- <input type="button" id="AlterBtn" class="btn btn-info" value="撤回" />
-			<input type="button" id="DraftBtn" class="btn btn-info" value="修改" />   -->
+			<input type="button" id="PurFixBtn" class="btn btn-info" value="采购" />
+			<input type="button" id="VoidBtn" class="btn btn-info" value="作废" />
 			<hr>
 			<br />
 			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
@@ -106,8 +106,8 @@
 						</div>
 						<div id="listPrintViewDiv">
 						</div>
-						<div class="modal-footer">
-							<button id="PrintConfirm" type="button" class="btn btn-info">打印</button>
+						<div  style="margin-left:400px;margin-top:40px;" >
+							<button id="PrintConfirm"  style="margin-left:60px"  type="button" class="btn btn-info">打印</button>
 							<button id="PrintClose" type="button" class="btn btn-primary"
 							data-dismiss="modal">关闭</button>
 						</div>
@@ -193,7 +193,6 @@
 					"DBTable": "auto_parts"
 				}
 				missType = getQueryString("missT");
-				console.log("漫漫古道:" + sessionName);
 				missAcute = getQueryString("missA");
 				missBcute = getQueryString("missB");
 				var missAencode = decodeURI(missAcute);
@@ -221,6 +220,12 @@
 			});
 			$("#SeaBtn").addClass("active");
 			getpull(); getDrop();
+			function timer(time) {
+					setTimeout(function () {
+						$('#SeaBtn').click();
+					}, time);
+			}
+			timer(500) ;
 			$("#pdf-wrapper").css('visibility', 'hidden');
 		});
 
@@ -417,13 +422,21 @@
 				alert("当前未选择任何数据,请先点击需要的数据行!");
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				var CurText = dataSelect.CurText;
 				var SendText = dataSelect.SendText;
 				var StaffName = dataSelect.StaffName;
 				if (SendText != '保存') {
 					layer.msg('非保存状态 ， 此单不能修改', { icon: 1 });
 					return;
 				}
-				// console.log("是转瞬即逝的东西",sessionName , StaffName)
+				if (CurText == '核准' ) {
+					layer.msg('已核准状态 ， 此单不能修改', { icon: 1 });
+					return;
+				}
+				if (CurText == '作废' ) {
+					layer.msg('已作废状态 ， 此单不能修改', { icon: 1 });
+					return;
+				}
 				if (sessionName != StaffName) {
 					layer.msg('非本人操作 ， 此单不能修改', { icon: 1 });
 					return;
@@ -433,11 +446,125 @@
 				}, function () {
 					var paramClearA = encodeURI(encodeURI(billNo));
 					var paramType = 'Mdy';
+					// if (CapMode == 'A') {
+					// 	window.location.href = "/app/bear/BearTest2?missT=" + paramType + "&missA=" + paramClearA + " ";
+					// }
+					// if (CapMode == 'B') {
+					// 	window.location.href = "/app/bear/BearTest2?missT=" + paramType + "&missA=" + paramClearA + " ";
+					// }
 					if (CapMode == 'A') {
 						window.location.href = "/app/TMFinc/feeApplyForm?missT=" + paramType + "&missA=" + paramClearA + " ";
 					}
 					if (CapMode == 'B') {
 						window.location.href = "/app/TMFinc/feeTravel?missT=" + paramType + "&missA=" + paramClearA + " ";
+					}
+				}, function () {
+					layer.msg('无操作', { icon: 1 });
+				});
+			}
+		});
+		$('#VoidBtn').click(function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				var CurText = dataSelect.CurText;
+				var StaffName = dataSelect.StaffName;
+				var MagName = dataSelect.MagName;
+				var VipName = dataSelect.VipName;
+				var DeptName = dataSelect.DeptName;
+				if (CurText == '核准' ) {
+					layer.msg('已核准状态 ， 此单不能作废', { icon: 1 });
+					return;
+				}
+				if (CurText == '作废' ) {
+					layer.msg('已作废状态 ， 此单不能作废', { icon: 1 });
+					return;
+				}
+				// console.log("鲨炮",MagName,"流尾",VipName,"喷",sessionName,"中",StaffName);
+				if (sessionName == MagName || sessionName == VipName || sessionName == StaffName) {
+					// console.log("虽",VipName,"自性",MagName,"清净",sessionName,"客尘",DeptName);
+				}else{
+					layer.msg('非相关人士 ， 此单不能修改', { icon: 1 });
+					return;
+				}
+				layer.confirm(billNo + '此单作废不可回复，请确认操作是否无误？', {
+					btn: ['是', '否']
+				}, function () {
+					layer.msg('操作成功', { icon: 1 });
+					var arrange = 'VoidBill';
+					var reportType = 'rejectFee';
+					var ReasonPest = '';
+					var taskData = {
+						"reportType": reportType, "arrange": arrange,  "BillNo": billNo, "CurName": sessionName,
+						"Reason": ReasonPest,
+					}
+					$.ajax({
+						method: 'post',
+						data: taskData,
+						url: "/app/TMFinc/getRoute",
+						success: function (data) {
+							if (data.status == 'Fail') {
+								layer.msg("讯息" + data.message);
+							} else if (data.status == 'OK') {
+								layer.confirm("作废文号" + data.BillNo + "" + (data.status), {
+									btn: ['知道了']
+								}, function () {
+									layer.msg('操作成功', { icon: 1 });
+									var DateB = $("#taskMakeDateB").val();
+									var DateE = $("#taskMakeDateE").val();
+									missAcute = $('#Pattern').val();
+									missBcute = $('#CapMode').val();
+									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+								});
+							}
+						},
+						error: function () {
+						}
+					})
+				}, function () {
+					layer.msg('无操作', { icon: 1 });
+				});
+			}
+		});
+		$('#PurFixBtn').click(function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				var CurText = dataSelect.CurText;
+				var StaffName = dataSelect.StaffName;
+				var PurName = dataSelect.PurName;
+				var PexName = dataSelect.PexName;
+				var CfoName = dataSelect.CfoName;
+				var DeptName = dataSelect.DeptName;
+				if (CurText != '审批') {
+					layer.msg('非审批状态 ， 此单不能修改', { icon: 1 });
+					return;
+				}
+				if (sessionName == PurName || sessionName == PexName || sessionName == CfoName) {
+					// console.log("鲨嘴炮",PurName,"流星尾",PurName,"轰",sessionName,"空中",DeptName);
+				}else{
+					layer.msg('非采购承办人或采购主管或财务人员 ， 此单不能修改', { icon: 1 });
+					return;
+				}
+				layer.confirm(billNo + '进入编辑作业，请确认操作是否无误？', {
+					btn: ['是', '否']
+				}, function () {
+					var paramClearA = encodeURI(encodeURI(billNo));
+					var paramType = '';
+					var paramPur = 'Pur';
+					var paramDept = encodeURI(encodeURI(DeptName));
+					var paramJump = encodeURI(encodeURI(sessionName));
+					if (CapMode == 'A') {
+						window.location.href = "/app/TMFinc/feeApplyForm?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
+					}
+					if (CapMode == 'B') {
+						window.location.href = "/app/TMFinc/feeTravel?missT=" + paramType  + "&missJ=" + paramJump + "&missG=" + paramDept +  "&missP=" + paramPur +"&missA=" + paramClearA + " ";
 					}
 				}, function () {
 					layer.msg('无操作', { icon: 1 });
@@ -452,9 +579,22 @@
 			} else {
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				var SendText = dataSelect.SendText;
+				var CurText = dataSelect.CurText;
 				var StaffName = dataSelect.StaffName;
 				if (SendText != '保存') {
 					layer.msg('非保存状态 ， 此单不能送审', { icon: 1 });
+					return;
+				}
+				if (CurText == '核准' ) {
+					layer.msg('已核准状态 ， 此单不能送审', { icon: 1 });
+					return;
+				}
+				if (CurText == '作废' ) {
+					layer.msg('已作废状态 ， 此单不能送审', { icon: 1 });
+					return;
+				}
+				if (CurText == '退回' ) {
+					layer.msg('已退回状态 ， 此单不能送审', { icon: 1 });
 					return;
 				}
 				if (sessionName != StaffName) {

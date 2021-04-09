@@ -4,6 +4,9 @@ module.exports = function (sender) {
   var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
   var yjDB = global.yjRequire("yujiang.Foil").yjDB;
   var async = require("async");
+  let now = new Date();
+	var BudYear = now.Format("yyyy");
+	var BudMonth = now.Format("MM");
   var qryBillNo = sender.req.query.BillNo;
   var queryClass = sender.req.query.PartsClass;
   var queryCode = sender.req.query.PartsCode;
@@ -29,6 +32,8 @@ module.exports = function (sender) {
           for (var i = 0; i < 10; i++) {
             var BillNo = '';
             var SNNo = '';
+            var Subject = '';
+            var BudgetCID = '';
             var BudgetItem = '';
             var ItemNo = '';
             var Description = '';
@@ -46,6 +51,8 @@ module.exports = function (sender) {
             } else {
               BillNo = result[1][i].BillNo; BillNo = nulReplaceTxt(BillNo);
               SNNo = result[1][i].SNNo; SNNo = nulReplaceTxt(SNNo);
+              Subject = result[1][i].Subject; Subject = nulReplaceTxt(Subject);
+              BudgetCID = result[1][i].BudgetCID; BudgetCID = nulReplaceTxt(BudgetCID);
               BudgetItem = result[1][i].BudgetItem; BudgetItem = nulReplaceTxt(BudgetItem);
               ItemNo = result[1][i].ItemNo; ItemNo = nulReplaceTxt(ItemNo);
               Description = result[1][i].Description; Description = nulReplaceTxt(Description);
@@ -63,6 +70,8 @@ module.exports = function (sender) {
             var obj2 = {
               "BillNo": BillNo,
               "SNNo": SNNo,
+              "Subject": Subject,
+              "BudgetCID": BudgetCID,
               "BudgetItem": BudgetItem,
               "ItemNo": ItemNo,
               "Description": Description,
@@ -91,6 +100,7 @@ module.exports = function (sender) {
               "RequestDate": result[0][0].RequestDate,
               "ProjectNo": result[0][0].ProjectNo,
               "ApplicNo": result[0][0].ApplicNo,
+              "GroupName": result[0][0].GroupName,
               "DeptName": result[0][0].DeptName,
               "StaffID": result[0][0].StaffID,
               "StaffName": result[0][0].StaffName,
@@ -121,6 +131,7 @@ module.exports = function (sender) {
           var PsdDate = '';
           var CeoDate = '';
           var BodDate = '';
+          var Reason = '';
           var SendStatus = '';
           var CurStatus = '';
           var CurLevel = '';
@@ -139,7 +150,7 @@ module.exports = function (sender) {
             PsdName = result[2][0].PsdName; PsdName = nulReplaceTxt(PsdName); PsdDate = result[2][0].PsdDate; PsdDate = nulReplaceTxt(PsdDate);
             CeoName = result[2][0].CeoName; CeoName = nulReplaceTxt(CeoName); CeoDate = result[2][0].CeoDate; CeoDate = nulReplaceTxt(CeoDate);
             BodName = result[2][0].BodName; BodName = nulReplaceTxt(BodName); BodDate = result[2][0].BodDate; BodDate = nulReplaceTxt(BodDate);
-            SendStatus = result[2][0].SendStatus; SendStatus = nulReplaceTxt(SendStatus);
+            Reason = result[2][0].Reason; Reason = nulReplaceTxt(Reason);
             CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
             CurLevel = result[2][0].CurLevel; CurLevel = nulReplaceTxt(CurLevel); TermiLevel = result[2][0].TermiLevel; TermiLevel = nulReplaceTxt(TermiLevel);
             CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); CurText = result[2][0].CurText; CurText = nulReplaceTxt(CurText);
@@ -155,6 +166,7 @@ module.exports = function (sender) {
             "PsdName": PsdName, "PsdDate": PsdDate,
             "CeoName": CeoName, "CeoDate": CeoDate,
             "BodName": BodName, "BodDate": BodDate,
+            "Reason": Reason, 
             "SendStatus": SendStatus, "CurStatus": CurStatus,
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
             "CurName": CurName, "CurText": CurText,
@@ -166,9 +178,9 @@ module.exports = function (sender) {
             "CreditB": result[3][0].CreditB,
             "CreditC": result[3][0].CreditC,
             "CreditD": result[3][0].CreditD,
-            // "CreditA": '项目预算已超过：',  
+            // "CreditA": '预算内额度已超过：',  
             // "CreditB": '预算5000已用5000：',  
-            // "CreditC": '副总额度未超过：',  
+            // "CreditC": '预算外额度未超过：',  
             // "CreditD": '额度3500已用2500',  
           }
           dataARR.push(objW);
@@ -184,7 +196,7 @@ module.exports = function (sender) {
     function PopupDetail(cb) {
       // var BillNo = '20201225103088';
       let SQL2 =
-        " select  `BillNo` , `SNNo` , `BudgetItem` , `ItemNo` , `Description` , `Unit` , " +
+        " select  `BillNo` , `SNNo` , `Subject` , `BudgetCID` , `BudgetItem` , `ItemNo` , `Description` , `Unit` , " +
         " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` ,  `AppendType` ,`Department` " +
         " from bgu_purchdetail tba  " +
         " where tba.BillNo= ?  Order By SNNo ";
@@ -199,6 +211,8 @@ module.exports = function (sender) {
             var temp = {
               "BillNo": qryBillNo,
               "SNNo": data[i].SNNo,
+              "Subject": data[i].Subject,
+              "BudgetCID": data[i].BudgetCID,
               "BudgetItem": data[i].BudgetItem,
               "ItemNo": data[i].ItemNo,
               "Description": data[i].Description,
@@ -224,7 +238,7 @@ module.exports = function (sender) {
       // var BillNo = '20201225093185';
       let SQL2 =
         " select  `Subject`, `BudgetCID` , `BudgetItem`, `BillNo` , `ListNo` , `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-        "`DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
+        "`GroupName` ,  `DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
         " from bgu_purchmain tba  " +
         " where tba.BillNo= ?   ";
       yjDBService.exec({
@@ -244,6 +258,7 @@ module.exports = function (sender) {
               "RequestDate": data[i].RequestDate,
               "ProjectNo": data[i].ProjectNo,
               "ApplicNo": data[i].ApplicNo,
+              "GroupName": data[i].GroupName,
               "DeptName": data[i].DeptName,
               "StaffID": data[i].StaffID,
               "StaffName": data[i].StaffName,
@@ -269,11 +284,11 @@ module.exports = function (sender) {
     function PopupAudit(cb) {
       // var BillNo = '20201225103088';
       let SQL2 =
-        " select  `BillNo` ,`entryDate` ,`groupLabel` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
+        " select  `BillNo` ,`entryDate` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
         " `CurName` , `CurJob` , `SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`MagWorkId` ,`MagName` ," +
         " `MagDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
-        " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate`  from bgu_rule tba  " +
+        " `Level8` ,`CeoWorkId` ,`CeoName` ,`CeoDate` ,`Level9` ,`BodWorkId` ,`BodName` ,`BodDate` ,`Reason`  from bgu_rule tba  " +
         " where tba.BillNo= ? ";
       yjDBService.exec({
         sql: SQL2,
@@ -295,6 +310,7 @@ module.exports = function (sender) {
               "Level7": data[i].Level7, "PsdWorkId": data[i].PsdWorkId, "PsdName": data[i].PsdName, "PsdDate": data[i].PsdDate,
               "Level8": data[i].Level8, "CeoWorkId": data[i].CeoWorkId, "CeoName": data[i].CeoName, "CeoDate": data[i].CeoDate,
               "Level9": data[i].Level9, "BodWorkId": data[i].BodWorkId, "BodName": data[i].BodName, "BodDate": data[i].BodDate,
+              "Reason": data[i].Reason, 
               "BillNo": data[i].BillNo, "SendStatus": data[i].SendStatus, "CurStatus": data[i].CurStatus, "CurLevel": data[i].CurLevel,
               "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "CurText": data[i].CurText,
               "CurJob": data[i].CurJob,
@@ -308,10 +324,16 @@ module.exports = function (sender) {
     }
     function PopupCredit(cb) {
       let SQL2 =
-      " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ? and DeptName = ?  " +
-      " Union " +
-      " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
+      // " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+      // " Union " +
+      // " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
       // console.log("柳惠濬:",  FlowBudget, "亚",FlowDept ,"瑟", FlowVip);
+      " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota " +
+      " where BudgetItem =? and BudYear = ? and DeptName = ?  " +
+      " Union " +
+      " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_buffer " +
+      " where  BffType = 'A' and BudYear =? and BudMonth = ? "  ;
+      let paramelist = [FlowBudget, BudYear, FlowDept, BudYear, BudMonth];
       var itemAllow = '0';
       var itemAccu = '0';
       var itemSurp = '0';
@@ -322,7 +344,7 @@ module.exports = function (sender) {
       var vvipIsOver = '';
       yjDBService.exec({
         sql: SQL2,
-        parameters: [FlowBudget, FlowDept , FlowVip],
+        parameters: paramelist , 
         rowsAsArray: true,
         success: function (r) {
           var datas = [];
@@ -346,14 +368,14 @@ module.exports = function (sender) {
 
             }
           }
-          itemMsg = '项目预算未超过：';
-          vvipMsg = '副总额度未超过：';
+          itemMsg = '预算内额度未超过：';
+          vvipMsg = '预算外额度未超过：';
           itemSurp = parseInt(itemSurp, 10);
           if (itemIsOver == 'Y') {
-            itemMsg = '项目预算已超过：';
+            itemMsg = '预算内额度已超过：';
           }
           if (vvipIsOver == 'Y') {
-            vvipMsg = '副总额度已超过：';
+            vvipMsg = '预算外额度已超过：';
           }
           var temp = {
             "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,

@@ -16,7 +16,7 @@ module.exports = function (sender) {
 		" where   StaffRole ='文员' Order By tba.`StaffID`  ASC " ;
 
 		// dataArr[i].StaffID+ "##" + dataArr[i].StaffUser+ "##" + dataArr[i].StaffName+ "##" + dataArr[i].Mobiles
-		console.log("貂蝉",SQLMgr);
+		// console.log("貂蝉",SQLMgr);
 		yjDBService.exec({
 			sql: SQLMgr,
 			parameters: [ ],
@@ -49,7 +49,7 @@ module.exports = function (sender) {
 		" select  tba.DBID ,tba.`StaffID`, tba.`StaffUser` , tba.`StaffName`, tba.`StaffLevel`, tba.`StaffRole` ,  " +
 		" tba.`DeptLabel`, tba.`GroupLabel`, tba.`Mobiles` from bgu_staffs tba   " +
 		" where   StatusText ='正常' Order By tba.`StaffID`  ASC " ;
-		console.log("白梅落下",SQLMgr);
+		// console.log("白梅落下",SQLMgr);
 		yjDBService.exec({
 			sql: SQLMgr,
 			parameters: [ ],
@@ -71,12 +71,12 @@ module.exports = function (sender) {
 					}
 					datas.push(temp);
 				}
-				var dump = JSON.stringify(datas);
-				if (dump.length > 100) {
-					console.log("姑瑛:" + dump.substring(0, 100));
-				} else {
-					console.log("姑瑛:" + JSON.stringify(datas));
-				}
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 100) {
+				// 	console.log("姑瑛:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("姑瑛:" + JSON.stringify(datas));
+				// }
 				sender.success(datas);
 			},
 			error: sender.error

@@ -127,7 +127,7 @@ module.exports = function (sender) {
 		if (orderBy != "" && orderBy != undefined) {
 			SQLExecute = SQLExecute + " ORDER BY " + orderBy;
 		}
-		  console.log(" 胜利 :" , CurName); 
+		//   console.log(" 胜利 :" , CurName); 
 		//   console.log(" 模特 :" , SQLExecute); 
 		let paramelist = [CurName];
 		let dataArr = [];

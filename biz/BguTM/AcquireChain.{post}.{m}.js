@@ -1,3 +1,4 @@
+require("../../client/js/Date.js");
 module.exports = function (sender) {
 //ironSubject
 	var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
@@ -6,25 +7,27 @@ module.exports = function (sender) {
 	var arrange = sender.req.query.arrange;
 	var flowOppWorkId = sender.req.query.oppOID; 
 	var flowOppName = sender.req.query.OppName; 
-	var flowGroup = sender.req.query.GroupName;
-	var flowDept = sender.req.query.DeptName; 
+	var FlowGroup = sender.req.query.GroupName;
+	console.log("忘却野心",FlowGroup);
+	var FlowDept = sender.req.query.DeptName; 
 	var FlowVip ='';
 	var qryDept = '';  //nouse
 	var qryGroup = ''; //nouse
-	console.log("明天也要",flowDept );
-
+	var now = new Date();
+	var BudYear = now.Format("yyyy");
+	var BudMonth = now.Format("MM");
 	if (arrange == 'RuleTrip') {
-		acqflowDept();
+		acqFlowDept();
 	}
 	if (arrange == 'RulePurch') {
-		acqflowDept();
+		acqFlowDept();
 	}
-	function acqflowDept() { //找副总
+	function acqFlowDept() { //找副总
 		let SQL4 =
 		    " select StaffName from bgu_credit where DeptName = ?  ";
 		yjDBService.exec({
 		    sql: SQL4,
-		    parameters: [flowDept],
+		    parameters: [FlowDept],
 		    rowsAsArray: true,
 		    success: function (r) {
 			  var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -91,10 +94,10 @@ module.exports = function (sender) {
             var CeoName = '';
             var BodWorkId = '';
             var BodName = '';
-            console.log(" 出差带出组 ", flowGroup, " 部  ", flowDept);
+            console.log(" 出差带出组 ", FlowGroup, " 部  ", FlowDept);
             yjDBService.exec({
                 sql: SQL3,
-                parameters: [flowGroup , flowDept], 
+                parameters: [FlowGroup , FlowDept], 
                 rowsAsArray: true,
                 success: function (r) {
                     var datas = [];
@@ -243,15 +246,15 @@ module.exports = function (sender) {
 					  CurWorkId = MagWorkId;
 					  CurName = MagName;
 				    }
-				     
 				}
+				Surplus = result[3][0].Surplus;
 				CreditA = result[3][0].CreditA;
 				CreditB = result[3][0].CreditB;
 				CreditC =  result[3][0].CreditC;
 				CreditD =  result[3][0].CreditD;
-					// "CreditA": '项目预算已超过：',  
+					// "CreditA": '预算内额度已超过：',  
 					// "CreditB": '预算5000已用5000：',  
-					// "CreditC": '副总额度未超过：',  
+					// "CreditC": '预算外额度未超过：',  
 					// "CreditD": '额度3500已用2500',  
 				var temp = {
 					"OppWorkId": OppWorkId,
@@ -272,6 +275,7 @@ module.exports = function (sender) {
 					"CeoName": CeoName,
 					"BodWorkId": BodWorkId,
 					"BodName": BodName,
+					"Surplus": Surplus,
 					"CreditA": CreditA,
 					"CreditB": CreditB,
 					"CreditC": CreditC,
@@ -279,8 +283,8 @@ module.exports = function (sender) {
 				  }
 				  datas.push(temp);
 				//   var dump = JSON.stringify(datas);
-				//   if (dump.length > 100) {
-				// 	  console.log("伯通:" + dump.substring(0, 100));
+				//   if (dump.length > 1000) {
+				// 	  console.log("伯通:" + dump.substring(0, 1000));
 				//   } else {
 				// 	  console.log("伯通:" + JSON.stringify(datas));
 				//   }
@@ -331,7 +335,8 @@ module.exports = function (sender) {
                 " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
                 " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
                 " from  bgu_staffs tba  " +
-                " LEFT JOIN bgu_staffs tdpt on ?  =tdpt.GroupLabel and tdpt.staffLevel='2' " +
+            //     " LEFT JOIN bgu_staffs tdpt on ?  =tdpt.GroupLabel and tdpt.staffLevel='2' " +
+                " LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '"+FlowGroup+"', '%')  and tdpt.staffLevel='2' " +
                 " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
                 " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4'  and tpur.StaffRole='" + StaffRole + "' " +
                 " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
@@ -358,10 +363,11 @@ module.exports = function (sender) {
 		    var CeoName = '';
 		    var BodWorkId = '';
 		    var BodName = '';
-		    console.log("人寿-----", flowGroup, flowDept);
+		    console.log("单位-----", FlowGroup, FlowDept);
 		    yjDBService.exec({
 			  sql: SQL3,
-			  parameters: [flowGroup , flowDept], 
+			  parameters: [ FlowDept], 
+			//   parameters: [FlowGroup , FlowDept], 
 			  rowsAsArray: true,
 			  success: function (r) {
 				var datas = [];
@@ -443,9 +449,9 @@ module.exports = function (sender) {
 		}
 		function FunCredit(cb) {
 			let SQL2 =
-			  " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudgetItem = ? and DeptName = ?  " +
+			  " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota where BudYear =? and BudgetItem = ? and DeptName = ?  " +
 			  " Union " +
-			  " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_credit where StaffName = ?   ";
+			  " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_buffer where  BffType = 'A' and BudYear =? and BudMonth = ?   ";
 			var itemAllow = '0';
 			var itemAccu = '0';
 			var itemSurp = '0';
@@ -454,9 +460,10 @@ module.exports = function (sender) {
 			var vvipAccu = '0';
 			var vvipSurp = '0';
 			var vvipIsOver = '';
+			console.log("周瑜",BudYear , "-", flowBudgetItem,"-", FlowDept,"-", BudYear , BudMonth);
 			yjDBService.exec({
 			  sql: SQL2,
-			  parameters: [flowBudgetItem, flowDept, FlowVip],
+			  parameters: [BudYear , flowBudgetItem, FlowDept, BudYear , BudMonth],
 			  rowsAsArray: true,
 			  success: function (r) {
 			    var datas = [];
@@ -480,20 +487,20 @@ module.exports = function (sender) {
 		
 				}
 			    }
-			    itemMsg = '项目预算未超过：';
-			    vvipMsg = '副总额度未超过：';
+			    itemMsg = '预算内额度未超过：';
+			    vvipMsg = '预算外额度未超过：';
 			    itemSurp = parseInt(itemSurp, 10);
 			    if (itemIsOver == 'Y') {
-				itemMsg = '项目预算已超过：';
+				itemMsg = '预算内额度已超过：';
 			    }
 			    if (vvipIsOver == 'Y') {
-				vvipMsg = '副总额度已超过：';
+				vvipMsg = '预算外额度已超过：';
 			    }
 			    var temp = {
-				"CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
+				"Surplus": itemSurp, "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
 			    }
 			    datas.push(temp);
-			    console.log("是否超预算:"  ,itemIsOver ,vvipIsOver); 
+			    console.log("是否超预算:"  ,itemIsOver ,vvipIsOver, itemSurp); 
 			//     var dump = JSON.stringify(datas);
 			//     if (dump.length > 500) {
 			//       console.log("廉颇:" + dump.substring(0, 500));

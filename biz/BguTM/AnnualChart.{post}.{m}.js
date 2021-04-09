@@ -76,7 +76,7 @@ module.exports = function (sender) {
                 }
             });
         function PopupDetail(cb) {
-            let SQL2 = "SELECT Subject ,AllowMoney FROM bom_chart where DeptName='软体部' group by Subject ";
+            let SQL2 = "SELECT Subject ,AllowMoney FROM bgu_quota where DeptName='软体部' group by Subject ";
             yjDBService.exec({
                 sql: SQL2,
                 parameters: [qryYear],

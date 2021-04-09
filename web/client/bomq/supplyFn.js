@@ -51,37 +51,37 @@ function CaculateBasic() {
 function FlowerBase() {
       for (var i = 1; i < 11; i++) {
             var youoption = document.createElement("option");
-            youoption.text =  "是" ;
-            youoption.id = "Underburget"+i;
-            youoption.name = "Underburget"+i;
-            youoption.value = "是" ;
-            $("#Underburget_"+i).append(youoption);
+            youoption.text = "是";
+            youoption.id = "Underburget" + i;
+            youoption.name = "Underburget" + i;
+            youoption.value = "是";
+            $("#Underburget_" + i).append(youoption);
             var youoption = document.createElement("option");
-            youoption.text =  "否" ;
-            youoption.id = "Underburget"+i;
-            youoption.name = "Underburget"+i;
-            youoption.value = "否" ;
-            $("#Underburget_"+i).append(youoption);
+            youoption.text = "否";
+            youoption.id = "Underburget" + i;
+            youoption.name = "Underburget" + i;
+            youoption.value = "否";
+            $("#Underburget_" + i).append(youoption);
       }
       for (var i = 1; i < 11; i++) {
             var youoption = document.createElement("option");
-            youoption.text =  "新增" ;
-            youoption.id = "AppendType"+i;
-            youoption.name = "AppendType"+i;
-            youoption.value = "新增" ;
-            $("#AppendType_"+i).append(youoption);
+            youoption.text = "新增";
+            youoption.id = "AppendType" + i;
+            youoption.name = "AppendType" + i;
+            youoption.value = "新增";
+            $("#AppendType_" + i).append(youoption);
             var youoption = document.createElement("option");
-            youoption.text =  "换新" ;
-            youoption.id = "AppendType"+i;
-            youoption.name = "AppendType"+i;
-            youoption.value = "换新" ;
-            $("#AppendType_"+i).append(youoption);
+            youoption.text = "换新";
+            youoption.id = "AppendType" + i;
+            youoption.name = "AppendType" + i;
+            youoption.value = "换新";
+            $("#AppendType_" + i).append(youoption);
             var youoption = document.createElement("option");
-            youoption.text =  "补遗" ;
-            youoption.id = "AppendType"+i;
-            youoption.name = "AppendType"+i;
-            youoption.value = "补遗" ;
-            $("#AppendType_"+i).append(youoption);
+            youoption.text = "补遗";
+            youoption.id = "AppendType" + i;
+            youoption.name = "AppendType" + i;
+            youoption.value = "补遗";
+            $("#AppendType_" + i).append(youoption);
       }
 }
 function FlowerBasic() {
@@ -96,19 +96,21 @@ function FlowerBasic() {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  var youoption = document.createElement("option");
-                  youoption.text =   "--请选择--"  ;
-                  youoption.id = "bellTime";
-                  youoption.name = "bellTime";
-                  youoption.value = '请选择';
-                  $("#BudgetCombo_1").append(youoption);
-                  for (var i = 0; i < dataArr.length; i++) {
+                  for (var ki = 1; ki <= 10; ki++) {
                         var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
-                        youoption.id = "bellTime";
-                        youoption.name = "bellTime";
-                        youoption.value = dataArr[i].Sub_CID+ "##" + dataArr[i].Sub_Prime+ "##"+ dataArr[i].Sub_Secon;
-                        $("#BudgetCombo_1").append(youoption);
+                        youoption.text = "----";
+                        youoption.id = "bellTime" + ki;
+                        youoption.name = "bellTime" + ki;
+                        youoption.value = '';
+                        $("#searchbox_" + ki).append(youoption);
+                        for (var i = 0; i < dataArr.length; i++) {
+                              var youoption = document.createElement("option");
+                              youoption.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
+                              youoption.id = "bellTime_" + ki;
+                              youoption.name = "bellTime_" + ki;
+                              youoption.value = dataArr[i].Sub_CID + "-" + dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
+                              $("#searchbox_" + ki).append(youoption);
+                        }
                   }
 
             },
@@ -116,12 +118,12 @@ function FlowerBasic() {
             }
       })
 }
-function FlowerMoney(SNtxt , BType) {
+function FlowerMoney(SNtxt, BType) {
       //applyPage
       let dataArr = [];
       var reportType = 'StarGate';
       var arrange = 'CacuBasic';
-      var taskData = { "reportType": reportType, "arrange": arrange , "BudgetType": BType };
+      var taskData = { "reportType": reportType, "arrange": arrange, "BudgetType": BType };
       $.ajax({
             method: 'post',
             data: taskData,
@@ -129,7 +131,7 @@ function FlowerMoney(SNtxt , BType) {
             success: function (data) {
                   dataArr = data;
                   for (var i = 0; i < dataArr.length; i++) {
-                        $("#Bunny_"+SNtxt).html(dataArr[0].ProductID);  $("#Bunny_"+SNtxt).val(dataArr[0].ProductID);
+                        $("#Bunny_" + SNtxt).html(dataArr[0].ProductID); $("#Bunny_" + SNtxt).val(dataArr[0].ProductID);
                   }
             },
             error: function () {
@@ -137,6 +139,11 @@ function FlowerMoney(SNtxt , BType) {
       })
 }
 function getpull() {
+      var youoption = document.createElement("option");
+      youoption.id = "Pattern";
+      youoption.text = "---";
+      youoption.value = "";
+      $("#Pattern").append(youoption);
       var youoption = document.createElement("option");
       youoption.id = "Pattern";
       youoption.name = "Pattern";
@@ -176,29 +183,59 @@ function getDrop() {
       youoption.value = "B";
       $("#CapMode").append(youoption);
 }
- 
-function obtLogGroup(loginName) { 
+function RolePlay(){
+      var DeptShow ='';
+      var GroupShow ='';
+      var GroupCombo = $('#GroupCombo').val();
+      $("#GroupName").val(GroupCombo);  
+      let PropList = [];
+      if (GroupCombo != "" && GroupCombo != undefined) {
+            PropList = GroupCombo.split('-');
+            for (var ki = 0; ki < PropList.length; ki++) {
+                  DeptShow = PropList[0];
+                  GroupShow = PropList[1];
+                  console.log("枪尖",DeptShow,"在燃烧",GroupShow);
+            }
+      }
+}
+function obtLogGroup(loginName) {
       let dataArr = [];
       var reportType = 'ironSubject';
-      var arrange = 'findDept';
-      var taskData = { "reportType": reportType, "arrange": arrange , "loginName": loginName  };
+      var arrange = 'LinkDept';
+      var taskData = { "reportType": reportType, "arrange": arrange, "loginName": loginName };
       $.ajax({
             method: 'post',
             data: taskData,
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  console.log("螺丝",JSON.stringify(dataArr));
-                  var sessDept = dataArr[0].DeptLabel;
-                  var sessGroup = dataArr[0].GroupLabel;
-                  var sessRole = dataArr[0].StaffRole;
-                  var Mobiles = dataArr[0].Mobiles;
-                  $("#hideDeptName").val(sessDept);  
-                  $("#GroupName").val(sessGroup);  
-                  $("#hideflowRole").val(sessRole);  
-                  $("#hidePhone").val(Mobiles);  
+                  if(dataArr.length>0){
+                        var sessDept = dataArr[0].DeptLabel;
+                        var qryGroup = dataArr[0].GroupLabel;
+                        let GroupList = [];
+                        if (qryGroup != "" && qryGroup != undefined) {
+                              console.log("男子汉",qryGroup );
+                              GroupList = qryGroup.split(',');
+                              $("#GroupCombo").val(); $("#GroupCombo").html("");
+                              console.log("汉子",GroupList.length );
+                              for (var i = 0; i < GroupList.length; i++) {
+                                    var youoption = document.createElement("option");
+                                    youoption.text = GroupList[i];
+                                    youoption.id = "kisstime";
+                                    youoption.name = "kisstime";
+                                    youoption.value = GroupList[i];
+                                    $("#GroupCombo").append(youoption);     
+                                    $("#GroupName").val(GroupList[0]);                        
+                              }
+                        }
+                        var sessRole = dataArr[0].StaffRole;
+                        var Mobiles = dataArr[0].Mobiles;
+                  }
+                  $("#hideDeptName").val(sessDept);                  
+                  $("#hideFlowRole").val(sessRole);
+                  $("#hidePhone").val(Mobiles);
             },
             error: function () {
             }
-      })   
+      })
 }

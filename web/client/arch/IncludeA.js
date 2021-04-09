@@ -161,9 +161,10 @@ function searchFile(mode) {
                           btn: ['是', '否']
                       }, function () {
                           layer.msg('操作成功', { icon: 1 });
+                          var arrange = 'ReturnBill';
                           var reportType = 'rejectFee';
                           var taskData = {
-                              "reportType": reportType, "BillNo": Parts_BillNo, "Subject": CapSubject, "TotalValue": CapTotalValue, 
+                              "reportType": reportType,  "arrange": arrange, "BillNo": Parts_BillNo, "Subject": CapSubject, "TotalValue": CapTotalValue, 
                               "CurWorkId": sessionAID, "CurName": sessionName ,"CurJob": CapCurJob,
                               "CurPhone": CapPhone
                           }

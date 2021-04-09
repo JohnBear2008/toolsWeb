@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-02 10:16:51
- * @LastEditTime: 2021-03-22 15:40:45
+ * @LastEditTime: 2021-04-08 16:28:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
@@ -24,6 +24,12 @@ const getUrl = (type) => {
             break;
         case 'person':
             apiUrl = 'getPerson'
+            break;
+        case 'bom':
+            apiUrl = 'getBom'
+            break;
+        case 'installInfo':
+            apiUrl = 'getInstallInfo'
             break;
 
 

@@ -187,7 +187,7 @@ function magnesium(selectValue, obj) {
 function aluminium(selectValue, obj) {
 	let dataArr = [];
       var reportType = 'ironSubject';
-      var arrange = 'findOrigDtl';
+      var arrange = 'OrigLinkDtl';
       var taskData = { "reportType": reportType, "arrange": arrange };
       $.ajax({
             method: 'post',

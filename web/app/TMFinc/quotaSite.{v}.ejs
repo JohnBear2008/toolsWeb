@@ -37,6 +37,10 @@
 			<div class="layui-inline">
 				<input class="can-find-M140" name="mainYear" id="mainYear" value="" autocomplete="off">
 			</div>
+			<label>月份:</label>
+			<div class="layui-inline">
+				<input class="can-find-M140" name="mainMonth" id="mainMonth" value="" autocomplete="off">
+			</div>
 			<label>部門:</label>
 			<div class="layui-inline">
 				<select id="DeptCombo" class="can-find-M140" type="text" value=""></select>
@@ -47,15 +51,6 @@
 			<hr>
 		</div>
 	</div><!-- modal fade -->
-	<div class="pdf-wrapper" id="pdf-wrapper" style="width:900px; background-color: aliceblue;">
-		<!--数据呈现区-->
-		<table id="center_TB" class="table table-striped table-bordered">
-			<thead id="content">
-
-			</thead>
-		</table>
-	</div>
-	</div>
 	<!--打开-->
 	<div id="DelivFilter" class="easyui-window" title="预算详细" closed="true" style="width:1000px;height:600px;">
 		<form style="padding:10px 50px;">
@@ -73,6 +68,15 @@
 				<button id="quotaCanBtn" type="button" class="btn btn-warning">关闭</button>
 			</div>
 		</div>
+	</div>
+	<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+		<!--数据呈现区-->
+		<table id="center_TB" class="table table-striped table-bordered">
+			<thead id="content">
+
+			</thead>
+		</table>
+	</div>
 	</div>
 	<div id="root" style="height: 100%"></div>
 	<script>
@@ -154,11 +158,11 @@
 				var youoption = document.createElement("option");
 				youoption.id = "mainkind";
 				youoption.name = "mainkind";
-				youoption.text = "项目预算";
+				youoption.text = "预算内额度";
 				youoption.value = "0";
 				$("#mainkind").append(youoption);
 				youoption = document.createElement("option");
-				youoption.text = "副总预算";
+				youoption.text = "预算外额度";
 				youoption.value = "1";
 				$("#mainkind").append(youoption);
 			});
@@ -197,6 +201,7 @@
 			var orderBy = '';
 			$("#center_TB").dataTable().fnDestroy();
 			var BudYear = $('#mainYear').val();
+			var BudMonth = $('#mainMonth').val();
 			var DeptCombo = $('#DeptCombo').val();
 			let PropList = [];
 			if (DeptCombo != "" && DeptCombo != undefined) {
@@ -213,7 +218,10 @@
 			} else if (Formkind == '1') {
 				var arrange = 'LookCredit';
 			}
-			var Advstr = { "Pattern": Pattern, "Formkind": Formkind, "BudYear": BudYear, "DeptName": DeptName, "limit": limit };
+			var Advstr = {
+				"Pattern": Pattern, "Formkind": Formkind, "BudYear": BudYear, "BudMonth": BudMonth,
+				"DeptName": DeptName, "limit": limit
+			};
 			var taskData = { "reportType": reportChannel, "arrange": arrange };
 			console.log("裴虎", taskData);
 			$.ajax({
@@ -260,16 +268,17 @@
 				var dataSelect = table.row('.selected').data();
 				var data = table.row(this).data();
 				var BudgetCID = dataSelect.BudgetCID; BudgetCID = myTrim(BudgetCID);
-				var StaffId = dataSelect.StaffId; StaffId = myTrim(StaffId);
+				// var StaffId = dataSelect.StaffId; StaffId = myTrim(StaffId);
 				var BudYear = dataSelect.BudYear; BudYear = myTrim(BudYear);
+				var BudMonth = dataSelect.BudMonth; BudMonth = myTrim(BudMonth);
 				var DeptName = dataSelect.DeptName; DeptName = myTrim(DeptName);
 				var Formkind = $('#mainkind').val();
 				if (Formkind == '0') {
-					showDBQuota(BudgetCID, DeptName , BudYear);
+					showDBQuota(BudgetCID, DeptName, BudYear);
 				} else if (Formkind == '1') {
-					showDBCredit(StaffId, BudYear);
+					showDBCredit(BudYear, BudMonth);
 				}
-				
+
 				$('#DelivFilter').window('open');
 				$("#DelivFilter").addClass("active")
 			});
@@ -284,13 +293,14 @@
 			reloadCol();
 			showDBDataSelf(DataPara, columnsData, Pattern);
 		});
-		function showDBQuota( BudgetCID, DeptName ,BudYear) {
+		function showDBQuota(BudgetCID, DeptName, BudYear) {
 			var DataPara = {
 				"tableID": "#middle_TB",
 				"DBTable": "play"
 			}
 			columnsData = [
 				{ data: 'DBID', "visible": false },
+				{ data: 'Subject', "visible": true, "width": "15%" },
 				{ data: 'BudgetCID', "visible": true, "width": "15%" },
 				{ data: 'BudgetItem', "visible": true, "width": "15%" },
 				{ data: 'BudYear', "visible": true, "width": "10%" },
@@ -304,6 +314,7 @@
 			var invent = '<tr>'
 				+ '<th></th>'
 				+ '<th>项目号</th>'
+				+ '<th>项目名</th>'
 				+ '<th>项目名</th>'
 				+ '<th>年</th>'
 				+ '<th>日期</th>'
@@ -336,16 +347,17 @@
 				},
 			});
 		}
-		function showDBCredit( StaffId, BudYear) {
+		function showDBCredit(BudYear, BudMonth) {
 			var DataPara = {
 				"tableID": "#middle_TB",
 				"DBTable": "play"
 			}
 			columnsData = [
 				{ data: 'DBID', "visible": false },
-				{ data: 'StaffId', "visible": true, "width": "15%" },
-				{ data: 'StaffName', "visible": true, "width": "15%" },
+				{ data: 'BffType', "visible": true, "width": "15%" },
+				{ data: 'BffName', "visible": true, "width": "15%" },
 				{ data: 'BudYear', "visible": true, "width": "10%" },
+				{ data: 'BudMonth', "visible": true, "width": "10%" },
 				{ data: 'RequestDate', "visible": true, "width": "15%" },
 				{ data: 'BillNo', "visible": true, "width": "10%" },
 				{ data: 'SNNO', "visible": true, "width": "10%" },
@@ -356,6 +368,7 @@
 			var invent = '<tr>'
 				+ '<th></th>'
 				+ '<th>职工号</th>'
+				+ '<th>姓名</th>'
 				+ '<th>姓名</th>'
 				+ '<th>年</th>'
 				+ '<th>日期</th>'
@@ -369,7 +382,7 @@
 			$("#middle_TB").dataTable().fnDestroy();
 			var reportType = 'AnnualRpt';
 			var arrange = 'seeCredit';
-			var taskData = { "reportType": reportType, "arrange": arrange, "StaffId": StaffId, "BudYear": BudYear };
+			var taskData = { "reportType": reportType, "arrange": arrange, "BudYear": BudYear, "BudMonth": BudMonth };
 			$(DataPara.tableID).DataTable({
 				ajax: {
 					method: 'post',

@@ -21,7 +21,7 @@ module.exports = function (sender) {
     var flowGroup = '';
     var qryDept = '';
     var qryGroup = '';
-    var flowRole = '';
+    var FlowRole = '';
     var flowphone ='';
     if (arrange == 'confirm') {
         uptRuleStatus();
@@ -82,7 +82,7 @@ module.exports = function (sender) {
 
     }
     function validOrig() {
-        // if (flowRole != '文员') {
+        // if (FlowRole != '文员') {
         //     var retcode = { "status": "Fail", "message": "送审不成功，送审人必须为文员", "BillNo": BillNo };
         //     sender.success(retcode);
         //     console.log("嬴政虎", retcode);
@@ -134,16 +134,16 @@ module.exports = function (sender) {
                 }
                 if (MagName != "" && MagName != undefined) {
                     if(MagName == StaffName){
-                        flowRole = '部门主管';
-                        console.log("姜子牙", flowRole);
+                        FlowRole = '部门主管';
+                        console.log("姜子牙", FlowRole);
                     }
                 } else {
                     Flag = '0';
                 }
                 if (VipName != "" && VipName != undefined) {
                     if(VipName ==StaffName){
-                        flowRole = '副总';
-                        console.log("妲己", flowRole);
+                        FlowRole = '副总';
+                        console.log("妲己", FlowRole);
                     }
                 } else {
                     Flag = '0';
@@ -241,7 +241,7 @@ module.exports = function (sender) {
 
                             }
                             var CurLevel = '1';
-                            if (flowRole == '副总' || flowRole == '总经理' || flowRole == '财务总监'  || flowRole == 'CEO' || flowRole == '董事长' ) {
+                            if (FlowRole == '副总' || FlowRole == '总经理' || FlowRole == '财务总监'  || FlowRole == 'CEO' || FlowRole == '董事长' ) {
                               //出差单最高也是2
                                 CurWorkId = VipWorkId ;
                                 CurName = VipName;
@@ -249,14 +249,14 @@ module.exports = function (sender) {
                                 CurLevel = '2';
                                 VipDate = nulReplaceDate(VipDate);
                                 MagDate = ApplyDate;
-                            }else if (flowRole == '部门主管') {
+                            }else if (FlowRole == '部门主管') {
                                 CurWorkId = VipWorkId ;
                                 CurName = VipName;
                                 VipDate = nulReplaceDate(VipDate);
                                 MagDate = ApplyDate;
                                 CurJob = 'vip';
                                 CurLevel = '2';
-                            }else if (flowRole == '文员') {
+                            }else if (FlowRole == '文员') {
                                 CurWorkId = MagWorkId;
                                 CurName = MagName;
                                 VipDate = nulReplaceDate(VipDate);
@@ -473,11 +473,11 @@ module.exports = function (sender) {
                 if (sData[i].TicTotal != "" && sData[i].TicTotal != undefined) {
                     let paramList = [BillNo, SNNo, TrafficA, TrafficB, TrafficC,
                         TrafficD, TrafficE, TrafficF, TicTotal, InputVAT,
-                        TripDate, TripCust, TripRept, TripNote];
+                        TripDate, TripCust, TripRept, TripNote, EntryDate];
                     var SQLInsert = "INSERT INTO `bgu_tripdetail` (  `BillNo`  ,  `SNNo`  ,  `TrafficA`  ,  `TrafficB`  ,  `TrafficC`   , " +
                         " `TrafficD`  ,  `TrafficE`  ,  `TrafficF`  ,  `TicTotal`  ,  `InputVAT`  , " +
-                        " `TripDate` ,  `TripCust`  ,  `TripRept`  ,  `TripNote`  ) " +
-                        "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?  )";
+                        " `TripDate` ,  `TripCust`  ,  `TripRept`  ,  `TripNote` , `EntryDate`  ) " +
+                        "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?   )";
                     yjDBService.exec({
                         sql: SQLInsert,
                         parameters: paramList,
@@ -493,11 +493,11 @@ module.exports = function (sender) {
                 if (sData[i].TripDate != "" && sData[i].TripDate != undefined) {
                     let paramList = [BillNo, SNNo, TrafficA, TrafficB, TrafficC,
                         TrafficD, TrafficE, TrafficF, TicTotal, InputVAT,
-                        TripDate, TripCust, TripRept, TripNote];
+                        TripDate, TripCust, TripRept, TripNote , EntryDate];
                     var SQLInsert = "INSERT INTO `bgu_tripdetail` (  `BillNo`  ,  `SNNo`  ,  `TrafficA`  ,  `TrafficB`  ,  `TrafficC`   , " +
                         " `TrafficD`  ,  `TrafficE`  ,  `TrafficF`  ,  `TicTotal`  ,  `InputVAT`  , " +
-                        " `TripDate` ,  `TripCust`  ,  `TripRept`  ,  `TripNote`  ) " +
-                        "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?  )";
+                        " `TripDate` ,  `TripCust`  ,  `TripRept`  ,  `TripNote`, `EntryDate`  ) " +
+                        "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,? )";
                     yjDBService.exec({
                         sql: SQLInsert,
                         parameters: paramList,
@@ -578,7 +578,7 @@ module.exports = function (sender) {
         var DeptName = Basstr.DeptName;
         var GroupName = Basstr.GroupName;
         var StaffName = Basstr.StaffName;
-        var idleRole = Basstr.flowRole;
+        var idleRole = Basstr.FlowRole;
         var idlephone = Basstr.hidePhone;
         // var mobiles = ['17051095060'] ;
         var mobiles = [];

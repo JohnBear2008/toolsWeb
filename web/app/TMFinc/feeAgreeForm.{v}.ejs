@@ -21,7 +21,7 @@
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 <style type="text/css">
-	 
+
 </style>
 
 <script src="/js/PM/FileSaver.min.js"></script>
@@ -44,21 +44,21 @@
 			<div id="handout_wrap_inner"></div>
 			<h1>弘讯科技费用审批</h1>
 			<div class="btn-group" id='BTNGroupFilter'>
-				<button id="SeaAllBtn" class="btn btn-default" onclick="searchFile('0')">采购申请</button>
-				<button id="SeaAllBtn" class="btn btn-default" onclick="searchTravel('0')">出差申请</button>
+				<button id="SeaAllBtn" class="btn btn-default" onclick="searchFile('0')">采购费用</button>
+				<button id="SeaAllBtn" class="btn btn-default" onclick="searchTravel('0')">差旅费用</button>
 				<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
 				<input type="button" id="SeaDateBtn" onclick="searchByDate()" class="btn btn-info" value="查找" />
 			</div>
 			<hr>
 		</div>
 	</div>
-      <input type="hidden" id="hideDeptName" value="" />
-      <input type="hidden" id="hidePhone" value="" />
+	<input type="hidden" id="hideDeptName" value="" />
+	<input type="hidden" id="hidePhone" value="" />
 	<table class="layui-hide" id="test" lay-filter="test"></table>
 	<script type="text/html" id="toolbarDemo">
-      <div class="layui-btn-group userTable">
+      <!-- <div class="layui-btn-group userTable">
 	  <button class="layui-btn layui-btn-normal" lay-event="viewSumary">预览</button>
-      </div>
+      </div> -->
     </script>
 	<table id="demo" lay-filter="testbaby"></table>
 	<script type="text/html" id="barDemo">
@@ -78,7 +78,7 @@
 						</div>
 						<div id="listPrintViewDiv">
 						</div>
-						<div class="modal-footer">
+						<div  style="margin-left:400px;margin-top:15px;">
 							<button id="BtnAgree" type="button" class="btn btn-warning">同意</button>
 							<button id="BtnReject" type="button" class="btn btn-danger ">退回</button>
 							<button id="PrintConfirm" type="button" class="btn btn-info">打印</button>
@@ -128,164 +128,186 @@
 					</div>
 				</div>
 			</div>
-			<!-- fin 自定义过滤  -->
-			<script>
-				var missmode = '';
-				var missType = '';
-				var missAcute = '';
-				var missBcute = '';
-				var missCcute = '';
-				var missDcute = '';
-				var centerTable = null;
-				var objCenter = null;
-				var sessionName = '';
-				var sessionAID = '';
-				var sessionOID = '';
-				var Dingphone = '';
-				let sData = [];
-				var CapBillNo = '';
-				var CapTotalValue = '';
-				var CapCurJob = '';
-				var CapSubject = '';
-				var CapMode = '';
-				var CapPhone = '';
-				var Formkind = '';
-				var CapDate = '0';  //0 NoDate, 1 Date
-				$(document).ready(function () {
-					layui.use(['table', 'form', 'layedit', 'laydate'], function () {
-						sessionName = "<%-locals.session.yjUser.Name%>";
-						sessionAID = "<%-locals.session.yjUser.AID%>";
-						sessionOID = "<%-locals.session.yjUser.OID%>";
-						// if (sessionAID == 'tmCodeAdm' || sessionAID == 'Admin') {
-						// } else {
-						// 	chkPower(sessionOID);
-						// }
-						missType = getQueryString("missT");  //use by FormType 采购 差旅
-						var missTencode = decodeURI(missType);
-						missAcute = getQueryString("missA");  //use by choose Date
-						var missAencode = decodeURI(missAcute);
-						missBcute = getQueryString("missB");
-						var missBencode = decodeURI(missBcute);
-						missCcute = getQueryString("missC");
-						missDcute = getQueryString("missD");
-						missmode = getQueryString("missE");
-						$("#taskMakeDateB").val(missCcute);
-						$("#taskMakeDateE").val(missDcute);
-						if (missType == 'A') {
-							searchFile('0');
-						}
-						if (missType == 'B') {
-							searchTravel('0');
-						}
-						$('#SeaAllBtn').click();
+			<div>
+				<div class="modal fade" id="sweetwindow" title="驳回理由" tabindex="-1" role="dialog"
+					aria-labelledby="sweetwindowLabel" aria-hidden="true" style="top:300px;height:500px;"
+					data-backdrop="static">
+					<div class="modal-dialog" style="width:70%">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div id="PestViewDiv">
+									<label class="feeSubCol">输入驳回理由:</label>
+								</div>
+								<div class="panel panel-info">
+									<div class="panel-heading">
+										<input id="ReasonPest" class="form-control " size="16"
+											type="text" value="">
+									</div>
+
+									<div class="modal-footer">
+										<button id="PestConfirm" type="button"
+											class="btn btn-info">确定</button>
+										<button id="PestClose" type="button"
+											class="btn btn-primary"
+											>取消</button>
+									</div>
+								</div><!-- /.modal-content -->
+							</div><!-- /.modal -->
+						</div><!-- 总结 -->
+					</div><!-- /.modal -->
+				</div>
+				<!-- fin 自定义过滤  -->
+				<script>
+					var missmode = '';
+					var missType = '';
+					var missAcute = '';
+					var missBcute = '';
+					var missCcute = '';
+					var missDcute = '';
+					var centerTable = null;
+					var objCenter = null;
+					var sessionName = '';
+					var sessionAID = '';
+					var sessionOID = '';
+					var Dingphone = '';
+					let sData = [];
+					var CapBillNo = '';
+					var CapTotalValue = '';
+					var CapCurJob = '';
+					var CapSubject = '';
+					var CapMode = '';
+					var CapPhone = '';
+					var Formkind = '';
+					var CapDate = '0';  //0 NoDate, 1 Date
+					$(document).ready(function () {
+						layui.use(['table', 'form', 'layedit', 'laydate'], function () {
+							sessionName = "<%-locals.session.yjUser.Name%>";
+							sessionAID = "<%-locals.session.yjUser.AID%>";
+							sessionOID = "<%-locals.session.yjUser.OID%>";
+							// if (sessionAID == 'tmCodeAdm' || sessionAID == 'Admin') {
+							// } else {
+							// 	chkPower(sessionOID);
+							// }
+							missType = getQueryString("missT");  //use by FormType 采购 差旅
+							var missTencode = decodeURI(missType);
+							missAcute = getQueryString("missA");  //use by choose Date
+							var missAencode = decodeURI(missAcute);
+							missBcute = getQueryString("missB");
+							var missBencode = decodeURI(missBcute);
+							missCcute = getQueryString("missC");
+							missDcute = getQueryString("missD");
+							missmode = getQueryString("missE");
+							$("#taskMakeDateB").val(missCcute);
+							$("#taskMakeDateE").val(missDcute);
+							if (missType == 'A') {
+								searchFile('0');
+							}
+							if (missType == 'B') {
+								searchTravel('0');
+							}
+							$('#SeaAllBtn').click();
+						});
 					});
-				});
-				$('#BTNFitler').click(function () {
-					$('#DivFilter').window('open');
-					$('.form_date').datetimepicker({
-						language: 'zh-CN',
-						weekStart: 1,
-						todayBtn: 1,
-						autoclose: 1,
-						todayHighlight: 1,
-						startView: 2,
-						minView: 2,
-						forceParse: 0
+					$('#BTNFitler').click(function () {
+						$('#DivFilter').window('open');
+						$('.form_date').datetimepicker({
+							language: 'zh-CN',
+							weekStart: 1,
+							todayBtn: 1,
+							autoclose: 1,
+							todayHighlight: 1,
+							startView: 2,
+							minView: 2,
+							forceParse: 0
+						});
+						$("#BTNFitler").addClass("active")
 					});
-					$("#BTNFitler").addClass("active")
-				});
-				//过滤功能组 自定义过滤确认按钮-----NNN
-				$('#FilterComfirmBtnN').click(function () {
-					$('#DivFilter').window('close');
-				});
-				//过滤功能组 自定义过滤确认按钮-----
-				$('#FilterCancelBtnN').click(function () {
-					$("#taskMakeDateB").val("")
-					$("#taskMakeDateE").val("")
-				});
-				function doubleChk() {
-					var checkStatus = centerTable.checkStatus(objCenter.config.id);
-				}
-				$('#PrintConfirm').click(function () {
-					Print('#listPrintViewDiv', {
-						onStart: function () {
-							console.log('onStart', new Date())
-						},
-						onEnd: function () {
-							console.log('onEnd', new Date())
-						}
-					})
-				});
-				$('#BtnAgree').click(function () {
-					layer.confirm(sessionName + '审批同意，请确认操作是否无误？', {
-						btn: ['是', '否']
-					}, function () {
-						// var checkStatus = centerTable.checkStatus(objCenter.config.id); 
-						// var dataARR = (checkStatus.data);
-						// console.log("艺仁",JSON.stringify(checkStatus));
-						// console.log("敏希", (objCenter.config.id));
-						console.log("张良", CapPhone,"张良");
-						var reportType = 'agreeFee';
-						var taskData = {
-							"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject,
-							"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
-							"CurPhone": CapPhone,
-						}
-						console.log("到达胜利之前", taskData);
-						layer.alert("同意此笔审批号" + CapBillNo);
-						$('#kisswindow').modal('toggle');
-						$.ajax({
-							method: 'post',
-							data: taskData,
-							url: "/app/TMFinc/getRoute",
-							success: function (result) {
-								var DateB = $("#taskMakeDateB").val();
-								var DateE = $("#taskMakeDateE").val();
-								missType = CapMode;
-								var paramClearA = encodeURI(encodeURI(result.BillNo));
-								layer.confirm("申请文号" + result.BillNo + "已" + (result.message), {
-									btn: ['知道了']
-								}, function () {
-									layer.msg('操作成功', { icon: 1 });
-									window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + missType + "&missA=" + CapDate + "&missC=" + DateB + "&missD=" + DateE + " ";
-								});
+					//过滤功能组 自定义过滤确认按钮-----NNN
+					$('#FilterComfirmBtnN').click(function () {
+						$('#DivFilter').window('close');
+					});
+					//过滤功能组 自定义过滤确认按钮-----
+					$('#FilterCancelBtnN').click(function () {
+						$("#taskMakeDateB").val("")
+						$("#taskMakeDateE").val("")
+					});
+					function doubleChk() {
+						var checkStatus = centerTable.checkStatus(objCenter.config.id);
+					}
+					$('#PrintConfirm').click(function () {
+						Print('#listPrintViewDiv', {
+							onStart: function () {
+								console.log('onStart', new Date())
 							},
-							error: function () {
+							onEnd: function () {
+								console.log('onEnd', new Date())
 							}
 						})
-					}, function () {
-						layer.msg('无操作', { icon: 1 });
 					});
-				});
-				$('#BtnReject').click(function () {
-					layer.confirm(sessionName + '审批驳回，请确认操作是否无误？', {
-						btn: ['是', '否']
-					}, function () {
-						console.log("金詩", CapBillNo);
-						console.log("金詩", CapMode);
+					$('#BtnAgree').click(function () {
+						layer.confirm(sessionName + '审批同意，请确认操作是否无误？', {
+							btn: ['是', '否']
+						}, function () {
+							// var checkStatus = centerTable.checkStatus(objCenter.config.id); 
+							// var dataARR = (checkStatus.data);
+							// console.log("艺仁",JSON.stringify(checkStatus));
+							// console.log("敏希", (objCenter.config.id));
+							console.log("张良", CapPhone, "张良");
+							var reportType = 'agreeFee';
+							var taskData = {
+								"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject,
+								"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
+								"CurPhone": CapPhone,
+							}
+							// console.log("到达胜利之前", taskData);
+							layer.alert("同意此笔审批号" + CapBillNo);
+							$('#kisswindow').modal('toggle');
+							$.ajax({
+								method: 'post',
+								data: taskData,
+								url: "/app/TMFinc/getRoute",
+								success: function (result) {
+									console.log("到达胜利");
+									var DateB = $("#taskMakeDateB").val();
+									var DateE = $("#taskMakeDateE").val();
+									missType = CapMode;
+									var paramClearA = encodeURI(encodeURI(result.BillNo));
+									layer.confirm("申请文号" + result.BillNo + "已" + (result.message), {
+										btn: ['知道了']
+									}, function () {
+										layer.msg('操作成功', { icon: 1 });
+										window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + missType + "&missA=" + CapDate + "&missC=" + DateB + "&missD=" + DateE + " ";
+									});
+								},
+								error: function () {
+								}
+							})
+						}, function () {
+							layer.msg('无操作', { icon: 1 });
+						});
+					});
+					$('#BtnReject').click(function () {
+						$('#sweetwindow').modal('show');
+					});
+					$('#PestClose').click(function () {
+						$('#sweetwindow').modal('toggle');
+					});
+					$('#PestConfirm').click(function () {
+						var ReasonPest = $("#ReasonPest").val();
+						console.log("审批驳回，请输入原因", ReasonPest);
+						layer.alert("驳回此笔审批号");
+						var arrange = 'ReturnBill';
 						var reportType = 'rejectFee';
 						var taskData = {
-							"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject, 
-							"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, 
-							"CurJob": CapCurJob ,"CurPhone": CapPhone,
+							"reportType": reportType, "arrange": arrange, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject,
+							"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName,
+							"CurJob": CapCurJob, "CurPhone": CapPhone, "Reason": ReasonPest,
 						}
-						layer.alert("驳回此笔审批号" + CapBillNo);
-						$('#kisswindow').modal('toggle');
 						$.ajax({
 							method: 'post',
 							data: taskData,
 							url: "/app/TMFinc/getRoute",
 							success: function (result) {
-								// layer.confirm("驳回文号" + result.BillNo + "已" + (result.Status), {
-								// 	btn: ['知道了']
-								// }, function () {
-								// 	layer.msg('操作成功', { icon: 1 });
-								// 	var DateB = $("#taskMakeDateB").val();
-								// 	var DateE = $("#taskMakeDateE").val();
-								// 	missType = CapMode;
-								// 	var paramClearA = encodeURI(encodeURI(result.BillNo));
-								// 	window.location.href = "/app/TMFinc/feeAgreeForm?missT=" + missType + "&missA=" + CapDate + "&missC=" + DateB + "&missD=" + DateE + " ";
-								// });
 								var DateB = $("#taskMakeDateB").val();
 								var DateE = $("#taskMakeDateE").val();
 								missType = CapMode;
@@ -300,8 +322,7 @@
 							error: function () {
 							}
 						})
-					}, function () {
-						layer.msg('无操作', { icon: 1 });
+						$('#sweetwindow').modal('toggle');
+						$('#kisswindow').modal('toggle');
 					});
-				});
-			</script>
+				</script>

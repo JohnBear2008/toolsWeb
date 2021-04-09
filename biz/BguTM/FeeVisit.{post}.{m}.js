@@ -7,16 +7,23 @@ module.exports = function (sender) {
 	var Advstr = sender.req.query.Advstr;
 	var arrange = sender.req.query.arrange;
 	var BudYear = Advstr.BudYear;
+	var BudMonth = Advstr.BudMonth;
 	var Pattern = Advstr.Pattern;
 	var Formkind = Advstr.Formkind;
 	var DeptName = Advstr.DeptName;
 	let now = new Date();
 	var DeafYear = now.Format("yyyy");
+	var DeafMonth = now.Format("MM");
 	if (BudYear != "" && BudYear != "null" && BudYear != undefined && BudYear.length > 0) {
 
-	}else{
+	} else {
 		BudYear = DeafYear;
 	}
+	// if (BudMonth != "" && BudMonth != "null" && BudMonth != undefined && BudMonth.length > 0) {
+
+	// } else {
+	// 	BudMonth = DeafMonth;
+	// }
 	if (arrange == 'LookOrig') {
 		LookOrig();
 	}
@@ -28,17 +35,17 @@ module.exports = function (sender) {
 	}
 	function LookQuota() {
 		var filter = " 1=1 ";
-		var orderBy = ' BudgetItem  ';
+		var orderBy = ' Subject  ';
 		var limit = '5000';
 		var capacity = '';
 		var BudgetItem = '';
 		var SQLExecute =
-		// " select tba.`DBID` ,tba.BudgetCID,  tba.BudgetItem, tba.DeptName, " +
-		// " tba.AllowMoney , tba.IsOver,  tba.BudYear , tdtl.TotalValue " +
-		// " , tdtl.RequestDate , tba.Accumulate from bgu_quota tba " +
-		// " LEFT JOIN bgu_quotadetail tdtl on tba.BudgetItem  = tdtl.BudgetItem " ;
-		" select tba.`DBID` ,tba.BudgetCID,  tba.BudgetItem, tba.DeptName, " +
-		" tba.AllowMoney , tba.IsOver,  tba.BudYear  , tba.Accumulate , tba.Surplus from bgu_quota tba " ;
+			// " select tba.`DBID` ,tba.BudgetCID,  tba.BudgetItem, tba.DeptName, " +
+			// " tba.AllowMoney , tba.IsOver,  tba.BudYear , tdtl.TotalValue " +
+			// " , tdtl.RequestDate , tba.Accumulate from bgu_quota tba " +
+			// " LEFT JOIN bgu_quotadetail tdtl on tba.BudgetItem  = tdtl.BudgetItem " ;
+			" select tba.`DBID` , tba.Subject ,tba.BudgetCID,  tba.BudgetItem, tba.DeptName, " +
+			" tba.AllowMoney , tba.IsOver,  tba.BudYear  , tba.Accumulate , tba.Surplus from bgu_quota tba ";
 		if (BudYear != "" && BudYear != "null" && BudYear != undefined && BudYear.length > 0) {
 			capacity += " AND  tba.BudYear  = " + "'" + BudYear + "'  ";
 		}
@@ -77,10 +84,11 @@ module.exports = function (sender) {
 				rowsAsArray: false,
 				success: function (data) {
 					for (var i = 0; i < data.length; i++) {
-						var IsOverFix =data[i].IsOver ;
-						IsOverFix = (IsOverFix == 'Y'? ('是') :('否'));
+						var IsOverFix = data[i].IsOver;
+						IsOverFix = (IsOverFix == 'Y' ? ('是') : ('否'));
 						var obj = {
 							"DBID": data[i].DBID,
+							"Subject": data[i].Subject,
 							"BudgetCID": data[i].BudgetCID,
 							"BudgetItem": data[i].BudgetItem,
 							"DeptName": data[i].DeptName,
@@ -88,7 +96,7 @@ module.exports = function (sender) {
 							"IsOver": (IsOverFix),
 							"AllowMoney": data[i].AllowMoney,
 							"Accumulate": data[i].Accumulate,
-							"Surplus": data[i].Surplus,							 
+							"Surplus": data[i].Surplus,
 						}
 						dataArr.push(obj);
 					}
@@ -100,25 +108,25 @@ module.exports = function (sender) {
 	}
 	function LookCredit() {
 		var filter = " 1=1 ";
-		var orderBy = ' StaffName  ';
+		var orderBy = ' BudYear  ';
 		var limit = '5000';
 		var capacity = '';
-		var StaffName = '';
 		var SQLExecute =
-			" select tba.`DBID` ,tba.StaffId,  tba.StaffName, tba.DeptName,  tba.UpperLimit, tba.IsOver,  tba.BudYear ," +
-			" tba.Accumulate , tba.Surplus from  bgu_credit tba "  ;
-			// " select tba.`DBID` ,tba.StaffId,  tba.StaffName, tba.DeptName,  tba.UpperLimit, tba.IsOver,  tba.BudYear , tdtl.TotalValue " +
-			// " , tdtl.RequestDate , tba.Accumulate  from  bgu_credit tba     " +
-			// " LEFT JOIN bgu_creditdetail tdtl on tba.StaffName  = tdtl.StaffName   ";
+			// " select tba.`DBID` ,tba.StaffId,  tba.StaffName, tba.DeptName,  tba.UpperLimit, tba.IsOver,  tba.BudYear ," +
+			// " tba.Accumulate , tba.Surplus, tba.SNNO from  bgu_credit tba ";
+		" select tba.`DBID` , tba.BffType , tba.BffName ,tba.BudYear ,tba.BudMonth ,tba.UpperLimit, tba.IsOver, tba.Accumulate , tba.Surplus, tba.SNNO  from  bgu_buffer tba ";
 		if (BudYear != "" && BudYear != "null" && BudYear != undefined && BudYear.length > 0) {
 			capacity += " AND tba.BudYear  = " + "'" + BudYear + "'  ";
 		}
-		if (StaffName != "" && StaffName != "null" && StaffName != undefined && StaffName.length > 0) {
-			capacity += " AND tba.StaffName  = " + "'" + StaffName + "'   ";
+		if (BudMonth != "" && BudMonth != "null" && BudMonth != undefined && BudMonth.length > 0) {
+			capacity += " AND tba.BudMonth  = " + "'" + BudMonth + "'  ";
 		}
-		if (DeptName != "" && DeptName != "null" && DeptName != undefined && DeptName.length > 0) {
-			capacity += " AND tba.DeptName  = " + "'" + DeptName + "'   ";
-		}
+		// if (StaffName != "" && StaffName != "null" && StaffName != undefined && StaffName.length > 0) {
+		// 	capacity += " AND tba.StaffName  = " + "'" + StaffName + "'   ";
+		// }
+		// if (DeptName != "" && DeptName != "null" && DeptName != undefined && DeptName.length > 0) {
+		// 	capacity += " AND tba.DeptName  = " + "'" + DeptName + "'   ";
+		// }
 		if (filter != "" && filter != undefined) {
 			SQLExecute = SQLExecute + " WHERE " + filter;
 		}
@@ -148,20 +156,27 @@ module.exports = function (sender) {
 				rowsAsArray: false,
 				success: function (data) {
 					for (var i = 0; i < data.length; i++) {
-						var IsOverFix =data[i].IsOver ;
-						IsOverFix = (IsOverFix == 'Y'? ('是') :('否'));
+						var IsOverFix = data[i].IsOver;
+						IsOverFix = (IsOverFix == 'Y' ? ('是') : ('否'));
 						var obj = {
 							"DBID": data[i].DBID,
-							"StaffId": data[i].StaffId,
-							"StaffName": data[i].StaffName,
-							"DeptName": data[i].DeptName,
+							"BffType": data[i].BffType,
+							"BffName": data[i].BffName,
 							"BudYear": data[i].BudYear,
+							"BudMonth": data[i].BudMonth,
 							"IsOver": (IsOverFix),
 							"UpperLimit": data[i].UpperLimit,
 							"Accumulate": data[i].Accumulate,
 							"Surplus": data[i].Surplus,
+							"SNNO": data[i].SNNO,
 						}
 						dataArr.push(obj);
+						var dump = JSON.stringify(dataArr);
+						if (dump.length > 100) {
+							console.log("骨骼:" + dump.substring(0, 100));
+						} else {
+							console.log("骨骼:" + JSON.stringify(dataArr));
+						}
 					}
 					sender.success(dataArr);
 				},

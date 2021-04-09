@@ -37,7 +37,7 @@ module.exports = function (sender) {
 		var capacity = '';
 		var SQLExecute =
 			" SELECT  A.`DBID`, A.`BillNo`,  A.`ListNo`, A.`Formkind` ,A.`Subject` , A.`RequestDate`,  A.`ProjectNo`, A. `ApplicNo`,  " +
-			" A.`DeptName`, A.`StaffID`, A.`StaffName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
+			" A.`DeptName`, A.`StaffID`, A.`StaffName` ,trul.`MagName`  ,trul.`VipName`  , trul.`PurName`  ,trul.`PexName` ,trul.`CfoName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
 			"  A.`EntryDate`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
 			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.BudgetItem " +
 			"  from  bgu_purchmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
@@ -102,6 +102,11 @@ module.exports = function (sender) {
 							"DeptName": data[i].DeptName,
 							"StaffID": data[i].StaffID,
 							"StaffName": data[i].StaffName,
+							"MagName": data[i].MagName,
+							"VipName": data[i].VipName,
+							"PurName": data[i].PurName,
+							"PexName": data[i].PexName,
+							"CfoName": data[i].CfoName,
 							"TotalValue": data[i].TotalValue,
 							"Currency": data[i].Currency,
 							"Payment": data[i].Payment,
@@ -132,9 +137,9 @@ module.exports = function (sender) {
 		var limit = '5000';
 		var capacity = '';
 		var SQLExecute =
-			" SELECT  A.`DBID`, A.`BillNo`, A.`ApplicNo`, A.Formkind ,A.`Subject` , A.`BusiMan`, A.`BusiArea`, A.`LeaveDate`, A.`StaffID`, A.`StaffName`, A.`DeptName`, " +
-			"  A.`IsOver`, A. `Overspend`,   " +
-			"  A.`EntryDate`, A.`Explanation`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
+			" SELECT  A.`DBID`, A.`BillNo`, A.`ApplicNo`, A.Formkind ,A.`Subject` , A.`BusiMan`, A.`BusiArea`, A.`LeaveDate`, "+
+			" A.`StaffID`, A.`StaffName`, trul.`MagName`  ,trul.`VipName` ,trul.`PurName`  ,trul.`PexName`,trul.`CfoName` ,  A.`DeptName`,   A.`IsOver`, A. `Overspend`,   " +
+			" A.`EntryDate`, A.`Explanation`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
 			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.TicTotal " +
 			"  from  bgu_tripmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
 			"  LEFT JOIN bgu_tripdetail tdtl on A.billNo =tdtl.billNo  AND tdtl.SNNo = '1'  ";
@@ -197,6 +202,11 @@ module.exports = function (sender) {
 							"LeaveDate": data[i].LeaveDate,
 							"StaffID": data[i].StaffID,
 							"StaffName": data[i].StaffName,
+							"MagName": data[i].MagName,
+							"VipName": data[i].VipName,
+							"PurName": data[i].PurName,
+							"PexName": data[i].PexName,
+							"CfoName": data[i].CfoName,
 							"DeptName": data[i].DeptName,
 							"IsOver": data[i].IsOver,
 							"Overspend": data[i].Overspend,
