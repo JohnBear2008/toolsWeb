@@ -21,6 +21,7 @@ const getWarehouseSelector = "select warehouseId as value,warehouseName as optio
 //获取仓库产品清单
 const getStoreProductSelector = "select * from ( select ta.warehouseId,ta.stockNum,ta.PID as value,ta.PID as option,tb.productName as token from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId ) A"
 
+const getBomPartSelector = "select distinct partId as value,partId as option,partId as token from `rp_partlocations`";
 
 const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"

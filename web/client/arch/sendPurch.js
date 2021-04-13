@@ -226,6 +226,7 @@ function apply_hmi() {
       var DeptName = $('#hideDeptName').val();
       var GroupName = $('#GroupName').val();
       var FlowRole = $('#hideFlowRole').val();
+      var ItemNo = $('#ItemNo_1' ).val();
       if (DeptName != null || DeptName != undefined) {
 
       } else {
@@ -248,7 +249,7 @@ function apply_hmi() {
             var hidePhone = $('#hidePhone').val();
             var Basstr = {
                   "SendStatus": SendStatus, "hideBillNo": hideBillNo, "hidePhone": hidePhone, "edituse": edituse, "DeptName": DeptName,
-                  "GroupName": GroupName, "StaffName": StaffName, "FlowRole": FlowRole
+                  "GroupName": GroupName, "StaffName": StaffName,  "ItemNo": ItemNo, "FlowRole": FlowRole
             };
             var reportType = 'applyBudget';
             var arrange = 'confirm';
@@ -293,8 +294,6 @@ function apply_hmi() {
 //       putDing( Advstr);
 // }
 function save_hmi() {
-     
-     
       view_hmi();
       var oldStaffID = '';
       var oldStaffName = '';
@@ -408,6 +407,14 @@ function save_hmi() {
                   }
             }
             var ItemNo = $('#ItemNo_' + i).val();
+            if (ItemNo != null && ItemNo != undefined && ItemNo != '') {
+                  console.log("品名",ItemNo);
+                  if (ItemNo.length>45) {
+                        layer.alert("无法保存, 品名栏位请缩短!");
+                        return;
+                  }
+            }else{
+            }
             var Descript = $('#Descript_' + i).val();
             var Unit = $('#Unit_' + i).val();
             var Remain = $('#Remain_' + i).val();

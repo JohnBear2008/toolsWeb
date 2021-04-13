@@ -1344,8 +1344,9 @@
         let locationsArr = locationsStr.split(',');
 
         for (const n of locationsArr) {
-            // console.log('n', n);
-            if (n) {
+
+            if (n && n !== '\n') {
+                console.log('add', n, typeof n);
                 $('#' + i.elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
                     '</option>'));
             }
@@ -1560,16 +1561,7 @@
                     $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
                 }
 
-                await loadBootStrapSelector({
-                    elementId: 'rp_partsbillsForm-partId',
-                    sqlParams: {
-                        sql: 'getPartSelector',
-                        params: {
-                            filter: 'productId="' + $('#rp_recordbillsForm-productId').text() +
-                                '"'
-                        }
-                    },
-                })
+                await loadPartSelector();
 
                 await loadLocationsSelector({
                     elementId: 'rp_partsbillsForm-partLocation',
@@ -1953,6 +1945,53 @@
         partList = partList.substring(0, partList.length - 1);
 
         $('#rp_recordbillsForm-changePartList').text(partList);
+
+    }
+
+    //加载部件清单
+    const loadPartSelector = async () => {
+        let elementId = 'rp_partsbillsForm-partId';
+        let productId = $('#rp_recordbillsForm-productId').text()
+        let options = []
+
+        let bomOptions = await getDataBySql({
+            sql: 'getBomPartSelector',
+            params: {
+                filter: 'productId="' + productId + '"'
+            }
+        })
+
+        if (bomOptions.length > 0) {
+            options = bomOptions
+        } else {
+            let partOptions = await getDataBySql({
+                sql: 'getProductSelector',
+                params: {
+                    filter: 'partBelong="零件"'
+                }
+            })
+            options = partOptions
+
+        }
+
+        loadDataBootStrapSelector({
+            elementId: elementId,
+            options: options
+        })
+
+
+
+
+        // await loadBootStrapSelector({
+        //     elementId: 'rp_partsbillsForm-partId',
+        //     sqlParams: {
+        //         sql: 'getPartSelector',
+        //         params: {
+        //             filter: 'productId="' + $('#rp_recordbillsForm-productId').text() +
+        //                 '"'
+        //         }
+        //     },
+        // })
 
     }
 
@@ -2420,16 +2459,7 @@
             // $('#rp_partsbillsForm-partLocation').unbind();
             $('#rp_partsbillsForm-partId').unbind();
 
-            await loadBootStrapSelector({
-                elementId: 'rp_partsbillsForm-partId',
-                sqlParams: {
-                    sql: 'getPartSelector',
-                    params: {
-                        filter: 'productId="' + $('#rp_recordbillsForm-productId').text() +
-                            '"'
-                    }
-                },
-            })
+            await loadPartSelector();
 
             await loadBootStrapSelector({
                 elementId: 'rp_partsbillsForm-partLocation',

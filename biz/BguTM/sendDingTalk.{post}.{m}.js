@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-02-22 14:59:19
+ * @LastEditTime: 2021-04-13 10:27:04
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \toolsWeb\biz\BguTM\sendDingTalk.{post}.{m}.js
+ */
 module.exports = function (sender) {
 
 	const msg = sender.req.query.msg;
@@ -22,7 +30,8 @@ module.exports = function (sender) {
 
 	const requestData = JSON.stringify(textMsg);
 
-	const token = "5b4fd0a118117ab5fb1e674cedd287de0a73835549586de601035f33b747d543" //测试群
+	const token = "854558d6b78ffb409b8fa639b5b62949608847051fe302d51dfe5dc465093a5d" //测试群
+
 	const url = 'oapi.dingtalk.com';
 	const req = https.request({
 		hostname: url,

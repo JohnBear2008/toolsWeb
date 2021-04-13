@@ -531,6 +531,44 @@ const loadBootStrapSelector = async ({
 
 
 /**
+ *加载bootStrapSelect 数据
+ *
+ * @param {*} i={elementId,options,initValue}
+ */
+const loadDataBootStrapSelector = async ({
+    elementId,
+    options,
+    initValue
+}) => {
+
+    $('#' + elementId).empty(); //清空原有选项
+    // $("#extraSelect1").selectpicker('refresh'); //刷新
+    $('#' + elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+
+    $('#' + elementId).selectpicker({
+        noneSelectedText: "未选择", //默认显示内容
+        // width: '100%' //弹出框宽度
+    });
+
+    if (!options) {
+        $('#' + elementId).append($('<option value="">未选择</option>'));
+        return
+    }
+
+    for (const n of options) {
+        $('#' + elementId).append($('<option  data-tokens=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+    }
+    if (initValue) {
+        $('#' + elementId).selectpicker('val', initValue);
+    } else {
+        $('#' + elementId).selectpicker('val', '');
+    }
+
+    $('#' + elementId).selectpicker('refresh');
+
+}
+
+/**
  *加载多个有相同参数的selector
  *
  * @param {*} {elementIds,sqlParams,initValue}

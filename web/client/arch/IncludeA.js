@@ -58,6 +58,7 @@ function searchFile(mode) {
                       , { field: 'BillNo', title: '系统号', width: 140, sort: true }
                       , { field: 'ListNo', title: '表单编号', width: 100, sort: true }
                       , { field: 'Subject', title: '科目', width: 0, hide: true }
+                      , { field: 'ItemNo', title: '品名', width: 0, hide: true }
                       , { field: 'VipName', title: '副总', width: 0, hide: true }
                       , { field: 'BudgetItem', title: '项目', width: 100, sort: true }
                       , { field: 'RequestDate', title: '申请日期', width: 110, sort: true }
@@ -88,6 +89,7 @@ function searchFile(mode) {
                           CapSubject = dataARR[0].Subject;
                           CapCurJob = dataARR[0].CurJob;
                           CapPhone = dataARR[0].CurPhone;
+                          CapItemNo = dataARR[0].ItemNo;
                           var BudgetItem = dataARR[0].BudgetItem;
                           var VipName = dataARR[0].VipName;
                           var DeptName = dataARR[0].DeptName;
@@ -113,9 +115,10 @@ function searchFile(mode) {
                   var BudgetItem = data.BudgetItem;
                   var VipName = data.VipName;
                   var DeptName = data.DeptName;
+                  CapItemNo = data.ItemNo;
                   CapCurJob = data.CurJob;
                   CapPhone = data.CurPhone;
-                  console.log("都市闲情", (CapPhone));
+                  console.log("都市闲情", (CapItemNo));
                   if (obj.event === 'analysis') {
                       VegasA(Parts_BillNo , BudgetItem , DeptName, VipName   );
                       CapBillNo = Parts_BillNo;
@@ -129,8 +132,8 @@ function searchFile(mode) {
                           var reportType = 'agreeFee';
                           var taskData = {
                               "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": Formkind, "Subject": CapSubject,
-                              "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
-                              "CurPhone": CapPhone,
+                              "ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName,
+                              "CurJob": CapCurJob, "CurPhone": CapPhone,
                             }
                           layer.alert("同意此笔审批号" + Parts_BillNo);
                           console.log("下立",taskData);
@@ -143,7 +146,7 @@ function searchFile(mode) {
                                   var DateE = $("#taskMakeDateE").val();
                                   var paramType = CapMode;
                                   var paramClearA = encodeURI(encodeURI(Parts_BillNo));
-                                  layer.confirm("菜购申请文号" + result.BillNo + "已" + (result.message), {
+                                  layer.confirm("采购申请文号" + result.BillNo + "" + (result.message), {
                                                         btn: ['知道了']
                                   }, function () {
                                       layer.msg('操作成功', { icon: 1 });

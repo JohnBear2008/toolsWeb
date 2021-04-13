@@ -2897,6 +2897,7 @@
 
             $("#rp_recordbillsForm-status").text('新增')
             $("#rp_recordbillsForm-productId").selectpicker('val', '')
+            $("#rp_recordbillsForm-origin").selectpicker('val', '宁波')
             $("#rp_recordbillsForm-productFrom").selectpicker('val', '终端客户')
             $("#rp_recordbillsForm-productBelong").selectpicker('val', '客户')
             $("#rp_recordbillsForm-isRework").selectpicker('val', '否')
@@ -3398,7 +3399,7 @@
             sqlParams: {
                 sql: 'getProductSelector',
                 params: {
-                    filter: 'partBelong in ("面板","主机","驱动器","马达")',
+                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
                 }
             },
         })
@@ -3467,7 +3468,7 @@
                 params: {
                     filter: 'optionClass="原产地"',
                     orderBy: 'orderId'
-                }
+                },
             },
         })
 

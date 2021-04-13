@@ -98,7 +98,7 @@ module.exports = function (sender) {
 		var limit = '5000';
 		var capacity = '';
 		let SQLExecute =
-			" SELECT tba.*, trul.CurWorkId, trul.CurName , trul.CurJob , trul.VipName ,tdel.BudgetItem from  bgu_purchmain tba " +
+			" SELECT tba.*, trul.CurWorkId, trul.CurName , trul.CurJob , trul.VipName ,tdel.ItemNo ,tdel.BudgetItem from  bgu_purchmain tba " +
 			" LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo   " +
 			" LEFT JOIN bgu_purchdetail tdel on tdel.BillNo  =tba.BillNo  and SNNo='1' " +
 			" where trul.CurStatus ='P' and trul.SendStatus ='D' ";
@@ -142,6 +142,7 @@ module.exports = function (sender) {
 						"BillNo": ((data[i].BillNo == null || data[i].BillNo == undefined) ? ('') : data[i].BillNo),
 						"Subject": ((data[i].Subject == null || data[i].Subject == undefined) ? ('') : data[i].Subject),
 						"ListNo": ((data[i].ListNo == null || data[i].ListNo == undefined) ? ('') : data[i].ListNo),
+						"ItemNo": ((data[i].ItemNo == null || data[i].ItemNo == undefined) ? ('') : data[i].ItemNo),
 						"RequestDate": ((data[i].RequestDate == null || data[i].RequestDate == undefined) ? ('') : data[i].RequestDate),
 						"ProjectNo": ((data[i].ProjectNo == null || data[i].ProjectNo == undefined) ? ('') : data[i].ProjectNo),
 						"ApplicNo": ((data[i].ApplicNo == null || data[i].ApplicNo == undefined) ? ('') : data[i].ApplicNo),

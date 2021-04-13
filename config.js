@@ -2,6 +2,7 @@ let yjSecurity = require('./yjSecurity')
 
 var fs = require("fs");
 
+// let pweT9 = 'TVaX3EUu8YLju8UV/9keI26SATPqYyRw8QtfTn5aOWofEa0KEfBPE6qxtas1vw7KzjRDkY5yuZupa+ZYToglYy6socUR5jUOQzuM+lZNTiXrIGcog9jerMI/RFVNqWTBdkmOpTiO3gOKLtUuOAz+MHU3Vnq2unsi1lKEvEc5g3v9ML6C846csqtn+Ql1mepcErTBMylS64MPTpWTp2L+4UeBES0/a/Hj+yQ4nd4SC1SECz9/0wJZjPcZBXYpk7mkTYzq646PgpAIdWqUmk7SY4gW2BNjwXbG4+gdoQ/34R+oAxv/K86x++wVnJi3Wulp+zyk1UoPaaRFjbLrONgENw=='
 
 
 
@@ -10,7 +11,7 @@ let pweT9 = 'TVaX3EUu8YLju8UV/9keI26SATPqYyRw8QtfTn5aOWofEa0KEfBPE6qxtas1vw7KzjR
 console.log(yjSecurity["Diffie-Hellman"].decrypt(pwe));
 
 // let test='do4dmJ+R6Y0oHXujQRoR3XHXM80OQNw0uEo4JLPE4vYhnJceGgqWRVmeEgN6J5sXPzD79qVuFnXVOAI3nm6c+arlQroHOqdVaG5yu99HunMkvKkrjG06GzsQQe56NMpmFzC2112TyyUsnNMdVzj1Et89d3pwDMNG1gqX++MRFSZ4k8LvPqoIeZKgolhYzO3cMI3ga7CTk7OXFAUUsN5mGWyWZ74ORYw6uMIMHypN8LIo3RnIrP/oSW0tLPWqc2ThipnN/DOvNJaA08nQ5/F/Qs1a3KoF+FOBhEsVwmsT6BiacifBCctDY9gx9Qs0JyZKYvgTSHs6YzzanMu7JH4++Q=='
-// console.log(yjSecurity["Diffie-Hellman"].decrypt(test));
+console.log(yjSecurity["Diffie-Hellman"].decrypt(pweT9));
 
 var path = require("path");
 var g_dbConenctions = {
