@@ -67,6 +67,7 @@ var g_dbConenctions = {
             password: 338168,
         },
     }
+
 };
 var config = {
     port: 2019,
@@ -135,7 +136,9 @@ var config = {
             certPath: path.join(__dirname, './cert/server.crt')
         },
         bodyParser: {
-            json:{limit:"100mb"},
+            json: {
+                limit: "100mb"
+            },
             urlencoded: {
                 limit: "100mb",
                 parameterLimit: 100000000

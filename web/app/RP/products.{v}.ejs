@@ -66,7 +66,7 @@
                         <th>产品类别</th>
                         <th>系统分类</th>
                         <th>所属部件</th>
-
+                        <th>有效性</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -248,6 +248,8 @@
             data: 'systemType',
         }, {
             data: 'productClass',
+        }, {
+            data: 'effective',
         }
     ]
 
@@ -434,7 +436,8 @@
         console.log('T9Data', T9Data);
 
         let MainTableData = MainTable.rows().data();
-        let RPData = []
+        let RPData = [];
+        let RPNewData = [];
         for (let i = 0; i < MainTableData.length; i++) {
             RPData.push(MainTableData[i]);
 
@@ -456,25 +459,32 @@
             }
             //不存在的物料如何处理,预留
             if (!match) {
+                n['effective'] = '是'
                 RPData.push(n)
+                RPNewData.push(n)
             }
         }
-        console.log('newRPData', RPData);
+        console.log('RPNewData', RPNewData);
 
+
+        if (RPNewData.length === 0) {
+            alert('未检测到新数据');
+            return
+        }
 
         let r1 = await postDBData({
             sql: 'replace',
             params: {
                 tableId: 'rp_products',
-                data: RPData,
+                data: RPNewData,
                 key: 'productId'
             }
         })
 
         console.log('r1', r1);
-        if (r1) {
+        if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成')
+            alert('同步完成,成功同步' + r1.affectedRows + '条新数据!')
         }
     }
 

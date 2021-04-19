@@ -51,6 +51,9 @@
         <button type="button" style="display: none;" id="rp_staffsNew">
             新增
         </button>
+        <button type="button" style="display: none;" id="rp_staffsDelete">
+            删除
+        </button>
     </div>
 
 
@@ -507,6 +510,8 @@
     }
 
     const syncErpData = async () => {
+
+
         let T9Data = await getT9Data({
             to: 'RP',
             type: 'person',
@@ -516,6 +521,7 @@
 
         let MainTableData = MainTable.rows().data();
         let RPData = []
+        let RPNewData = [];
         for (let i = 0; i < MainTableData.length; i++) {
             RPData.push(MainTableData[i]);
 
@@ -527,47 +533,130 @@
             for (let m of RPData) {
                 if (m.staffName === n.staffName) {
                     match = true
-                    for (const p in m) {
-                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
-                            switch (p) {
-                                case 'staffId':
-                                    m[p] = n['UID']
-                                    break;
-                                case 'birthday':
-                                    m[p] = dateFormat(new Date(n[p]), 'yyyy-mm-dd');
-                                    break;
-                                default:
-                                    m[p] = n[p]
-                                    break;
-                            }
-                        }
-                    }
+                    // for (const p in m) {
+                    //     if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+                    //         switch (p) {
+                    //             case 'staffId':
+                    //                 m[p] = n['UID']
+                    //                 break;
+                    //             case 'birthday':
+                    //                 m[p] = dateFormat(new Date(n[p]), 'yyyy-mm-dd');
+                    //                 break;
+                    //             default:
+                    //                 m[p] = n[p]
+                    //                 break;
+                    //         }
+                    //     }
+                    // }
                     break;
                 }
             }
             //不存在的物料如何处理,预留
             if (!match) {
-                RPData.push(n)
+                // RPData.push(n)
+
+                console.log('n', n);
+
+
+                let newStaff = {
+                    UID: n.staffId,
+                    address: n.address,
+                    birthday: T9DateFormat(n.birthday),
+                    city: "",
+                    contact: "",
+                    contactPhone: "",
+                    education: n.education,
+                    effective: "是",
+                    entryDate: T9DateFormat(n.entryDate),
+                    homePhone: n.homePhone,
+                    identity: n.identity,
+                    inservice: "在职",
+                    mobilePhone: n.mobilePhone,
+                    pinyin: Pinyin.GetJP(n.staffName).toUpperCase(),
+                    position: "",
+                    region: "",
+                    remark: "",
+                    sex: n.sex,
+                    staffId: n.staffId,
+                    staffName: n.staffName,
+                    workPhone: n.mobilePhone,
+                    zipcode: ""
+                }
+                RPNewData.push(newStaff)
             }
         }
-        console.log('newRPData', RPData);
+        console.log('newRPData', RPNewData);
 
+        if (RPNewData.length === 0) {
+            alert('未检测到新数据');
+            return
+        }
+
+        // return;
 
         let r1 = await postDBData({
             sql: 'replace',
             params: {
                 tableId: 'rp_staffs',
-                data: RPData,
-                key: 'DBID'
+                data: RPNewData,
+                // key: 'DBID'
             }
         })
 
         console.log('r1', r1);
-        if (r1) {
+        if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成')
+            alert('同步完成,成功同步' + r1.affectedRows + '条新数据!')
 
         }
+    }
+
+
+    const deleteStaff = async () => {
+
+        //check-选中检查
+        let table = $('#rp_staffs').DataTable();
+        let rowsSelect = table.rows('.selected').data();
+        console.log('rowsSelect', rowsSelect);
+
+        if (rowsSelect.length === 0) {
+            alert('请先选中需要删除的人员')
+            return
+        }
+
+        // //check-系统产品是否包含检查
+        // for (let i = 0; i < rowsSelect.length; i++) {
+        //     if (rowsSelect[i].isSystemOption === '是') {
+        //         alert('选中产品中包含系统产品,无法删除')
+        //         return
+        //     }
+        // }
+
+        //do-删除人员
+        let DBIDArr = []
+        for (let i = 0; i < rowsSelect.length; i++) {
+            DBIDArr.push(rowsSelect[i].DBID)
+        }
+
+        let r1 = await postDBData({
+            sql: 'delete',
+            params: {
+                tableId: 'rp_staffs',
+                data: DBIDArr
+            }
+        })
+
+        //return-结果提醒
+        if (r1.affectedRows > 0) {
+            alert('删除成功')
+        } else {
+            alert('出现错误')
+        }
+        //return-重载表格
+        // loadBillMainTable();
+
+        MainTable.ajax.reload() //内置函数重加载
+
     }
 
 
@@ -593,6 +682,11 @@
         //客户新增按钮
         $('#rp_staffsNew').click(function () {
             addStaff();
+        })
+
+        //产品新增按钮
+        $('#rp_staffsDelete').click(function () {
+            deleteStaff();
         })
 
         //表单保存按钮

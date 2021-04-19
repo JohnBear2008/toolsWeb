@@ -1561,7 +1561,9 @@
                     $('#rp_partsbillsForm').find('select,input,textarea').attr("disabled", true);
                 }
 
-                await loadPartSelector();
+                await loadPartSelector({
+                    type: 'bom'
+                });
 
                 await loadLocationsSelector({
                     elementId: 'rp_partsbillsForm-partLocation',
@@ -1949,7 +1951,9 @@
     }
 
     //加载部件清单
-    const loadPartSelector = async () => {
+    const loadPartSelector = async ({
+        type
+    }) => {
         let elementId = 'rp_partsbillsForm-partId';
         let productId = $('#rp_recordbillsForm-productId').text()
         let options = []
@@ -1961,26 +1965,30 @@
             }
         })
 
-        if (bomOptions.length > 0) {
-            options = bomOptions
-        } else {
-            let partOptions = await getDataBySql({
-                sql: 'getProductSelector',
-                params: {
-                    filter: 'partBelong="零件"'
-                }
-            })
-            options = partOptions
 
+
+        switch (type) {
+            case 'all':
+                let partOptions = await getDataBySql({
+                    sql: 'getProductSelector',
+                    params: {
+                        filter: 'partBelong="零件"'
+                    }
+                })
+
+                let arr = bomOptions.concat(partOptions)
+                options = Array.from(arr)
+                break;
+            default:
+                options = bomOptions
+                break;
         }
+
 
         loadDataBootStrapSelector({
             elementId: elementId,
             options: options
         })
-
-
-
 
         // await loadBootStrapSelector({
         //     elementId: 'rp_partsbillsForm-partId',
@@ -2459,7 +2467,9 @@
             // $('#rp_partsbillsForm-partLocation').unbind();
             $('#rp_partsbillsForm-partId').unbind();
 
-            await loadPartSelector();
+            await loadPartSelector({
+                type: 'bom'
+            });
 
             await loadBootStrapSelector({
                 elementId: 'rp_partsbillsForm-partLocation',
