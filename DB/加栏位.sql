@@ -1,0 +1,1 @@
+ alter table `bgu_purchmain` add COLUMN `UnitName` CHAR(20) COLLATE utf8_bin DEFAULT NULL after `DeptName`

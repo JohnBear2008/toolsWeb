@@ -45,52 +45,53 @@
                         style="margin-left:30px">采&nbsp;&nbsp;&nbsp;&nbsp;购</a>
                 <a class="layui-btn layui-btn-info" id="btn_apply_B"
                         style="margin-left:30px">差&nbsp;&nbsp;&nbsp;&nbsp;旅</a>
-                <a class="layui-btn layui-btn-info" id="btn_apply_C" style="margin-left:30px">私车公用</a>
-                <a class="layui-btn layui-btn-info" id="btn_apply_D" style="margin-left:30px">修&nbsp;缮&nbsp;费</a>
+                <!-- <a class="layui-btn layui-btn-info" id="btn_apply_C" style="margin-left:30px">私车公用</a>
+                <a class="layui-btn layui-btn-info" id="btn_apply_D" style="margin-left:30px">修&nbsp;缮&nbsp;费</a> -->
         </div>
         <table width="1100" border="2" style="margin-left:30px" align="center">
                 <tr>
-                        <td width="100" rowspan="2" colspan="3" height="50" align="center"><img
+                        <td width="100"  colspan="2" rowspan="2" height="50" align="center"><img
                                         src="/images/techmation.png" /></td>
                         <td colspan="6" align="center">
                                 <h3>宁波弘讯科技股份有限公司</h3>
                         </td>
-                        <td colspan="2" align="center" class="coffee-drop"></td>
+                        <td colspan="2" align="center" ></td>
                 </tr>
                 <tr>
                         <td colspan="6" align="center">
                                 <h3>NINGBO TECHMATION CO.,LTD.</h3>
                         </td>
-                        <td colspan="2" bgcolor="#FAF0E6" align="center">表单编号:<input name="ListNo" id="ListNo"
-                                        type="text" size="20" class="feetitel" value="系统" readonly> </td>
+                        <td colspan="2" bgcolor="#FAF0E6" >表单编号:<input name="ListNo" id="ListNo"
+                                        type="text"   class="feeDrop" value="系统" readonly> </td>
                         <input type="hidden" id="hideBillNo" value="" />
                         <input type="hidden" id="hideDeptName" value="" />
                         <input type="hidden" id="GroupName" value="" />
                         <input type="hidden" id="hideFlowRole" value="" />
                         <input type="hidden" id="hidePhone" value="" />
+                        <input type="hidden" id="hideUnit" value="" />
                 </tr>
                 <tr>
-                        <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">计划案号：<input name="ProjectNo"
-                                        id="ProjectNo" type="text" size="20" class="feetitel" value=""> </td>
-                        <td width="50" rowspan="2" colspan="5" height="25" align="center">
+                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">计划案号：<input name="ProjectNo"
+                                        id="ProjectNo" type="text" size="20" class="feeDrop" value=""> </td>
+                        <td width="50" colspan="6"  rowspan="2" height="25" align="center">
                                 <h3>采购申请单</h3>
                         </td>
-                        <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">
+                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">
                                 申请日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input name="RequestDate" id="RequestDate" type="date" class="feetitel" size="20"
+                                <input name="RequestDate" id="RequestDate" type="date" class="feeDrop" size="20"
                                         value="">
                         </td>
                 </tr>
                 <tr>
-                        <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">使用部门:&nbsp;&nbsp;
-                                <!-- <input id="GroupName"
-                                name="GroupName" type="text" class="feeDrop" size="20" class="feeSubCol"
-                                        value="" readonly></input> -->
+                        <td width="50" bgcolor="#FAF0E6" colspan="1" height="25">提交部门:&nbsp;&nbsp;
                                 <select id="GroupCombo" name="GroupCombo" class="can-find-M180"></select>
                         </td>
-                        <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">申请单编号:
+                        <td width="50" bgcolor="#FAF0E6" colspan="1" height="25">使用部门:&nbsp;&nbsp;
+                                <select id="UnitCombo" name="UnitCombo" class="can-find-M180"></select>
+                        </td>
+                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">申请单编号:
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input name="ApplicNo" id="ApplicNo" type="text" size="20" class="feetitel" value="系统"
+                                <input name="ApplicNo" id="ApplicNo" type="text" size="20" class="feeDrop" value="系统"
                                         readonly>
                         </td>
                 </tr>
@@ -105,7 +106,6 @@
                         <td width="50" class="feeSubCol">交期</td>
                         <td width="50" class="feeSubCol">供货商</td>
                         <td width="50" class="feeSubCol">剩余额度</td>
-                        <td width="50" class="feeSubCol">使用部门</td>
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -116,9 +116,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_1" id="ItemNo_1" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_1" id="Descript_1" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_1" id="Unit_1" type="text" size="10" value=""
                                         class="feefield"></input></td>
 
@@ -134,9 +134,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_1" id="Remain_1" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_1" id="Department_1" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_1" id="Department_1" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -147,9 +147,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_2" id="ItemNo_2" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_2" id="Descript_2" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_2" id="Unit_2" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_2" id="UnitPrice_2" type="text" size="10"
@@ -164,9 +164,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_2" id="Remain_2" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_2" id="Department_2" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_2" id="Department_2" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -177,9 +177,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_3" id="ItemNo_3" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_3" id="Descript_3" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_3" id="Unit_3" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_3" id="UnitPrice_3" type="text" size="10"
@@ -194,9 +194,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_3" id="Remain_3" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_3" id="Department_3" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_3" id="Department_3" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -207,9 +207,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_4" id="ItemNo_4" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_4" id="Descript_4" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_4" id="Unit_4" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_4" id="UnitPrice_4" type="text" size="10"
@@ -224,9 +224,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_4" id="Remain_4" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_4" id="Department_4" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_4" id="Department_4" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -237,9 +237,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_5" id="ItemNo_5" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_5" id="Descript_5" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_5" id="Unit_5" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_5" id="UnitPrice_5" type="text" size="10"
@@ -254,9 +254,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_5" id="Remain_5" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_5" id="Department_5" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_5" id="Department_5" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -267,9 +267,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_6" id="ItemNo_6" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_6" id="Descript_6" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_6" id="Unit_6" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_6" id="UnitPrice_6" type="text" size="10"
@@ -284,9 +284,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_6" id="Remain_6" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_6" id="Department_6" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_6" id="Department_6" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -297,9 +297,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_7" id="ItemNo_7" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_7" id="Descript_7" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_7" id="Unit_7" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_7" id="UnitPrice_7" type="text" size="10"
@@ -314,9 +314,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_7" id="Remain_7" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_7" id="Department_7" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_7" id="Department_7" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -327,9 +327,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_8" id="ItemNo_8" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_8" id="Descript_8" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_8" id="Unit_8" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_8" id="UnitPrice_8" type="text" size="10"
@@ -344,9 +344,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_8" id="Remain_8" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_8" id="Department_8" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_8" id="Department_8" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -357,9 +357,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_9" id="ItemNo_9" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_9" id="Descript_9" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_9" id="Unit_9" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_9" id="UnitPrice_9" type="text" size="10"
@@ -374,9 +374,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_9" id="Remain_9" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_9" id="Department_9" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_9" id="Department_9" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" height="25">
@@ -387,9 +387,9 @@
                                 </div>
                         </td>
                         <td width="50" height="25"><input name="ItemNo_10" id="ItemNo_10" type="text" size="10" value=""
-                                        class="feeDrop"></input></td>
+                                        class="feeBigDrop"></input></td>
                         <td width="50" height="25"><input name="Descript_10" id="Descript_10" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                        value="" class="feeDrop"></input></td>
                         <td width="50" height="25"><input name="Unit_10" id="Unit_10" type="text" size="10" value=""
                                         class="feefield"></input></td>
                         <td width="50" height="25"><input name="UnitPrice_10" id="UnitPrice_10" type="text" size="10"
@@ -405,9 +405,9 @@
                                         value="" class="feefield"></input></td>
                         <td width="50" height="25"><input name="Remain_10" id="Remain_10" type="text" size="10" value=""
                                         class="feefield" readonly></input></td>
-                        <td width="50" height="25"><input name="Department_10" id="Department_10" type="text" size="10"
+                        <!-- <td width="50" height="25"><input name="Department_10" id="Department_10" type="text" size="10"
                                         value="" class="feefield"></input>
-                        </td>
+                        </td> -->
                 </tr>
                 <tr>
                         <td width="50" rowspan="4" colspan="5" height="25">申请说明： <br />
@@ -425,19 +425,19 @@
                                         class="feeDrop"></input>
                         </td>
                         <td width="50" bgcolor="#FAF0E6" colspan="1" height="25">总金额</td>
-                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25"><input name="TotalValue"
-                                        id="TotalValue" bgcolor="#FAF0E6" type="text" size="30" value=""
-                                        class="feetitel" readonly></td>
+                        <td width="50" bgcolor="#FAF0E6" height="25"><input name="TotalValue"
+                                        id="TotalValue" bgcolor="#FAF0E6" type="text"   value=""
+                                        class="feefield" readonly></td>
                 </tr>
                 <tr>
                         <td width="50" bgcolor="#FAF0E6" colspan="1" height="25">币别</td>
-                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25"><input name="Currency" id="Currency"
-                                        bgcolor="#FAF0E6" type="text" size="30" value="RMB" class="feetitel"></td>
+                        <td width="50" bgcolor="#FAF0E6" colspan="1" height="25"><input name="Currency" id="Currency"
+                                        bgcolor="#FAF0E6" type="text"  value="RMB" class="feefield"></td>
                 </tr>
                 <tr>
                         <td width="50" bgcolor="#FAF0E6" colspan="1" height="25">付款方式</td>
-                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25"><input name="Payment" id="Payment"
-                                        bgcolor="#FAF0E6" type="text" size="30" value="" class="feetitel"></td>
+                        <td width="50" bgcolor="#FAF0E6" colspan="1" height="25"><input name="Payment" id="Payment"
+                                        bgcolor="#FAF0E6" type="text"   value="" class="feefield"></td>
                 </tr>
                 <tr>
                         <td width="50" colspan="3" bgcolor="#FAF0E6" height="25">说明： <br />
@@ -446,7 +446,7 @@
                         </td>
                 </tr>
         </table>
-        <table width="1285" border="1" style="margin-left:30px" align="center">
+        <table width="1340" border="1" style="margin-left:30px" align="center">
                 <tr>
                         <td id="manOP" width="50" class="feeSubCol" colspan="1">申请人</td>
                         <td id="mandpt" width="50" class="feeSubCol" colspan="1">部门主管</td>
@@ -526,6 +526,10 @@
 		var missJcute = '';
                 var edituse = 'C';
                 var editmoney = '';
+                var CeoName ='';
+                var BodName ='';
+                var CapAlert = '0';  //0 不超过, 1 超过
+                var CapBossOver = 'N';  //N 不送BOSS, Y 送BOSS
                 $(document).ready(function () {
                         sessionName = "<%-locals.session.yjUser.Name%>";
                         sessionOID = "<%-locals.session.yjUser.OID%>";
@@ -548,6 +552,7 @@
                                 FlowerBasic();
                                 FlowerBase();
                                 obtLogGroup(sessionName);
+                                obtLogUnit(sessionName);
                                 let now = new Date();
                                 var defaultDate = now.Format("yyyy-MM-dd");
                                 $('#RequestDate').val(defaultDate);
@@ -579,10 +584,12 @@
                         addCacuFeeListener();
                         addGroupListener();
                         addRoleListener();
+                        addUnitListener();
                         RolePlay();
                         // var dropText = 'A006-办公费-商标费';
                         // $("#BudgetCombo_1").val( 'A006-办公费-商标费');
                         // $("#BudgetCombo_1").html( 'A006-办公费-商标费');
+                       
                 });
 
                 $('#btn_apply_A').click(function () {
@@ -637,8 +644,8 @@
                 const addCacuFeeListener = () => {
                         $("#UnitPrice_1, #UnitPrice_2, #UnitPrice_3, #UnitPrice_4, #UnitPrice_5, #UnitPrice_6, #UnitPrice_7, #UnitPrice_8, #UnitPrice_9, #UnitPrice_10,#Quantity_1, #Quantity_2, #Quantity_3, #Quantity_4, #Quantity_5, #Quantity_6, #Quantity_7, #Quantity_8, #Quantity_9, #Quantity_10")
                                 .on("change", function () {
-                                        view_hmi();
-                                });
+                                        view_hmi(this);
+                        });
                 }
                 const addGroupListener = () => {
                         $("#GroupName,#searchbox_1,#searchbox_2,#searchbox_3,#searchbox_4,#searchbox_5,#searchbox_6,#searchbox_7,#searchbox_8,#searchbox_9,#searchbox_10")
@@ -650,6 +657,12 @@
                         $("#GroupCombo")
                                 .on("change", function () {
                                         RolePlay();
+                                });
+                }
+                const addUnitListener = () => {
+                        $("#UnitCombo")
+                                .on("change", function () {
+                                        UnitPlay();
                                 });
                 }
                 $('#FilterComfirmBtnN').click(function () {

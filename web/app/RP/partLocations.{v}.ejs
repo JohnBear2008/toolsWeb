@@ -392,48 +392,66 @@
         })
         console.log('T9Data', T9Data);
 
-        // let MainTableData = MainTable.rows().data();
-        // let RPData = []
-        // for (let i = 0; i < MainTableData.length; i++) {
-        //     RPData.push(MainTableData[i]);
+        let MainTableData = MainTable.rows().data();
+        let RPData = []
+        for (let i = 0; i < MainTableData.length; i++) {
+            RPData.push(MainTableData[i]);
 
-        // }
-        // console.log('RPData', RPData);
+        }
 
-        // for (const n of T9Data) {
-        //     let match = false
-        //     for (let m of RPData) {
-        //         if (m.productId === n.productId) {
-        //             match = true
-        //             for (const p in m) {
-        //                 if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
-        //                     m[p] = n[p]
-        //                 }
-        //             }
-        //             break;
-        //         }
-        //     }
-        //     //不存在的物料如何处理,预留
-        //     if (!match) {
-        //         RPData.push(n)
-        //     }
-        // }
-        // console.log('newRPData', RPData);
+        if (T9Data.length === RPData.length) {
+            alert('未检查到新数据!')
+            return
+        }
+
+        console.log('RPData', RPData);
+
+        let newRPData = []
+
+        //优化方案
+        for (let i = 0; i < T9Data.length; i++) {
+            for (let j = 0; j < RPData.length; j++) {
+                if (T9Data[i].productId === RPData[j].productId && T9Data[i].partId === RPData[j].partId) {
+                    match = true
+                    RPData.splice(j, 1)
+                    break;
+                }
+            }
+
+            if (!match) {
+                let newRow = {
+                    productId: n.productId,
+                    partId: n.partId,
+                    locations: n.locations,
+                    num: n.num,
+                    remark: n.remark
+                }
+                newRPData.push(newRow)
+            }
+        }
+
+
+        console.log('newRPData', newRPData);
+
+        if (newRPData.length === 0) {
+            alert('未检查到新数据!')
+            return
+        }
 
 
         let r1 = await postDBData({
             sql: 'replace',
             params: {
                 tableId: 'rp_partlocations',
-                data: T9Data,
+                data: newRPData,
                 // key: 'productId'
             }
         })
 
         console.log('r1', r1);
-        if (r1) {
+        if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成')
+            alert('同步完成' + r1.affectedRows + '条新数据!')
         }
     }
 

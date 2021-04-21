@@ -85,7 +85,6 @@ function FlowerBase() {
       }
 }
 function FlowerBasic() {
-      //applyPage
       let dataArr = [];
       var reportType = 'ironSubject';
       var arrange = 'itemBasic';
@@ -112,7 +111,6 @@ function FlowerBasic() {
                               $("#searchbox_" + ki).append(youoption);
                         }
                   }
-
             },
             error: function () {
             }
@@ -183,20 +181,64 @@ function getDrop() {
       youoption.value = "B";
       $("#CapMode").append(youoption);
 }
-function RolePlay(){
-      var DeptShow ='';
-      var GroupShow ='';
+function UnitPlay() {
+      var UnitCombo = $('#UnitCombo').val();
+      $("#hideUnit").val(UnitCombo);
+      console.log("枪尖", UnitCombo);
+
+      for (let i = 1; i <= 10; i++) {
+            $("#BudgetCombo_" + i).val('');
+            $("#BudgetCombo_" + i).html('');
+      }
+}
+function RolePlay() {
+      var DeptShow = '';
+      var GroupShow = '';
       var GroupCombo = $('#GroupCombo').val();
-      $("#GroupName").val(GroupCombo);  
+      $("#GroupName").val(GroupCombo);
       let PropList = [];
       if (GroupCombo != "" && GroupCombo != undefined) {
             PropList = GroupCombo.split('-');
             for (var ki = 0; ki < PropList.length; ki++) {
                   DeptShow = PropList[0];
                   GroupShow = PropList[1];
-                  console.log("枪尖",DeptShow,"在燃烧",GroupShow);
             }
       }
+}
+function obtLogUnit(loginName) {
+      let dataArr = [];
+      var reportType = 'ironSubject';
+      var arrange = 'LinkUnit';
+      var taskData = { "reportType": reportType, "arrange": arrange, "loginName": loginName };
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMFinc/getRoute",
+            success: function (data) {
+                  dataArr = data;
+                  $("#UnitCombo").val(); $("#UnitCombo").html("");
+                  for (var i = 0; i < dataArr.length; i++) {
+                        var sessUnit = dataArr[i].DeptName;
+                        var myUnit = dataArr[i].DeptLabel;
+                        if (sessUnit != "" && sessUnit != undefined) {
+                              var youoption = document.createElement("option");
+                              youoption.text = sessUnit;
+                              youoption.id = "citytime";
+                              youoption.name = "citytime";
+                              youoption.value = sessUnit;
+                              if (youoption.text == myUnit) {
+                                    console.log("王者", sessUnit, "不可阻", myUnit);
+                                    youoption.selected = "selected";
+                                    $("#hideUnit").val(sessUnit);
+                              }
+                              $("#UnitCombo").append(youoption);
+                        }
+                  }
+                 
+            },
+            error: function () {
+            }
+      })
 }
 function obtLogGroup(loginName) {
       let dataArr = [];
@@ -209,31 +251,54 @@ function obtLogGroup(loginName) {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
-                  if(dataArr.length>0){
+                  if (dataArr.length > 0) {
                         var sessDept = dataArr[0].DeptLabel;
                         var qryGroup = dataArr[0].GroupLabel;
                         let GroupList = [];
                         if (qryGroup != "" && qryGroup != undefined) {
-                              console.log("男子汉",qryGroup );
+                              console.log("男子汉", qryGroup);
                               GroupList = qryGroup.split(',');
                               $("#GroupCombo").val(); $("#GroupCombo").html("");
-                              console.log("汉子",GroupList.length );
                               for (var i = 0; i < GroupList.length; i++) {
                                     var youoption = document.createElement("option");
                                     youoption.text = GroupList[i];
                                     youoption.id = "kisstime";
                                     youoption.name = "kisstime";
                                     youoption.value = GroupList[i];
-                                    $("#GroupCombo").append(youoption);     
-                                    $("#GroupName").val(GroupList[0]);                        
+                                    $("#GroupCombo").append(youoption);
+                                    $("#GroupName").val(GroupList[0]);
                               }
                         }
                         var sessRole = dataArr[0].StaffRole;
                         var Mobiles = dataArr[0].Mobiles;
                   }
-                  $("#hideDeptName").val(sessDept);                  
+                  $("#hideDeptName").val(sessDept);
                   $("#hideFlowRole").val(sessRole);
                   $("#hidePhone").val(Mobiles);
+            },
+            error: function () {
+            }
+      })
+}
+function obtCurText(BillNo) {
+      let dataArr = [];
+      var reportType = 'ironSubject';
+      var arrange = 'LinkCurText';
+      var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo };
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMFinc/getRoute",
+            success: function (data) {
+                  dataArr = data;
+                  if (dataArr.length > 0) {
+                        var CurText = dataArr[0].CurText;
+                        if (CurText == '核准' || CurText == '结算') {
+                              loadCaseA(BillNo);
+                        } else {
+                              layer.alert("表单状态不对，不可结算");
+                        }
+                  }
             },
             error: function () {
             }

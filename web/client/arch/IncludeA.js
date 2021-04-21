@@ -109,6 +109,7 @@ function searchFile(mode) {
               });
               table.on('tool(test)', function (obj) {
                   var data = obj.data;
+                //   console.log("都市闲情", (data));
                   var Parts_BillNo = data.BillNo;
                   var CapTotalValue = data.TotalValue;
                   var CapSubject = data.Subject;
@@ -118,14 +119,21 @@ function searchFile(mode) {
                   CapItemNo = data.ItemNo;
                   CapCurJob = data.CurJob;
                   CapPhone = data.CurPhone;
-                  console.log("都市闲情", (CapItemNo));
+                //   console.log("都市闲情", (CapItemNo));
                   if (obj.event === 'analysis') {
                       VegasA(Parts_BillNo , BudgetItem , DeptName, VipName   );
                       CapBillNo = Parts_BillNo;
                       // <DIV STYLE="page-break-before:always">
                       $('#kisswindow').modal('show');
                   } else if (obj.event === 'approval') {
-                      layer.confirm('进行审批同意吗，请确认操作是否无误？', {
+                      var message = '';
+                      if(CapAlert=='1'){
+                           message ='进行审批同意吗，请确认操作是否无误？';
+                      }else{
+                           message ='部份项目预算已超过 ，请确认是否进行审批同意？';
+                      }
+                      console.log("挥棒猖狂人间",CapAlert);
+                      layer.confirm(message, {
                           btn: ['是', '否']
                       }, function () {
                           layer.msg('操作成功', { icon: 1 });

@@ -88,7 +88,6 @@
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal -->
 			</div><!-- 总结 -->
-			<!-- 点击自定义过滤弹出的窗口 -->
 			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
 				style="width:800px;height:400px;">
 				<div class="form-horizontal">
@@ -180,6 +179,7 @@
 					var CapPhone = '';
 					var Formkind = '';
 					var CapDate = '0';  //0 NoDate, 1 Date
+					var CapAlert = '0';  //0 不超过, 1 超过
 					$(document).ready(function () {
 						layui.use(['table', 'form', 'layedit', 'laydate'], function () {
 							sessionName = "<%-locals.session.yjUser.Name%>";
@@ -246,7 +246,13 @@
 						})
 					});
 					$('#BtnAgree').click(function () {
-						layer.confirm(sessionName + '审批同意，请确认操作是否无误？', {
+						var message = '';
+						if(CapAlert=='1'){
+							message ='部份项目预算已超过 ，请确认是否进行审批同意？';
+						}else{
+							message ='进行审批同意吗，请确认操作是否无误？';
+						}
+						layer.confirm(message, {
 							btn: ['是', '否']
 						}, function () {
 							// var checkStatus = centerTable.checkStatus(objCenter.config.id); 

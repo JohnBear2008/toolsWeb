@@ -50,6 +50,7 @@
 			<input type="button" id="btn_apply" class="btn btn-info" onclick="apply_hmi();" value="送审" />
 			<input type="button" id="MdfyBtn" class="btn btn-info" value="编辑" />
 			<input type="button" id="PurFixBtn" class="btn btn-info" value="采购" />
+			<!-- <input type="button" id="ExpFillBtn" class="btn btn-info" value="结算" /> -->
 			<input type="button" id="VoidBtn" class="btn btn-info" value="作废" />
 			<hr>
 			<br />
@@ -247,7 +248,8 @@
 			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
 			$("#matchRec").html("查找条件:" + signTxt);
 			var reportChannel = 'FeeHead';
-			var taskData = { "reportType": reportChannel, "arrange": CapMode };
+			var arrange = 'Fee';
+			var taskData = { "reportType": reportChannel, "arrange": arrange , "pick": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -257,7 +259,7 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskData = { "reportType": reportType, "arrange": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskData = { "reportType": reportType, "arrange": arrange , "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskData, newColumns);
 				},
 				error: function () {
@@ -274,8 +276,8 @@
 			var signTxt = signoption.text();
 			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "CapMode": CapMode, "limit": limit };
 			var reportChannel = 'FeeHead';
-			var arrange = 'Lookup';
-			var taskData = { "reportType": reportChannel, "arrange": CapMode };
+			var arrange = 'Fee';
+			var taskData = { "reportType": reportChannel,  "arrange": arrange , "pick": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -285,7 +287,7 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskType = { "reportType": reportType, "arrange": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskType = { "reportType": reportType,  "arrange": arrange , "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskType, newColumns);
 				},
 				error: function () {
@@ -565,6 +567,48 @@
 					}
 					if (CapMode == 'B') {
 						window.location.href = "/app/TMFinc/feeTravel?missT=" + paramType  + "&missJ=" + paramJump + "&missG=" + paramDept +  "&missP=" + paramPur +"&missA=" + paramClearA + " ";
+					}
+				}, function () {
+					layer.msg('无操作', { icon: 1 });
+				});
+			}
+		});
+		$('#ExpFillBtn').click(function () {
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			if (dataSelect == undefined) {
+				alert("当前未选择任何数据,请先点击需要的数据行!");
+			} else {
+				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+				var CurText = dataSelect.CurText;
+				var StaffName = dataSelect.StaffName;
+				var PurName = dataSelect.PurName;
+				var PexName = dataSelect.PexName;
+				var CfoName = dataSelect.CfoName;
+				var DeptName = dataSelect.DeptName;
+				if (CurText != '核准') {
+					layer.msg('非核准状态 ， 此单不能结算', { icon: 1 });
+					return;
+				}
+				// if (sessionName == PurName || sessionName == PexName || sessionName == CfoName) {
+				// 	// console.log("鲨嘴炮",PurName,"流星尾",PurName,"轰",sessionName,"空中",DeptName);
+				// }else{
+				// 	layer.msg('非采购承办人或采购主管或财务人员 ， 此单不能结算', { icon: 1 });
+				// 	return;
+				// }
+				layer.confirm(billNo + '进入结算作业，请确认操作是否无误？', {
+					btn: ['是', '否']
+				}, function () {
+					var paramClearA = encodeURI(encodeURI(billNo));
+					var paramType = '';
+					var paramPur = 'Reim';
+					var paramDept = encodeURI(encodeURI(DeptName));
+					var paramJump = encodeURI(encodeURI(sessionName));
+					if (CapMode == 'A') {
+						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
+					}
+					if (CapMode == 'B') {
+						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType  + "&missJ=" + paramJump + "&missG=" + paramDept +  "&missP=" + paramPur +"&missA=" + paramClearA + " ";
 					}
 				}, function () {
 					layer.msg('无操作', { icon: 1 });

@@ -34,7 +34,6 @@ function DDRobotMsgSender(divMsg) {
 		console.error(err);
 	});
 	req.end();
-
 }
 
 
@@ -46,7 +45,7 @@ const CreateDDMsgText = (I, O) => {
 
 	let DDText = "";
 	for (let i = 0; i < I.DDMsg.length; i++) {
-		DDText = DDText + I.DDMsg[i].msg + '@' + I.DDMsg[i].at + '\n\n';
+		DDText = DDText + I.DDMsg[i].msg + '@' + I.DDMsg[i].at + '\n\n' + '登录地址:http://192.168.0.9:2019/app/TMFinc/feeAgreeForm';
 	}
 	console.log("DDText:" + DDText)
 
@@ -86,10 +85,6 @@ const CreateDDMsgText = (I, O) => {
 }
 
 
-
-
-
-
 //i={sql:''}
 const sendBillsUndoneDDMsg = async (i, o) => {
 
@@ -112,7 +107,7 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 			console.log("R1.length:" + R1.length)
 
-		
+
 
 			switch (R1.length) {
 				case 0:
@@ -228,8 +223,8 @@ let O;
 // 通知任务---------
 var j1 = schedule
 	.scheduleJob({
-			hour: 13,
-			minute: 19,
+			hour: 08,
+			minute: 32,
 			dayOfWeek: [1, 2, 3, 4, 5]
 
 		},
@@ -242,8 +237,8 @@ var j1 = schedule
 
 var j2 = schedule
 	.scheduleJob({
-			hour: 13,
-			minute: 35,
+			hour: 16,
+			minute: 20,
 			dayOfWeek: [1, 2, 3, 4, 5]
 
 		},

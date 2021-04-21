@@ -16,8 +16,7 @@ module.exports = function (sender) {
   var FlowBudget = sender.req.query.FlowBudget;
   var FlowVip = sender.req.query.FlowVip;
   var FlowDept = sender.req.query.FlowDept; 
-  var FlowUnit = ''; 
-  console.log("常乐 ", FlowUnit ,qryBillNo, FlowVip, FlowBudget);
+  console.log("及时 ", qryBillNo );
   var orderBy = '';
   var limit = '500';
   var capacity = '';
@@ -43,6 +42,7 @@ module.exports = function (sender) {
             var UnitPrice = '';
             var Quantity = '';
             var Subtotal = '';
+            var Realtotal = '';
             var Delivery = '';
             var Supplier = '';
             var Underburget = '';
@@ -62,6 +62,7 @@ module.exports = function (sender) {
               UnitPrice = result[1][i].UnitPrice; UnitPrice = nulReplaceTxt(UnitPrice);
               Quantity = result[1][i].Quantity; Quantity = nulReplaceTxt(Quantity);
               Subtotal = result[1][i].Subtotal; Subtotal = nulReplaceTxt(Subtotal);
+              Realtotal = result[1][i].Realtotal; Realtotal = nulReplaceTxt(Realtotal);
               Delivery = result[1][i].Delivery; Delivery = nulReplaceTxt(Delivery);
               Supplier = result[1][i].Supplier; Supplier = nulReplaceTxt(Supplier);
               Underburget = result[1][i].Underburget; Underburget = nulReplaceTxt(Underburget);
@@ -81,6 +82,7 @@ module.exports = function (sender) {
               "UnitPrice": UnitPrice,
               "Quantity": Quantity,
               "Subtotal": Subtotal,
+              "Realtotal": Realtotal,
               "Delivery": Delivery,
               "Supplier": Supplier,
               "Underburget": Underburget,
@@ -102,11 +104,11 @@ module.exports = function (sender) {
               "ProjectNo": result[0][0].ProjectNo,
               "ApplicNo": result[0][0].ApplicNo,
               "GroupName": result[0][0].GroupName,
-              "UnitName": result[0][0].UnitName,
               "DeptName": result[0][0].DeptName,
               "StaffID": result[0][0].StaffID,
               "StaffName": result[0][0].StaffName,
               "TotalValue": result[0][0].TotalValue,
+              "RealValue": result[0][0].RealValue,
               "Currency": result[0][0].Currency,
               "Payment": result[0][0].Payment,
               "Explanation": result[0][0].Explanation,
@@ -199,8 +201,8 @@ module.exports = function (sender) {
       // var BillNo = '20201225103088';
       let SQL2 =
         " select  `BillNo` , `SNNo` , `Subject` , `BudgetCID` , `BudgetItem` , `ItemNo` , `Description` , `Unit` , " +
-        " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Delivery` , `Supplier` ,  `Underburget` ,  `AppendType` ,`Department` " +
-        " from bgu_purchdetail tba  " +
+        " `Remain` , `UnitPrice` ,  `Quantity` , `Subtotal` , `Realtotal` , `Delivery` , `Supplier` ,  `Underburget` ,  `AppendType` ,`Department` " +
+        " from bgu_expdetail tba  " +
         " where tba.BillNo= ?  Order By SNNo ";
       yjDBService.exec({
         sql: SQL2,
@@ -223,6 +225,7 @@ module.exports = function (sender) {
               "UnitPrice": data[i].UnitPrice,
               "Quantity": data[i].Quantity,
               "Subtotal": data[i].Subtotal,
+              "Realtotal": data[i].Realtotal,
               "Delivery": data[i].Delivery,
               "Supplier": data[i].Supplier,
               "Underburget": data[i].Underburget,
@@ -240,8 +243,8 @@ module.exports = function (sender) {
       // var BillNo = '20201225093185';
       let SQL2 =
         " select  `Subject`, `BudgetCID` , `BudgetItem`, `BillNo` , `ListNo` , `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-        "`GroupName` , `UnitName` , `DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
-        " from bgu_purchmain tba  " +
+        "`GroupName` ,  `DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `RealValue` , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
+        " from bgu_expmain tba  " +
         " where tba.BillNo= ?   ";
       yjDBService.exec({
         sql: SQL2,
@@ -253,18 +256,18 @@ module.exports = function (sender) {
           for (var i = 0; i < data.length; i++) {
             var temp = {
               "BillNo": data[i].BillNo,
-              "ListNo":  (data[i].ListNo==undefined ? '' :data[i].ListNo),
+              "ListNo": data[i].ListNo,
               "Subject": data[i].Subject,
               "BudgetCID": data[i].BudgetCID,
               "BudgetItem": data[i].BudgetItem,
               "RequestDate": data[i].RequestDate,
-              "ProjectNo": (data[i].ProjectNo==undefined ? '' :data[i].ProjectNo),
-              "ApplicNo": (data[i].ApplicNo==undefined ? '' :data[i].ApplicNo),
+              "ProjectNo": data[i].ProjectNo,
+              "ApplicNo": data[i].ApplicNo,
               "GroupName": data[i].GroupName,
-              "UnitName": (data[i].UnitName==undefined ? '' :data[i].UnitName),
               "DeptName": data[i].DeptName,
               "StaffID": data[i].StaffID,
               "StaffName": data[i].StaffName,
+              "RealValue": data[i].RealValue,
               "TotalValue": data[i].TotalValue,
               "Currency": data[i].Currency,
               "Payment": data[i].Payment,

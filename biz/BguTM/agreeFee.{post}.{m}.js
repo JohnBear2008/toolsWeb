@@ -257,7 +257,7 @@ module.exports = function (sender) {
 	function qryPurch(BillNo) {
 		let SQLExecute =
 			" select tba.billNo, tba.Subject, tba.SNNo, tba.BudgetCID, tba.BudgetItem, " +
-			" sum(tba.Subtotal) as Synchtotal ,tman.TotalValue ,tman.DeptName,tman.GroupName " +
+			" sum(tba.Subtotal) as Synchtotal ,tman.TotalValue ,tman.DeptName, tman.UnitName , tman.GroupName " +
 			" from bgu_purchdetail tba LEFT JOIN bgu_purchmain tman on tba.billNo = tman.billNo " +
 			" where  tba.billNo =  ? " +
 			" Group by tba.BudgetItem";
@@ -291,19 +291,20 @@ module.exports = function (sender) {
 					TotalValue = data[i].TotalValue; TotalValue = nulReplace0(TotalValue);
 					TotalValue = parseInt(TotalValue, 10);
 					DeptName = data[i].DeptName;
+					UnitName = data[i].UnitName;
 					GroupName = data[i].GroupName;
-					console.log("瀑布圖", Subject, BudgetCID, TotalValue, DeptName);
-					qryQuota(i,Digit, BillNo, Subject, BudYear, BudgetCID, BudgetItem, DeptName, TotalValue);
+					console.log("瀑布圖", Subject, BudgetCID, TotalValue, UnitName , DeptName);
+					qryQuota(i,Digit, BillNo, Subject, BudYear, BudgetCID, BudgetItem, UnitName, TotalValue);
 				}
 			},
 			error: sender.error
 		});
 	}
 	//得 AllowMoney Accumulate
-	function qryQuota(ki ,Digit, BillNo, Subject, BudYear, BudgetCID, BudgetItem, DeptName, TotalValue) {
-		// console.log("栗惠美", BudgetCID, BudYear, DeptName);
+	function qryQuota(ki ,Digit, BillNo, Subject, BudYear, BudgetCID, BudgetItem, UnitName, TotalValue) {
+		// console.log("栗惠美", BudgetCID, BudYear, UnitName);
 		let SQLExecute = "  SELECT  * from bgu_quota tba  where  tba.BudgetCID= ?  and  tba.BudYear= ?  and  tba.DeptName= ?    ";
-		let paramelist = [BudgetCID, BudYear, DeptName];
+		let paramelist = [BudgetCID, BudYear, UnitName];
 		yjDBService.exec({
 			sql: SQLExecute,
 			parameters: paramelist,
@@ -340,7 +341,7 @@ module.exports = function (sender) {
 						var mixBudgetItem = Digit[ki].BudgetItem;
 						var mixSubtotal = Digit[ki].Subtotal;
 						console.log("暗箭", Digit[ki].BudgetItem,"链刃", Digit[ki].Subtotal);
-						idvQuota(i, BillNo, BudYear, mixSubject, mixBudgetCID, mixBudgetItem, DeptName, mixSubtotal);
+						idvQuota(i, BillNo, BudYear, mixSubject, mixBudgetCID, mixBudgetItem, UnitName, mixSubtotal);
 					// }
 				} else {
 					console.log("秒杀了");
@@ -350,11 +351,11 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function idvQuota(nowcnt, BillNo, BudYear, Subject, BudgetCID, BudgetItem, DeptName, Subtotal) {
+	function idvQuota(nowcnt, BillNo, BudYear, Subject, BudgetCID, BudgetItem, UnitName, Subtotal) {
 		// console.log("貂蝉", Subject, BudgetCID, Subtotal);
-		// console.log("伽罗", BudgetCID, BudYear, DeptName);
+		// console.log("伽罗", BudgetCID, BudYear, UnitName);
 		let SQLExecute = "  SELECT  * from bgu_quota tba  where  tba.BudgetCID= ?  and  tba.BudYear= ?  and  tba.DeptName= ?    ";
-		let paramelist = [BudgetCID, BudYear, DeptName];
+		let paramelist = [BudgetCID, BudYear, UnitName];
 		yjDBService.exec({
 			sql: SQLExecute,
 			parameters: paramelist,
@@ -408,8 +409,8 @@ module.exports = function (sender) {
 					}
 					function timer(time) {
 						setTimeout(function () {
-							HandleQuota(nowcnt, BudgetCID, DivMyQuo, BudYear, SNNO, AllowMoney, Accumulate, DeptName);
-							HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, DivMyQuo, EntryDate);
+							HandleQuota(nowcnt, BudgetCID, DivMyQuo, BudYear, SNNO, AllowMoney, Accumulate, UnitName);
+							HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, DivMyQuo, EntryDate);
 						}, time);
 					}
 					timer(500);
@@ -455,7 +456,7 @@ module.exports = function (sender) {
 		});
 	}
 	//计算 Accumulate UseMoney 由 TotalValue  AllowMoney
-	function HandleQuota(nowcnt, BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate, DeptName) {
+	function HandleQuota(nowcnt, BudgetCID, TotalValue, BudYear, SNNO, AllowMoney, Accumulate, UnitName) {
 		AllowMoney = nulReplace0(AllowMoney);
 		AllowMoney = parseInt(AllowMoney, 10);
 		TotalValue = nulReplace0(TotalValue); TotalValue = parseInt(TotalValue, 10);
@@ -486,11 +487,11 @@ module.exports = function (sender) {
 			// console.log("捕刀了", IsOver, "五连绝世", bufferTot, diffMoney);
 
 		}
-		// console.log("唯朕独尊:", Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear, DeptName);
+		// console.log("唯朕独尊:", Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear, UnitName);
 		console.log("唯朕独尊:", Accumulate, IsOver, Surplus, SNNO);
 		var SQLUPt = "Update `bgu_quota` set Accumulate =? , IsOver =?, Surplus =? , SNNO  =?   " +
 			" where  BudgetCID= ? and BudYear =? and DeptName =? ";
-		let paramList = [Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear, DeptName];
+		let paramList = [Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear, UnitName];
 		yjDBService.exec({
 			sql: SQLUPt,
 			parameters: paramList,
@@ -501,13 +502,13 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue, EntryDate) {
-		// console.log("殿昌 ", Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue, EntryDate);
+	function HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, TotalValue, EntryDate) {
+		// console.log("殿昌 ", Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, TotalValue, EntryDate);
 		var SQLInsert = "INSERT INTO `bgu_quotadetail` " +
 			"(`Subject`, `BudgetCID` , `BudgetItem` , `BudYear` , `RequestDate`,`BillNo`, `SNNO` , `DeptName` , `TotalValue` , `EntryDate`  ) " +
 			"  VALUES (?,?,?,?,?,?,?,?,?,?   )";
 
-		let paramList = [Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, TotalValue, EntryDate];
+		let paramList = [Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, TotalValue, EntryDate];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,

@@ -28,6 +28,40 @@ module.exports = function (sender) {
 		var loginName = sender.req.query.loginName;
 		LinkDept();
 	}
+	if (arrange == 'LinkUnit') {
+		var loginName = sender.req.query.loginName;
+		LinkUnit();
+	}
+	if (arrange == 'LinkCurText') {
+		var BillNo = sender.req.query.BillNo;
+		LinkCurText();
+	}
+	function LinkCurText() {
+		var SQLqry = " select tba.`CurStatus` , tba.`CurText`  from  bgu_rule tba where BillNo =?  ";
+		yjDBService.exec({
+			sql: SQLqry,
+			parameters: [BillNo],
+			success: function (r) {
+				var datas = []
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					var temp = {
+						"CurStatus": data[i].CurStatus,
+						"CurText": data[i].CurText,
+					}
+					datas.push(temp)
+				}
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 100) {
+				// 	console.log("昭瑛:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("昭瑛:" + JSON.stringify(datas));
+				// }
+				sender.success(datas);
+			},
+			error: {},
+		});
+	}
 	function LinkDept() {
 		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
 		" where tba.StaffName = ? and StaffLevel = '1' ";
@@ -53,6 +87,37 @@ module.exports = function (sender) {
 				// 	console.log("姑瑛:" + dump.substring(0, 100));
 				// } else {
 				// 	console.log("姑瑛:" + JSON.stringify(datas));
+				// }
+				sender.success(datas);
+			},
+			error: {},
+		});
+	}
+	function LinkUnit() {
+		var SQLqry = 
+		" select torg.DeptName , tba.`DeptLabel` , tba.`GroupLabel` from bgu_orig torg " +
+		" LEFT JOIN bgu_staffs tba on tba.DeptLabel = torg.DeptName " +
+		" and tba.StaffName = ? and StaffLevel = '1' " ;
+		yjDBService.exec({
+			sql: SQLqry,
+			parameters: [loginName],
+			success: function (r) {
+				var datas = []
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					var qryDeptName = data[i].DeptName;
+					var qryDeptLabel = data[i].DeptLabel;
+					var temp = {
+						"DeptName": qryDeptName,   //多
+						"DeptLabel": qryDeptLabel, //唯一
+					}
+					datas.push(temp)
+				}
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 500) {
+				// 	console.log("才哥:" + dump.substring(0, 100));
+				// } else {
+				// 	console.log("才哥:" + JSON.stringify(datas));
 				// }
 				sender.success(datas);
 			},

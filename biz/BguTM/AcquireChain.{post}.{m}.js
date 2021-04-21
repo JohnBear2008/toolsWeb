@@ -8,11 +8,14 @@ module.exports = function (sender) {
 	var flowOppWorkId = sender.req.query.oppOID; 
 	var flowOppName = sender.req.query.OppName; 
 	var FlowGroup = sender.req.query.GroupName;
-	console.log("忘却野心",FlowGroup);
 	var FlowDept = sender.req.query.DeptName; 
+	var FlowUnit = sender.req.query.UnitName; 
+	var FlowSubtotal = sender.req.query.Subtotal; 
+	console.log("忘却野心",FlowSubtotal);
 	var FlowVip ='';
 	var qryDept = '';  //nouse
 	var qryGroup = ''; //nouse
+	var flagLimit = 'N';
 	var now = new Date();
 	var BudYear = now.Format("yyyy");
 	var BudMonth = now.Format("MM");
@@ -27,21 +30,22 @@ module.exports = function (sender) {
 		    " select StaffName from bgu_credit where DeptName = ?  ";
 		yjDBService.exec({
 		    sql: SQL4,
-		    parameters: [FlowDept],
+		    parameters: [FlowUnit],
 		    rowsAsArray: true,
 		    success: function (r) {
 			  var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
 			  for (var i = 0; i < data.length; i++) {
 				FlowVip = data[i].StaffName;
 			  }
-			  console.log("卷土重来",FlowVip);
 			if (arrange == 'RuleTrip') {
 				acqRuleTrip();
 			}
 			if (arrange == 'RulePurch') {
 				var flowBudgetItem = sender.req.query.BudgetItem; 
 				var flowBudgetCID = sender.req.query.BudgetCID; 
-				acqRulePurch(flowBudgetCID ,flowBudgetItem);
+				if(flowBudgetItem !=undefined && flowBudgetItem!=null){
+					acqRulePurch(flowBudgetCID ,flowBudgetItem);
+				}
 			}
 			  
 		    },
@@ -162,7 +166,6 @@ module.exports = function (sender) {
 	function acqRulePurch(flowBudgetCID ,flowBudgetItem) {
 		var TotalValue = '0';
 		var UpperLimit = '';
-		var flagLimit = 'N';
 		var TermiLevel = '';
 		var CurWorkId = '';
 		var CurName = '';
@@ -198,15 +201,14 @@ module.exports = function (sender) {
 					  UpperLimit = '0';
 				    } else {
 					  UpperLimit = result[0][i].UpperLimit;
-					  if (TotalValue > UpperLimit) {  //超过预算
-						flagLimit = 'Y';
+					  if (flagLimit == 'Y') {  //超过预算
 						if (BudgetType == 'A') {
 						    TermiLevel = '6';
 						}
 						if (BudgetType == 'B') {
 						    TermiLevel = '8';
 						}
-						// console.log(">>>超过预算", UpperLimit, "崔崔", BudgetType);
+						console.log(">>>超过预算", UpperLimit, "崔崔", BudgetType);
 					  } else {
 						if (BudgetType == 'A') {
 						    TermiLevel = '4';
@@ -252,6 +254,7 @@ module.exports = function (sender) {
 				CreditB = result[3][0].CreditB;
 				CreditC =  result[3][0].CreditC;
 				CreditD =  result[3][0].CreditD;
+				BossOver =  result[3][0].BossOver;
 					// "CreditA": '预算内额度已超过：',  
 					// "CreditB": '预算5000已用5000：',  
 					// "CreditC": '预算外额度未超过：',  
@@ -280,6 +283,7 @@ module.exports = function (sender) {
 					"CreditB": CreditB,
 					"CreditC": CreditC,
 					"CreditD": CreditD,
+					"BossOver": BossOver,
 				  }
 				  datas.push(temp);
 				//   var dump = JSON.stringify(datas);
@@ -292,30 +296,37 @@ module.exports = function (sender) {
 			  }
 		    });
 		function FunLimit(cb) {
-		    var StaffName = '周筱龙';
-		    let SQL2 = "select tvip.StaffID , tvip.StaffName ,tquo.UpperLimit from  bgu_staffs tba " +
-			  "LEFT JOIN bgu_staffs tvip on tba.DeptLabel =tvip.DeptLabel and tvip.staffLevel='3' " +
-			  "LEFT JOIN bgu_credit tquo on tvip.StaffName = tquo.StaffName  " +
-			  "where tba.StaffName = ? ";
-		    yjDBService.exec({
-			  sql: SQL2,
-			  parameters: [StaffName],
-			  rowsAsArray: true,
-			  success: function (r) {
-				var datas = [];
-				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-				for (var i = 0; i < data.length; i++) {
-				    UpperLimit = data[i].UpperLimit;
-				    var temp = {
-					  "UpperLimit": UpperLimit,
-				    }
-				    // console.log("仔延:" + JSON.stringify(temp));
-				    datas.push(temp)
-				}
-				cb(null, datas);
-			  },
-			  error: sender.error
-		    });
+			var datas = [];
+			var temp = {
+				"UpperLimit": '500000',
+			  }
+			  datas.push(temp)
+		       
+		    cb(null, datas);
+
+		//     var StaffName = '';
+		//     let SQL2 = "select tvip.StaffID , tvip.StaffName ,tquo.UpperLimit from  bgu_staffs tba " +
+		// 	  "LEFT JOIN bgu_staffs tvip on tba.DeptLabel =tvip.DeptLabel and tvip.staffLevel='3' " +
+		// 	  "LEFT JOIN bgu_credit tquo on tvip.StaffName = tquo.StaffName  " +
+		// 	  "where tba.StaffName = ? ";
+		//     yjDBService.exec({
+		// 	  sql: SQL2,
+		// 	  parameters: [StaffName],
+		// 	  rowsAsArray: true,
+		// 	  success: function (r) {
+		// 		var datas = [];
+		// 		var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+		// 		for (var i = 0; i < data.length; i++) {
+		// 		    UpperLimit = data[i].UpperLimit;
+		// 		    var temp = {
+		// 			  "UpperLimit": UpperLimit,
+		// 		    }
+		// 		    datas.push(temp)
+		// 		}
+		// 		cb(null, datas);
+		// 	  },
+		// 	  error: sender.error
+		//     });
 		}
 		function FunOrig(cb) {
 			var StaffRole = "";
@@ -423,7 +434,7 @@ module.exports = function (sender) {
 		    });
 		}
 		function FunSubject(cb) {
-		    console.log("A或B:", BudgetType);
+		//     console.log("A或B:", BudgetType);
 		    var Track = '';
 		    let SQL4 =
 			  " select Track from  bgu_rule_def where RuleType =?  ";
@@ -460,10 +471,13 @@ module.exports = function (sender) {
 			var vvipAccu = '0';
 			var vvipSurp = '0';
 			var vvipIsOver = '';
-			console.log("周瑜",BudYear , "-", flowBudgetItem,"-", FlowDept,"-", BudYear , BudMonth);
+			console.log("周瑜",BudYear , "-", flowBudgetItem,"-", FlowUnit,"-", BudYear , BudMonth);
+			FlowSubtotal = nulReplace0(FlowSubtotal); 
+			FlowSubtotal = parseInt(FlowSubtotal, 10);
+			console.log("盖世英雄",FlowSubtotal  );
 			yjDBService.exec({
 			  sql: SQL2,
-			  parameters: [BudYear , flowBudgetItem, FlowDept, BudYear , BudMonth],
+			  parameters: [BudYear , flowBudgetItem, FlowUnit, BudYear , BudMonth],
 			  rowsAsArray: true,
 			  success: function (r) {
 			    var datas = [];
@@ -487,20 +501,34 @@ module.exports = function (sender) {
 		
 				}
 			    }
+			    
 			    itemMsg = '预算内额度未超过：';
 			    vvipMsg = '预算外额度未超过：';
 			    itemSurp = parseInt(itemSurp, 10);
 			    if (itemIsOver == 'Y') {
 				itemMsg = '预算内额度已超过：';
+				// console.log("AA故犹见不净", itemMsg  );
 			    }
 			    if (vvipIsOver == 'Y') {
 				vvipMsg = '预算外额度已超过：';
+				// console.log("BB故犹见不净", vvipMsg  );
+			    }
+			    if (itemSurp == '0' && vvipIsOver == 'Y') {
+				  flagLimit ='Y';
+			    }
+			    if (FlowSubtotal > itemSurp ) {
+				  flagLimit ='Y';
+				  console.log("暴雪也无法掩埋" , itemSurp ,FlowSubtotal);
+			    }else{
+				// console.log("暴雪" ,FlowSubtotal,"也能",itemSurp );
 			    }
 			    var temp = {
-				"Surplus": itemSurp, "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu, "CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
+				"Surplus": itemSurp, "CreditA": itemMsg, "CreditB": '预算' + itemAllow + '已用' + itemAccu,
+				"CreditC": vvipMsg, "CreditD": '预算' + vvipAllow + '已用' + vvipAccu,
+				"BossOver": flagLimit,
 			    }
 			    datas.push(temp);
-			    console.log("是否超预算:"  ,itemIsOver ,vvipIsOver, itemSurp); 
+			    console.log("是否超预算:"  ,itemIsOver ,vvipIsOver, itemSurp ,"妲己",flagLimit); 
 			//     var dump = JSON.stringify(datas);
 			//     if (dump.length > 500) {
 			//       console.log("廉颇:" + dump.substring(0, 500));

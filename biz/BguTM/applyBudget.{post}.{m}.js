@@ -24,6 +24,7 @@ module.exports = function (sender) {
     var Formkind = "采购单";
     var FlowGroup = '';
     var FlowDept = '';
+    var FlowUnit = '';
     var FlowRole = '';
     var FlowVip = '';
     var FlowCID = '';
@@ -31,6 +32,7 @@ module.exports = function (sender) {
     var flowphone = '';
     var qryDept = '';
     var qryGroup = '';
+    var Smalltotal = 0;
     var IsAuditChange = 'N';
     if (arrange == 'confirm') {
         chkNextAudit();
@@ -44,6 +46,7 @@ module.exports = function (sender) {
         var RequestDate = Advstr.RequestDate;
         var ProjectNo = Advstr.ProjectNo;
         qryDept = Advstr.DeptName;
+        FlowUnit = Advstr.UnitName;
         let DeptList = [];
         if (qryDept != "" && qryDept != undefined) {
             DeptList = qryDept.split(',');
@@ -80,12 +83,6 @@ module.exports = function (sender) {
     }
 
     function validOrig() {
-        // if (FlowRole != '文员') {
-        //     var retcode = { "status": "Fail", "message": "送审不成功，送审人必须为文员", "BillNo": BillNo };
-        //     sender.success(retcode);
-        //     console.log("嬴政虎", retcode);
-        //     return ;
-        // }
         var sData = sender.req.query.sData;
         var BudgetCID = sData[0].BudgetCID;
         FlowItem = sData[0].BudgetItem;
@@ -107,7 +104,6 @@ module.exports = function (sender) {
             " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
             " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
             " from  bgu_staffs tba  " +
-            // " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
             " LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2' " +
             " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
             " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' and tpur.StaffRole='" + StaffRole + "' " +
@@ -136,7 +132,6 @@ module.exports = function (sender) {
             success: function (r) {
                 var datas = [];
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-                console.log("漫漫古道", data.length);
                 for (var i = 0; i < data.length; i++) {
                     flowphone = data[i].Mobiles;
                     MagName = data[i].MagName;
@@ -152,7 +147,6 @@ module.exports = function (sender) {
                 if (MagName != "" && MagName != undefined) {
                     if (MagName == StaffName) {
                         FlowRole = '部门主管';
-                        console.log("姜子牙", FlowRole);
                     }
                 } else {
                     Flag = '0';
@@ -160,7 +154,6 @@ module.exports = function (sender) {
                 if (VipName != "" && VipName != undefined) {
                     if (VipName == StaffName) {
                         FlowRole = '副总';
-                        console.log("妲己", FlowRole);
                     }
                 } else {
                     Flag = '0';
@@ -236,7 +229,6 @@ module.exports = function (sender) {
             var BudgetBID = BudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0"); FlowCID = BudgetCID;
             var BudgetType = BudgetCID.substring(0, 1); BudgetCID = nulReplaceWord(BudgetCID, "0");
         }
-        console.log(">>>AB：", BudgetType, ">>>科目：", BudgetCID, ">>>承办：", BudgetBID);
         async.parallel([FunLimit, FunOrig, FunSubject],
             function (err, result) {
                 if (err) {
@@ -341,11 +333,12 @@ module.exports = function (sender) {
             });
         function FunLimit(cb) {
             var sData = sender.req.query.sData;
-            var IsQuoOver = 'N';
+            var IsZero = 'N';
             for (var i = 0; i < sData.length; i++) {
                 if (sData[i].Remain == '0') {
-                    IsQuoOver = 'Y';
+                    IsZero = 'Y';
                 }
+                Smalltotal = sData[0].Subtotal;
             }
             let SQLExecute =
                 " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota " +
@@ -353,8 +346,8 @@ module.exports = function (sender) {
                 " Union " +
                 " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_buffer " +
                 " where  BffType = 'A' and BudYear =? and BudMonth = ? ";
-            let paramelist = [FlowItem, BudYear, FlowDept, BudYear, BudMonth];
-            console.log("控股", FlowItem, BudYear, FlowDept, BudYear, BudMonth)
+            let paramelist = [FlowItem, BudYear, FlowUnit, BudYear, BudMonth];
+            console.log("控股", FlowItem, BudYear, FlowUnit, BudYear, BudMonth)
             yjDBService.exec({
                 sql: SQLExecute,
                 parameters: paramelist,
@@ -365,6 +358,7 @@ module.exports = function (sender) {
                     var UpperLimitB = 0;
                     var Surplus = 0;
                     var qryAIsOver = '';
+                    var IsQuoOver = '';  //提交$减项目$ 
                     var qryBIsOver = '';
                     var datas = [];
                     for (var i = 0; i < data.length; i++) {
@@ -372,8 +366,7 @@ module.exports = function (sender) {
                         if (Rank == 'A') {
                             qryAIsOver = data[i].IsOver;
                             Surplus = data[i].Surplus;
-                            Surplus = nulReplace0(Surplus);
-                            Surplus = parseInt(Surplus, 10);
+                            Surplus = nulReplace0(Surplus); Surplus = parseInt(Surplus, 10);
                             UpperLimit = Surplus;
                         }
                         if (Rank == 'B') {
@@ -387,7 +380,13 @@ module.exports = function (sender) {
                     let now = new Date();
                     var labDate = now.Format("yyyyMMdd");
                     RequestDate = labDate;
-                    // if (IsQuoOver == 'Y' && qryAIsOver == 'Y' && qryBIsOver == 'Y' ) {
+                    if(Smalltotal > UpperLimit ){
+                        IsQuoOver ='Y';
+                    }
+                    console.log("很报歉",Smalltotal , UpperLimit);
+                    if (IsZero == 'Y' && qryBIsOver == 'Y') {
+                        IsAuditChange = 'Y';
+                    }
                     if (IsQuoOver == 'Y' && qryBIsOver == 'Y') {
                         IsAuditChange = 'Y';
                     }
@@ -598,7 +597,7 @@ module.exports = function (sender) {
                     parameters: paramList,
                     rowsAsArray: true,
                     success: function (result) {
-                        console.log("拳握初心:", result);
+                        // console.log("拳握初心:", result);
                     },
                     error: sender.error
                 });
@@ -613,8 +612,7 @@ module.exports = function (sender) {
     }
     function clearMoney() {
         var uData = sender.req.query.uData;
-        console.log("身为君主就是这么任性", uData);
-        // let SQLDelete1 = "Delete From `bgu_purchmain` where BillNo=?   ";
+        // console.log("身为君主就是这么任性", uData);
         let SQLDelete2 = "Delete From `bgu_purchdetail` where BillNo=?   ";
         yjDBService.exec({
             sql: SQLDelete2,
@@ -682,22 +680,18 @@ module.exports = function (sender) {
         var BudgetCID = sData[0].BudgetCID;
         var Subject = sData[0].Subject;
         var BudgetItem = sData[0].BudgetItem;
-        // console.log("竹風青庭", Subject);
-        // console.log("竹風青庭", BudgetCID);
         let paramList = [BillNo, Formkind, Subject, BudgetCID, BudgetItem, ListNo,
-            RequestDate, ProjectNo, ApplicNo, FlowDept, FlowGroup,
+            RequestDate, ProjectNo, ApplicNo, FlowDept, FlowUnit, FlowGroup,
             StaffID, StaffName, TotalValue, Currency, Payment,
             Explanation, EntryDate];
         var SQLInsert = "INSERT INTO `bgu_purchmain` ( `BillNo` , `Formkind` , `Subject` , `BudgetCID` , `BudgetItem` , `ListNo` ,  `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-            "`DeptName` , `GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate`  ) " +
-            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?  )";
+            "`DeptName` , `UnitName` ,`GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate`  ) " +
+            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?  )";
         yjDBService.exec({
             sql: SQLInsert,
             parameters: paramList,
             rowsAsArray: true,
             success: function (result) {
-                // var data=yjDB.dataSet2ObjectList(result.meta,result.rows);
-                console.log("是种罪孽:", result);
                 saveDetail();
             },
             error: sender.error
@@ -737,7 +731,7 @@ module.exports = function (sender) {
         // var mobiles = ['17051095060'] ;
         var mobiles = [];
         mobiles.push(idlephone);
-        console.log('何以缘起何以缘起', BillNo, " TEL:", mobiles);
+        // console.log('何以缘起何以缘起', BillNo, " TEL:", mobiles);
         if (BillNo != '' && BillNo != undefined) {
 
         } else {
@@ -752,13 +746,13 @@ module.exports = function (sender) {
             parameters: [BillNo],
             success: function (result) {
                 var Msg = "@"+ CurName + " ，请审批采购单" + "\n文号: " + BillNo +  "\n部門: " + GroupName +   "\n品项: " + ItemNo;
-                console.log("町町发送 ");
-                console.log(Msg);
+                // console.log("町町发送 ");
+                // console.log(Msg);
                 var yjDing = require("./yjDing");
                 let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
                 var retcode = { "status": "OK", "message": "送审完成\n" + pw, "BillNo": BillNo };
                 sender.success(retcode);
-                console.log("懿", retcode);
+                // console.log("懿", retcode);
             },
             error: {},
         });

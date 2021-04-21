@@ -44,6 +44,14 @@ function loadCaseA( BillNo  ) {
               $('#RequestDate').val(bjob[i].RequestDate);
               $('#ApplicNo').val(bjob[i].ApplicNo);
               $('#DeptName').val(bjob[i].DeptName);
+              if( bjob[i].UnitName!=undefined &&  bjob[i].UnitName !='' ){
+                var dropUnit = bjob[i].UnitName;                  
+                $("#UnitCombo option[value="+dropUnit+"]").prop('selected', true);
+              }
+              if( bjob[i].GroupName!=undefined &&  bjob[i].GroupName !='' ){
+                var dropGroup = bjob[i].GroupName;                  
+                $("#GroupCombo option[value="+dropGroup+"]").prop('selected', true);
+              }
               $('#TotalValue').val(bjob[i].TotalValue);
               $('#Currency').val(bjob[i].Currency);
               $('#Payment').val(bjob[i].Payment);
@@ -60,6 +68,17 @@ function loadCaseA( BillNo  ) {
             $('#PsdName').val(bjob[i].PsdName);
             $('#CeoName').val(bjob[i].CeoName);
             $('#BodName').val(bjob[i].BodName); 
+          }
+          for (let i = 11; i < 12; i++) {
+            $('#OppDate').val(bjob[i].OppDate);
+            $('#MagDate').val(bjob[i].MagDate);
+            $('#VipDate').val(bjob[i].VipDate);
+            $('#PurDate').val(bjob[i].PurDate);
+            $('#PexDate').val(bjob[i].PexDate);
+            $('#CfoDate').val(bjob[i].CfoDate);
+            $('#PsdDate').val(bjob[i].PsdDate);
+            $('#CeoDate').val(bjob[i].CeoDate);
+            $('#BodDate').val(bjob[i].BodDate); 
           }
           for (let i = 12; i < 13; i++) {
             $('#CreditA').val(bjob[i].CreditA);
