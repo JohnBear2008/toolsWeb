@@ -456,7 +456,7 @@ const createSql = (i) => {
 			break;
 	}
 
-	// console.log("excuteSql last:" + excuteSql);
+	console.log("excuteSql last:" + excuteSql);
 	return excuteSql;
 }
 

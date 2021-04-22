@@ -79,16 +79,25 @@ module.exports = function (sender) {
                   break;
             case "DingSpeak":
                   url = ["BguTM", "DingSpeak"];
-                  break;             
+                  break;
             case "AnnualRpt":
                   url = ["BguTM", "AnnualRpt"];
-                  break;             
+                  break;
             case "AnnualChart":
                   url = ["BguTM", "AnnualChart"];
-                  break;             
+                  break;
             case "EngLook":
                   url = ["BguTM", "EngLook"];
-                  break;             
+                  break;
+            case "Really":
+                  url = ["BguTM", "Really"];
+                  break;
+            case "payExpense":
+                  url = ["BguTM", "payExpense"];
+                  break;
+            case "WeeeklyPay":
+                  url = ["BguTM", "WeeeklyPay"];
+                  break;
             default:
                   console.log("找不到Finc路由");
                   break;

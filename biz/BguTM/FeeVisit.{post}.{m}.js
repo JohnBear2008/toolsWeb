@@ -186,13 +186,13 @@ module.exports = function (sender) {
 	}
 	function LookOrig() {
 		var filter = " 1=1 ";
-		var orderBy = '';
+		var orderBy = ' tba.DeptID';
 		var limit = '5000';
 		var capacity = '';
 		var SQLExecute =
 			" select tba.`DBID` , tba.`DeptID` , tba.`DeptName` , tdtl.GroupName , tba.`Loacation` , tba.`Status` ,tba.`Descript` " +
 			" from  bgu_orig tba  " +
-			" LEFT JOIN bgu_orig_detail tdtl on tba.DeptID  = tdtl.DeptID ";
+			" LEFT JOIN bgu_orig_detail tdtl on tba.DeptID  = tdtl.DeptID  ";
 
 		if (Pattern != "" && Pattern != "null" && Pattern != undefined && Pattern.length > 0) {
 			capacity += " AND (trul.CurStatus  = " + "'" + Pattern + "' OR trul.SendStatus  = " + "'" + Pattern + "' )  ";
@@ -205,6 +205,9 @@ module.exports = function (sender) {
 		}
 		if (limit != "" && limit != undefined) {
 			SQLExecute = SQLExecute + " LIMIT " + limit;
+		}
+		if (orderBy != "" && orderBy != undefined) {
+			SQLExecute = SQLExecute + " Order By " + orderBy;
 		}
 		var banWord1 = new RegExp("delete");
 		var banWord2 = new RegExp("update");

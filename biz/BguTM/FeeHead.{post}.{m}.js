@@ -137,9 +137,10 @@ module.exports = function (sender) {
       { data: 'Subject', "visible": true, "width": "6%" },
       { data: 'BudgetItem', "visible": true, "width": "12%" },
       { data: 'ListNo', "visible": false, "width": "6%" },
-      { data: 'ProjectNo', "visible": true, "width": "6%" },
+      { data: 'ProjectNo', "visible": false, "width": "6%" },
       { data: 'ApplicNo', "visible": false, "width": "6%" },
       { data: 'DeptName', "visible": true, "width": "6%" },
+      { data: 'UnitName', "visible": true, "width": "6%" },
       { data: 'StaffName', "visible": true, "width": "6%" },
       { data: 'PurName', "visible": true , "width": "6%" },
       { data: 'PexName', "visible": true, "width": "6%" },
@@ -165,6 +166,7 @@ module.exports = function (sender) {
       + '<th>品名/说明</th>'
       + '<th>计划案号</th>'
       + '<th>申请单编号</th>'
+      + '<th>提交部门</th>'
       + '<th>使用部门</th>'
       + '<th>申请人</th>'
       + '<th>采购人</th>'

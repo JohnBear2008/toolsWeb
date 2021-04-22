@@ -412,19 +412,23 @@ module.exports = function (sender) {
                 StaffRole = "采购承办人";
             }
             let SQL3 =
-                " select tba.Mobiles as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles as MagWorkId, tdpt.StaffName as MagName,tvip.Mobiles as VipWorkId, tvip.StaffName as VipName" +
-                " ,tpur.Mobiles as PurWorkId, tpur.StaffName as PurName,tpex.Mobiles as PexWorkId, tpex.StaffName as PexName,tcfo.Mobiles as CfoWorkId, tcfo.StaffName as CfoName" +
-                " ,tpsd.Mobiles as PsdWorkId, tpsd.StaffName as PsdName,tceo.Mobiles as CeoWorkId, tceo.StaffName as CeoName,tbod.Mobiles as BodWorkId, tbod.StaffName as BodName " +
-                " from  bgu_staffs tba  " +
-                " LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2' " +
-                " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
-                " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' and tpur.StaffRole='" + StaffRole + "' " +
-                " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
-                " LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' " +
-                " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
-                " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
-                " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
-                " where  tba.DeptLabel =? and tba.StaffLevel='1'   ";
+                " select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName, " +
+                " tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName, " +
+                " dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName, " +
+                " dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName, " +
+                "  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName, " +
+                "  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba    " +
+                "  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2'     " +
+                "  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3'    " +
+                "  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='" + StaffRole + "'    " + 
+                "  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and dhpur.StaffRole= '" + StaffRole + "'   " +
+                "  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'   " +
+                "  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'  and dhpex.GroupLabel like CONCAT('%', '" + FlowGroup + "' , '%')   " +
+                "  LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6'    " +
+                "  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'   " +
+                "  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'   " +
+                "  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'   " +
+                "  where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffName ='" + StaffName + "'   " ;
             var OppWorkId = StaffID;
             var OppName = StaffName;
             var MagWorkId = '';
@@ -432,9 +436,17 @@ module.exports = function (sender) {
             var VipWorkId = '';
             var VipName = '';
             var PurWorkId = '';
-            var PurName = '';
-            var PexWorkId = '';
-            var PexName = '';
+			var PurName = '';
+			var PurDHWorkId = '';
+			var PurDHName = '';
+			var PuroriWorkId = '';
+			var PuroriName = '';
+			var PexWorkId = '';
+			var PexName = '';
+			var PexDHWorkId = '';
+			var PexDHName = '';
+			var PexoriWorkId = '';
+			var PexoriName = '';
             var CfoWorkId = '';
             var CfoName = '';
             var PsdWorkId = '';
@@ -461,10 +473,17 @@ module.exports = function (sender) {
                         MagName = data[i].MagName;
                         VipWorkId = data[i].VipWorkId;
                         VipName = data[i].VipName;
-                        PurWorkId = data[i].PurWorkId;
-                        PurName = data[i].PurName;
-                        PexWorkId = data[i].PexWorkId;
-                        PexName = data[i].PexName;
+
+                        PurDHWorkId = data[i].PurDHWorkId;
+						PurDHName = data[i].PurDHName;
+						PuroriWorkId = data[i].PurWorkId;
+						PuroriName = data[i].PurName;
+
+						PexDHWorkId = data[i].PexDHWorkId;
+						PexDHName = data[i].PexDHName;
+						PexoriWorkId = data[i].PexWorkId;
+						PexoriName = data[i].PexName;
+
                         CfoWorkId = data[i].CfoWorkId;
                         CfoName = data[i].CfoName;
                         PsdWorkId = data[i].PsdWorkId;
@@ -473,6 +492,20 @@ module.exports = function (sender) {
                         CeoName = data[i].CeoName;
                         BodWorkId = data[i].BodWorkId;
                         BodName = data[i].BodName;
+                       if(PurDHName != undefined && PurDHName != '' ){
+							PurName = PurDHName;
+							PurWorkId = PurDHWorkId;
+						}else{
+							PurName = PuroriName;
+							PurWorkId = PuroriWorkId;
+						}
+						if(PexDHName != undefined && PexDHName != '' ){
+							PexName = PexDHName;
+							PexWorkId = PexDHWorkId;
+						}else{
+							PexName = PexoriName;
+							PexWorkId = PexoriWorkId;
+						}
                         var temp = {
                             "OppWorkId": OppWorkId,
                             "OppName": OppName,

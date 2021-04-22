@@ -16,8 +16,8 @@ module.exports = function (sender) {
   var FlowBudget = sender.req.query.FlowBudget;
   var FlowVip = sender.req.query.FlowVip;
   var FlowDept = sender.req.query.FlowDept; 
-  var FlowUnit = ''; 
-  console.log("常乐 ", FlowUnit ,qryBillNo, FlowVip, FlowBudget);
+  var FlowUnit = sender.req.query.FlowUnit;
+  console.log("常乐 ", FlowUnit ,"知足 ",qryBillNo, FlowVip, FlowBudget);
   var orderBy = '';
   var limit = '500';
   var capacity = '';
@@ -336,7 +336,7 @@ module.exports = function (sender) {
       " Union " +
       " select 'B' as Rank, UpperLimit  as AllowValue, Accumulate , Surplus ,IsOver from bgu_buffer " +
       " where  BffType = 'A' and BudYear =? and BudMonth = ? "  ;
-      let paramelist = [FlowBudget, BudYear, FlowDept, BudYear, BudMonth];
+      let paramelist = [FlowBudget, BudYear, FlowUnit, BudYear, BudMonth];
       var itemAllow = '0';
       var itemAccu = '0';
       var itemSurp = '0';

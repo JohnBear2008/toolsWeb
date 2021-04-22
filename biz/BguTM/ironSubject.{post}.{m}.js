@@ -97,7 +97,7 @@ module.exports = function (sender) {
 		var SQLqry = 
 		" select torg.DeptName , tba.`DeptLabel` , tba.`GroupLabel` from bgu_orig torg " +
 		" LEFT JOIN bgu_staffs tba on tba.DeptLabel = torg.DeptName " +
-		" and tba.StaffName = ? and StaffLevel = '1' " ;
+		" and tba.StaffName = ? and StaffLevel = '1' Order By torg.DeptName " ;
 		yjDBService.exec({
 			sql: SQLqry,
 			parameters: [loginName],

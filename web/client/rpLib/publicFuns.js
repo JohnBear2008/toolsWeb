@@ -34,11 +34,11 @@ const languageCN = {
  * @returns
  */
 const currentDate = () => {
-    var now = new Date();
-    var year = now.getFullYear(); //年
-    var month = now.getMonth() + 1; //月
-    var day = now.getDate(); //日   
-    var clock = year + "-";
+    let now = new Date();
+    let year = now.getFullYear(); //年
+    let month = now.getMonth() + 1; //月
+    let day = now.getDate(); //日   
+    let clock = year + "-";
     if (month < 10)
         clock += "0";
     clock += month + "-";
@@ -46,6 +46,15 @@ const currentDate = () => {
         clock += "0";
     clock += day + "";
     return clock;
+}
+
+/**
+ *获取格式化当前时间
+ *
+ * @returns
+ */
+const currentTime = () => {
+    return dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss');
 }
 
 /**

@@ -47,7 +47,8 @@ module.exports = function (sender) {
 		var capacity = '';
 		var SQLExecute =
 			" SELECT  A.`DBID`, A.`BillNo`,  A.`ListNo`, A.`Formkind` ,A.`Subject` , A.`RequestDate`,  A.`ProjectNo`, A. `ApplicNo`,  " +
-			" A.`DeptName`, A.`StaffID`, A.`StaffName` ,trul.`MagName`  ,trul.`VipName`  , trul.`PurName`  ,trul.`PexName` ,trul.`CfoName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
+			" A.`DeptName`, A.`UnitName`, A.`StaffID`, A.`StaffName` ,trul.`MagName`  ,trul.`VipName`  , trul.`PurName`  ,trul.`PexName` ," +
+			" trul.`CfoName`, A.`TotalValue`, A. `Currency`,  A.`Payment`, A. `Explanation`,   " +
 			"  A.`EntryDate`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
 			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.BudgetItem " +
 			"  from  bgu_purchmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
@@ -110,6 +111,7 @@ module.exports = function (sender) {
 							"ProjectNo": data[i].ProjectNo,
 							"ApplicNo": data[i].ApplicNo,
 							"DeptName": data[i].DeptName,
+							"UnitName": data[i].UnitName,
 							"StaffID": data[i].StaffID,
 							"StaffName": data[i].StaffName,
 							"MagName": data[i].MagName,
@@ -148,7 +150,8 @@ module.exports = function (sender) {
 		var capacity = '';
 		var SQLExecute =
 			" SELECT  A.`DBID`, A.`BillNo`, A.`ApplicNo`, A.Formkind ,A.`Subject` , A.`BusiMan`, A.`BusiArea`, A.`LeaveDate`, "+
-			" A.`StaffID`, A.`StaffName`, trul.`MagName`  ,trul.`VipName` ,trul.`PurName`  ,trul.`PexName`,trul.`CfoName` ,  A.`DeptName`,   A.`IsOver`, A. `Overspend`,   " +
+			" A.`StaffID`, A.`StaffName`, trul.`MagName`  ,trul.`VipName` ,trul.`PurName`  ,trul.`PexName`,trul.`CfoName` ,  "+
+			" A.`DeptName`,  A.`UnitName`,  A.`IsOver`, A. `Overspend`,   " +
 			" A.`EntryDate`, A.`Explanation`, trul.`SendStatus` ,  trul.`CurLevel` ,  trul.`TermiLevel` ,  trul.`CurWorkId` ,  " +
 			" trul.`CurName` ,  trul.`CurStatus`,  trul.`CurText` ,  trul.`SendText` ,tdtl.TicTotal " +
 			"  from  bgu_tripmain A LEFT JOIN bgu_rule trul on A.BillNo =trul.BillNo " +
@@ -218,6 +221,7 @@ module.exports = function (sender) {
 							"PexName": data[i].PexName,
 							"CfoName": data[i].CfoName,
 							"DeptName": data[i].DeptName,
+							"UnitName": data[i].UnitName,
 							"IsOver": data[i].IsOver,
 							"Overspend": data[i].Overspend,
 							"CurName": data[i].CurName,

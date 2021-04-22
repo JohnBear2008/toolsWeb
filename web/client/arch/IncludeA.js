@@ -63,14 +63,15 @@ function searchFile(mode) {
                       , { field: 'BudgetItem', title: '项目', width: 100, sort: true }
                       , { field: 'RequestDate', title: '申请日期', width: 110, sort: true }
                       , { field: 'ApplicNo', title: '申请单号', width: 90 }
-                      , { field: 'DeptName', title: '部门', width: 80 }
+                      , { field: 'DeptName', title: '提交', width: 80 }
+                      , { field: 'UnitName', title: '使用', width: 80 }
                       , { field: 'Explanation', title: '原因', width: 120 }
                       , { field: 'EntryDate', title: '打单日期', width: 110 }
                       , { field: 'StaffName', title: '提交人', width: 80, sort: true }
-                      , { field: 'TotalValue', title: '总金额', width: 70 }
-                      , { field: 'Currency', title: '币别', width: 70 }
-                      , { field: 'Payment', title: '付款', width: 70 }
                       , { field: 'CurName', title: '审批人', width: 90, sort: true }
+                      , { field: 'TotalValue', title: '总金额', width: 70 }
+                      , { field: 'Currency', title: '币别', width: 70  }
+                      , { field: 'Payment', title: '付款', width: 70 , hide: true }
                       , { field: 'CurJob', title: '职位', width: 0, hide: true }
                       , { field: 'CurPhone', title: '釘釘', width: 0, hide: true }
                       , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 160 }
@@ -93,7 +94,8 @@ function searchFile(mode) {
                           var BudgetItem = dataARR[0].BudgetItem;
                           var VipName = dataARR[0].VipName;
                           var DeptName = dataARR[0].DeptName;
-                          VegasA(dataARR[0].BillNo ,BudgetItem ,DeptName, VipName );
+                          var UnitName = dataARR[0].UnitName;
+                          VegasA(dataARR[0].BillNo ,BudgetItem ,DeptName,  UnitName, VipName );
                           // <DIV STYLE="page-break-before:always">
                           $('#kisswindow').modal('show');
                           $("#matchRec").html("采购单审批:");
@@ -116,12 +118,13 @@ function searchFile(mode) {
                   var BudgetItem = data.BudgetItem;
                   var VipName = data.VipName;
                   var DeptName = data.DeptName;
+                  var UnitName = data.UnitName;
                   CapItemNo = data.ItemNo;
                   CapCurJob = data.CurJob;
                   CapPhone = data.CurPhone;
                 //   console.log("都市闲情", (CapItemNo));
                   if (obj.event === 'analysis') {
-                      VegasA(Parts_BillNo , BudgetItem , DeptName, VipName   );
+                      VegasA(Parts_BillNo , BudgetItem , DeptName, UnitName, VipName   );
                       CapBillNo = Parts_BillNo;
                       // <DIV STYLE="page-break-before:always">
                       $('#kisswindow').modal('show');

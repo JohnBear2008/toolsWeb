@@ -696,10 +696,11 @@ function shuffleA(BillNo) {
         }
     })
 }
-function VegasA(BillNo, FlowBudget, FlowDept, FlowVip) {
+function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
     var reportType = 'BulletQuery';
     var arrange = 'popup';
-    var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo, "FlowDept": FlowDept,  "FlowVip": FlowVip, "FlowBudget": FlowBudget };
+    var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo, "FlowDept": FlowDept, 
+    "FlowUnit": FlowUnit,  "FlowVip": FlowVip, "FlowBudget": FlowBudget };
     // console.log("李白", taskData);
     $.ajax({
         method: 'post',

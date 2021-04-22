@@ -62,10 +62,16 @@
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
+                    <div style="float: left;margin-left:100px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success">扫描</button>
+                            <button type="button" id="btnScanStaff" class="btn btn-default">领单</button>
+                            <button type="button" id="btnScanStaffReturn" class="btn btn-default">还单</button>
+                            <button type="button" id="btnScanRecord" class="btn btn-default">登记</button>
+                        </div>
+                    </div>
                     <div style="float:right">
                         <button id='btnRecordBillNew' type="button" class="btn btn-info">维修登记</button>
-                        <button id='btnScanRecord' type="button" class="btn btn-success">扫描登记</button>
-                        <button id='btnScanStaff' type="button" class="btn btn-success">扫描领单</button>
                         <button id='btnRecordReport' type="button" class="btn btn-success">维修报告</button>
                     </div>
                     <div style="clear:both"></div>
@@ -294,6 +300,7 @@
 
                                     <div class="col-sm-2">
                                         <button id='btnBindStaff' type="button" class="btn btn-info">领单</button>
+                                        <button id='btnBindStaffReturn' type="button" class="btn btn-info">还单</button>
                                     </div>
                                 </div>
                         </form>
@@ -2227,6 +2234,8 @@
         //扫描领单按钮
         $('#btnScanStaff').click(function () {
 
+
+
             //清空信息
             $('#scanModel-repairId').val('');
 
@@ -2239,6 +2248,8 @@
             })
 
             //领单按钮
+            $('#btnBindStaff').show();
+            $('#btnBindStaffReturn').hide();
             $('#btnBindStaff').unbind();
             $('#btnBindStaff').click(async function () {
                 let repairId = $('#scanModel-repairId').val();
@@ -2265,6 +2276,11 @@
                             }
                         }
 
+                        if (rows[i].repairStaff && rows[i].repairStaff === repairStaff) {
+                            alert('此单已完成领单!')
+                            return
+                        }
+
                         //绑定维修人
 
                         let updateData = {
@@ -2273,6 +2289,7 @@
                             data: [{
                                 DBID: DBID,
                                 repairStaff: repairStaff,
+                                startTime: currentTime(),
                                 status: '维修中'
                             }]
                         }
@@ -2317,6 +2334,126 @@
                 //     // alert('stoped');
                 //     $('#scanStaffModal').modal('hide')
                 // });
+            });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]).then(function () {
+                        // alert('start');
+                    }).catch(function (err) {
+                        alert('err:' + err);
+                    });
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+                alert("系统错误,请检查摄像头设备!")
+
+            });
+
+            // 停止扫描按钮功能定义
+            $('#btnScanStaffStop').unbind();
+            $('#btnScanStaffStop').click(function () {
+                scanner.stop()
+                $('#scanStaffModal').modal('hide')
+            })
+            $('#scanStaffModal').modal('show');
+        })
+
+
+
+        //扫描还单按钮
+        $('#btnScanStaffReturn').click(function () {
+
+            //清空信息
+            $('#scanModel-repairId').val('');
+
+            // loadBootStrapSelector({
+            //     elementId: 'scanModel-repairStaff',
+            //     sqlParams: {
+            //         sql: 'getStaffSelector'
+            //     },
+            //     // initValue:'中国,北京'
+            // })
+
+            //领单按钮
+            $('#btnBindStaff').hide();
+            $('#btnBindStaffReturn').show();
+
+            $('#btnBindStaffReturn').unbind();
+            $('#btnBindStaffReturn').click(async function () {
+                let repairId = $('#scanModel-repairId').val();
+                if (!repairId) {
+                    alert('维修码为空!')
+                    return
+                }
+
+                let table = $('#rp_recordbills').DataTable();
+
+                let rows = table.rows().data();
+
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].repairId === repairId) {
+                        // console.log('rows[i]', rows[i]);
+                        let DBID = rows[i].DBID;
+
+                        //check
+                        let status = rows[i].status;
+                        if (status !== '维修中') {
+                            alert(repairId + '单据状态为' + status + ',非维修中状态无法还单!')
+                            return
+                        }
+
+
+                        if (!confirm('是否立即还单?')) {
+                            return
+                        }
+
+
+                        //绑定维修人
+
+                        let updateData = {
+                            tableId: 'rp_recordbills',
+                            key: ['DBID'],
+                            data: [{
+                                DBID: DBID,
+                                endTime: currentTime(),
+                                status: '已还单'
+                            }]
+                        }
+
+                        let rs = await postDBData({
+                            sql: 'update',
+                            params: updateData
+                        })
+
+                        // console.log('rs', rs);
+
+                        if (rs.affectedRows > 0) {
+                            alert(repairId + '还单成功!')
+
+                            //清空信息
+                            $('#scanModel-repairId').val('');
+                            loadBillMainTable();
+                        }
+
+                        break;
+                    }
+                }
+
+                alert('无匹配维修单,请检查维修码!')
+            })
+
+
+            let scanner = new Instascan.Scanner({
+                video: document.getElementById('staffVideo')
+            });
+            scanner.addListener('scan', async function (repairId) {
+                // console.log('repairId:' + repairId);
+
+                $('#scanModel-repairId').val(repairId);
+                $('#btnBindStaffReturn').click()
+
             });
             Instascan.Camera.getCameras().then(function (cameras) {
                 if (cameras.length > 0) {
