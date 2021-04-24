@@ -71,7 +71,18 @@ module.exports = function (sender) {
 		}
 		if (queryStaffName != "" && queryStaffName != "null" && queryStaffName != undefined && queryStaffName.length > 0) {
 			// console.log("...本人 <", queryStaffName, ">");
-			capacity += " AND (A.StaffName  = " + "'" + queryStaffName + "' OR trul.CurName  = " + "'" + queryStaffName + "' ) ";
+			capacity += " AND ( ";
+			capacity += " A.StaffName  = " + "'" + queryStaffName + "' OR trul.CurName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.OppName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.MagName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.VipName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.PurName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.PexName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.CfoName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.PsdName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.CeoName  = " + "'" + queryStaffName + "'  ";
+			capacity += "  OR  trul.BodName  = " + "'" + queryStaffName + "'  ";
+			capacity += " ) ";
 		}
 		if (Pattern != "" && Pattern != "null" && Pattern != undefined && Pattern.length > 0) {
 			// console.log("...状态 <", Pattern, ">");

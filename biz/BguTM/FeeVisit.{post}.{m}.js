@@ -186,7 +186,7 @@ module.exports = function (sender) {
 	}
 	function LookOrig() {
 		var filter = " 1=1 ";
-		var orderBy = ' tba.DeptID';
+		var orderBy = '';
 		var limit = '5000';
 		var capacity = '';
 		var SQLExecute =

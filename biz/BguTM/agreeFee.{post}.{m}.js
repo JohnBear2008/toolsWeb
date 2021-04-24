@@ -47,6 +47,7 @@ module.exports = function (sender) {
 	var FlowBodName = '';
 	var CurJob = qryCurJob;
 	var Flowphone = '';
+	var LionKing = '';
 	var sendCnt = '';
 	var flag = '0';
 	QueryParts();
@@ -229,11 +230,10 @@ module.exports = function (sender) {
 					CurText = '核准';
 					console.log("生米煮熟  ", AppFlag);
 					if (Formkind == '采购单') {
-						console.log(" 我要采购单  ", CurJob);
 						if (CurJob == 'ceo') {
 							HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 						} else {
-							console.log(" 熊与鱼 ", fixdate);//熊与鱼
+							 console.log(" 熊与鱼 ", fixdate); 
 							qryPurch(BillNo);
 						}
 					} else {
@@ -246,9 +246,6 @@ module.exports = function (sender) {
 					sendCnt = '1';
 					HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 				}
-				// console.log("妲己nextLevel", nextLevel);
-				// console.log("妲己nextName", nextName);
-				// console.log("妲己nextWorkId", nextWorkId);
 			},
 			error: sender.error
 		});
@@ -256,7 +253,7 @@ module.exports = function (sender) {
 	//得 TotalValue BudgetItem DeptName
 	function qryPurch(BillNo) {
 		let SQLExecute =
-			" select tba.billNo, tba.Subject, tba.SNNo, tba.BudgetCID, tba.BudgetItem, " +
+			" select tba.billNo, tba.Subject, tba.SNNo, tba.BudgetCID, tba.BudgetItem,  tba.Underburget , " +
 			" sum(tba.Subtotal) as Synchtotal ,tman.TotalValue ,tman.DeptName, tman.UnitName , tman.GroupName " +
 			" from bgu_purchdetail tba LEFT JOIN bgu_purchmain tman on tba.billNo = tman.billNo " +
 			" where  tba.billNo =  ? " +
@@ -272,6 +269,7 @@ module.exports = function (sender) {
 				var Subject = '';
 				var BudgetCID = '';
 				var BudgetItem = '';
+				var Underburget = '';
 				let Digit = [];
 				for (var i = 0; i < data.length; i++) {
 					var objT = {
@@ -279,12 +277,30 @@ module.exports = function (sender) {
 						"Subject": data[i].Subject,
 						"BudgetCID": data[i].BudgetCID,
 						"BudgetItem": data[i].BudgetItem,
+						"Underburget": data[i].Underburget,
 						"Subtotal": data[i].Synchtotal,
 					}
 					Digit.push(objT);
 				}
 				// console.log("没有永远的朋友", Digit);
+				var Dragon = 0;
 				for (var i = 0; i < data.length; i++) {
+					Underburget = data[i].Underburget;
+					if(Underburget=='否'){
+						var Synchtotal = data[i].Synchtotal;
+						var diffVal = nulReplace0(Synchtotal);
+						diffVal = parseInt(diffVal, 10); 
+						Dragon = Dragon + diffVal;
+					}
+				}
+				 console.log("没有永远的朋友", Dragon);
+				if(Dragon > 0 ){
+					// idvCredit(Dragon);
+					qryCredit( 0, Dragon);
+				}
+				for (var i = 0; i < data.length; i++) {
+					Underburget = data[i].Underburget;
+					if(Underburget=='是'){
 					Subject = data[i].Subject;
 					BudgetCID = data[i].BudgetCID;
 					BudgetItem = data[i].BudgetItem;
@@ -295,6 +311,7 @@ module.exports = function (sender) {
 					GroupName = data[i].GroupName;
 					console.log("瀑布圖", Subject, BudgetCID, TotalValue, UnitName , DeptName);
 					qryQuota(i,Digit, BillNo, Subject, BudYear, BudgetCID, BudgetItem, UnitName, TotalValue);
+					}
 				}
 			},
 			error: sender.error
@@ -314,7 +331,7 @@ module.exports = function (sender) {
 				var AllowMoney = 0;
 				var Accumulate = 0;
 				var SNNO = '';
-				var qryIsOver = '';//有的项目没预算 qryIsOver是空  
+				var qryIsOver = ''; //有的项目没预算 qryIsOver是空  
 				for (var i = 0; i < data.length; i++) {
 					AllowMoney = data[i].AllowMoney;
 					AllowMoney = nulReplace0(AllowMoney);
@@ -344,8 +361,9 @@ module.exports = function (sender) {
 						idvQuota(i, BillNo, BudYear, mixSubject, mixBudgetCID, mixBudgetItem, UnitName, mixSubtotal);
 					// }
 				} else {
-					console.log("秒杀了");
-					qryCredit(0, TotalValue);
+						console.log("-----------------秒杀了");
+						// qryCredit( 0, TotalValue);
+					 
 				}
 			},
 			error: sender.error
@@ -410,7 +428,7 @@ module.exports = function (sender) {
 					function timer(time) {
 						setTimeout(function () {
 							HandleQuota(nowcnt, BudgetCID, DivMyQuo, BudYear, SNNO, AllowMoney, Accumulate, UnitName);
-							HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, DivMyQuo, EntryDate);
+							HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName, UnitName, DivMyQuo, EntryDate);
 						}, time);
 					}
 					timer(500);
@@ -439,6 +457,10 @@ module.exports = function (sender) {
 					UpperLimit = data[i].UpperLimit; UpperLimit = nulReplace0(UpperLimit); UpperLimit = parseInt(UpperLimit, 10);
 					Accumulate = data[i].Accumulate; Accumulate = nulReplace0(Accumulate);
 					Accumulate += diffMoney;
+					var diffVal = nulReplace0(diffMoney);
+					diffVal = parseInt(diffVal, 10);
+					console.log("关興", diffVal );
+					LionKing = LionKing + diffVal;
 					SNNO = data[i].SNNO; SNNO = nulReplace0(SNNO); SNNO = parseInt(SNNO, 10);
 					SNNO = SNNO + 1;
 					if (Accumulate > UpperLimit) {
@@ -449,6 +471,7 @@ module.exports = function (sender) {
 					}
 					console.log("发育良好", VipName, BudYear, Accumulate);
 				}
+				console.log("黄忠", LionKing );
 				UpdateCredit(Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear);
 				UpdateCreditDetail(VipStaffId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney, EntryDate);
 			},
@@ -502,13 +525,13 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, TotalValue, EntryDate) {
-		// console.log("殿昌 ", Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, TotalValue, EntryDate);
+	function HandleDtlQuota(Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName , UnitName, TotalValue, EntryDate) {
+		//  console.log("殿昌 ", Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, "飞",DeptName ,UnitName, TotalValue, EntryDate);
 		var SQLInsert = "INSERT INTO `bgu_quotadetail` " +
-			"(`Subject`, `BudgetCID` , `BudgetItem` , `BudYear` , `RequestDate`,`BillNo`, `SNNO` , `DeptName` , `TotalValue` , `EntryDate`  ) " +
-			"  VALUES (?,?,?,?,?,?,?,?,?,?   )";
+			"(`Subject`, `BudgetCID` , `BudgetItem` , `BudYear` , `RequestDate`,`BillNo`, `SNNO` , `DeptName` , `UnitName` , `TotalValue` , `EntryDate`  ) " +
+			"  VALUES (?,?,?,?,?,?,?,?,?,?,?   )";
 
-		let paramList = [Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, UnitName, TotalValue, EntryDate];
+		let paramList = [Subject, BudgetCID, BudgetItem, BudYear, RequestDate, BillNo, SNNO, DeptName , UnitName, TotalValue, EntryDate];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,
@@ -765,7 +788,7 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function qryCredit(bufferTot, diffMoney) {
+	function qryCredit( bufferTot, diffMoney) {
 		let SQLExecute = " select BffType , UpperLimit , Accumulate  ,SNNO from bgu_buffer " +
 			"where  BffType = 'A' and BudYear =? and BudMonth = ?     ";
 		// console.log("查信用", VipName, BudYear, diffMoney);
@@ -785,6 +808,9 @@ module.exports = function (sender) {
 					UpperLimit = data[i].UpperLimit; UpperLimit = nulReplace0(UpperLimit); UpperLimit = parseInt(UpperLimit, 10);
 					Accumulate = data[i].Accumulate; Accumulate = nulReplace0(Accumulate);
 					Accumulate += diffMoney;
+					var diffVal = nulReplace0(diffMoney);
+					diffVal = parseInt(diffVal, 10);
+					LionKing = LionKing + diffVal;
 					SNNO = data[i].SNNO; SNNO = nulReplace0(SNNO); SNNO = parseInt(SNNO, 10);
 					SNNO = SNNO + 1;
 					if (Accumulate > UpperLimit) {
@@ -795,7 +821,7 @@ module.exports = function (sender) {
 					}
 					console.log("信用良好", BudYear, Accumulate);
 				}
-				console.log("现在是：", CurJob);
+				console.log("现在是：", CurJob , "亚瑟" ,LionKing);
 				if (CurJob == 'bod') {
 					UpdateCredit(Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear);
 					UpdateCreditDetail(VipStaffId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney);
@@ -850,7 +876,7 @@ module.exports = function (sender) {
 			parameters: paramList,
 			rowsAsArray: true,
 			success: function (result) {
-
+				// console.log("苞娜 ",result);
 			},
 			error: sender.error
 		});
@@ -902,7 +928,7 @@ module.exports = function (sender) {
 		});
 	}
 	function seeAudit(BillNo, CurLevel, CurStatus, CurText) {
-		console.log(" 市直", DeptName, GroupName);
+		console.log(" 市直", FlowDeptName, GroupName);
 		let SQL4 =
 			" select tceo.Mobiles as CeoWorkId, tceo.staffName as CeoName, tbod.Mobiles as BodWorkId, tbod.staffName as BodName from  bgu_staffs tba " +
 			" LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%' , tba.DeptLabel , '%') and tceo.staffLevel='8' " +
@@ -910,7 +936,7 @@ module.exports = function (sender) {
 			"  where tba.DeptLabel=? and tba.StaffLevel='1'  ";
 		yjDBService.exec({
 			sql: SQL4,
-			parameters: [DeptName],
+			parameters: [FlowDeptName],
 			rowsAsArray: true,
 			success: function (r) {
 				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
@@ -1002,13 +1028,3 @@ module.exports = function (sender) {
 	}
 }
 
-// for (var i = 0; i < Digit.length; i++) {
-// 	sendCnt = Digit.length;
-// 	var mixSubject = Digit[i].Subject;
-// 	var mixBudgetCID = Digit[i].BudgetCID;
-// 	var mixBudgetItem = Digit[i].BudgetItem;
-// 	var mixSubtotal = Digit[i].Subtotal;
-// 	console.log("暗箭", Digit[i].BudgetItem);
-// 	console.log("链刃", Digit[i].Subtotal);
-// 	idvQuota(i, BillNo, BudYear, mixSubject, mixBudgetCID, mixBudgetItem, DeptName, mixSubtotal);
-// }

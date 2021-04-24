@@ -521,7 +521,7 @@
 
         let MainTableData = MainTable.rows().data();
         let RPData = []
-        let RPNewData = [];
+        let newRPData = [];
         for (let i = 0; i < MainTableData.length; i++) {
             RPData.push(MainTableData[i]);
 
@@ -555,7 +555,7 @@
             if (!match) {
                 // RPData.push(n)
 
-                console.log('n', n);
+                // console.log('n', n);
 
 
                 let newStaff = {
@@ -582,12 +582,12 @@
                     workPhone: n.mobilePhone,
                     zipcode: ""
                 }
-                RPNewData.push(newStaff)
+                newRPData.push(newStaff)
             }
         }
-        console.log('newRPData', RPNewData);
+        console.log('newRPData', newRPData);
 
-        if (RPNewData.length === 0) {
+        if (newRPData.length === 0) {
             alert('未检测到新数据');
             return
         }
@@ -598,7 +598,7 @@
             sql: 'replace',
             params: {
                 tableId: 'rp_staffs',
-                data: RPNewData,
+                data: newRPData,
                 // key: 'DBID'
             }
         })
@@ -606,8 +606,7 @@
         console.log('r1', r1);
         if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成,成功同步' + r1.affectedRows + '条新数据!')
-
+            alert('同步完成,更新' + r1.affectedRows + '条新数据!')
         }
     }
 

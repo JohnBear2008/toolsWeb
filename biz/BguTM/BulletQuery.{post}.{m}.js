@@ -17,7 +17,7 @@ module.exports = function (sender) {
   var FlowVip = sender.req.query.FlowVip;
   var FlowDept = sender.req.query.FlowDept; 
   var FlowUnit = sender.req.query.FlowUnit;
-  console.log("常乐 ", FlowUnit ,"知足 ",qryBillNo, FlowVip, FlowBudget);
+  console.log("常乐 ", FlowUnit ,"知足 ",qryBillNo );
   var orderBy = '';
   var limit = '500';
   var capacity = '';

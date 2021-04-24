@@ -480,7 +480,7 @@ module.exports = function (sender) {
 							"BodName": BodName,
 						}
 						datas.push(temp)
-						console.log("受力:" + JSON.stringify(temp));
+						// console.log("受力:" + JSON.stringify(temp));
 					}
 					cb(null, datas);
 				},

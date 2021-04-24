@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-02 10:16:51
- * @LastEditTime: 2021-04-19 10:15:56
+ * @LastEditTime: 2021-04-22 12:54:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
@@ -76,7 +76,7 @@ const getT9Data = async ({
 }
 
 const T9DateFormat = (date) => {
-    console.log('T9DateFormat', date);
+    // console.log('T9DateFormat', date);
 
     let returnDate = '0000-00-00'
     if (date.toString().length !== 8) {

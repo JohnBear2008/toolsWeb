@@ -28,7 +28,7 @@ function shuffleA(BillNo) {
                 '<td  colspan="2" align="center" class="coffee-drop" ><img src="watermark"  /></td> ' +
                 '</tr>' +
                 '<tr>' +
-                '<td  colspan="7" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
+                '<td  colspan="7" align="center"><h3>Ningbo Techmation Co.,Ltd.</h3></td>' +
                 '<td  colspan="2" > List_No</td> ' +
                 '</tr>' +
                 '<tr>' +
@@ -48,11 +48,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">单位</td>' +
                 '<td width="50" height="25">单价</td>' +
                 '<td width="50" height="25">数量</td>' +
-                '<td width="50" height="25">小计</td>' +
                 '<td width="50" height="25">交期</td>' +
                 '<td width="50" height="25">供货商</td>' +
-                '<td width="50" height="25">剩余额度</td>' +
                 '<td width="50" height="25">是否预算内</td>' +
+                '<td width="50" height="25">剩余额度</td>' +
+                '<td width="50" height="25">小计</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" height="25">BudItem_1</td>' +
@@ -61,11 +61,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_1</td>' +
                 '<td width="50" height="25">UniPrice_1</td>' +
                 '<td width="50" height="25">QuantAmt_1</td>' +
-                '<td width="50" height="25">SubTot_1</td>' +
                 '<td width="50" height="25">Delivway_1</td>' +
                 '<td width="50" height="25">Vender_1</td>' +
-                '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">Underbur_1</td>' +
+                '<td width="50" height="25">Invent_1</td>' +
+                '<td width="50" height="25">SubTot_1</td>' +
                 // '<td width="50" height="25">DeptM_1</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -75,11 +75,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_2</td>' +
                 '<td width="50" height="25">UniPrice_2</td>' +
                 '<td width="50" height="25">QuantAmt_2</td>' +
-                '<td width="50" height="25">SubTot_2</td>' +
                 '<td width="50" height="25">Delivway_2</td>' +
                 '<td width="50" height="25">Vender_2</td>' +
-                '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">Underbur_2</td>' +
+                '<td width="50" height="25">Invent_2</td>' +
+                '<td width="50" height="25">SubTot_2</td>' +
                 // '<td width="50" height="25">DeptM_2</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -89,11 +89,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_3</td>' +
                 '<td width="50" height="25">UniPrice_3</td>' +
                 '<td width="50" height="25">QuantAmt_3</td>' +
-                '<td width="50" height="25">SubTot_3</td>' +
                 '<td width="50" height="25">Delivway_3</td>' +
                 '<td width="50" height="25">Vender_3</td>' +
-                '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">Underbur_3</td>' +
+                '<td width="50" height="25">Invent_3</td>' +
+                '<td width="50" height="25">SubTot_3</td>' +
                 // '<td width="50" height="25">DeptM_3</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -103,11 +103,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_4</td>' +
                 '<td width="50" height="25">UniPrice_4</td>' +
                 '<td width="50" height="25">QuantAmt_4</td>' +
-                '<td width="50" height="25">SubTot_4</td>' +
                 '<td width="50" height="25">Delivway_4</td>' +
                 '<td width="50" height="25">Vender_4</td>' +
-                '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">Underbur_4</td>' +
+                '<td width="50" height="25">Invent_4</td>' +
+                '<td width="50" height="25">SubTot_4</td>' +
                 // '<td width="50" height="25">DeptM_4</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -117,11 +117,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_5</td>' +
                 '<td width="50" height="25">UniPrice_5</td>' +
                 '<td width="50" height="25">QuantAmt_5</td>' +
-                '<td width="50" height="25">SubTot_5</td>' +
                 '<td width="50" height="25">Delivway_5</td>' +
                 '<td width="50" height="25">Vender_5</td>' +
-                '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">Underbur_5</td>' +
+                '<td width="50" height="25">Invent_5</td>' +
+                '<td width="50" height="25">SubTot_5</td>' +
                 // '<td width="50" height="25">DeptM_5</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -131,11 +131,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_6</td>' +
                 '<td width="50" height="25">UniPrice_6</td>' +
                 '<td width="50" height="25">QuantAmt_6</td>' +
-                '<td width="50" height="25">SubTot_6</td>' +
                 '<td width="50" height="25">Delivway_6</td>' +
                 '<td width="50" height="25">Vender_6</td>' +
-                '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">Underbur_6</td>' +
+                '<td width="50" height="25">Invent_6</td>' +
+                '<td width="50" height="25">SubTot_6</td>' +
                 // '<td width="50" height="25">DeptM_6</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -145,11 +145,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_7</td>' +
                 '<td width="50" height="25">UniPrice_7</td>' +
                 '<td width="50" height="25">QuantAmt_7</td>' +
-                '<td width="50" height="25">SubTot_7</td>' +
                 '<td width="50" height="25">Delivway_7</td>' +
                 '<td width="50" height="25">Vender_7</td>' +
-                '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">Underbur_7</td>' +
+                '<td width="50" height="25">Invent_7</td>' +
+                '<td width="50" height="25">SubTot_7</td>' +
                 // '<td width="50" height="25">DeptM_7</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -159,11 +159,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_8</td>' +
                 '<td width="50" height="25">UniPrice_8</td>' +
                 '<td width="50" height="25">QuantAmt_8</td>' +
-                '<td width="50" height="25">SubTot_8</td>' +
                 '<td width="50" height="25">Delivway_8</td>' +
                 '<td width="50" height="25">Vender_8</td>' +
-                '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">Underbur_8</td>' +
+                '<td width="50" height="25">Invent_8</td>' +
+                '<td width="50" height="25">SubTot_8</td>' +
                 // '<td width="50" height="25">DeptM_8</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -173,11 +173,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_9</td>' +
                 '<td width="50" height="25">UniPrice_9</td>' +
                 '<td width="50" height="25">QuantAmt_9</td>' +
-                '<td width="50" height="25">SubTot_9</td>' +
                 '<td width="50" height="25">Delivway_9</td>' +
                 '<td width="50" height="25">Vender_9</td>' +
-                '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">Underbur_9</td>' +
+                '<td width="50" height="25">Invent_9</td>' +
+                '<td width="50" height="25">SubTot_9</td>' +
                 // '<td width="50" height="25">DeptM_9</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -187,11 +187,11 @@ function shuffleA(BillNo) {
                 '<td width="50" height="25">Measure_10</td>' +
                 '<td width="50" height="25">UniPrice_10</td>' +
                 '<td width="50" height="25">QuantAmt_10</td>' +
-                '<td width="50" height="25">SubTot_10</td>' +
                 '<td width="50" height="25">Delivway_10</td>' +
                 '<td width="50" height="25">Vender_10</td>' +
-                '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">Underbur_10</td>' +
+                '<td width="50" height="25">Invent_10</td>' +
+                '<td width="50" height="25">SubTot_10</td>' +
                 // '<td width="50" height="25">DeptM_10</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -648,12 +648,10 @@ function shuffleA(BillNo) {
             if ( Answer != undefined && Answer != null && Answer != '') {
                 $("#reaLabel").addClass("fee-approval");
                 $("#reaLabel").html("退回理由");
-                console.log("琴一把");
             }else{
                 $("#reaLabel").html("");
                 $("#reaLabel").val("");
                 $("#reaLabel").removeClass("fee-approval");
-                console.log("潦倒布衣一身");
             }
             if (CurJob == 'dpt') {
                 $("#mandpt").addClass("fee-approval");
@@ -726,7 +724,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td  colspan="2" align="center" class="coffee-drop" ><img src="watermark"  /></td> ' +
                 '</tr>' +
                 '<tr>' +
-                '<td  colspan="7" align="center"><h3>NINGBO TECHMATION CO.,LTD.</h3></td>' +
+                '<td  colspan="7" align="center"><h3>Ningbo Techmation Co.,Ltd.</h3></td>' +
                 '<td  colspan="2" > List_No</td> ' +
                 '</tr>' +
                 '<tr>' +
@@ -746,11 +744,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">单位</td>' +
                 '<td width="50" height="25">单价</td>' +
                 '<td width="50" height="25">数量</td>' +
-                '<td width="50" height="25">小计</td>' +
                 '<td width="50" height="25">交期</td>' +
                 '<td width="50" height="25">供货商</td>' +
-                '<td width="50" height="25">剩余额度</td>' +
                 '<td width="50" height="25">是否预算内</td>' +
+                '<td width="50" height="25">剩余额度</td>' +
+                '<td width="50" height="25">小计</td>' +
                 // '<td width="50" height="25">使用部门</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -760,11 +758,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_1</td>' +
                 '<td width="50" height="25">UniPrice_1</td>' +
                 '<td width="50" height="25">QuantAmt_1</td>' +
-                '<td width="50" height="25">SubTot_1</td>' +
                 '<td width="50" height="25">Delivway_1</td>' +
                 '<td width="50" height="25">Vender_1</td>' +
-                '<td width="50" height="25">Invent_1</td>' +
                 '<td width="50" height="25">Underbur_1</td>' +
+                '<td width="50" height="25">Invent_1</td>' +
+                '<td width="50" height="25">SubTot_1</td>' +
                 // '<td width="50" height="25">DeptM_1</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -774,11 +772,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_2</td>' +
                 '<td width="50" height="25">UniPrice_2</td>' +
                 '<td width="50" height="25">QuantAmt_2</td>' +
-                '<td width="50" height="25">SubTot_2</td>' +
                 '<td width="50" height="25">Delivway_2</td>' +
                 '<td width="50" height="25">Vender_2</td>' +
-                '<td width="50" height="25">Invent_2</td>' +
                 '<td width="50" height="25">Underbur_2</td>' +
+                '<td width="50" height="25">Invent_2</td>' +
+                '<td width="50" height="25">SubTot_2</td>' +
                 // '<td width="50" height="25">DeptM_2</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -788,11 +786,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_3</td>' +
                 '<td width="50" height="25">UniPrice_3</td>' +
                 '<td width="50" height="25">QuantAmt_3</td>' +
-                '<td width="50" height="25">SubTot_3</td>' +
                 '<td width="50" height="25">Delivway_3</td>' +
                 '<td width="50" height="25">Vender_3</td>' +
-                '<td width="50" height="25">Invent_3</td>' +
                 '<td width="50" height="25">Underbur_3</td>' +
+                '<td width="50" height="25">Invent_3</td>' +
+                '<td width="50" height="25">SubTot_3</td>' +
                 // '<td width="50" height="25">DeptM_3</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -802,11 +800,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_4</td>' +
                 '<td width="50" height="25">UniPrice_4</td>' +
                 '<td width="50" height="25">QuantAmt_4</td>' +
-                '<td width="50" height="25">SubTot_4</td>' +
                 '<td width="50" height="25">Delivway_4</td>' +
                 '<td width="50" height="25">Vender_4</td>' +
-                '<td width="50" height="25">Invent_4</td>' +
                 '<td width="50" height="25">Underbur_4</td>' +
+                '<td width="50" height="25">Invent_4</td>' +
+                '<td width="50" height="25">SubTot_4</td>' +
                 // '<td width="50" height="25">DeptM_4</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -816,11 +814,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_5</td>' +
                 '<td width="50" height="25">UniPrice_5</td>' +
                 '<td width="50" height="25">QuantAmt_5</td>' +
-                '<td width="50" height="25">SubTot_5</td>' +
                 '<td width="50" height="25">Delivway_5</td>' +
                 '<td width="50" height="25">Vender_5</td>' +
-                '<td width="50" height="25">Invent_5</td>' +
                 '<td width="50" height="25">Underbur_5</td>' +
+                '<td width="50" height="25">Invent_5</td>' +
+                '<td width="50" height="25">SubTot_5</td>' +
                 // '<td width="50" height="25">DeptM_5</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -830,11 +828,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_6</td>' +
                 '<td width="50" height="25">UniPrice_6</td>' +
                 '<td width="50" height="25">QuantAmt_6</td>' +
-                '<td width="50" height="25">SubTot_6</td>' +
                 '<td width="50" height="25">Delivway_6</td>' +
                 '<td width="50" height="25">Vender_6</td>' +
-                '<td width="50" height="25">Invent_6</td>' +
                 '<td width="50" height="25">Underbur_6</td>' +
+                '<td width="50" height="25">Invent_6</td>' +
+                '<td width="50" height="25">SubTot_6</td>' +
                 // '<td width="50" height="25">DeptM_6</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -844,11 +842,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_7</td>' +
                 '<td width="50" height="25">UniPrice_7</td>' +
                 '<td width="50" height="25">QuantAmt_7</td>' +
-                '<td width="50" height="25">SubTot_7</td>' +
                 '<td width="50" height="25">Delivway_7</td>' +
                 '<td width="50" height="25">Vender_7</td>' +
-                '<td width="50" height="25">Invent_7</td>' +
                 '<td width="50" height="25">Underbur_7</td>' +
+                '<td width="50" height="25">Invent_7</td>' +
+                '<td width="50" height="25">SubTot_7</td>' +
                 // '<td width="50" height="25">DeptM_7</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -858,11 +856,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_8</td>' +
                 '<td width="50" height="25">UniPrice_8</td>' +
                 '<td width="50" height="25">QuantAmt_8</td>' +
-                '<td width="50" height="25">SubTot_8</td>' +
                 '<td width="50" height="25">Delivway_8</td>' +
                 '<td width="50" height="25">Vender_8</td>' +
-                '<td width="50" height="25">Invent_8</td>' +
                 '<td width="50" height="25">Underbur_8</td>' +
+                '<td width="50" height="25">Invent_8</td>' +
+                '<td width="50" height="25">SubTot_8</td>' +
                 // '<td width="50" height="25">DeptM_8</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -872,11 +870,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_9</td>' +
                 '<td width="50" height="25">UniPrice_9</td>' +
                 '<td width="50" height="25">QuantAmt_9</td>' +
-                '<td width="50" height="25">SubTot_9</td>' +
                 '<td width="50" height="25">Delivway_9</td>' +
                 '<td width="50" height="25">Vender_9</td>' +
-                '<td width="50" height="25">Invent_9</td>' +
                 '<td width="50" height="25">Underbur_9</td>' +
+                '<td width="50" height="25">Invent_9</td>' +
+                '<td width="50" height="25">SubTot_9</td>' +
                 // '<td width="50" height="25">DeptM_9</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -886,11 +884,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" height="25">Measure_10</td>' +
                 '<td width="50" height="25">UniPrice_10</td>' +
                 '<td width="50" height="25">QuantAmt_10</td>' +
-                '<td width="50" height="25">SubTot_10</td>' +
                 '<td width="50" height="25">Delivway_10</td>' +
                 '<td width="50" height="25">Vender_10</td>' +
-                '<td width="50" height="25">Invent_10</td>' +
                 '<td width="50" height="25">Underbur_10</td>' +
+                '<td width="50" height="25">Invent_10</td>' +
+                '<td width="50" height="25">SubTot_10</td>' +
                 // '<td width="50" height="25">DeptM_10</td>' +
                 '</tr>' +
                 '<tr>' +

@@ -17,9 +17,10 @@ module.exports = function (sender) {
     var Formkind = "采购单";
     var FlowGroup = '';
     var FlowDept = '';
-  
+    var FlowUnit = '';
+    var flag = '0';
     var qryDept = '';
-    var qryGroup = ''; 
+    var qryGroup = '';  
     var Transaction = 0;
     if (arrange == 'saveSend') {
         var Advstr = sender.req.query.Advstr;
@@ -36,7 +37,8 @@ module.exports = function (sender) {
             DeptList = qryDept.split(',');
             FlowDept = DeptList[0];
         }
-        qryGroup = Advstr.GroupName;
+        qryGroup = Advstr.GroupName; 
+        FlowUnit = Advstr.UnitName;
         let GroupList = [];
         if (qryGroup != "" && qryGroup != undefined) {
             GroupList = qryGroup.split(',');
@@ -53,7 +55,7 @@ module.exports = function (sender) {
         var hideBillNo = Advstr.hideBillNo;
                 BillNo = hideBillNo;
                 PopupMain( ) ;
-         
+                console.log("冤孽:", FlowDept ,"奇谈:",FlowUnit,"怪",FlowGroup);
     } else {
 
     }
@@ -154,12 +156,12 @@ module.exports = function (sender) {
         var Subject = sData[0].Subject;
         var BudgetItem = sData[0].BudgetItem;
         let paramList = [BillNo, Formkind, Subject, BudgetCID, BudgetItem, ListNo,
-            RequestDate, ProjectNo, ApplicNo, FlowDept, FlowGroup,
+            RequestDate, ProjectNo, ApplicNo, FlowDept, FlowUnit ,FlowGroup,
             StaffID, StaffName, TotalValue, RealValue, Currency, Payment,
             Explanation, Transaction , EntryDate];
         var SQLInsert = "INSERT INTO `bgu_expmain` ( `BillNo` , `Formkind` , `Subject` , `BudgetCID` , `BudgetItem` , `ListNo` ,  `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-            "`DeptName` , `GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  ,  `RealValue` ,`Currency` ,  `Payment` , `Explanation` , `Transaction` ,`EntryDate`  ) " +
-            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,  ?  )";
+            "`DeptName` , `UnitName` , `GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  ,  `RealValue` ,`Currency` ,  `Payment` , `Explanation` , `Transaction` ,`EntryDate`  ) " +
+            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,  ?,? )";
         yjDBService.exec({
             sql: SQLInsert,
             parameters: paramList,
@@ -178,8 +180,11 @@ module.exports = function (sender) {
         if (BillNo != '' && BillNo != undefined) {
 
         } else {
+            if (flag == '0') {
             NoticeFail();
             console.log("不良件");
+            flag = '1';
+            }
             return;
         }
         var SQLInsert = "Update `bgu_rule` set CurStatus  = 'T'  , CurText  = '结算' where BillNo= ?";
@@ -187,7 +192,10 @@ module.exports = function (sender) {
             sql: SQLInsert,
             parameters: [BillNo],
             success: function (result) {
+                if (flag == '0') {
                 Notice();
+                flag = '1';
+            }
             },
             error: {},
         });

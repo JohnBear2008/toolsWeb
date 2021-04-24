@@ -24,8 +24,8 @@
 <!-- 打印 -->
 <script src="/public/print/print.js"></script>
 <!-- 预览 -->
-<script src="/arch/FnSubA.js"></script>
-<script src="/arch/FnSubB.js"></script>
+<script src="/arch/CloneA.js"></script>
+<script src="/arch/CloneB.js"></script>
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
@@ -36,22 +36,17 @@
 	<div id="noprint" class="noprint">
 		<div class="divcontent">
 			<div id="handout_wrap_inner"></div>
-			<h1>费用单据查找</h1>
+			<h1>已报销结算查找</h1>
 			<label>模式:</label>
 			<select id="Pattern" name="Pattern" class="can-find-M140"></select>
 			<label>种类:</label>
 			<select id="CapMode" name="CapMode" class="can-find-M140"></select>
 			<button id="SeaBtn" class="btn btn-default">与我相关</button>
 			<button id="SeaAllBtn" class="btn btn-default">全部单据</button>
-			<!-- <input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" /> -->
 			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
 			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
 			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
-			<input type="button" id="btn_apply" class="btn btn-info" onclick="apply_hmi();" value="送审" />
-			<input type="button" id="MdfyBtn" class="btn btn-info" value="编辑" />
-			<input type="button" id="PurFixBtn" class="btn btn-info" value="采购" />
-			<!-- <input type="button" id="ExpFillBtn" class="btn btn-info" value="结算" /> -->
-			<input type="button" id="VoidBtn" class="btn btn-info" value="作废" />
+			<input type="button" id="ExpFillBtn" class="btn btn-info" value="结算" />
 			<hr>
 			<br />
 			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
@@ -107,12 +102,10 @@
 						</div>
 						<div id="listPrintViewDiv">
 						</div>
-						<div style="margin-left:400px;margin-top:40px;">
-							<br />
-							<button id="PrintConfirm" style="margin-left:60px" type="button"
-								class="btn btn-info">打印</button>
+						<div  style="margin-left:400px;margin-top:40px;" >
+							<button id="PrintConfirm"  style="margin-left:60px"  type="button" class="btn btn-info">打印</button>
 							<button id="PrintClose" type="button" class="btn btn-primary"
-								data-dismiss="modal">关闭</button>
+							data-dismiss="modal">关闭</button>
 						</div>
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal -->
@@ -130,7 +123,7 @@
 	</div>
 	<div id="root" style="height: 100%"></div>
 	<script>
-		var href = "/app/TMFinc/feeHistory";
+		var href =  "/app/TMFinc/feeHistory";
 		var missType = '';
 		var missAcute = '';
 		var missBcute = '';
@@ -224,11 +217,11 @@
 			$("#SeaBtn").addClass("active");
 			getpull(); getDrop();
 			function timer(time) {
-				setTimeout(function () {
-					$('#SeaBtn').click();
-				}, time);
+					setTimeout(function () {
+						$('#SeaBtn').click();
+					}, time);
 			}
-			timer(500);
+			timer(500) ;
 			$("#pdf-wrapper").css('visibility', 'hidden');
 		});
 
@@ -244,14 +237,14 @@
 			var limit = '5000';
 			var filter = ' 1=1 ';
 			var orderBy = '';
-			$("#center_TB").dataTable().fnDestroy();  
+			$("#center_TB").dataTable().fnDestroy();  //搞好thead
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
 			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
 			$("#matchRec").html("查找条件:" + signTxt);
 			var reportChannel = 'FeeHead';
-			var arrange = 'Fee';
-			var taskData = { "reportType": reportChannel, "arrange": arrange, "pick": CapMode };
+			var arrange = 'Exp';
+			var taskData = { "reportType": reportChannel,  "arrange": arrange , "pick": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -261,7 +254,7 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskData = { "reportType": reportType, "arrange": arrange, "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskData = { "reportType": reportType, "arrange": arrange , "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskData, newColumns);
 				},
 				error: function () {
@@ -278,8 +271,8 @@
 			var signTxt = signoption.text();
 			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "CapMode": CapMode, "limit": limit };
 			var reportChannel = 'FeeHead';
-			var arrange = 'Fee';
-			var taskData = { "reportType": reportChannel, "arrange": arrange, "pick": CapMode };
+			var arrange = 'Exp';
+			var taskData = { "reportType": reportChannel,  "arrange": arrange , "pick": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -289,7 +282,7 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskType = { "reportType": reportType, "arrange": arrange, "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskType = { "reportType": reportType, "arrange": arrange , "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
 					bornTable(taskType, newColumns);
 				},
 				error: function () {
@@ -320,18 +313,18 @@
 			});
 
 			$('#center_TB tbody').on('dblclick', 'tr', function () {
-				var table = $('#center_TB').DataTable();
-				var dataSelect = table.row('.selected').data();
-				var data = table.row(this).data();
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
+			var table = $('#center_TB').DataTable();
+			var dataSelect = table.row('.selected').data();
+			var data = table.row(this).data();
+			var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				if (CapMode == 'A') {
-					shuffleA(billNo);
+					DryingA(billNo);
 				}
 				if (CapMode == 'B') {
-					shuffleB(billNo);
+					DryingB(billNo);
 				}
-				$('#kisswindow').modal('show');
-			});
+				$('#kisswindow').modal('show');	
+		      });
 		}
 		function reloadCol() {
 			columnsData = [
@@ -389,10 +382,10 @@
 				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
 				console.log("西阭", (billNo));
 				if (CapMode == 'A') {
-					shuffleA(billNo);
+					DryingA(billNo);
 				}
 				if (CapMode == 'B') {
-					shuffleB(billNo);
+					DryingB(billNo);
 				}
 				$('#kisswindow').modal('show');
 			}
@@ -418,167 +411,6 @@
 			showDBDataByBill(DataPara, columnsData, Pattern, CapMode, '');
 			$("#SeaAllBtn").addClass("active");
 			$("#SeaBtn").removeClass("active");
-		});
-		$('#MdfyBtn').click(function () {
-			var table = $('#center_TB').DataTable();
-			var dataSelect = table.row('.selected').data();
-			if (dataSelect == undefined) {
-				alert("当前未选择任何数据,请先点击需要的数据行!");
-			} else {
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				var CurText = dataSelect.CurText;
-				var SendText = dataSelect.SendText;
-				var StaffName = dataSelect.StaffName;
-				if (CurText == '作废') {
-
-				} else {
-					if (SendText != '保存') {
-						layer.msg('非保存状态 ， 此单不能修改', { icon: 1 });
-						return;
-					}
-				}
-
-				if (CurText == '核准') {
-					layer.msg('已核准状态 ， 此单不能修改', { icon: 1 });
-					return;
-				}
-				if (CurText == '结算') {
-					layer.msg('已结算状态 ， 此单不能修改', { icon: 1 });
-					return;
-				}
-				if (sessionName != StaffName) {
-					layer.msg('非本人操作 ， 此单不能修改', { icon: 1 });
-					return;
-				}
-				layer.confirm(billNo + '进入编辑作业，请确认操作是否无误？', {
-					btn: ['是', '否']
-				}, function () {
-					var paramClearA = encodeURI(encodeURI(billNo));
-					var paramType = 'Mdy';
-					// if (CapMode == 'A') {
-					// 	window.location.href = "/app/bear/BearTest2?missT=" + paramType + "&missA=" + paramClearA + " ";
-					// }
-					// if (CapMode == 'B') {
-					// 	window.location.href = "/app/bear/BearTest2?missT=" + paramType + "&missA=" + paramClearA + " ";
-					// }
-					if (CapMode == 'A') {
-						window.location.href = "/app/TMFinc/feeApplyForm?missT=" + paramType + "&missA=" + paramClearA + " ";
-					}
-					if (CapMode == 'B') {
-						window.location.href = "/app/TMFinc/feeTravel?missT=" + paramType + "&missA=" + paramClearA + " ";
-					}
-				}, function () {
-					layer.msg('无操作', { icon: 1 });
-				});
-			}
-		});
-		$('#VoidBtn').click(function () {
-			var table = $('#center_TB').DataTable();
-			var dataSelect = table.row('.selected').data();
-			if (dataSelect == undefined) {
-				alert("当前未选择任何数据,请先点击需要的数据行!");
-			} else {
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				var CurText = dataSelect.CurText;
-				var StaffName = dataSelect.StaffName;
-				var MagName = dataSelect.MagName;
-				var VipName = dataSelect.VipName;
-				var DeptName = dataSelect.DeptName;
-				if (CurText == '核准') {
-					layer.msg('已核准状态 ， 此单不能作废', { icon: 1 });
-					return;
-				}
-				if (CurText == '作废') {
-					layer.msg('已作废状态 ， 此单不能作废', { icon: 1 });
-					return;
-				}
-				// console.log("鲨炮",MagName,"流尾",VipName,"喷",sessionName,"中",StaffName);
-				if (sessionName == MagName || sessionName == VipName || sessionName == StaffName) {
-					// console.log("虽",VipName,"自性",MagName,"清净",sessionName,"客尘",DeptName);
-				} else {
-					layer.msg('非相关人士 ， 此单不能修改', { icon: 1 });
-					return;
-				}
-				layer.confirm(billNo + '此单作废不可回复，请确认操作是否无误？', {
-					btn: ['是', '否']
-				}, function () {
-					layer.msg('操作成功', { icon: 1 });
-					var arrange = 'VoidBill';
-					var reportType = 'rejectFee';
-					var ReasonPest = '';
-					var taskData = {
-						"reportType": reportType, "arrange": arrange, "BillNo": billNo, "CurName": sessionName,
-						"Reason": ReasonPest,
-					}
-					$.ajax({
-						method: 'post',
-						data: taskData,
-						url: "/app/TMFinc/getRoute",
-						success: function (data) {
-							if (data.status == 'Fail') {
-								layer.msg("讯息" + data.message);
-							} else if (data.status == 'OK') {
-								layer.confirm("作废文号" + data.BillNo + "" + (data.status), {
-									btn: ['知道了']
-								}, function () {
-									layer.msg('操作成功', { icon: 1 });
-									var DateB = $("#taskMakeDateB").val();
-									var DateE = $("#taskMakeDateE").val();
-									missAcute = $('#Pattern').val();
-									missBcute = $('#CapMode').val();
-									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
-								});
-							}
-						},
-						error: function () {
-						}
-					})
-				}, function () {
-					layer.msg('无操作', { icon: 1 });
-				});
-			}
-		});
-		$('#PurFixBtn').click(function () {
-			var table = $('#center_TB').DataTable();
-			var dataSelect = table.row('.selected').data();
-			if (dataSelect == undefined) {
-				alert("当前未选择任何数据,请先点击需要的数据行!");
-			} else {
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				var CurText = dataSelect.CurText;
-				var StaffName = dataSelect.StaffName;
-				var PurName = dataSelect.PurName;
-				var PexName = dataSelect.PexName;
-				var CfoName = dataSelect.CfoName;
-				var DeptName = dataSelect.DeptName;
-				if (CurText != '审批') {
-					layer.msg('非审批状态 ， 此单不能修改', { icon: 1 });
-					return;
-				}
-				if (sessionName == PurName || sessionName == PexName || sessionName == CfoName) {
-					// console.log("鲨嘴炮",PurName,"流星尾",PurName,"轰",sessionName,"空中",DeptName);
-				} else {
-					layer.msg('非采购承办人或采购主管或财务人员 ， 此单不能修改', { icon: 1 });
-					return;
-				}
-				layer.confirm(billNo + '进入编辑作业，请确认操作是否无误？', {
-					btn: ['是', '否']
-				}, function () {
-					var paramClearA = encodeURI(encodeURI(billNo));
-					var paramType = '';
-					var paramPur = 'Pur';
-					var paramDept = encodeURI(encodeURI(DeptName));
-					var paramJump = encodeURI(encodeURI(sessionName));
-					if (CapMode == 'A') {
-						window.location.href = "/app/TMFinc/feeApplyForm?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
-					}
-					if (CapMode == 'B') {
-						window.location.href = "/app/TMFinc/feeTravel?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
-					}
-				}, function () {
-					layer.msg('无操作', { icon: 1 });
-				});
-			}
 		});
 		$('#ExpFillBtn').click(function () {
 			var table = $('#center_TB').DataTable();
@@ -615,86 +447,14 @@
 						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
 					}
 					if (CapMode == 'B') {
-						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
+						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType  + "&missJ=" + paramJump + "&missG=" + paramDept +  "&missP=" + paramPur +"&missA=" + paramClearA + " ";
 					}
 				}, function () {
 					layer.msg('无操作', { icon: 1 });
 				});
 			}
 		});
-		function apply_hmi() {
-			var table = $('#center_TB').DataTable();
-			var dataSelect = table.row('.selected').data();
-			if (dataSelect == undefined) {
-				alert("当前未选择任何数据,请先点击需要的数据行!");
-			} else {
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				var SendText = dataSelect.SendText;
-				var CurText = dataSelect.CurText;
-				var StaffName = dataSelect.StaffName;
-				if (SendText != '保存') {
-					layer.msg('非保存状态 ， 此单不能送审', { icon: 1 });
-					return;
-				}
-				if (CurText == '核准') {
-					layer.msg('已核准状态 ， 此单不能送审', { icon: 1 });
-					return;
-				}
-				if (CurText == '作废') {
-					layer.msg('已作废状态 ， 此单不能送审', { icon: 1 });
-					return;
-				}
-				if (CurText == '退回') {
-					layer.msg('已退回状态 ， 此单不能送审', { icon: 1 });
-					return;
-				}
-				if (sessionName != StaffName) {
-					layer.msg('非本人提交 ， 此单不能送审', { icon: 1 });
-					return;
-				}
-				console.log("西阭", (billNo));
-				var SendStatus = '1';
-				layer.confirm('此单送出审批吗，请确认操作是否无误？', {
-					btn: ['是', '否']
-				}, function () {
-					layer.msg('操作成功', { icon: 1 });
-					var Basstr = {
-						"SendStatus": SendStatus, "hideBillNo": billNo
-					};
-					var reportType = 'applyBudget';
-					var arrange = 'confirm';
-					var taskData = {
-						"reportType": reportType, "arrange": arrange, "Basstr": Basstr
-					}
-					$.ajax({
-						method: 'post',
-						data: taskData,
-						url: "/app/TMFinc/getRoute",
-						success: function (data) {
-							console.log("会好", JSON.stringify(data));
-							if (data.status == 'Fail') {
-								layer.msg("讯息" + data.message);
-							} else if (data.status == 'OK') {
-								layer.confirm("申请文号" + data.BillNo + "已送出" + (data.status), {
-									btn: ['知道了']
-								}, function () {
-									layer.msg('操作成功', { icon: 1 });
-									var DateB = $("#taskMakeDateB").val();
-									var DateE = $("#taskMakeDateE").val();
-									missAcute = $('#Pattern').val();
-									missBcute = $('#CapMode').val();
-									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
-								});
-							}
-						},
-						error: function () {
-						}
-					})
-				}, function () {
-					layer.msg('无操作', { icon: 1 });
-				});
-			}
-		}
+
 		$('#PrintConfirm').click(function () {
 			Print('#listPrintViewDiv', {
 				onStart: function () {

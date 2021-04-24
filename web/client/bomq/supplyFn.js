@@ -107,7 +107,7 @@ function FlowerBasic() {
                               youoption.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
                               youoption.id = "bellTime_" + ki;
                               youoption.name = "bellTime_" + ki;
-                              youoption.value = dataArr[i].Sub_CID + "-" + dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
+                              youoption.value =  dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon+ "-" + dataArr[i].Sub_CID ;
                               $("#searchbox_" + ki).append(youoption);
                         }
                   }
@@ -294,7 +294,7 @@ function obtCurText(BillNo) {
                   if (dataArr.length > 0) {
                         var CurText = dataArr[0].CurText;
                         if (CurText == '核准' || CurText == '结算') {
-                              loadCaseA(BillNo);
+                              shiftCaseA(BillNo);
                         } else {
                               layer.alert("表单状态不对，不可结算");
                         }

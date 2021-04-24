@@ -45,7 +45,9 @@ const CreateDDMsgText = (I, O) => {
 
 	let DDText = "";
 	for (let i = 0; i < I.DDMsg.length; i++) {
-		DDText = DDText + I.DDMsg[i].msg + '@' + I.DDMsg[i].at + '\n\n' + '登录地址:http://192.168.0.9:2019/app/TMFinc/feeAgreeForm';
+		DDText = DDText + I.DDMsg[i].msg + '@' + I.DDMsg[i].at + '\n\n' +
+			'内网登录:http://192.168.0.9:2019/app/TMFinc/feeAgreeForm' + '\n\n' +
+			'外网登录:http://60.190.61.10:8091/app/TMFinc/feeAgreeForm';
 	}
 	console.log("DDText:" + DDText)
 
@@ -223,8 +225,8 @@ let O;
 // 通知任务---------
 var j1 = schedule
 	.scheduleJob({
-			hour: 08,
-			minute: 32,
+			hour: 09,
+			minute: 13,
 			dayOfWeek: [1, 2, 3, 4, 5]
 
 		},
@@ -237,8 +239,8 @@ var j1 = schedule
 
 var j2 = schedule
 	.scheduleJob({
-			hour: 16,
-			minute: 20,
+			hour: 12,
+			minute: 53,
 			dayOfWeek: [1, 2, 3, 4, 5]
 
 		},

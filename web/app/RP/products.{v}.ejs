@@ -437,7 +437,7 @@
 
         let MainTableData = MainTable.rows().data();
         let RPData = [];
-        let RPNewData = [];
+        let newRPData = [];
         for (let i = 0; i < MainTableData.length; i++) {
             RPData.push(MainTableData[i]);
 
@@ -461,13 +461,13 @@
             if (!match) {
                 n['effective'] = '是'
                 RPData.push(n)
-                RPNewData.push(n)
+                newRPData.push(n)
             }
         }
-        console.log('RPNewData', RPNewData);
+        console.log('newRPData', newRPData);
 
 
-        if (RPNewData.length === 0) {
+        if (newRPData.length === 0) {
             alert('未检测到新数据');
             return
         }
@@ -476,7 +476,7 @@
             sql: 'replace',
             params: {
                 tableId: 'rp_products',
-                data: RPNewData,
+                data: newRPData,
                 key: 'productId'
             }
         })
@@ -484,7 +484,7 @@
         console.log('r1', r1);
         if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成,成功同步' + r1.affectedRows + '条新数据!')
+            alert('同步完成,更新' + r1.affectedRows + '条新数据!')
         }
     }
 

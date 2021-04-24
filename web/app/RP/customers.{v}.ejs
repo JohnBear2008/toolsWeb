@@ -673,6 +673,7 @@
 
         let MainTableData = MainTable.rows().data();
         let RPData = []
+        let newRPData = []
         for (let i = 0; i < MainTableData.length; i++) {
             RPData.push(MainTableData[i]);
 
@@ -684,35 +685,51 @@
             for (let m of RPData) {
                 if (m.customerName === n.customerName) {
                     match = true
+
+                    let updated = false;
+
                     for (const p in m) {
-                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p) && !m[p] && n[
+                                p]) {
                             m[p] = n[p]
+                            console.log(m);
+                            updated = true;
                         }
+                    }
+
+                    if (updated) {
+                        newRPData.push(m)
                     }
                     break;
                 }
             }
+
             //不存在的物料如何处理,预留
             if (!match) {
-                RPData.push(n)
+                newRPData.push(n)
             }
         }
-        console.log('newRPData', RPData);
+        console.log('newRPData', newRPData);
+
+        if (newRPData.length === 0) {
+            alert('未检测到新数据');
+            return
+        }
+
 
 
         let r1 = await postDBData({
             sql: 'replace',
             params: {
                 tableId: 'rp_customers',
-                data: RPData,
-                key: 'DBID'
+                data: newRPData,
             }
         })
 
         console.log('r1', r1);
-        if (r1) {
+        if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成')
+            alert('同步完成,更新' + r1.affectedRows + '条新数据!')
         }
     }
 

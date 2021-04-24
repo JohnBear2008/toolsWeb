@@ -35,15 +35,15 @@ function MacPurch(nowIDX) {
       if (BudgetCombo != "" && BudgetCombo != undefined) {
             PropList = BudgetCombo.split('-');
             for (var ki = 0; ki < PropList.length; ki++) {
-                  BudgetCID = PropList[0];
-                  BudgetItem = PropList[2];
+                  BudgetCID = PropList[2];
+                  BudgetItem = PropList[1];
             }
       }
       if (nowIDX == '' + parval) {
             if (BudgetCombo != "" && BudgetCombo != undefined) {
                   PropList = BudgetCombo.split('-');
                   for (var ki = 0; ki < PropList.length; ki++) {
-                        Subject = PropList[1];
+                        Subject = PropList[0];
                   }
             }
       }
@@ -101,22 +101,22 @@ function MacPurch(nowIDX) {
                         $("#CfoName").val(data[0].CfoName);
                         $("#PsdName").val(data[0].PsdName);
                         $("#Remain_" + (parval)).val(data[0].Surplus);
-                        if(data[0].BossOver == 'Y' ){
-                              CapBossOver ='Y';
+                        if (data[0].BossOver == 'Y') {
+                              CapBossOver = 'Y';
                               CeoName = data[0].CeoName;
                               BodName = data[0].BodName;
                               // $("#CeoName").val(data[0].CeoName);
                               // $("#BodName").val(data[0].BodName);
-                              console.log("有项目超标了",CapBossOver);
-                        }else{
-                              CapBossOver ='N';
+                              console.log("有项目超标了", CapBossOver);
+                        } else {
+                              CapBossOver = 'N';
                               // $("#CeoName").val('');
                               // $("#BodName").val('');
                         }
                         if (CapBossOver == 'Y') {
                               $("#CeoName").val(CeoName);
                               $("#BodName").val(BodName);
-                        }else{
+                        } else {
                               $("#CeoName").val('');
                               $("#BodName").val('');
                         }
@@ -150,9 +150,9 @@ function winPurch() {
                   console.log("张飞", BudgetCombo);
                   PropList = BudgetCombo.split('-');
                   for (var ki = 0; ki < PropList.length; ki++) {
-                        BudgetCID = PropList[0];
-                        Subject = PropList[1];
-                        BudgetItem = PropList[2];
+                        Subject = PropList[0];
+                        BudgetItem = PropList[1];
+                        BudgetCID = PropList[2];
                   }
             }
 
@@ -224,7 +224,7 @@ function winPurch() {
       }
 }
 function view_hmi(obj) {
-      if(obj != undefined && obj != null){
+      if (obj != undefined && obj != null) {
             var quantid = obj.id;
       }
       // console.log("张良",quantid );
@@ -256,20 +256,71 @@ function view_hmi(obj) {
             var UnitPrice = $('#UnitPrice_' + i).val();
             var Quantity = $('#Quantity_' + i).val();
             var smallTOT = UnitPrice * Quantity;
+            if (i == 1) {
+                  var Apkdiff1 = Remain - smallTOT;
+                  DiffMoney1 = Apkdiff1;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney1);
+            }
+            if (i == 2) {
+                  var Apkdiff2 = Remain - smallTOT;
+                  DiffMoney2 = Apkdiff2;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney2);
+            }
+            if (i == 3) {
+                  var Apkdiff3 = Remain - smallTOT;
+                  DiffMoney3 = Apkdiff3;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney3);
+            }
+            if (i == 4) {
+                  var Apkdiff4 = Remain - smallTOT;
+                  DiffMoney4 = Apkdiff4;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney4);
+            }
+            if (i == 5) {
+                  var Apkdiff5 = Remain - smallTOT;
+                  DiffMoney5 = Apkdiff5;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney5);
+            }
+            if (i == 6) {
+                  var Apkdiff6 = Remain - smallTOT;
+                  DiffMoney6 = Apkdiff6;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney6);
+            }
+            if (i == 7) {
+                  var Apkdiff7 = Remain - smallTOT;
+                  DiffMoney7 = Apkdiff7;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney7);
+            }
+            if (i == 8) {
+                  var Apkdiff8 = Remain - smallTOT;
+                  DiffMoney8 = Apkdiff8;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney8);
+            }
+            if (i == 9) {
+                  var Apkdiff9 = Remain - smallTOT;
+                  DiffMoney9 = Apkdiff9;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney9);
+            }
+            if (i == 10) {
+                  var Apkdiff10 = Remain - smallTOT;
+                  DiffMoney10 = Apkdiff10;
+                  console.log("公孙离 ", i, " -APk ", DiffMoney10);
+            }
+
             if (Remain == '0') {
                   CapAlert = '1';
                   console.log("没了要提醒了", CapAlert);
             } else {
                   if (smallTOT > Remain) {
                         CapAlert = '1';
-                        console.log("超过了，也要提醒了", smallTOT,"你那位：",i);
+                        console.log("超过了，也要提醒了", smallTOT, "你那位：", i);
                         OverIdx = i;
                   } else {
                         // console.log("免提QQ",Remain,"免提JJ",smallTOT);
                   }
             }
       }
-    
+
       // CapBossOver ='N';
       // if (quantid == 'UnitPrice_1' || quantid == 'Quantity_1') {
       //       MacPurch('1');
@@ -302,7 +353,7 @@ function view_hmi(obj) {
       //       MacPurch('10');
       // }
       console.log("最新提醒值", CapBossOver);
-    
+
 }
 function apply_hmi() {
       var DeptName = $('#hideDeptName').val();
@@ -459,9 +510,9 @@ function save_hmi() {
                   if (BudgetCombo_1 != "" && BudgetCombo_1 != undefined) {
                         PropList = BudgetCombo_1.split('-');
                         for (var ki = 0; ki < PropList.length; ki++) {
-                              BudgetCID_1 = PropList[0];
-                              Subject_1 = PropList[1];
-                              BudgetItem_1 = PropList[2];
+                              Subject_1 = PropList[0];
+                              BudgetItem_1 = PropList[1];
+                              BudgetCID_1 = PropList[2];
                         }
                   }
             }
@@ -482,9 +533,9 @@ function save_hmi() {
             if (BudgetCombo != "" && BudgetCombo != undefined) {
                   PropList = BudgetCombo.split('-');
                   for (var ki = 0; ki < PropList.length; ki++) {
-                        BudgetCID = PropList[0];
-                        Subject = PropList[1];
-                        BudgetItem = PropList[2];
+                        Subject = PropList[0];
+                        BudgetItem = PropList[1];
+                        BudgetCID = PropList[2];
                   }
             }
             var ItemNo = $('#ItemNo_' + i).val();
@@ -507,6 +558,36 @@ function save_hmi() {
             var Underburget = $('#Underburget_' + i).val();
             var AppendType = $('#AppendType_' + i).val();
             var Department = $('#Department_' + i).val();
+            if (i == 1) {
+                  var DiffMoney = DiffMoney1;
+            }
+            if (i == 2) {
+                  var DiffMoney = DiffMoney2;
+            }
+            if (i == 3) {
+                  var DiffMoney = DiffMoney3;
+            }
+            if (i == 4) {
+                  var DiffMoney = DiffMoney4;
+            }
+            if (i == 5) {
+                  var DiffMoney = DiffMoney5;
+            }
+            if (i == 6) {
+                  var DiffMoney = DiffMoney6;
+            }
+            if (i == 7) {
+                  var DiffMoney = DiffMoney7;
+            }
+            if (i == 8) {
+                  var DiffMoney = DiffMoney8;
+            }
+            if (i == 9) {
+                  var DiffMoney = DiffMoney9;
+            }
+            if (i == 10) {
+                  var DiffMoney = DiffMoney10;
+            }
             // console.log("丸実", Subject, BudgetCID, BudgetItem);
             var StepStr = {
                   "SNNo": SNNo,
@@ -524,7 +605,8 @@ function save_hmi() {
                   "Supplier": Supplier,
                   "Underburget": Underburget,
                   "AppendType": AppendType,
-                  "Department": Department
+                  "Department": Department,
+                  "DiffMoney": DiffMoney,
             };
             sData.push(StepStr);
       }

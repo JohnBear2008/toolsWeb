@@ -34,6 +34,7 @@ module.exports = function (sender) {
     var qryGroup = '';
     var Smalltotal = 0;
     var IsAuditChange = 'N';
+    var IsBillUnder = '是';
     if (arrange == 'confirm') {
         chkNextAudit();
     } else if (arrange == 'saveSend') {
@@ -334,11 +335,22 @@ module.exports = function (sender) {
         function FunLimit(cb) {
             var sData = sender.req.query.sData;
             var IsZero = 'N';
+            var IsDiffNeg = 'N';
             for (var i = 0; i < sData.length; i++) {
                 if (sData[i].Remain == '0') {
                     IsZero = 'Y';
                 }
                 Smalltotal = sData[0].Subtotal;
+                // console.log("长安城", sData[i].DiffMoney);
+                var DiffMoney =sData[i].DiffMoney;
+                DiffMoney = nulReplace0(DiffMoney); DiffMoney = parseInt(DiffMoney, 10);
+                if (DiffMoney< 0) {
+                    IsDiffNeg = 'Y';
+                    IsBillUnder = '否';
+                    console.log("有阴性:", DiffMoney ,"超了：",IsBillUnder );
+                }else{
+                    // console.log("皆阳性:", DiffMoney);
+                }
             }
             let SQLExecute =
                 " select 'A' as Rank, AllowMoney as AllowValue, Accumulate , Surplus ,IsOver from bgu_quota " +
@@ -380,17 +392,16 @@ module.exports = function (sender) {
                     let now = new Date();
                     var labDate = now.Format("yyyyMMdd");
                     RequestDate = labDate;
-                    if(Smalltotal > UpperLimit ){
-                        IsQuoOver ='Y';
-                    }
-                    console.log("很报歉",Smalltotal , UpperLimit);
+                     
+                    // console.log("很报歉",Smalltotal , UpperLimit);
                     if (IsZero == 'Y' && qryBIsOver == 'Y') {
                         IsAuditChange = 'Y';
                     }
-                    if (IsQuoOver == 'Y' && qryBIsOver == 'Y') {
+                    if (IsDiffNeg == 'Y' && qryBIsOver == 'Y') {
                         IsAuditChange = 'Y';
+                        console.log("要变天了", IsDiffNeg);
                     }
-                    console.log("双飞:", IsQuoOver, "求", qryAIsOver, "天", qryBIsOver);
+                    console.log("双飞:", IsDiffNeg, "求", IsZero, "天", qryBIsOver);
                     var temp = {
                         "UpperLimit": UpperLimit,
                         "UpperLimitB": UpperLimitB,
@@ -619,6 +630,8 @@ module.exports = function (sender) {
             var Underburget = ((sData[i].Remain == '0') ? ('否') : ('是'));
             var AppendType = sData[i].AppendType;
             var Department = sData[i].Department;
+            var DiffMoney = sData[i].DiffMoney;
+            // console.log("拳握初心:", DiffMoney," 第： ",i);
             let paramList = [BillNo, SNNo, Subject, BudgetCID, BudgetItem, ItemNo, Descript, Unit,
                 Remain, UnitPrice, Quantity, Subtotal, Delivery, Supplier, Underburget, AppendType, Department, EntryDate];
             if (ItemNo != "" && ItemNo != undefined) {
@@ -630,7 +643,6 @@ module.exports = function (sender) {
                     parameters: paramList,
                     rowsAsArray: true,
                     success: function (result) {
-                        // console.log("拳握初心:", result);
                     },
                     error: sender.error
                 });
@@ -713,13 +725,25 @@ module.exports = function (sender) {
         var BudgetCID = sData[0].BudgetCID;
         var Subject = sData[0].Subject;
         var BudgetItem = sData[0].BudgetItem;
+      
+        for (var i = 0; i < sData.length; i++) {
+            var DiffMoney =sData[i].DiffMoney;
+            DiffMoney = nulReplace0(DiffMoney); DiffMoney = parseInt(DiffMoney, 10);
+            if (DiffMoney< 0) {
+                IsBillUnder = '否';
+                // console.log("主阴性:", DiffMoney ,"超了：",IsBillUnder );
+            }else{
+               
+            }
+        }
+        console.log( "有奸细",IsBillUnder );
         let paramList = [BillNo, Formkind, Subject, BudgetCID, BudgetItem, ListNo,
             RequestDate, ProjectNo, ApplicNo, FlowDept, FlowUnit, FlowGroup,
             StaffID, StaffName, TotalValue, Currency, Payment,
-            Explanation, EntryDate];
+            Explanation, IsBillUnder, EntryDate];
         var SQLInsert = "INSERT INTO `bgu_purchmain` ( `BillNo` , `Formkind` , `Subject` , `BudgetCID` , `BudgetItem` , `ListNo` ,  `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-            "`DeptName` , `UnitName` ,`GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate`  ) " +
-            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?  )";
+            "`DeptName` , `UnitName` ,`GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,   `IsBillUnder` ,`EntryDate`  ) " +
+            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,  ?  )";
         yjDBService.exec({
             sql: SQLInsert,
             parameters: paramList,

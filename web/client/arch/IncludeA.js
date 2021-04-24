@@ -66,6 +66,7 @@ function searchFile(mode) {
                       , { field: 'DeptName', title: '提交', width: 80 }
                       , { field: 'UnitName', title: '使用', width: 80 }
                       , { field: 'Explanation', title: '原因', width: 120 }
+                      , { field: 'IsBillUnder', title: '预算内', hide: true }
                       , { field: 'EntryDate', title: '打单日期', width: 110 }
                       , { field: 'StaffName', title: '提交人', width: 80, sort: true }
                       , { field: 'CurName', title: '审批人', width: 90, sort: true }
@@ -95,6 +96,7 @@ function searchFile(mode) {
                           var VipName = dataARR[0].VipName;
                           var DeptName = dataARR[0].DeptName;
                           var UnitName = dataARR[0].UnitName;
+                          var IsBillUnder = dataARR[0].IsBillUnder;
                           VegasA(dataARR[0].BillNo ,BudgetItem ,DeptName,  UnitName, VipName );
                           // <DIV STYLE="page-break-before:always">
                           $('#kisswindow').modal('show');
@@ -119,6 +121,7 @@ function searchFile(mode) {
                   var VipName = data.VipName;
                   var DeptName = data.DeptName;
                   var UnitName = data.UnitName;
+                  var IsBillUnder = data.IsBillUnder;
                   CapItemNo = data.ItemNo;
                   CapCurJob = data.CurJob;
                   CapPhone = data.CurPhone;
@@ -130,7 +133,7 @@ function searchFile(mode) {
                       $('#kisswindow').modal('show');
                   } else if (obj.event === 'approval') {
                       var message = '';
-                      if(CapAlert=='1'){
+                      if(IsBillUnder=='是'){
                            message ='进行审批同意吗，请确认操作是否无误？';
                       }else{
                            message ='部份项目预算已超过 ，请确认是否进行审批同意？';
