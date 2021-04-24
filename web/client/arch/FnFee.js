@@ -1,11 +1,11 @@
 //FnFee.js
 function searchByDate() {
     if (CapMode == 'A') {
-        searchFile('2');
+        sleepFile('2');
     } else if (CapMode == 'B') {
-        searchTravel('2');
+        sleepTravel('2');
     } else {
-        searchFile('2');
+        sleepFile('2');
     }
     CapDate = '1';
 }

@@ -44,25 +44,25 @@
 			<div id="handout_wrap_inner"></div>
 			<h1>弘讯科技费用审批</h1>
 			<div class="btn-group" id='BTNGroupFilter'>
-				<button id="SeaAllBtn" class="btn btn-default" onclick="searchFile('0')">采购费用</button>
-				<button id="SeaAllBtn" class="btn btn-default" onclick="searchTravel('0')">差旅费用</button>
+				<button id="SeaAllBtn" class="btn btn-default" onclick="sleepFile('0')">采购费用</button>
+				<button id="SeaAllBtn" class="btn btn-default" onclick="sleepTravel('0')">差旅费用</button>
 				<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
-				<input type="button" id="SeaDateBtn" onclick="searchByDate()" class="btn btn-info" value="查找" />
+				<input type="button" id="SeaDateBtn" onclick="sleepByDate()" class="btn btn-info" value="查找" />
 			</div>
 			<hr>
 		</div>
 	</div>
 	<input type="hidden" id="hideDeptName" value="" />
 	<input type="hidden" id="hidePhone" value="" />
-	<table class="layui-hide" id="test" lay-filter="test"></table>
+	<table class="layui-hide" id="chin" lay-filter="chin"></table>
 	<script type="text/html" id="toolbarDemo">
       <!-- <div class="layui-btn-group userTable">
 	  <button class="layui-btn layui-btn-normal" lay-event="viewSumary">预览</button>
       </div> -->
     </script>
-	<table id="demo" lay-filter="testbaby"></table>
+	<!-- <table id="demo" lay-filter="testbaby"></table> -->
 	<br />
-	<script type="text/html" id="barDemo">
+      <script type="text/html" id="swagDemo">
       <a class="layui-btn layui-btn-xs" lay-event="approval">同意</a>
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reject">驳回</a>
       <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="analysis">预览</a> 
@@ -202,10 +202,10 @@
 							$("#taskMakeDateB").val(missCcute);
 							$("#taskMakeDateE").val(missDcute);
 							if (missType == 'A') {
-								searchFile('0');
+								sleepFile('0');
 							}
 							if (missType == 'B') {
-								searchTravel('0');
+								sleepTravel('0');
 							}
 							$('#SeaAllBtn').click();
 						});

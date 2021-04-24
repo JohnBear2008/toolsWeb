@@ -99,7 +99,8 @@ module.exports = function (sender) {
 		var limit = '5000';
 		var capacity = '';
 		let SQLExecute =
-			" SELECT tba.*, trul.CurWorkId, trul.CurName , trul.CurJob , trul.VipName ,tdel.ItemNo ,tdel.BudgetItem from  bgu_purchmain tba " +
+			" SELECT tba.*, trul.CurWorkId, trul.CurName , trul.CurJob , trul.VipName ,tdel.ItemNo ,tdel.BudgetItem " +
+			" from  bgu_purchmain tba " +
 			" LEFT JOIN bgu_rule trul on tba.BillNo =trul.BillNo   " +
 			" LEFT JOIN bgu_purchdetail tdel on tdel.BillNo  =tba.BillNo  and SNNo='1' " +
 			" where trul.CurStatus ='P' and trul.SendStatus ='D' ";
@@ -147,6 +148,7 @@ module.exports = function (sender) {
 						"RequestDate": ((data[i].RequestDate == null || data[i].RequestDate == undefined) ? ('') : data[i].RequestDate),
 						"ProjectNo": ((data[i].ProjectNo == null || data[i].ProjectNo == undefined) ? ('') : data[i].ProjectNo),
 						"ApplicNo": ((data[i].ApplicNo == null || data[i].ApplicNo == undefined) ? ('') : data[i].ApplicNo),
+						"Formkind": ((data[i].Formkind == null || data[i].Formkind == undefined) ? ('') : data[i].Formkind),
 						"VipName": ((data[i].VipName == null || data[i].VipName == undefined) ? ('') : data[i].VipName),
 						"DeptName": ((data[i].DeptName == null || data[i].DeptName == undefined) ? ('') : data[i].DeptName),
 						"UnitName": ((data[i].UnitName == null || data[i].UnitName == undefined) ? ('') : data[i].UnitName),

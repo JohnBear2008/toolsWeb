@@ -1,4 +1,4 @@
-function searchTravel(mode) {
+function sleepTravel(mode) {
       CapMode = 'B'; Formkind = '出差单';
       CapDate = '0';
       var qrybillno = $('#mainbillno').val();
@@ -44,7 +44,7 @@ function searchTravel(mode) {
               centerTable = table;
               table = $.extend(table, { config: { checkName: 'checked' } });
               table.render({
-                  elem: '#test'
+                  elem: '#chin'
                   , data: emdata
                   , toolbar: '#toolbarDemo'
                   // , defaultToolbar: ['filter', 'exports', 'print', {
@@ -55,7 +55,8 @@ function searchTravel(mode) {
                   , width: 1480
                   , title: '数据表'
                   , cols: [[
-                      { type: 'checkbox', fixed: 'left' }
+                    //   { type: 'checkbox', fixed: 'left' }
+                        { fixed: 'oper', title: '操作', toolbar: '#swagDemo', width: 160 }
                       , { field: 'BillNo', title: '系统号', width: 140, sort: true }
                       , { field: 'ApplicNo', title: '申请单号', width: 90, sort: true }
                       , { field: 'Subject', title: '科目', width: 0, hide: true }
@@ -76,7 +77,7 @@ function searchTravel(mode) {
                   ]]
                   , page: true
               });
-              table.on('toolbar(test)', function (obj) {
+              table.on('toolbar(chin)', function (obj) {
                   objCenter = obj;
                   var checkStatus = table.checkStatus(obj.config.id);
                   switch (obj.event) {
@@ -103,7 +104,7 @@ function searchTravel(mode) {
                           layer.alert('这是工具栏右侧自定义的一个图标按钮');
                   };
               });
-              table.on('tool(test)', function (obj) {
+              table.on('tool(chin)', function (obj) {
                   var data = obj.data;
                   var Parts_BillNo = data.BillNo;
                   CapTotalValue = data.TotalValue;

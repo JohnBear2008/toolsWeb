@@ -17,7 +17,7 @@ function shuffleA(BillNo) {
             let CurText = bjob[11].CurText;
             var CurJob = bjob[11].CurJob;
             var Answer = bjob[11].Reason;
-            console.log("延希延希延希延希", Answer);
+            console.log("延希", Answer);
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
                 '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:640px;">' +
@@ -33,8 +33,8 @@ function shuffleA(BillNo) {
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="2" height="25">Proj_No</td>' +
-                '<td width="50" colspan="7" rowspan ="2" height="25" class="feeDrop" align="center">  采购申请单 </td>' +
-                '<td width="50" colspan="3" height="25">ReqDate</td>' +
+                '<td width="50" colspan="7" rowspan ="2" height="25" class="feeSignfield" align="center">  采购申请单 </td>' +
+                '<td width="50" colspan="2" height="25">ReqDate</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="1" height="25">GroupName</td>' +
@@ -42,8 +42,8 @@ function shuffleA(BillNo) {
                 '<td width="50" colspan="3" height="25">Applic_No</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25" class="feeMcell">预算项目</td>' +
-                '<td width="50" height="25" class="feeMcell">品名/服务</td>' +
+                '<td width="50" height="25" class="feeLcell">预算项目</td>' +
+                '<td width="50" height="25" class="feeXLcell">品名/服务</td>' +
                 '<td width="50" height="25" class="feeMcell">型号/说明</td>' +
                 '<td width="50" height="25">单位</td>' +
                 '<td width="50" height="25">单价</td>' +
@@ -197,7 +197,7 @@ function shuffleA(BillNo) {
                 '<tr>' +
                 '<td width="50" rowspan="4" colspan="6" height="25">申请说明： <br/>  ' +
                 '<textarea   class="fee-drop-super" rows="6" readonly>Explan</textarea></td> ' +
-                '<td width="50" rowspan="4" class="fee-credit" colspan="3" height="25">  <br/>  ' +
+                '<td width="50" rowspan="4" class="feeELcell"  colspan="3" height="25">  <br/>  ' +
                 '   <br/>  ' +
                 '   <br/>  ' +
                 '   <br/>  ' +
@@ -220,26 +220,26 @@ function shuffleA(BillNo) {
                 '</table>' +
                 '<table width = "1100" border = "1"  > ' +
                 '<tr>' +
-                '<td id=\"manOP\" width="50"  colspan="1" height="25">申请人</td>' +
-                '<td id=\"mandpt\" width="50"  colspan="1" height="25">部门主管</td>' +
-                '<td id=\"manvip\" width="50"  colspan="1" height="25">副总</td>' +
-                '<td id=\"manpur\" width="50"  colspan="1" height="25">采购承办人</td>' +
-                '<td id=\"manpex\" width="50"  colspan="1" height="25">采购主管</td>' +
-                '<td id=\"mancfo\" width="50"  colspan="1" height="25">财务总监</td>' +
-                '<td id=\"manpsd\" width="50"  colspan="1" height="25">总经理</td>' +
-                '<td id=\"manceo\" width="50"  colspan="1" height="25">集团CEO</td>' +
-                '<td id=\"manbod\" width="50"  colspan="1" height="25">董事长</td>' +
+                '<td id=\"manOP\" width="50"   colspan="1" height="25" class="feeMcell">申请人</td>' +
+                '<td id=\"mandpt\" width="50"  colspan="1" height="25" class="feeMcell">部门主管</td>' +
+                '<td id=\"manvip\" width="50"  colspan="1" height="25" class="feeMcell">副总</td>' +
+                '<td id=\"manpur\" width="50"  colspan="1" height="25" class="feeMcell">采购承办人</td>' +
+                '<td id=\"manpex\" width="50"  colspan="1" height="25" class="feeMcell">采购主管</td>' +
+                '<td id=\"mancfo\" width="50"  colspan="1" height="25" class="feeMcell">财务总监</td>' +
+                '<td id=\"manpsd\" width="50"  colspan="1" height="25" class="feeMcell">总经理</td>' +
+                '<td id=\"manceo\" width="50"  colspan="1" height="25" class="feeMcell">集团CEO</td>' +
+                '<td id=\"manbod\" width="50"  colspan="1" height="25" class="feeMcell">董事长</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50"  colspan="1" height="25">OppName</td>' +
-                '<td width="50"  colspan="1" height="25">MagName</td>' +
-                '<td width="50"  colspan="1" height="25">VipName</td>' +
-                '<td width="50"  colspan="1" height="25">PurName</td>' +
-                '<td width="50"  colspan="1" height="25">PexName</td>' +
-                '<td width="50"  colspan="1" height="25">CfoName</td>' +
-                '<td width="50"  colspan="1" height="25">PsdName</td>' +
-                '<td width="50"  colspan="1" height="25">CeoName</td>' +
-                '<td width="50"  colspan="1" height="25">BodName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">OppName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">MagName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">VipName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">PurName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">PexName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">CfoName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">PsdName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">CeoName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">BodName</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppDate</td>' +
@@ -270,9 +270,13 @@ function shuffleA(BillNo) {
                 watermark = "/images/BudgetPend.png";
             }
             for (let i = 0; i < 10; i++) {
+                var BugItemCombo='';
+                if(bjob[i].Subject !=undefined && bjob[i].Subject !='' && bjob[i].BudgetItem !=undefined && bjob[i].BudgetItem !='' ){
+                    BugItemCombo =bjob[i].Subject+"-"+bjob[i].BudgetItem;
+                }
                 objT = {
                     "SNO": bjob[i].SNNo,
-                    "BudItem": bjob[i].BudgetItem,
+                    "BudItem": BugItemCombo,
                     "ItemO": bjob[i].ItemNo,
                     "Descip": bjob[i].Description,
                     "Measure": bjob[i].Unit,
@@ -729,7 +733,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="2" height="25">Proj_No</td>' +
-                '<td width="50" colspan="7" rowspan ="2"  height="25" class="feeDrop" align="center">  采购申请单 </td>' +
+                '<td width="50" colspan="7" rowspan ="2"  height="25" class="feeSignfield"  align="center">  采购申请单 </td>' +
                 '<td width="50" colspan="2" height="25">ReqDate</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -738,15 +742,15 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" colspan="3" height="25">Applic_No</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50" height="25" class="feeMcell">预算项目</td>' +
-                '<td width="50" height="25" class="feeMcell">品名/服务</td>' +
+                '<td width="50" height="25" class="feeLcell">预算项目</td>' +
+                '<td width="50" height="25" class="feeXLcell">品名/服务</td>' +
                 '<td width="50" height="25" class="feeMcell">型号/说明</td>' +
                 '<td width="50" height="25">单位</td>' +
                 '<td width="50" height="25">单价</td>' +
                 '<td width="50" height="25">数量</td>' +
-                '<td width="50" height="25">交期</td>' +
-                '<td width="50" height="25">供货商</td>' +
-                '<td width="50" height="25">是否预算内</td>' +
+                '<td width="50" height="25" >交期</td>' +
+                '<td width="50" height="25" >供货商</td>' +
+                '<td width="50" height="25" >是否预算内</td>' +
                 '<td width="50" height="25">剩余额度</td>' +
                 '<td width="50" height="25">小计</td>' +
                 // '<td width="50" height="25">使用部门</td>' +
@@ -894,7 +898,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<tr>' +
                 '<td width="50" rowspan="4" colspan="6" height="25">申请说明： <br/>  ' +
                 '<textarea   class="fee-drop-super" rows="6" readonly>Explan</textarea></td> ' +
-                '<td width="50" rowspan="4" class="fee-credit" colspan="3" height="25">额度控管： <br/>  ' +
+                '<td width="50" rowspan="4" class="feeELcell" colspan="3" height="25">额度控管： <br/>  ' +
                 ' CreditA <br/>  ' +
                 ' CreditB <br/>  ' +
                 ' CreditC <br/>  ' +
@@ -917,26 +921,26 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '</table>' +
                 '<table width = "1100" border = "1"   > ' +
                 '<tr>' +
-                '<td id=\"manOP\" width="50"  colspan="1" height="25">申请人</td>' +
-                '<td id=\"mandpt\" width="50"  colspan="1" height="25">部门主管</td>' +
-                '<td id=\"manvip\" width="50"  colspan="1" height="25">副总</td>' +
-                '<td id=\"manpur\" width="50"  colspan="1" height="25">采购承办人</td>' +
-                '<td id=\"manpex\" width="50"  colspan="1" height="25">采购主管</td>' +
-                '<td id=\"mancfo\" width="50"  colspan="1" height="25">财务总监</td>' +
-                '<td id=\"manpsd\" width="50"  colspan="1" height="25">总经理</td>' +
-                '<td id=\"manceo\" width="50"  colspan="1" height="25">集团CEO</td>' +
-                '<td id=\"manbod\" width="50"  colspan="1" height="25">董事长</td>' +
+                '<td id=\"manOP\" width="50"   colspan="1" height="25" class="feeMcell">申请人</td>' +
+                '<td id=\"mandpt\" width="50"  colspan="1" height="25" class="feeMcell">部门主管</td>' +
+                '<td id=\"manvip\" width="50"  colspan="1" height="25" class="feeMcell">副总</td>' +
+                '<td id=\"manpur\" width="50"  colspan="1" height="25" class="feeMcell">采购承办人</td>' +
+                '<td id=\"manpex\" width="50"  colspan="1" height="25" class="feeMcell">采购主管</td>' +
+                '<td id=\"mancfo\" width="50"  colspan="1" height="25" class="feeMcell">财务总监</td>' +
+                '<td id=\"manpsd\" width="50"  colspan="1" height="25" class="feeMcell">总经理</td>' +
+                '<td id=\"manceo\" width="50"  colspan="1" height="25" class="feeMcell">集团CEO</td>' +
+                '<td id=\"manbod\" width="50"  colspan="1" height="25" class="feeMcell">董事长</td>' +
                 '</tr>' +
                 '<tr>' +
-                '<td width="50"  colspan="1" height="25">OppName</td>' +
-                '<td width="50"  colspan="1" height="25">MagName</td>' +
-                '<td width="50"  colspan="1" height="25">VipName</td>' +
-                '<td width="50"  colspan="1" height="25">PurName</td>' +
-                '<td width="50"  colspan="1" height="25">PexName</td>' +
-                '<td width="50"  colspan="1" height="25">CfoName</td>' +
-                '<td width="50"  colspan="1" height="25">PsdName</td>' +
-                '<td width="50"  colspan="1" height="25">CeoName</td>' +
-                '<td width="50"  colspan="1" height="25">BodName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">OppName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">MagName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">VipName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">PurName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">PexName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">CfoName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">PsdName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">CeoName</td>' +
+                '<td width="50"  colspan="1" height="25" class="feeMcell">BodName</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td width="50"  colspan="1" height="25">OppDate</td>' +
@@ -983,9 +987,13 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                       }else{
                       }
                 }
+                var BugItemCombo='';
+                if(bjob[i].Subject !=undefined && bjob[i].Subject !='' && bjob[i].BudgetItem !=undefined && bjob[i].BudgetItem !='' ){
+                    BugItemCombo =bjob[i].Subject+"-"+bjob[i].BudgetItem;
+                }
                 objT = {
                     "SNO": bjob[i].SNNo,
-                    "BudItem": bjob[i].BudgetItem,
+                    "BudItem": BugItemCombo,
                     "ItemO": bjob[i].ItemNo,
                     "Descip": bjob[i].Description,
                     "Measure": bjob[i].Unit,
