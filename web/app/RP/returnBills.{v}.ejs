@@ -1228,7 +1228,7 @@
         $('#rp_returnbillsForm-returnType').change(function () {
             let returnType = $('#rp_returnbillsForm-returnType option:selected').val();
 
-            console.log('returnType',returnType);
+            console.log('returnType', returnType);
             $('#rp_returnbillsForm-returnType').selectpicker('refresh');
 
             let subWarehouseId, subWarehouseName = ''
@@ -2006,7 +2006,25 @@
                 }
             }
 
-         
+            //check-检测未审核的关联单据
+            let selectBorrowBillIdArr = [];
+            for (let i = 0; i < rowsSelect.length; i++) {
+                selectBorrowBillIdArr.push(rowsSelect[i].borrowBillId)
+            }
+
+            let checkR = await getDataBySql({
+                sql: 'sqlReturnSubBills',
+                params: {
+                    filter: 'borrowBillId in ' + getRangeString(selectBorrowBillIdArr) +
+                        ' and status ="预还入"'
+                }
+            })
+
+            console.log('checkR', checkR);
+            if (checkR.length > 0) {
+                alert('存在相关未审核的还货单,会影响可还货数量,请先审核!')
+                return
+            }
 
 
             //do-填写主表数据
