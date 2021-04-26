@@ -1569,7 +1569,7 @@
     const showReturnRequestNum = async () => {
 
         let rs = await getDataBySql({
-            sql: 'getReturnBillsNum',
+            sql: 'getReturnSubBillsNum',
             params: {
                 filter: 'status="待维修"'
             }
@@ -2143,7 +2143,7 @@
         loadBillDataTable({
             elementId: 'rp_returnBills',
             sqlParams: {
-                sqlId: 'sqlReturnBills',
+                sqlId: 'sqlUnreturnRequestBills',
                 params: {
                     filter: 'status="待维修"',
                     // orderBy: 'billSaveTimeStamp desc'

@@ -1228,6 +1228,9 @@
         $('#rp_returnbillsForm-returnType').change(function () {
             let returnType = $('#rp_returnbillsForm-returnType option:selected').val();
 
+            console.log('returnType',returnType);
+            $('#rp_returnbillsForm-returnType').selectpicker('refresh');
+
             let subWarehouseId, subWarehouseName = ''
 
             switch (returnType) {
@@ -2002,6 +2005,8 @@
                     return
                 }
             }
+
+         
 
 
             //do-填写主表数据
