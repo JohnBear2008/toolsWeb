@@ -1199,19 +1199,37 @@ const getBillDataTableConfig = ({
  *
  * @param {*} i={sql,params}
  */
-const getDataBySql = async (i) => {
+const getDataBySql = async ({
+    sql,
+    params,
+    method
+}) => {
 
+    //v
+    let methodValue = 'get'
+    let urlValue = '/app/RP/lib/ajaxGet'
+
+    //c
+    if (method === 'post') {
+        methodValue = 'post'
+        urlValue = '/app/RP/lib/ajaxPost'
+    }
+    //d
     let o;
     o = await $.ajax({
-        method: 'get',
-        url: '/app/RP/lib/ajaxGet',
-        data: i,
+        method: methodValue,
+        url: urlValue,
+        data: {
+            sql,
+            params
+        },
         success: function (data) {
             // console.log("getDataBySql data:" + JSON.stringify(data));
             return data;
         },
         error: function () {}
     })
+    //r
     return o;
 }
 
@@ -2099,6 +2117,7 @@ const getStockNum = async (PID, warehouseId) => {
  */
 const getStockNums = async (PIDArr) => {
     //1.check
+    console.log('getStockNums PIDArr', PIDArr);
     if (!PIDArr) {
         console.log('getStockNums 无参数');
         return
@@ -2108,13 +2127,17 @@ const getStockNums = async (PIDArr) => {
     for (const n of PIDArr) {
         filterArr = filterArr + '("' + n.PID + '","' + n.warehouseId + '")' + ',';
     }
+    // console.log('filterArr11111', filterArr);
     filterArr = filterArr.substring(0, filterArr.length - 1);
+    // console.log('filterArr22222', filterArr);
     filterArr = '(' + filterArr + ')'
+    // console.log('filterArr33333', filterArr);
     let stockArr = await getDataBySql({
         sql: 'getStockNum',
         params: {
             filter: '(PID,warehouseId) in ' + filterArr
-        }
+        },
+        method: 'post'
     })
     //3.return
     return stockArr

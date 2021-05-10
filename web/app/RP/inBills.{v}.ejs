@@ -1724,7 +1724,7 @@
         //3.return
         return {
             result: true,
-            stockNums: stockNums
+            stockNums: stockNums.rows
         }
 
     }
@@ -2095,15 +2095,21 @@
             //do-增加零件库存
             let updateStockArr = []
             for (let n of subTableData) {
-                console.log('n', n);
+                // console.log('n', n);
 
                 for (const m of stockResult.stockNums) {
-                    console.log('m', m);
+                    // console.log('m', m);
                     if (n.productId === m.PID) {
                         n.stockNum = m.stockNum;
                     }
                 }
+
+
                 //赋值添加PID,去除partId
+                if (!n.stockNum) {
+                    n.stockNum = 0 //undefined 初始化为0
+                }
+
                 updateStockArr.push({
                     PID: n.productId,
                     warehouseId: n.warehouseId,
@@ -2113,6 +2119,8 @@
             }
             console.log('updateStockArr', updateStockArr);
 
+            // //临时中断
+            // return
 
             let r1 = await updateStock({
                 stockArr: updateStockArr,
@@ -2164,15 +2172,12 @@
 
             //3.return
             console.log(r1, r2, r3);
-
             if (r1 && r2.affectedRows && r3.affectedRows) {
                 alert('审核入库成功!')
                 loadBillMainTable();
             } else {
                 alert('出现错误!')
             }
-
-
         })
 
 

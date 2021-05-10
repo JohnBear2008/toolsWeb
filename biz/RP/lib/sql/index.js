@@ -123,7 +123,7 @@ const sqlPartRequestBills = "select * from (select ta.DBID,ta.recordBillId,ta.re
 const sqlUnreturnBills = "select  * from ( SELECT   ta.productId,ta.productName,ta.unit,(ta.num-ta.returnNum) as unreturnNum,ta.remark,ta.status,ta.productDescription as searchText,tb.borrowBillId,tb.customerId,tb.customerShortName,tb.customerName,tb.contact,tb.mobilePhone,tb.operator,tb.borrowDate from `rp_borrowsubbills` ta left join  (select borrowBillId,customerId,customerShortName,customerName,contact,mobilePhone,operator,borrowDate from `rp_borrowbills`) tb on ta.borrowBillId=tb.borrowBillId ) A"
 
 //还货待维修sql
-const sqlUnreturnRequestBills="SELECT * FROM (SELECT ta.returnDate,ta.billFrom,ta.customerId,ta.customerShortName,ta.customerName as searchText,ta.customerName,ta.contact,ta.mobilePhone,ta.workPhone,ta.fax,ta.customerBelongShort,ta.returnType,ta.isInland,ta.operator,ta.price,ta.tester,ta.maker,ta.makeDate,ta.auditor,ta.auditDate,tb.DBID,tb.returnBillId,tb.rowId,tb.borrowBillId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.unit,tb.warehouseId,tb.warehouseName,tb.num,tb.`status`,tb.remark FROM  rp_returnbills AS ta INNER JOIN rp_returnsubbills AS tb ON ta.returnBillId = tb.returnBillId) A"
+const sqlUnreturnRequestBills = "SELECT * FROM (SELECT ta.returnDate,ta.billFrom,ta.customerId,ta.customerShortName,ta.customerName as searchText,ta.customerName,ta.contact,ta.mobilePhone,ta.workPhone,ta.fax,ta.customerBelongShort,ta.returnType,ta.isInland,ta.operator,ta.price,ta.tester,ta.maker,ta.makeDate,ta.auditor,ta.auditDate,tb.DBID,tb.returnBillId,tb.rowId,tb.borrowBillId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.unit,tb.warehouseId,tb.warehouseName,tb.num,tb.`status`,tb.remark FROM  rp_returnbills AS ta INNER JOIN rp_returnsubbills AS tb ON ta.returnBillId = tb.returnBillId) A"
 
 //出库单sql
 const sqlOutBills = "select * from `rp_outbills`"
@@ -182,7 +182,7 @@ const scrapBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.scrapBillId,ta.sc
  * @param {*} i={sql,params}
  */
 const createSql = (i) => {
-	console.log('createSql', i.sql);
+	console.log('createSql', i, i.sql);
 	let excuteSql = "";
 	switch (i.sql) {
 		case "select":
