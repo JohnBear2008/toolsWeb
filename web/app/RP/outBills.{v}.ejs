@@ -1713,8 +1713,12 @@
 
     //加载多联系人数据
     const loadContactOptions = (customerData) => {
-        // console.log('contacts', contacts);
-
+        console.log('customerData', customerData);
+        //c
+        if (!customerData) {
+            console.log('客户缺失,加载联系人信息失败');
+            return
+        }
         //补齐联系人待选项
         let contacts = [];
         if (customerData.contact) {

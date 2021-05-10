@@ -1781,7 +1781,12 @@
 
     //加载多联系人数据
     const loadContactOptions = (customerData) => {
-        // console.log('customerData', customerData);
+        console.log('customerData', customerData);
+        //c
+        if (!customerData) {
+            console.log('客户缺失,加载联系人信息失败');
+            return
+        }
 
         //补齐联系人待选项
         let contacts = [];
@@ -3104,8 +3109,8 @@
             elementId: 'rp_borrowsubbillsForm-productId',
             sqlParams: {
                 sql: 'getProductSelector',
-                params:{
-                    filter:'partBelong in ("零件","面板","主机","其他","液晶","选配")'
+                params: {
+                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")'
                 }
             },
         })
