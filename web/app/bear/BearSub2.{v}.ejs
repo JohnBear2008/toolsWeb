@@ -1,9 +1,29 @@
 <!-- <script src="/Foil/yjSecurity.js"></script> -->
 
+<meta http-equiv="Access-Control-Allow-Origin" content="*">//解决跨域
+
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
 
+
+<div>
+	<button id="bt_test" onclick="apiTest()">测试按钮</button>
+</div>
+
+
 <script type="text/javascript">
+	const apiTest = () => {
+		alert('apitest run')
+		$.ajax({
+			method: "get",
+			data: {},
+			url: "https://172.16.3.49:8000/api/ppm",
+			success: function (data, textStatus) {
+				alert(JSON.stringify(data))
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {}
+		}); //定义数据面板
+	}
 	//加密单一参数      
 	function encryptS() {
 
@@ -75,9 +95,6 @@
 		console.log("PW8_P1:" + PW8_P1)
 		//计算PW8_P2
 
-
-
-
 		if (MRadio == '1') {
 
 			let endDayR = moment(ASEndDay).format("YYYYMMDD") + 1
@@ -136,4 +153,12 @@
 		return PW8;
 
 	}
+
+
+	$(function () {
+
+		// $('#bt_test').click(function () {
+		// 	apiTest()
+		// })
+	})
 </script>

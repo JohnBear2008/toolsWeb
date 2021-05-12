@@ -75,7 +75,7 @@ var config = {
     port_https: 443,
     potocols: ['http', 'https'],
     biz_Connection: {
-        engine: "remote.superagent",
+        engine: "remote.superagent", //西安推荐替换
         //        engine: "remote.restify",
         connection: {
             url: "http://127.0.0.1:2019/biz"
@@ -113,7 +113,7 @@ var config = {
     },
     security: {
         passwordEncryptMode: 'rsa',
-        isNeedSession: true,
+        isNeedSession: true, //设置为true 会导致其他端口号程序都会跳转到此处重新登录
         isOpenRegister: false,
         login_url: "/app/account/showLogin",
         loginTypes: ["userID"],
