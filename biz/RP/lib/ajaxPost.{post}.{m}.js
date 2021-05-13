@@ -1,12 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2019-12-04 15:01:33
- * @LastEditTime: 2021-05-13 14:05:54
+ * @LastEditTime: 2021-05-13 14:16:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\biz\RP\lib\ajaxPost.{post}.{m}.js
  */
 require("./js/Date");
+const funs = require("./js/funs");
 const sqlObj = require("./sql");
 
 // console.log("sqlObj:" + JSON.stringify(sqlObj));
