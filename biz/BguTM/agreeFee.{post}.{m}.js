@@ -72,8 +72,7 @@ module.exports = function (sender) {
 				for (var i = 0; i < data.length; i++) {
 					Track = data[i].Track;
 					var TrackUU = JSON.parse(Track);
-					// console.log("别问我谁  ", Track);  qryCurName
-
+					// console.log("别问我谁  ", Track);   
 					FlowDeptName = data[i].DeptLabel;
 					FlowGroupName = data[i].GroupLabel;
 					CurLevel = data[i].CurLevel;
@@ -95,7 +94,6 @@ module.exports = function (sender) {
 					var CeoName = data[i].CeoName;
 					var BodName = data[i].BodName;
 					console.log("你血管里流淌着的", OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName);
-
 					if (CurLevel == TermiLevel) {
 						AppFlag = 1;
 					}
@@ -147,9 +145,7 @@ module.exports = function (sender) {
 						nextjob = TrackUU[0].Level9;
 						console.log("---------------推10推  ", nextjob);
 					}
-
 					var Twins = '0';
-
 					if (nowtjob == 'dpt') {
 						fixdate = "  MagDate ='" + EntryDate + "',  ";
 						fixlv = "  Level2 ='Y' ";
@@ -234,7 +230,9 @@ module.exports = function (sender) {
 							HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 						} else {
 							 console.log(" 熊与鱼 ", fixdate); 
-							qryPurch(BillNo);
+							 qryPurch(BillNo);
+							 //labuse  remove it
+							 HandleRule("0", "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
 						}
 					} else {
 						HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
@@ -490,7 +488,7 @@ module.exports = function (sender) {
 		console.log();
 		var bufferTot = 0;
 		var diffMoney = 0;
-		console.log("身无", Accumulate, "彩凤", AllowMoney);
+		// console.log("身无", Accumulate, "彩凤", AllowMoney);
 		if (Accumulate >= AllowMoney) {
 			IsOver = 'Y';
 			bufferTot = Accumulate;
@@ -503,11 +501,11 @@ module.exports = function (sender) {
 		// console.log("公孙离TotalValue", TotalValue, "SNNO", SNNO, "AllowMoney", AllowMoney, "公孙离 Accumulate", Accumulate);
 		// 唯朕独尊: 0 Y 0 NaN A044 2021 财务部
 		if (IsOver == 'N') {
-			HandleRule("0", nowcnt, BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
+			//labuse  add it 
+			// HandleRule("0", nowcnt, BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
 			// console.log("失误了", IsOver, "打野");
 		} else {
-			HandleRule("0", nowcnt, BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
-			// console.log("捕刀了", IsOver, "五连绝世", bufferTot, diffMoney);
+			// c// console.log("捕刀了", IsOver, "五连绝世", bufferTot, diffMoney);
 
 		}
 		// console.log("唯朕独尊:", Accumulate, IsOver, Surplus, SNNO, BudgetCID, BudYear, UnitName);
@@ -833,8 +831,8 @@ module.exports = function (sender) {
 						}
 					}
 					console.log("老板审批过了………………", IsVipOver,"何以", tundate,"缘起", fixdate);
-
-					HandleRule("0", "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv);
+                              //labuse
+					// HandleRule("0", "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv);
 				} else if (CurJob == 'psd') {
 					if (IsVipOver == 'Y') {
 
@@ -842,7 +840,8 @@ module.exports = function (sender) {
 						UpdateCredit(Accumulate, Surplus, IsVipOver, SNNO, VipName, BudYear);
 						UpdateCreditDetail(VipStaffId, VipName, BudYear, RequestDate, BillNo, SNNO, diffMoney);
 					}
-					MakeupRule(BillNo, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, IsVipOver);
+                              //labuse
+					// MakeupRule(BillNo, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, IsVipOver);
 				}
 			},
 			error: sender.error
@@ -971,15 +970,16 @@ module.exports = function (sender) {
 	function NoticePending() {
 		var mobiles = [];
 		mobiles.push(Flowphone);
+		console.log('缘起缘滅', BillNo, " TEL:", mobiles);
 		// var Msg = "送审" + "\n文号: " + BillNo + "\n部門: " + FlowDeptName + "\n课组: " + FlowGroupName + "\n姓名: " + qryCurName + "\n ";
 		var Msg = "@"+ qryNextName + " ，请审批采购单" + "\n文号: " + BillNo +  "\n部門: " + FlowGroupName +   "\n品项: " + qryItemNo;
-		console.log("町町发送 ",Msg);
+		// console.log("町町发送 ",Msg);
 		var yjDing = require("./yjDing");
 		let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
 
 		var retcode = { "Status": "OK", "message": "审批完成"+"下一关："+qryNextName, "BillNo": BillNo };
 		sender.success(retcode);
-		console.log("同意完成-继续", retcode);
+		// console.log("同意完成-继续", retcode);
 	}
 	function NoticeNotOver() {
 		var mobiles = [];
@@ -1014,7 +1014,7 @@ module.exports = function (sender) {
 		let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
 		var retcode = { "Status": "OK", "message": "核准完成! 请注意，项目预算已超过", "BillNo": BillNo };
 		sender.success(retcode);
-		console.log("~同意完成-项目超 ", retcode);
+		// console.log("~同意完成-项目超 ", retcode);
 	}
 	function nulReplaceDate(passTxt) {
 		var ret = '';

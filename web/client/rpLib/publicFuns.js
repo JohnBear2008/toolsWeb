@@ -1204,7 +1204,6 @@ const getDataBySql = async ({
     params,
     method
 }) => {
-
     //v
     let methodValue = 'get'
     let urlValue = '/app/RP/lib/ajaxGet'
@@ -1215,8 +1214,8 @@ const getDataBySql = async ({
         urlValue = '/app/RP/lib/ajaxPost'
     }
     //d
-    let o;
-    o = await $.ajax({
+    let r;
+    r = await $.ajax({
         method: methodValue,
         url: urlValue,
         data: {
@@ -1224,13 +1223,15 @@ const getDataBySql = async ({
             params
         },
         success: function (data) {
-            // console.log("getDataBySql data:" + JSON.stringify(data));
+            console.log("getDataBySql data " + methodValue + " way:" + JSON.stringify(data));
             return data;
         },
         error: function () {}
     })
     //r
-    return o;
+    console.log('getDataBySql r', r);
+
+    return r;
 }
 
 
@@ -2139,6 +2140,7 @@ const getStockNums = async (PIDArr) => {
         },
         method: 'post'
     })
+    console.log('getStockNums stockArr', stockArr);
     //3.return
     return stockArr
 

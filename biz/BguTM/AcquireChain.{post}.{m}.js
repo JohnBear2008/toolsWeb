@@ -11,14 +11,17 @@ module.exports = function (sender) {
 	var FlowDept = sender.req.query.DeptName;
 	var FlowUnit = sender.req.query.UnitName;
 	var FlowSubtotal = sender.req.query.Subtotal;
-	console.log("忘却野心", FlowSubtotal ,"的战场",flowOppName);
+	var FlowBuy = sender.req.query.FlowBuy;//A 系统 B0 采购 B1 资讯 B2行政
+	console.log("忘却野心", FlowBuy, "的战场", flowOppName );
 	var FlowVip = '';
 	var qryDept = '';  //nouse
 	var qryGroup = ''; //nouse
 	var flagLimit = 'N';
+	var BudgetType = '';
 	var now = new Date();
 	var BudYear = now.Format("yyyy");
 	var BudMonth = now.Format("MM");
+	// seePhase();
 	if (arrange == 'RuleTrip') {
 		acqFlowDept();
 	}
@@ -135,18 +138,6 @@ module.exports = function (sender) {
 						"MagName": MagName,
 						"VipWorkId": VipWorkId,
 						"VipName": VipName,
-						//     "PurWorkId": PurWorkId,
-						//     "PurName": PurName,
-						//     "PexWorkId": PexWorkId,
-						//     "PexName": PexName,
-						//     "CfoWorkId": CfoWorkId,
-						//     "CfoName": CfoName,
-						//     "PsdWorkId": PsdWorkId,
-						//     "PsdName": PsdName,
-						//     "CeoWorkId": CeoWorkId,
-						//     "CeoName": CeoName,
-						//     "BodWorkId": BodWorkId,
-						//     "BodName": BodName,
 					}
 					datas.push(temp);
 					// var dump = JSON.stringify(datas);
@@ -188,7 +179,8 @@ module.exports = function (sender) {
 		var BodWorkId = '';
 		var BodName = '';
 		var Track = '';
-		var BudgetType = flowBudgetCID.substring(0, 1);
+		BudgetType = flowBudgetCID.substring(0, 1);
+		seePhase();
 		console.log(">>>科目AB：", BudgetType, "血型", flowBudgetCID);
 		async.parallel([FunLimit, FunOrig, FunSubject, FunCredit],
 			function (err, result) {
@@ -288,9 +280,9 @@ module.exports = function (sender) {
 					datas.push(temp);
 					//   var dump = JSON.stringify(datas);
 					//   if (dump.length > 1000) {
-					// 	  console.log("伯通:" + dump.substring(0, 1000));
+					// 	  console.log("子懿:" + dump.substring(0, 1000));
 					//   } else {
-					// 	  console.log("伯通:" + JSON.stringify(datas));
+					// 	  console.log("子懿:" + JSON.stringify(datas));
 					//   }
 					sender.success(datas);
 				}
@@ -330,55 +322,55 @@ module.exports = function (sender) {
 		}
 		function FunOrig(cb) {
 			var StaffRole = "";
-			var JobKind = "";
 			if (flowBudgetCID != null && flowBudgetCID != undefined) {
 				var BudgetBID = flowBudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0");
 			}
 			if (BudgetBID == "1") {
-				StaffRole = "资讯承办人"; JobKind = "资讯主管";
+				StaffRole = "资讯承办人";
 			} else if (BudgetBID == "2") {
-				StaffRole = "行政承办人"; JobKind = "行政主管";
+				StaffRole = "行政承办人";
 			} else {
-				StaffRole = "采购承办人"; JobKind = "采购主管";
+				StaffRole = "采购承办人";
 			}
-			console.log("承办人:", StaffRole, flowBudgetCID, "主管", JobKind);
+			seePhase();
+			console.log("承办人:", StaffRole, flowBudgetCID);
 			let SQL3 =
-" select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName, " +
-" tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName, " +
-" dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName, " +
-" dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName, " +
-"  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName, " +
-"  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba    " +
-"  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2'     " +
-"  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3'    " +
-"  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='" + StaffRole + "'    " + 
-"  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and dhpur.StaffRole= '" + StaffRole + "'   " +
-"  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'  and dhpex.GroupLabel like CONCAT('%', '" + FlowGroup + "' , '%')   " +
-"  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'   " +
-"  LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6'    " +
-"  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'   " +
-"  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'   " +
-"  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'   " +
-"  where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffName ='" + flowOppName + "'   " ;
+				" select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName, " +
+				" tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName, " +
+				" dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName, " +
+				" dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName, " +
+				"  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName, " +
+				"  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba    " +
+				"  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2'     " +
+				"  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3'    " +
+				"  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='" + StaffRole + "'    " +
+				"  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and dhpur.StaffRole= '" + StaffRole + "'   " +
+				"  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'  and dhpex.GroupLabel like CONCAT('%', '" + FlowGroup + "' , '%')   " +
+				"  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'   " +
+				"  LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6'    " +
+				"  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'   " +
+				"  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'   " +
+				"  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'   " +
+				"  where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffName ='" + flowOppName + "'   ";
 
-// select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,
-// tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName,
-// dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName,
-// dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName,
-//  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,
-//  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba   
-//  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '工程部-产品应用部', '%')  and tdpt.staffLevel='2'  
-//  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3' 
-//  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='采购承办人'  
-//  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '工程部-产品应用部', '%')  and dhpur.StaffRole= '采购承办人'
-//  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'
-//  and dhpex.GroupLabel like CONCAT('%', '工程部-产品应用部' , '%')
-//  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'
-//  LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' 
-//  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'
-//  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'
-//  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'
-//  where  tba.DeptLabel ='工程部' and tba.StaffLevel='1' and tba.StaffName ='崔文娇'
+			// select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,
+			// tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName,
+			// dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName,
+			// dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName,
+			//  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,
+			//  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba   
+			//  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '工程部-产品应用部', '%')  and tdpt.staffLevel='2'  
+			//  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3' 
+			//  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='采购承办人'  
+			//  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '工程部-产品应用部', '%')  and dhpur.StaffRole= '采购承办人'
+			//  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'
+			//  and dhpex.GroupLabel like CONCAT('%', '工程部-产品应用部' , '%')
+			//  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'
+			//  LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' 
+			//  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'
+			//  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'
+			//  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'
+			//  where  tba.DeptLabel ='工程部' and tba.StaffLevel='1' and tba.StaffName ='崔文娇'
 
 			//     console.log("阿咯哈-----", SQL3 );
 			var OppWorkId = flowOppWorkId;
@@ -407,7 +399,9 @@ module.exports = function (sender) {
 			var CeoName = '';
 			var BodWorkId = '';
 			var BodName = '';
-			console.log("单位-----", FlowGroup, FlowDept ,flowOppName);
+			console.log("组别-----", FlowGroup );
+			console.log("部門-----", FlowDept );
+			console.log("申请人-----", flowOppName);
 			yjDBService.exec({
 				sql: SQL3,
 				parameters: [FlowDept],
@@ -426,7 +420,7 @@ module.exports = function (sender) {
 						MagName = data[i].MagName;
 						VipWorkId = data[i].VipWorkId;
 						VipName = data[i].VipName;
-						 
+
 						PurDHWorkId = data[i].PurDHWorkId;
 						PurDHName = data[i].PurDHName;
 						PuroriWorkId = data[i].PurWorkId;
@@ -445,17 +439,17 @@ module.exports = function (sender) {
 						CeoName = data[i].CeoName;
 						BodWorkId = data[i].BodWorkId;
 						BodName = data[i].BodName;
-						if(PurDHName != undefined && PurDHName != '' ){
+						if (PurDHName != undefined && PurDHName != '') {
 							PurName = PurDHName;
 							PurWorkId = PurDHWorkId;
-						}else{
+						} else {
 							PurName = PuroriName;
 							PurWorkId = PuroriWorkId;
 						}
-						if(PexDHName != undefined && PexDHName != '' ){
+						if (PexDHName != undefined && PexDHName != '') {
 							PexName = PexDHName;
 							PexWorkId = PexDHWorkId;
-						}else{
+						} else {
 							PexName = PexoriName;
 							PexWorkId = PexoriWorkId;
 						}
@@ -528,7 +522,7 @@ module.exports = function (sender) {
 			console.log("周瑜", BudYear, "-", flowBudgetItem, "-", FlowUnit, "-", BudYear, BudMonth);
 			FlowSubtotal = nulReplace0(FlowSubtotal);
 			FlowSubtotal = parseInt(FlowSubtotal, 10);
-			console.log("盖世英雄", FlowSubtotal);
+			// console.log("盖世英雄", FlowSubtotal);
 			yjDBService.exec({
 				sql: SQL2,
 				parameters: [BudYear, flowBudgetItem, FlowUnit, BudYear, BudMonth],
@@ -561,7 +555,7 @@ module.exports = function (sender) {
 					itemSurp = parseInt(itemSurp, 10);
 					if (itemIsOver == 'Y') {
 						itemMsg = '预算内额度已超过：';
-						console.log("AA故犹见不净", itemMsg  );
+						console.log("AA故犹见不净", itemMsg);
 					}
 					if (vvipIsOver == 'Y') {
 						vvipMsg = '预算外额度已超过：';
@@ -605,6 +599,21 @@ module.exports = function (sender) {
 		var ret = '';
 		ret = (passTxt == null || passTxt == undefined) ? ('0') : passTxt;
 		return ret;
+	}
+	function seePhase() {
+		if (FlowBuy == '系统') {
+
+		} else if (FlowBuy == '采购承办人') {
+			BudgetType = 'B'; StaffRole = "采购承办人";
+		} else if (FlowBuy == '资讯承办人') {
+			BudgetType = 'B'; StaffRole = "资讯承办人";
+		} else if (FlowBuy == '行政承办人') {
+			BudgetType = 'B'; StaffRole = "行政承办人";
+		} else if (FlowBuy == '不加采购') {
+			BudgetType = 'A';
+		} else {
+
+		}
 	}
 };
 // select wpex.DBID ,tba.StaffID as OppWorkId,tba.StaffName as OppName ,

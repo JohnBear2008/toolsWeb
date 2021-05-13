@@ -13,9 +13,7 @@ module.exports = function (sender) {
 		let SQLMgr =
 		" select  distinct tba.`StaffID`, tba.`StaffUser` , tba.`StaffName`, tba.`Mobiles`  " +
 		" from bgu_staffs tba   " +
-		" where   StaffRole ='文员' Order By tba.`StaffID`  ASC " ;
-
-		// dataArr[i].StaffID+ "##" + dataArr[i].StaffUser+ "##" + dataArr[i].StaffName+ "##" + dataArr[i].Mobiles
+		" where   StaffRole ='文员' and (StaffID NOT LIKE '%-%') Order By tba.`StaffID`  ASC " ;
 		// console.log("貂蝉",SQLMgr);
 		yjDBService.exec({
 			sql: SQLMgr,
@@ -46,7 +44,7 @@ module.exports = function (sender) {
 		// " tba.`DeptLabel` , tba.`GroupLabel`, tbu.MobilePhone from bgu_staffs tba   " +
 		// " LEFT JOIN users tbu on tba.StaffUser = tbu.UserAID  where tba.Status = '1' " +
 		// " Order By tba.`StaffID`  ASC " ;
-		" select  tba.DBID ,tba.`StaffID`, tba.`StaffUser` , tba.`StaffName`, tba.`StaffLevel`, tba.`StaffRole` ,  " +
+		" select  distinct tba.DBID ,tba.`StaffID`, tba.`StaffUser` , tba.`StaffName`, tba.`StaffLevel`, tba.`StaffRole` ,  " +
 		" tba.`DeptLabel`, tba.`GroupLabel`, tba.`Mobiles` from bgu_staffs tba   " +
 		" where   StatusText ='正常' Order By tba.`StaffID`  ASC " ;
 		// console.log("白梅落下",SQLMgr);

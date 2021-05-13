@@ -8,6 +8,7 @@ module.exports = function (sender) {
     var arrange = sender.req.query.arrange;
     var edituse = sender.req.query.edituse;
     var editmoney = sender.req.query.editmoney;
+    var FlowBuy = sender.req.query.FlowBuy; 
     let now = new Date();
     var swift = Math.random(100) * 100;
     swift = swift.toFixed(0);
@@ -25,6 +26,7 @@ module.exports = function (sender) {
     var FlowGroup = '';
     var FlowDept = '';
     var FlowUnit = '';
+    var FlowBuy = '';
     var FlowRole = '';
     var FlowVip = '';
     var FlowCID = '';
@@ -35,6 +37,7 @@ module.exports = function (sender) {
     var Smalltotal = 0;
     var IsAuditChange = 'N';
     var IsBillUnder = '是';
+    var BudgetType = '';
     if (arrange == 'confirm') {
         chkNextAudit();
     } else if (arrange == 'saveSend') {
@@ -48,6 +51,7 @@ module.exports = function (sender) {
         var ProjectNo = Advstr.ProjectNo;
         qryDept = Advstr.DeptName;
         FlowUnit = Advstr.UnitName;
+        FlowBuy = Advstr.FlowBuy;
         let DeptList = [];
         if (qryDept != "" && qryDept != undefined) {
             DeptList = qryDept.split(',');
@@ -113,7 +117,7 @@ module.exports = function (sender) {
             " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
             " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
             " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
-            " where  tba.DeptLabel =? and tba.StaffLevel='1'  and tba.StaffName=?   ";
+            " where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffID NOT LIKE ('%-%')    and tba.StaffName=?   ";
         var OppWorkId = StaffID;
         var OppName = StaffName;
         var MagName = '';
@@ -227,9 +231,10 @@ module.exports = function (sender) {
         var Subject = sData[0].Subject;
         var BudgetCID = sData[0].BudgetCID;
         if (BudgetCID != null && BudgetCID != undefined) {
-            var BudgetBID = BudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0"); FlowCID = BudgetCID;
-            var BudgetType = BudgetCID.substring(0, 1); BudgetCID = nulReplaceWord(BudgetCID, "0");
+            BudgetBID = BudgetCID.substring(1, 2); BudgetBID = nulReplaceWord(BudgetBID, "0"); FlowCID = BudgetCID;
+            BudgetType = BudgetCID.substring(0, 1); BudgetCID = nulReplaceWord(BudgetCID, "0");
         }
+        seePhase();
         async.parallel([FunLimit, FunOrig, FunSubject],
             function (err, result) {
                 if (err) {
@@ -255,7 +260,7 @@ module.exports = function (sender) {
                                 if (BudgetType == 'B') {
                                     TermiLevel = '6';
                                 }
-                                // console.log("<<<未达预算", UpperLimit, "项目", BudgetType);
+                                 console.log("<<<未达预算", UpperLimit, "项目", BudgetType);
                             }
                         }
                         if (result[1][i] == null || result[1][i] == undefined) {
@@ -342,13 +347,13 @@ module.exports = function (sender) {
                 }
                 Smalltotal = sData[0].Subtotal;
                 // console.log("长安城", sData[i].DiffMoney);
-                var DiffMoney =sData[i].DiffMoney;
+                var DiffMoney = sData[i].DiffMoney;
                 DiffMoney = nulReplace0(DiffMoney); DiffMoney = parseInt(DiffMoney, 10);
-                if (DiffMoney< 0) {
+                if (DiffMoney < 0) {
                     IsDiffNeg = 'Y';
                     IsBillUnder = '否';
-                    console.log("有阴性:", DiffMoney ,"超了：",IsBillUnder );
-                }else{
+                    console.log("有阴性:", DiffMoney, "超了：", IsBillUnder);
+                } else {
                     // console.log("皆阳性:", DiffMoney);
                 }
             }
@@ -391,23 +396,21 @@ module.exports = function (sender) {
                     }
                     let now = new Date();
                     var labDate = now.Format("yyyyMMdd");
-                    RequestDate = labDate;
-                     
-                    // console.log("很报歉",Smalltotal , UpperLimit);
+                    RequestDate = labDate; 
                     if (IsZero == 'Y' && qryBIsOver == 'Y') {
                         IsAuditChange = 'Y';
                     }
                     if (IsDiffNeg == 'Y' && qryBIsOver == 'Y') {
                         IsAuditChange = 'Y';
-                        console.log("要变天了", IsDiffNeg);
+                        // console.log("要变天了", IsDiffNeg);
                     }
-                    console.log("双飞:", IsDiffNeg, "求", IsZero, "天", qryBIsOver);
+                    // console.log("双飞:", IsDiffNeg, "求", IsZero, "天", qryBIsOver);
                     var temp = {
                         "UpperLimit": UpperLimit,
                         "UpperLimitB": UpperLimitB,
                         "IsAuditChange": IsAuditChange,
                     }
-                    console.log("飞翼:" + JSON.stringify(temp));
+                    // console.log("飞翼:" + JSON.stringify(temp));
                     datas.push(temp)
                     cb(null, datas);
                 }
@@ -422,16 +425,17 @@ module.exports = function (sender) {
             } else {
                 StaffRole = "采购承办人";
             }
+            seePhase();
             let SQL3 =
-                " select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName, " +
-                " tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName, " +
-                " dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName, " +
-                " dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName, " +
-                "  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName, " +
-                "  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba    " +
+                " select  tba.DBID, tba.Mobiles as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles as MagWorkId, tdpt.StaffName as MagName, " +
+                " tvip.Mobiles as VipWorkId, tvip.StaffName as VipName, pur.Mobiles as PurWorkId, pur.StaffName as PurName, " +
+                " dhpur.Mobiles as PurDHWorkId, dhpur.StaffName as PurDHName, pex.Mobiles as PexWorkId, pex.StaffName as PexName, " +
+                " dhpex.Mobiles as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.Mobiles as CfoWorkId, tcfo.StaffName as CfoName, " +
+                "  tpsd.Mobiles as PsdWorkId, tpsd.StaffName as PsdName,tceo.Mobiles as CeoWorkId, tceo.StaffName as CeoName, " +
+                "  tbod.Mobiles as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba    " +
                 "  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2'     " +
                 "  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3'    " +
-                "  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='" + StaffRole + "'    " + 
+                "  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='" + StaffRole + "'    " +
                 "  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and dhpur.StaffRole= '" + StaffRole + "'   " +
                 "  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'   " +
                 "  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'  and dhpex.GroupLabel like CONCAT('%', '" + FlowGroup + "' , '%')   " +
@@ -439,25 +443,25 @@ module.exports = function (sender) {
                 "  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'   " +
                 "  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'   " +
                 "  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'   " +
-                "  where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffName ='" + StaffName + "'   " ;
-            var OppWorkId = StaffID;
+                "  where  tba.DeptLabel =? and tba.StaffLevel='1'  and tba.StaffID NOT LIKE ('%-%') and tba.StaffName ='" + StaffName + "'   ";
+            var OppWorkId = '';
             var OppName = StaffName;
             var MagWorkId = '';
             var MagName = '';
             var VipWorkId = '';
             var VipName = '';
             var PurWorkId = '';
-			var PurName = '';
-			var PurDHWorkId = '';
-			var PurDHName = '';
-			var PuroriWorkId = '';
-			var PuroriName = '';
-			var PexWorkId = '';
-			var PexName = '';
-			var PexDHWorkId = '';
-			var PexDHName = '';
-			var PexoriWorkId = '';
-			var PexoriName = '';
+            var PurName = '';
+            var PurDHWorkId = '';
+            var PurDHName = '';
+            var PuroriWorkId = '';
+            var PuroriName = '';
+            var PexWorkId = '';
+            var PexName = '';
+            var PexDHWorkId = '';
+            var PexDHName = '';
+            var PexoriWorkId = '';
+            var PexoriName = '';
             var CfoWorkId = '';
             var CfoName = '';
             var PsdWorkId = '';
@@ -480,20 +484,21 @@ module.exports = function (sender) {
                         console.log("瑜@@", retcode);
                     }
                     for (var i = 0; i < data.length; i++) {
+                        OppWorkId = data[i].OppWorkId;
                         MagWorkId = data[i].MagWorkId;
                         MagName = data[i].MagName;
                         VipWorkId = data[i].VipWorkId;
                         VipName = data[i].VipName;
 
                         PurDHWorkId = data[i].PurDHWorkId;
-						PurDHName = data[i].PurDHName;
-						PuroriWorkId = data[i].PurWorkId;
-						PuroriName = data[i].PurName;
+                        PurDHName = data[i].PurDHName;
+                        PuroriWorkId = data[i].PurWorkId;
+                        PuroriName = data[i].PurName;
 
-						PexDHWorkId = data[i].PexDHWorkId;
-						PexDHName = data[i].PexDHName;
-						PexoriWorkId = data[i].PexWorkId;
-						PexoriName = data[i].PexName;
+                        PexDHWorkId = data[i].PexDHWorkId;
+                        PexDHName = data[i].PexDHName;
+                        PexoriWorkId = data[i].PexWorkId;
+                        PexoriName = data[i].PexName;
 
                         CfoWorkId = data[i].CfoWorkId;
                         CfoName = data[i].CfoName;
@@ -503,20 +508,20 @@ module.exports = function (sender) {
                         CeoName = data[i].CeoName;
                         BodWorkId = data[i].BodWorkId;
                         BodName = data[i].BodName;
-                       if(PurDHName != undefined && PurDHName != '' ){
-							PurName = PurDHName;
-							PurWorkId = PurDHWorkId;
-						}else{
-							PurName = PuroriName;
-							PurWorkId = PuroriWorkId;
-						}
-						if(PexDHName != undefined && PexDHName != '' ){
-							PexName = PexDHName;
-							PexWorkId = PexDHWorkId;
-						}else{
-							PexName = PexoriName;
-							PexWorkId = PexoriWorkId;
-						}
+                        if (PurDHName != undefined && PurDHName != '') {
+                            PurName = PurDHName;
+                            PurWorkId = PurDHWorkId;
+                        } else {
+                            PurName = PuroriName;
+                            PurWorkId = PuroriWorkId;
+                        }
+                        if (PexDHName != undefined && PexDHName != '') {
+                            PexName = PexDHName;
+                            PexWorkId = PexDHWorkId;
+                        } else {
+                            PexName = PexoriName;
+                            PexWorkId = PexoriWorkId;
+                        }
                         var temp = {
                             "OppWorkId": OppWorkId,
                             "OppName": OppName,
@@ -725,25 +730,25 @@ module.exports = function (sender) {
         var BudgetCID = sData[0].BudgetCID;
         var Subject = sData[0].Subject;
         var BudgetItem = sData[0].BudgetItem;
-      
+
         for (var i = 0; i < sData.length; i++) {
-            var DiffMoney =sData[i].DiffMoney;
+            var DiffMoney = sData[i].DiffMoney;
             DiffMoney = nulReplace0(DiffMoney); DiffMoney = parseInt(DiffMoney, 10);
-            if (DiffMoney< 0) {
+            if (DiffMoney < 0) {
                 IsBillUnder = '否';
                 // console.log("主阴性:", DiffMoney ,"超了：",IsBillUnder );
-            }else{
-               
+            } else {
+
             }
         }
-        console.log( "有奸细",IsBillUnder );
+        // console.log("有奸细", IsBillUnder,"密探",FlowBuy);
         let paramList = [BillNo, Formkind, Subject, BudgetCID, BudgetItem, ListNo,
             RequestDate, ProjectNo, ApplicNo, FlowDept, FlowUnit, FlowGroup,
             StaffID, StaffName, TotalValue, Currency, Payment,
-            Explanation, IsBillUnder, EntryDate];
+            Explanation, IsBillUnder, FlowBuy , EntryDate];
         var SQLInsert = "INSERT INTO `bgu_purchmain` ( `BillNo` , `Formkind` , `Subject` , `BudgetCID` , `BudgetItem` , `ListNo` ,  `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-            "`DeptName` , `UnitName` ,`GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,   `IsBillUnder` ,`EntryDate`  ) " +
-            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,  ?  )";
+            "`DeptName` , `UnitName` ,`GroupName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,   `IsBillUnder` , `BuyPhase`, `EntryDate`  ) " +
+            "  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,  ?,?  )";
         yjDBService.exec({
             sql: SQLInsert,
             parameters: paramList,
@@ -770,14 +775,14 @@ module.exports = function (sender) {
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                 for (var i = 0; i < data.length; i++) {
                     CurName = data[i].CurName;
-                    CurJob = data[i].CurJob; 
+                    CurJob = data[i].CurJob;
                 }
                 uptRuleStatus(CurName, ItemNo);
             },
             error: sender.error
         });
     }
-    function uptRuleStatus(CurName ,ItemNo) {
+    function uptRuleStatus(CurName, ItemNo) {
         var Basstr = sender.req.query.Basstr;
         var BillNo = Basstr.hideBillNo;
         var DeptName = Basstr.DeptName;
@@ -788,7 +793,7 @@ module.exports = function (sender) {
         // var mobiles = ['17051095060'] ;
         var mobiles = [];
         mobiles.push(idlephone);
-        // console.log('何以缘起何以缘起', BillNo, " TEL:", mobiles);
+        console.log('何以缘起何以缘起', BillNo, " TEL:", mobiles);
         if (BillNo != '' && BillNo != undefined) {
 
         } else {
@@ -802,14 +807,13 @@ module.exports = function (sender) {
             sql: SQLInsert,
             parameters: [BillNo],
             success: function (result) {
-                var Msg = "@"+ CurName + " ，请审批采购单" + "\n文号: " + BillNo +  "\n部門: " + GroupName +   "\n品项: " + ItemNo;
+                var Msg = "@" + CurName + " ，请审批采购单" + "\n文号: " + BillNo + "\n部門: " + GroupName + "\n品项: " + ItemNo;
                 // console.log("町町发送 ");
                 // console.log(Msg);
                 var yjDing = require("./yjDing");
                 let pw = yjDing["HelloMsg"].talk(Msg, mobiles);
                 var retcode = { "status": "OK", "message": "送审完成\n" + pw, "BillNo": BillNo };
                 sender.success(retcode);
-                // console.log("懿", retcode);
             },
             error: {},
         });
@@ -862,4 +866,37 @@ module.exports = function (sender) {
         ret = (passTxt == null || passTxt == undefined) ? ('0') : passTxt;
         return ret;
     }
+    function seePhase() {
+        if (FlowBuy == '系统') {
+	 
+		} else if (FlowBuy == '采购承办人') { 
+		    BudgetType = 'B'; StaffRole = "采购承办人";
+		} else if (FlowBuy == '资讯承办人') {
+		    BudgetType = 'B'; StaffRole = "资讯承办人"; 
+		} else if (FlowBuy == '行政承办人') {
+		    BudgetType = 'B'; StaffRole = "行政承办人";
+		}  else if (FlowBuy == '不加采购') {
+		    BudgetType = 'A';  
+		} else {
+		  
+		}
+    }
 }
+//L0512
+// " select  tba.DBID, tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName, " +
+// " tvip.StaffID as VipWorkId, tvip.StaffName as VipName, pur.StaffID as PurWorkId, pur.StaffName as PurName, " +
+// " dhpur.StaffID as PurDHWorkId, dhpur.StaffName as PurDHName, pex.StaffID as PexWorkId, pex.StaffName as PexName, " +
+// " dhpex.StaffID as PexDHWorkId, dhpex.StaffName as PexDHName, tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName, " +
+// "  tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName, " +
+// "  tbod.StaffID as BodWorkId,  tbod.StaffName as BodName from  bgu_staffs tba    " +
+// "  LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2'     " +
+// "  LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and tvip.staffLevel='3'    " +
+// "  LEFT JOIN bgu_staffs pur on pur.DeptLabel like CONCAT('%', tba.DeptLabel, '%')  and pur.staffLevel='4'  and pur.StaffRole='" + StaffRole + "'    " +
+// "  LEFT JOIN bgu_staffs dhpur on dhpur.staffLevel='4'  and dhpur.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and dhpur.StaffRole= '" + StaffRole + "'   " +
+// "  LEFT JOIN bgu_staffs pex on pex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and pex.staffLevel='5'   " +
+// "  LEFT JOIN bgu_staffs dhpex on dhpex.staffLevel='5'  and dhpex.GroupLabel like CONCAT('%', '" + FlowGroup + "' , '%')   " +
+// "  LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6'    " +
+// "  LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7'   " +
+// "  LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8'   " +
+// "  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'   " +
+// "  where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffName ='" + StaffName + "'   ";

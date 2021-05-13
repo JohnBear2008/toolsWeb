@@ -27,7 +27,16 @@ function MacPurch(nowIDX) {
       var DeptName = $('#hideDeptName').val();
       var UnitName = $('#hideUnit').val();
       var GroupName = $('#GroupName').val();
-      console.log("银河", BudgetCombo, "小铁骑", UnitName, "欣然", Subtotal);
+      var FlowBuy = $('#BuyCombo').val();
+      console.log("宇宙", FlowBuy , "铁骑", GroupName);
+      let DepList = [];
+      if (GroupName != "" && GroupName != undefined) {
+            DepList = GroupName.split('-');
+            for (var ki = 0; ki < DepList.length; ki++) {
+                  DeptName = DepList[0];
+                  console.log( "酷斯拉", DeptName);
+            }
+      }
       var BudgetCID = '';
       var Subject = '';
       var BudgetItem = '';
@@ -80,8 +89,9 @@ function MacPurch(nowIDX) {
       var taskData = {
             "reportType": reportType, "arrange": arrange, "BudgetCID": BudgetCID, "BudgetItem": BudgetItem,
             "Subtotal": Subtotal, "UnitName": UnitName, "DeptName": DeptName, "GroupName": GroupName,
-            "oppOID": oppOID, "OppName": OppName
+            "FlowBuy": FlowBuy, "oppOID": oppOID, "OppName": OppName
       }
+      console.log("美貌美貌", taskData );
       if (BudgetCID != undefined && BudgetCID != "") {
 
       } else {
@@ -140,6 +150,7 @@ function winPurch() {
             var DeptName = $('#hideDeptName').val();
             var UnitName = $('#hideUnit').val();
             var GroupName = $('#GroupName').val();
+            console.log("岳飞", GroupName);
             // var BudgetCombo = $('#BudgetCombo_1').val();
             var BudgetCID = '';
             var Subject = '';
@@ -259,52 +270,52 @@ function view_hmi(obj) {
             if (i == 1) {
                   var Apkdiff1 = Remain - smallTOT;
                   DiffMoney1 = Apkdiff1;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney1);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney1);
             }
             if (i == 2) {
                   var Apkdiff2 = Remain - smallTOT;
                   DiffMoney2 = Apkdiff2;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney2);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney2);
             }
             if (i == 3) {
                   var Apkdiff3 = Remain - smallTOT;
                   DiffMoney3 = Apkdiff3;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney3);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney3);
             }
             if (i == 4) {
                   var Apkdiff4 = Remain - smallTOT;
                   DiffMoney4 = Apkdiff4;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney4);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney4);
             }
             if (i == 5) {
                   var Apkdiff5 = Remain - smallTOT;
                   DiffMoney5 = Apkdiff5;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney5);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney5);
             }
             if (i == 6) {
                   var Apkdiff6 = Remain - smallTOT;
                   DiffMoney6 = Apkdiff6;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney6);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney6);
             }
             if (i == 7) {
                   var Apkdiff7 = Remain - smallTOT;
                   DiffMoney7 = Apkdiff7;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney7);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney7);
             }
             if (i == 8) {
                   var Apkdiff8 = Remain - smallTOT;
                   DiffMoney8 = Apkdiff8;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney8);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney8);
             }
             if (i == 9) {
                   var Apkdiff9 = Remain - smallTOT;
                   DiffMoney9 = Apkdiff9;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney9);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney9);
             }
             if (i == 10) {
                   var Apkdiff10 = Remain - smallTOT;
                   DiffMoney10 = Apkdiff10;
-                  console.log("公孙离 ", i, " -APk ", DiffMoney10);
+                  // console.log("公孙离 ", i, " -APk ", DiffMoney10);
             }
 
             if (Remain == '0') {
@@ -320,38 +331,6 @@ function view_hmi(obj) {
                   }
             }
       }
-
-      // CapBossOver ='N';
-      // if (quantid == 'UnitPrice_1' || quantid == 'Quantity_1') {
-      //       MacPurch('1');
-      // }
-      // if (quantid == 'UnitPrice_2' || quantid == 'Quantity_2') {
-      //       MacPurch('2');
-      // }
-      // if (quantid == 'UnitPrice_3' || quantid == 'Quantity_3') {
-      //       MacPurch('3');
-      // }
-      // if (quantid == 'UnitPrice_4' || quantid == 'Quantity_4') {
-      //       MacPurch('4');
-      // }
-      // if (quantid == 'UnitPrice_5' || quantid == 'Quantity_5') {
-      //       MacPurch('5');
-      // }
-      // if (quantid == 'UnitPrice_6' || quantid == 'Quantity_6') {
-      //       MacPurch('6');
-      // }
-      // if (quantid == 'UnitPrice_7' || quantid == 'Quantity_7') {
-      //       MacPurch('7');
-      // }
-      // if (quantid == 'UnitPrice_8' || quantid == 'Quantity_8') {
-      //       MacPurch('8');
-      // }
-      // if (quantid == 'UnitPrice_9' || quantid == 'Quantity_9') {
-      //       MacPurch('9');
-      // }
-      // if (quantid == 'UnitPrice_10' || quantid == 'Quantity_10') {
-      //       MacPurch('10');
-      // }
       console.log("最新提醒值", CapBossOver);
 
 }
@@ -441,16 +420,17 @@ function save_hmi() {
       var UnitName = $('#hideUnit').val();
       var GroupName = $('#GroupName').val();
       var FlowRole = $('#hideFlowRole').val();
+      var FlowBuy = $('#BuyCombo').val();
       var StaffID = sessionOID;
       var StaffName = sessionName;
       var TotalValue = $('#TotalValue').val();
       var Currency = $('#Currency').val();
       var Payment = $('#Payment').val();
       var Explanation = $('#Explanation').val();
-
       var Advstr = {
             "SendStatus": SendStatus, "ListNo": ListNo, "RequestDate": RequestDate, "ProjectNo": ProjectNo, "ApplicNo": ApplicNo,
-            "DeptName": DeptName, "UnitName": UnitName, "GroupName": GroupName, "StaffID": StaffID, "StaffName": StaffName, "FlowRole": FlowRole, "TotalValue": TotalValue, "Currency": Currency,
+            "DeptName": DeptName, "UnitName": UnitName, "GroupName": GroupName, "StaffID": StaffID, "StaffName": StaffName,
+            "FlowRole": FlowRole,  "FlowBuy": FlowBuy, "TotalValue": TotalValue, "Currency": Currency,
             "Payment": Payment, "Explanation": Explanation, "hideBillNo": hideBillNo
       };
       for (let i = 1; i <= 10; i++) {

@@ -276,12 +276,6 @@ module.exports = function (sender) {
             }
             datas.push(temp)
           }
-          // var dump = JSON.stringify(datas);
-          // if (dump.length > 100) {
-          //   console.log("彩暻:" + dump.substring(0, 100));
-          // } else {
-          //   console.log("彩暻:" + JSON.stringify(datas));
-          // }
           cb(null, datas);
         },
         error: sender.error

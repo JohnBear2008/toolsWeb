@@ -74,13 +74,6 @@ module.exports = function (sender) {
                 console.log(" 长安城城管 ", Transaction);
             }
             clearMain(Transaction);
-            // var dump = JSON.stringify(datas);
-            // if (dump.length > 100) {
-            //   console.log("彩暻:" + dump.substring(0, 100));
-            // } else {
-            //   console.log("彩暻:" + JSON.stringify(datas));
-            // }
-          
           },
           error: sender.error
         });

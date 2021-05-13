@@ -20,7 +20,7 @@ function shuffleA(BillNo) {
             console.log("延希", Answer);
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
-                '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:640px;">' +
+                '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:700px;">' +
                 '<table width = "1100" border = "1"  > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="2" height="50" align="center"><img src="/images/techmation.png" /></td>' +
@@ -257,6 +257,9 @@ function shuffleA(BillNo) {
                 '<td  width="50"  colspan="9" height="25">Reason</td>' +
                 '</tr>' +
                 '</table>' +
+                '</br>' +
+                '<button id="PrintConfirm" style="margin-left:400px" type="button" class="btn btn-info"  onclick="printpage()">打印</button>' +
+				'<button id="PrintClose" type="button" class="btn btn-primary" data-dismiss="modal">关闭</button> ' + 
                 '</DIV>';
 
             var watermark = "";
@@ -695,6 +698,16 @@ function shuffleA(BillNo) {
             }
         },
         error: function () {
+        }
+    })
+}
+function printpage() {
+    Print('#listPrintViewDiv', {
+        onStart: function () {
+            console.log('onStart', new Date())
+        },
+        onEnd: function () {
+            console.log('onEnd', new Date())
         }
     })
 }

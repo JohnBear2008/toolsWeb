@@ -16,7 +16,7 @@ function loadCaseA( BillNo  ) {
               var dropText =bjob[i].Subject+ "-"  +bjob[i].BudgetItem + "-"  + bjob[i].BudgetCID ;
               // $("#BudgetCombo_"+(i+1)+" option[value="+dropText+"]").prop('selected', true);
               if( bjob[i].BudgetCID!=undefined &&  bjob[i].BudgetCID !='' ){
-                console.log("版",i,"到",dropText);
+                console.log("牛",i,"羊",dropText);
                 $("#BudgetCombo_"+(i+1)).val(dropText);
                 $("#BudgetCombo_"+(i+1)).html(dropText);
               }
@@ -34,7 +34,7 @@ function loadCaseA( BillNo  ) {
               $('#Department_'+(i+1)).val(bjob[i].Department);
           }
           for (let i = 10; i < 11; i++) {
-              console.log("号",bjob[i].BudgetCID,"提",bjob[i].Subject,"科",bjob[i].BudgetItem);
+              console.log("哈",bjob[i].BudgetCID,"机",bjob[i].Subject,"八",bjob[i].BudgetItem);
               var dropText =bjob[i].Subject+ "-"  +bjob[i].BudgetItem + "-"  + bjob[i].BudgetCID ;
               // $("#BudgetCombo_1 option[value="+dropText+"]").prop('selected', true);
               $("#BudgetCombo_1").val( dropText);
@@ -51,6 +51,11 @@ function loadCaseA( BillNo  ) {
               if( bjob[i].GroupName!=undefined &&  bjob[i].GroupName !='' ){
                 var dropGroup = bjob[i].GroupName;       
                 $("#GroupCombo option[value="+dropGroup+"]").prop('selected', true);
+              }
+              if( bjob[i].BuyPhase!=undefined &&  bjob[i].BuyPhase !='' ){
+                var dropPhase = bjob[i].BuyPhase;    
+                console.log("賢合莊",dropPhase);
+                $("#BuyCombo option[value="+dropPhase+"]").prop('selected', true);
               }
               $('#TotalValue').val(bjob[i].TotalValue);
               $('#Currency').val(bjob[i].Currency);
@@ -142,7 +147,12 @@ function shiftCaseA( BillNo  ) {
               if( bjob[i].UnitName!=undefined &&  bjob[i].UnitName !='' ){
                 var dropUnit = bjob[i].UnitName;    
                 console.log("大海捞",dropUnit);
-                $('#UnitCombo').val(dropUnit);              
+                $('#UnitCombo').val(dropUnit);          
+              }
+              if( bjob[i].BuyPhase!=undefined &&  bjob[i].BuyPhase !='' ){
+                var dropPhase = bjob[i].BuyPhase;    
+                console.log("賢合莊",dropPhase);
+                $("#BuyCombo option[value="+dropPhase+"]").prop('selected', true);
               }
               if( bjob[i].GroupName!=undefined &&  bjob[i].GroupName !='' ){
                 var dropGroup = bjob[i].GroupName;       

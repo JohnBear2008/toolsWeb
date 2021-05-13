@@ -56,158 +56,158 @@ function getUpPull() {
       youoption.value = "2";
       $("#PicKind").append(youoption);
 }
-function CriteriaBasic9() {
-      let dataArr = [];
-      var reportType = 'StarGate';
-      var arrange = 'Basic';
-      var taskData = { "reportType": reportType, "arrange": arrange };
-      $.ajax({
-            method: 'post',
-            data: taskData,
-            url: "/app/TMErp/getRoute",
-            success: function (data) {
-                  dataArr = data;
-                  for (var i = 0; i < dataArr.length; i++) {
-                        var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-                        youoption.id = "lifetime";
-                        youoption.name = "lifetime";
-                        youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#LifeValue").append(youoption);
-                  }
+// function CriteriaBasic9() {
+//       let dataArr = [];
+//       var reportType = 'StarGate';
+//       var arrange = 'Basic';
+//       var taskData = { "reportType": reportType, "arrange": arrange };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#LifeValue").append(youoption);
+//                   }
 
-            },
-            error: function () {
-            }
-      })
-}
-function ReverseBasic9() {
-      let dataArr = [];
-      var reportType = 'StarGate';
-      var arrange = 'ReveBasic';
-      var taskData = { "reportType": reportType, "arrange": arrange };
-      $.ajax({
-            method: 'post',
-            data: taskData,
-            url: "/app/TMErp/getRoute",
-            success: function (data) {
-                  dataArr = data;
-                  for (var i = 0; i < dataArr.length; i++) {
-                        var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-                        youoption.id = "lifetime";
-                        youoption.name = "lifetime";
-                        youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#LifeValue").append(youoption);
-                  }
+//             },
+//             error: function () {
+//             }
+//       })
+// }
+// function ReverseBasic9() {
+//       let dataArr = [];
+//       var reportType = 'StarGate';
+//       var arrange = 'ReveBasic';
+//       var taskData = { "reportType": reportType, "arrange": arrange };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#LifeValue").append(youoption);
+//                   }
 
-            },
-            error: function () {
-            }
-      })
-}
-function CriteriaBasic() {
-      let dataArr = [];
-      var reportType = 'StarCate';
-      var arrange = 'Basic';
-      var taskData = { "reportType": reportType, "arrange": arrange };
-      $.ajax({
-            method: 'post',
-            data: taskData,
-            url: "/app/TMErp/getRoute",
-            success: function (data) {
-                  dataArr = data;
-                  for (var i = 0; i < dataArr.length; i++) {
-                        var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-                        youoption.id = "lifetime";
-                        youoption.name = "lifetime";
-                        youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#OnlyValue").append(youoption);
-                  }
+//             },
+//             error: function () {
+//             }
+//       })
+// }
+// function CriteriaBasic() {
+//       let dataArr = [];
+//       var reportType = 'StarCate';
+//       var arrange = 'Basic';
+//       var taskData = { "reportType": reportType, "arrange": arrange };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#OnlyValue").append(youoption);
+//                   }
 
-            },
-            error: function () {
-            }
-      })
-}
+//             },
+//             error: function () {
+//             }
+//       })
+// }
 
-function CriteriaAdv(prodID , prodNM  ){
-      let dataArr = [];
-      var reportType = 'StarCate';
-      var arrange = 'Adv';
-      var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
-      $.ajax({
-            method: 'post',
-            data: taskData,
-            url: "/app/TMErp/getRoute",
-            success: function (data) {
-                  dataArr = data;
-                  $("#OnlyValue").val(); $("#OnlyValue").html("");
-                  for (var i = 0; i < dataArr.length; i++) {
-                        var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-                        youoption.id = "lifetime";
-                        youoption.name = "lifetime";
-                        youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#OnlyValue").append(youoption);
-                  }
-            },
-            error: function () {
-            }
-      })
-}
+// function CriteriaAdv(prodID , prodNM  ){
+//       let dataArr = [];
+//       var reportType = 'StarCate';
+//       var arrange = 'Adv';
+//       var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   $("#OnlyValue").val(); $("#OnlyValue").html("");
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#OnlyValue").append(youoption);
+//                   }
+//             },
+//             error: function () {
+//             }
+//       })
+// }
 
-function ReverseAdv9(prodID , prodNM  ){
-      let dataArr = [];
-      var reportType = 'StarGate';
-      var arrange = 'ReveAdv';
-      var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
-      $.ajax({
-            method: 'post',
-            data: taskData,
-            url: "/app/TMErp/getRoute",
-            success: function (data) {
-                  dataArr = data;
-                  $("#LifeValue").val(); $("#LifeValue").html("");
-                  for (var i = 0; i < dataArr.length; i++) {
-                        var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-                        youoption.id = "lifetime";
-                        youoption.name = "lifetime";
-                        youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#LifeValue").append(youoption);
-                  }
-            },
-            error: function () {
-            }
-      })
-}
-function CriteriaAdv9(prodID , prodNM  ){
-      let dataArr = [];
-      var reportType = 'StarGate';
-      var arrange = 'Adv';
-      var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
-      $.ajax({
-            method: 'post',
-            data: taskData,
-            url: "/app/TMErp/getRoute",
-            success: function (data) {
-                  dataArr = data;
-                  $("#LifeValue").val(); $("#LifeValue").html("");
-                  for (var i = 0; i < dataArr.length; i++) {
-                        var youoption = document.createElement("option");
-                        youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
-                        youoption.id = "lifetime";
-                        youoption.name = "lifetime";
-                        youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
-                        $("#LifeValue").append(youoption);
-                  }
-            },
-            error: function () {
-            }
-      })
-}
+// function ReverseAdv9(prodID , prodNM  ){
+//       let dataArr = [];
+//       var reportType = 'StarGate';
+//       var arrange = 'ReveAdv';
+//       var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   $("#LifeValue").val(); $("#LifeValue").html("");
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#LifeValue").append(youoption);
+//                   }
+//             },
+//             error: function () {
+//             }
+//       })
+// }
+// function CriteriaAdv9(prodID , prodNM  ){
+//       let dataArr = [];
+//       var reportType = 'StarGate';
+//       var arrange = 'Adv';
+//       var taskData = { "reportType": reportType, "arrange": arrange , "prodID": prodID , "prodNM": prodNM  };
+//       $.ajax({
+//             method: 'post',
+//             data: taskData,
+//             url: "/app/TMErp/getRoute",
+//             success: function (data) {
+//                   dataArr = data;
+//                   $("#LifeValue").val(); $("#LifeValue").html("");
+//                   for (var i = 0; i < dataArr.length; i++) {
+//                         var youoption = document.createElement("option");
+//                         youoption.text = dataArr[i].ProductID + " 品名: " + dataArr[i].ProductName;
+//                         youoption.id = "lifetime";
+//                         youoption.name = "lifetime";
+//                         youoption.value = dataArr[i].ProductID+ "##" + dataArr[i].ProductName;
+//                         $("#LifeValue").append(youoption);
+//                   }
+//             },
+//             error: function () {
+//             }
+//       })
+// }
 // function CriteriaAdv9(prodID , prodNM  ){
 //       let dataArr = [];
 //       var reportType = 'StarGate';

@@ -110,6 +110,7 @@ module.exports = function (sender) {
               "Currency": result[0][0].Currency,
               "Payment": result[0][0].Payment,
               "Explanation": result[0][0].Explanation,
+              "BuyPhase": result[0][0].BuyPhase,
               "EntryDate": result[0][0].EntryDate,
             };
             dataARR.push(obj);
@@ -240,7 +241,8 @@ module.exports = function (sender) {
       // var BillNo = '20201225093185';
       let SQL2 =
         " select  `Subject`, `BudgetCID` , `BudgetItem`, `BillNo` , `ListNo` , `RequestDate` , `ProjectNo` , `ApplicNo` ,  " +
-        "`GroupName` , `UnitName` , `DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation` ,`EntryDate` " +
+        "`GroupName` , `UnitName` , `DeptName` , `StaffID`  , `StaffName` ,  `TotalValue`  , `Currency` ,  `Payment` , `Explanation`, " +
+        " `BuyPhase`, `EntryDate` " +
         " from bgu_purchmain tba  " +
         " where tba.BillNo= ?   ";
       yjDBService.exec({
@@ -269,15 +271,16 @@ module.exports = function (sender) {
               "Currency": data[i].Currency,
               "Payment": data[i].Payment,
               "Explanation": data[i].Explanation,
+              "BuyPhase": data[i].BuyPhase,
               "EntryDate": data[i].EntryDate,
             }
             datas.push(temp)
           }
           // var dump = JSON.stringify(datas);
           // if (dump.length > 100) {
-          //   console.log("彩暻:" + dump.substring(0, 100));
+          //   console.log("姚采颍:" + dump.substring(0, 100));
           // } else {
-          //   console.log("彩暻:" + JSON.stringify(datas));
+          //   console.log("姚采颍:" + JSON.stringify(datas));
           // }
           cb(null, datas);
         },

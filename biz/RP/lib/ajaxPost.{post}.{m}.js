@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-04 15:01:33
- * @LastEditTime: 2021-03-19 08:53:10
+ * @LastEditTime: 2021-05-13 14:05:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\biz\RP\lib\ajaxPost.{post}.{m}.js
@@ -28,7 +28,16 @@ module.exports = function (sender) {
     yjDBService.exec({
         sql: sql,
         parameters: [],
-        success: sender.success,
+        rowsAsArray: false,
+        // success: sender.success,
+        success: function (result) {
+            if (result.length > 0) {
+                for (let n of result) {
+                    n = funs.nullToEmpty(n)
+                }
+            }
+            sender.success(result)
+        },
         error: sender.error
     });
 };

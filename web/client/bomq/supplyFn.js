@@ -169,6 +169,31 @@ function getpull() {
       youoption.value = "F";
       $("#Pattern").append(youoption);
 }
+function getPhase() {
+      var youoption = document.createElement("option");
+      youoption.id = "BuyCombo";
+      youoption.name = "BuyCombo";
+      youoption.text = "系统";
+      youoption.value = "系统";
+      $("#BuyCombo").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "采购承办人";
+      youoption.value = "采购承办人";
+      $("#BuyCombo").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "资讯承办人";
+      youoption.value = "资讯承办人";
+      $("#BuyCombo").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "行政承办人";
+      youoption.value = "行政承办人";
+      $("#BuyCombo").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "不加采购";
+      youoption.value = "不加采购";
+      $("#BuyCombo").append(youoption);
+      
+}
 function getDrop() {
       var youoption = document.createElement("option");
       youoption.id = "CapMode";
@@ -203,6 +228,10 @@ function RolePlay() {
                   DeptShow = PropList[0];
                   GroupShow = PropList[1];
             }
+      }
+      for (let i = 1; i <= 10; i++) {
+            $("#BudgetCombo_" + i).val('');
+            $("#BudgetCombo_" + i).html('');
       }
 }
 function obtLogUnit(loginName) {
@@ -251,22 +280,26 @@ function obtLogGroup(loginName) {
             url: "/app/TMFinc/getRoute",
             success: function (data) {
                   dataArr = data;
+                  console.log("早餐",dataArr);
                   if (dataArr.length > 0) {
-                        var sessDept = dataArr[0].DeptLabel;
-                        var qryGroup = dataArr[0].GroupLabel;
-                        let GroupList = [];
-                        if (qryGroup != "" && qryGroup != undefined) {
-                              console.log("男子汉", qryGroup);
-                              GroupList = qryGroup.split(',');
-                              $("#GroupCombo").val(); $("#GroupCombo").html("");
-                              for (var i = 0; i < GroupList.length; i++) {
-                                    var youoption = document.createElement("option");
-                                    youoption.text = GroupList[i];
-                                    youoption.id = "kisstime";
-                                    youoption.name = "kisstime";
-                                    youoption.value = GroupList[i];
-                                    $("#GroupCombo").append(youoption);
-                                    $("#GroupName").val(GroupList[0]);
+                        $("#GroupCombo").val(); $("#GroupCombo").html("");
+                        for (var i = 0; i < dataArr.length; i++) {
+                              var sessDept = dataArr[i].DeptLabel;
+                              var qryGroup = dataArr[i].GroupLabel;
+                              let GroupList = [];
+                              if (qryGroup != "" && qryGroup != undefined) {
+                                    console.log("男子汉", qryGroup);
+                                    GroupList = qryGroup.split(',');
+                                  
+                                    for (var ki = 0; ki < GroupList.length; ki++) {
+                                          var youoption = document.createElement("option");
+                                          youoption.text = GroupList[ki];
+                                          youoption.id = "kisstime";
+                                          youoption.name = "kisstime";
+                                          youoption.value = GroupList[ki];
+                                          $("#GroupCombo").append(youoption);
+                                          $("#GroupName").val(GroupList[0]);
+                                    }
                               }
                         }
                         var sessRole = dataArr[0].StaffRole;

@@ -20,10 +20,10 @@ module.exports = function (sender) {
 	if (arrange == 'OrigLinkDtl') {
 		OrigLinkDtl();
 	}
-	if (arrange == 'findDept') {
-		var loginName = sender.req.query.loginName;
-		findDept();
-	}
+	// if (arrange == 'findDept') {
+	// 	var loginName = sender.req.query.loginName;
+	// 	findDept();
+	// }
 	if (arrange == 'LinkDept') {
 		var loginName = sender.req.query.loginName;
 		LinkDept();
@@ -63,7 +63,7 @@ module.exports = function (sender) {
 		});
 	}
 	function LinkDept() {
-		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
+		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`, tba.Mobiles  from  bgu_staffs tba " +
 		" where tba.StaffName = ? and StaffLevel = '1' ";
 		yjDBService.exec({
 			sql: SQLqry,
@@ -82,22 +82,23 @@ module.exports = function (sender) {
 					}
 					datas.push(temp)
 				}
-				var dump = JSON.stringify(datas);
-				// if (dump.length > 100) {
-				// 	console.log("姑瑛:" + dump.substring(0, 100));
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 1000) {
+				// 	console.log("男朋友:" + dump.substring(0, 1000));
 				// } else {
-				// 	console.log("姑瑛:" + JSON.stringify(datas));
+				// 	console.log("男朋友:" + JSON.stringify(datas));
 				// }
 				sender.success(datas);
 			},
 			error: {},
 		});
 	}
+	 
 	function LinkUnit() {
 		var SQLqry = 
 		" select torg.DeptName , tba.`DeptLabel` , tba.`GroupLabel` from bgu_orig torg " +
 		" LEFT JOIN bgu_staffs tba on tba.DeptLabel = torg.DeptName " +
-		" and tba.StaffName = ? and StaffLevel = '1' Order By torg.DeptName " ;
+		" and tba.StaffName = ? and StaffLevel = '1' and tba.StaffID NOT LIKE ('%-%') Order By torg.DeptName " ;
 		yjDBService.exec({
 			sql: SQLqry,
 			parameters: [loginName],
@@ -114,8 +115,8 @@ module.exports = function (sender) {
 					datas.push(temp)
 				}
 				// var dump = JSON.stringify(datas);
-				// if (dump.length > 500) {
-				// 	console.log("才哥:" + dump.substring(0, 100));
+				// if (dump.length > 2000) {
+				// 	console.log("才哥:" + dump.substring(0, 2000));
 				// } else {
 				// 	console.log("才哥:" + JSON.stringify(datas));
 				// }
@@ -124,49 +125,43 @@ module.exports = function (sender) {
 			error: {},
 		});
 	}
-	function findDept() {
-		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
-		" where tba.StaffName = ? and StaffLevel = '1' ";
-		yjDBService.exec({
-			sql: SQLqry,
-			parameters: [loginName],
-			success: function (r) {
-				var datas = []
-				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-				for (var i = 0; i < data.length; i++) {
-					var flowDept = ''; 
-					var flowGroup = '';
-					var qryDept = data[i].DeptLabel;
-					let DeptList = [];
-					if (qryDept != "" && qryDept != undefined) {
-					    DeptList = qryDept.split(',');
-					    flowDept = DeptList[0];
-					}
-					qryGroup = data[i].GroupLabel;
-					let GroupList = [];
-					if (qryGroup != "" && qryGroup != undefined) {
-					    GroupList = qryGroup.split(',');
-					    flowGroup = GroupList[0];
-					}
-					var temp = {
-						"DeptLabel": flowDept,
-						"GroupLabel": flowGroup,
-						"StaffRole": data[i].StaffRole,
-						"Mobiles": data[i].Mobiles,
-					}
-					datas.push(temp)
-				}
-				// var dump = JSON.stringify(datas);
-				// if (dump.length > 100) {
-				// 	console.log("姑瑛:" + dump.substring(0, 100));
-				// } else {
-				// 	console.log("姑瑛:" + JSON.stringify(datas));
-				// }
-				sender.success(datas);
-			},
-			error: {},
-		});
-	}
+	// function findDept() {
+	// 	var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`  from  bgu_staffs tba " +
+	// 	" where tba.StaffName = ? and StaffLevel = '1' ";
+	// 	yjDBService.exec({
+	// 		sql: SQLqry,
+	// 		parameters: [loginName],
+	// 		success: function (r) {
+	// 			var datas = []
+	// 			var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+	// 			for (var i = 0; i < data.length; i++) {
+	// 				var flowDept = ''; 
+	// 				var flowGroup = '';
+	// 				var qryDept = data[i].DeptLabel;
+	// 				let DeptList = [];
+	// 				if (qryDept != "" && qryDept != undefined) {
+	// 				    DeptList = qryDept.split(',');
+	// 				    flowDept = DeptList[0];
+	// 				}
+	// 				qryGroup = data[i].GroupLabel;
+	// 				let GroupList = [];
+	// 				if (qryGroup != "" && qryGroup != undefined) {
+	// 				    GroupList = qryGroup.split(',');
+	// 				    flowGroup = GroupList[0];
+	// 				}
+	// 				var temp = {
+	// 					"DeptLabel": flowDept,
+	// 					"GroupLabel": flowGroup,
+	// 					"StaffRole": data[i].StaffRole,
+	// 					"Mobiles": data[i].Mobiles,
+	// 				}
+	// 				datas.push(temp)
+	// 			}
+	// 			sender.success(datas);
+	// 		},
+	// 		error: {},
+	// 	});
+	// }
 	function findOrigDtl() {
 		var SQLqry = " select tba.`DeptID` , tba.`DeptName` , tdtl.GroupID , tdtl.GroupName  from  bgu_orig tba " +
 		" LEFT JOIN bgu_orig_detail tdtl on tba.DeptName  = tdtl.DeptName ";
