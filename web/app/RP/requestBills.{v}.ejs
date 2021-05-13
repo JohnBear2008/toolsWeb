@@ -1960,6 +1960,10 @@
 
         loadBillMainTable();
 
+        //更新待还货 待维修数量
+        showReturnRequestNum()
+        showPartRequestNum()
+
     }
 
 
@@ -2077,8 +2081,15 @@
     const loadContactOptions = (customerData) => {
         // console.log('contacts', contacts);
 
+        //c 检查客户信息
+        if (!customerData) {
+            console.log('loadContactOptions 缺少参数!');
+            return
+        }
+
         //补齐联系人待选项
         let contacts = [];
+
         console.log('customerData', customerData);
         if (!customerData.contacts) {
             contacts.push({
