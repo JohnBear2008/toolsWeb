@@ -520,7 +520,8 @@
 
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="rp_recordbillsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="rp_recordbillsModal" tabindex="-1" role="dialog" aria-hidden="true"
+        data-backdrop="static">
 
         <div class="modal-dialog" style="width: 75%;">
 
@@ -1353,7 +1354,7 @@
         for (const n of locationsArr) {
 
             if (n && n !== '\n') {
-                console.log('add', n, typeof n);
+                // console.log('add', n, typeof n);
                 $('#' + i.elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
                     '</option>'));
             }
@@ -1668,7 +1669,7 @@
 
     //计算总费用
     const CalcRepairTotalFee = () => {
-        console.log('CalcRepairTotalFee do');
+        // console.log('CalcRepairTotalFee do');
         //初始话费用
         let [testFee, partsFee, yearsFee, conditionFee, urgentFee, repairTotalFee, repairLastFee] = [0, 0, 0, 0, 0,
             0, 0
@@ -2195,7 +2196,7 @@
                 let imagesHtml = ""
 
                 for (const file of filesArr) {
-                    console.log("file", file);
+                    // console.log("file", file);
 
                     let picFormat = ['.jpg', '.png', '.bmp']
 
@@ -2715,9 +2716,9 @@
             let numStatus = $("#rp_partsbillsForm-numStatus").text();
             let num = $("#rp_partsbillsForm-num").val();
             let stockNum = parseInt($("#stockNum").text());
-            console.log(numStatus, num, stockNum);
-            console.log(numStatus === '预领');
-            console.log(num > stockNum);
+            // console.log(numStatus, num, stockNum);
+            // console.log(numStatus === '预领');
+            // console.log(num > stockNum);
 
 
             if (numStatus === '预领' && num > stockNum) {
@@ -2893,7 +2894,7 @@
         //表单保存按钮
         $('#rp_recordbillsSave').click(async function () {
 
-            console.log('save mainTableData', mainTableData);
+            // console.log('save mainTableData', mainTableData);
 
             //check-检查单据状态
             let status = $('#rp_recordbillsForm-status').text()
@@ -2902,6 +2903,21 @@
                 return
             }
             //check-保存确认
+            if (subTableData.length > 0) {
+                let reCheck = false;
+                for (const n of subTableData) {
+                    if (n.numStatus === '预领') {
+                        reCheck = true
+                    }
+                }
+                if (reCheck) {
+                    if (!confirm('此维修单存在预领零件,系统会自动产生领用记录,如信息有误可点击取消返回修改,是否保存?')) {
+                        return
+                    }
+                }
+
+            }
+
             let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val()
             if (repairResult) {
                 if (!confirm('选定维修结果后,此维修单完结,无法再次修改,是否保存?')) {
@@ -3141,7 +3157,7 @@
                     subTable: subTable
                 })
 
-                console.log('r1', r1);
+                // console.log('r1', r1);
 
                 if (!r1) {
                     alert('加入报废仓失败')

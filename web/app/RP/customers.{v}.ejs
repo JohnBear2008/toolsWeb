@@ -44,6 +44,9 @@
         <button type="button" class="btn btn-primary" id="syncErpDataButton">
             同步ERP
         </button>
+        <!-- <button type="button" class="btn btn-primary" id="autoFixButton">
+            信息补齐
+        </button> -->
         <button type="button" style="display: none;" id="rp_customersNew">
             新增
         </button>
@@ -733,6 +736,31 @@
         }
     }
 
+    // const autoFixData = () => {
+
+    //     //d
+    //     let MainTableData = MainTable.rows().data();
+    //     let RPData = []
+    //     let newRPData = []
+    //     for (let i = 0; i < MainTableData.length; i++) {
+    //         RPData.push(MainTableData[i]);
+    //     }
+
+    //     for (const n of RPData) {
+    //         let newN = n
+    //         if (!n.customerShortName) {
+    //             newN.customerShortName = n.customerName.replace('有限公司', '')
+    //         }
+    //         if (!n.customerId) {
+    //             newN.customerId = Pinyin.GetJP(n.customerShortName).toUpperCase()
+    //         }
+
+    //     }
+
+
+
+    // }
+
 
     $(document).ready(function () {
 
@@ -752,6 +780,11 @@
         $('#syncErpDataButton').click(function () {
             syncErpData();
         })
+
+        // //自动补齐信息按钮
+        // $('#autoFixButton').click(function () {
+        //     autoFixData();
+        // })
 
 
         //客户新增按钮

@@ -1372,7 +1372,7 @@
         //     params: [productId]
         // })
 
-        console.log('r1:' + JSON.stringify(r1));
+        // console.log('r1:' + JSON.stringify(r1));
         let r2 = r1[0]
         delete r2.productId;
         // console.log('r2:' + JSON.stringify(r2));
@@ -1410,7 +1410,7 @@
             let warrantyPeriod = parseInt($('#rp_requestbillsForm-warrantyPeriod').text());
             let year = $('#rp_recordbillsForm-productYear').val() || '2000'
             let month = $('#rp_recordbillsForm-productMonth').val() || '01'
-            console.log(warrantyPeriod, year, month);
+            // console.log(warrantyPeriod, year, month);
 
             //计算月份差函数
             const getIntervalMonth = (startDate, endDate) => {
@@ -1427,7 +1427,7 @@
             let intervalMonth = getIntervalMonth(productDate, nowDate)
 
             if (warrantyPeriod + intervalMonth >= 0) {
-                console.log('保内');
+                // console.log('保内');
                 $("#rp_recordbillsForm-inWarranty").selectpicker('val', '是')
                 // $("#rp_recordbillsForm-inWarranty").selectpicker('refresh')
             } else {
@@ -1966,9 +1966,6 @@
 
     }
 
-
-
-
     //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
 
     const checkRequestBillId = async () => {
@@ -2090,7 +2087,7 @@
         //补齐联系人待选项
         let contacts = [];
 
-        console.log('customerData', customerData);
+        // console.log('customerData', customerData);
         if (!customerData.contacts) {
             contacts.push({
                 name: customerData.contact,
@@ -2364,7 +2361,7 @@
                     filter: mainTableFilter
                 }
             })
-            console.log('exportData', exportData);
+            // console.log('exportData', exportData);
 
             let tableArr = []
 
@@ -2382,10 +2379,7 @@
                 }
             }
 
-            console.log('tableArr', tableArr);
-
-
-
+            // console.log('tableArr', tableArr);
             var sheet = XLSX.utils.aoa_to_sheet(tableArr);
             openDownloadDialog(sheet2blob(
                 sheet), '申请单.xlsx');
@@ -2498,7 +2492,7 @@
 
             })
 
-            console.log('returnProductsArr', returnProductsArr);
+            // console.log('returnProductsArr', returnProductsArr);
 
             let recordsArr = [];
 
@@ -2530,7 +2524,7 @@
             }
 
             subTableData = recordsArr
-            console.log('recordsArr', recordsArr);
+            // console.log('recordsArr', recordsArr);
 
             loadDataSubTable({
                 elementId: 'rp_recordbills',
@@ -2640,7 +2634,7 @@
 
             }
 
-            console.log('partProductsArr', partProductsArr);
+            // console.log('partProductsArr', partProductsArr);
 
             let recordsArr = [];
 
@@ -2672,7 +2666,7 @@
             }
 
             subTableData = recordsArr
-            console.log('recordsArr', recordsArr);
+            // console.log('recordsArr', recordsArr);
 
             loadDataSubTable({
                 elementId: 'rp_recordbills',
@@ -3269,7 +3263,7 @@
 
         //添加到可选联系人按钮
         $('#addContactsBtn').click(function () {
-            console.log('customerData', customerData);
+            // console.log('customerData', customerData);
             //check-客户id校验
             if (!customerData.customerId) {
                 alert('必须先选定客户!')

@@ -363,7 +363,8 @@
 
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="rp_responsebillsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="rp_responsebillsModal" tabindex="-1" role="dialog" aria-hidden="true"
+        data-backdrop="static">
 
         <div class="modal-dialog" style="width: 75%;">
 
@@ -471,13 +472,14 @@
 
                                     <label class="col-sm-1 control-label">开票名称</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_responsebillsForm-invoiceName"></p>
+                                        <input class="form-control" id="rp_responsebillsForm-invoiceName" type="text"
+                                            value="">
                                     </div>
 
 
                                     <label class="col-sm-1 control-label">传真</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_responsebillsForm-fax"></p>
+                                        <input class="form-control" id="rp_responsebillsForm-fax" type="text" value="">
                                     </div>
 
                                 </div>
@@ -487,12 +489,14 @@
 
                                     <label class="col-sm-1 control-label">联系人</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_responsebillsForm-contact"></p>
+                                        <input class="form-control" id="rp_responsebillsForm-contact" type="text"
+                                            value="">
                                     </div>
 
                                     <label class="col-sm-1 control-label">移动电话</label>
                                     <div class="col-sm-5">
-                                        <p class="form-control-static" id="rp_responsebillsForm-mobilePhone"></p>
+                                        <input class="form-control" id="rp_responsebillsForm-mobilePhone" type="text"
+                                            value="">
                                     </div>
 
                                 </div>
@@ -1549,7 +1553,7 @@
             })
 
             if (!(mainFormData.data[0].sendWay && mainFormData.data[0].responseStaff)) {
-                alert('请检查出货人未填写!')
+                alert('请检查出货方式或出货人未填写!')
                 return
             }
 

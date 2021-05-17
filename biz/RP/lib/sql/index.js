@@ -27,7 +27,7 @@ const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"
 const getProduct = "select * from `rp_products`"
 const getT9Prouct = "select * from comMaterialGroup"
-const getPartInfo = "select * from ( select ta.productId,ta.partId,ta.partName,ta.num,tb.price,tc.productDescription as partDescription from `rp_partlocations` ta left join `rp_partsfee` tb on ta.partId=tb.partId left join `rp_products` tc on ta.partId=tc.productId) A"
+const getPartInfo = "select * from ( select ta.productId,ta.partId,ta.num,tb.price,tc.productName,tc.productDescription as partDescription from `rp_partlocations` ta left join `rp_partsfee` tb on ta.partId=tb.partId left join `rp_products` tc on ta.partId=tc.productId) A"
 const getStockNum = "select * from (select PID,stockNum,ta.warehouseId,warehouseName from `rp_warehouse` ta left join `rp_warehouseslist` tb on ta.warehouseId=tb.warehouseId) A"
 
 const getPartLocations = "select locations from `rp_partlocations`"

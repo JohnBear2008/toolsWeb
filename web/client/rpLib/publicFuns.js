@@ -1223,13 +1223,13 @@ const getDataBySql = async ({
             params
         },
         success: function (data) {
-            console.log("getDataBySql data " + methodValue + " way:" + JSON.stringify(data));
+            // console.log("getDataBySql data " + methodValue + " way:" + JSON.stringify(data));
             return data;
         },
         error: function () {}
     })
     //r
-    console.log('getDataBySql r', r);
+    // console.log('getDataBySql r', r);
 
     return r;
 }
