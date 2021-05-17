@@ -15,6 +15,21 @@ module.exports = function (sender) {
 	}
 	// var Pattern = sender.req.query.Pattern;
 	var Advstr = sender.req.query.Advstr;
+	var Micstr = sender.req.query.Micstr;
+	var qryMicroName =  '';
+	var qryMicroDept =  '';
+	var qryMicroWord =  '';
+	console.log("啊", Advstr);
+	console.log("浴", Micstr);  
+	if ( Micstr != undefined && Micstr != null   ) {
+		qryMicroName =  Micstr.MicroName;
+		qryMicroDept =  Micstr.MicroDept;
+		qryMicroWord =  Micstr.MicroWord;
+		console.log("酒:", qryMicroName);
+	}else{
+		console.log("品:", qryMicroName);
+	}
+
 	var weekbeg = Advstr.weekbeg;
 	var weekend = Advstr.weekend;
 	var queryBillNo = Advstr.BillNo;
@@ -23,7 +38,8 @@ module.exports = function (sender) {
 	var queryStaffName = Advstr.StaffName;
 	var arrange = sender.req.query.arrange;
 	var pick = sender.req.query.pick;
-	// console.log("酒:", queryBillNo, "日:", queryApplicNo, "金:", Pattern);
+	var CapMode = Advstr.CapMode;
+ 
 	if (arrange == 'Fee') {
 		if (pick == 'A') {
 			HandleStockA();
@@ -69,6 +85,33 @@ module.exports = function (sender) {
 			// console.log("...申请号 <", queryApplicNo, ">");
 			capacity += " AND A.ApplicNo  = " + "'" + queryApplicNo + "' ";
 		}
+		if (qryMicroName != "" && qryMicroName != "null" && qryMicroName != undefined && qryMicroName.length > 0) {
+			console.log("...过滤人名 <", qryMicroName, ">");
+			capacity += " AND ( ";
+			capacity += " A.StaffName  = " + "'" + qryMicroName + "' OR trul.CurName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.DeptLabel  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.MagName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.VipName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.PurName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.PexName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.CfoName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.PsdName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.CeoName  = " + "'" + qryMicroName + "'  ";
+			capacity += "  OR  trul.BodName  = " + "'" + qryMicroName + "'  ";
+			capacity += " ) ";
+		}
+		if (qryMicroDept != "" && qryMicroDept != "null" && qryMicroDept != undefined && qryMicroDept.length > 0) {
+			// console.log("...过滤部 <", qryMicroDept, ">");
+			capacity += " AND ( ";
+			capacity += "     trul.DeptLabel  = " + "'" + qryMicroDept + "'  ";
+			capacity += " ) ";
+		}
+		if (qryMicroWord != "" && qryMicroWord != "null" && qryMicroWord != undefined && qryMicroWord.length > 0) {
+			// console.log("...过滤字 <", qryMicroWord, ">");
+			capacity += " AND ( ";
+			capacity += "     tdtl.ItemNo  = " + "'" + qryMicroWord + "'  ";
+			capacity += " ) ";
+		}
 		if (queryStaffName != "" && queryStaffName != "null" && queryStaffName != undefined && queryStaffName.length > 0) {
 			// console.log("...本人 <", queryStaffName, ">");
 			capacity += " AND ( ";
@@ -97,6 +140,7 @@ module.exports = function (sender) {
 		if (limit != "" && limit != undefined) {
 			SQLExecute = SQLExecute + " LIMIT " + limit;
 		}
+		console.log("寒流:" + SQLExecute);
 		var banWord1 = new RegExp("delete");
 		var banWord2 = new RegExp("update");
 		var banWord3 = new RegExp("insert");

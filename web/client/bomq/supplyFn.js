@@ -210,11 +210,20 @@ function UnitPlay() {
       var UnitCombo = $('#UnitCombo').val();
       $("#hideUnit").val(UnitCombo);
       console.log("枪尖", UnitCombo);
-
       for (let i = 1; i <= 10; i++) {
             $("#BudgetCombo_" + i).val('');
             $("#BudgetCombo_" + i).html('');
       }
+      $("#OppName").val('');  $("#OppName").html('');
+      $("#MagName").val('');  $("#MagName").html('');
+      $("#VipName").val('');  $("#VipName").html('');
+      $("#PurName").val('');  $("#PurName").html('');
+      $("#PexName").val('');  $("#PexName").html('');
+      $("#CfoName").val('');  $("#CfoName").html('');
+      $("#PsdName").val('');  $("#PsdName").html('');
+      $("#CeoName").val('');  $("#CeoName").html('');
+      $("#BodName").val('');  $("#BodName").html('');
+      $("#OppName").val('');  $("#OppName").html('');  
 }
 function RolePlay() {
       var DeptShow = '';
@@ -233,6 +242,16 @@ function RolePlay() {
             $("#BudgetCombo_" + i).val('');
             $("#BudgetCombo_" + i).html('');
       }
+      $("#OppName").val('');  $("#OppName").html('');
+      $("#MagName").val('');  $("#MagName").html('');
+      $("#VipName").val('');  $("#VipName").html('');
+      $("#PurName").val('');  $("#PurName").html('');
+      $("#PexName").val('');  $("#PexName").html('');
+      $("#CfoName").val('');  $("#CfoName").html('');
+      $("#PsdName").val('');  $("#PsdName").html('');
+      $("#CeoName").val('');  $("#CeoName").html('');
+      $("#BodName").val('');  $("#BodName").html('');
+      $("#OppName").val('');  $("#OppName").html('');
 }
 function obtLogUnit(loginName) {
       let dataArr = [];
@@ -297,6 +316,9 @@ function obtLogGroup(loginName) {
                                           youoption.id = "kisstime";
                                           youoption.name = "kisstime";
                                           youoption.value = GroupList[ki];
+                                          if (ki==0) {
+                                                youoption.selected = "selected";
+                                          }
                                           $("#GroupCombo").append(youoption);
                                           $("#GroupName").val(GroupList[0]);
                                     }

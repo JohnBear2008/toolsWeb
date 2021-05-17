@@ -44,8 +44,7 @@
 			<button id="SeaBtn" class="btn btn-default">与我相关</button>
 			<button id="SeaAllBtn" class="btn btn-default">全部单据</button>
 			<!-- <input type="button" id="DisplayBtn" class="btn btn-info" value="栏位" /> -->
-			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
-			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
+			<button id="BTNFitler" type="button" class="btn btn-default">过滤查找</button>
 			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
 			<input type="button" id="btn_apply" class="btn btn-info" onclick="apply_hmi();" value="送审" />
 			<input type="button" id="MdfyBtn" class="btn btn-info" value="编辑" />
@@ -55,12 +54,12 @@
 			<hr>
 			<br />
 			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
-				style="width:800px;height:400px;">
+				style="width:900px;height:400px;">
 				<form style="padding:10px 50px;">
 					<div class="form-horizontal">
 						<div class="form-group">
 							<label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
-							<div class="col-sm-3 ">
+							<div class="col-sm-3">
 								<div class="input-group date form_date " data-date=""
 									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateB"
 									data-link-format="yyyy-mm-dd">
@@ -71,9 +70,7 @@
 								</div>
 								<input type="hidden" id="taskMakeDateB" value="" />
 							</div>
-
-							<div class="col-sm-3 ">
-
+							<div class="col-sm-3">
 								<div class="input-group date form_date " data-date=""
 									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateE"
 									data-link-format="yyyy-mm-dd">
@@ -85,15 +82,47 @@
 								<input type="hidden" id="taskMakeDateE" value="" />
 							</div>
 						</div>
+					</div>
+				</form>
+				<br></br>
+				<form style="padding:10px 50px;">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-3">
+								<label>姓名:</label>
+								<input id="MicroName" class="form-control " size="16" type="text"
+									value="">
+							</div>
+							<div class="col-sm-3">
+								<label>部門:</label>
+								<input id="MicroDept" class="form-control " size="16" type="text"
+									value="">
+								<br></br>
+							</div>
+							<div class="col-sm-3">
+								<label>关键字:</label>
+								<input id="MicroWord" class="form-control " size="16" type="text"
+									value="">
+								<br></br>
+							</div>
+						</div>
+					</div>
+				</form>
+				<form style="padding:10px 50px;">
+					<div class="form-horizontal">
+						<div class="col-sm-3">
+							<label class="form-horizontal"></label>
+							<div class="form-horizontal">
+								<button id="FilterComfirmBtnN" type="button"
+									class="btn btn-primary">确认</button>
+								<button id="FilterCancelBtnN" type="button"
+									class="btn btn-warning">清空</button>
+							</div>
+						</div>
+					</div>
 				</form>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label"></label>
-				<div class="col-sm-3 ">
-					<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
-					<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
-				</div>
-			</div>
+
 		</div>
 	</div><!-- modal fade -->
 	<div class="modal fade" id="kisswindow" tabindex="-1" role="dialog" aria-labelledby="kisswindowLabel"
@@ -245,7 +274,7 @@
 			var limit = '5000';
 			var filter = ' 1=1 ';
 			var orderBy = '';
-			$("#center_TB").dataTable().fnDestroy();  
+			$("#center_TB").dataTable().fnDestroy();
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
 			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
@@ -269,7 +298,7 @@
 				}
 			})
 		}
-		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode) {
+		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode, Micstr) {
 			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
@@ -290,7 +319,8 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskType = { "reportType": reportType, "arrange": arrange, "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskType = { "reportType": reportType, "arrange": arrange, "pick": CapMode, "filter": filter, "Advstr": Advstr, "Micstr": Micstr, "limit": limit, "orderBy": orderBy };
+					//   console.log("倾覆了故国",taskType);
 					bornTable(taskType, newColumns);
 				},
 				error: function () {
@@ -298,6 +328,7 @@
 			})
 		}
 		function bornTable(taskData, columnsData) {
+			console.log("倾覆了故国", taskData);
 			$(DataPara.tableID).DataTable({
 				ajax: {
 					method: 'post',
@@ -357,30 +388,35 @@
 		//过滤功能组 自定义过滤确认按钮-----NNN
 		$('#FilterComfirmBtnN').click(function () {
 			$('#DivFilter').window('close');
+			filter_look();
 		});
 		//过滤功能组 自定义过滤确认按钮-----
 		$('#FilterCancelBtnN').click(function () {
 
 			$("#taskMakeDateB").val("")
 			$("#taskMakeDateE").val("")
+			$("#MicroName").val("")
+			$("#MicroDept").val("")
+			$("#MicroWord").val("")
 		});
-		$('#BTNFitSearch').click(function () {
+		function filter_look() {
 			$("#center_TB").dataTable().fnDestroy();
 			var MakeDateB = $("#taskMakeDateB").val();
 			var MakeDateE = $("#taskMakeDateE").val();
+			var MicroName = $("#MicroName").val();
+			var MicroDept = $("#MicroDept").val();
+			var MicroWord = $("#MicroWord").val();
+			var Micstr = {
+				"MicroName": MicroName, "MicroDept": MicroDept, "MicroWord": MicroWord
+			};
+			console.log("杨过", MicroName, "龙女", MicroDept, "陈研", MicroWord);
 			Pattern = $('#Pattern').val();
 			CapMode = $('#CapMode').val();
 			reloadCol();
-			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode);
-		});
-		$('#ResetBtn').click(function () {
-			$("#mainclass").html(""); $("#mainclass").val("");
-			$("#mateId").html(""); $("#mateId").val("");
-			$("#invoice").html(""); $("#invoice").val("");
-			$("#mainpast").html(""); $("#mainpast").val("");
-			$("#mainname").html(""); $("#mainname").val("");
-			getCategory();
-		});
+			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode, Micstr);
+		}
+		 
+
 		$('#DetailBtn').click(function () {
 			var table = $('#center_TB').DataTable();
 			var dataSelect = table.row('.selected').data();

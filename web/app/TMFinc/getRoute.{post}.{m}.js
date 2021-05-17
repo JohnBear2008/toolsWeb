@@ -89,8 +89,8 @@ module.exports = function (sender) {
             case "EngLook":
                   url = ["BguTM", "EngLook"];
                   break;
-            case "Really":
-                  url = ["BguTM", "Really"];
+            case "HideReally":
+                  url = ["RichTM", "HideReally"];
                   break;
             case "payExpense":
                   url = ["BguTM", "payExpense"];

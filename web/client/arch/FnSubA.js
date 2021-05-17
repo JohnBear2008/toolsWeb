@@ -20,7 +20,7 @@ function shuffleA(BillNo) {
             console.log("延希", Answer);
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
-                '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:700px;">' +
+                '<div id=\'waterAy\' style="left:200px;top:0px;width:800px;height:800px;">' +
                 '<table width = "1100" border = "1"  > ' +
                 '<tr>' +
                 '<td width="100"  rowspan ="2" colspan="2" height="50" align="center"><img src="/images/techmation.png" /></td>' +
