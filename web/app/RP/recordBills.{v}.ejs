@@ -58,6 +58,8 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterUndone" class="btn btn-default">未完成</button>
+                            <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterWeek" class="btn btn-default">一周内</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
@@ -1493,13 +1495,34 @@
     const loadBillMainTable = async () => {
 
         //显示过滤模式
-        if (mainTableFilter === 'status<>"维修完成" and status<>"已出货"') {
-            $('#btnFilterUndone').addClass('active');
-            $('#btnFilterDiy').removeClass('active');
-        } else {
-            $('#btnFilterDiy').addClass('active');
-            $('#btnFilterUndone').removeClass('active');
+        switch (mainTableFilter) {
+            case 'status<>"维修完成" and status<>"已出货"':
+                $('#btnFilterUndone').addClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+
+            case 'to_days(makeDate) = to_days(now())':
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterToday').addClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            case 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)':
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').addClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            default:
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').addClass('active');
+                break;
         }
+
         //初始化主表
         loadBillDataTable({
             elementId: 'rp_recordbills',
@@ -2042,6 +2065,21 @@
         })
 
         $('#btnFilterUndone').click(); //默认开启当天过滤
+
+        //过滤器当天按钮
+        $('#btnFilterToday').click(function () {
+            mainTableFilter = 'to_days(makeDate) = to_days(now())';
+            //初始化主表
+            loadBillMainTable();
+
+        })
+
+        //过滤器一周内按钮
+        $('#btnFilterWeek').click(function () {
+            mainTableFilter = 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)';
+            //初始化主表
+            loadBillMainTable();
+        })
 
         //过滤器自定义按钮
         $('#btnFilterDiy').click(function () {

@@ -52,6 +52,8 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterUnFinished" class="btn btn-default">未完结</button>
+                            <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterWeek" class="btn btn-default">一周内</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
@@ -861,13 +863,36 @@
     const loadBillMainTable = async () => {
 
         //显示过滤模式
-        if (mainTableFilter === 'isSended is null or isFullPay<>"是" or isFullPay is null') {
-            $('#btnFilterUnFinished').addClass('active');
-            $('#btnFilterDiy').removeClass('active');
-        } else {
-            $('#btnFilterDiy').addClass('active');
-            $('#btnFilterUnFinished').removeClass('active');
+        switch (mainTableFilter) {
+            case 'isSended is null or isFullPay<>"是" or isFullPay is null':
+                $('#btnFilterUnFinished').addClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+
+            case 'to_days(makeDate) = to_days(now())':
+                $('#btnFilterUnFinished').removeClass('active');
+                $('#btnFilterToday').addClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            case 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)':
+                $('#btnFilterUnFinished').removeClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').addClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            default:
+                $('#btnFilterUnFinished').removeClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').addClass('active');
+                break;
         }
+
+
+
 
         //加载表格
         loadBillDataTable({
@@ -1263,7 +1288,21 @@
 
         })
 
-        $('#btnFilterUnFinished').click(); //默认开启当天过滤
+        $('#btnFilterUnFinished').click(); //默认开启
+
+        //过滤器当天按钮
+        $('#btnFilterToday').click(function () {
+            mainTableFilter = 'to_days(makeDate) = to_days(now())';
+            //初始化主表
+            loadBillMainTable();
+        })
+
+        //过滤器一周内按钮
+        $('#btnFilterWeek').click(function () {
+            mainTableFilter = 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)';
+            //初始化主表
+            loadBillMainTable();
+        })
 
         //过滤器自定义按钮
         $('#btnFilterDiy').click(function () {

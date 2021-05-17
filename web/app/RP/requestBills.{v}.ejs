@@ -62,6 +62,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterWeek" class="btn btn-default">一周内</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
@@ -1600,12 +1601,22 @@
     const loadBillMainTable = async () => {
 
         //显示过滤模式
-        if (mainTableFilter === 'to_days(makeDate) = to_days(now())') {
-            $('#btnFilterToday').addClass('active');
-            $('#btnFilterDiy').removeClass('active');
-        } else {
-            $('#btnFilterDiy').addClass('active');
-            $('#btnFilterToday').removeClass('active');
+        switch (mainTableFilter) {
+            case 'to_days(makeDate) = to_days(now())':
+                $('#btnFilterToday').addClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            case 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)':
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').addClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            default:
+                $('#btnFilterDiy').addClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                break;
         }
 
         //初始化主表
@@ -2236,6 +2247,14 @@
             loadBillMainTable();
 
         })
+
+        //过滤器一周内按钮
+        $('#btnFilterWeek').click(function () {
+            mainTableFilter = 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)';
+            //初始化主表
+            loadBillMainTable();
+        })
+
 
         $('#btnFilterToday').click(); //默认开启当天过滤
 
