@@ -3,6 +3,7 @@
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/rpLib/publicFuns.js"></script>
+<script type="text/javascript" src="/rpLib/addonFuns.js"></script>
 
 <!-- 导入datatables -->
 <link rel="stylesheet" type="text/css" href="/rpLib/DataTables/datatables.min.css" />
@@ -32,11 +33,23 @@
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
 
+<!-- 导入js-xlsx -->
+<script type="text/javascript" src="/rpLib/sheetJs/xlsx.core.min.js"></script>
+
+
+
 <!-- 定义html元素 -->
 <div class="rpContent">
 
     <!-- 按钮：用于打开模态框 -->
 
+    <!-- <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>库存管理-借货单</h1>
+            </div>
+        </div>
+    </div> -->
 
 
     <div class="row clearfix">
@@ -53,6 +66,18 @@
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
                             <button type="button" id="btnFilterUnAudit" class="btn btn-default">待审核</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
+                        </div>
+                    </div>
+
+                    <!-- excel -->
+                    <div style="float: left; margin-left: 15px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">excel</button>
+                            <button type="button" id="batchImportBtn" class="btn btn-default">批量导入</button>
+                            <button type="button" id="batchExportBtn" class="btn btn-default">批量导出</button>
+                            <button type="button" id="importModelBtn" class="btn btn-default">数据模板</button>
+                            <input type="file" id="file" style="display:none;"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                         </div>
                     </div>
                     <!-- 功能组按钮 -->
@@ -214,7 +239,198 @@
         </div>
     </div>
 
+    <!-- 导出模态框（Modal） -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-hidden="true">
 
+        <div class="modal-dialog" style="width: 800px;">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        字段选择
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel panel-info">
+                        <div class="panel-body" style="height:600px">
+
+                            <label class="col-sm-2 control-label">主表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height:500px">
+
+                                        <form class="form-horizontal" role="form" id='exportModelForm'>
+
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="billFrom"
+                                                    checked>
+                                                <label class="form-check-label">单据来源</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="borrowBillId"
+                                                    checked>
+                                                <label class="form-check-label">借货单号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerId"
+                                                    checked>
+                                                <label class="form-check-label">客户编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerShortName" checked>
+                                                <label class="form-check-label">客户简称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="customerName"
+                                                    checked>
+                                                <label class="form-check-label">客户名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input"
+                                                    value="customerBelongShort" checked>
+                                                <label class="form-check-label">客户归属</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="contact" checked>
+                                                <label class="form-check-label">联系人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="mobilePhone"
+                                                    checked>
+                                                <label class="form-check-label">移动电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="workPhone"
+                                                    checked>
+                                                <label class="form-check-label">工作电话</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="operator"
+                                                    checked>
+                                                <label class="form-check-label">经手人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="maker" checked>
+                                                <label class="form-check-label">制单人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditor" checked>
+                                                <label class="form-check-label">审核人</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="makeDate"
+                                                    checked>
+                                                <label class="form-check-label">制单日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="auditDate"
+                                                    checked>
+                                                <label class="form-check-label">审核日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="status" checked>
+                                                <label class="form-check-label">单据状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="remark" checked>
+                                                <label class="form-check-label">备注</label>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <label class="col-sm-2 control-label">子表字段</label>
+                            <div class="col-sm-4">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" role="form" id='exportSubModelForm'>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="rowId" checked>
+                                                <label class="form-check-label">序号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productId"
+                                                    checked>
+                                                <label class="form-check-label">产品编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productName"
+                                                    checked>
+                                                <label class="form-check-label">产品名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseId"
+                                                    checked>
+                                                <label class="form-check-label">仓库编号</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="warehouseName"
+                                                    checked>
+                                                <label class="form-check-label">仓库名称</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="unit" checked>
+                                                <label class="form-check-label">单位</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="num" checked>
+                                                <label class="form-check-label">数量</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="returnNum"
+                                                    checked>
+                                                <label class="form-check-label">已还</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="unReturnNum"
+                                                    checked>
+                                                <label class="form-check-label">未还</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subStatus"
+                                                    checked>
+                                                <label class="form-check-label">借货状态</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="subRemark"
+                                                    checked>
+                                                <label class="form-check-label">子表备注</label>
+                                            </div>
+
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" id="doExportBtn">
+                                    确认导出
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
 
     <!-- 打印预览模态框（Modal） -->
     <div class="modal fade" id="printViewModal">
@@ -791,24 +1007,15 @@
                             <!-- <div class="modal fade" id="scanModal">
                                 <div class="modal-dialog" style="width: 675px;">
                                     <div class="modal-content">
-
                                         <div class="modal-body">请将产品二维码放置于摄像头内
                                             <div><button id='btnScanStop' type="button"
                                                     class="btn btn-info">停止扫描</button></div>
                                             <div style="width:640;height:480px"><video id="preview"></video>
                                             </div>
-
                                         </div>
-
                                     </div>
                                 </div>
                             </div> -->
-
-
-
-
-
-
 
 
                         </div>
@@ -989,45 +1196,14 @@
         });
     }
 
-    // //保固期自动计算事件
-    // const addInWarrantyListener = () => {
-    //     $('#rp_borrowsubbillsForm-productYear,#rp_borrowsubbillsForm-productMonth').unbind('change'); //仅解绑change事件
-    //     $('#rp_borrowsubbillsForm-productYear,#rp_borrowsubbillsForm-productMonth').change(function () {
-    //         let warrantyPeriod = parseInt($('#rp_borrowbillsForm-warrantyPeriod').text());
-    //         let year = $('#rp_borrowsubbillsForm-productYear').val() || '2000'
-    //         let month = $('#rp_borrowsubbillsForm-productMonth').val() || '01'
-    //         console.log(warrantyPeriod, year, month);
 
-    //         //计算月份差函数
-    //         const getIntervalMonth = (startDate, endDate) => {
-    //             var startMonth = startDate.getMonth();
-    //             var endMonth = endDate.getMonth();
-    //             var intervalMonth = (startDate.getFullYear() * 12 + startMonth) - (endDate
-    //                 .getFullYear() *
-    //                 12 + endMonth);
-    //             return intervalMonth;
-    //         }
-
-    //         let nowDate = new Date()
-    //         let productDate = new Date(year + '-' + month + '-01');
-    //         let intervalMonth = getIntervalMonth(productDate, nowDate)
-
-    //         if (warrantyPeriod + intervalMonth >= 0) {
-    //             console.log('保内');
-    //             $("#rp_borrowsubbillsForm-inWarranty").selectpicker('val', '是')
-    //             // $("#rp_borrowsubbillsForm-inWarranty").selectpicker('refresh')
-    //         } else {
-    //             $("#rp_borrowsubbillsForm-inWarranty").selectpicker('val', '否')
-    //         }
-    //     });
-    // }
 
     //创建借货单新单号
     const createBorrowBillId = async () => {
         let r1 = await getDataBySql({
             sql: "getBorrowBillsNum",
             params: {
-                filter: 'makeDate="' + currentDate() + '"'
+                filter: 'borrowBillId like "B-%" and makeDate="' + currentDate() + '"'
             }
         })
         // console.log('r1:' + r1);
@@ -1604,7 +1780,12 @@
 
     //加载多联系人数据
     const loadContactOptions = (customerData) => {
-        // console.log('customerData', customerData);
+        console.log('customerData', customerData);
+        //c
+        if (!customerData) {
+            console.log('客户缺失,加载联系人信息失败');
+            return
+        }
 
         //补齐联系人待选项
         let contacts = [];
@@ -1665,6 +1846,206 @@
     }
 
 
+    function selectFile() {
+        $("#file")[0].click();
+    }
+
+    //去除excel生成json中的中文属性
+    const excelJsonArr2DivJsonArr = (excelJsonArr, rules) => {
+        for (let n of excelJsonArr) {
+            n = replaceObjParamsName(n, rules)
+        }
+        return excelJsonArr;
+    }
+
+    const addFileReaderListener = () => {
+        $("#file")[0].addEventListener('change', function (e) {
+
+            //check-检查文件数量
+            var files = e.target.files;
+            if (files.length == 0) return;
+            var f = files[0];
+
+            //check-检查文件格式
+            if (!/\.xlsx$/g.test(f.name)) {
+                alert('仅支持读取xlsx格式！');
+                return;
+            }
+
+            //do-读取数据
+            readWorkbookFromLocalFile(f, async function (workbook) {
+                let excelData = readWorkbook(workbook);
+                let storeData = excelJsonArr2DivJsonArr(excelData, {
+                    borrowBillId: '借货单号',
+                    customerId: '客户编号',
+                    customerShortName: '客户简称',
+                    customerName: '客户名称',
+                    customerBelongShort: '客户归属',
+                    contact: '联系人',
+                    mobilePhone: '移动电话',
+                    workPhone: '工作电话',
+                    operator: '经手人',
+                    maker: '制单人',
+                    auditor: '审核人',
+                    remark: '备注',
+                    rowId: '行号',
+                    productId: '产品编号',
+                    productName: '产品名称',
+                    warehouseId: '仓库编号',
+                    warehouseName: '仓库名称',
+                    unit: '单位',
+                    num: '数量',
+                    subRemark: '子表备注'
+                })
+
+                console.log('storeData', storeData);
+
+                //c-检查导入数据规范
+                let billsIdArr = [];
+                for (const n of storeData) {
+                    if (n.borrowBillId.indexOf('PB-') === -1) { //单据编号以P-开头
+                        alert('批量导入借货单号必须以PB-为前缀,请检查')
+                        return
+                    }
+
+                    billsIdArr.push(n.borrowBillId)
+                }
+
+                //c-检查重复单号
+                let billIdRange = getRangeString(billsIdArr);
+                // console.log("billsIdArr:" + JSON.stringify(billsIdArr));
+
+                let statusArr = await getDataBySql({
+                    sql: 'sqlBorrowBills',
+                    params: {
+                        filter: 'borrowBillId in ' + billIdRange
+                    }
+                })
+                console.log('statusArr', statusArr);
+
+                let dupBillIds = "";
+                if (statusArr.length > 0) {
+                    for (const n of statusArr) {
+                        dupBillIds = dupBillIds + n.borrowBillId + ',';
+                    }
+                    dupBillIds = dupBillIds.substring(0, dupBillIds.length - 1);
+                    alert('以下单号' + dupBillIds + '存在重复单号,请检查!')
+                    return
+                }
+
+                //do-生成主表,子表数据
+                let borrowBillsArr = [];
+                let borrowSubBillsArr = [];
+
+                for (const n of storeData) {
+                    borrowBillsArr.push({
+                        billFrom: '批量导入',
+                        borrowBillId: n.borrowBillId,
+                        customerId: n.customerId,
+                        customerShortName: n.customerShortName,
+                        contact: n.contact,
+                        mobilePhone: n.mobilePhone,
+                        workPhone: n.workPhone,
+                        operator: n.operator,
+                        maker: n.maker,
+                        makeDate: currentDate(),
+                        auditor: n.auditor,
+                        status: '待审核',
+                        remark: n.remark
+                    })
+
+                    borrowSubBillsArr.push({
+                        borrowBillId: n.borrowBillId,
+                        rowId: n.rowId,
+                        productId: n.productId,
+                        productName: n.productName,
+                        warehouseId: n.warehouseId,
+                        warehouseName: n.warehouseName,
+                        unit: n.unit,
+                        num: n.num,
+                        status: '预借出',
+                        remark: n.subRemark
+                    })
+                }
+                //do-去重处理
+                // borrowBillsArr = Array.from(new Set(borrowBillsArr))仅可用于简单数组去重
+                var obj = {};
+                borrowBillsArr = borrowBillsArr.reduce(function (item, next) {
+                    obj[next.borrowBillId] ? '' : obj[next.borrowBillId] = true && item
+                        .push(next);
+                    return item
+                }, [])
+
+                //子表不去重
+                // var subObj = {};
+                // borrowSubBillsArr = borrowSubBillsArr.reduce(function (item, next) {
+                //     subObj[next.borrowBillId] ? '' : subObj[next.borrowBillId] = true && item.push(
+                //         next);
+                //     return item
+                // }, [])
+                console.log('borrowBillsArr', borrowBillsArr);
+                console.log('borrowSubBillsArr', borrowSubBillsArr);
+
+                //do-导入数据库
+                let rInBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_borrowbills',
+                        data: borrowBillsArr
+                    }
+                })
+
+                let rInSubBills = await postDBData({
+                    sql: 'insert',
+                    params: {
+                        tableId: 'rp_borrowsubbills',
+                        data: borrowSubBillsArr
+                    }
+                })
+
+                //do-初始化库存
+                let PIDArr = [];
+                for (const n of borrowSubBillsArr) {
+                    PIDArr.push({
+                        PID: n.productId,
+                        warehouseId: n.warehouseId
+                    })
+                }
+
+                let newPIDArr = []
+                for (let i = 0; i < PIDArr.length; i++) {
+                    let isNew = true
+                    for (let j = 0; j < newPIDArr.length; j++) {
+                        if (PIDArr[i].PID === newPIDArr[j].PID && PIDArr[i].warehouseId ===
+                            newPIDArr[j].warehouseId) {
+                            isNew = false;
+                            break;
+                        }
+                    }
+                    if (isNew) {
+                        newPIDArr.push(PIDArr[i])
+                    }
+
+                }
+
+                //初始化库存记录
+                let rInitPID = await initWarehousePID({
+                    PIDArr: newPIDArr
+                })
+
+                if (rInBills.affectedRows > 0 && rInSubBills.affectedRows > 0 && rInitPID) {
+                    alert('批量导入成功')
+                }
+
+                //return-刷新主界面
+                loadBillMainTable()
+
+
+            });
+        });
+    }
+
+
     $(document).ready(function () {
 
         // alert(parseInt(''))
@@ -1681,10 +2062,6 @@
         customerDataChanged = false
         //主表过滤器
         mainTableFilter = '';
-
-
-
-
 
 
         //过滤器当天按钮
@@ -1760,6 +2137,119 @@
             $('#closeFilter').click();
             loadBillMainTable()
 
+        })
+
+
+
+
+        //批量导出按钮
+        $('#batchExportBtn').click(async function () {
+            $('#exportModal').modal('show')
+
+
+        })
+
+        //执行批量导出按钮
+        $('#doExportBtn').click(async function () {
+
+            let titleTextArr = []
+            let titleValueArr = []
+
+            //主表字段选择
+            $('#exportModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+            //子表字段选择
+            $('#exportSubModelForm').find('input').each(function () {
+                // console.log("this:" + JSON.stringify(this));
+                if ($(this).is(':checked')) {
+                    let title = $(this).next('label').text();
+                    titleTextArr.push(title)
+                    let value = $(this).val();
+                    titleValueArr.push(value)
+                }
+            })
+
+
+
+
+
+            exportData = await getDataBySql({
+                sql: 'borrowBillsExportSql',
+                params: {
+                    filter: mainTableFilter
+                }
+            })
+            console.log('exportData', exportData);
+
+            let tableArr = []
+
+            tableArr.push(titleTextArr)
+
+            if (exportData.length > 0) {
+                for (let i = 0; i < exportData.length; i++) {
+                    let row = []
+                    for (const p in exportData[i]) {
+                        if (titleValueArr.includes(p)) {
+                            row.push(exportData[i][p])
+                        }
+                    }
+                    tableArr.push(row)
+                }
+            }
+
+            console.log('tableArr', tableArr);
+
+
+
+            var sheet = XLSX.utils.aoa_to_sheet(tableArr);
+            openDownloadDialog(sheet2blob(
+                sheet), '借货单.xlsx');
+        })
+
+
+        //批量导入按钮
+        $('#batchImportBtn').click(function () {
+            selectFile()
+        })
+
+        //数据模板按钮
+        $('#importModelBtn').click(function () {
+            var aoa = [
+                [
+                    '单据来源',
+                    '借货单号',
+                    '客户编号',
+                    '客户简称',
+                    '客户名称',
+                    '客户归属',
+                    '联系人',
+                    '移动电话',
+                    '工作电话',
+                    '经手人',
+                    '制单人',
+                    '审核人',
+                    '备注',
+                    '行号',
+                    '产品编号',
+                    '产品名称',
+                    '仓库编号',
+                    '仓库名称',
+                    '单位',
+                    '数量',
+                    '子表备注'
+                ],
+            ];
+            var sheet = XLSX.utils.aoa_to_sheet(aoa);
+            openDownloadDialog(sheet2blob(sheet), '借货单模板.xlsx');
         })
 
 
@@ -1970,7 +2460,6 @@
             })
 
             //do-更新借货单子表状态
-
             for (let n of subTableData) {
                 if (n.status === '预借出') {
                     n.status = '待归还'
@@ -1993,6 +2482,12 @@
             } else {
                 alert('审核失败')
             }
+
+            //do-补齐unReturnNum
+            for (let n of subTableData) {
+                n.unReturnNum = n.num
+            }
+
             //return-刷新主表
             loadBillMainTable();
 
@@ -2062,80 +2557,7 @@
 
 
 
-        // // 扫描按钮
-        // $('#btnScan').click(function () {
 
-        //     let scanner = new Instascan.Scanner({
-        //         video: document.getElementById('preview')
-        //     });
-        //     scanner.addListener('scan', async function (productId) {
-        //         // console.log('productId:' + productId);
-        //         let productData = await getDataBySql({
-        //             sql: 'getProduct',
-        //             params: {
-        //                 filter: 'productId="' + productId + '"'
-        //             }
-        //         })
-        //         // console.log("productData:" + JSON.stringify(productData));
-        //         let rowNum = $("#rp_borrowsubbills tbody tr").size();
-        //         let rowData = {};
-
-        //         rowData.rowId = rowNum + 1;
-        //         rowData.status = '新增'
-        //         rowData.productId = productData[0].productId;
-        //         rowData.productName = productData[0].productName;
-        //         rowData.productDescription = productData[0].productDescription;
-        //         rowData.factoryNo = '11111'
-        //         rowData.origin = 'nb'
-        //         rowData.isRework = '否';
-        //         rowData.urgent = '否';
-        //         rowData.inWarranty = '否';
-        //         rowData.productFrom = '终端客户';
-        //         rowData.productBelong = '客户 ';
-
-        //         // console.log("rowData:" + JSON.stringify(rowData));
-
-        //         subTableData.push(rowData);
-        //         //重新加载子表
-        //         loadDataSubTable({
-        //             elementId: 'rp_borrowsubbills',
-        //             dataArray: subTableData
-        //         });
-
-        //         // alert('productId:' + productId);
-        //         // $('#rp_borrowsubbillsPanel').show();
-
-
-        //         scanner.stop().then(function () {
-        //             // alert('stoped');
-        //             $('#scanModal').modal('hide')
-        //         });
-        //     });
-        //     Instascan.Camera.getCameras().then(function (cameras) {
-        //         if (cameras.length > 0) {
-        //             scanner.start(cameras[0]).then(function () {
-        //                 // alert('start');
-        //             }).catch(function (err) {
-        //                 alert('err:' + err);
-        //             });
-        //         } else {
-        //             console.error('No cameras found.');
-        //         }
-        //     }).catch(function (e) {
-        //         console.error(e);
-        //         alert("系统错误,请检查摄像头设备!")
-
-        //     });
-
-        //     // 停止扫描按钮功能定义
-        //     $('#btnScanStop').unbind();
-        //     $('#btnScanStop').click(function () {
-        //         scanner.stop()
-        //         $('#scanModal').modal('hide')
-        //     })
-
-        //     $('#scanModal').modal('show');
-        // })
 
 
 
@@ -2659,32 +3081,6 @@
 
         })
 
-        // //初始化组件
-        // loadDatePicker({
-        //     elementId: "rp_borrowsubbillsForm-productYear",
-        //     params: {
-        //         startView: 4,
-        //         minView: 4,
-        //         format: 'yyyy'
-        //     }
-        // })
-
-        // //初始化组件
-        // loadDatePicker({
-        //     elementId: "rp_borrowsubbillsForm-productMonth",
-        //     params: {
-        //         startView: 3,
-        //         minView: 3,
-        //         format: 'mm'
-        //     }
-        // })
-
-
-
-        // $("#msgSwitch").bootstrapSwitch({
-        //     onText: "是",
-        //     offText: "否"
-        // });
 
 
         //初始化selector
@@ -2699,17 +3095,6 @@
 
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowbillsForm-customerArea',
-        //     sqlParams: {
-        //         sql: 'getRegionSelector',
-        //         // params: {
-        //         //     filter: 'mername like "%宁波%"'
-        //         // }
-        //     },
-        //     // initValue:'中国,北京'
-        // })
-
         loadBootStrapSelector({
             elementId: 'rp_borrowbillsForm-operator',
             sqlParams: {
@@ -2722,7 +3107,10 @@
         loadBootStrapSelector({
             elementId: 'rp_borrowsubbillsForm-productId',
             sqlParams: {
-                sql: 'getProductSelector'
+                sql: 'getProductSelector',
+                params: {
+                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")'
+                }
             },
         })
 
@@ -2795,70 +3183,7 @@
         })
 
 
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowsubbillsForm-productFrom',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="产品来源"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
 
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowsubbillsForm-origin',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="原产地"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
-
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowsubbillsForm-productBelong',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="产品归属"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowsubbillsForm-isRework',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowsubbillsForm-urgent',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_borrowsubbillsForm-inWarranty',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
 
 
 
@@ -2871,8 +3196,8 @@
         //仓库选择修改事件
         addWarehouseListener();
 
-        // //保固期计算事件
-        // addInWarrantyListener();
+        //添加文件监听事件
+        addFileReaderListener()
 
 
 

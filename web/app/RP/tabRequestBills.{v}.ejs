@@ -61,6 +61,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary">过滤</button>
                             <button type="button" id="btnFilterToday" class="btn btn-default">当天</button>
+                            <button type="button" id="btnFilterWeek" class="btn btn-default">一周内</button>
                             <button type="button" id="btnFilterDiy" class="btn btn-default">自定义</button>
                         </div>
                     </div>
@@ -1371,7 +1372,7 @@
         //     params: [productId]
         // })
 
-        console.log('r1:' + JSON.stringify(r1));
+        // console.log('r1:' + JSON.stringify(r1));
         let r2 = r1[0]
         delete r2.productId;
         // console.log('r2:' + JSON.stringify(r2));
@@ -1409,7 +1410,7 @@
             let warrantyPeriod = parseInt($('#rp_requestbillsForm-warrantyPeriod').text());
             let year = $('#rp_recordbillsForm-productYear').val() || '2000'
             let month = $('#rp_recordbillsForm-productMonth').val() || '01'
-            console.log(warrantyPeriod, year, month);
+            // console.log(warrantyPeriod, year, month);
 
             //计算月份差函数
             const getIntervalMonth = (startDate, endDate) => {
@@ -1426,7 +1427,7 @@
             let intervalMonth = getIntervalMonth(productDate, nowDate)
 
             if (warrantyPeriod + intervalMonth >= 0) {
-                console.log('保内');
+                // console.log('保内');
                 $("#rp_recordbillsForm-inWarranty").selectpicker('val', '是')
                 // $("#rp_recordbillsForm-inWarranty").selectpicker('refresh')
             } else {
@@ -1599,12 +1600,22 @@
     const loadBillMainTable = async () => {
 
         //显示过滤模式
-        if (mainTableFilter === 'to_days(makeDate) = to_days(now())') {
-            $('#btnFilterToday').addClass('active');
-            $('#btnFilterDiy').removeClass('active');
-        } else {
-            $('#btnFilterDiy').addClass('active');
-            $('#btnFilterToday').removeClass('active');
+        switch (mainTableFilter) {
+            case 'to_days(makeDate) = to_days(now())':
+                $('#btnFilterToday').addClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            case 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)':
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').addClass('active');
+                $('#btnFilterDiy').removeClass('active');
+                break;
+            default:
+                $('#btnFilterDiy').addClass('active');
+                $('#btnFilterToday').removeClass('active');
+                $('#btnFilterWeek').removeClass('active');
+                break;
         }
 
         //初始化主表
@@ -1959,10 +1970,11 @@
 
         loadBillMainTable();
 
+        //更新待还货 待维修数量
+        showReturnRequestNum()
+        showPartRequestNum()
+
     }
-
-
-
 
     //检查需求单Id函数,防止多人同时填单时出现的覆盖问题
 
@@ -2076,9 +2088,16 @@
     const loadContactOptions = (customerData) => {
         // console.log('contacts', contacts);
 
+        //c 检查客户信息
+        if (!customerData) {
+            console.log('loadContactOptions 缺少参数!');
+            return
+        }
+
         //补齐联系人待选项
         let contacts = [];
-        console.log('customerData', customerData);
+
+        // console.log('customerData', customerData);
         if (!customerData.contacts) {
             contacts.push({
                 name: customerData.contact,
@@ -2191,6 +2210,10 @@
 
     $(document).ready(function () {
 
+        //自动缩放比例
+        // var t = window.devicePixelRatio // 获取下载的缩放 125% -> 1.25    150% -> 1.5
+        // document.body.style.zoom = 0.8 / t; // 就去修改页面的缩放比例80%
+
 
 
         // alert(parseInt(''))
@@ -2223,6 +2246,14 @@
             loadBillMainTable();
 
         })
+
+        //过滤器一周内按钮
+        $('#btnFilterWeek').click(function () {
+            mainTableFilter = 'DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(makeDate)';
+            //初始化主表
+            loadBillMainTable();
+        })
+
 
         $('#btnFilterToday').click(); //默认开启当天过滤
 
@@ -2348,7 +2379,7 @@
                     filter: mainTableFilter
                 }
             })
-            console.log('exportData', exportData);
+            // console.log('exportData', exportData);
 
             let tableArr = []
 
@@ -2366,10 +2397,7 @@
                 }
             }
 
-            console.log('tableArr', tableArr);
-
-
-
+            // console.log('tableArr', tableArr);
             var sheet = XLSX.utils.aoa_to_sheet(tableArr);
             openDownloadDialog(sheet2blob(
                 sheet), '申请单.xlsx');
@@ -2482,7 +2510,7 @@
 
             })
 
-            console.log('returnProductsArr', returnProductsArr);
+            // console.log('returnProductsArr', returnProductsArr);
 
             let recordsArr = [];
 
@@ -2514,7 +2542,7 @@
             }
 
             subTableData = recordsArr
-            console.log('recordsArr', recordsArr);
+            // console.log('recordsArr', recordsArr);
 
             loadDataSubTable({
                 elementId: 'rp_recordbills',
@@ -2624,7 +2652,7 @@
 
             }
 
-            console.log('partProductsArr', partProductsArr);
+            // console.log('partProductsArr', partProductsArr);
 
             let recordsArr = [];
 
@@ -2656,7 +2684,7 @@
             }
 
             subTableData = recordsArr
-            console.log('recordsArr', recordsArr);
+            // console.log('recordsArr', recordsArr);
 
             loadDataSubTable({
                 elementId: 'rp_recordbills',
@@ -2892,6 +2920,7 @@
 
             $("#rp_recordbillsForm-status").text('新增')
             $("#rp_recordbillsForm-productId").selectpicker('val', '')
+            $("#rp_recordbillsForm-origin").selectpicker('val', '宁波')
             $("#rp_recordbillsForm-productFrom").selectpicker('val', '终端客户')
             $("#rp_recordbillsForm-productBelong").selectpicker('val', '客户')
             $("#rp_recordbillsForm-isRework").selectpicker('val', '否')
@@ -2955,7 +2984,7 @@
                         '费用:' + rs[0].repairLastFee
                     )
                 }
-                rowData.isRework = '是'
+                // rowData.isRework = '是'
                 subTableData.push(rowData);
                 // console.log("subTableData:" + JSON.stringify(subTableData));
 
@@ -3252,7 +3281,7 @@
 
         //添加到可选联系人按钮
         $('#addContactsBtn').click(function () {
-            console.log('customerData', customerData);
+            // console.log('customerData', customerData);
             //check-客户id校验
             if (!customerData.customerId) {
                 alert('必须先选定客户!')
@@ -3391,7 +3420,10 @@
         loadBootStrapSelector({
             elementId: 'rp_recordbillsForm-productId',
             sqlParams: {
-                sql: 'getProductSelector'
+                sql: 'getProductSelector',
+                params: {
+                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+                }
             },
         })
 
@@ -3459,7 +3491,7 @@
                 params: {
                     filter: 'optionClass="原产地"',
                     orderBy: 'orderId'
-                }
+                },
             },
         })
 
