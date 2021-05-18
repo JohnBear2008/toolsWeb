@@ -38,17 +38,17 @@ var g_dbConenctions = {
     //         password: '338168',
     //     }
     // },
-    // "rich_T9": {
-    //     engine: "sqlserver",
-    //     package: "msnodesqlv8",
-    //     connection: {
-    //         driver: "SQL Server Native Client 10.0",
-    //         server: '192.168.0.22',
-    //         database: 'T9Techmation',
-    //         user: 'sa',
-    //         password: yjSecurity["Diffie-Hellman"].decrypt(pweT9),
-    //     },
-    // },
+    "erp_T9": {
+        engine: "sqlserver",
+        package: "msnodesqlv8",
+        connection: {
+            driver: "SQL Server Native Client 10.0",
+            server: '192.168.0.22',
+            database: 'T9Techmation',
+            user: 'sa',
+            password: yjSecurity["Diffie-Hellman"].decrypt(pweT9),
+        },
+    },
     "rich_T9": {
         engine: "sqlserver",
         package: "msnodesqlv8",

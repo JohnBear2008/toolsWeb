@@ -1,0 +1,925 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<link rel="stylesheet" type="text/css" href="/css/TM/layui-v265.css">
+<!-- <link rel="stylesheet" href="/layui/v2.5.6/css/layui.css" media="all"> -->
+<!-- JS  -->
+<script src="/css/PM/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<style media=print type="text/css">
+
+</style>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/banq/TMfun.js"></script>
+<script src="/both/demand.js"></script>
+<!-- <script src="/bomq/attach.js"></script> -->
+<script type="text/javascript" src="/public/treeGrid/treegrid-dnd.js"></script>
+<script type="text/javascript" src="/public/treeGrid/datagrid-detailview.js"></script>
+<script type="text/javascript" src="/public/treeGrid/datagrid-scrollview.js"></script>
+
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- easyui treegrid -->
+<script src="/easyui/jquery.easyui.min.js"></script>
+<script src="/layui/v2.5.6/layui.all.js" charset="utf-8"></script>
+<script src="/layui/v2.5.6/layui.js" charset="utf-8"></script>
+
+<!-- 导出报告EXCEL -->
+<script type=text/javascript src="/both/xlsLevel.js"></script>
+<script src="/public/report/js/xlsx.core.min.js"></script>
+<script src="/public/report/js/xlsx.full.min.js"></script>
+
+<!-- date format-->
+<script src="/js/PM/PMfuns.js"></script>
+<!-- swal-->
+<script src="/js/sweetalert.min.js"></script>
+
+
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+	<body>
+		<form class="layui-form" action=""></form>
+		<div style="z-index:999;position:absolute;left:5px;width:40px;height:40px;">
+			<img id="DivAuditImage" src="/images/logo.png">
+		</div>
+		<h1 style="margin-top:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 弘讯科技BOM表
+			&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+		</h1>
+		<div class=" layui-btn-container" style="position:absolute;top:5px;left:430px">
+			<button id="ExlBtn" class="layui-btn layui-btn-primary layui-border layui-btn-lg">报告</button>
+			<button id="SeaBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">查找</button>
+			<button id="ZoomBtn" class="layui-btn layui-btn-primary layui-border-blue layui-btn-lg">子点</button>
+			<button id="AdvOpen" class="layui-btn layui-btn-primary layui-border-orange layui-btn-lg">进阶</button>
+			<button id="DetailBtn" class="layui-btn layui-btn-primary layui-border-red layui-btn-lg">解析</button>
+			<button id="PurchBtn" class="layui-btn layui-btn-primary layui-border-black layui-btn-lg">单价</button>
+			<button id="DisplayBtn" class="layui-btn layui-btn-primary layui-border layui-btn-lg">栏位</button>
+			<button id="NextBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">回上页</button>
+		</div>
+		<br></br>
+		<div class="divcontent">
+			<!-- <div class="layui-btn-container"> -->
+			<div class="layui-inline" style="position:absolute;top:60px;left:100px">
+				<!-- <label> BOM名: </label>
+			<input class="can-find-M260" id="ProductName" name="ProductName" value="TKC_A60_M5C" autocomplete="off">
+			&nbsp;&nbsp;&nbsp; -->
+				<label> ID: </label>
+				<input class="can-find-M260" id="ProductID" name="ProductID" value="" autocomplete="off">
+				<label> 名称: </label>
+				<input class="can-find-M260" id="ProductName" name="ProductName" readonly="readonly" value=""
+					autocomplete="off">
+				<label> 旧代码: </label>
+				<input class="can-find-M260" id="OldMat" name="OldMat" readonly="readonly" value=""
+					autocomplete="off">
+				&nbsp;&nbsp;&nbsp;
+				<label> 规格: </label>
+				<input class="can-find-M260" id="OldSpc" name="OldSpc" readonly="readonly" value=""
+					autocomplete="off">
+				<!-- <label>模式:</label>
+				<select id="Pattern" name="Pattern" class="can-find-M140"></select>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label>生产:</label>
+				<select id="OutSour" name="OutSour" class="can-find-M140"></select>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+			</div>
+			<br />
+		</div>
+		<div id="DivAdvance" class="easyui-window" title="进阶查找" closed="true"
+		style="top:100px; left:200px; width:1100px;height:550px;">
+		<div class="form-group">
+			<span id="spanID" class="green-label-small"> 编号 </span>
+			<input id="prodID" class="can-drop" type="text" value="">
+
+			<span id="spanNM" class="green-label-small"> 名称 </span>
+			<input id="prodNM" class="can-drop-spec" type="text" value="">
+			<br />
+		</div>
+		<div class="form-group">
+			<button id="AdvClass" type="button" class="btn btn-info">查找</button>
+		</div>
+		<br />
+		<div class="form-group">
+			<span id="Lifespan" class="blue-label"> 列表 </span>
+			<select id="LifeValue" name="LifeValue" class="bom-area-drop"></select>
+		</div>
+		<div class="form-group">
+			<button id="AdvOK" type="button" class="btn btn-primary">确认</button>
+			<button id="AdvCan" type="button" class="btn btn-warning">清空</button>
+		</div>
+		<br />
+	</div>
+		<!-- title="弘讯科技BOM表" -->
+		<table id='dg' class="easyui-treegrid" style="width:1370px;height:650px" data-options="
+	    data: rows,
+	    rownumbers: true,
+	    idField: 'id',
+	    treeField: 'enname',
+	    onDblClickCell:function(row){  
+		layer.msg(' F6 位置 '+'<br>F7  规格'+'<br>F8  用量'+'<br>F9  图片');
+	    },
+	">
+			<script>
+				var FieldA = false;
+				var FieldB = false;
+				var FieldC = false;
+				var FieldD = true;
+				var FieldE = false;
+				var FieldF = false;
+				var FieldG = false;
+				var FieldH = false;
+				var FieldI = false;
+				var FieldJ = false;
+				var FieldK = true;
+				var FieldL = true;
+				var selprodID = '';
+			</script>
+			<thead>
+				<tr>
+					<th data-options="field:'id'" width="35">OID</th>
+					<th data-options="field:'field'" width="35">PID</th>
+					<th data-options="field:'enname'" width="200">品名</th>
+					<th data-options="field:'encode'" width="120">编码</th>
+					<th data-options="field:'stock', hidden:FieldA " width="35" align="right">用量</th>
+					<th data-options="field:'waste', hidden:FieldB " width="35" align="right">损耗</th>
+					<th data-options="field:'belong', hidden:FieldC " width="50">类 别</th>
+					<th data-options="field:'descrip', hidden:FieldD " width="200"> 规 格 </th>
+					<th data-options="field:'oldmat', hidden:FieldE " width="150"> 旧代码 </th>
+					<th data-options="field:'oldspc',sortable:true,width:180,align:'center', hidden:FieldF ">
+						旧品名 </th>
+					<th data-options="field:'totqty',sortable:true,width:50,align:'center', hidden:FieldG ">
+						库存 </th>
+					<th data-options="field:'cabinA',sortable:true,width:50,align:'center', hidden:FieldH ">
+						A仓 </th>
+					<th data-options="field:'seed',sortable:true,width:50,align:'center', hidden:FieldI "> 个数
+					</th>
+					<th data-options="field:'price',sortable:true,width:50,align:'center', hidden:FieldJ "> 单价
+					</th>
+					<th data-options="field:'cost',sortable:true,width:50,align:'center', hidden:FieldK "> 成本
+					</th>
+					<th data-options="field:'isend',sortable:true,width:50,align:'center', hidden:FieldL "> 最终点
+					</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="pptwindow" class="easyui-window" title="规格-" closed="true"
+			style="width:600px;height:680px; position: fixed; z-index: 1030; top:20px;  left:600px; ">
+			<form style="padding:10px 50px;">
+				<div class="form-horizontal">
+					<div class="form-group">
+						<div class="col-sm-3 ">
+							<input id="specNHead" class="win-green-large" type="text" value="">
+						</div>
+						<br></br>
+						<div class="col-sm-3 ">
+							<input id="specOHead" class="win-green-large" type="text" value="">
+						</div>
+						<br></br>
+						<div class="col-sm-3 ">
+							<textarea id="specList" class="can-drop-super" width="500px"
+								rows="20"></textarea>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">按X键关闭</label>
+				<div class="col-sm-3 ">
+					<button id="ComfirmBtn" type="button" class="btn btn-primary">关闭</button>
+				</div>
+			</div>
+		</div>
+		<!-- 点击窗口fin -->
+		<div class="modal fade" id="lovewindow" tabindex="-1" role="dialog" aria-labelledby="lovewindowLabel"
+			aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog" style="width:65%">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="panel-title">物料号面板
+							<button id="BTNFormClose" type="button" class="btn btn-primary"
+								data-dismiss="modal">关闭</button>
+						</h3>
+					</div>
+					<div class="modal-body">
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h3 class="panel-title">物料基本信息与规格</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-horizontal" id="DivAnaly">
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label">新物料号:</label>
+										<div class="col-sm-4">
+											<input id="specNHead" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">类别:</label>
+										<div class="col-sm-4">
+											<input id="specOHead" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">EF码:</label>
+										<div class="col-sm-4">
+											<input id="specEF" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">供应商:</label>
+										<div class="col-sm-4">
+											<input id="specSupy" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">型号:</label>
+										<div class="col-sm-4">
+											<input id="specModel" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">组合件:</label>
+										<div class="col-sm-4">
+											<input id="specAssem" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">基本单位:</label>
+										<div class="col-sm-4">
+											<input id="specUnitE" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">物料状态:</label>
+										<div class="col-sm-4">
+											<input id="specPhase" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">优先耗用:</label>
+										<div class="col-sm-4">
+											<input id="specPrior" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">备注:</label>
+										<div class="col-sm-4">
+											<input id="specReason" class="form-control"
+												type="text" value="" disabled="true">
+										</div>
+									</div>
+
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label"
+											for="name">规格详细:</label>
+										<div class="col-sm-8">
+											<textarea id="specList" class="can-drop-super"
+												width="500px" rows="18"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label"
+											for="name">提交人:</label>
+										<div class="col-sm-3 ">
+											<input id="specStaff" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label"
+											for="name">提交日期:</label>
+										<div class="col-sm-3 ">
+											<input id="specApplyDate" class="form-control"
+												type="text" value="" disabled="true">
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="BTNFormClose" type="button" class="btn btn-primary"
+							data-dismiss="modal">关闭</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div><!-- modal fade -->
+		<div class="modal fade" id="purwindow" tabindex="-1" role="dialog" aria-labelledby="purwindowLabel"
+			aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog" style="width:65%">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="panel-title">採购成本面板
+							<button id="BTNFormClose" type="button" class="btn btn-primary"
+								data-dismiss="modal">关闭</button>
+						</h3>
+					</div>
+					<div class="modal-body">
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h3 class="panel-title">物料成本</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-horizontal" id="DivAnaly">
+									<!-------------------------------------------------------------------------->
+									<div class="form-group">
+										<label class="col-sm-1 control-label">新物料号:</label>
+										<div class="col-sm-3">
+											<input id="PurchNHead" class="form-control"
+												type="text" value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">成本:</label>
+										<div class="col-sm-3">
+											<input id="PurchOHead" class="form-control"
+												type="text" value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">币别:</label>
+										<div class="col-sm-3">
+											<input id="PurchCurr" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">单位:</label>
+										<div class="col-sm-3">
+											<input id="PurchUnit" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label">库存:</label>
+										<div class="col-sm-3">
+											<input id="TotQty" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+										<label class="col-sm-1 control-label">A仓:</label>
+										<div class="col-sm-3">
+											<input id="CabinA" class="form-control" type="text"
+												value="" disabled="true">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="PurchClose" type="button" class="btn btn-primary"
+							data-dismiss="modal">关闭</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div><!-- modal fade -->
+
+		<div id="DisplayWin" class="easyui-window" title="栏位设定" closed="true"
+			style="top:50px; left:1000px; width:400px;height:700px;">
+			<form style="padding:10px 50px;">
+				<div class="form-horizontal">
+					<div class="form-group">
+						<br></br>
+						<span id="DispA" class="blue-label"> 用量 </span>
+						<input type="checkbox" name="BOXA" id="BOXA" title="用量" lay-filter="page_check">
+						<br></br>
+						<span id="DispB" class="blue-label"> 损耗 </span>
+						<input type="checkbox" name="BOXB" id="BOXB" title="损耗" lay-filter="page_check">
+						<br></br>
+						<span id="DispC" class="blue-label"> 类 别 </span>
+						<input type="checkbox" name="BOXC" id="BOXC" title="类 别" lay-filter="page_check">
+						<br></br>
+						<span id="DispD" class="blue-label"> 规 格 </span>
+						<input type="checkbox" name="BOXD" id="BOXD" title="规  格" lay-filter="page_check">
+						<br></br>
+						<span id="DispE" class="blue-label"> 旧代码 </span>
+						<input type="checkbox" name="BOXE" id="BOXE" title="旧代码" lay-filter="page_check">
+						<br></br>
+						<span id="DispF" class="blue-label"> 旧品名 </span>
+						<input type="checkbox" name="BOXF" id="BOXF" title="旧品名" lay-filter="page_check">
+						<br></br>
+						<span id="DispG" class="blue-label"> 库存 </span>
+						<input type="checkbox" name="BOXG" id="BOXG" title="库存" lay-filter="page_check">
+						<br></br>
+						<span id="DispH" class="blue-label"> A仓 </span>
+						<input type="checkbox" name="BOXH" id="BOXH" title="A仓" lay-filter="page_check">
+						<br></br>
+						<span id="DispI" class="blue-label"> 个数 </span>
+						<input type="checkbox" name="BOXI" id="BOXI" title="个数" lay-filter="page_check">
+						<br></br>
+						<span id="DispJ" class="blue-label"> 单价 </span>
+						<input type="checkbox" name="BOXJ" id="BOXJ" title="单价" lay-filter="page_check">
+						<br></br>
+						<span id="DispK" class="blue-label"> 成本 </span>
+						<input type="checkbox" name="BOXK" id="BOXK" title="成本" lay-filter="page_check">
+						<br></br>
+						<span id="DispL" class="blue-label"> 结点 </span>
+						<input type="checkbox" name="BOXL" id="BOXL" title="结点" lay-filter="page_check">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3 ">
+						<button id="DisplayOkBtn" type="button" class="btn btn-primary">确认</button>
+					</div>
+					<div class="col-sm-3 ">
+						<button id="DisplayCloseBtn" type="button" class="btn btn-primary">关闭</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- 点击窗口fin -->
+		</div>
+
+		<!-- 点击弹出窗口开始 -->
+		<!-- style="width:400px;height:360px;background-color: aliceblue;" -->
+		<div id="root" style="height: 100%"></div>
+		<script>
+	var sessionName = "<%-locals.session.yjUser.Name%>";
+	let sessionOID = "<%-locals.session.yjUser.OID%>";
+	let sessionAID = "<%-locals.session.yjUser.AID%>"; 
+			var missAType = '';
+			var missBType = '';
+			var bill_choose = '';
+			var code_choose = '';
+			var Category = '';
+			var ProductID = '';
+			var Pattern = '';
+			var OutSour = '';
+			var glbpcode = '';
+			var glbpname = '';
+			var glbprole = '';
+			var cnt = 0;
+			let rows = [];
+			let Oper = [];
+			var topName = '';
+			rows = [{
+				"id": 0,
+				"enname": "",
+				"encode": "",
+				"stock": "",
+				"waste": "",
+				"belong": "",
+				"descrip": "",
+				"oldmat": "",
+				"oldspc": "",
+				"totqty": "",
+				"cabinA": "",
+				"price": "",
+				"seed": "",
+				"isend": "",
+				"cost": ""
+			}];
+			var storage = window.localStorage;
+			var hidata = localStorage.getItem("seedtree");
+			hidata = JSON.parse(hidata);
+			console.log("王钉钉·", hidata);
+			if (hidata != undefined && hidata != null) {
+				FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
+				FieldB = ((hidata.B == null || hidata.B == undefined) ? (FieldB) : hidata.B);
+				FieldC = ((hidata.C == null || hidata.C == undefined) ? (FieldC) : hidata.C);
+				FieldD = ((hidata.D == null || hidata.D == undefined) ? (FieldD) : hidata.D);
+				FieldE = ((hidata.E == null || hidata.E == undefined) ? (FieldE) : hidata.E);
+				FieldF = ((hidata.F == null || hidata.F == undefined) ? (FieldF) : hidata.F);
+				FieldG = ((hidata.G == null || hidata.G == undefined) ? (FieldG) : hidata.G);
+				FieldH = ((hidata.H == null || hidata.H == undefined) ? (FieldH) : hidata.H);
+				FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
+				FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
+				FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
+				FieldL = ((hidata.L == null || hidata.L == undefined) ? (FieldL) : hidata.L);
+				console.log("AAA陆地", FieldD);
+				console.log("BBB陆地", FieldK);
+			}
+			//页面加载函数---------------
+			var missAType = '';
+			function NoObfuscate() {
+				console.log("採茶", sessionOID);
+				if (sessionAID == 'tmCodeAdm' || sessionAID == 'tmCodeUser' || sessionAID == 'Admin' || sessionName == '王启源') {
+					return true;
+				} else {
+					swal("不合法用户!")
+					return false;
+				}
+			}
+			$(document).ready(function () {
+				var init = NoObfuscate();
+				if(!init){
+					$("#ExlBtn").attr("disabled","true");
+					$("#SeaBtn").attr("disabled","true");
+					$("#ZoomBtn").attr("disabled","true");
+					$("#AdvOpen").attr("disabled","true");
+					$("#DetailBtn").attr("disabled","true");
+					$("#PurchBtn").attr("disabled","true");
+					$("#DisplayBtn").attr("disabled","true");
+					$("#NextBtn").attr("disabled","true");
+				}
+				layui.use(['form', 'layedit', 'laydate'], function () {
+					var form = layui.form
+						, layer = layui.layer
+						, layedit = layui.layedit
+						, laydate = layui.laydate;
+					form.render();
+				});
+				getPull();
+				let now = new Date();
+				var fname = new Date(now).Format("yyyy-MM-dd");
+				$("#LocBtn").addClass("active");
+				missAType = getQueryString("missA");
+				console.log("钟馗", missAType);
+				$('#ProductID').val(missAType);
+			});
+			$('#AdvOpen').click(function () {
+				$('#DivAdvance').window('open');
+				var prodID = $('#prodID').val();
+				var prodNM = $('#prodNM').val();
+				if (prodID != '' || prodNM != '') {
+					CriteriaAdv9(prodID, prodNM);
+				} else {
+					CriteriaBasic9();
+				}
+			});
+			//进阶查找分类 
+			$('#AdvClass').click(function () {
+				var prodID = $('#prodID').val();
+				var prodNM = $('#prodNM').val();
+				CriteriaAdv9(prodID, prodNM);
+			});
+			$('#AdvOK').click(function () {
+				var LifeValue = $('#LifeValue').val();
+				var LFList = LifeValue.split('##');
+				selprodID = LFList[0];
+				$('#ProductID').val(LFList[0]);
+				$('#ProductName').val(LFList[1]);
+				$('#OldMat').val(LFList[2]);
+				$('#OldSpc').val(LFList[3]);
+				$('#DivAdvance').window('close');
+			});
+			$('#AdvCan').click(function () {
+				$("#LifeValue").val(); $("#LifeValue").html("");
+			});
+			$('#AddNodeBtn').click(function () {
+
+			});
+			$('#UpdNodeBtn').click(function () {
+
+			});
+			$('#OKButton').click(function () {
+
+			});
+			$('#CancelButton').click(function () {
+				$('#addWin').window('close');
+			});
+			$('#DelBtn').click(function () {
+
+			});
+			$('#SeaBtn').click(function () {
+				Category = $('#ProductName').val();
+				ProductID = $('#ProductID').val();
+				topName = ProductID;
+				cabinFirst();
+				$('#dg').treegrid('reload');
+			});
+			$('#DetailBtn').click(function () {
+				analysisWin();
+			});
+			$('#PurchBtn').click(function () {
+				PurchFun();
+			});
+			$('#ZoomBtn').click(function () {
+				genParse();
+				$('#ProductID').val(glbpcode);
+				Category = $('#ProductName').val();
+				ProductID = $('#ProductID').val();
+				cabinFirst();
+				$('#dg').treegrid('reload');
+			});
+			$('#NextBtn').click(function () {
+				$('#ProductID').val(topName);
+				Category = $('#ProductName').val();
+				ProductID = $('#ProductID').val();
+				cabinFirst();
+				$('#dg').treegrid('reload');
+			});
+			function cabinFirst() {
+				layer.msg('加载中', {
+					icon: 16
+					, shade: 0.01
+					, time: 2000
+				});
+				// var reportType = 'cabinJet';
+				var reportType = 'wpsBOM';
+				Pattern = $('#Pattern').val();
+				OutSour = $('#OutSour').val();
+				if(OutSour !=undefined && OutSour !=null){
+
+				}else{
+					OutSour = '0';
+				}
+				Category = $('#ProductName').val();
+                        var showTime = '9';
+				var taskData = { "reportType": reportType, "showTime": showTime, "ProductName": Category, "ProductID": ProductID, "Pattern": Pattern, "OutSour": OutSour };
+				$('#dg').treegrid('remove', 0);
+				$.ajax({
+					method: 'post',
+					data: taskData,
+					url: "/app/TMBom/getRoute",
+					success: function (data) {
+						let dataT = [];
+						const json2 = JSON.stringify(data);
+						const bjob = JSON.parse(json2);
+						var showshow = JSON.stringify(data);
+						var datashow = JSON.stringify(data);
+						if (showshow.length > 200) {
+							showshow = showshow.substr(150, 200);
+						} else {
+
+						}
+						var retcode = data.status;
+						var ProdID = data.ProdID;
+						console.log("卤蛋 ", showshow);
+						if (retcode == 'FAIL') {
+							retmsg = "BOM：" + ProdID + "加载失败！"
+							layer.confirm(retmsg, {
+								btn: ['是'] //按钮
+							}, function () {
+								layer.msg('操作成功', { icon: 1 });
+							});
+						}
+						rows = data;
+						$('#dg').treegrid('append', {
+							parent: 0,
+							data: rows
+						});
+						$('#dg').treegrid('reload');
+					},
+					error: function () {
+					}
+				})
+			}
+
+			$('#StockBtn').click(function () {
+				qryStockWin();
+			});
+			$('#PicBtn').click(function () {
+				qryPicWin();
+			});
+			$('#LocBtn').click(function () {
+				qryLocation();
+			});
+			$('#MapBtn').click(function () {
+				qryBoard();
+			});
+			$('#ExlBtn').click(function () {
+				qryExcel();
+			});
+			$('#ComfirmBtn').click(function () {
+				$('#pptwindow').window('close');
+			});
+			$('#PurchClose').click(function () {
+				$('#purwindow').window('close');
+			});
+			$('#qtyOkBtn').click(function () {
+				$('#qqtwindow').window('close');
+			});
+			$('#picOkBtn').click(function () {
+				$('#rrtwindow').window('close');
+			});
+			$('#boardYesBtn').click(function () {
+				$('#boardWin').window('close');
+			});
+			$('#boardFixBtn').click(function () {
+				uptBoard();
+			});
+			$('#ClsConnect').click(function () {
+				$('#locateWin').window('close');
+			});
+			function genParse() {
+				var node = $('#dg').treegrid('getSelected');
+				// console.log("趙", JSON.stringify(node));
+				glbpname = node.enname;
+				glbpcode = node.encode;
+				console.log("操" + glbpname + " 植 " + glbpcode);
+			}
+			$('#DisplayBtn').click(function () {
+				console.log("弹跳：对", FieldA, FieldK);
+				//隐藏 =true ，checked = false
+				//隐藏 =false ，checked = true
+				if (FieldA) { $("#BOXA").prop("checked", false); } else { $("#BOXA").prop("checked", true); }
+				if (FieldB) { $("#BOXB").prop("checked", false); } else { $("#BOXB").prop("checked", true); }
+				if (FieldC) { $("#BOXC").prop("checked", false); } else { $("#BOXC").prop("checked", true); }
+				if (FieldD) { $("#BOXD").prop("checked", false); } else { $("#BOXD").prop("checked", true); }
+				if (FieldE) { $("#BOXE").prop("checked", false); } else { $("#BOXE").prop("checked", true); }
+				if (FieldF) { $("#BOXF").prop("checked", false); } else { $("#BOXF").prop("checked", true); }
+				if (FieldG) { $("#BOXG").prop("checked", false); } else { $("#BOXG").prop("checked", true); }
+				if (FieldH) { $("#BOXH").prop("checked", false); } else { $("#BOXH").prop("checked", true); }
+				if (FieldI) { $("#BOXI").prop("checked", false); } else { $("#BOXI").prop("checked", true); }
+				if (FieldJ) { $("#BOXJ").prop("checked", false); } else { $("#BOXJ").prop("checked", true); }
+				if (FieldK) { $("#BOXK").prop("checked", false); } else { $("#BOXK").prop("checked", true); }
+				if (FieldL) { $("#BOXL").prop("checked", false); } else { $("#BOXL").prop("checked", true); }
+				$('#DisplayWin').window('open');
+			});
+			$('#DisplayOkBtn').click(function () {
+				var AisChecked = $("#BOXA").is(":checked");
+				if (AisChecked) { FieldA = false; } else { FieldA = true; }
+				var BisChecked = $("#BOXB").is(":checked");
+				if (BisChecked) { FieldB = false; } else { FieldB = true; }
+				var CisChecked = $("#BOXC").is(":checked");
+				if (CisChecked) { FieldC = false; } else { FieldC = true; }
+				var DisChecked = $("#BOXD").is(":checked");
+				if (DisChecked) { FieldD = false; } else { FieldD = true; }
+				var EisChecked = $("#BOXE").is(":checked");
+				if (EisChecked) { FieldE = false; } else { FieldE = true; }
+				var FisChecked = $("#BOXF").is(":checked");
+				if (FisChecked) { FieldF = false; } else { FieldF = true; }
+				var GisChecked = $("#BOXG").is(":checked");
+				if (GisChecked) { FieldG = false; } else { FieldG = true; }
+				var HisChecked = $("#BOXH").is(":checked");
+				if (HisChecked) { FieldH = false; } else { FieldH = true; }
+				var IisChecked = $("#BOXI").is(":checked");
+				if (IisChecked) { FieldI = false; } else { FieldI = true; }
+				var JisChecked = $("#BOXJ").is(":checked");
+				if (JisChecked) { FieldJ = false; } else { FieldJ = true; }
+				var KisChecked = $("#BOXK").is(":checked");
+				if (KisChecked) {	FieldK = false; } else { FieldK = true; }
+				var LisChecked = $("#BOXL").is(":checked");
+				if (LisChecked) {	FieldL = false; } else { FieldL = true; }
+				var data = {
+					A: FieldA,
+					B: FieldB,
+					C: FieldC,
+					D: FieldD,
+					E: FieldE,
+					F: FieldF,
+					G: FieldG,
+					H: FieldH,
+					I: FieldI,
+					J: FieldJ,
+					K: FieldK,
+					L: FieldL
+				}
+				localStorage.setItem("seedtree", JSON.stringify(data));
+				$('#DisplayWin').window('close');
+				selprodID = $('#ProductID').val();
+				var paramClearA = encodeURI(encodeURI(selprodID));
+				window.location.href = "/app/TMBom/t9BOM?missA=" + paramClearA + " ";
+			});
+			$('#DisplayCloseBtn').click(function () {
+				$('#DisplayWin').window('close');
+			});
+			function qryLocation() {
+
+			}
+			function qryStockWin() {
+
+			}
+			function qryPicWin() {
+
+			}
+			function PurchFun() {
+				genParse();
+				var pcode = glbpcode; pcode = myTrim(pcode);
+				var reportType = 'factorPrice';
+				var taskData = { "reportType": reportType, "PartsCode": pcode };
+				$.ajax({
+					method: 'post',
+					data: taskData,
+					url: "/app/TMBom/getRoute",
+					success: function (data) {
+						const json2 = JSON.stringify(data);
+						const bjob = JSON.parse(json2);
+						if (bjob.status == 'Fail') {
+							layer.msg("无法显示");
+							return;
+						}
+						console.log("人生啊...", bjob.StandPrice);
+						$("#PurchNHead").val("  " + bjob.MaterialId);
+						$("#PurchOHead").val(" " + bjob.StandPrice);
+						$("#PurchCurr").val(" " + bjob.CurrId);
+						$("#PurchUnit").val(" " + bjob.SUnitId);
+						$("#TotQty").val(" " + bjob.TotQty);
+						$("#CabinA").val(" " + bjob.CabinA);
+						$('#purwindow').modal('show');
+					},
+					error: function () {
+					}
+				})
+
+			}
+			function analysisWin() {
+				genParse();
+				var pcode = glbpcode; pcode = myTrim(pcode);
+				var reportType = 'factorHat';
+				var taskData = { "reportType": reportType, "PartsCode": pcode };
+				$.ajax({
+					method: 'post',
+					data: taskData,
+					url: "/app/TMBom/getRoute",
+					success: function (data) {
+						if (data.status == 'Fail') {
+							layer.msg("无法显示规格");
+							return;
+						}
+						const json2 = JSON.stringify(data);
+						const bjob = JSON.parse(json2);
+						console.log("人生啊...", bjob.Assembly);
+						$("#specOHead").val(" 旧品名: " + bjob.PartsOldName + "旧编码: " + bjob.PartsOldCode);
+						$("#specNHead").val(" 品名: " + bjob.PartsName + "编码: " + bjob.PartsCode);
+						$("#specEF").val(bjob.Value1 + bjob.Name1);
+						$("#specSupy").val(" 供应商: " + bjob.SupplyTitle);
+						$("#specModel").val(bjob.Model);
+						$("#specAssem").val(bjob.Assembly);
+						$("#specUnitE").val(bjob.UnitE);
+						$("#specPhase").val(bjob.Phase);
+						$("#specPrior").val(bjob.Prior);
+						$("#specStaff").val(bjob.Staff);
+						$("#specApplyDate").val(bjob.ApplyDate);
+						console.log("日不漏: " + JSON.stringify(bjob));
+						$("#specList").val(bjob.Value1 + bjob.Name1 + bjob.Value2 + bjob.Name2 + bjob.Value3 + bjob.Name3 + bjob.Value4 + bjob.Name4 + bjob.Value5 + bjob.Name5 + bjob.Value6 + bjob.Name6 + bjob.Value7 + bjob.Name7 + bjob.Value8 + bjob.Name8
+							+ bjob.Value9 + bjob.Name9 + bjob.Value10 + bjob.Name10 + bjob.Value11 + bjob.Name11 + bjob.Value12 + bjob.Name12 + bjob.Value13 + bjob.Name13 + bjob.Value14 + bjob.Name14 + bjob.Value15 + bjob.Name15
+							+ bjob.Value16 + bjob.Name16 + bjob.Value17 + bjob.Name17 + bjob.Value18 + bjob.Name18 + bjob.Value19 + bjob.Name19 + bjob.Value20 + bjob.Name20);
+						$('#lovewindow').modal('show');
+					},
+					error: function () {
+					}
+				})
+
+			}
+			function qryExcel() {
+				var Pattern = $("#Pattern").val();
+				var OutSour = $("#OutSour").val();
+				var LifeValue = $('#LifeValue').val();
+				if (LifeValue != undefined && LifeValue != '') {
+					var LFList = LifeValue.split('##');
+					$('#ProductID').val(LFList[0]);
+					$('#ProductName').val(LFList[1]);
+				}
+				var prodID = $('#ProductID').val();
+				var prodNM = $('#ProductName').val();
+				console.log("prodID: ", prodID);
+				console.log("prodNM: ", prodNM);
+				var showTime = '9';
+				enterLevel(Category, Pattern, OutSour, showTime, prodID, prodNM);
+			}
+			function showLink(DataPara, columnsData) {
+			}
+			var table = '';
+			var picRole = '';
+			var picItem = '';
+			var picNick = '';
+			var picPos = '';
+			var picID = '';
+			document.onkeydown = function (eventTag) {
+				var event = eventTag || windows.event;
+				var e = event.srcElement || event.target;
+				if (event.keyCode == 88) {
+					layer.msg(' 按下 X 关闭....');
+					$('#pptwindow').window('close');
+					$('#qqtwindow').window('close');
+					$('#rrtwindow').window('close');
+					$('#locateWin').window('close');
+					$('#boardWin').window('close');
+				}
+				if (event.keyCode == 117) {
+					layer.msg('按下 F6');
+					qryLocation();
+				}
+				if (event.keyCode == 118) {
+					layer.msg('按下 F7');
+					analysisWin();
+				}
+				if (event.keyCode == 119) {
+					layer.msg('按下 F8');
+					qryStockWin();
+				}
+				if (event.keyCode == 120) {
+					layer.msg('按下 F9');
+					qryPicWin();
+				}
+			}
+			$('#AddConnect').click(function () {
+
+			});
+			function showLay(Encname) {
+
+			}
+			$('#OpenConnect').click(function () {
+
+			});
+			$('#DelConnect').click(function () {
+
+			});
+			$('#CanDoForm').click(function () {
+				$('#connFormWin').window('close');
+			});
+		</script>
+	</body>
+
+	</html>
