@@ -1390,8 +1390,9 @@
 
     //选定产品修改事件
     const addProductListener = () => {
-        $('#rp_recordbillsForm-productId').unbind();
+        $('#rp_recordbillsForm-productId').unbind('change');
         $('#rp_recordbillsForm-productId').change(function () {
+            // alert(1)
             let productId = $('#rp_recordbillsForm-productId option:selected')
                 .val()
             if (productId) {
@@ -1797,6 +1798,12 @@
         let mainFormData = getPostFormData({
             formId: 'rp_requestbillsForm'
         })
+
+        //c-
+        if(!mainFormData.data[0].customerId){
+            alert('客户编号为空,请检查客户资料!')
+            return
+        }
 
         //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
 

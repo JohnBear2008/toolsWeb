@@ -27,6 +27,8 @@
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
 
+
+
 <!-- 定义html元素 -->
 <div class="rpContent">
 
@@ -83,6 +85,7 @@
                                 <th>客户简称</th>
                                 <th>维修单号</th>
                                 <th>产品编号</th>
+                                <th>出厂编号</th>
                                 <th>是否返修</th>
                                 <th>是否紧急</th>
                                 <th>质保期内</th>
@@ -912,7 +915,7 @@
                                         <!-- <button id='btnScan' type="button" class="btn btn-success">扫描新增</button> -->
                                         <button id='btnAddPart' type="button" class="btn btn-info">添加零件</button>
                                         <button id='btnDeletePart' type="button" class="btn btn-warning">删除零件</button>
-                                        <!-- <button id='btnReturnPart' type="button" class="btn btn-danger">退还零件</button> -->
+                                        <button id='btnReturnPart' type="button" class="btn btn-danger">退还零件</button>
                                     </div>
 
                                     <!-- 扫描模态框（Modal） -->
@@ -1186,6 +1189,9 @@
         },
         {
             data: 'productId'
+        },
+        {
+            data: 'factoryNo'
         }, {
             data: 'isRework',
         }, {
@@ -1381,7 +1387,7 @@
 
     //添加替换位置监听器
     const addPartIdListener = () => {
-        $('#rp_partsbillsForm-partId').unbind();
+        $('#rp_partsbillsForm-partId').unbind('change');
         $('#rp_partsbillsForm-partId').change(async function () {
             let partId = $('#rp_partsbillsForm-partId option:selected').val();
             // console.log('partId', partId);
@@ -2723,11 +2729,19 @@
 
 
         //退还零件按钮
-        $('#btnReturnPart').click(function () {
+        $('#btnReturnPart').click(async function () {
 
             let subTable = $('#rp_partsbills').DataTable();
             let rowSelect = subTable.row('.selected').data();
             // alert(JSON.stringify(rowSelect))
+            // return
+            //c-检查单据状态
+
+            let status = $('#rp_recordbillsForm-status').text()
+            if (status !== '维修中') {
+                alert('此单单据状态非维修中状态,无法进行此操作!')
+                return
+            }
 
             //检查退还零件条件
             if (!rowSelect) {
@@ -2738,6 +2752,114 @@
                 alert('非已领状态不允许退还!')
                 return
             }
+
+            //do-系统入库
+
+
+            let PIDArr = [{
+                PID: rowSelect.partId,
+                warehouseId: rowSelect.warehouseId
+            }];
+
+            // console.log('PIDArr', PIDArr);
+            let r0 = await initWarehousePID({
+                PIDArr: PIDArr
+            })
+            // console.log('r0', r0);
+
+            if (!r0) {
+                alert('初始化仓库数据错误', r0);
+                return
+            }
+
+            let mainFormData = getPostFormData({
+                formId: 'rp_recordbillsForm'
+            })
+
+            let mainTable = {
+                billFrom: '维修单',
+                billId: mainFormData.data[0].recordBillId,
+                customerId: 'HXKFB',
+                customerShortName: '弘讯客服部',
+                customerName: '弘讯客服部',
+                customerBelongShort: mainTableData.customerBelongShort,
+                contact: mainTableData.contact,
+                mobilePhone: mainTableData.mobilePhone,
+                workPhone: mainTableData.workPhone,
+                // sendWay: mainFormData.data[0].sendWay,
+                operator: sessionName,
+                address: mainTableData.address,
+                maker: sessionName,
+                makeDate: currentDate(),
+                auditor: sessionName,
+                auditDate: currentDate(),
+                status: '已审核',
+                remark: mainFormData.data[0].remark,
+            };
+            let subTableIn = [{
+                billId: rowSelect.recordBillId,
+                rowId: rowSelect.rowId,
+                productId: rowSelect.partId,
+                productName: rowSelect.partName,
+                productDescription: rowSelect.partDescription,
+                warehouseId: rowSelect.warehouseId,
+                warehouseName: rowSelect.warehouseName,
+                unit: rowSelect.unit,
+                num: rowSelect.num,
+                status: '已入',
+                remark: rowSelect.remark,
+                actType: '维修单',
+                rpBillId: rowSelect.recordBillId
+            }];
+
+            console.log('11111', mainTable, subTableIn);
+
+            let rIn = await autoInStoreBills({
+                mainTable: mainTable,
+                subTable: subTableIn
+            })
+            // console.log('r2',r2);
+
+            if (!rIn) {
+                alert('系统入库失败')
+                return
+            }
+
+            alert('退还零件成功,已自动生成配件入库单!')
+
+
+            //d-删除子表数据库
+
+
+            let delR = await postDBData({
+                sql: 'delete',
+                params: {
+                    tableId: 'rp_partsbills',
+                    data: [rowSelect.DBID]
+                }
+            })
+            console.log('delR', delR);
+            if (delR.affectedRows !== 1) {
+                alert('删除子表数据库错误!')
+                return
+            }
+
+            //d-删除子表显示
+            for (let i = 0; i < subTableData.length; i++) {
+                if (subTableData[i].productId === rowSelect.productId) {
+                    subTableData.splice(i, 1)
+                    break
+                }
+            }
+            console.log('subTableData111', subTableData);
+            loadDataSubTable({
+                elementId: 'rp_partsbills',
+                dataArray: subTableData
+            });
+            //关闭面板
+            $('#rp_partsbillsPanel').hide();
+
+
 
         })
 

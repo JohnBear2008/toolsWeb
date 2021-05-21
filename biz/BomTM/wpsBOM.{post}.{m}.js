@@ -17,7 +17,7 @@ module.exports = function (sender) {
 	if (ProductID != undefined && ProductID != '') {
 
 	} else {
-		ProductID = 'AU5-AAK0001-001';
+		ProductID = 'AU2-AWY0019-001'  ;//'AU5-AAK0001-001';
 	}
 	var Pattern = sender.req.query.Pattern;
 	var OutSour = sender.req.query.OutSour;
@@ -85,30 +85,49 @@ module.exports = function (sender) {
 		datas.push(level3);
 		sender.success(datas);
 	}
-	// SELECT Distinct 'szB' as ProdRank, lvb.[SubMaterialId]  , count(*) as TMC 
-	// FROM [BOMMainInfo] tba  
-	//  LEFT JOIN BOMSubMatInfo lvb on tba.[BOMKeyId] =lvb.[BOMKeyId]
-	// WHERE  tba.BOMKeyId = 'AU5-AAK0001-001' and lvb.[SubMatType]='0'  group by lvb.[SubMaterialId] 
 	function loop_Count(loopProdID) {
 		var SQLqry =
+		// SELECT 'szB' as ProdRank, lvb.[BOMKeyId] as MiddleID, count(*) as TMC  
+		// FROM [BOMSubMatInfo] tba   
+		// LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]   
+		//   LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] =lvb.BOMKeyId  
+		// WHERE  tba.BOMKeyId = 'AU2-AWY0019-001'   and lvb.[SubMatType]='0' 
+		// and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null )	 
+		// group by lvb.[BOMKeyId] 
 			"	SELECT 'szB' as ProdRank, lvb.[BOMKeyId] as MiddleID, '' as OptionID , count(*) as TMC " +
 			"	FROM [BOMSubMatInfo] tba  " +
 			"	LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]  " +
+			"     LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] =lvb.BOMKeyId " +
 			"	WHERE  tba.BOMKeyId = '" + loopProdID + "' and lvb.[SubMatType]='0'  " +
+			"     and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null ) " +
 			"	group by lvb.[BOMKeyId] " +
 			"     UNION " +
-			"    SELECT Distinct 'spB' as ProdRank, lvb.[SubMaterialId]  as MiddleID ,'' as OptionID , count(*) as TMC " +
-			"    FROM [BOMMainInfo] tba   " +
-			"     LEFT JOIN BOMSubMatInfo lvb on tba.[BOMKeyId] =lvb.[BOMKeyId] " +
-			"     LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId  " +
+			// SELECT 'spB' as ProdRank, lvb.[SubMaterialId]  as MiddleID , lvv.BOMKeyId as OptionID , 
+			// count(lvv.BOMKeyId) as TMC  FROM [BOMMainInfo] tba 
+			//  LEFT JOIN BOMSubMatInfo lvb on tba.[BOMKeyId] =lvb.[BOMKeyId]  
+			//  LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] =lvb.SubMaterialId    
+			//  LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId     
+			// and tba.BOMKeyId = 'AU2-AWY0019-001' and lvb.[SubMatType]='0' and lvv.[SubMatType]='0'    
+			// WHERE  tba.BOMKeyId =  'AU2-AWY0019-001'  and lvb.[SubMatType]='0' 
+			// and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null )
+			// group by lvb.[SubMaterialId] , lvv.BOMKeyId  	
+			"   SELECT 'spB' as ProdRank, lvb.[SubMaterialId]  as MiddleID , lvv.BOMKeyId as OptionID , " +
+			"   count(lvv.BOMKeyId) as TMC  FROM [BOMMainInfo] tba   " +
+			"   LEFT JOIN BOMSubMatInfo lvb on tba.[BOMKeyId] =lvb.[BOMKeyId] " +
+			" LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] =lvb.SubMaterialId    "+
+			"   LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId  " +
 			"    and tba.BOMKeyId = '" + loopProdID + "' and lvb.[SubMatType]='0' and lvv.[SubMatType]='0' " +
-			"    WHERE  tba.BOMKeyId =  '" + loopProdID + "'  and lvb.[SubMatType]='0'  group by lvb.[SubMaterialId]  " +
+			"    WHERE  tba.BOMKeyId =  '" + loopProdID + "'  and lvb.[SubMatType]='0' " +
+			" and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null ) " +
+			"    group by lvb.[SubMaterialId] , lvv.BOMKeyId " +
 			"	 union " +
 			"	SELECT 'szC' as ProdRank, lvv.[BOMKeyId] as MiddleID, '' as OptionID , count(*) as TMC   " +
 			"	FROM [BOMSubMatInfo] tba   " +
-			"	 LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]   " +
-			"	 LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId  " +
+			"    LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]   " +
+			// "    LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] = lvv.[BOMKeyId] " +
+			"    LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId  " +
 			"	WHERE  tba.BOMKeyId =  ? and lvb.[SubMatType]='0' and lvv.[SubMatType]='0' " +
+			// "    and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null ) " +
 			"	group by lvv.[BOMKeyId]    " +
 			"	union " +
 			// SELECT 'spC' as ProdRank,  
@@ -119,13 +138,17 @@ module.exports = function (sender) {
 			// WHERE  tba.BOMKeyId =  'AA3-A000022-003' 
 			// and lvb.[SubMatType]='0'  
 			// Group by  lvb.SubMaterialId,lvv.BOMKeyId		    
-			" SELECT 'spC' as ProdRank,   " +
-			"  lvb.SubMaterialId   as MiddleID, lvv.BOMKeyId as OptionID  ,  count(lvv.BOMKeyId) as TMC   FROM [BOMSubMatInfo] tba       " +
-			" LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]      " +
+			" SELECT 'spC' as ProdRank, lvb.SubMaterialId   as MiddleID, lvv.BOMKeyId as OptionID  , " +
+			" count(lvv.BOMKeyId) as TMC   FROM [BOMSubMatInfo] tba  " +
+			" LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]  " +
+			// " LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] = lvb.SubMaterialId   " +
 			" LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId        " +
 			" WHERE  tba.BOMKeyId =   '" + loopProdID + "'  " +
 			" and lvb.[SubMatType]='0'          " +
-			" Group by  lvb.SubMaterialId,lvv.BOMKeyId     " +
+			//这印刻有效
+			// "   and lvb.SubMaterialId <> 'AF4-A000039-A1T'  " + 
+			// " and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null ) " +
+			" Group by  lvb.SubMaterialId,lvv.BOMKeyId " +
 			"	union " +
 			"	  SELECT 'szD' as ProdRank, etb.[BOMKeyId] as MiddleID,'' as OptionID , count(*) as TMC  " +
 			"	FROM [BOMSubMatInfo] tba   " +
@@ -194,22 +217,23 @@ module.exports = function (sender) {
 						sizeB[lengthB] = TMC;
 						prodB[lengthB] = MiddleID;
 						if (lengthB > 0 && lengthB < 30) {
-							// console.log("序：", lengthB, "西B永", sizeB[lengthB], "狗:", prodB[lengthB]);
+							// console.log("序：", lengthB, "西B永", sizeB[lengthB], ":", prodB[lengthB]);
 						}
 						lengthB++;
 					} else if (Rank == 'spB') {
 						var TMCTot = ''; var MLBTot = 0; var EndFlag = 'N';
 						if (TMC != undefined && TMC != '') {
 							TMCTot = parseInt(TMC, 10);
+							MLBTot = parseInt(TMC, 10);
 							if (TMCTot == 0) {
-								TMCTot = '1'; MLBTot = 0;
+								TMCTot = '1'; 
 							} else {
-								MLBTot = TMCTot;
+								 
 							}
 						} else {
-							TMCTot = '1'; MLBTot = 0;
+							TMCTot = '1';  
 						}
-						if(MLBTot > 1){
+						if(MLBTot >= 1){
 							EndFlag = '否';
 						}else{
 							EndFlag = '是';
@@ -217,8 +241,8 @@ module.exports = function (sender) {
 						psizeB[splenB] = TMC;
 						middlB[splenB] = MiddleID;
 						enuchB[splenB] =  EndFlag;
-						if (splenB > 0 && splenB < 30) {
-						//     console.log("东B涌", psizeB[splenB], "帮到忙", middlB[splenB], "好勒", enuchB[splenB]);
+						if (splenB > 0 && splenB < 3) {
+						    console.log("B人爱", MLBTot ,"东B", psizeB[splenB], "帮到忙", middlB[splenB], "好勒", enuchB[splenB]);
 						}
 						splenB++;
 					} else if (Rank == 'szC') {
@@ -230,15 +254,16 @@ module.exports = function (sender) {
 						var TMCTot = ''; var MLBTot = 0; var EndFlag = 'N';
 						if (TMC != undefined && TMC != '') {
 							TMCTot = parseInt(TMC, 10);
+							MLBTot = parseInt(TMC, 10);
 							if (TMCTot == 0) {
-								TMCTot = '1'; MLBTot = 0;
+								TMCTot = '1'; 
 							} else {
-								MLBTot = TMCTot;
+								 
 							}
 						} else {
-							TMCTot = '1'; MLBTot = 0;
+							TMCTot = '1';  
 						}
-						if(MLBTot > 1){
+						if(MLBTot >= 1){//避免 压力传感器AF4-A000039-A1T 为否
 							EndFlag = '否';
 						}else{
 							EndFlag = '是';
@@ -250,7 +275,7 @@ module.exports = function (sender) {
 							if(middlC[splenC]=='AEK-A020120-A00'){
 								console.log( "零度", enuchC[splenC] ,"应该是终点", psizeC[splenC], "帮到忙", middlC[splenC]);
 							}
-							console.log("东C涌", psizeC[splenC], "帮到忙", middlC[splenC], "零度", enuchC[splenC]);
+							// console.log("东C涌", psizeC[splenC], "帮到忙", middlC[splenC], "零度", enuchC[splenC]);
 						}
 						splenC++;
 					} else if (Rank == 'szD') {
@@ -262,15 +287,16 @@ module.exports = function (sender) {
 						var TMCTot = ''; var MLBTot = 0; var EndFlag = 'N';
 						if (TMC != undefined && TMC != '') {
 							TMCTot = parseInt(TMC, 10);
+							MLBTot = parseInt(TMC, 10);
 							if (TMCTot == 0) {
-								TMCTot = '1'; MLBTot = 0;
+								TMCTot = '1'; 
 							} else {
-								MLBTot = TMCTot;
+								 
 							}
 						} else {
-							TMCTot = '1'; MLBTot = 0;
+							TMCTot = '1';  
 						}
-						if(MLBTot > 1){
+						if(MLBTot >= 1){
 							EndFlag = '否';
 						}else{
 							EndFlag = '是';
@@ -279,7 +305,7 @@ module.exports = function (sender) {
 						psizeD[splenD] = TMCTot;
 						middlD[splenD] = MiddleID;
 						if (splenD > 0 && splenD < 30) {
-							console.log("东D涌", splenD, "套餐", psizeD[splenD], "帮", middlD[splenD]);
+							// console.log("东D涌", splenD, "套餐", psizeD[splenD], "帮", middlD[splenD]);
 						}
 						splenD++;
 					} else if (Rank == 'szE') {
@@ -299,7 +325,7 @@ module.exports = function (sender) {
 						} else {
 							TMCTot = '1'; MLBTot = 0;
 						}
-						if(MLBTot > 1){
+						if(MLBTot >= 1){
 							EndFlag = '否';
 						}else{
 							EndFlag = '是';
@@ -391,12 +417,14 @@ module.exports = function (sender) {
 			" convert (varchar(20),prc.StandPrice  )  as StandPrice," +
 			" tcm.[CU_OldMaterialId] as OldMat , tcm.[CU_OldMaterialSpec] as OldSpc  , tcm.[TotalStkQty] as TotQty ,  convert (varchar(20),cmv.Quantity  ) as CabinA  FROM [BOMSubMatInfo] tba   " +
 			" LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId] " +
+			" LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] = lvb.SubMaterialId " +
 			" LEFT JOIN comMaterial tcm on lvb.SubMaterialId =tcm.[MaterialId] " +
 			" LEFT JOIN  [stkWareHouseAccountDetail]  cmv on tcm.[MaterialId] = cmv.[MaterialId]  and cmv.[WarehouseId] = 'NBA'  and StkBizAttr='1'   " +
 			" LEFT JOIN comMaterialCategory tic on subString(lvb.SubMaterialId,2,2) =tic.MaterialCategoryId  " +
 			" LEFT JOIN [comMaterialGroup] ktb on ktb.MaterialId  = lvb.SubMaterialId  " +
 			" LEFT JOIN comMaterialPurchases prc on lvb.SubMaterialId = prc.MaterialId " +
 			" WHERE  tba.BOMKeyId =  ?  and lvb.[SubMatType]='0'  " +
+			" and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null ) " +
 			"  Union   " +
 			" SELECT 'D' as ProdRank,  ktb.MaterialName ,   subString(lvv.SubMaterialId,2,2) as ClassID , tic.MaterialCategoryName as PartsChi , lvv.[SubMatType],  lvv.[BOMKeyId] as ParentID,  " +
 			"  lvv.BOMKeyId  as MiddleID , lvv.SubMaterialId as LastID, lvv.UnitQty as [UnitQty] , lvv.WasteRate as [WasteRate] , '' as Remark , lvv.[SubMaterialSpec] as ProdName , " +
@@ -545,7 +573,7 @@ module.exports = function (sender) {
 					}
 					resolve('长安城少东');
 					for (var i = 0; i < binrec.length; i++) {
-						if (i >= 0 && i < 5) {
+						if (i >= 0 && i < 1) {
 							console.log("皮", binrec[i]);
 						}
 					}
@@ -586,6 +614,7 @@ module.exports = function (sender) {
 			};
 			datas.push(level3);
 			sender.success(datas);
+			// sender.success(binrec);
 			console.log("异常", data);
 		});
 	}
@@ -613,12 +642,21 @@ module.exports = function (sender) {
 				lenAA++;
 			} else if (Rank == 'B') {
 				dataBB[lenBB] = data[i];
+				if(data[i].LastID =='AF4-A000040-A1T'){
+					console.log("B男神....", data[i].LastID);
+				}
 				lenBB++;
 			} else if (Rank == 'C') {
 				dataCC[lenCC] = data[i];
+				if(data[i].LastID =='AF4-A000039-A1T'){
+					console.log("C男神....", data[i].LastID);
+				}
 				lenCC++;
 			} else if (Rank == 'D') {
 				dataDD[lenDD] = data[i];
+				if(data[i].LastID =='AF4-A000050-A7R'){
+					console.log("D男神....", data[i].LastID,"粗暴--",lenDD);
+				}
 				lenDD++;
 			} else if (Rank == 'E') {
 				dataEE[lenEE] = data[i];
@@ -670,7 +708,7 @@ module.exports = function (sender) {
 			display = PartsOldName;
 			displayCode = PartsOldCode;
 			// var sibling = psizeB[SN2No - 1];
-			var sibling = ''; var enuch = '';
+			var sibling = '1'; var enuch = '是';
 			for (var ki = 0; ki < data.length; ki++) {
 				if (middlB[ki] == displayCode) {
 					sibling = psizeB[ki]; enuch= enuchB[ki];
@@ -738,6 +776,9 @@ module.exports = function (sender) {
 				if (showTime > 2) {
 					for (var ki = 0; ki < lengthB; ki++) {
 						if (prodB[ki] == provCCC[provlen]) {// 瞬移
+							if(prodB[ki] =='AF4-A000039-A1T'){
+								console.log("比特币", provCCC[provlen]);
+							}
 							run3Floor(AAA, provi[provlen], provCCC[provlen], dataCC, dataDD, dataEE, dataFF, lowerB[ki], upperB[ki], lowerC, upperC, lowerD, upperD, lowerE, upperE);
 						}
 					}
@@ -755,7 +796,13 @@ module.exports = function (sender) {
 		let BBB = [];
 		var SN3No = 1;
 		// for (var i = 0; i < data.length; i++) {
-		for (var i = lowB; i < (uppB); i++) {   //这是OK的 
+		var lowFix = 0;
+		if(lowB <=0 ){
+			
+		}else{
+			lowFix = lowB-1;
+		}
+		for (var i = lowFix; i < (uppB); i++) {   //这是OK的 
 			SN3No++;
 			var Rank = data[i].ProdRank;
 			if (Rank == 'C') {
@@ -781,7 +828,7 @@ module.exports = function (sender) {
 				display = PartsOldName;
 				displayCode = PartsOldCode;
 				// var sibling = psizeC[SN3No - 2];
-				var sibling = ''; var enuch = '';
+				var sibling = '1'; var enuch = '是';
 				for (var gi = 0; gi < splenC; gi++) {
 					if (middlC[gi] == displayCode) {
 						sibling = psizeC[gi]; enuch = enuchC[gi];
@@ -853,6 +900,9 @@ module.exports = function (sender) {
 					}
 					if (showTime > 3) {
 						for (var ki = 0; ki < lengthC; ki++) {
+							// if(prodC[ki] =='AF4-A000039-A1T'){
+							// 	console.log("狗狗币", prodC[ki] );
+							// }
 							if (prodC[ki] == cityCCC[citylen]) {
 								// console.log("骑射 ", ki , "喷 "+psizeD[ki]);
 								 run4Floor(ki, BBB, citie[citylen], cityCCC[citylen], dataDD, dataEE, dataFF, lowerC[ki], upperC[ki], lowerD, upperD, lowerE, upperE);
@@ -873,8 +923,14 @@ module.exports = function (sender) {
 		let areaSED = []; let areaPRC = []; let areaCOS = []; let areaEND = [];
 		let CCC = [];
 		var SN4No = 0;
-		// console.log("凑", lowC ,"最大 ",uppC ,"正确",data.length ,"夏 ",lv4OID);
-		for (var i = lowC; i < uppC; i++) {
+		console.log("凑", lowC ,"最大 ",uppC ,"正确",data.length ,"夏 ",lv4OID);
+		var lowFix = 0;
+		if(lowC <=0 ){
+			
+		}else{
+			lowFix = lowC-1;
+		}
+		for (var i = lowFix; i < uppC; i++) {
 			if (data[i] != null && data[i] != undefined) {
 				SN4No++;
 				var combine = '';
@@ -901,6 +957,9 @@ module.exports = function (sender) {
 				displayCode = PartsOldCode;
 				// combine =   display + '##'  +  OID + '##' + displayCode + '##' + PID + '##' + Dosage + '##' + Damage + '##' + PartsChi + '##' + Descrip;
 				if (Rank == 'D' && lv4OID == MiddleID) {  //1BP_S600_AD05FM1   AD板
+					if(MiddleID =='AF4-A000039-A1T'){
+						console.log("@@@@@@@抓到狗币", lv4OID,"才闪亮", PartsCode);
+					}					 
 					areai.push(OID);
 					areaNNN.push(display);
 					areaCCC.push(displayCode);
@@ -914,12 +973,12 @@ module.exports = function (sender) {
 					areaQTY.push(TotQty);
 					areaCAB.push(CabinA);
 					// var sibling = psizeD[SN4No - 1];
-					var sibling = '';	var enuch = '';
+					var sibling = '1'; var enuch = '是';
 					// if('AEK-A030053-A61'==displayCode){
 					for (var gi = 0; gi < splenD; gi++) {
 						if (middlD[gi] == displayCode) {
 							sibling = psizeD[gi]; enuch = enuchD[gi];
-							// console.log("砸场D", sibling ,"爱：",displayCode);
+						//      console.log("砸场D", sibling ,"爱：",displayCode);
 						}
 					}
 					// }
@@ -960,11 +1019,11 @@ module.exports = function (sender) {
 						, isend: areaEND[arealen]
 						, children: CCC
 					}
-					if (areaCCC[arealen] == 'AEK-A030090-AB9' || areai[arealen] == '42') {
-						// console.log("斗酒酒", areaCCC[arealen]);
-						// console.log("曲长歌", sibling, "傻才是", areaSED[arealen]);
-						// console.log("剑天涯", StandPrice, "沧海笑", areaPRC[arealen] );
-						// console.log("一一一", fincost);
+					if (areaCCC[arealen] == 'AF4-A000050-A7R' ) {
+						console.log("斗酒酒", areaCCC[arealen]);
+						console.log("曲长歌", sibling, "傻才是", areaSED[arealen]);
+						console.log("剑天涯", StandPrice, "沧海笑", areaPRC[arealen] );
+						console.log("一一一", fincost);
 					}
 					if (DEBUG == '1') {
 						if (areai[arealen] > '400' && areai[arealen] < '410') {
@@ -1045,7 +1104,7 @@ module.exports = function (sender) {
 					allyCAB.push(CabinA);
 					var finprice = '';
 					// var sibling = psizeE[SN5No - 1];
-					var sibling = '';	var enuch = '';
+					var sibling = '1'; var enuch = '是';
 					for (var gi = 0; gi < splenE; gi++) {
 						if (middlE[gi] == displayCode) {
 							sibling = psizeE[gi]; enuch = enuchE[gi];
