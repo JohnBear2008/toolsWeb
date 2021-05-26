@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-02 10:16:51
- * @LastEditTime: 2021-04-22 12:54:03
+ * @LastEditTime: 2021-05-25 13:53:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
@@ -31,8 +31,9 @@ const getUrl = (type) => {
         case 'installInfo':
             apiUrl = 'getInstallInfo'
             break;
-
-
+        case 'getStoreHistoryRPIn':
+            apiUrl = 'getStoreHistoryRPIn'
+            break;
         default:
             console.log("无法识别type");
             break;
