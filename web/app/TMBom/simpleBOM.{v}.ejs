@@ -48,18 +48,24 @@
 <!-- swal-->
 <script src="/js/sweetalert.min.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
 	<body>
 		<form class="layui-form" action=""></form>
 		<div style="z-index:999;position:absolute;left:5px;width:40px;height:40px;">
 			<img id="DivAuditImage" src="/images/logo.png">
 		</div>
-		<h1 style="margin-top:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 弘讯科技二阶BOM
+		<!-- <h1 style="margin-top:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 弘讯科技二阶BOM
 			&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-		</h1>
+		</h1> -->
 		<div class=" layui-btn-container" style="position:absolute;top:5px;left:430px">
-			<button id="SeaBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">查找</button>
+			<!-- <button id="ExlBtn" class="layui-btn layui-btn-primary layui-border layui-btn-lg">报告</button> -->
+			<button id="SeaBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">确认</button>
+			<!-- <button id="ZoomBtn" class="layui-btn layui-btn-primary layui-border-blue layui-btn-lg">子点</button> -->
 			<button id="AdvOpen" class="layui-btn layui-btn-primary layui-border-orange layui-btn-lg">进阶</button>
+			<!-- <button id="DetailBtn" class="layui-btn layui-btn-primary layui-border-red layui-btn-lg">解析</button> -->
+			<!-- <button id="PurchBtn" class="layui-btn layui-btn-primary layui-border-black layui-btn-lg">单价</button> -->
 			<button id="DisplayBtn" class="layui-btn layui-btn-primary layui-border layui-btn-lg">栏位</button>
+			<!-- <button id="NextBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">回上页</button> -->
 		</div>
 		<br></br>
 		<div class="divcontent">
@@ -69,22 +75,24 @@
 			<input class="can-find-M260" id="ProductName" name="ProductName" value="TKC_A60_M5C" autocomplete="off">
 			&nbsp;&nbsp;&nbsp; -->
 				<label> ID: </label>
-				<input class="can-find-M260" id="ProductID" name="ProductID" value="" autocomplete="off">
-				<label> 名称: </label>
-				<input class="can-find-M260" id="ProductName" name="ProductName" readonly="readonly" value=""
-					autocomplete="off">
+				<input class="can-find-M260" list="searchbox" id="ProductID" class="feeDrop"  >
+				<datalist id="searchbox" name="searchbox">
+				</datalist>
+				<!-- <input class="can-find-M260" id="ProductID" name="ProductID" value="" autocomplete="off"> -->
 				<label> 旧代码: </label>
-				<input class="can-find-M260" id="OldMat" name="OldMat" readonly="readonly" value=""
-					autocomplete="off">
+				<input class="can-find-M260" id="OldMat" name="OldMat" value="" autocomplete="off">
 				&nbsp;&nbsp;&nbsp;
-				<label> 规格: </label>
+				<button id="LookBtn" class="btn btn-default">旧代码查找</button>
+				<!-- <label> 名称: </label> -->
+				<input class="can-find-M260" id="ProductName" name="ProductName" readonly="readonly" value=""
+					autocomplete="off" style="visibility:hidden">
+				<!-- <label> 规格: </label> -->
 				<input class="can-find-M260" id="OldSpc" name="OldSpc" readonly="readonly" value=""
-					autocomplete="off">
-				&nbsp;&nbsp;&nbsp;
+					autocomplete="off" style="visibility:hidden">
 				<!-- <label>模式:</label>
 				<select id="Pattern" name="Pattern" class="can-find-M140"></select>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-				<!-- <label>生产:</label>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label>生产:</label>
 				<select id="OutSour" name="OutSour" class="can-find-M140"></select>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
 			</div>
@@ -95,7 +103,6 @@
 			<div class="form-group">
 				<span id="spanID" class="green-label-small"> 编号 </span>
 				<input id="prodID" class="can-drop" type="text" value="">
-
 				<span id="spanNM" class="green-label-small"> 名称 </span>
 				<input id="prodNM" class="can-drop-spec" type="text" value="">
 				<br />
@@ -114,6 +121,7 @@
 			</div>
 			<br />
 		</div>
+		<br></br>
 		<!-- title="弘讯科技BOM表" -->
 		<table id='dg' class="easyui-treegrid" style="width:1370px;height:650px" data-options="
 	    data: rows,
@@ -430,16 +438,17 @@
 		<!-- style="width:400px;height:360px;background-color: aliceblue;" -->
 		<div id="root" style="height: 100%"></div>
 		<script>
-	var sessionName = "<%-locals.session.yjUser.Name%>";
-	let sessionOID = "<%-locals.session.yjUser.OID%>";
-	let sessionAID = "<%-locals.session.yjUser.AID%>"; 
+			var sessionName = "<%-locals.session.yjUser.Name%>";
+			let sessionOID = "<%-locals.session.yjUser.OID%>";
+			let sessionAID = "<%-locals.session.yjUser.AID%>";
 			var missAType = '';
 			var missBType = '';
 			var bill_choose = '';
 			var code_choose = '';
 			var Category = '';
-			var ProductID = '';
+			var ProductOldID = '';
 			var Pattern = '';
+			var OutSour = '';
 			var OutSour = '';
 			var glbpcode = '';
 			var glbpname = '';
@@ -495,17 +504,17 @@
 				}
 			}
 			$(document).ready(function () {
-				var init = NoObfuscate();
-				if(!init){
-					$("#ExlBtn").attr("disabled","true");
-					$("#SeaBtn").attr("disabled","true");
-					$("#ZoomBtn").attr("disabled","true");
-					$("#AdvOpen").attr("disabled","true");
-					$("#DetailBtn").attr("disabled","true");
-					$("#PurchBtn").attr("disabled","true");
-					$("#DisplayBtn").attr("disabled","true");
-					$("#NextBtn").attr("disabled","true");
-				}
+				// var init = NoObfuscate();
+				// if(!init){
+				// 	$("#ExlBtn").attr("disabled","true");
+				// 	$("#SeaBtn").attr("disabled","true");
+				// 	$("#ZoomBtn").attr("disabled","true");
+				// 	$("#AdvOpen").attr("disabled","true");
+				// 	$("#DetailBtn").attr("disabled","true");
+				// 	$("#PurchBtn").attr("disabled","true");
+				// 	$("#DisplayBtn").attr("disabled","true");
+				// 	$("#NextBtn").attr("disabled","true");
+				// }
 				layui.use(['form', 'layedit', 'laydate'], function () {
 					var form = layui.form
 						, layer = layui.layer
@@ -536,6 +545,10 @@
 				var prodID = $('#prodID').val();
 				var prodNM = $('#prodNM').val();
 				CriteriaAdv9(prodID, prodNM);
+			});
+			$('#LookBtn').click(function () {
+				var OldMat = $('#OldMat').val();
+				OldMateLook(OldMat);
 			});
 			$('#AdvOK').click(function () {
 				var LifeValue = $('#LifeValue').val();
@@ -594,7 +607,7 @@
 				$('#dg').treegrid('reload');
 
 			});
-			
+
 			function cabinFirst() {
 				layer.msg('加载中', {
 					icon: 16
@@ -606,18 +619,24 @@
 				Pattern = $('#Pattern').val();
 				OutSour = $('#OutSour').val();
 				Category = $('#ProductName').val();
-                        var showTime = '2';
-                        if(OutSour !=undefined && OutSour !=null){
+				ProductOldID = $('#OldMat').val();
+				var showTime = '2';
+				if (OutSour != undefined && OutSour != null) {
 
-                        }else{
-                              OutSour = '0';
-                        }
-				var taskData = { "reportType": reportType, "showTime": showTime, "ProductName": Category, "ProductID": ProductID, "Pattern": Pattern, "OutSour": OutSour };
+				} else {
+					OutSour = '0';
+				}
+				var taskData = {
+					"reportType": reportType, "showTime": showTime, "ProductName": Category, "ProductID": ProductID,
+					"ProductOldID": ProductOldID, "Pattern": Pattern, "OutSour": OutSour
+				};
+				console.log("随缘", taskData);
 				$('#dg').treegrid('remove', 0);
 				$.ajax({
 					method: 'post',
 					data: taskData,
 					url: "/app/TMBom/getRoute",
+					// url: "/app/TMErp/getRoute",
 					success: function (data) {
 						let dataT = [];
 						const json2 = JSON.stringify(data);

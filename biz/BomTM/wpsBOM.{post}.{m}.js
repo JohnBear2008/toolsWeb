@@ -12,16 +12,15 @@ module.exports = function (sender) {
 	}
 	var ProductName = sender.req.query.ProductName;
 	var ProductID = sender.req.query.ProductID;
+	var ProductOldID = sender.req.query.ProductOldID;
 	var sendshowTime = sender.req.query.showTime;
+	var loopProdID = '';
 	var showTime = parseInt(sendshowTime, 10);
-	if (ProductID != undefined && ProductID != '') {
-
-	} else {
-		ProductID = 'AU2-AWY0019-001'  ;//'AU5-AAK0001-001';
-	}
+	
 	var Pattern = sender.req.query.Pattern;
 	var OutSour = sender.req.query.OutSour;
-	console.log(" BOM名：", ProductID);
+	var Option = sender.req.query.Option;
+	console.log("  输出：", Option ,"  新ID：", ProductID , "  旧ID：", ProductOldID);
 	let binrec = [];
 	//A仓版
 	var DEBUG = '1'; //0不除错 1 显示输出
@@ -64,7 +63,10 @@ module.exports = function (sender) {
 	let upperE = [];
 	let lowerE = [];
 	if (ProductID != "" && ProductID != "null" && ProductID != undefined && ProductID.length > 0) {
-		loop_Count(ProductID);
+		// loop_Count(ProductID);
+		valid_ProdID(ProductID , ProductOldID);
+	} else if (ProductOldID != "" && ProductOldID != "null" && ProductOldID != undefined && ProductOldID.length > 0) {
+		valid_ProdID(ProductID , ProductOldID);
 	} else {
 		var datas = [];
 		let level3 = {
@@ -85,7 +87,42 @@ module.exports = function (sender) {
 		datas.push(level3);
 		sender.success(datas);
 	}
-	function loop_Count(loopProdID) {
+	function valid_ProdID(ProductID ,ProductOldID) {
+		console.log(" 夏日阳光舞台中央", ProductID ,"---",ProductOldID  );
+	// 	SELECT bma.BOMKeyId FROM [T9CS02].[dbo].comMaterial tba
+	//      LEFT JOIN [BOMMainInfo] bma on tba.[MaterialId] = bma.BOMKeyId
+	//      where tba.[CU_OldMaterialId]='08AK050THYB3HS333B22' OR tba.[MaterialId]='AU5-AAK0001-001'
+	// SELECT bma.BOMKeyId FROM  comMaterial tba
+	// LEFT JOIN [BOMMainInfo] bma on tba.[MaterialId] = bma.[MaterialId]
+	// where tba.[MaterialId] = 'AU5-AWC0003-001'
+	//   OR tba.[CU_OldMaterialId]= ''
+		var SQLqry =
+			"  SELECT bma.BOMKeyId FROM  comMaterial tba  " +
+			"  LEFT JOIN [BOMMainInfo] bma on tba.[MaterialId] = bma.[MaterialId]  " +
+			"  where tba.[MaterialId] = '" + ProductID + "' OR tba.[CU_OldMaterialId]= '" + ProductOldID + "'  "   ;
+			// console.log(" 人家可是很有料的 ",  SQLqry  );
+		yjDBService_sqlserver.exec({
+			connectionOptions: connection,
+			sql: SQLqry,
+			parameters: [ ],
+			success: function (r) {
+				var datas = []
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				// console.log(" 羞涩的初次公演", data.length  );
+				for (var i = 0; i < data.length; i++) {
+					// console.log(" 公演", data[i].BOMKeyId  );
+					if(data[i].BOMKeyId !=undefined && data[i].BOMKeyId !='null' && data[i].BOMKeyId !=null && data[i].BOMKeyId.length>0){
+						loopProdID = data[i].BOMKeyId;	
+						console.log(" BOM名：", loopProdID  );
+						loop_Count( loopProdID);
+					}
+				}
+								 
+			},
+			error: sender.error
+		})
+	}
+	function loop_Count( loopProdID) {
 		var SQLqry =
 		// SELECT 'szB' as ProdRank, lvb.[BOMKeyId] as MiddleID, count(*) as TMC  
 		// FROM [BOMSubMatInfo] tba   
@@ -242,7 +279,7 @@ module.exports = function (sender) {
 						middlB[splenB] = MiddleID;
 						enuchB[splenB] =  EndFlag;
 						if (splenB > 0 && splenB < 3) {
-						    console.log("B人爱", MLBTot ,"东B", psizeB[splenB], "帮到忙", middlB[splenB], "好勒", enuchB[splenB]);
+						//     console.log("B人爱", MLBTot ,"东B", psizeB[splenB], "帮到忙", middlB[splenB], "好勒", enuchB[splenB]);
 						}
 						splenB++;
 					} else if (Rank == 'szC') {
@@ -272,9 +309,9 @@ module.exports = function (sender) {
 						psizeC[splenC] = TMCTot;
 						middlC[splenC] = MiddleID;
 						if (splenC > 0 && splenC < 500) {
-							if(middlC[splenC]=='AEK-A020120-A00'){
-								console.log( "零度", enuchC[splenC] ,"应该是终点", psizeC[splenC], "帮到忙", middlC[splenC]);
-							}
+							// if(middlC[splenC]=='AEK-A020120-A00'){
+							// 	console.log( "零度", enuchC[splenC] ,"应该是终点", psizeC[splenC], "帮到忙", middlC[splenC]);
+							// }
 							// console.log("东C涌", psizeC[splenC], "帮到忙", middlC[splenC], "零度", enuchC[splenC]);
 						}
 						splenC++;
@@ -342,12 +379,12 @@ module.exports = function (sender) {
 					}
 					// datas.push(temp);
 				}
-				caculate();
+				caculate( );
 			},
 			error: sender.error
 		})
 	}
-	function caculate() {
+	function caculate( ) {
 		var quanity = 0;
 		var accumu = 0;
 		for (var i = 0; i < lengthB; i++) {
@@ -384,24 +421,25 @@ module.exports = function (sender) {
 			accuE = accuE + quanE;
 			// console.log("台", lowerE[i], "敏", upperE[i], "对=>", sizeE[i]);
 		}
-		loop_NLevel(lowerB, upperB, lowerC, upperC, lowerD, upperD, lowerE, upperE);
+		loop_NLevel( lowerB, upperB, lowerC, upperC, lowerD, upperD, lowerE, upperE);
 	}
-	function loop_NLevel(lowerB, upperB, lowerC, upperC, lowerD, upperD, lowerE, upperE) {
+	function loop_NLevel( lowerB, upperB, lowerC, upperC, lowerD, upperD, lowerE, upperE) {
 		let state = []; let statAAA = []; let statRRR = []; let statQTY = []; let statCAB = []; let statNNN = []; let statCCC = []; let statUSG = []; let statWAS = []; let statCHI = []; let statDES = []; let statPPP = []; let statlen = 0; let statCHD = []; let statSTP = [];
-		let statSED = []; let statPRC = []; let statCOS = [];let statEND = [];
+		let statSED = []; let statPRC = []; let statCOS = []; let statSUP = []; let statCUR = []; let statEND = [];
 		var datas = [];
 		var SQLqry =
 			" SELECT  DISTINCT 'A' as ProdRank,  tba.BOMKeyName as MaterialName ,tba.BOMKeyName as ClassID , tba.BOMKeyName  as PartsChi ,tba.BOMStyleId, tba.[BOMKeyId] as ParentID,  " +
 			" tba.[BOMKeyId] as MiddleID , '' as  LastID  , 0 as [UnitQty] , 0 as [WasteRate] ,'' as Remark ,  tba.[BOMKeyName] as ProdName , " +
-			"  convert (varchar(20),prc.StandPrice  )  as StandPrice,  " +
+			"  convert (varchar(20),prc.StandPrice  )  as StandPrice,   cbp.[BizPartnerName] as SupplyId, prc.[CurrId] , " +
 			"  tcm.[CU_OldMaterialId] as OldMat ,tcm.[CU_OldMaterialSpec] as OldSpc , tcm.[TotalStkQty] as TotQty , '' as CabinA   FROM [BOMMainInfo] tba   " +
 			" LEFT JOIN comMaterial tcm on tba.[BOMKeyId] =tcm.[MaterialId] " +
 			" LEFT JOIN comMaterialPurchases prc on tba.[BOMKeyId] = prc.MaterialId  " +
+			" LEFT JOIN comBusinessPartner cbp on prc.[SupplyId] = cbp.[BizPartnerId] " +
 			" WHERE  tba.BOMKeyId =  ?  " +
 			"  Union   " +
 			" SELECT DISTINCT 'B' as ProdRank, ktb.MaterialName , subString(lvb.SubMaterialId,2,2) as ClassID , tic.MaterialCategoryName as PartsChi,tba.BOMStyleId, tba.[BOMKeyId] as ParentID,  " +
 			" tba.[BOMKeyId] as MiddleID ,lvb.SubMaterialId  as LastID, lvb.UnitQty as [UnitQty] ,lvb.WasteRate as [WasteRate] , '' as Remark , lvb.[SubMaterialSpec] as ProdName  , " +
-			" convert (varchar(20),prc.StandPrice  )  as StandPrice," +
+			" convert (varchar(20),prc.StandPrice  )  as StandPrice,  cbp.[BizPartnerName] as SupplyId, prc.[CurrId] ," +
 			" tcm.[CU_OldMaterialId] as OldMat , tcm.[CU_OldMaterialSpec] as OldSpc , tcm.[TotalStkQty] as TotQty ," +
 			"   convert (varchar(20),cmv.Quantity  ) as CabinA  FROM [BOMMainInfo] tba   " +
 			" LEFT JOIN BOMSubMatInfo lvb on tba.[BOMKeyId] =lvb.[BOMKeyId] " +
@@ -410,11 +448,12 @@ module.exports = function (sender) {
 			" LEFT JOIN comMaterialCategory tic on subString(lvb.SubMaterialId,2,2) =tic.MaterialCategoryId  " +
 			" LEFT JOIN [comMaterialGroup] ktb on ktb.MaterialId  = lvb.SubMaterialId  " +
 			" LEFT JOIN comMaterialPurchases prc on lvb.SubMaterialId = prc.MaterialId " +
+			" LEFT JOIN comBusinessPartner cbp on prc.[SupplyId] = cbp.[BizPartnerId] " +
 			" WHERE  tba.BOMKeyId =  ?  and lvb.[SubMatType]='0' " +
-			" Union   " +
+			" Union  " +
 			" SELECT 'C' as ProdRank, ktb.MaterialName ,  subString(lvb.SubMaterialId,2,2) as ClassID, tic.MaterialCategoryName as PartsChi , lvb.[SubMatType],  lvb.[BOMKeyId] as ParentID,  " +
 			" lvb.[BOMKeyId] as MiddleID , lvb.SubMaterialId as LastID, lvb.UnitQty as [UnitQty] ,lvb.WasteRate as [WasteRate] , '' as Remark , lvb.[SubMaterialSpec] as ProdName  ,   " +
-			" convert (varchar(20),prc.StandPrice  )  as StandPrice," +
+			" convert (varchar(20),prc.StandPrice  )  as StandPrice,  cbp.[BizPartnerName] as SupplyId, prc.[CurrId] ," +
 			" tcm.[CU_OldMaterialId] as OldMat , tcm.[CU_OldMaterialSpec] as OldSpc  , tcm.[TotalStkQty] as TotQty ,  convert (varchar(20),cmv.Quantity  ) as CabinA  FROM [BOMSubMatInfo] tba   " +
 			" LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId] " +
 			" LEFT JOIN [BOMMainInfo] vat on vat.[BOMKeyId] = lvb.SubMaterialId " +
@@ -423,12 +462,13 @@ module.exports = function (sender) {
 			" LEFT JOIN comMaterialCategory tic on subString(lvb.SubMaterialId,2,2) =tic.MaterialCategoryId  " +
 			" LEFT JOIN [comMaterialGroup] ktb on ktb.MaterialId  = lvb.SubMaterialId  " +
 			" LEFT JOIN comMaterialPurchases prc on lvb.SubMaterialId = prc.MaterialId " +
+			" LEFT JOIN comBusinessPartner cbp on prc.[SupplyId] = cbp.[BizPartnerId] " +
 			" WHERE  tba.BOMKeyId =  ?  and lvb.[SubMatType]='0'  " +
 			" and ( vat.[ValidityToDate] = '99999999' OR vat.[ValidityToDate] is null ) " +
 			"  Union   " +
 			" SELECT 'D' as ProdRank,  ktb.MaterialName ,   subString(lvv.SubMaterialId,2,2) as ClassID , tic.MaterialCategoryName as PartsChi , lvv.[SubMatType],  lvv.[BOMKeyId] as ParentID,  " +
 			"  lvv.BOMKeyId  as MiddleID , lvv.SubMaterialId as LastID, lvv.UnitQty as [UnitQty] , lvv.WasteRate as [WasteRate] , '' as Remark , lvv.[SubMaterialSpec] as ProdName , " +
-			"  convert (varchar(20),prc.StandPrice  )  as StandPrice, " +
+			"  convert (varchar(20),prc.StandPrice  )  as StandPrice,   cbp.[BizPartnerName] as SupplyId, prc.[CurrId] ," +
 			"  tcm.[CU_OldMaterialId] as OldMat , tcm.[CU_OldMaterialSpec] as OldSpc  , tcm.[TotalStkQty] as TotQty ,   convert (varchar(20),cmv.Quantity  ) as CabinA  FROM [BOMSubMatInfo] tba   " +
 			"  LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]     " +
 			"  LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId " +
@@ -437,11 +477,12 @@ module.exports = function (sender) {
 			" LEFT JOIN comMaterialCategory tic on subString(lvv.SubMaterialId,2,2) =tic.MaterialCategoryId  " +
 			" LEFT JOIN [comMaterialGroup] ktb on ktb.MaterialId  = lvv.SubMaterialId  " +
 			" LEFT JOIN comMaterialPurchases prc on lvv.SubMaterialId = prc.MaterialId " +
+			" LEFT JOIN comBusinessPartner cbp on prc.[SupplyId] = cbp.[BizPartnerId] " +
 			" WHERE  tba.BOMKeyId =  ?  and lvb.[SubMatType]='0' and lvv.[SubMatType]='0' " +
 			"  Union   " +
 			" SELECT 'E' as ProdRank,  ktb.MaterialName ,  subString(etb.SubMaterialId,2,2) as ClassID, tic.MaterialCategoryName as PartsChi , etb.[SubMatType],  etb.[BOMKeyId] as ParentID,  " +
 			"  etb.BOMKeyId  as MiddleID , etb.SubMaterialId as LastID, etb.UnitQty as [UnitQty] , etb.WasteRate as [WasteRate] ,'' as Remark , etb.[SubMaterialSpec] as ProdName , " +
-			" convert (varchar(20),prc.StandPrice  )  as StandPrice, " +
+			" convert (varchar(20),prc.StandPrice  )  as StandPrice,   cbp.[BizPartnerName] as SupplyId, prc.[CurrId] ," +
 			"  tcm.[CU_OldMaterialId] as OldMat , tcm.[CU_OldMaterialSpec] as OldSpc , tcm.[TotalStkQty] as TotQty ,    convert (varchar(20),cmv.Quantity  ) as CabinA  FROM [BOMSubMatInfo] tba   " +
 			"  LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]     " +
 			"  LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId  " +
@@ -451,12 +492,13 @@ module.exports = function (sender) {
 			" LEFT JOIN comMaterialCategory tic on subString(etb.SubMaterialId,2,2) =tic.MaterialCategoryId  " +
 			" LEFT JOIN [comMaterialGroup] ktb on ktb.MaterialId  = etb.SubMaterialId  " +
 			" LEFT JOIN comMaterialPurchases prc on etb.SubMaterialId = prc.MaterialId " +
+			" LEFT JOIN comBusinessPartner cbp on prc.[SupplyId] = cbp.[BizPartnerId] " +
 			" WHERE  tba.BOMKeyId =  ?  and lvb.[SubMatType]='0' and lvv.[SubMatType]='0'  " +
 			" and etb.[SubMatType]='0' " +
 			"  Union   " +
 			" SELECT 'F' as ProdRank,  ktb.MaterialName ,  subString(ftb.SubMaterialId,2,2) as ClassID , tic.MaterialCategoryName as PartsChi , ftb.[SubMatType],  ftb.[BOMKeyId] as ParentID, " +
 			"  ftb.BOMKeyId  as MiddleID , ftb.SubMaterialId as LastID , ftb.UnitQty as [UnitQty] , ftb.WasteRate as [WasteRate] , '' as Remark , ftb.[SubMaterialSpec] as ProdName , " +
-			" convert (varchar(20),prc.StandPrice  )  as StandPrice," +
+			" convert (varchar(20),prc.StandPrice  )  as StandPrice,  cbp.[BizPartnerName] as SupplyId, prc.[CurrId] ," +
 			"   tcm.[CU_OldMaterialId] as OldMat , tcm.[CU_OldMaterialSpec] as OldSpc , tcm.[TotalStkQty] as TotQty ,   convert (varchar(20),cmv.Quantity  ) as CabinA  FROM [BOMSubMatInfo] tba   " +
 			"  LEFT JOIN BOMSubMatInfo lvb on tba.[SubMaterialId] = lvb.[BOMKeyId]     " +
 			"  LEFT JOIN BOMSubMatInfo lvv on lvb.SubMaterialId =lvv.BOMKeyId  " +
@@ -467,6 +509,7 @@ module.exports = function (sender) {
 			" LEFT JOIN comMaterialCategory tic on subString(ftb.SubMaterialId,2,2) =tic.MaterialCategoryId  " +
 			" LEFT JOIN [comMaterialGroup] ktb on ktb.MaterialId  = ftb.SubMaterialId  " +
 			" LEFT JOIN comMaterialPurchases prc on ftb.SubMaterialId = prc.MaterialId " +
+			" LEFT JOIN comBusinessPartner cbp on prc.[SupplyId] = cbp.[BizPartnerId] " +
 			" WHERE  tba.BOMKeyId =  ?  and lvb.[SubMatType]='0' and lvv.[SubMatType]='0'  " +
 			" and etb.[SubMatType]='0' and ftb.[SubMatType]='0'  " +
 			" order by ProdRank ,MiddleID ";
@@ -475,7 +518,8 @@ module.exports = function (sender) {
 			yjDBService_sqlserver.exec({
 				connectionOptions: connection,
 				sql: SQLqry,
-				parameters: [ProductID, ProductID, ProductID, ProductID, ProductID, ProductID],
+				// parameters: [ProductID, ProductID, ProductID, ProductID, ProductID, ProductID],
+				parameters: [loopProdID, loopProdID, loopProdID, loopProdID, loopProdID, loopProdID],
 				success: function (r) {
 					var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
 					console.log("得天下", data.length); //725
@@ -494,10 +538,12 @@ module.exports = function (sender) {
 							, price: '123'
 							, spread: true  //展开或不展开
 							, cost: '0'
+							, suppl:'123'
+							, curry: '123'
 							, isend: 'N'
 							, children: root
 						};
-						binrec.push('NA' + "##" + '000' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##"+ '123' + "##");
+						binrec.push('NA' + "##" + '000' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##" + '123' + "##"+ '123' + "##"+ '123' + "##"+ '123' + "##");
 						datas.push(level3);
 						sender.success(datas);
 						return;
@@ -520,6 +566,8 @@ module.exports = function (sender) {
 						var TotQty = data[i].TotQty; TotQty = nulReplaceTxt(TotQty);
 						var CabinA = data[i].CabinA; CabinA = nulReplaceTxt(CabinA);
 						var StandPrice = data[i].StandPrice; StandPrice = nanReplaceZero(StandPrice);
+						var SupplyId = data[i].SupplyId; SupplyId = nulReplacePad(SupplyId);
+						var CurrId = data[i].CurrId; CurrId = nulReplacePad(CurrId);
 						var display = '';
 						var displayCode = '';
 						display = PartsOldName;
@@ -540,6 +588,8 @@ module.exports = function (sender) {
 							statSED.push("" + splenB);
 							statPRC.push(StandPrice);
 							statCOS.push(StandPrice);
+							statSUP.push(SupplyId);
+							statCUR.push(CurrId);
 							statEND.push('否');
 							let level3 = {
 								enname: '' + statNNN[0] //集成总号：statNNN[0] 
@@ -557,13 +607,16 @@ module.exports = function (sender) {
 								, seed: statSED[0]
 								, price: statPRC[0]
 								, cost: '0'
+								, suppl: statSUP[0]
+								, curry: statCUR[0]
 								, isend: statEND[0]
 								, spread: true  //展开或不展开
 								, children: root
 							};
 							binrec.push('' + '0' + "##" + statPPP[0] + "##" + statNNN[0] + "##" + statCCC[0] + "##" +
 								statUSG[0] + "##" + statWAS[0] + "##" + statCHI[0] + "##" + statDES[0] + "##" + statAAA[0] + "##" +
-								statRRR[0] + "##" + statQTY[0] + "##" + statCAB[0] + "##" + statSED[0] + "##" + statPRC[0] + "##" + statCOS[0] + "##" + statEND[0] + "##");
+								statRRR[0] + "##" + statQTY[0] + "##" + statCAB[0] + "##" + statSED[0] + "##" + statPRC[0] + "##" + 
+								statCOS[0] + "##" + statEND[0] + "##"+ statSUP[0] + "##" + statCUR[0] + "##");
 							datas.push(level3);
 							div2Floor(root, statCCC[statlen], statPPP[statlen], data, lowerB, upperB, lowerC, upperC, lowerD, upperD, lowerE, upperE); //原state
 							root = [];
@@ -591,9 +644,13 @@ module.exports = function (sender) {
 			});
 		});
 		promise.then(data => {
-			// sender.success(binrec);
-			sender.success(datas);
-			console.log("这是 web", data);
+			if(Option =='Excel'){
+				sender.success(binrec);
+				console.log("这是 Excel", data);
+			}else{
+				sender.success(datas);
+				console.log("这是 web", data);
+			}
 		}).catch(data => {
 			let level3 = {
 				"status": "FAIL"
@@ -609,12 +666,19 @@ module.exports = function (sender) {
 				, price: '123'
 				, cost: '0'
 				, isend: 'N'
+				, suppl: '123'
+				, curry: '123'
 				, spread: true
 				, children: root
 			};
 			datas.push(level3);
-			sender.success(datas);
-			// sender.success(binrec);
+			if(Option =='Excel'){
+				sender.success(binrec);
+				console.log("这是 Excel", data);
+			}else{
+				sender.success(datas);
+				console.log("这是 web", data);
+			}
 			console.log("异常", data);
 		});
 	}
@@ -642,34 +706,28 @@ module.exports = function (sender) {
 				lenAA++;
 			} else if (Rank == 'B') {
 				dataBB[lenBB] = data[i];
-				if(data[i].LastID =='AF4-A000040-A1T'){
-					console.log("B男神....", data[i].LastID);
-				}
+				// if(data[i].LastID =='AF4-A000040-A1T'){
+				// 	console.log("B男神....", data[i].LastID);
+				// }
 				lenBB++;
 			} else if (Rank == 'C') {
 				dataCC[lenCC] = data[i];
-				if(data[i].LastID =='AF4-A000039-A1T'){
-					console.log("C男神....", data[i].LastID);
-				}
+				// if(data[i].LastID =='AF4-A000039-A1T'){
+				// 	console.log("C男神....", data[i].LastID);
+				// }
 				lenCC++;
 			} else if (Rank == 'D') {
 				dataDD[lenDD] = data[i];
-				if(data[i].LastID =='AF4-A000050-A7R'){
-					console.log("D男神....", data[i].LastID,"粗暴--",lenDD);
-				}
+				// if(data[i].LastID =='AF4-A000050-A7R'){
+				// 	console.log("D男神....", data[i].LastID,"粗暴--",lenDD);
+				// }
 				lenDD++;
 			} else if (Rank == 'E') {
 				dataEE[lenEE] = data[i];
 				lenEE++;
 			} else if (Rank == 'F') {
 				dataFF[lenFF] = data[i];
-				// if (lenFF > 152) {
-				// 	console.log("F男神....154", dataFF[lenFF]);
-				// }
 				lenFF++;
-				// if (lenFF > 152) {
-				// 	console.log("Rich", lenFF);
-				// }
 			} else {
 				dataBack[lenBack] = data[i];
 				lenBack++;
@@ -679,7 +737,7 @@ module.exports = function (sender) {
 	}
 	function run2Floor(root, SN1No, lv2OID, data, dataCC, dataDD, dataEE, dataFF, lowerB, upperB, lowerC, upperC, lowerD, upperD, lowerE, upperE) {
 		let provi = []; let provAAA = []; let provRRR = []; let provQTY = []; let provCAB = []; let provNNN = []; let provCCC = []; let provUSG = []; let provWAS = []; let provCHI = []; let provDES = []; let provPPP = []; let provlen = 0; let provCHD = [];
-		let provSED = []; let provPRC = []; let provCOS = []; let provEND = []; let AAA = [];
+		let provSED = []; let provPRC = []; let provCOS = []; let provSUP = []; let provCUR = []; let provEND = []; let AAA = [];
 		var SN2No = 1;
 		if (DEBUG == '1') {
 
@@ -705,6 +763,8 @@ module.exports = function (sender) {
 			var TotQty = data[i].TotQty; TotQty = nulReplaceTxt(TotQty);
 			var CabinA = data[i].CabinA; CabinA = nulReplaceTxt(CabinA);
 			var StandPrice = data[i].StandPrice; StandPrice = nanReplaceZero(StandPrice);
+			var SupplyId = data[i].SupplyId; SupplyId = nulReplacePad(SupplyId);
+			var CurrId = data[i].CurrId; CurrId = nulReplacePad(CurrId);
 			display = PartsOldName;
 			displayCode = PartsOldCode;
 			// var sibling = psizeB[SN2No - 1];
@@ -746,6 +806,8 @@ module.exports = function (sender) {
 				}
 				provPRC.push(finprice);
 				provCOS.push(fincost);
+				provSUP.push(SupplyId);
+				provCUR.push(CurrId);
 				provEND.push(enuch);
 				var temp = {
 					enname: "" + provNNN[provlen]
@@ -764,21 +826,23 @@ module.exports = function (sender) {
 					, price: provPRC[provlen]
 					, cost: provCOS[provlen]
 					, isend: provEND[provlen]
+					, suppl: provSUP[provlen]
+					, curry: provCUR[provlen]
 					, children: AAA
 				}
 				root.push(temp);
 				binrec.push('' + provi[provlen] + "##" + provPPP[provlen] + "##" + provNNN[provlen] + "##" + provCCC[provlen] + "##"
 					+ provUSG[provlen] + "##" + provWAS[provlen] + "##" + provCHI[provlen] + "##" + provDES[provlen] + "##" + provAAA[provlen] + "##"
 					+ provRRR[provlen] + "##" + provQTY[provlen] + "##" + provCAB[provlen] + "##" + provSED[provlen] + "##" + provPRC[provlen] + "##" 
-					+ provCOS[provlen] + "##" + provEND[provlen] + "##");
+					+ provCOS[provlen] + "##" + provEND[provlen] + "##" + provSUP[provlen] + "##" + provCUR[provlen] + "##" );
 				if (DEBUG == '1') {
 				}
 				if (showTime > 2) {
 					for (var ki = 0; ki < lengthB; ki++) {
 						if (prodB[ki] == provCCC[provlen]) {// 瞬移
-							if(prodB[ki] =='AF4-A000039-A1T'){
-								console.log("比特币", provCCC[provlen]);
-							}
+							// if(prodB[ki] =='AF4-A000039-A1T'){
+							// 	console.log("比特币", provCCC[provlen]);
+							// }
 							run3Floor(AAA, provi[provlen], provCCC[provlen], dataCC, dataDD, dataEE, dataFF, lowerB[ki], upperB[ki], lowerC, upperC, lowerD, upperD, lowerE, upperE);
 						}
 					}
@@ -792,7 +856,7 @@ module.exports = function (sender) {
 	}
 	function run3Floor(AAA, SN2No, lv3OID, data, dataDD, dataEE, dataFF, lowB, uppB, lowerC, upperC, lowerD, upperD) {
 		let citie = []; let cityAAA = []; let cityRRR = []; let cityQTY = []; let cityCAB = []; let cityNNN = []; let cityCCC = []; let cityUSG = []; let cityWAS = []; let cityCHI = []; let cityDES = []; let cityPPP = []; let citylen = 0; let cityCHD = [];
-		let citySED = []; let cityPRC = []; let cityCOS = []; let cityEND = [];
+		let citySED = []; let cityPRC = []; let cityCOS = [];  let citySUP = []; let cityCUR = []; let cityEND = [];
 		let BBB = [];
 		var SN3No = 1;
 		// for (var i = 0; i < data.length; i++) {
@@ -804,6 +868,7 @@ module.exports = function (sender) {
 		}
 		for (var i = lowFix; i < (uppB); i++) {   //这是OK的 
 			SN3No++;
+	         if(data[i]!=null && data[i] !=undefined){
 			var Rank = data[i].ProdRank;
 			if (Rank == 'C') {
 				var combine = '';
@@ -823,6 +888,8 @@ module.exports = function (sender) {
 				var TotQty = data[i].TotQty; TotQty = nulReplaceTxt(TotQty);
 				var CabinA = data[i].CabinA; CabinA = nulReplaceTxt(CabinA);
 				var StandPrice = data[i].StandPrice; StandPrice = nanReplaceZero(StandPrice);
+				var SupplyId = data[i].SupplyId; SupplyId = nulReplacePad(SupplyId);
+				var CurrId = data[i].CurrId; CurrId = nulReplacePad(CurrId);
 				var display = '';
 				var displayCode = '';
 				display = PartsOldName;
@@ -866,6 +933,8 @@ module.exports = function (sender) {
 					}
 					cityPRC.push(finprice);
 					cityCOS.push(fincost);
+					citySUP.push(SupplyId);
+					cityCUR.push(CurrId);
 					cityEND.push(enuch);
 					var temp = {
 						enname: "" + cityNNN[citylen]
@@ -883,6 +952,8 @@ module.exports = function (sender) {
 						, seed: citySED[citylen]
 						, price: cityPRC[citylen]
 						, cost: cityCOS[citylen]
+						, suppl: citySUP[citylen]
+						, curry: cityCUR[citylen]
 						, isend: cityEND[citylen]
 						, children: BBB
 					}
@@ -890,7 +961,8 @@ module.exports = function (sender) {
 					binrec.push('' + citie[citylen] + "##" + cityPPP[citylen] + "##" + cityNNN[citylen] + "##" + cityCCC[citylen] + "##" +
 						cityUSG[citylen] + "##" + cityWAS[citylen] + "##" + cityCHI[citylen] + "##" + cityDES[citylen] + "##" + 
 						cityAAA[citylen] + "##" + cityRRR[citylen] + "##" + cityQTY[citylen] + "##" + cityCAB[citylen] + "##" + 
-						citySED[citylen] + "##" + cityPRC[citylen] + "##" + cityCOS[citylen] + "##" + cityEND[citylen] + "##");
+						citySED[citylen] + "##" + cityPRC[citylen] + "##" + cityCOS[citylen] + "##" + cityEND[citylen] + "##" + 
+						citySUP[citylen] + "##" + cityCUR[citylen] + "##" );
 					cnt++;
 					if (DEBUG == '1') {
 						if (i > 10 && i < 15) {
@@ -916,14 +988,15 @@ module.exports = function (sender) {
 					BBB = []; //超级重要
 				}
 			}
+		   }
 		}
 	}
 	function run4Floor(nowki, BBB, SN3No, lv4OID, data, dataEE, dataFF, lowC, uppC, lowerD, upperD, lowerE, upperE) {
 		let areai = []; let areaAAA = []; let areaRRR = []; let areaQTY = []; let areaCAB = []; let areaNNN = []; let areaCCC = []; let areaUSG = []; let areaWAS = []; let areaCHI = []; let areaDES = []; let areaPPP = []; let arealen = 0; let areaCHD = [];
-		let areaSED = []; let areaPRC = []; let areaCOS = []; let areaEND = [];
+		let areaSED = []; let areaPRC = []; let areaCOS = [];  let areaSUP = []; let areaCUR = []; let areaEND = [];
 		let CCC = [];
 		var SN4No = 0;
-		console.log("凑", lowC ,"最大 ",uppC ,"正确",data.length ,"夏 ",lv4OID);
+		// console.log("凑", lowC ,"最大 ",uppC ,"正确",data.length ,"夏 ",lv4OID);
 		var lowFix = 0;
 		if(lowC <=0 ){
 			
@@ -951,15 +1024,16 @@ module.exports = function (sender) {
 				var TotQty = data[i].TotQty; TotQty = nulReplaceTxt(TotQty);
 				var CabinA = data[i].CabinA; CabinA = nulReplaceTxt(CabinA);
 				var StandPrice = data[i].StandPrice; StandPrice = nanReplaceZero(StandPrice);
+				var SupplyId = data[i].SupplyId; SupplyId = nulReplacePad(SupplyId);
+				var CurrId = data[i].CurrId; CurrId = nulReplaceTxt(CurrId);
 				var display = '';
 				var displayCode = '';
 				display = PartsOldName;
 				displayCode = PartsOldCode;
-				// combine =   display + '##'  +  OID + '##' + displayCode + '##' + PID + '##' + Dosage + '##' + Damage + '##' + PartsChi + '##' + Descrip;
 				if (Rank == 'D' && lv4OID == MiddleID) {  //1BP_S600_AD05FM1   AD板
-					if(MiddleID =='AF4-A000039-A1T'){
-						console.log("@@@@@@@抓到狗币", lv4OID,"才闪亮", PartsCode);
-					}					 
+					// if(MiddleID =='AF4-A000039-A1T'){
+					// 	console.log("@@@@@@@抓到狗币", lv4OID,"才闪亮", PartsCode);
+					// }					 
 					areai.push(OID);
 					areaNNN.push(display);
 					areaCCC.push(displayCode);
@@ -999,11 +1073,13 @@ module.exports = function (sender) {
 					}
 					areaPRC.push(finprice);
 					areaCOS.push(fincost);
+					areaSUP.push(SupplyId);
+					areaCUR.push(CurrId);
 					areaEND.push(enuch);
 					var temp = {
 						enname: "" + areaNNN[arealen]
-						, id: areai[arealen]       //OID
-						, field: areaPPP[arealen]  //PID
+						, id: areai[arealen]        
+						, field: areaPPP[arealen]   
 						, encode: areaCCC[arealen]
 						, stock: areaUSG[arealen]
 						, waste: areaWAS[arealen]
@@ -1016,15 +1092,17 @@ module.exports = function (sender) {
 						, seed: areaSED[arealen]
 						, price: areaPRC[arealen]
 						, cost: areaCOS[arealen]
+						, suppl: areaSUP[arealen]
+						, curry: areaCUR[arealen]
 						, isend: areaEND[arealen]
 						, children: CCC
 					}
-					if (areaCCC[arealen] == 'AF4-A000050-A7R' ) {
-						console.log("斗酒酒", areaCCC[arealen]);
-						console.log("曲长歌", sibling, "傻才是", areaSED[arealen]);
-						console.log("剑天涯", StandPrice, "沧海笑", areaPRC[arealen] );
-						console.log("一一一", fincost);
-					}
+					// if (areaCCC[arealen] == 'AF4-A000050-A7R' ) {
+					// 	console.log("斗酒酒", areaCCC[arealen]);
+					// 	console.log("曲长歌", sibling, "傻才是", areaSED[arealen]);
+					// 	console.log("剑天涯", StandPrice, "沧海笑", areaPRC[arealen] );
+					// 	console.log("一一一", fincost);
+					// }
 					if (DEBUG == '1') {
 						if (areai[arealen] > '400' && areai[arealen] < '410') {
 							// console.log("@@@诗人", areai[arealen], "智", areaCCC[arealen], "泉梓", areaNNN[arealen]);
@@ -1032,8 +1110,8 @@ module.exports = function (sender) {
 					}
 					binrec.push('' + areai[arealen] + "##" + areaPPP[arealen] + "##" + areaNNN[arealen] + "##" + areaCCC[arealen] + "##" +
 						areaUSG[arealen] + "##" + areaWAS[arealen] + "##" + areaCHI[arealen] + "##" + areaDES[arealen] + "##" + areaAAA[arealen] + "##" +
-						areaRRR[arealen] + "##" + areaQTY[arealen] + "##" + areaCAB[arealen] + "##" + areaSED[arealen] + "##" + 
-						areaPRC[arealen] + "##" + areaCOS[arealen] + "##" + areaEND[arealen] + "##");
+						areaRRR[arealen] + "##" + areaQTY[arealen] + "##" + areaCAB[arealen] + "##" + areaSED[arealen] + "##" + areaPRC[arealen] + "##" +
+						areaCOS[arealen] + "##" + areaEND[arealen] + "##" + areaSUP[arealen] + "##" + areaCUR[arealen] + "##" );
 					BBB.push(temp);
 					cnt++;
 					//  if (areaCCC[arealen] == '2BP_S600_AD05FM1') {
@@ -1055,12 +1133,18 @@ module.exports = function (sender) {
 	}
 	function run5Floor(CCC, SN4No, lv5OID, data, dataFF, lowerD, upperD, lowerE, upperE) { //lv4OID== 2BP_S600_AD05FM1 為识别条件
 		let allie = []; let allyAAA = []; let allyRRR = []; let allyQTY = []; let allyCAB = []; let allyNNN = []; let allyCCC = []; let allyUSG = []; let allyWAS = []; let allyCHI = []; let allyDES = []; let allyPPP = []; let allylen = 0; let allyCHD = [];
-		let allySED = []; let allyPRC = []; let allyCOS = []; let allyEND = [];
+		let allySED = []; let allyPRC = []; let allyCOS = [];  let allySUP = []; let allyCUR = []; let allyEND = [];
 		let DDD = [];
 		var SN5No = 0;
 		// console.log("殿昌", lowerD, "可欣 ", upperD, "正确", data.length, "好看 ", lv5OID);
 		// for (var i = 0; i < data.length; i++) {
-		for (var i = lowerD; i < upperD; i++) {
+		var lowFix = 0;
+		if(lowerD <=0 ){
+			
+		}else{
+			lowFix = lowerD-1;
+		}
+		for (var i = lowFix; i < upperD; i++) {
 			if (data[i] != null && data[i] != undefined) {
 				SN5No++;
 				var combine = '';
@@ -1081,15 +1165,13 @@ module.exports = function (sender) {
 				var TotQty = data[i].TotQty; TotQty = nulReplaceTxt(TotQty);
 				var CabinA = data[i].CabinA; CabinA = nulReplaceTxt(CabinA);
 				var StandPrice = data[i].StandPrice; StandPrice = nanReplaceZero(StandPrice);
+				var SupplyId = data[i].SupplyId; SupplyId = nulReplacePad(SupplyId);
+				var CurrId = data[i].CurrId; CurrId = nulReplaceTxt(CurrId);
 				var display = '';
 				var displayCode = '';
 				display = PartsOldName;
 				displayCode = PartsOldCode;
-				// combine =   display + '##'  +  OID + '##' + displayCode + '##' + PID + '##' + Dosage + '##' + Damage + '##' + PartsChi + '##' + Descrip;
 				if (Rank == 'E' && lv5OID == MiddleID) {
-					// if (i < 2) {
-					// 	console.log("殿昌惠末 ", combine);
-					// }
 					allie.push(OID);
 					allyNNN.push(display);
 					allyCCC.push(displayCode);
@@ -1127,6 +1209,8 @@ module.exports = function (sender) {
 					}
 					allyPRC.push(finprice);
 					allyCOS.push(fincost);
+					allySUP.push(SupplyId);
+					allyCUR.push(CurrId);
 					allyEND.push(enuch);
 					var temp3 = {
 						enname: "" + allyNNN[allylen]
@@ -1144,18 +1228,24 @@ module.exports = function (sender) {
 						, seed: allySED[allylen]
 						, price: allyPRC[allylen]
 						, cost: allyCOS[allylen]
+						, suppl: allySUP[allylen]
+						, curry: allyCUR[allylen]
 						, isend: allyEND[allylen]
 						, children: DDD
 					}
 					CCC.push(temp3);
-					binrec.push('' + allie[allylen] + "##" + allyPPP[allylen] + "##" + allyNNN[allylen] + "##" + allyCCC[allylen] + "##" +
-						allyUSG[allylen] + "##" + allyWAS[allylen] + "##" + allyCHI[allylen] + "##" + allyDES[allylen] +
+					binrec.push('' + allie[allylen] + "##" + allyPPP[allylen] + "##" + allyNNN[allylen] + "##" + allyCCC[allylen] + 
+					       "##" + allyUSG[allylen] + "##" + allyWAS[allylen] + "##" + allyCHI[allylen] + "##" + allyDES[allylen] +
 						 "##" + allyAAA[allylen] + "##" + allyRRR[allylen] + "##" + allyQTY[allylen] + "##" + allyCAB[allylen] +
-						 "##" + allySED[allylen] + "##" + allyPRC[allylen] + "##" + allyCOS[allylen] + "##"+ allyEND[allylen] + "##");
+						 "##" + allySED[allylen] + "##" + allyPRC[allylen] + "##" + allyCOS[allylen] + "##"  + allyEND[allylen] + 
+						 "##"+ allySUP[allylen] +  "##" + allyCUR[allylen] + "##");
 					if (DEBUG == '1') {
 						if (allie[allylen] > '5200' && allie[allylen] < '5220') {
 							// console.log("五乡", allie[allylen], "楽意", allyCCC[allylen], "意足", allyPPP[allylen]);
 						}
+					}
+					if (allie[allylen] == '513') { 
+						console.log("五乡", allie[allylen] ,"大碶", allySUP[allylen], "楽意",  allyCUR[allylen], "石川",  allyEND[allylen]  );
 					}
 					// if (allyCCC[allylen] == '3CDTP105_025') { //3CD6XP225_016_NMS
 					// 	console.log("都", allylen, "楽意", allyCCC[allylen], "石川", lv4OID, "意足", allyPPP[allylen]);
@@ -1176,13 +1266,20 @@ module.exports = function (sender) {
 		}
 	}
 	function run6Floor(DDD, SN5No, lv6OID, data, low6, upp6) {
-		let lingi = []; let lingAAA = []; let lingRRR = []; let lingQTY = []; let lingCAB = []; let lingNNN = []; let lingCCC = []; let lingUSG = []; let lingWAS = []; let lingCHI = []; let lingDES = []; let lingPPP = []; let linglen = 0;
-		let lingSED = []; let lingPRC = []; let lingCOS = [];  let lingEND = [];
+		let lingi = []; let lingAAA = []; let lingRRR = []; let lingQTY = []; let lingCAB = []; let lingNNN = [];
+		let lingCCC = []; let lingUSG = []; let lingWAS = []; let lingCHI = []; let lingDES = []; let lingPPP = [];
+		let linglen = 0; let lingSED = []; let lingPRC = []; let lingCOS = [];  let lingSUP = []; let lingCUR = []; 
+		let lingEND = [];
 		let EEE = [];
 		var SN6No = 0;
 		// console.log("6添", low6, "栗田 ", upp6, " 惠 ", lv6OID, "恐 ", data.length);
-		// for (var i = 0; i < data.length; i++) {
-		for (var i = low6; i < upp6; i++) {
+		var lowFix = 0;
+		if(low6 <=0 ){
+			
+		}else{
+			lowFix = low6-1;
+		}
+		for (var i = lowFix; i < upp6; i++) {
 			if (data[i] != undefined && data[i] != null) {
 				SN6No++;
 				var combine = '';
@@ -1203,6 +1300,8 @@ module.exports = function (sender) {
 				var TotQty = data[i].TotQty; TotQty = nulReplaceTxt(TotQty);
 				var CabinA = data[i].CabinA; CabinA = nulReplaceTxt(CabinA);
 				var StandPrice = data[i].StandPrice; StandPrice = nanReplaceZero(StandPrice);
+				var SupplyId = data[i].SupplyId; SupplyId = nulReplacePad(SupplyId);
+				var CurrId = data[i].CurrId; CurrId = nulReplaceTxt(CurrId);
 				var display = '';
 				var displayCode = '';
 				display = PartsOldName;
@@ -1238,6 +1337,8 @@ module.exports = function (sender) {
 					}
 					lingPRC.push(finprice);
 					lingCOS.push(fincost);
+					lingSUP.push(SupplyId);
+					lingCUR.push(CurrId);
 					lingEND.push(enuch);
 					var temp3 = {
 						enname: "" + lingNNN[linglen]
@@ -1255,13 +1356,16 @@ module.exports = function (sender) {
 						, seed: lingSED[linglen]
 						, price: lingPRC[linglen]
 						, cost: lingCOS[linglen]
+						, suppl: lingSUP[linglen]
+						, curry: lingCUR[linglen]
 						, isend: lingEND[linglen]
 						, children: EEE
 					}
 					binrec.push('' + lingi[linglen] + "##" + lingPPP[linglen] + "##" + lingNNN[linglen] + "##" + lingCCC[linglen] + "##" +
 						lingUSG[linglen] + "##" + lingWAS[linglen] + "##" + lingCHI[linglen] + "##" + lingDES[linglen] + "##" +
 						lingAAA[linglen] + "##" + lingRRR[linglen] + "##" + lingQTY[linglen] + "##" + lingCAB[linglen] + "##" +
-						lingSED[linglen] + "##" + lingPRC[linglen] + "##" + lingCOS[linglen] + "##" + lingEND[linglen] + "##");
+						lingSED[linglen] + "##" + lingPRC[linglen] + "##" + lingCOS[linglen] + "##" + lingEND[linglen] + "##" +
+						lingSUP[linglen] + "##" + lingCUR[linglen] + "##" );
 					DDD.push(temp3);
 					if (DEBUG == '1') {
 						if (lingi[linglen] > '6100' && lingi[linglen] < '6110') {
@@ -1278,7 +1382,10 @@ module.exports = function (sender) {
 	}
 	function run7Floor(EEE, SN6No, lv7OID, data, low7, upp7) {
 		var SN7No = 0;
-		let house = []; let housAAA = []; let housRRR = []; let housNNN = []; let housCCC = []; let housUSG = []; let housWAS = []; let housCHI = []; let housDES = []; let housPPP = []; let houslen = 0; let housCHD = [];
+		let house = []; let housAAA = []; let housRRR = []; let housNNN = []; let housCCC = []; 
+		let housUSG = []; let housWAS = []; let housCHI = []; let housDES = []; let housPPP = [];
+		let houslen = 0; let housCHD = [];
+		let housSUP = []; let housCUR = []; 
 		for (var i = low7; i < upp7; i++) {
 			SN7No++;
 			var combine = '';
@@ -1337,6 +1444,16 @@ module.exports = function (sender) {
 	function nulReplaceTxt(passTxt) {
 		var ret = '';
 		ret = (passTxt == null || passTxt == undefined) ? ('缺省') : passTxt;
+		return ret;
+	}
+	function nulReplacePad(passTxt) {
+		var ret = '';
+		if(passTxt != undefined && passTxt != "" && passTxt != "null" && passTxt != '' && passTxt.length>0 && passTxt != null && passTxt != 'null' && passTxt != 'NULL' ){
+			ret = passTxt;
+		}else{
+			// console.log("呜呜",passTxt,"拉垃" );
+			ret ='缺省';
+		}
 		return ret;
 	}
 	function nanReplaceZero(passTxt) {

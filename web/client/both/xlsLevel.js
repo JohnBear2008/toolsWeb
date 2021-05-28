@@ -4,7 +4,7 @@ var DateMakE = '';
 var DateFinB = '';
 var parCat = '';
 
-function enterLevel(Category, Pattern, OutSour, showTime, prodID, prodNM) {
+function enterLevel(Category, Pattern, OutSour, showTime, prodID, prodNM ,ProdOldID) {
     // var Pattern = '1';
     if(OutSour !=undefined && OutSour !=null){
 
@@ -12,8 +12,10 @@ function enterLevel(Category, Pattern, OutSour, showTime, prodID, prodNM) {
         OutSour = '0';
     }
     let ary1 = [];
-    var reportType = 'excelBOM';
-    var taskData = { "reportType": reportType, "showTime": showTime, "Category": Category, "Pattern": Pattern, "OutSour": OutSour , "ProductID": prodID, "ProductName": prodNM};
+    var reportType = 'wpsBOM';
+    var Option = 'Excel';
+    var taskData = { "reportType": reportType, "showTime": showTime,  "Option": Option, "Category": Category, 
+    "Pattern": Pattern, "OutSour": OutSour , "ProductID": prodID, "ProductName": prodNM, "ProductOldID": ProdOldID};
     let ajax1 = $.ajax({
         method: 'post',
         data: taskData,
@@ -63,6 +65,8 @@ function ShipStat(ydata, zdata) {
 			FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
 			FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
             FieldL = ((hidata.L == null || hidata.L == undefined) ? (FieldL) : hidata.L);
+            FieldM = ((hidata.M == null || hidata.M == undefined) ? (FieldM) : hidata.M);
+            FieldN = ((hidata.N == null || hidata.N == undefined) ? (FieldN) : hidata.N);
 			// console.log("有料",FieldH);
 			// console.log("回报",FieldG);
 			// console.log("海海",FieldK);
@@ -106,6 +110,12 @@ function ShipStat(ydata, zdata) {
     if (!FieldL) {
         Ttitle.push('最终点'); 
     }
+    if (!FieldM) {
+        Ttitle.push('供应商'); 
+    }
+    if (!FieldN) {
+        Ttitle.push('币种'); 
+    }
     toyota.push(Ttitle);
     let PropList = [];
     var enname = '';
@@ -120,7 +130,10 @@ function ShipStat(ydata, zdata) {
     var oldspc = '';
     var totqty = '';
     var cabinA = '';
-    var sibling = '';    var isend = '';
+    var sibling = '';  
+    var suppl = '';  
+    var curry = '';      
+    var isend = '';
     var priceTOT = '';  var finprice = '';
     var costTOT = '';  var fincost = '';
   
@@ -154,6 +167,8 @@ function ShipStat(ydata, zdata) {
             priceTOT = PropList[13];
             fincost  = PropList[14];
             isend = PropList[15];
+            suppl  = PropList[16];
+            curry  = PropList[17];
             if(id == '22'  ){
                 // console.log("腐朽", EmpValue ,"寒冰",isend);
             }
@@ -216,6 +231,12 @@ function ShipStat(ydata, zdata) {
         if (!FieldL) {
             speebook.push(isend);   
         }
+        if (!FieldM) {
+            speebook.push(suppl); 
+        }
+        if (!FieldN) {
+            speebook.push(curry); 
+        }
         toyota.push(speebook);
     }
     var sheet1 = XLSX.utils.json_to_sheet(toyota, { skipHeader: true });
@@ -275,6 +296,14 @@ function ShipStat(ydata, zdata) {
     }
     if (!FieldL) {
         console.log("最终", FieldK);
+        sheet1['!cols'].push({ wch: 10 });
+    }
+    if (!FieldM) {
+        console.log("供应商", FieldM);
+        sheet1['!cols'].push({ wch: 10 });
+    }
+    if (!FieldN) {
+        console.log("币种", FieldN);
         sheet1['!cols'].push({ wch: 10 });
     }
     var range = XLSX.utils.decode_range(sheet1['!ref']);
@@ -449,7 +478,7 @@ function ShipStat(ydata, zdata) {
         }
     }
     var wb = XLSX.utils.book_new();
-    // 代码+'|'+旧代码
+    // 代码+'|'+旧代码 
     XLSX.utils.book_append_sheet(wb, sheet1, "新编码BOm结构");
     // XLSX.utils.book_append_sheet(wb, sheet3, "新编码BOm结构");
     const workbookBlob = workbook2blob(wb);

@@ -3,8 +3,8 @@ module.exports = function (sender) {
 	var yjDBService = global.yjRequire("yujiang.Foil").yjDBService;
 	var yjDB = global.yjRequire("yujiang.Foil").yjDB;
 	var yjDBServiceUtil = global.yjRequire("yujiang.Foil", 'yjDBService.util.js');
-	// var connectionOptions=yjGlobal.config.db_Connection.erp_Connection.connection;
-	var connectionOptions = yjGlobal.config.db_Connection.rich_T9.connection;
+	var connectionOptions=yjGlobal.config.db_Connection.erp_T9.connection;
+	// var connectionOptions = yjGlobal.config.db_Connection.rich_T9.connection;
 	var connection = null;
 	if (connectionOptions) {
 		connection = yjDBServiceUtil.extractConnectionOptions(connectionOptions);
@@ -12,6 +12,7 @@ module.exports = function (sender) {
 	var arrange = sender.req.query.arrange;
 	var prodID = sender.req.query.prodID;
 	var prodNM = sender.req.query.prodNM;
+	var OldMat = sender.req.query.OldMat;
 	if (arrange == 'Basic') {
 		BasicCate();
 	} else if (arrange == 'ReveBasic') {
@@ -24,8 +25,34 @@ module.exports = function (sender) {
 		Caculate(prodID, prodNM);
 	} else if (arrange == 'CacuBasic') {
 		CacuBasic();
+	} else if (arrange == 'LookBom') {
+		LookBom(OldMat);
 	} else {
 		AdvCate(prodID, prodNM);
+	}
+	function LookBom(OldMat) {
+		var SQLqry = 
+		"SELECT  [MaterialId]  FROM comMaterial tba where tba.[CU_OldMaterialId] = ? ";
+		var dataArr = [];
+		yjDBService_sqlserver.exec({
+			connectionOptions: connection,
+			sql: SQLqry,
+			parameters: [OldMat],
+			success: function (r) {
+				var datas = [];
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				console.log("携手共度:"+data.length);
+				for (var i = 0; i < data.length; i++) {
+					var temp = {
+						"MaterialId": data[i].MaterialId, 
+					}
+					datas.push(temp)
+				}
+				console.log("携手共度:"+JSON.stringify(datas));
+				sender.success(datas);
+			},
+			error: {},
+		});
 	}
 	function BasicCate() {
 		var SQLqry = " select TOP 100  tba.BOMKeyId , tba.BOMKeyName  , tcm.[CU_OldMaterialId] as OldMat, " +
@@ -39,9 +66,13 @@ module.exports = function (sender) {
 			success: function (r) {
 				var datas = [];
 				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				console.log("保养统计:"+data.length);
 				for (var i = 0; i < data.length; i++) {
 					var OldSpc =data[i].OldSpc;
-					OldSpc = (OldSpc.length  > 50 ? OldSpc.substring(0, 50)  :OldSpc);
+					OldSpc = nulReplaceTxt(OldSpc);
+					if(OldSpc !=undefined && OldSpc !=null  && OldSpc.length>1 ){
+						OldSpc = (OldSpc.length  > 50 ? OldSpc.substring(0, 50)  :OldSpc);
+					}
 					var temp = {
 						"ProductID": data[i].BOMKeyId,
 						"ProductName": data[i].BOMKeyName,
@@ -82,9 +113,13 @@ module.exports = function (sender) {
 			success: function (r) {
 				var datas = [];
 				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				console.log("維修是否:"+data.length);
 				for (var i = 0; i < data.length; i++) {
 					var OldSpc =data[i].OldSpc;
-					OldSpc = (OldSpc.length  > 50 ? OldSpc.substring(0, 50)  :OldSpc);
+					OldSpc = nulReplaceTxt(OldSpc);
+					if(OldSpc !=undefined && OldSpc !=null  && OldSpc.length>1 ){
+						OldSpc = (OldSpc.length  > 50 ? OldSpc.substring(0, 50)  :OldSpc);
+					}
 					var temp = {
 						"ProductID": data[i].BOMKeyId,
 						"ProductName": data[i].BOMKeyName,
@@ -307,5 +342,10 @@ module.exports = function (sender) {
 			},
 			error: {},
 		});
+	}
+	function nulReplaceTxt(passTxt) {
+		var ret = '';
+		ret = (passTxt == null || passTxt == undefined) ? ('缺省') : passTxt;
+		return ret;
 	}
 };

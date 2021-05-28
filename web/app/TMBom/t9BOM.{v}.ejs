@@ -56,45 +56,48 @@
 		<div style="z-index:999;position:absolute;left:5px;width:40px;height:40px;">
 			<img id="DivAuditImage" src="/images/logo.png">
 		</div>
-		<h1 style="margin-top:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 弘讯科技BOM表
+		<br></br> 
+		<!-- <h1 style="margin-top:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 弘讯科技BOM表
 			&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-		</h1>
+		</h1> -->
 		<div class=" layui-btn-container" style="position:absolute;top:5px;left:430px">
 			<button id="ExlBtn" class="layui-btn layui-btn-primary layui-border layui-btn-lg">报告</button>
-			<button id="SeaBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">查找</button>
+			<button id="SeaBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">确认</button>
 			<!-- <button id="ZoomBtn" class="layui-btn layui-btn-primary layui-border-blue layui-btn-lg">子点</button> -->
 			<button id="AdvOpen" class="layui-btn layui-btn-primary layui-border-orange layui-btn-lg">进阶</button>
 			<!-- <button id="DetailBtn" class="layui-btn layui-btn-primary layui-border-red layui-btn-lg">解析</button> -->
 			<!-- <button id="PurchBtn" class="layui-btn layui-btn-primary layui-border-black layui-btn-lg">单价</button> -->
 			<button id="DisplayBtn" class="layui-btn layui-btn-primary layui-border layui-btn-lg">栏位</button>
-			<button id="NextBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">回上页</button>
+			<!-- <button id="NextBtn" class="layui-btn layui-btn-primary layui-border-green layui-btn-lg">回上页</button> -->
 		</div>
-		<br></br>
 		<div class="divcontent">
 			<!-- <div class="layui-btn-container"> -->
-			<div class="layui-inline" style="position:absolute;top:60px;left:100px">
-				<!-- <label> BOM名: </label>
-			<input class="can-find-M260" id="ProductName" name="ProductName" value="TKC_A60_M5C" autocomplete="off">
-			&nbsp;&nbsp;&nbsp; -->
-				<label> ID: </label>
-				<input class="can-find-M260" id="ProductID" name="ProductID" value="" autocomplete="off">
-				<label> 名称: </label>
-				<input class="can-find-M260" id="ProductName" name="ProductName" readonly="readonly" value=""
-					autocomplete="off">
-				<label> 旧代码: </label>
-				<input class="can-find-M260" id="OldMat" name="OldMat" readonly="readonly" value=""
-					autocomplete="off">
-				&nbsp;&nbsp;&nbsp;
-				<label> 规格: </label>
-				<input class="can-find-M260" id="OldSpc" name="OldSpc" readonly="readonly" value=""
-					autocomplete="off">
-				<!-- <label>模式:</label>
-				<select id="Pattern" name="Pattern" class="can-find-M140"></select>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<label>生产:</label>
-				<select id="OutSour" name="OutSour" class="can-find-M140"></select>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-			</div>
+				<div class="layui-inline" style="position:absolute;top:60px;left:100px">
+					<!-- <label> BOM名: </label>
+				<input class="can-find-M260" id="ProductName" name="ProductName" value="TKC_A60_M5C" autocomplete="off">
+				&nbsp;&nbsp;&nbsp; -->
+					<label> ID: </label>
+					<input class="can-find-M260" list="searchbox" id="ProductID" class="feeDrop"  >
+					<datalist id="searchbox" name="searchbox">
+					</datalist>
+					<!-- <input class="can-find-M260" id="ProductID" name="ProductID" value="" autocomplete="off"> -->
+					<label> 旧代码: </label>
+					<input class="can-find-M260" id="OldMat" name="OldMat" value="" autocomplete="off">
+					&nbsp;&nbsp;&nbsp;
+					<button id="LookBtn" class="btn btn-default">旧代码查找</button>
+					<!-- <label> 名称: </label> -->
+					<input class="can-find-M260" id="ProductName" name="ProductName" readonly="readonly" value=""
+						autocomplete="off" style="visibility:hidden">
+					<!-- <label> 规格: </label> -->
+					<input class="can-find-M260" id="OldSpc" name="OldSpc" readonly="readonly" value=""
+						autocomplete="off" style="visibility:hidden">
+					<!-- <label>模式:</label>
+					<select id="Pattern" name="Pattern" class="can-find-M140"></select>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>生产:</label>
+					<select id="OutSour" name="OutSour" class="can-find-M140"></select>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+				</div>
 			<br />
 		</div>
 		<div id="DivAdvance" class="easyui-window" title="进阶查找" closed="true"
@@ -119,8 +122,8 @@
 			<button id="AdvOK" type="button" class="btn btn-primary">确认</button>
 			<button id="AdvCan" type="button" class="btn btn-warning">清空</button>
 		</div>
-		<br />
 	</div>
+	<br></br> 
 		<!-- title="弘讯科技BOM表" -->
 		<table id='dg' class="easyui-treegrid" style="width:1370px;height:650px" data-options="
 	    data: rows,
@@ -135,15 +138,17 @@
 				var FieldA = false;
 				var FieldB = false;
 				var FieldC = false;
-				var FieldD = true;
+				var FieldD = false;
 				var FieldE = false;
 				var FieldF = false;
-				var FieldG = false;
-				var FieldH = false;
+				var FieldG = true;
+				var FieldH = true;
 				var FieldI = false;
 				var FieldJ = false;
 				var FieldK = true;
-				var FieldL = true;
+				var FieldL = false;
+				var FieldM = true;
+				var FieldN = true;
 				var selprodID = '';
 			</script>
 			<thead>
@@ -163,13 +168,17 @@
 						库存 </th>
 					<th data-options="field:'cabinA',sortable:true,width:50,align:'center', hidden:FieldH ">
 						A仓 </th>
-					<th data-options="field:'seed',sortable:true,width:50,align:'center', hidden:FieldI "> 个数
+					<th data-options="field:'seed',sortable:true,width:30,align:'center', hidden:FieldI "> 个数
 					</th>
-					<th data-options="field:'price',sortable:true,width:50,align:'center', hidden:FieldJ "> 单价
+					<th data-options="field:'price',sortable:true,width:60,align:'center', hidden:FieldJ "> 单价
 					</th>
-					<th data-options="field:'cost',sortable:true,width:50,align:'center', hidden:FieldK "> 成本
+					<th data-options="field:'cost',sortable:true,width:60,align:'center', hidden:FieldK "> 成本
 					</th>
-					<th data-options="field:'isend',sortable:true,width:50,align:'center', hidden:FieldL "> 最终点
+					<th data-options="field:'isend',sortable:true,width:30,align:'center', hidden:FieldL "> 最终点
+					</th>
+					<th data-options="field:'suppl',sortable:true,width:80,align:'center', hidden:FieldM "> 供应商
+					</th>
+					<th data-options="field:'curry',sortable:true,width:20,align:'center', hidden:FieldN "> 币种
 					</th>
 				</tr>
 			</thead>
@@ -424,6 +433,12 @@
 						<br></br>
 						<span id="DispL" class="blue-label"> 结点 </span>
 						<input type="checkbox" name="BOXL" id="BOXL" title="结点" lay-filter="page_check">
+						<br></br>
+						<span id="DispM" class="blue-label"> 供应商 </span>
+						<input type="checkbox" name="BOXM" id="BOXM" title="供应商" lay-filter="page_check">
+						<br></br>
+						<span id="DispN" class="blue-label"> 币种 </span>
+						<input type="checkbox" name="BOXN" id="BOXN" title="币种" lay-filter="page_check">
 					</div>
 				</div>
 				<div class="form-group">
@@ -452,6 +467,7 @@
 			var code_choose = '';
 			var Category = '';
 			var ProductID = '';
+			var ProductOldID = '';
 			var Pattern = '';
 			var OutSour = '';
 			var glbpcode = '';
@@ -495,6 +511,9 @@
 				FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
 				FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
 				FieldL = ((hidata.L == null || hidata.L == undefined) ? (FieldL) : hidata.L);
+				FieldL = ((hidata.L == null || hidata.L == undefined) ? (FieldL) : hidata.L);
+				FieldM = ((hidata.M == null || hidata.M == undefined) ? (FieldM) : hidata.M);
+				FieldN = ((hidata.N == null || hidata.N == undefined) ? (FieldN) : hidata.N);
 				console.log("AAA陆地", FieldD);
 				console.log("BBB陆地", FieldK);
 			}
@@ -551,6 +570,10 @@
 				var prodID = $('#prodID').val();
 				var prodNM = $('#prodNM').val();
 				CriteriaAdv9(prodID, prodNM);
+			});
+			$('#LookBtn').click(function () {
+				var OldMat = $('#OldMat').val();
+				OldMateLook(OldMat);
 			});
 			$('#AdvOK').click(function () {
 				var LifeValue = $('#LifeValue').val();
@@ -618,6 +641,7 @@
 				var reportType = 'wpsBOM';
 				Pattern = $('#Pattern').val();
 				OutSour = $('#OutSour').val();
+				ProductOldID = $('#OldMat').val();
 				if(OutSour !=undefined && OutSour !=null){
 
 				}else{
@@ -625,7 +649,9 @@
 				}
 				Category = $('#ProductName').val();
                         var showTime = '9';
-				var taskData = { "reportType": reportType, "showTime": showTime, "ProductName": Category, "ProductID": ProductID, "Pattern": Pattern, "OutSour": OutSour };
+				var Option = 'Web';
+				var taskData = { "reportType": reportType, "showTime": showTime, "ProductName": Category, "Option": Option,
+				"ProductID": ProductID, "ProductOldID": ProductOldID, "Pattern": Pattern, "OutSour": OutSour };
 				$('#dg').treegrid('remove', 0);
 				$.ajax({
 					method: 'post',
@@ -724,6 +750,8 @@
 				if (FieldJ) { $("#BOXJ").prop("checked", false); } else { $("#BOXJ").prop("checked", true); }
 				if (FieldK) { $("#BOXK").prop("checked", false); } else { $("#BOXK").prop("checked", true); }
 				if (FieldL) { $("#BOXL").prop("checked", false); } else { $("#BOXL").prop("checked", true); }
+				if (FieldM) { $("#BOXM").prop("checked", false); } else { $("#BOXM").prop("checked", true); }
+				if (FieldN) { $("#BOXN").prop("checked", false); } else { $("#BOXN").prop("checked", true); }
 				$('#DisplayWin').window('open');
 			});
 			$('#DisplayOkBtn').click(function () {
@@ -751,6 +779,10 @@
 				if (KisChecked) {	FieldK = false; } else { FieldK = true; }
 				var LisChecked = $("#BOXL").is(":checked");
 				if (LisChecked) {	FieldL = false; } else { FieldL = true; }
+				var MisChecked = $("#BOXM").is(":checked");
+				if (MisChecked) {	FieldM = false; } else { FieldM = true; }
+				var NisChecked = $("#BOXN").is(":checked");
+				if (NisChecked) {	FieldN = false; } else { FieldN = true; }
 				var data = {
 					A: FieldA,
 					B: FieldB,
@@ -763,7 +795,9 @@
 					I: FieldI,
 					J: FieldJ,
 					K: FieldK,
-					L: FieldL
+					L: FieldL,
+					M: FieldM,
+					N: FieldN,
 				}
 				localStorage.setItem("seedtree", JSON.stringify(data));
 				$('#DisplayWin').window('close');
@@ -850,7 +884,6 @@
 					error: function () {
 					}
 				})
-
 			}
 			function qryExcel() {
 				var Pattern = $("#Pattern").val();
@@ -863,10 +896,11 @@
 				}
 				var prodID = $('#ProductID').val();
 				var prodNM = $('#ProductName').val();
+				var ProdOldID = $('#OldMat').val();
 				console.log("prodID: ", prodID);
 				console.log("prodNM: ", prodNM);
 				var showTime = '9';
-				enterLevel(Category, Pattern, OutSour, showTime, prodID, prodNM);
+				enterLevel(Category, Pattern, OutSour, showTime, prodID, prodNM, ProdOldID);
 			}
 			function showLink(DataPara, columnsData) {
 			}

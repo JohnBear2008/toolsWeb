@@ -24,6 +24,31 @@ function CriteriaAdv9(prodID , prodNM  ){
             }
       })
 }
+function OldMateLook(OldMat) {
+      let dataArr = [];
+      var reportType = 'StarGate';
+      var arrange = 'LookBom';
+      var taskData = { "reportType": reportType, "arrange": arrange  , "OldMat": OldMat};
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMBom/getRoute",
+            success: function (data) {
+                  dataArr = data;
+                  for (var i = 0; i < dataArr.length; i++) {
+                        var youoption = document.createElement("option");
+                        youoption.text = dataArr[i].MaterialId;
+                        youoption.id = "bellTime_" ;
+                        youoption.name = "bellTime_"  ;
+                        youoption.value =   dataArr[i].MaterialId;
+                        $("#searchbox").append(youoption);
+                  }
+
+            },
+            error: function () {
+            }
+      })
+}
 function CriteriaBasic9() {
       let dataArr = [];
       var reportType = 'StarGate';
