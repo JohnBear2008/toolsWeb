@@ -17,6 +17,9 @@ const getTaskCodeAuditData = "select * from (select t1.BTID,t1.BTVersion,t1.code
 //需求单sql
 const sqlRequestBills = "select * from `ppm_bills_request`"
 
+//任务单
+const sqlTaskBills = 'select * from `ppm_bills_task`'
+
 
 //获取任务审核记录
 const getCodeAuditRecord = " select * from `ppm_bills_codeaudit`"

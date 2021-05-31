@@ -372,7 +372,7 @@
 						<!--panel------------------------------------------------------------------------>
 
 						<button id="BTNUpdVer" class="btn btn-danger" data-toggle="modal">更新版本</button>
-
+						<button id="BTNProgramEnd" class="btn btn-success" data-toggle="modal">程序归档</button>
 						<button id="BTNEnd" class="btn btn-success" data-toggle="modal">完结归档</button>
 
 
@@ -1834,6 +1834,55 @@
 
 					}
 				});
+
+
+				//按钮-程序归档
+				$('#BTNProgramEnd').click(async function () {
+
+					//d 获得任务单数据
+					let fileNum = $("#billsTaskTable tbody").find("tr").length;
+					let taskFilter = ""
+					for (let i = 0; i < fileNum; i++) {
+						let tdBTID = $("#billsTaskTable tbody tr:eq(" + i + ") td:first").html()
+						let tdBTVer = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(1)").html()
+						taskFilter = taskFilter + "('" + tdBTID + "'," + tdBTVer + "),"
+					}
+					taskFilter = ' (BTID,BTVersion) in (' + taskFilter.substring(0, taskFilter.length - 1) +
+						')';
+
+					let tasks = await getDataBySql({
+						sql: 'sqlTaskBills',
+						params: {
+							filter: taskFilter
+						}
+					})
+					console.log(tasks, tasks);
+
+					//d api归档
+
+					let res = await $.ajax({
+						method: 'post',
+						url: 'https://172.16.3.49:8000/api/ppm/autoFile',
+						data: {
+							tasks: tasks
+						},
+						success: function (data) {
+							console.log('111111', data);
+							return data;
+						},
+						error: function (error) {
+							console.log('111111', error);
+							return error;
+						}
+					});
+
+					return res;
+
+
+
+
+
+				})
 
 
 				//按钮-完结归档
