@@ -373,6 +373,7 @@
 
 						<button id="BTNUpdVer" class="btn btn-danger" data-toggle="modal">更新版本</button>
 						<button id="BTNProgramEnd" class="btn btn-success" data-toggle="modal">程序归档</button>
+						<button id="BTNSendSMSOpen" class="btn btn-success" data-toggle="modal">短信通知</button>
 						<button id="BTNEnd" class="btn btn-success" data-toggle="modal">完结归档</button>
 
 
@@ -542,6 +543,34 @@
 		</div>
 
 
+		<!-- 点击更新、添加按钮后弹出的窗口 -->
+		<div id="winSMS" class="easyui-window" title="表单详情" closed="true" style="width:50%;height:500px;">
+
+			<div class="divcontent">
+
+				<h3>短信发送</h3>
+				<hr>
+				<label class="col-sm-2 control-label">接收号码:</label>
+				<div class="col-sm-8">
+					<input id="smsPhone" class="form-control" type="text" list="phoneList">
+					<datalist id="phoneList">
+						<option value="BMW">
+						<option value="Ford">
+						<option value="Volvo">
+					</datalist>
+				</div>
+
+				<div class="col-sm-2">
+					<button id="BTNSendSMS" class="btn btn-default" data-toggle="modal">发送</button>
+
+				</div>
+			</div>
+			<!-- 点击更新、添加按钮后弹出的窗口 -->
+
+
+		</div>
+
+
 		<script>
 			//函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
 
@@ -648,7 +677,8 @@
 				} else if (reg.test($("#emailADRS").val()) || reg.test($("#emailCopyADRS").val())) {
 					swal("系统检测到收件人或抄送人地址包含中文标点符号会导致邮件发送失败,请检查!");
 					return false;
-				} else if (!(checkEmailAdrsFormate($("#emailADRS").val()) && checkEmailAdrsFormate($("#emailCopyADRS").val()))) {
+				} else if (!(checkEmailAdrsFormate($("#emailADRS").val()) && checkEmailAdrsFormate($("#emailCopyADRS")
+						.val()))) {
 					swal("收件人或抄送人邮件格式不符合系统规范,请检查!" + "\n 标准格式:海天-张三<aaa@163.com>");
 					return false;
 
@@ -770,7 +800,8 @@
 						if (files.length > 0) {
 							for (var i = 0; i < files.length; i++) {
 								console.log("files[i].fileName:" + files[i].fileName);
-								fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey + " download=" +
+								fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey +
+									" download=" +
 									files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
 							}
 							// fileLink = fileLink.substr(0, fileLink.length - 3);
@@ -879,6 +910,21 @@
 
 				return o;
 
+			}
+
+			const sendSMS = async (phone, content) => {
+				$.ajax({
+					method: 'post',
+					url: '/app/PM/lib/sms',
+					data: {
+						phone,
+						content
+					},
+					success: function (data) {
+						alert(JSON.stringify(data))
+					},
+					error: function () {}
+				})
 			}
 
 			//页面加载函数---------------
@@ -1624,7 +1670,8 @@
 										let i = {
 
 											DDMsg: {
-												at: '"' + $('#PGEMaker').text() +
+												at: '"' + $('#PGEMaker')
+													.text() +
 													'"',
 												msg: '@' + $('#PGEMaker')
 													.text() +
@@ -1875,15 +1922,23 @@
 							return error;
 						}
 					});
+					alert(res)
 
-					return res;
+				})
 
 
-
+				//按钮-短信通知
+				$('#BTNSendSMSOpen').click(async function () {
+					$('#winSMS').window('open');
 
 
 				})
 
+
+				$('#BTNSendSMS').click(async function () {
+					sendSMS("17051095060", "测试修改内容***8")
+
+				})
 
 				//按钮-完结归档
 				$('#BTNEnd').click(function () {

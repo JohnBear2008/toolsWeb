@@ -1,27 +1,24 @@
+/*
+ * @Author: your name
+ * @Date: 2020-08-17 08:18:38
+ * @LastEditTime: 2021-06-04 08:40:39
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \toolsWeb\biz\PM\lib\sms.{post}.{m}.js
+ */
 module.exports = function (sender) {
-	var yjDBService = global.yjRequire("yujiang.Foil").yjDBService
-	var yjDB = global.yjRequire("yujiang.Foil").yjDB
-
-	console.log("ajax Postqqq:" + JSON.stringify(sender.req.query));
-
-	let r1 = sender.req.query;
+	let {
+		phone,
+		content
+	} = sender.req.query;
 
 	var yjSMS_baidu = yjRequire("yujiang.Foil", "yjSMS.baidu.js");
-	console.log("come in testSMS");
-
 
 	var option = {
-		//18205849527
-		phone: "17051095060",
-		// //维修收费01
-		// templateCode:"smsTpl:3ffad050-814a-40a7-8689-35430ceef9b7",
-		// //维修收费02
-		// templateCode:"smsTpl:adb893e7-288c-4348-95ef-0d0f6369e6fa",
-		//维修收费03
-		templateCode: "smsTpl:3ffad050-814a-40a7-8689-35430ceef9b7",
+		phone: phone,
+		templateCode: "sms-tmpl-PWZZjq43597",
 		contentVar: {
-			"count": "3",
-			"cost": "3000"
+			"code": content,
 		},
 		success: function (data) {
 			console.log(data);
@@ -31,8 +28,5 @@ module.exports = function (sender) {
 			console.log(err);
 		}
 	}
-
 	yjSMS_baidu.send(option);
-
-
 };

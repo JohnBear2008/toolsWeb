@@ -1,0 +1,1221 @@
+<!-- 导入css库 -->
+<link rel="stylesheet" type="text/css" href="/ppmLib/css/divCss.css">
+
+<!-- 导入js库 -->
+<script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
+
+
+
+<!-- 导入datatables -->
+<link rel="stylesheet" type="text/css" href="/ppmLib/DataTables/datatables.min.css" />
+<script type="text/javascript" src="/ppmLib/DataTables/datatables.min.js"></script>
+
+<!-- 导入bootstrapSelect -->
+<link rel="stylesheet" href="/ppmLib/bootstrapSelect/css/bootstrap-select.min.css" />
+<script type="text/javascript" src="/ppmLib/bootstrapSelect/js/bootstrap-select.min.js"></script>
+
+
+<!-- 导入bootstrapSwitch -->
+<link rel="stylesheet" href="/ppmLib/bootstrapSwitch/css/bootstrap3/bootstrap-switch.min.css" />
+<script type="text/javascript" src="/ppmLib/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
+
+<!-- 导入datatimepicker -->
+<link href="/ppmLib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/ppmLib/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/ppmLib/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<!-- 加载foil外框架 -->
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+
+
+
+<!-- 定义html元素 -->
+<div class="rpContent">
+
+    <!-- 按钮：用于打开模态框 -->
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>信息管理-修改记录</h1>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+
+            <!-- 定义基础模块数据表 -->
+
+            <div class="panel panel-default" id='mainTablePanel'>
+                <div class="panel-heading">
+                    <div style="float: left;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" disabled>过滤</button>
+                            <button type="button" id="btnFilterRelated" class="btn btn-default">与我相关</button>
+                            <button type="button" id="btnFilterUndone" class="btn btn-default">未完结</button>
+                            <button type="button" id="btnFilterAll" class="btn btn-default">全部</button>
+                        </div>
+                    </div>
+
+                    <div style="float: left;margin-left: 25px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" disabled>功能</button>
+                            <button type=" button" class="btn btn-info" id="newRequestBtn">新增
+                            </button>
+
+                        </div>
+
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="panel-body">
+                    <table id="ppm_bills_request" class=" table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>计划单号</th>
+                                <th width='60'>客户</th>
+                                <th width='300'>修改主题</th>
+                                <th width='50'>申请人</th>
+                                <th width='60'>申请时间</th>
+                                <th width='60'>完成期限</th>
+                                <th width='50'>审核人</th>
+                                <th>反馈</th>
+                                <th>单据状态</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="ppm_bills_requestModal" tabindex="-1" role="dialog" aria-hidden="true"
+        data-backdrop="static">
+
+        <div class="modal-dialog" style="width: 75%;">
+
+            <!-- 按钮触发模态框 -->
+            <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#ppm_bills_requestModal"
+                id="ppm_bills_requestModalOpen" style="display: none;">
+                开始演示模态框
+            </button> -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        表单详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <!-- 表单面板 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="text-align: center;">
+                            <h3 class="panel-title">
+                                弘讯科技PPM需求单
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" id='ppm_bills_requestForm'>
+
+
+                                <input id="ppm_bills_requestForm-DBID" type="hidden" value="">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="ppm_bills_requestForm-PLDArea">地区</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-PLDArea" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-orderFrom">来源</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-orderFrom" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-billClass">类型</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-billClass" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-orderFromDep">需求方</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-orderFromDep"
+                                            class="selectpicker form-control" data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="ppm_bills_requestForm-CTRName">客户</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-CTRName" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label" for="ppm_bills_requestForm-MHEName">机型</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-MHEName" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-modelD">系统DSP</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-modelD" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-modelH">系统HMI</label>
+                                    <div class="col-sm-5">
+                                        <select id="ppm_bills_requestForm-modelH" class="selectpicker form-control"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">申请日期</label>
+                                    <div class="col-sm-5">
+                                        <input id="ppm_bills_requestForm-applyDate" class="form-control " size="16"
+                                            type="text" value="" placeholder="申请日期" readonly disabled>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">完成期限</label>
+                                    <div class="col-sm-5">
+                                        <input id="ppm_bills_requestForm-limitDate" class="form-control " size="16"
+                                            type="text" value="" placeholder="完成期限" readonly>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="ppm_bills_requestForm-topic">修改主题</label>
+                                    <div class="col-sm-11">
+                                        <input class="form-control" id="ppm_bills_requestForm-topic" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">修改要求</label>
+                                    <div class="col-sm-11">
+                                        <textarea id="ppm_bills_requestForm-detail" class="form-control"
+                                            rows="15"></textarea>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">附件</label>
+                                    <div class="col-sm-11">
+                                        <div id="uploadToolDiv">
+                                            <input type="file" multiple="multiple" id="fileToUpload"
+                                                onchange="fileSelected();" style="display: none;" />
+                                            <a class="btn btn-info" onclick="$('#fileToUpload').click()">上传附件</a>
+                                            <button type="button" type="button" class="btn btn-warning"
+                                                onclick="deleteFiles()">清空附件</button>
+                                        </div>
+
+                                        <div class="progress progress-striped active" id='progressbarDiv'
+                                            style="display: none;">
+                                            <div id="progressbar" class="progress-bar progress-bar-success"
+                                                role="progressbar" aria-valuenow="60" aria-valuemin="0"
+                                                aria-valuemax="100" style="width: 0%;">
+                                            </div>
+                                        </div>
+                                        <p class="form-control-static" id="files"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="ppm_bills_requestForm-auditor">审核人</label>
+                                    <div class="col-sm-5">
+                                        <select class="selectpicker" id="ppm_bills_requestForm-auditor"
+                                            data-live-search="true" data-size="10">
+                                        </select>
+                                        <button type="button" class="btn btn-info" id="getAuditorBtn">系统指定
+                                        </button>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label" for="ppm_bills_requestForm-maker">申请人</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="ppm_bills_requestForm-maker"></p>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-makeDate">制单时间</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="ppm_bills_requestForm-makeDate"></p>
+                                    </div>
+
+                                    <label class="col-sm-1 control-label"
+                                        for="ppm_bills_requestForm-makeDate">单据状态</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="ppm_bills_requestForm-status"></p>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group" id='feedBackRow'>
+                                    <label class="col-sm-1 control-label text-warning"
+                                        for="ppm_bills_requestForm-feedBack">反馈信息</label>
+                                    <div class="col-sm-11">
+                                        <input class="form-control" id="ppm_bills_requestForm-feedBack" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label"></label>
+                                    <div class="col-sm-5">
+                                        <button type="button" class="btn btn-warning" id="saveRequestBtn">保存
+                                        </button>
+                                        <button type="button" class="btn btn-success" id="auditRequestBtn">审核通过
+                                        </button>
+                                        <button type="button" class="btn btn-danger" id="rejectRequestBtn">审核驳回
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    //主表加载数据函数;
+
+    const loadBillMainTable = async () => {
+        //r-模式确定
+        //显示过滤模式
+        switch (true) {
+            case mainTableFilter === "maker='" + sessionName + "' or auditor='" + sessionName + "'":
+                $('#btnFilterRelated').addClass('active');
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+            case mainTableFilter === "status<>'已完结'":
+                $('#btnFilterRelated').removeClass('active');
+                $('#btnFilterUndone').addClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+            case mainTableFilter === '':
+                $('#btnFilterRelated').removeClass('active');
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterAll').addClass('active');
+                break;
+            default:
+                $('#btnFilterRelated').removeClass('active');
+                $('#btnFilterUndone').removeClass('active');
+                $('#btnFilterAll').removeClass('active');
+                break;
+        }
+
+
+
+        //r-初始化主表
+        loadBillDataTable({
+            elementId: 'ppm_bills_request',
+            sqlParams: {
+                sqlId: 'sqlRequestBills',
+                params: {
+                    filter: mainTableFilter,
+                    orderBy: 'billSaveTimeStamp desc'
+                }
+            },
+            dtParams: {
+                columns: [{
+                    data: 'BPID',
+                }, {
+                    data: 'CTRName',
+                }, {
+                    data: 'topic',
+                }, {
+                    data: 'maker',
+                }, {
+                    data: 'makeDate',
+                }, {
+                    data: 'limitDate',
+                }, {
+                    data: 'auditor',
+                }, {
+                    data: 'feedBack',
+                }, {
+                    data: 'status',
+                }],
+                // dom: 'frtlip',
+                aLengthMenu: [
+                    [10, 20, 50],
+                    [10, 20, 50],
+                ], //设置每页显示数据条数的下拉选项
+                iDisplayLength: 10, //每页初始显示5条记录
+            }
+        })
+
+        //清空选项值
+        $('.dataTables_filter input').val('')
+
+        //自定义样式调整
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'size': 45
+        });
+        $('.dataTables_filter input').attr({
+            'name': 'search',
+            'placeholder': '可用表属性过滤搜索'
+        });
+
+
+
+        //解绑原事件
+        $('#ppm_bills_request tbody').unbind();
+
+
+        //d-定义主表双击事件
+        $('#ppm_bills_request tbody').on('dblclick', 'tr', async function () {
+            //设定选中
+            let table = $('#ppm_bills_request').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let dataSelect = table.row('.selected').data();
+
+            mainTableData = dataSelect; //刷新全局主表对象数据
+
+            // console.log('mainTableData', mainTableData);
+
+            //初始化并填写form内inputs
+            initAndFillFormInputs({
+                formId: 'ppm_bills_requestForm',
+                params: dataSelect
+            })
+
+
+
+            //如存在file属性,对其单独处理生成下载链接
+            // alert(JSON.stringify(dataSelect))
+            if (dataSelect.files) {
+                let filesLink = getFilesUrl(dataSelect.files)
+                $('#files').html(filesLink);
+            }
+
+            //r-显示控制
+            $('#feedBackRow').show()
+
+            if (['待审核', '审核驳回', ''].includes(dataSelect.status)) {
+                $('#saveRequestBtn').show()
+            } else {
+                $('#saveRequestBtn').hide()
+            }
+
+
+            if (dataSelect.auditor === sessionName && dataSelect.status === '待审核') {
+                $('#auditRequestBtn').show()
+                $('#rejectRequestBtn').show()
+            } else {
+                $('#auditRequestBtn').hide()
+                $('#rejectRequestBtn').hide()
+            }
+
+            //打开面板
+            $('#ppm_bills_requestModal').modal('show');
+
+        });
+    }
+
+
+    $(document).ready(function () {
+
+        //定义全局变量,当前用户名
+        sessionName = "<%-locals.session.yjUser.Name%>";
+        //定义主表全局变量临时数据对象
+        mainTableData = {};
+
+        //过滤器
+        mainTableFilter = '';
+
+        var undone = getQueryString("undone");
+
+        switch (undone) {
+            case "unAudit":
+                mainTableFilter = "auditor ='" + sessionName + "' AND status='待审核'"
+                break;
+
+            default:
+                mainTableFilter = "maker='" + sessionName + "' or auditor='" + sessionName + "'"
+                break;
+        }
+
+
+
+        loadBillMainTable()
+
+        //按钮-过滤与我相关
+        $('#btnFilterRelated').click(async function () {
+
+            mainTableFilter = "maker='" + sessionName + "' or auditor='" + sessionName + "'"
+            loadBillMainTable()
+        })
+
+        //按钮-过滤未完结
+        $('#btnFilterUndone').click(async function () {
+
+            mainTableFilter = "status<>'已完结'"
+            loadBillMainTable()
+        })
+
+        //按钮-过滤全部
+        $('#btnFilterAll').click(async function () {
+
+            mainTableFilter = ""
+            loadBillMainTable()
+        })
+
+        //新增按钮
+        $('#newRequestBtn').click(function () {
+            //r-打开面板
+            $('#ppm_bills_requestModal').modal('show');
+
+            //d-清空表单
+            clearFormInputs({
+                formId: 'ppm_bills_requestForm'
+            })
+
+            //r-设定初始值
+            $("#ppm_bills_requestForm-PLDArea").selectpicker('val', '大港');
+            $("#ppm_bills_requestForm-orderFrom").selectpicker('val', '邮件');
+            $("#ppm_bills_requestForm-billClass").selectpicker('val', '量产');
+            $("#ppm_bills_requestForm-orderFromDep").selectpicker('val', '客户订单');
+            $("#ppm_bills_requestForm-applyDate").val(currentDate());
+            $("#ppm_bills_requestForm-limitDate").val(getIntervalDate(currentDate(), 3));
+
+
+
+            //r-部件显示控制
+
+            $('#feedBackRow').hide()
+
+            $('#uploadToolDiv').show()
+            $('#getAuditorBtn').show()
+            $('#saveRequestBtn').show()
+            $('#auditRequestBtn').hide()
+            $('#rejectRequestBtn').hide()
+
+
+
+        })
+
+        //获取审核人按钮
+        $('#getAuditorBtn').click(async function () {
+
+            //c-检查参数
+            let CTRNameVal = $('#ppm_bills_requestForm-CTRName option:selected').val()
+            let MHENameVal = $('#ppm_bills_requestForm-MHEName option:selected').val()
+            let modelDVal = $('#ppm_bills_requestForm-modelD option:selected').val()
+            let modelHVal = $('#ppm_bills_requestForm-modelH option:selected').val()
+
+            if (!CTRNameVal && !MHENameVal) {
+                alert('客户,机型至少选则一项,请检查')
+                return
+            }
+
+            if (!modelDVal && !modelHVal) {
+                alert('系统DSP,系统HMI至少选则一项,请检查')
+                return
+            }
+
+            let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
+            let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
+            let modelD = $('#ppm_bills_requestForm-modelD option:selected').text()
+            let modelH = $('#ppm_bills_requestForm-modelH option:selected').text()
+
+            let ModelName = "";
+            if (modelHVal) {
+                ModelName = modelH
+            }
+            if (modelDVal) {
+                ModelName = modelD
+            }
+
+            let filter = ''
+            if (CTRNameVal) {
+                filter = filter + ' and CTRName="' + CTRName + '"';
+            }
+
+            if (MHENameVal) {
+                filter = filter + ' and MHEName="' + MHEName + '"';
+            }
+
+            if (ModelName) {
+                filter = filter + ' and ModelName="' + ModelName + '"';
+            }
+
+            if (filter) {
+                filter = filter.substring(4, filter.length);
+            }
+
+            let rs = await getDataBySql({
+                sql: 'getBindAuditor',
+                params: {
+                    filter: filter,
+                    ordorBy: 'saveTimeStamp desc'
+                }
+            })
+
+            // console.log('rs', rs);
+
+            let auditor = '谢丽君';
+            if (rs.length > 0) {
+                auditor = rs[0].auditor;
+            }
+
+            $("#ppm_bills_requestForm-auditor").selectpicker('val', auditor);
+
+
+
+        })
+
+        //提交按钮
+        $('#saveRequestBtn').click(async function () {
+
+            //c-账号检测
+            let table = $('#ppm_bills_request').DataTable();
+            let dataSelect = table.row('.selected').data();
+            if (dataSelect) {
+                if (sessionName !== dataSelect.maker && sessionName !== dataSelect.auditor) {
+                    alert('当前账号非此单申请人或审核人,无法修改!')
+                    return
+                }
+            }
+
+            //c-检查必填项
+            if (!$('#ppm_bills_requestForm-PLDArea option:selected').val()) {
+                alert('地区未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-orderFrom option:selected').val()) {
+                alert('来源未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-billClass option:selected').val()) {
+                alert('类型未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-orderFromDep option:selected').val()) {
+                alert('需求方未选择,请检查')
+                return
+            }
+
+
+            if (!$('#ppm_bills_requestForm-CTRName option:selected').val()) {
+                alert('客户未选择,请检查')
+                return
+            }
+
+
+
+            if (!$('#ppm_bills_requestForm-CTRName option:selected').val()) {
+                alert('客户未选择,请检查')
+                return
+            }
+
+
+            if (!$('#ppm_bills_requestForm-modelD option:selected').val() && !$(
+                    '#ppm_bills_requestForm-modelH option:selected').val()) {
+                alert('系统DSP,系统HMI至少选一项,请检查')
+                return
+            }
+
+            if (!$("#ppm_bills_requestForm-topic").val()) {
+                alert('修改主题必填')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-auditor option:selected').val()) {
+                alert('审核人必填,如不确定,可用系统指定功能,请检查!')
+                return
+            }
+
+
+            //c-检查状态
+            let status = $('#ppm_bills_requestForm-status').text()
+            if (!['待审核', '审核驳回', ''].includes(status)) {
+                alert('该订单状态无法修改')
+                return
+            }
+
+            //c-重置审核状态确认
+            if (status === '审核驳回') {
+                if (!confirm('该申请单已经审核驳回,保存将重新提交审核,再次确认!')) {
+                    return
+                }
+            }
+
+
+            //d-获取表单数据
+
+            let requestBillData = getPostFormData({
+                formId: 'ppm_bills_requestForm'
+            })
+            console.log('requestBillData', requestBillData);
+
+
+            //d-添加附件信息
+            let filesArr = getFilesJson();
+            requestBillData.data[0].files = filesArr;
+
+            //d-调整数据
+
+            if (!requestBillData.data[0].DBID) {
+                delete requestBillData.data[0].DBID
+            }
+
+            if (!requestBillData.data[0].maker) {
+                requestBillData.data[0].maker = sessionName
+            }
+
+            requestBillData.data[0].makeDate = currentDate()
+
+
+
+            if (!requestBillData.data[0].status || requestBillData.data[0].status === '审核驳回') {
+                requestBillData.data[0].feedBack = ''
+                requestBillData.data[0].status = '待审核'
+            }
+
+
+
+            //d-保存单据
+            let r1 = await postDBData({
+                sql: 'replace',
+                params: requestBillData
+            })
+
+            if (r1.affectedRows > 0) {
+                alert('保存成功!')
+            } else {
+                alert('出现错误!')
+            }
+
+            //r-重载表格
+            loadBillMainTable()
+
+
+            //r-关闭modal
+            $('#ppm_bills_requestModal').modal('hide');
+
+        })
+
+
+        //审核通过按钮
+        $('#auditRequestBtn').click(async function () {
+
+            //c-检查审核人
+            let auditor = $('#ppm_bills_requestForm-auditor option:selected').val();
+            if (sessionName !== auditor) {
+                alert('您不是此需求单的审核人,无法审核!')
+                return
+            }
+
+            //c-检查必填项
+            if (!$('#ppm_bills_requestForm-PLDArea option:selected').val()) {
+                alert('地区未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-orderFrom option:selected').val()) {
+                alert('来源未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-billClass option:selected').val()) {
+                alert('类型未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-orderFromDep option:selected').val()) {
+                alert('需求方未选择,请检查')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-CTRName option:selected').val()) {
+                alert('客户未选择,请检查')
+                return
+            }
+
+
+            if (!$('#ppm_bills_requestForm-modelD option:selected').val() && !$(
+                    '#ppm_bills_requestForm-modelH option:selected').val()) {
+                alert('系统DSP,系统HMI至少选一项,请检查')
+                return
+            }
+
+            if (!$("#ppm_bills_requestForm-topic").val()) {
+                alert('修改主题必填')
+                return
+            }
+
+            if (!$('#ppm_bills_requestForm-auditor option:selected').val()) {
+                alert('审核人必填,如不确定,可用系统指定功能,请检查!')
+                return
+            }
+
+
+
+            //c-审核再确认
+            if (!confirm('审核后此单由您负责处理,将自动生成计划单,再次确认!')) {
+                return
+            }
+
+
+            //d-添加绑定关系 
+
+            let CTRNameVal = $('#ppm_bills_requestForm-CTRName option:selected').attr(
+                'data-tokens')
+            let MHENameVal = $('#ppm_bills_requestForm-MHEName option:selected').attr('data-tokens')
+            let modelDVal = $('#ppm_bills_requestForm-modelD option:selected').attr('data-tokens')
+            let modelHVal = $('#ppm_bills_requestForm-modelH option:selected').attr('data-tokens')
+            let staffVal = $('#ppm_bills_requestForm-auditor option:selected').attr('data-tokens')
+
+            // alert(staffVal)
+            // return
+
+            let CTRName = $('#ppm_bills_requestForm-CTRName option:selected').text()
+            let MHEName = $('#ppm_bills_requestForm-MHEName option:selected').text()
+            let modelD = $('#ppm_bills_requestForm-modelD option:selected').text()
+            let modelH = $('#ppm_bills_requestForm-modelH option:selected').text()
+            let staffName = $('#ppm_bills_requestForm-auditor option:selected').text()
+
+            let ModelVal = ""
+            let ModelName = "";
+            if (modelHVal) {
+                ModelVal = modelHVal
+                ModelName = modelH
+            }
+            if (modelDVal) {
+                ModelVal = modelDVal
+                ModelName = modelD
+            }
+
+            let addResult = await autoAddBindAuditor({
+                CTRVal: CTRNameVal,
+                CTRName: CTRName,
+                MHEVal: MHENameVal,
+                MHEName: MHEName,
+                ModelVal: ModelVal,
+                ModelName: ModelName,
+                staffVal: staffVal,
+                staffName: staffName
+            })
+            if (!addResult) {
+                alert(addResult)
+                return
+            }
+
+            //d-生成计划单
+
+            let PLDNumRS = await getDataBySql({
+                sql: 'getPLDNum'
+            })
+            console.log('PLDNumRS', PLDNumRS);
+
+            let PLDNum = PLDNumRS[0].PLDNum + 1
+
+            if (PLDNum < 10) {
+                PLDNum = "0" + PLDNum;
+            }
+
+            //定义BPID单号标识符;
+            let charA, charB, charC
+            switch ($('#ppm_bills_requestForm-PLDArea option:selected').val()) {
+                case '大港':
+                    charA = 'D';
+                    break;
+                case '虎门':
+                    charA = 'H';
+                    break;
+                case '台湾':
+                    charA = 'T';
+                    break;
+                default:
+                    break;
+            }
+
+            switch ($('#ppm_bills_requestForm-orderFrom option:selected').val()) {
+                case '邮件':
+                    charB = 'M';
+                    break;
+                case '电话':
+                    charB = 'T';
+                    break;
+                case '传真':
+                    charB = 'F';
+                    break;
+                case '微信':
+                    charB = 'W';
+                    break;
+                case '工具':
+                    charB = 'P';
+                    break;
+                default:
+                    break;
+            }
+
+            switch ($('#ppm_bills_requestForm-orderFromDep option:selected').val()) {
+                case '客户订单':
+                    charC = 'A';
+                    break;
+                case '其他部门':
+                    charC = 'B';
+                    break;
+                case '工程单位':
+                    charC = 'C';
+                    break;
+                case '公司预算或经营会议':
+                    charC = 'D';
+                    break;
+                default:
+                    break;
+            }
+
+
+            let BPID = "P" + dateFormat(currentDate(), "yyyyMMdd") + PLDNum + "_" + charA + charB +
+                "_" + charC;
+
+
+            // alert(BPID)
+
+            //d-生成计划单
+
+            //d-获取计划单fileJson
+            let newFileArr = []
+            let oldFileArr = JSON.parse(getFilesJson())
+            for (const n of oldFileArr) {
+                newFileArr.push({
+                    fileName: n.name,
+                    fileKey: n.key
+                })
+            }
+            let newFileJson = JSON.stringify(newFileArr)
+
+            let PLDData = {
+                tableId: 'ppm_bills_plan',
+                data: [{
+                    "BPID": BPID,
+                    "CTRName": $('#ppm_bills_requestForm-CTRName option:selected')
+                        .val(),
+                    "topic": $("#ppm_bills_requestForm-topic").val(),
+                    "detail": $("#ppm_bills_requestForm-detail").val().replace(
+                        /\n|\r\n/g, '<br/>').replace(/'/g, '"'),
+                    "PGEMaker": staffName,
+                    "PLDArea": charA,
+                    "orderFrom": charB,
+                    "orderFromDep": charC,
+                    "billClass": $('#ppm_bills_requestForm-billClass option:selected')
+                        .text(),
+                    "MHEName": $('#ppm_bills_requestForm-MHEName option:selected')
+                        .val(),
+                    "modelD": modelD,
+                    "modelH": modelH,
+                    // "OGNSystemVersion": $('#OGNSystemVersion').val(),
+                    "applyDate": $('#ppm_bills_requestForm-applyDate').val(),
+                    "limitDate": $('#ppm_bills_requestForm-limitDate').val(),
+                    "maker": $('#ppm_bills_requestForm-maker').text(),
+                    "makeDate": currentDate(),
+                    "version": 0,
+                    "files": newFileJson,
+                    "auditor": staffName,
+                    "auditDate": currentDate(),
+                    "auditResult": 1,
+                    "PLDStatus": 1,
+                    // "auditOpinion": $('#ppm_bills_requestForm-auditOpinion').val().replace(
+                    //     /\n|\r\n/g, '<br/>').replace(/'/g, '"'),
+                    "WFStatus": 10
+                }]
+            }
+
+            console.log('PLDData', PLDData);
+
+            let PLDSaveResult = await postDBData({
+                sql: 'replace',
+                params: PLDData
+            })
+
+            if (!PLDSaveResult) {
+                alert('生成计划单错')
+                return
+            }
+
+
+            //d-审核
+            let billData = {
+                DBID: $('#ppm_bills_requestForm-DBID').val(),
+                BPID: BPID,
+                status: '审核通过'
+            }
+
+            let rs = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'ppm_bills_request',
+                    data: [billData],
+                    key: 'DBID'
+                }
+            })
+
+            if (rs.affectedRows > 0) {
+                alert('审核成功!')
+            } else {
+                alert('审核失败!')
+            }
+
+
+
+
+            //r-重载表格
+            loadBillMainTable()
+
+            //r-关闭modal
+            $('#ppm_bills_requestModal').modal('hide');
+
+        })
+
+        //审核驳回按钮
+        $('#rejectRequestBtn').click(async function () {
+
+            //c-检查审核人
+            let auditor = $('#ppm_bills_requestForm-auditor option:selected').val();
+            if (sessionName !== auditor) {
+                alert('您不是此需求单的审核人,无法驳回!')
+                return
+            }
+
+            //c-检查反馈信息
+            let feedBack = $('#ppm_bills_requestForm-feedBack').val()
+            if (!feedBack) {
+                alert('驳回需求需填写反馈信息,请检查!')
+                return
+            }
+
+            //d-审核
+            let billData = {
+                DBID: $('#ppm_bills_requestForm-DBID').val(),
+                feedBack: feedBack,
+                status: '审核驳回'
+            }
+
+            let rs = await postDBData({
+                sql: 'update',
+                params: {
+                    tableId: 'ppm_bills_request',
+                    data: [billData],
+                    key: 'DBID'
+                }
+            })
+
+            if (rs.affectedRows > 0) {
+                alert('驳回成功!')
+            } else {
+                alert('驳回失败!')
+            }
+
+            //r-重载表格
+            loadBillMainTable()
+
+            //r-关闭modal
+            $('#ppm_bills_requestModal').modal('hide');
+
+        })
+
+        //初始化过滤器日期组
+        loadDatePickers({
+            elementIds: [
+                'ppm_bills_requestForm-applyDate',
+                'ppm_bills_requestForm-limitDate',
+            ]
+        })
+
+
+        //初始化selector
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-PLDArea',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="地区"',
+                    orderBy: 'orderId'
+                }
+            },
+            // initValue: '大港'
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-orderFrom',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="来源"',
+                    orderBy: 'orderId'
+                }
+            },
+            // initValue: '邮件'
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-billClass',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="类型"',
+                    orderBy: 'orderId'
+                }
+            },
+            // initValue: '量产'
+        })
+
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-orderFromDep',
+            sqlParams: {
+                sql: 'getOptionSelector',
+                params: {
+                    filter: 'optionClass="需求方"',
+                    orderBy: 'orderId'
+                }
+            },
+            // initValue: '其他部门'
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-CTRName',
+            sqlParams: {
+                sql: 'getCTRNameSelector',
+                params: {
+                    filter: 'status=1'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-MHEName',
+            sqlParams: {
+                sql: 'getMHENameSelector',
+                params: {
+                    filter: 'status=1'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-modelD',
+            sqlParams: {
+                sql: 'getSytemSelector',
+                params: {
+                    filter: 'belong="DSP" and sort="APP"'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-modelH',
+            sqlParams: {
+                sql: 'getSytemSelector',
+                params: {
+                    filter: 'belong="HMI"  and sort="APP"'
+                }
+            },
+        })
+
+        loadBootStrapSelector({
+            elementId: 'ppm_bills_requestForm-auditor',
+            sqlParams: {
+                sql: 'getStaffSelector'
+            },
+        })
+
+
+
+
+
+        // 关闭事件重置选中datatable选中,避免显示错误
+        $('#ppm_bills_requestModal').on('hidden.bs.modal', function () {
+            let table = $('#ppm_bills_request').DataTable();
+            table.$('tr.selected').removeClass('selected');
+            mainTableData = {}
+        })
+
+
+
+
+        // //enter键监听
+        // $(window).keyup(function (event) {
+        //     // var event = ev || event
+        //     if (event.keyCode == 13) {
+        //         $('#getRequestBtn').click()
+        //     }
+        // });
+
+
+
+
+
+
+    });
+</script>
