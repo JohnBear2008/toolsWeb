@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-08-17 08:18:38
- * @LastEditTime: 2021-06-04 08:40:39
+ * @LastEditTime: 2021-06-09 14:19:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\biz\PM\lib\sms.{post}.{m}.js
@@ -16,7 +16,7 @@ module.exports = function (sender) {
 
 	var option = {
 		phone: phone,
-		templateCode: "sms-tmpl-PWZZjq43597",
+		templateCode: "sms-tmpl-MFaSIN60881",
 		contentVar: {
 			"code": content,
 		},

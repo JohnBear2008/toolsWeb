@@ -19,11 +19,13 @@
 <script src="/js/PM/tableExport.js"></script>
 <script src="/js/PM/PMfuns.js"></script>
 
+
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
 
 <!-- 导入js库 -->
 <script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
+
 
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 
@@ -49,7 +51,7 @@
 				style="float:right">个人中心</button></a>
 
 		<!-- 模态框（Modal） -->
-		<div class="modal fade" id="BillPLD" tabindex="-1" role="dialog" aria-labelledby="BillPLDLabel"
+		<div class="modal fade" id="BillPLD" tabindex="1" role="dialog" aria-labelledby="BillPLDLabel"
 			aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog" style="width:75%">
 				<div class="modal-content">
@@ -102,16 +104,7 @@
 										<div class="col-sm-1 ">
 											<span id="model" class="help-block"></span>
 										</div>
-
-
-
-
-
 									</div>
-
-
-
-
 									<!-------------------------------------------------------------------------->
 									<div class="form-group">
 
@@ -120,12 +113,10 @@
 											<span id="applyDate" class="help-block"></span>
 										</div>
 
-
 										<label for="limitDate" class="col-sm-1 control-label">完成期限:</label>
 										<div class="col-sm-2 ">
 											<span id="limitDate" class="help-block"></span>
 										</div>
-
 
 										<label class="col-sm-1 control-label" for="name">方案负责人:</label>
 										<div class="col-sm-1 ">
@@ -142,11 +133,7 @@
 											<span id="FQCPassText" class="help-block"></span>
 										</div>
 
-
 									</div>
-
-
-
 
 									<!-------------------------------------------------------------------------->
 
@@ -164,10 +151,6 @@
 											<span id="detail" class="help-block" style="white-space:pre-wrap;"></span>
 										</div>
 									</div>
-
-
-
-
 
 									<!-------------------------------------------------------------------------->
 
@@ -196,8 +179,6 @@
 								<h3 class="panel-title">发布记录</h3>
 							</div>
 							<div class="panel-body">
-
-
 								<div class="form-horizontal">
 
 									<!-------------------------------------------------------------------------->
@@ -417,6 +398,51 @@
 		</thead>
 	</table>
 
+	<!-- 点击更新、添加按钮后弹出的窗口 -->
+	<!-- <div id="winSMS" class="easyui-window" title="表单详情" closed="true">
+		<h3>短信发送</h3>
+		<hr>
+		<input id="smsPhone" class="form-control" type="text" list="phoneList" />
+		<datalist id="phoneList">
+			<option value="BMW">
+			<option value="Ford">
+			<option value="Volvo">
+		</datalist>
+
+		<button id="BTNSendSMS" class="btn btn-default">发送</button>
+	</div> -->
+
+	<!-- 短信模态框（Modal） -->
+	<div class="modal fade" id="winSMS">
+		<div class="modal-dialog" style="width: 750px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title">
+						短信发送
+					</h4>
+				</div>
+				<div class="modal-body form-horizontal" style="height: 300px;">
+
+					<div class="form-group" style="text-align: center;">
+						注意事项:仅支持有效手机号,可直接输入或下拉选择,发送多个手机号,以","分隔
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">手机号:</label>
+						<div class="col-sm-8">
+							<input id="smsPhone" class="form-control" type="text" />
+							<!-- <datalist id="phoneList">
+							</datalist> -->
+						</div>
+						<div class="col-sm-2"><button id="BTNSendSMS" class="btn btn-default">发送</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 	<!-- 点击更新、添加按钮后弹出的窗口 -->
@@ -510,11 +536,6 @@
 								</tr>
 							</table>
 						</div>
-
-
-
-
-
 					</div>
 				</div>
 				<!-------------------------------------------------------------------------->
@@ -529,46 +550,15 @@
 				<!-------------------------------------------------------------------------->
 
 				<div>
-
-
-				</div>
-
-
-
-
-			</div>
-			<!-- 点击更新、添加按钮后弹出的窗口 -->
-
-
-		</div>
-
-
-		<!-- 点击更新、添加按钮后弹出的窗口 -->
-		<div id="winSMS" class="easyui-window" title="表单详情" closed="true" style="width:50%;height:500px;">
-
-			<div class="divcontent">
-
-				<h3>短信发送</h3>
-				<hr>
-				<label class="col-sm-2 control-label">接收号码:</label>
-				<div class="col-sm-8">
-					<input id="smsPhone" class="form-control" type="text" list="phoneList">
-					<datalist id="phoneList">
-						<option value="BMW">
-						<option value="Ford">
-						<option value="Volvo">
-					</datalist>
-				</div>
-
-				<div class="col-sm-2">
-					<button id="BTNSendSMS" class="btn btn-default" data-toggle="modal">发送</button>
-
 				</div>
 			</div>
 			<!-- 点击更新、添加按钮后弹出的窗口 -->
 
 
 		</div>
+
+
+
 
 
 		<script>
@@ -713,7 +703,7 @@
 				$('#limitDate').text(dataSelect.limitDate);
 				$('#topic').text(dataSelect.topic);
 
-				console.log('detail:' + dataSelect.detail)
+				// console.log('detail:' + dataSelect.detail)
 				$('#detail').text(dataSelect.detail.replace(/<br\/>/g, '\n'));
 
 				//	tasksTableSQL={"SQL":"SQLTableBillsTask","filter":"taskBPID = '"+dataSelect.BPID+"'"};
@@ -775,7 +765,7 @@
 						var fileLink = "";
 						if (files.length > 0) {
 							for (var i = 0; i < files.length; i++) {
-								console.log("files[i].fileName:" + files[i].fileName);
+								// console.log("files[i].fileName:" + files[i].fileName);
 
 								fileLink = fileLink + "<a  href=" + '/system.files.download/upload_' + files[i].fileKey +
 									" download=" + files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" +
@@ -799,7 +789,7 @@
 						var fileLink = "";
 						if (files.length > 0) {
 							for (var i = 0; i < files.length; i++) {
-								console.log("files[i].fileName:" + files[i].fileName);
+								// console.log("files[i].fileName:" + files[i].fileName);
 								fileLink = fileLink + "<a  href=" + '/system.files.download/' + files[i].fileKey +
 									" download=" +
 									files[i].fileName + ">" + "<span>" + files[i].fileName + "</span></a>" + " ; ";
@@ -881,7 +871,7 @@
 
 			const formateCopyEmailADS = (adrs, mark) => {
 
-				console.log(adrs)
+				// console.log(adrs)
 				let o = '';
 
 				o = adrs;
@@ -921,7 +911,7 @@
 						content
 					},
 					success: function (data) {
-						alert(JSON.stringify(data))
+						alert('发送短信成功!')
 					},
 					error: function () {}
 				})
@@ -934,6 +924,7 @@
 
 
 				sessionName = "<%-locals.session.yjUser.Name%>";
+				customerPhone = '';
 
 				var undone = getQueryString("undone");
 
@@ -1071,7 +1062,7 @@
 				//按钮-发布维护---------
 				$('#BTNPBHDetail').click(function () {
 
-					console.log("seclet: " + JSON.stringify(table.row('.selected').data()));
+					// console.log("seclet: " + JSON.stringify(table.row('.selected').data()));
 					// table.row('.selected').remove().draw( false );
 					var dataSelect = table.row('.selected').data();
 					if (dataSelect == undefined) {
@@ -1096,7 +1087,7 @@
 					$("#emailTitle").val("【弘讯PPM处理结果】" + $("#topic").text() + "  ,  单号:" + $("#BPID").text());
 
 					var fileNum = $("#billsTaskTable tbody").find("tr").length;
-					console.log("fileNum:" + fileNum);
+					// console.log("fileNum:" + fileNum);
 
 					var filesHtml = $("#divFilesUploaded").html();
 					//emailFilesValue=[];
@@ -1139,7 +1130,7 @@
 
 					}
 
-					console.log("filesHtml:" + JSON.stringify(filesHtml));
+					// console.log("filesHtml:" + JSON.stringify(filesHtml));
 
 					if (filesHtml != "") {
 						filesHtml = filesHtml.substr(0, filesHtml.length - 3);
@@ -1178,7 +1169,7 @@
 						data: SQLEMails,
 						url: "/app/PM/getSQLDBData",
 						success: function (data) {
-							console.log("back email data:" + JSON.stringify(data));
+							// console.log("back email data:" + JSON.stringify(data));
 
 							$("#emailADRS").val($('#PBHCTRName').text() + '-' + data[0].contact +
 								'<' + data[0].email + '>');
@@ -1230,7 +1221,7 @@
 
 							let dataSelect = table.row('.selected').data();
 
-							console.log("dataSelect.maker:" + dataSelect.maker);
+							// console.log("dataSelect.maker:" + dataSelect.maker);
 
 
 							if (sessionName !== dataSelect.maker) {
@@ -1457,7 +1448,7 @@
 				$('input:radio[name="auditType"]').click(function () {
 
 					var PGEMaker = $('#PGEMaker').children('option:selected').text();
-					console.log("PGEMaker:" + PGEMaker);
+					// console.log("PGEMaker:" + PGEMaker);
 					var radioValue = $('input:radio[name="auditType"]:checked').val();
 					switch (radioValue) {
 						case "1":
@@ -1516,7 +1507,7 @@
 							let tdBTType = tdBTID.substring(12, 13)
 
 							let tdFiles = $("#billsTaskTable tbody tr:eq(" + i + ") td:last").text();
-							console.log("tdFiles:" + tdFiles)
+							// console.log("tdFiles:" + tdFiles)
 
 							let tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(3)").html();
 
@@ -1565,7 +1556,7 @@
 
 							let emailContentModel = $('#emailContent').val().replace(/\n|\r\n/g, '<br/>');
 
-							console.log("emailContentModel:" + emailContentModel)
+							// console.log("emailContentModel:" + emailContentModel)
 
 							if ($('#PBHRemark').val() !== '') {
 								emailContentModel = emailContentModel + '备注:' + $('#PBHRemark').val();
@@ -1632,7 +1623,7 @@
 							},
 							url: "/app/PM/getSQLDBData",
 							success: function (data) {
-								console.log('staff get:' + JSON.stringify(data))
+								// console.log('staff get:' + JSON.stringify(data))
 
 								let signName = ''
 								let signTelNo = ''
@@ -1793,7 +1784,7 @@
 								files.push(fileInfo);
 							});
 
-							console.log("file:" + JSON.stringify(files))
+							// console.log("file:" + JSON.stringify(files))
 
 
 							let oldPBHData = {
@@ -1903,7 +1894,7 @@
 							filter: taskFilter
 						}
 					})
-					console.log(tasks, tasks);
+					// console.log(tasks, tasks);
 
 					//d api归档
 
@@ -1914,11 +1905,11 @@
 							tasks: tasks
 						},
 						success: function (data) {
-							console.log('111111', data);
+							// console.log('111111', data);
 							return data;
 						},
 						error: function (error) {
-							console.log('111111', error);
+							// console.log('111111', error);
 							return error;
 						}
 					});
@@ -1929,15 +1920,79 @@
 
 				//按钮-短信通知
 				$('#BTNSendSMSOpen').click(async function () {
-					$('#winSMS').window('open');
+					$('#winSMS').modal('show')
+					let customerName = $('#PBHCTRName').text();
+					let customerData = await getDataBySql({
+						sql: "getCustomer",
+						params: {
+							filter: "FTYName='" + customerName + "'"
+						}
+					})
+					// console.log('customerData', customerData);
+					let phone = customerData[0].phone;
 
+					if (!phone) {
+						alert('此客户手机号为空!')
+						return
+					}
+
+					customerPhone = phone
+					$('#smsPhone').val(phone)
 
 				})
 
 
 				$('#BTNSendSMS').click(async function () {
-					sendSMS("17051095060", "测试修改内容***8")
 
+					//检查号码有效性
+					let smsPhone = $('#smsPhone').val();
+					let smsPhoneArr = smsPhone.split(',');
+
+					//判断是否为有效手机号
+					const isPhoneAvailable = (phone) => {
+						let myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+						if (!myreg.test(phone)) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+
+					for (const n of smsPhoneArr) {
+						if (!isPhoneAvailable(n)) {
+							alert('存在无效手机号,请检查!')
+							return;
+						}
+					}
+
+					//发送短信
+					let topic = $('#topic').text()
+					await sendSMS(smsPhone, topic)
+
+					if (smsPhone === customerPhone) {
+						return
+					}
+
+					if (!confirm('检测到号码有异动,是否更新到客户信息?')) {
+						return
+					}
+					//更新手机号
+					let customerData = {
+						FTYName: $('#PBHCTRName').text(),
+						phone: smsPhone
+					}
+					let ru = await postDBData({
+						sql: 'update',
+						params: {
+							tableId: 'ppm_customers',
+							data: [customerData],
+							key: 'FTYName'
+						}
+					})
+					if (ru.affectedRows > 0) {
+						alert('更新客户信息成功!')
+						$('#winSMS').modal('hide')
+					}
 				})
 
 				//按钮-完结归档

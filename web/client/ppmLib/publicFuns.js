@@ -1647,3 +1647,13 @@ const getIntervalDate = (
     console.log('newDate', newDate);
     return newDate;
 }
+
+//判断是否为有效手机号
+const isPhoneAvailable = (phone) => {
+    let myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+    if (!myreg.test(phone)) {
+        return false;
+    } else {
+        return true;
+    }
+}

@@ -7,6 +7,9 @@ const getMHENameSelector = "select MHEName as value,concat_ws('-',MHEType,MHENam
 const getSytemSelector = "select val as value,val as option,DBID as token from ppm_systems";
 const getStaffSelector = "select staffName as value,staffName as option,DBID as token from `ppm_staffs`"
 
+//获取客户信息
+const getCustomer = "select * from ppm_customers"
+
 //获取负责人
 const getBindAuditor = "select StaffName as auditor from `ppm_customerbinds`"
 
