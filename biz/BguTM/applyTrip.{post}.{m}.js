@@ -34,6 +34,7 @@ module.exports = function (sender) {
         var Version = Advstr.Version;
         var Subject = '差旅费';
         var BusiMan = Advstr.BusiMan;
+        var CompMan = Advstr.CompMan;
         var BusiArea = Advstr.BusiArea;
         qryDept = Advstr.DeptName;
         let DeptList = [];
@@ -47,6 +48,8 @@ module.exports = function (sender) {
             GroupList = qryGroup.split(',');
             flowGroup = GroupList[0];
         }
+        var RoomChoice   = Advstr.RoomChoice ;
+        var DinnerChoice = Advstr.DinnerChoice;
         var StaffID = Advstr.StaffID;
         var StaffName = Advstr.StaffName;
         var TotalValue = Advstr.TotalValue;
@@ -62,7 +65,14 @@ module.exports = function (sender) {
         var LiveDateD = Advstr.LiveDateD; LiveDateD = nulReplaceDate(LiveDateD);
         var LiveDateE = Advstr.LiveDateE; LiveDateE = nulReplaceDate(LiveDateE);
         var LiveDateF = Advstr.LiveDateF; LiveDateF = nulReplaceDate(LiveDateF);
+        var LiveExtA = Advstr.LiveExtA; 
+        var LiveExtB = Advstr.LiveExtB; 
+        var LiveExtC = Advstr.LiveExtC; 
+        var LiveExtD = Advstr.LiveExtD; 
+        var LiveExtE = Advstr.LiveExtE; 
+        var LiveExtF = Advstr.LiveExtF; 
         var Explanation = Advstr.Explanation;
+        var OverReason = Advstr.OverReason;
         var Overspend = Advstr.Overspend;
         var IsOver = Advstr.IsOver;
         var HotelName = Advstr.HotelName;
@@ -550,18 +560,24 @@ module.exports = function (sender) {
     }
     function saveMain() {
         var Formkind = '出差单';
-        let paramList = [BillNo, ApplicNo, Formkind, Subject, Version, BusiMan, BusiArea, flowDept,
-            StaffID, StaffName, LeaveDate, LeaveHour, LeaveMin, BackDate,
-            BackHour, BackMin, LiveDateA, LiveDateB, LiveDateC, LiveDateD,
-            LiveDateE, LiveDateF, Explanation, Overspend, IsOver, HotelName,
-            HotelTel, EntryDate, BillStatus];
+        let paramList = [BillNo, ApplicNo, Formkind, Subject, Version, 
+            BusiMan, CompMan ,  BusiArea , RoomChoice , DinnerChoice ,
+            flowDept, StaffID, StaffName, LeaveDate, LeaveHour,
+            LeaveMin, BackDate, BackHour, BackMin, LiveDateA,
+            LiveDateB, LiveDateC, LiveDateD,  LiveDateE, LiveDateF, 
+            LiveExtA, LiveExtB, LiveExtC, LiveExtD,  LiveExtE,
+            LiveExtF, Explanation, Overspend ,  OverReason, IsOver, 
+            TotalValue , HotelName, HotelTel, EntryDate, BillStatus ];
         // console.log('差旅申请', paramList);
-        var SQLInsert = "INSERT INTO `bgu_tripmain` ( `BillNo`  ,  `ApplicNo`  ,  `Formkind` ,  `Subject`  ,  `Version`  ,  `BusiMan`  ,  `BusiArea`  ,  `DeptName`  , " +
-            " `StaffID`  ,  `StaffName`  ,  `LeaveDate`  , `LeaveHour`  ,  `LeaveMin`  ,  `BackDate`  , " +
-            " `BackHour`  ,  `BackMin`  ,  `LiveDateA`  ,  `LiveDateB`  ,  `LiveDateC`  ,  `LiveDateD`  , " +
-            " `LiveDateE`  ,  `LiveDateF`  ,  `Explanation`  ,  `Overspend`  ,  `IsOver`  ,  `HotelName`  , " +
-            " `HotelTel`  ,  `EntryDate`  ,  `BillStatus`    ) " +
-            " VALUES (?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,? )";
+        var SQLInsert = "INSERT INTO `bgu_tripmain` ( `BillNo`  ,  `ApplicNo`  ,  `Formkind` ,  `Subject`  ,  `Version`  , " + 
+            " `BusiMan`  , `CompMan`  , `BusiArea`  ,  `RoomChoice` ,  `DinnerChoice` ,  " +
+            " `DeptName` ,  `StaffID` ,  `StaffName`  ,  `LeaveDate` , `LeaveHour`  , " +
+            " `LeaveMin`  ,  `BackDate`  ,   `BackHour`  , `BackMin` ,  `LiveDateA`  , " +
+            " `LiveDateB`  ,  `LiveDateC`  ,  `LiveDateD`  ,   `LiveDateE` , `LiveDateF`, " +
+            " `LiveExtA`  ,  `LiveExtB`  ,  `LiveExtC`  , `LiveExtD` ,   `LiveExtE`  ," +
+            " `LiveExtF`  ,  `Explanation`  ,  `Overspend`  , `OverReason`  , `IsOver`  , " +
+            " `TotalValue` ,  `HotelName`  ,  `HotelTel`  , `EntryDate`  , `BillStatus` )" +
+            " VALUES (?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,? )";
         yjDBService.exec({
             sql: SQLInsert,
             parameters: paramList,

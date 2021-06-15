@@ -184,6 +184,7 @@ module.exports = function (sender) {
 			});
 		}
 	}
+	
 	function LookOrig() {
 		var filter = " 1=1 ";
 		var orderBy = '';

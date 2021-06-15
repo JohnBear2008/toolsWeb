@@ -57,7 +57,7 @@
 			<input type="button" id="MdfyBtn" class="btn btn-primary" value="编辑" />
 			<input type="button" id="VoidBtn" class="btn btn-primary" value="作废" />
 			<input type="button" id="PurFixBtn" class="btn btn-danger" value="采购" />
-			<!-- <input type="button" id="ExpFillBtn" class="btn btn-warning" value="报销" /> -->
+			<input type="button" id="ExpFillBtn" class="btn btn-warning" value="报销" />
 			<input type="hidden" id="hideDeptName" value="" />
 			<input type="hidden" id="hideFlowRole" value="" />
 			<input type="hidden" id="hidePhone" value="" />
@@ -184,25 +184,10 @@
 									<input id="TotalValue" class="form-control" type="text" value=""
 										readonly>
 								</div>
-								<label class="col-sm-1 control-label">调整额</label>
-								<div class="col-sm-3">
-									<input id="ExceedValue" class="form-control" type="text" value=""
-									readonly >
-								</div>
-								<input type="hidden" id="hideCurJob" value="" />
-							</div>
-							<br />
-							<br />
-							<div class="form-group">
 								<label class="col-sm-1 control-label">上限</label>
 								<div class="col-sm-3">
 									<input id="UpperLimit" class="form-control" type="text" value="">
-								</div>	
-
-								<!-- <div class="col-sm-3">
-									<input id="hideCurJob" class="form-control" type="text" value="">
-								</div>	 -->
-
+								</div>
 							</div>
 							<br> </br>
 						</div>
@@ -264,7 +249,7 @@
 		var glbH = '';
 		var glbS = '';
 		var Pattern = '';
-		var CapMode = 'A';
+		var CapMode = 'B';
 		var SeaMode = '';  //0 is SeaBtn , 1 is SeaAllBtn
 		var CurName = '';
 		var selClass = '';
@@ -379,7 +364,6 @@
 			var limit = '5000';
 			var filter = ' 1=1 ';
 			var orderBy = '';
-		      CapMode ='A';
 			$("#center_TB").dataTable().fnDestroy();
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
@@ -761,12 +745,8 @@
 				var CurText = dataSelect.CurText;
 				var ClaimText = dataSelect.ClaimText;
 				var StaffName = dataSelect.StaffName;
-				var MagName = dataSelect.MagName;
-				var VipName = dataSelect.VipName;
-				var CurJob = dataSelect.CurJob;
 				var message = '开始报销，请确认操作是否无误？';
 				var TotalValue = dataSelect.TotalValue;
-				var ExceedValue = dataSelect.ExceedValue;
 				if (CurText != '核准') {
 					layer.msg('非核准状态 ， 此单不能报销', { icon: 1 });
 					return;
@@ -775,9 +755,11 @@
 					message = '此单已进行报销中，是否清空重新建立？'
 				}
 				var sessionDept = $("#hideDeptName").val();
-				if (sessionDept == '财务部' || sessionName == MagName || sessionName == VipName || sessionName == StaffName) {
+				if (sessionDept == '财务部') {
+					console.log("鲨嘴炮", sessionDept);
 				} else {
-					layer.msg('非相关人士 ， 此单不能报销作业', { icon: 1 });
+					console.log("愿得一心人", sessionDept);
+					layer.msg('非财务人员 ， 此单不能报销作业', { icon: 1 });
 					return;
 				}
 				layer.confirm(BillNo + message, {
@@ -786,8 +768,6 @@
 					layer.msg('操作成功', { icon: 1 });
 					$('#BillNo').val(BillNo);
 					$('#TotalValue').val(TotalValue);
-					$('#ExceedValue').val(ExceedValue);
-					$("#hideCurJob").val(CurJob);
 					$('#momowindow').modal('show');
 				}, function () {
 					layer.msg('无操作', { icon: 1 });
@@ -885,74 +865,56 @@
 			var Flag = 'N';
 			var UpperLimit = $('#UpperLimit').val();
 			var TotalValue = $('#TotalValue').val();
-			var ExceedValue = $('#ExceedValue').val();
-			var hideCurJob = $('#hideCurJob').val();
 			UpperLimit = nulReplace0(UpperLimit); UpperLimit = parseInt(UpperLimit, 10);
 			TotalValue = nulReplace0(TotalValue); TotalValue = parseInt(TotalValue, 10);
-			ExceedValue = nulReplace0(ExceedValue); ExceedValue = parseInt(ExceedValue, 10);
 
 			var BillNo = $('#BillNo').val();
 			var StaffName = sessionName;
 			var StaffID = sessionOID;
 			var Advstr = {
-				"BillNo": BillNo, "UpperLimit": UpperLimit, "TotalValue": TotalValue, "ExceedValue": ExceedValue,
-				"StaffName": StaffName, "StaffID": StaffID , "CurJob": hideCurJob
+				"BillNo": BillNo, "UpperLimit": UpperLimit, "TotalValue": TotalValue, "StaffName": StaffName, "StaffID": StaffID
 			};
-			console.log("剑的A意义",Advstr);
 			var message = '建立报销可使用金额，请确认操作是否无误？';
-			if (ExceedValue !=undefined && ExceedValue !=null && ExceedValue !='') {
-				if ( UpperLimit > ExceedValue ) {
-				    Flag = 'Y';
-			      }
-			}else{
-				if (TotalValue !=undefined && TotalValue !=null && TotalValue !='') {
-					if ( UpperLimit > TotalValue ) {
-					  Flag = 'Y';
-					}else{
-					  Flag = 'N';	
-					}
-			      }else{
-					layer.msg('操作不成功', { icon: 1 });
-					return ;
-				}
+			if (UpperLimit > TotalValue) {
+				Flag = 'Y';
 			}
 			if (Flag == 'Y') {
-				var messYes = ' 金额不可超过！！请重新修改金额或再次进入追加预算审批程序';
-				// layer.msg(messYes, { icon: 1 });
-				ReConfirm("资讯", messYes).then(function () {
-					console.log('再次进入费用审批');
-					$('.console-show').text('Promise_resolve_confirm页面点击"确定"');
-					var reportType = 'CreateClaim';
-					var arrange = 'exceedBud';
-					var taskData = { "reportType": reportType, "arrange": arrange, "Advstr": Advstr };
-					$.ajax({
-						method: 'post',
-						data: taskData,
-						url: "/app/TMFinc/getRoute",
-						success: function (data) {
-							console.log("会好", JSON.stringify(data));
-							if (data.status == 'Fail') {
-								layer.msg("讯息" + data.message);
-							} else if (data.status == 'OK') {
-								layer.confirm("文号" + data.BillNo + "已重新审批" + (data.status), {
-									btn: ['知道了']
-								}, function () {
-									layer.msg('操作成功', { icon: 1 });
-									var DateB = $("#taskMakeDateB").val();
-									var DateE = $("#taskMakeDateE").val();
-									missAcute = $('#Pattern').val();
-									missBcute = $('#CapMode').val();
-									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missS=" + SeaMode + "&missC=" + DateB + "&missD=" + DateE + " ";
-								});
-							}
-						},
-						error: function () {
-						}
-					})
-				}, function () {
-					console.log("取消被点击，返回之前的操作");
-					$('.console-show').text('Promise_reject_confirm页面点击"取消"');
-				})
+				var messYes = ' 金额不可超过！！请重新修改金额或再送一笔费用申请单';
+				layer.msg(messYes, { icon: 1 });
+				// ReConfirm("资讯", messYes).then(function () {
+				// 	console.log('此单请重新修改金额后送审');
+				// 	$('.console-show').text('Promise_resolve_confirm页面点击"确定"');
+				// 	var reportType = 'CreateClaim';
+				// 	var arrange = 'redoApply';
+				// 	var taskData = { "reportType": reportType, "arrange": arrange, "Advstr": Advstr };
+				// 	$.ajax({
+				// 		method: 'post',
+				// 		data: taskData,
+				// 		url: "/app/TMFinc/getRoute",
+				// 		success: function (data) {
+				// 			console.log("会好", JSON.stringify(data));
+				// 			if (data.status == 'Fail') {
+				// 				layer.msg("讯息" + data.message);
+				// 			} else if (data.status == 'OK') {
+				// 				layer.confirm("文号" + data.BillNo + "已重新审批" + (data.status), {
+				// 					btn: ['知道了']
+				// 				}, function () {
+				// 					layer.msg('操作成功', { icon: 1 });
+				// 					var DateB = $("#taskMakeDateB").val();
+				// 					var DateE = $("#taskMakeDateE").val();
+				// 					missAcute = $('#Pattern').val();
+				// 					missBcute = $('#CapMode').val();
+				// 					window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+				// 				});
+				// 			}
+				// 		},
+				// 		error: function () {
+				// 		}
+				// 	})
+				// }, function () {
+				// 	console.log("取消被点击，返回之前的操作");
+				// 	$('.console-show').text('Promise_reject_confirm页面点击"取消"');
+				// })
 			}
 			if (Flag == 'N') {
 				ReConfirm("警告", message).then(function () {

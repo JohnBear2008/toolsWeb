@@ -186,7 +186,6 @@ module.exports = function (sender) {
 						"DeptLabel": data[i].DeptLabel,
 						"GroupLabel": data[i].GroupLabel,
 					}
-
 					datas.push(temp)
 				}
 				// var dump = JSON.stringify(datas);

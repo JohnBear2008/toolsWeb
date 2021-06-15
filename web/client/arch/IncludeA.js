@@ -13,17 +13,17 @@ function sleepFile(mode) {
     if (mode == '0') {
         taskData = {
             "reportType": reportType, "arrange": arrange,
-            "CurWorkId": sessionAID, "CurName": sessionName,
+            "CurWorkId": sessionOID, "CurName": sessionName,
         };
     } else if (mode == '1') {
         taskData = {
             "reportType": reportType, "arrange": arrange,
-            "CurWorkId": sessionAID, "CurName": '',
+            "CurWorkId": sessionOID, "CurName": '',
         };
     } else if (mode == '2') {
         taskData = {
             "reportType": reportType, "arrange": arrange, "weekbeg": DateB, "weekend": DateE,
-            "CurWorkId": sessionAID, "CurName": sessionName,
+            "CurWorkId": sessionOID, "CurName": sessionName,
         };
     }
     $.ajax({
@@ -34,10 +34,11 @@ function sleepFile(mode) {
             dataArr = data;
             const json2 = JSON.stringify(dataArr);
             const bjob = JSON.parse(json2);
-            // console.log(  "机动队", data.length);
+            console.log(  "机动队", data.length);
             for (var i = 0; i < dataArr.length; i++) {
                 var dataTTT = dataArr[i];
                 emdata.push(dataTTT);
+                // $('#SeaAllBtn').addClass("layui-btn layui-btn-warm layui-btn  ");
             }
             var table = layui.table;
             centerTable = table;
@@ -57,7 +58,6 @@ function sleepFile(mode) {
                   //   { type: 'checkbox', fixed: 'left' }
                     { fixed: 'oper', title: '操作', toolbar: '#swagDemo', width: 160 }
                     , { field: 'BillNo', title: '系统号', width: 140, sort: true }
-                    // , { field: 'ListNo', title: '表单编号', width: 100, sort: true }
                     , { field: 'Subject', title: '科目', width: 0, hide: true }
                     , { field: 'BudgetItem', title: '项目', width: 100, sort: true }
                     , { field: 'ItemNo', title: '品名', width: 120 }
@@ -144,7 +144,7 @@ function sleepFile(mode) {
                         var reportType = 'agreeFee';
                         var taskData = {
                             "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": Formkind, "Subject": CapSubject,
-                            "ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName,
+                            "ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionOID, "CurName": sessionName,
                             "CurJob": CapCurJob, "CurPhone": CapPhone,
                           }
                         layer.alert("同意此笔审批号" + Parts_BillNo);
@@ -180,7 +180,7 @@ function sleepFile(mode) {
                         var reportType = 'rejectFee';
                         var taskData = {
                             "reportType": reportType,  "arrange": arrange, "BillNo": Parts_BillNo, "Subject": CapSubject, "TotalValue": CapTotalValue, 
-                            "CurWorkId": sessionAID, "CurName": sessionName ,"CurJob": CapCurJob,
+                            "CurWorkId": sessionOID, "CurName": sessionName ,"CurJob": CapCurJob,
                             "CurPhone": CapPhone
                         }
                         layer.alert("驳回此笔审批号" + Parts_BillNo);

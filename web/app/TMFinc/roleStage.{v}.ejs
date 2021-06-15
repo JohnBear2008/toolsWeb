@@ -112,7 +112,7 @@
     <!-- <input type="button" id="CurrentBtn" class="btn btn-lg btn-info" style="margin-left:60px" value="取回预设" /> -->
     <input type="button" id="DefaultBtn" class="btn btn-lg btn-info" style="margin-left:60px" value="取回预设" />
     <input type="button" id="ResetBtn" class="btn btn-lg btn-info" style="margin-left:60px" value="清除职位部門" />
-    <div id="DelivFilter" class="easyui-window" title="人员职位" closed="true" style="width:1000px;height:500px;">
+    <div id="DelivFilter" class="easyui-window" title="人员职位" closed="true" style="width:1200px;height:500px;">
       <form style="padding:10px 50px;">
         <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
           <table id="center_TB" class="table table-striped table-bordered">
@@ -177,50 +177,64 @@
           data: taskData,
           url: "/app/TMFinc/getRoute",
           success: function (result) {
-            var Deptselt=result[0].DeptLabel;
-            $("#DeptValue").val(Deptselt.split(",")); 
-            var Groupselt=result[0].GroupLabel;
-            $("#GroupValue").val(Groupselt.split(",")); 
-            console.log("李信", result[0].DeptLabel , "达摩", result[0].GroupLabel);
-            $('#PowerLabel').val(result[0].DeptLabel);
-            $('#RingLabel').val(result[0].GroupLabel);
-            layer.msg('取回成功！' + result[0].GroupLabel + result[0].DeptLabel, { icon: 1 });
+            if(result[0] !=undefined && result[0] !=null){
+              let PropList = [];
+              var Deptselt = result[0].DeptLabel;
+              if(Deptselt !=undefined && Deptselt !=null){
+                PropList = Deptselt.split(',');
+                $("#DeptValue").val(PropList); 
+              }
+            
+              let GropList = [];
+              var Groupselt = result[0].GroupLabel;
+              if(Groupselt !=undefined && Groupselt !=null){
+                 GropList = Groupselt.split(',');
+                 $("#GroupValue").val(GropList); 
+              }
+              console.log("李信", result[0].DeptLabel , "达摩", result[0].GroupLabel);
+              $('#PowerLabel').val(result[0].DeptLabel);
+              $('#RingLabel').val(result[0].GroupLabel);
+              layer.msg('取回成功！' + result[0].GroupLabel + result[0].DeptLabel, { icon: 1 });
+            }else{
+              $('#PowerLabel').val('');
+              $('#RingLabel').val('');
+            }
           },
           error: function () {
           }
         })
       });
-      $('#CurrentBtn').click(function () {
-        var EmpValue = $('#EmpValue').val();
-        var LevelValue = $('#LevelValue').val();
-        var Leveloption = $("#LevelValue option:selected");
-        var Levelindex = Leveloption.val();
-        var LevelText = Leveloption.text();
-        var Advstr = {
-          "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue
-        };
-        var reportType = 'EmployJob';
-        var Arrange = 'JobReach';
-        var taskData = {
-          "reportType": reportType, "Arrange": Arrange, "Advstr": Advstr
-        }
-        if (lockOP == '0') {
-          layer.msg('请选择角色', { icon: 1 });
-          return;
-        }
-        $.ajax({
-          method: 'post',
-          data: taskData,
-          url: "/app/TMFinc/getRoute",
-          success: function (result) {
-            $('#PowerLabel').val(result[0].DeptLabel);
-            $('#RingLabel').val(result[0].GroupLabel);
-            layer.msg('取回成功！' + result[0].GroupLabel + result[0].DeptLabel, { icon: 1 });
-          },
-          error: function () {
-          }
-        })
-      });
+      // $('#CurrentBtn').click(function () {
+      //   var EmpValue = $('#EmpValue').val();
+      //   var LevelValue = $('#LevelValue').val();
+      //   var Leveloption = $("#LevelValue option:selected");
+      //   var Levelindex = Leveloption.val();
+      //   var LevelText = Leveloption.text();
+      //   var Advstr = {
+      //     "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue
+      //   };
+      //   var reportType = 'EmployJob';
+      //   var Arrange = 'JobReach';
+      //   var taskData = {
+      //     "reportType": reportType, "Arrange": Arrange, "Advstr": Advstr
+      //   }
+      //   if (lockOP == '0') {
+      //     layer.msg('请选择角色', { icon: 1 });
+      //     return;
+      //   }
+      //   $.ajax({
+      //     method: 'post',
+      //     data: taskData,
+      //     url: "/app/TMFinc/getRoute",
+      //     success: function (result) {
+      //       $('#PowerLabel').val(result[0].DeptLabel);
+      //       $('#RingLabel').val(result[0].GroupLabel);
+      //       layer.msg('取回成功！' + result[0].GroupLabel + result[0].DeptLabel, { icon: 1 });
+      //     },
+      //     error: function () {
+      //     }
+      //   })
+      // });
       $('#ConfirmBtn').click(function () {
         lockOP = $('#LevelValue').val();
         var EmpValue = $('#EmpValue').val();
@@ -372,13 +386,13 @@
         }
         columnsData = [
           { data: 'DBID', "visible": false },
-          { data: 'StaffUser', "visible": true, "width": "12%" },
-          { data: 'StaffLevel', "visible": false, "width": "10%" },
-          { data: 'StaffName', "visible": true, "width": "10%" },
-          { data: 'StaffRole', "visible": true, "width": "10%" },
-          { data: 'DeptLabel', "visible": true, "width": "50%" },
-          { data: 'GroupLabel', "visible": true, "width": "25%" },
-          { data: 'Mobiles', "visible": true, "width": "25%" },
+          { data: 'StaffUser', "visible": true, "width": "8%" },
+          { data: 'StaffLevel', "visible": false, "width": "8%" },
+          { data: 'StaffName', "visible": true, "width": "8%" },
+          { data: 'StaffRole', "visible": true, "width": "8%" },
+          { data: 'DeptLabel', "visible": true, "width": "45%" },
+          { data: 'GroupLabel', "visible": true, "width": "20%" },
+          { data: 'Mobiles', "visible": true, "width": "8%" },
         ];
         var contentSum = "";
         var content = '<tr>'

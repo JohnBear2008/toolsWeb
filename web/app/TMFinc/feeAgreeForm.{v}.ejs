@@ -44,25 +44,30 @@
 			<div id="handout_wrap_inner"></div>
 			<h1>弘讯科技费用审批</h1>
 			<div class="btn-group" id='BTNGroupFilter'>
-				<button id="SeaAllBtn" class="btn btn-default" onclick="sleepFile('0')">采购费用</button>
-				<button id="SeaAllBtn" class="btn btn-default" onclick="sleepTravel('0')">差旅费用</button>
+								<!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
 				<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
-				<input type="button" id="SeaDateBtn" onclick="sleepByDate()" class="btn btn-info" value="查找" />
+				<button id="SeaDateBtn" type="button"  onclick="searchByDate()" class="btn btn-default">查找</button>
+                                <button id="SeaAllBtn" class="btn btn-default" onclick="sleepFile('0')"  style="visibility:hidden">采购费用</button>
+				<button id="TripViewBtn" class="btn btn-default" onclick="sleepTravel('0')"  style="visibility:hidden">差旅费用</button>
+				<!-- <input type="button" id="SeaDateBtn" onclick="sleepByDate()" class="btn btn-info" value="查找" /> -->
 			</div>
 			<hr>
 		</div>
 	</div>
 	<input type="hidden" id="hideDeptName" value="" />
 	<input type="hidden" id="hidePhone" value="" />
+        <H3>采购费用</H3>
 	<table class="layui-hide" id="chin" lay-filter="chin"></table>
+        <br /> <H3>出差费用</H3>
+	<table class="layui-hide" id="baby" lay-filter="baby"></table>
 	<script type="text/html" id="toolbarDemo">
+	<script type="text/html" id="toolcantips">
       <!-- <div class="layui-btn-group userTable">
 	  <button class="layui-btn layui-btn-normal" lay-event="viewSumary">预览</button>
       </div> -->
     </script>
-	<!-- <table id="demo" lay-filter="testbaby"></table> -->
 	<br />
-      <script type="text/html" id="swagDemo">
+      <script type="text/html" id="swagDemo" >
       <a class="layui-btn layui-btn-xs" lay-event="approval">同意</a>
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reject">驳回</a>
       <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="analysis">预览</a> 
@@ -145,7 +150,6 @@
 										<input id="ReasonPest" class="form-control " size="16"
 											type="text" value="">
 									</div>
-
 									<div class="modal-footer">
 										<button id="PestConfirm" type="button"
 											class="btn btn-info">确定</button>
@@ -181,7 +185,7 @@
 					var CapMode = '';
 					var CapPhone = '';
 					var Formkind = '';
-					var CapDate = '0';  //0 NoDate, 1 Date
+					var CapDate = '0';  //0  NoDate, 1 Date
 					var CapAlert = '0';  //0 不超过, 1 超过
 					$(document).ready(function () {
 						layui.use(['table', 'form', 'layedit', 'laydate'], function () {
@@ -210,6 +214,7 @@
 								sleepTravel('0');
 							}
 							$('#SeaAllBtn').click();
+							$('#TripViewBtn').click();
 						});
 					});
 					$('#BTNFitler').click(function () {
@@ -262,11 +267,11 @@
 							// var dataARR = (checkStatus.data);
 							// console.log("艺仁",JSON.stringify(checkStatus));
 							// console.log("敏希", (objCenter.config.id));
-							console.log("张良", CapItemNo, "张良");
+							console.log("张良", CapItemNo, "张良" , sessionOID );
 							var reportType = 'agreeFee';
 							var taskData = {
 								"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject,
-								"ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName,
+								"ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionOID, "CurName": sessionName,
 								"CurJob": CapCurJob, "CurPhone": CapPhone,
 							}
 							// console.log("到达胜利之前", taskData);

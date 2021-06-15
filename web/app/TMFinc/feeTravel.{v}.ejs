@@ -41,8 +41,8 @@
                         style="margin-left:30px">采&nbsp;&nbsp;&nbsp;&nbsp;购</a>
                 <a class="layui-btn layui-btn-info" id="btn_apply_B"
                         style="margin-left:30px">差&nbsp;&nbsp;&nbsp;&nbsp;旅</a>
-                <a class="layui-btn layui-btn-info" id="btn_apply_C" style="margin-left:30px">私车公用</a>
-                <a class="layui-btn layui-btn-info" id="btn_apply_D" style="margin-left:30px">修&nbsp;缮&nbsp;费</a>
+                <!-- <a class="layui-btn layui-btn-info" id="btn_apply_C" style="margin-left:30px">私车公用</a>
+                <a class="layui-btn layui-btn-info" id="btn_apply_D" style="margin-left:30px">修&nbsp;缮&nbsp;费</a> -->
         </div>
         <table width="1000" border="3" style="margin-left:30px" align="center">
                 <input type="hidden" id="TotalValue" value="" />
@@ -56,22 +56,34 @@
                 </tr>
                 <tr>
                         <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">表单编号<input name="ApplicNo"
-                                        id="ApplicNo" type="text" size="20" class="feeSubCol" value="系统" readonly> </td>
+                                        id="ApplicNo" type="text" size="20" class="feeSubCol" value="系统" readonly>
+                                课组：
+                                <select id="GroupCombo" name="GroupCombo" class="can-find-M180"></select>
+                        </td>
                         <input type="hidden" id="hideBillNo" value="" />
                         <input type="hidden" id="Version" value="3" />
-                        <input type="hidden" id="hideDeptName" value="" />
                         <input type="hidden" id="hideFlowRole" value="" />
                         <input type="hidden" id="hidePhone" value="" />
-                        <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">课组：
-                                <input id="GroupName" name="GroupName" type="text" class="feeDrop" size="20"
-                                class="feeSubCol" value="" readonly></input>
+                        <input type="hidden" id="hideDeptName" value="" />
+                        <input type="hidden" id="GroupName" value="" />
+                        <input type="hidden" id="hideUnit" value="" />
+                        <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">
+                                出 差 人： <input name="BusiMan"
+                                id="BusiMan" type="text" size="20" class="feeSubCol" value=""> 
+                                同 行 人： <input name="CompMan"
+                                        id="CompMan" type="text" size="20" class="feeSubCol" value=""> 
                         </td>
                 </tr>
                 <tr>
-                        <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">出 差 人： <input name="BusiMan"
-                                        id="BusiMan" type="text" size="20" class="feeSubCol" value=""> </td>
-                        <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">出差地区： <input name="BusiArea"
-                                        id="BusiArea" type="text" size="20" class="feetitel" value="">
+                        <td width="50" bgcolor="#FAF0E6" colspan="4" height="25">出差地区： <input name="BusiArea"
+                                id="BusiArea" type="text" size="20" class="feeSubCol" value=""></td>
+                        <td width="50" bgcolor="#FAF0E6" colspan="2" height="25">
+                                住房选择：
+                                <select id="RoomChoice" name="RoomChoice" class="can-find-S180"></select>
+                        </td>
+                        <td width="50" bgcolor="#FAF0E6" colspan="3" height="25">
+                                餐费选择：
+                                <select id="DinnerChoice" name="DinnerChoice" class="can-find-S180"></select>
                         </td>
                 </tr>
                 <tr>
@@ -155,19 +167,26 @@
                 <tr>
                         <td id="manOP" width="50" class="feeSubCol" colspan="1">日 期</td>
                         <td width="50" height="30"><input name="LiveDateA" id="LiveDateA" type="date" value=""
-                                        class="travel-date"></input></td>
+                                        class="travel-date"></input>住<input name="LiveExtA" id="LiveExtA" type="text"
+                                        value="" class="travel-ext">天</input></td>
                         <td width="50" height="30"><input name="LiveDateB" id="LiveDateB" type="date" value=""
-                                        class="travel-date"></input></td>
+                                        class="travel-date"></input>住<input name="LiveExtB" id="LiveExtB" type="text"
+                                        value="" class="travel-ext">天</input></td>
                         <td width="50" height="30"><input name="LiveDateC" id="LiveDateC" type="date" value=""
-                                        class="travel-date"></input></td>
+                                        class="travel-date"></input>住<input name="LiveExtC" id="LiveExtC" type="text"
+                                        value="" class="travel-ext">天</input></td>
                         <td width="50" height="30"><input name="LiveDateD" id="LiveDateD" type="date" value=""
-                                        class="travel-date"></input></td>
+                                        class="travel-date"></input>住<input name="LiveExtD" id="LiveExtD" type="text"
+                                        value="" class="travel-ext">天</input></td>
                         <td width="50" height="30"><input name="LiveDateE" id="LiveDateE" type="date" value=""
-                                        class="travel-date"></input></td>
+                                        class="travel-date"></input>&nbsp;&nbsp;住<input name="LiveExtE" id="LiveExtE"
+                                        type="text" value="" class="travel-ext">天</input></td>
                         <td width="50" height="30"><input name="LiveDateF" id="LiveDateF" type="date" value=""
-                                        class="travel-date"></input></td>
-                        <td id="mancfo" width="50" class="feeSubCol" colspan="1">共计</td>
-                        <td id="manpsd" width="50" class="feeSubCol" colspan="1">其中进项税</td>
+                                        class="travel-date"></input>&nbsp;&nbsp;住<input name="LiveExtF" id="LiveExtF"
+                                        type="text" value="" class="travel-ext">天</input></td>
+                        <td id="mancfo" width="50" class="feeSubCol" colspan="1">共计住<input name="LiveSatExt"
+                                        id="LiveSatExt" type="text" value="" class="travel-ext">天</input></td>
+                        <td id="manpsd" width="50" class="feeSubCol" colspan="1">进项税</td>
                 </tr>
                 <tr>
                         <td width="50" height="30">出发地 </td>
@@ -384,7 +403,7 @@
                         <td width="50" height="30"><input name="TicTotal_10" id="TicTotal_10" type="text" size="10"
                                         value="" class="feefield"></input></td>
                         <td width="50" height="30"><input name="InputVAT_10" id="InputVAT_10" type="text" size="10"
-                                        value="" class="feefield"></input></td>
+                                       value="" class="feefield"></input></td>
                 </tr>
                 <tr>
                         <td width="50" height="30">午 餐补贴 </td>
@@ -471,9 +490,10 @@
                         <td width="50" height="30">是否有超支 </td>
                         <td width="50" height="30" colspan="2"><select id="IsOver" name="IsOver"
                                         class="feefield"></select></td>
-                        <td width="50" height="30" colspan="2"> 超支额度</td>
-                        <td width="50" height="30" colspan="4"><input name="Overspend" id="Overspend" type="text"
-                                        size="40" value="" class="feefield"></input>元</td>
+                        <td width="50" height="30" colspan="3">说明<textarea name="OverReason" id="OverReason"
+                                          rows="4" class="can-drop-mid"></textarea></td>
+                        <td width="50" height="30" colspan="3">超支<textarea name="Overspend" id="Overspend"
+                                         rows="4"  class="can-drop-mid" readonly></textarea></td>
                 </tr>
                 <tr>
                         <td width="50" height="30"> 申请人 </td>
@@ -575,8 +595,16 @@
                                         loadCaseB(missAType);
                                 }
                         });
+                        getRoom();
+                        getDinner();
                         addCacuFeeListener();
-                        addGroupListener();
+                        addLiveA();
+                        addLiveB();
+                        addLiveC();
+                        addLiveD();
+                        addLiveE();
+                        addLiveF();
+                        addExtListener();
                 });
                 $('#BTNFitler').click(function () {
                         $('#DivFilter').window('open');
@@ -622,7 +650,49 @@
                                         view_dsp();
                                 });
                 };
-
+                // ,#LiveDateB, #LiveDateC, #LiveDateD, #LiveDateE, #LiveDateF
+                const addLiveA = () => {
+                        $("#LiveDateA")
+                                .on("change", function () {
+                                        LiveRoomA();
+                                });
+                }
+                const addLiveB = () => {
+                        $("#LiveDateB")
+                                .on("change", function () {
+                                        LiveRoomB();
+                                });
+                }
+                const addLiveC = () => {
+                        $("#LiveDateC")
+                                .on("change", function () {
+                                        LiveRoomC();
+                                });
+                }
+                const addLiveD = () => {
+                        $("#LiveDateD")
+                                .on("change", function () {
+                                        LiveRoomD();
+                                });
+                }
+                const addLiveE = () => {
+                        $("#LiveDateE")
+                                .on("change", function () {
+                                        LiveRoomE();
+                                });
+                }
+                const addLiveF = () => {
+                        $("#LiveDateF")
+                                .on("change", function () {
+                                        LiveRoomF();
+                                });
+                }
+                const addExtListener = () => {
+                        $("#LiveExtA, #LiveExtB, #LiveExtC, #LiveExtD , #LiveExtE, #LiveExtF")
+                                .on("change", function () {
+                                        LiveRoomExt();
+                                });
+                }
                 const addGroupListener = () => {
                         $("#GroupName,#LiveDateA, #TrafficA_0, #TrafficA_1")
                                 .on("change", function () {

@@ -258,7 +258,7 @@ module.exports = function (sender) {
 						"Sub_Prime": data[i].Subject,
 						"Sub_Secon": data[i].BudgetItem,
 					}
-					datas.push(temp)
+					datas.push(temp);
 				}
 				// var dump = JSON.stringify(datas);
 				// if (dump.length > 100) {

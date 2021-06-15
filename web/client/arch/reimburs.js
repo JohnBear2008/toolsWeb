@@ -156,8 +156,8 @@ function send_inet() {
                   if (Remain != null && Remain != undefined && Remain != '') {
                         console.log("项目额度有的",Remain);
                   }else{
-                        layer.alert("项目额度无定义，无法保存!");
-                        return;
+                        // layer.alert("项目额度无定义，无法保存!");
+                        // return;
                   }
             }
             var BudgetCID = '';

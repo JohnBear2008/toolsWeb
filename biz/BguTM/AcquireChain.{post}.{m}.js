@@ -29,31 +29,30 @@ module.exports = function (sender) {
 		acqFlowDept();
 	}
 	function acqFlowDept() { //找副总
-		let SQL4 =
-			" select StaffName from bgu_credit where DeptName = ?  ";
-		yjDBService.exec({
-			sql: SQL4,
-			parameters: [FlowUnit],
-			rowsAsArray: true,
-			success: function (r) {
-				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
-				for (var i = 0; i < data.length; i++) {
-					FlowVip = data[i].StaffName;
-				}
-				if (arrange == 'RuleTrip') {
-					acqRuleTrip();
-				}
-				if (arrange == 'RulePurch') {
-					var flowBudgetItem = sender.req.query.BudgetItem;
-					var flowBudgetCID = sender.req.query.BudgetCID;
-					if (flowBudgetItem != undefined && flowBudgetItem != null) {
-						acqRulePurch(flowBudgetCID, flowBudgetItem);
-					}
-				}
-
-			},
-			error: sender.error
-		});
+		if (arrange == 'RuleTrip') {
+			acqRuleTrip();
+		}
+		if (arrange == 'RulePurch') {
+			var flowBudgetItem = sender.req.query.BudgetItem;
+			var flowBudgetCID = sender.req.query.BudgetCID;
+			if (flowBudgetItem != undefined && flowBudgetItem != null) {
+				acqRulePurch(flowBudgetCID, flowBudgetItem);
+			}
+		}
+		// let SQL4 =
+		// 	" select StaffName from bgu_credit where DeptName = ?  ";
+		// yjDBService.exec({
+		// 	sql: SQL4,
+		// 	parameters: [FlowUnit],
+		// 	rowsAsArray: true,
+		// 	success: function (r) {
+		// 		var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+		// 		for (var i = 0; i < data.length; i++) {
+		// 			FlowVip = data[i].StaffName;
+		// 		}		
+		// 	},
+		// 	error: sender.error
+		// });
 	}
 	function acqRuleTrip() {
 		// select tba.staffID ,tba.staffName ,tdpt.staffID , tdpt.staffName ,tvip.staffID , tvip.staffName
@@ -379,7 +378,7 @@ module.exports = function (sender) {
 				//  LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel,'%') and tbod.staffLevel='9'      
 				//  where  tba.DeptLabel = '证券部及董事会' and tba.StaffLevel='1' and tba.StaffName = '王光漫'
 
-			    console.log("阿咯哈-----", SQL3 );
+			//     console.log("阿咯哈-----", SQL3 );
 			// var OppWorkId = flowOppWorkId;
 			var OppWorkId = '';
 			var OppName = flowOppName;

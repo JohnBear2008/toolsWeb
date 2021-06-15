@@ -21,97 +21,127 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/PM/FileSaver.min.js"></script>
 <script src="/js/PM/tableExport.js"></script>
-<!-- 打印 -->
-<script src="/public/print/print.js"></script>
 <!-- 预览 -->
-<script src="/arch/CloneA.js"></script>
-<script src="/arch/CloneB.js"></script>
 <script src="/js/HMIPrint/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<script src="/arch/roleSet.js"></script>
 <script src="/bomq/supplyFn.js"></script>
 <script src="/bomq/utilFn.js"></script>
-<script src="/good/jquery.watermark.js"></script>
+<script src="/js/sweetalert.min.js"></script>
 <% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
 	<div id="noprint" class="noprint">
 		<div class="divcontent">
 			<div id="handout_wrap_inner"></div>
-			<h1>已报销结算查找</h1>
-			<label>模式:</label>
-			<select id="Pattern" name="Pattern" class="can-find-M140"></select>
-			<label>种类:</label>
-			<select id="CapMode" name="CapMode" class="can-find-M140"></select>
-			<button id="SeaBtn" class="btn btn-default">与我相关</button>
-			<button id="SeaAllBtn" class="btn btn-default">全部单据</button>
-			<button id="BTNFitler" type="button" class="btn btn-default">自定义日期</button>
+			<h1>报销查找</h1>
+			<label>年份:</label>
+			<div class="layui-inline">
+				<input class="can-find-M140" name="mainYear" id="mainYear" value="" autocomplete="off">
+			</div>
+			<label>部門:</label>
+			<div class="layui-inline">
+				<select id="DeptCombo" name="DeptCombo" class="can-find-M140" type="text" value=""></select>
+			</div>
 			<button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
-			<input type="button" id="DetailBtn" class="btn btn-info" value="预览" />
-			<input type="button" id="ExpFillBtn" class="btn btn-info" value="结算" />
+			<input type="button" id="BatchBtn" class="btn btn-warning" value="建立单据" />
 			<hr>
-			<br />
-			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
-				style="width:800px;height:400px;">
-				<form style="padding:10px 50px;">
-					<div class="form-horizontal">
-						<div class="form-group">
-							<label for="taskMakeDate" class="col-sm-2 control-label">上周日期范围:</label>
-							<div class="col-sm-3 ">
-								<div class="input-group date form_date " data-date=""
-									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateB"
-									data-link-format="yyyy-mm-dd">
-									<input id="taskMakeDateB" class="form-control " size="16"
-										type="text" value="" readonly>
-									<span class="input-group-addon"><span
-											class="glyphicon glyphicon-calendar"></span></span>
-								</div>
-								<input type="hidden" id="taskMakeDateB" value="" />
-							</div>
-
-							<div class="col-sm-3 ">
-
-								<div class="input-group date form_date " data-date=""
-									data-date-format="yyyy-mm-dd" data-link-field="taskMakeDateE"
-									data-link-format="yyyy-mm-dd">
-									<input id="taskMakeDateE" class="form-control " size="16"
-										type="text" value="" readonly>
-									<span class="input-group-addon"><span
-											class="glyphicon glyphicon-calendar"></span></span>
-								</div>
-								<input type="hidden" id="taskMakeDateE" value="" />
-							</div>
-						</div>
-				</form>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label"></label>
-				<div class="col-sm-3 ">
-					<button id="FilterComfirmBtnN" type="button" class="btn btn-primary">确认</button>
-					<button id="FilterCancelBtnN" type="button" class="btn btn-warning">清空</button>
-				</div>
-			</div>
+			<input type="hidden" id="hideDeptName" value="" />
 		</div>
 	</div><!-- modal fade -->
-	<div class="modal fade" id="kisswindow" tabindex="-1" role="dialog" aria-labelledby="kisswindowLabel"
-		aria-hidden="true" data-backdrop="static">
-		<div class="modal-dialog" style="width:70%">
+	<!--打开-->
+	<div id="DelivFilter" class="easyui-window" title="预算详细" closed="true" style="width:1200px;height:600px;">
+		<form style="padding:10px 50px;">
+			<div class="pdf-wrapper" id="quota-wrapper" style="background-color: aliceblue;">
+				<table id="middle_TB" class="table table-striped table-bordered">
+					<thead id="conpage">
+					</thead>
+				</table>
+			</div>
+		</form>
+		<div class="form-group">
+			<label class="col-sm-2 control-label"></label>
+			<div class="col-sm-3 ">
+				<button id="quotaCanBtn" type="button" class="btn btn-warning">关闭</button>
+			</div>
+		</div>
+	</div>	 
+	<div class="modal fade" id="momowindow" style="top:200px;" tabindex="-1" role="dialog"
+		aria-labelledby="momowindowLabel" aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" style="width:65%">
 			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="panel-title">建立单据</h3>
+				</div>
 				<div class="modal-body">
 					<div class="panel panel-info">
 						<div class="panel-heading">
-							<h3 class="panel-title">费用明细</h3>
+							<h3 class="panel-title"></h3>
 						</div>
-						<div id="listPrintViewDiv">
+						<div class="panel-body">
+							<br />
+							<div class="form-group">
+								<label class="col-sm-1 control-label">文号</label>
+								<div class="col-sm-3">
+									<input id="BillNo" class="form-control" type="text" value=""
+										readonly>
+								</div>
+								<label class="col-sm-1 control-label">申请</label>
+								<div class="col-sm-3">
+									<input id="TotalValue" class="form-control" type="text" value=""
+										readonly>
+								</div>
+								<label class="col-sm-1 control-label">上限</label>
+								<div class="col-sm-3">
+									<input id="UpperLimit" class="form-control" type="text" value=""
+										readonly>
+								</div>
+								<input type="hidden" id="SNNO" value="" />
+							</div>
+							<br> </br>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">累计</label>
+								<div class="col-sm-3">
+									<input id="Accumulate" class="form-control" type="text" value=""
+										readonly>
+								</div>
+								<label class="col-sm-1 control-label">剩余</label>
+								<div class="col-sm-3">
+									<input id="Surplus" class="form-control" type="text" value=""
+										readonly>
+								</div>
+								<label class="col-sm-1 control-label">超支</label>
+								<div class="col-sm-3">
+									<input id="IsOver" class="form-control" type="text" value=""
+										readonly>
+								</div>
+							</div>
+							<br> </br>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">发票号</label>
+								<div class="col-sm-3">
+									<input id="Invoice" class="form-control" type="text" value="">
+								</div>
+								<label class="col-sm-1 control-label">金额</label>
+								<div class="col-sm-3">
+									<input id="DivideValue" class="form-control" type="text" value="">
+								</div>
+								<label class="col-sm-1 control-label">备注</label>
+								<div class="col-sm-3">
+									<input id="Descript" class="form-control" type="text" value="">
+								</div>
+							</div>
 						</div>
-						<div  style="margin-left:400px;margin-top:40px;" >
-							<button id="PrintConfirm"  style="margin-left:60px"  type="button" class="btn btn-info">打印</button>
-							<button id="PrintClose" type="button" class="btn btn-primary"
-							data-dismiss="modal">关闭</button>
-						</div>
-					</div><!-- /.modal-content -->
-				</div><!-- /.modal -->
-			</div><!-- 总结 -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="FormBYES" type="button" class="btn btn-primary"
+						data-dismiss="modal">确认</button>
+					<button id="FormBClose" type="button" class="btn btn-primary"
+						data-dismiss="modal">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
-	</div>
+	</div> 
 	<div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
 		<!--数据呈现区-->
 		<table id="center_TB" class="table table-striped table-bordered">
@@ -120,10 +150,30 @@
 			</thead>
 		</table>
 	</div>
+	<div class="modal fade" id="confirmModal"  tabindex="2">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span
+							aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<p></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default cancelBtn" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-danger sureBtn" data-dismiss="modal">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
 	</div>
 	<div id="root" style="height: 100%"></div>
 	<script>
-		var href =  "/app/TMFinc/feeHistory";
 		var missType = '';
 		var missAcute = '';
 		var missBcute = '';
@@ -139,9 +189,11 @@
 		var glbH = '';
 		var glbS = '';
 		var Pattern = '';
-		var CapMode = '';
-		var CurName = '';
+		var Formkind = '';
+		var advSearch = '';
 		var selClass = '';
+		var CapMode = 'A';
+		var ClaimMode = 'T';
 		var FieldA = true;
 		var FieldB = true;
 		var FieldC = true;
@@ -154,7 +206,7 @@
 		var FieldJ = false;
 		var FieldK = false;
 		var storage = window.localStorage;
-		var hidata = localStorage.getItem("findXXX");
+		var hidata = localStorage.getItem("findpo");
 		hidata = JSON.parse(hidata);
 		var sessionName = '';
 		var sessionOID = '';
@@ -171,7 +223,6 @@
 			FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
 			FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
 			FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
-			console.log("敏A希", FieldA, "敏B希", FieldB);
 		}
 		var columnsData = [];
 		//页面加载函数---------------
@@ -190,39 +241,37 @@
 				}
 				missType = getQueryString("missT");
 				missAcute = getQueryString("missA");
-				missBcute = getQueryString("missB");
 				var missAencode = decodeURI(missAcute);
-
 				glbA = missAencode;
 				columnsData = [
-
+					{ data: 'DBID', "visible": false },
+					{ data: 'StaffId', "visible": true, "width": "10%" },
+					{ data: 'StaffName', "visible": true, "width": "10%" },
+					{ data: 'BudgetYear', "visible": true, "width": "10%" },
+					{ data: 'UpperLimit', "visible": true, "width": "10%" },
+					{ data: 'Accumulate', "visible": true, "width": "10%" },
 				];
-				var contentSum = "";
-				var content = '<tr>'
-					+ '<th></th>'
-					+ '</tr>';
-				contentSum += content;
-				$('#content').html(contentSum);
-				var youoption = document.createElement("option");
-				youoption.id = "SIGN";
-				youoption.name = "SIGN";
-				youoption.text = "AND";
-				youoption.value = "1";
-				$("#SIGN").append(youoption);
-				youoption = document.createElement("option");
-				youoption.text = "OR";
-				youoption.value = "2";
-				$("#SIGN").append(youoption);
 			});
 			$("#SeaBtn").addClass("active");
-			getpull(); getDrop();
-			function timer(time) {
-					setTimeout(function () {
-						$('#SeaBtn').click();
-					}, time);
-			}
-			timer(500) ;
-			$("#pdf-wrapper").css('visibility', 'hidden');
+			var contentSum = "";
+			var content = '<tr>'
+				+ '<th>系统ID</th>'
+				+ '<th>部門ID</th>'
+				+ '<th>部門名称</th>'
+				+ '<th>课组名称</th>'
+				+ '<th>地区</th>'
+				+ '<th>描述</th>'
+				+ '<th>描述</th>'
+				+ '<th>描述</th>'
+				+ '</tr>';
+			contentSum += content;
+			$('#content').html(contentSum);
+			Pattern = $('#Pattern').val();
+			reloadCol();
+			OrigList();
+			obtLogGroup(sessionName);
+			showDBDataByBill(DataPara, columnsData, Pattern, CapMode, '');
+			$("#pdf-wrapper").css('visibility', 'visible');
 		});
 
 		var DataPara = {
@@ -233,35 +282,7 @@
 
 		];
 		function showDBDataByBill(DataPara, columnsData, Pattern, CapMode, StaffName) {
-			$("#pdf-wrapper").css('visibility', 'visible');
-			var limit = '5000';
-			var filter = ' 1=1 ';
-			var orderBy = '';
-			$("#center_TB").dataTable().fnDestroy();  //搞好thead
-			var signoption = $("#SIGN option:selected");
-			var signTxt = signoption.text();
-			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
-			$("#matchRec").html("查找条件:" + signTxt);
-			var reportChannel = 'FeeHead';
-			var arrange = 'Exp';
-			var taskData = { "reportType": reportChannel,  "arrange": arrange , "pick": CapMode };
-			$.ajax({
-				method: 'post',
-				data: taskData,
-				url: "/app/TMFinc/getRoute",
-				success: function (data) {
-					$('#content').html(data[1]);
-					let newColumns = [];
-					newColumns = data[0];
-					var reportType = 'FeeHisVisit';
-					var taskData = { "reportType": reportType, "arrange": arrange , "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
-					bornTable(taskData, newColumns);
-				},
-				error: function () {
-				}
-			})
-		}
-		function showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode) {
+			console.log("倾覆爱");
 			$("#pdf-wrapper").css('visibility', 'visible');
 			var limit = '5000';
 			var filter = ' 1=1 ';
@@ -269,10 +290,25 @@
 			$("#center_TB").dataTable().fnDestroy();
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
-			var Advstr = { "SIGN": signTxt, "weekbeg": MakeDateB, "weekend": MakeDateE, "Pattern": Pattern, "CapMode": CapMode, "limit": limit };
+			var BguYear = $('#mainYear').val();
+			var DeptCombo = $('#DeptCombo').val();
+			var DeptName = '';
+			var DeptID = '';
+			let PropList = [];
+			if (DeptCombo != "" && DeptCombo != undefined) {
+				PropList = DeptCombo.split('##');
+				for (var ki = 0; ki < PropList.length; ki++) {
+					DeptID = PropList[0];
+					DeptName = PropList[1];
+				}
+			}
+			var Advstr = {
+				"SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "BguYear": BguYear,
+				"DeptName": DeptName, "limit": limit
+			};
 			var reportChannel = 'FeeHead';
-			var arrange = 'Exp';
-			var taskData = { "reportType": reportChannel,  "arrange": arrange , "pick": CapMode };
+			var arrange = 'Claim';
+			var taskData = { "reportType": reportChannel, "arrange": arrange, "pick": CapMode };
 			$.ajax({
 				method: 'post',
 				data: taskData,
@@ -282,14 +318,15 @@
 					let newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskType = { "reportType": reportType, "arrange": arrange , "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
-					bornTable(taskType, newColumns);
+					var taskData = { "reportType": reportType, "arrange": arrange, "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					bornTable(taskData, newColumns);
 				},
 				error: function () {
 				}
 			})
 		}
 		function bornTable(taskData, columnsData) {
+			console.log("倾覆了故国", taskData);
 			$(DataPara.tableID).DataTable({
 				ajax: {
 					method: 'post',
@@ -311,158 +348,216 @@
 					$(this).addClass('selected');
 				}
 			});
-
 			$('#center_TB tbody').on('dblclick', 'tr', function () {
-			var table = $('#center_TB').DataTable();
-			var dataSelect = table.row('.selected').data();
-			var data = table.row(this).data();
-			var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				if (CapMode == 'A') {
-					DryingA(billNo);
-				}
-				if (CapMode == 'B') {
-					DryingB(billNo);
-				}
-				$('#kisswindow').modal('show');	
-		      });
+				var table = $('#center_TB').DataTable();
+				var dataSelect = table.row('.selected').data();
+				var data = table.row(this).data();
+				var BillNo = dataSelect.BillNo; BillNo = myTrim(BillNo);
+				// BillNo ='20210512084625';
+				showDBCredit(BillNo);
+				$('#DelivFilter').window('open');
+				$("#DelivFilter").addClass("active")
+			});
 		}
 		function reloadCol() {
 			columnsData = [
-
 			];
 		}
-		$('#BTNFitler').click(function () {
-			$('#DivFilter').window('open');
-			$('.form_date').datetimepicker({
-				language: 'zh-CN',
-				weekStart: 1,
-				todayBtn: 1,
-				autoclose: 1,
-				todayHighlight: 1,
-				startView: 2,
-				minView: 2,
-				forceParse: 0
-			});
-			$("#BTNGroupFilter").children().removeClass("active");
-			$("#BTNFitler").addClass("active")
-		});
-		//过滤功能组 自定义过滤确认按钮-----NNN
-		$('#FilterComfirmBtnN').click(function () {
-			$('#DivFilter').window('close');
-		});
-		//过滤功能组 自定义过滤确认按钮-----
-		$('#FilterCancelBtnN').click(function () {
-
-			$("#taskMakeDateB").val("")
-			$("#taskMakeDateE").val("")
-		});
+		function ReConfirm(title, content) {
+			var confirmPromise = new Promise(function (resolve, reject) {
+				$('#confirmModal .modal-title').text(title);
+				$('#confirmModal .modal-body p').text(content);
+				$('#confirmModal').modal('show');
+				$('#confirmModal .sureBtn').off('click').click(resolve);
+				$('#confirmModal .cancelBtn').off('click').click(reject);
+			})
+			return confirmPromise;
+		};
 		$('#BTNFitSearch').click(function () {
 			$("#center_TB").dataTable().fnDestroy();
-			var MakeDateB = $("#taskMakeDateB").val();
-			var MakeDateE = $("#taskMakeDateE").val();
 			Pattern = $('#Pattern').val();
-			CapMode = $('#CapMode').val();
-			reloadCol();
-			showDBDataSelf(DataPara, columnsData, MakeDateB, MakeDateE, Pattern, CapMode);
-		});
-		$('#ResetBtn').click(function () {
-			$("#mainclass").html(""); $("#mainclass").val("");
-			$("#mateId").html(""); $("#mateId").val("");
-			$("#invoice").html(""); $("#invoice").val("");
-			$("#mainpast").html(""); $("#mainpast").val("");
-			$("#mainname").html(""); $("#mainname").val("");
-			getCategory();
-		});
-		$('#DetailBtn').click(function () {
-			var table = $('#center_TB').DataTable();
-			var dataSelect = table.row('.selected').data();
-			if (dataSelect == undefined) {
-				alert("当前未选择任何数据,请先点击需要的数据行!");
-			} else {
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				console.log("西阭", (billNo));
-				if (CapMode == 'A') {
-					DryingA(billNo);
-				}
-				if (CapMode == 'B') {
-					DryingB(billNo);
-				}
-				$('#kisswindow').modal('show');
-			}
-		});
-		$('#SeaBtn').click(function () {
-			$("#center_TB").dataTable().fnDestroy();
-			Pattern = $('#Pattern').val();
-			CapMode = $('#CapMode').val();
-			var msource = '';
-			var morder = "";
-			reloadCol();
-			showDBDataByBill(DataPara, columnsData, Pattern, CapMode, sessionName);
-			$("#SeaBtn").addClass("active");
-			$("#SeaAllBtn").removeClass("active");
-		});
-		$('#SeaAllBtn').click(function () {
-			$("#center_TB").dataTable().fnDestroy();
-			Pattern = $('#Pattern').val();
-			CapMode = $('#CapMode').val();
-			var msource = '';
-			var morder = "";
+			var DeptName = $('#DeptCombo').val();
 			reloadCol();
 			showDBDataByBill(DataPara, columnsData, Pattern, CapMode, '');
-			$("#SeaAllBtn").addClass("active");
-			$("#SeaBtn").removeClass("active");
 		});
-		$('#ExpFillBtn').click(function () {
+		$('#BatchBtn').click(function () {
 			var table = $('#center_TB').DataTable();
 			var dataSelect = table.row('.selected').data();
 			if (dataSelect == undefined) {
 				alert("当前未选择任何数据,请先点击需要的数据行!");
 			} else {
-				var billNo = dataSelect.BillNo; billNo = myTrim(billNo);
-				var CurText = dataSelect.CurText;
-				var StaffName = dataSelect.StaffName;
-				var PurName = dataSelect.PurName;
-				var PexName = dataSelect.PexName;
-				var CfoName = dataSelect.CfoName;
-				var DeptName = dataSelect.DeptName;
-				if (CurText != '核准') {
-					layer.msg('非核准状态 ， 此单不能结算', { icon: 1 });
+				var BillNo = dataSelect.BillNo; BillNo = myTrim(BillNo);
+				var IsOver = dataSelect.IsOver;
+				if (IsOver == '是') {
+					layer.msg(' 已超过核销金额， 此单不能再增加', { icon: 1 });
+					return;
+				} else {
+
+				}
+				var sessionDept = $("#hideDeptName").val();
+				if (sessionDept == '财务部') {
+					console.log("鲨嘴炮", sessionDept);
+				} else {
+					console.log("愿得一心人", sessionDept);
+					layer.msg('非财务人员 ， 此单不能报销作业', { icon: 1 });
 					return;
 				}
-				// if (sessionName == PurName || sessionName == PexName || sessionName == CfoName) {
-				// 	// console.log("鲨嘴炮",PurName,"流星尾",PurName,"轰",sessionName,"空中",DeptName);
-				// }else{
-				// 	layer.msg('非采购承办人或采购主管或财务人员 ， 此单不能结算', { icon: 1 });
-				// 	return;
-				// }
-				layer.confirm(billNo + '进入结算作业，请确认操作是否无误？', {
-					btn: ['是', '否']
-				}, function () {
-					var paramClearA = encodeURI(encodeURI(billNo));
-					var paramType = '';
-					var paramPur = 'Reim';
-					var paramDept = encodeURI(encodeURI(DeptName));
-					var paramJump = encodeURI(encodeURI(sessionName));
-					if (CapMode == 'A') {
-						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType + "&missJ=" + paramJump + "&missG=" + paramDept + "&missP=" + paramPur + "&missA=" + paramClearA + " ";
+				console.log("故乡的春天", IsOver);
+				let dataArr = [];
+				var reportType = 'CreateClaim';
+				var arrange = 'examine';
+				var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo };
+				$.ajax({
+					method: 'post',
+					data: taskData,
+					url: "/app/TMFinc/getRoute",
+					success: function (data) {
+						dataArr = data;
+						for (var i = 0; i < dataArr.length; i++) {
+							$('#BillNo').val(dataArr[i].BillNo);
+							$('#TotalValue').val(dataArr[i].TotalValue);
+							$('#UpperLimit').val(dataArr[i].UpperLimit);
+							$('#Accumulate').val(dataArr[i].Accumulate);
+							$('#IsOver').val(dataArr[i].IsOver);
+							$('#Surplus').val(dataArr[i].Surplus);
+							$('#SNNO').val(dataArr[i].SNNO);
+						}
+						$('#momowindow').modal('show');
+					},
+					error: function () {
 					}
-					if (CapMode == 'B') {
-						window.location.href = "/app/TMFinc/expenseFill?missT=" + paramType  + "&missJ=" + paramJump + "&missG=" + paramDept +  "&missP=" + paramPur +"&missA=" + paramClearA + " ";
-					}
-				}, function () {
-					layer.msg('无操作', { icon: 1 });
-				});
+				})
 			}
 		});
+		function nulReplace0(passTxt) {
+			var ret = '';
+			ret = (passTxt == null || passTxt == undefined || passTxt == '') ? ('0') : passTxt;
+			return ret;
+		}
+		function showDBCredit(BillNo) {
 
-		$('#PrintConfirm').click(function () {
-			Print('#listPrintViewDiv', {
-				onStart: function () {
-					console.log('onStart', new Date())
+			$("#quota-wrapper").css('visibility', 'visible');
+			console.log("裴虎", BillNo);
+			var DataPara = {
+				"tableID": "#middle_TB",
+				"DBTable": "play"
+			}
+			columnsData = [
+				{ data: 'DBID', "visible": false },
+				{ data: 'SNNO', "visible": true, "width": "3%" },
+				{ data: 'BillNo', "visible": true, "width": "10%" },
+				{ data: 'RequestDate', "visible": true, "width": "10%" },
+				{ data: 'TotalValue', "visible": true, "width": "10%" },
+				{ data: 'UpperLimit', "visible": true, "width": "10%" },
+				{ data: 'Surplus', "visible": true, "width": "10%" },
+				{ data: 'Accumulate', "visible": true, "width": "10%" },
+				{ data: 'DivideValue', "visible": true, "width": "10%" },
+				{ data: 'Invoice', "visible": true, "width": "10%" },
+				{ data: 'Descript', "visible": true, "width": "15%" }
+			];
+			var inventSum = "";
+			var invent = '<tr>'
+				+ '<th>系统ID</th>'
+				+ '<th>号</th>'
+				+ '<th>文号ID</th>'
+				+ '<th>日期</th>'
+				+ '<th>申请额</th>'
+				+ '<th>上限额</th>'
+				+ '<th>剩余</th>'
+				+ '<th>累计</th>'
+				+ '<th>分批额</th>'
+				+ '<th>发票</th>'
+				+ '<th>描述</th>'
+				+ '</tr>';
+			inventSum += invent;
+			$('#conpage').html(inventSum);
+			$("#middle_TB").dataTable().fnDestroy();
+			var reportType = 'CreateClaim';
+			var arrange = 'seeInvoice';
+			var taskData = { "reportType": reportType, "arrange": arrange, "BillNo": BillNo };
+			$(DataPara.tableID).DataTable({
+				ajax: {
+					method: 'post',
+					data: taskData,
+					url: "/app/TMFinc/getRoute",
+					dataSrc: '',
+					aaSorting: [1, 'asc'],
 				},
-				onEnd: function () {
-					console.log('onEnd', new Date())
-				}
+				columns: columnsData,
+				autoWidth: true,
+				createdRow: function (row, data, dataIndex) {
+					if (data.RowCode != "") {
+					} else {
+						$('td', row).css("background", "#B4EEB4");
+					}
+				},
+			});
+		}
+		$('#quotaCanBtn').click(function () {
+			$('#DelivFilter').window('close');
+		});
+		$('#FormBClose').click(function () {
+			$('#momowindow').modal('close');
+		});
+		$('#FormBYES').click(function () {
+			var Invoice = $('#Invoice').val();
+			var DivideValue = $('#DivideValue').val();
+			var UpperLimit = $('#UpperLimit').val();
+			var Accumulate = $('#Accumulate').val();
+			var Surplus = $('#Surplus').val();
+			var Descript = $('#Descript').val();
+			var BillNo = $('#BillNo').val();
+			var SNNO = $('#SNNO').val();
+			var reportType = 'CreateClaim';
+			var arrange = 'addInvoice';
+			var Advstr = {
+				"BillNo": BillNo, "SNNO": SNNO, "UpperLimit": UpperLimit, "Accumulate": Accumulate,
+				"Invoice": Invoice, "DivideValue": DivideValue, "Descript": Descript
+			};
+			var taskData = {
+				"reportType": reportType, "arrange": arrange, "Advstr": Advstr
+			}
+			var message = '进行批次报销，请确认操作是否无误？';
+
+			DivideValue = nulReplace0(DivideValue); DivideValue = parseInt(DivideValue, 10);
+			Accumulate = nulReplace0(Accumulate); Accumulate = parseInt(Accumulate, 10);
+			Accumulate += DivideValue;
+			Surplus = nulReplace0(Surplus); Surplus = parseInt(Surplus, 10);
+			console.log("读过六道 ", DivideValue, "安心抵达 ", Accumulate,"彼岸净土", Surplus);
+			if (DivideValue > Surplus) {
+				message = '报销金额超过核准金额，此单不能送出'
+				layer.msg(message, { icon: 1 });
+				return ;
+			}
+			console.log("凛冬已至", Advstr); 
+			ReConfirm("警告", message).then(function () {
+				console.log('确定被点击，执行后续操作');
+				$('.console-show').text('Promise_resolve_confirm页面点击"确定"');
+					$.ajax({
+					method: 'post',
+					data: taskData,
+					url: "/app/TMFinc/getRoute",
+					success: function (data) {
+						console.log("会好", JSON.stringify(data));
+						if (data.status == 'Fail') {
+							layer.msg("讯息" + data.message);
+						} else if (data.status == 'OK') {
+							layer.confirm("创建单笔金额已完成" + (data.status), {
+								btn: ['知道了']
+							}, function () {
+								layer.msg('操作成功', { icon: 1 });
+								missAcute = $('#Pattern').val();
+								window.location.href = "/app/TMFinc/expHistory?missT=" + missType + "&missA=" + missAcute + " ";
+							});
+						}
+					},
+					error: function () {
+					}
+				})
+			}, function () {
+				console.log("取消被点击，返回之前的操作");
+				$('.console-show').text('Promise_reject_confirm页面点击"取消"');
 			})
+
 		});
 	</script>

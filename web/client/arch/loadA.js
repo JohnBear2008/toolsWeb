@@ -14,11 +14,12 @@ function loadCaseA( BillNo  ) {
           for (let i = 0; i < 10; i++) {
               $('#SNO_'+(i+1)).val(bjob[i].SNNo);
               var dropText =bjob[i].Subject+ "-"  +bjob[i].BudgetItem + "-"  + bjob[i].BudgetCID ;
-              // $("#BudgetCombo_"+(i+1)+" option[value="+dropText+"]").prop('selected', true);
               if( bjob[i].BudgetCID!=undefined &&  bjob[i].BudgetCID !='' ){
                 console.log("牛",i,"羊",dropText);
-                $("#BudgetCombo_"+(i+1)).val(dropText);
-                $("#BudgetCombo_"+(i+1)).html(dropText);
+                $("#BudgetCombo_"+(i+1)+" option[value="+dropText+"]").prop('selected', true);
+                //edgeuse
+                // $("#BudgetCombo_"+(i+1)).val(dropText);
+                // $("#BudgetCombo_"+(i+1)).html(dropText);
               }
               $('#ItemNo_'+(i+1)).val(bjob[i].ItemNo);
               $('#Descript_'+(i+1)).val(bjob[i].Description);
@@ -36,9 +37,10 @@ function loadCaseA( BillNo  ) {
           for (let i = 10; i < 11; i++) {
               console.log("哈",bjob[i].BudgetCID,"机",bjob[i].Subject,"八",bjob[i].BudgetItem);
               var dropText =bjob[i].Subject+ "-"  +bjob[i].BudgetItem + "-"  + bjob[i].BudgetCID ;
-              // $("#BudgetCombo_1 option[value="+dropText+"]").prop('selected', true);
-              $("#BudgetCombo_1").val( dropText);
-              $("#BudgetCombo_1").html(dropText);
+              $("#BudgetCombo_1 option[value="+dropText+"]").prop('selected', true);
+              //edgeuse
+              // $("#BudgetCombo_1").val( dropText);
+              // $("#BudgetCombo_1").html(dropText);
               $('#ListNo').val(bjob[i].ListNo);
               $('#ProjectNo').val(bjob[i].ProjectNo);
               $('#RequestDate').val(bjob[i].RequestDate);

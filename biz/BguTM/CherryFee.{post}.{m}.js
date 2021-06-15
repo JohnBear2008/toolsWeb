@@ -118,8 +118,13 @@ module.exports = function (sender) {
 		}
 		if (CurName != "" && CurName != "null" && CurName != undefined && CurName.length > 0) {
 			// console.log("...查无此人", CurName);
-			capacity += " AND  trul.CurName = " + "'" + CurName + "' ";
+			if(CurName =='超级用户'){
+				console.log("...万能的天神", CurName);
+			}else{
+				capacity += " AND  trul.CurName = " + "'" + CurName + "'   ";
+			}
 		}
+
 		// if (filter != "" && filter != undefined) {
 		//     SQLExecute = SQLExecute + " WHERE " + filter;
 		// }

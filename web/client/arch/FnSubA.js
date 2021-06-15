@@ -309,6 +309,9 @@ function shuffleA(BillNo) {
                     "StaffID": bjob[i].StaffID,
                     "StaffName": bjob[i].StaffName,
                     "TotalValue": bjob[i].TotalValue,
+                    "ExceedValue": bjob[i].ExceedValue,
+                    "IsOver": bjob[i].IsOver,
+                    "Accumulate": bjob[i].Accumulate,
                     "Currency": bjob[i].Currency,
                     "Payment": bjob[i].Payment,
                     "Explanation": bjob[i].Explanation,
@@ -363,7 +366,7 @@ function shuffleA(BillNo) {
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, GroupName, UnitName ,TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
                 OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
-                StatusOK, CreditA, CreditB, CreditC, CreditD
+                StatusOK, CreditA, CreditB, CreditC, CreditD , ExceedValue
             }) => {
                 let newHtml = htmlModel
                     .replace(/SNO_1/, SNO_1).replace(/BudItem_1/, BudItem_1)
@@ -493,6 +496,7 @@ function shuffleA(BillNo) {
                     .replace(/CreditB/, CreditB)
                     .replace(/CreditC/, CreditC)
                     .replace(/CreditD/, CreditD)
+                    .replace(/ExceedValue/, ExceedValue)
                     .replace(/watermark/, watermark)
                     ;
                 return newHtml;
@@ -641,6 +645,7 @@ function shuffleA(BillNo) {
                             CreditB: sData[12].CreditB,
                             CreditC: sData[12].CreditC,
                             CreditD: sData[12].CreditD,
+                            ExceedValue: sData[10].ExceedValue,
 
                         })
                         if (i === 0) {
@@ -912,10 +917,11 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '<td width="50" rowspan="4" colspan="6" height="25">申请说明： <br/>  ' +
                 '<textarea   class="fee-drop-super" rows="6" readonly>Explan</textarea></td> ' +
                 '<td width="50" rowspan="4" class="feeELcell" colspan="3" height="25">额度控管： <br/>  ' +
-                ' CreditA <br/>  ' +
-                ' CreditB <br/>  ' +
-                ' CreditC <br/>  ' +
-                ' CreditD </td> ' +
+                ' CreditA    ' +
+                ' CreditB  <br/>  ' +
+                ' CreditC   ' +
+                ' CreditD  ' +
+                ' <br/>追加额度： ExceedValue </td> ' +
                 '<td width="50" colspan="1" height="25">总金额</td>' +
                 '<td width="50" colspan="1" height="25">TotalV</td>' +
                 '</tr>' +
@@ -1035,6 +1041,9 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                     "StaffID": bjob[i].StaffID,
                     "StaffName": bjob[i].StaffName,
                     "TotalValue": bjob[i].TotalValue,
+                    "ExceedValue": bjob[i].ExceedValue,
+                    "IsOver": bjob[i].IsOver,
+                    "Accumulate": bjob[i].Accumulate,
                     "Currency": bjob[i].Currency,
                     "Payment": bjob[i].Payment,
                     "Explanation": bjob[i].Explanation,
@@ -1087,7 +1096,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, GroupName, UnitName, TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
                 OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
-                StatusOK, CreditA, CreditB, CreditC, CreditD
+                StatusOK, CreditA, CreditB, CreditC, CreditD, ExceedValue
             }) => {
                 let newHtml = htmlModel
                     .replace(/SNO_1/, SNO_1).replace(/BudItem_1/, BudItem_1)
@@ -1217,6 +1226,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                     .replace(/CreditB/, CreditB)
                     .replace(/CreditC/, CreditC)
                     .replace(/CreditD/, CreditD)
+                    .replace(/ExceedValue/, ExceedValue)
                     .replace(/watermark/, watermark)
                     ;
                 return newHtml;
@@ -1365,6 +1375,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                             CreditB: sData[12].CreditB,
                             CreditC: sData[12].CreditC,
                             CreditD: sData[12].CreditD,
+                            ExceedValue: sData[10].ExceedValue,
 
                         })
                         if (i === 0) {

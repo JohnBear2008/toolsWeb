@@ -320,11 +320,11 @@ function view_hmi(obj) {
 
             if (Remain == '0') {
                   CapAlert = '1';
-                  console.log("没了要提醒了", CapAlert);
+                  // console.log("没了要提醒了", CapAlert);
             } else {
                   if (smallTOT > Remain) {
                         CapAlert = '1';
-                        console.log("超过了，也要提醒了", smallTOT, "你那位：", i);
+                        // console.log("超过了，也要提醒了", smallTOT, "你那位：", i);
                         OverIdx = i;
                   } else {
                         // console.log("免提QQ",Remain,"免提JJ",smallTOT);
@@ -402,7 +402,6 @@ function apply_hmi() {
       }, function () {
             layer.msg('无操作', { icon: 1 });
       });
-
 }
 function save_hmi() {
       view_hmi();
@@ -502,8 +501,8 @@ function save_hmi() {
                   if (Remain != null && Remain != undefined && Remain != '') {
                         console.log("项目额度有的", Remain);
                   } else {
-                        layer.alert("项目额度无定义，无法保存!");
-                        return;
+                        // layer.alert("项目额度无定义，无法保存!");
+                        // return;
                   }
             }
             var BudgetCID = '';
@@ -626,10 +625,11 @@ function save_hmi() {
             data: taskData,
             url: "/app/TMFinc/getRoute",
             success: function (data) {
+                  console.log("生世世若初",data);
                   $("#hideBillNo").val(data.BillNo);
                   $("#hidePhone").val(data.Phone);
                   if (data.status == 'Fail') {
-                        layer.msg("讯息" + data.message);
+                        layer.msg("讯息：" + data.message);
                   } else if (data.status == 'OK') {
                         layer.confirm("申请文号" + data.BillNo + "已保存" + (data.status), {
                               btn: ['知道了']

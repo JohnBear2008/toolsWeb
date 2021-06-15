@@ -97,10 +97,43 @@ function FlowerBasic() {
                   dataArr = data;
                   for (var ki = 1; ki <= 10; ki++) {
                         var youoption = document.createElement("option");
-                        youoption.text = "----";
+                        youoption.text = "---";
                         youoption.id = "bellTime" + ki;
                         youoption.name = "bellTime" + ki;
-                        youoption.value = '';
+                        youoption.value = '---';
+                        $("#BudgetCombo_" + ki).append(youoption);
+                        for (var i = 0; i < dataArr.length; i++) {
+                              var youoption = document.createElement("option");
+                              youoption.text = dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon;
+                              youoption.id = "bellTime_" + ki;
+                              youoption.name = "bellTime_" + ki;
+                              youoption.value =  dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon+ "-" + dataArr[i].Sub_CID ;
+                              // console.log("子弹飞",dataArr[i].Sub_Prime + "-" + dataArr[i].Sub_Secon+ "-" + dataArr[i].Sub_CID );
+                              $("#BudgetCombo_" + ki).append(youoption);
+                        }
+                  }
+            },
+            error: function () {
+            }
+      })
+}
+function EdgeBasic() {//use by edge ,has problem
+      let dataArr = [];
+      var reportType = 'ironSubject';
+      var arrange = 'itemBasic';
+      var taskData = { "reportType": reportType, "arrange": arrange };
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMFinc/getRoute",
+            success: function (data) {
+                  dataArr = data;
+                  for (var ki = 1; ki <= 10; ki++) {
+                        var youoption = document.createElement("option");
+                        youoption.text = "---";
+                        youoption.id = "bellTime" + ki;
+                        youoption.name = "bellTime" + ki;
+                        youoption.value = '---';
                         $("#searchbox_" + ki).append(youoption);
                         for (var i = 0; i < dataArr.length; i++) {
                               var youoption = document.createElement("option");
@@ -206,13 +239,72 @@ function getDrop() {
       youoption.value = "B";
       $("#CapMode").append(youoption);
 }
+function getDinner() {
+      var youoption = document.createElement("option");
+      youoption.id = "DinnerChoice";
+      youoption.name = "DinnerChoice";
+      youoption.text = "国内";
+      youoption.value = "国内";
+      $("#DinnerChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "国外-印度";
+      youoption.value = "国外-印度";
+      $("#DinnerChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "国外-巴西";
+      youoption.value = "国外-巴西";
+      $("#DinnerChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "国外-伊朗";
+      youoption.value = "国外-伊朗";
+      $("#DinnerChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "国外-马来西亚";
+      youoption.value = "国外-马来西亚";
+      $("#DinnerChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "国外-其他";
+      youoption.value = "国外-其他";
+      $("#DinnerChoice").append(youoption);
+}
+function getRoom() {
+      var youoption = document.createElement("option");
+      youoption.id = "RoomChoice";
+      youoption.name = "RoomChoice";
+      youoption.text = "普通员工-单人住宿";
+      youoption.value = "普通员工-单人住宿";
+      $("#RoomChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "普通员工-两人同住";
+      youoption.value = "普通员工-两人同住";
+      $("#RoomChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "组长以上-单人住宿";
+      youoption.value = "组长以上-单人住宿";
+      $("#RoomChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "组长以上-两人同住";
+      youoption.value = "组长以上-两人同住";
+      $("#RoomChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "副经理以上-单人住宿";
+      youoption.value = "副经理以上-单人住宿";
+      $("#RoomChoice").append(youoption);
+      youoption = document.createElement("option");
+      youoption.text = "副经理以上-两人同住";
+      youoption.value = "副经理以上-两人同住";
+      $("#RoomChoice").append(youoption);
+}
 function UnitPlay() {
       var UnitCombo = $('#UnitCombo').val();
       $("#hideUnit").val(UnitCombo);
       console.log("枪尖", UnitCombo);
       for (let i = 1; i <= 10; i++) {
-            $("#BudgetCombo_" + i).val('');
-            $("#BudgetCombo_" + i).html('');
+            //edgeuse
+            // $("#BudgetCombo_" + i).val('');
+            // $("#BudgetCombo_" + i).html('');
+            var dropText = "---";
+            $("#BudgetCombo_" + (i) + " option[value=" + dropText + "]").prop('selected', true);
       }
       $("#OppName").val('');  $("#OppName").html('');
       $("#MagName").val('');  $("#MagName").html('');
@@ -239,8 +331,11 @@ function RolePlay() {
             }
       }
       for (let i = 1; i <= 10; i++) {
-            $("#BudgetCombo_" + i).val('');
-            $("#BudgetCombo_" + i).html('');
+             //edgeuse
+            // $("#BudgetCombo_" + i).val('');
+            // $("#BudgetCombo_" + i).html('');
+            var dropText = "---";
+            $("#BudgetCombo_" + (i) + " option[value=" + dropText + "]").prop('selected', true);
       }
       $("#OppName").val('');  $("#OppName").html('');
       $("#MagName").val('');  $("#MagName").html('');

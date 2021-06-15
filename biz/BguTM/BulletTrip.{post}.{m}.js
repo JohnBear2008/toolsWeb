@@ -11,7 +11,10 @@ module.exports = function (sender) {
   var orderBy = '';
   var limit = '500';
   var capacity = '';
-  funAsync(qryBillNo);
+  if (arrange == 'popup') {
+    funAsync(qryBillNo);
+  }
+  
   function funAsync(qryBillNo) {
     console.log("旅乐-------------", (qryBillNo));
     var dataARR = [];
@@ -82,7 +85,10 @@ module.exports = function (sender) {
               "ApplicNo": result[0][0].ApplicNo,
               "Version": result[0][0].Version,
               "BusiMan": result[0][0].BusiMan,
+              "CompMan": result[0][0].CompMan ,
               "BusiArea": result[0][0].BusiArea,
+              "RoomChoice": result[0][0].RoomChoice,
+              "DinnerChoice": result[0][0].DinnerChoice,
               "DeptName":(result[0][0].DeptName == null ? '' : result[0][0].DeptName),
               "StaffID": result[0][0].StaffID,
               "StaffName": (result[0][0].StaffName == null ? '' : result[0][0].StaffName),
@@ -98,9 +104,16 @@ module.exports = function (sender) {
               "LiveDateD": (result[0][0].LiveDateD == null ? '' : result[0][0].LiveDateD),
               "LiveDateE": (result[0][0].LiveDateE == null ? '' : result[0][0].LiveDateE),
               "LiveDateF": (result[0][0].LiveDateF == null ? '' : result[0][0].LiveDateF),
+              "LiveExtA": ((result[0][0].LiveExtA != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtA + '天' : ''),
+              "LiveExtB": ((result[0][0].LiveExtB != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtB + '天' : ''),
+              "LiveExtC": ((result[0][0].LiveExtC != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtC + '天' : ''),
+              "LiveExtD": ((result[0][0].LiveExtD != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtD + '天' : ''),
+              "LiveExtE": ((result[0][0].LiveExtE != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtE + '天' : ''),
+              "LiveExtF": ((result[0][0].LiveExtF != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtF + '天' : ''),
               "Explanation": result[0][0].Explanation,
               "BackMin": result[0][0].BackMin,
               "Overspend": result[0][0].Overspend,
+              "OverReason": result[0][0].OverReason,
               "IsOver": result[0][0].IsOver,
               "HotelName": result[0][0].HotelName,
               "HotelTel": result[0][0].HotelTel,
@@ -260,10 +273,12 @@ module.exports = function (sender) {
     function PopupMain(cb) {
       // var BillNo = '20201225093185';
       let SQL2 =
-        " select   `BillNo`  ,  `ApplicNo`  ,  `Version`  ,  `BusiMan`  ,  `BusiArea`  ,  `DeptName`  ," +
+        " select   `BillNo`  ,  `ApplicNo`  ,  `Version`  ,  `BusiMan`  ,  `CompMan`  , `BusiArea`  , " +
+        " `RoomChoice`  ,`DinnerChoice`  ,  `DeptName`  ," +
         " `StaffID`  ,  `StaffName`  ,  `LeaveDate`  , `LeaveHour`  ,  `LeaveMin`  ,  `BackDate`  ," +
         " `BackHour`  ,  `BackMin`  ,  `LiveDateA`  ,  `LiveDateB`  ,  `LiveDateC`  ,  `LiveDateD`  ," +
-        " `LiveDateE`  ,  `LiveDateF`  ,  `Explanation`  ,  `Overspend`  ,  `IsOver`  ,  `HotelName`  ," +
+        " `LiveDateE`  ,  `LiveDateF` , `LiveExtA`  ,  `LiveExtB`  ,  `LiveExtC`  ,  `LiveExtD`  ," +
+        " `LiveExtE`  ,  `LiveExtF` ,  `Explanation`  ,  `Overspend` ,  `OverReason`  ,  `IsOver`  ,  `HotelName`  ," +
         " `HotelTel`  ,  `EntryDate`  ,  `BillStatus`   " +
         " from bgu_tripmain tba  " +
         " where tba.BillNo= ?   ";
@@ -280,7 +295,10 @@ module.exports = function (sender) {
               "ApplicNo": data[i].ApplicNo,
               "Version": data[i].Version,
               "BusiMan": data[i].BusiMan,
+              "CompMan": data[i].CompMan,
               "BusiArea": data[i].BusiArea,
+              "RoomChoice": data[i].RoomChoice ,
+              "DinnerChoice": data[i].DinnerChoice,
               "DeptName": data[i].DeptName,
               "StaffID": data[i].StaffID,
               "StaffName": data[i].StaffName,
@@ -296,9 +314,16 @@ module.exports = function (sender) {
               "LiveDateD": data[i].LiveDateD,
               "LiveDateE": data[i].LiveDateE,
               "LiveDateF": data[i].LiveDateF,
+              "LiveExtA": data[i].LiveExtA,
+              "LiveExtB": data[i].LiveExtB,
+              "LiveExtC": data[i].LiveExtC,
+              "LiveExtD": data[i].LiveExtD,
+              "LiveExtE": data[i].LiveExtE,
+              "LiveExtF": data[i].LiveExtF,
               "Explanation": data[i].Explanation,
               "BackMin": data[i].BackMin,
               "Overspend": data[i].Overspend,
+              "OverReason": data[i].OverReason,
               "IsOver": data[i].IsOver,
               "HotelName": data[i].HotelName,
               "HotelTel": data[i].HotelTel,

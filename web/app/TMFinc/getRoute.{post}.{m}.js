@@ -68,6 +68,9 @@ module.exports = function (sender) {
             case "createOrig":
                   url = ["BguTM", "createOrig"];
                   break;
+            case "CreateClaim":
+                  url = ["BguTM", "CreateClaim"];
+                  break;
             case "HandleOrig":
                   url = ["BguTM", "HandleOrig"];
                   break;

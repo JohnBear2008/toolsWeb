@@ -20,6 +20,7 @@ module.exports = function (sender) {
 	var qryCurPhone = sender.req.query.CurPhone;
 	var Formkind = sender.req.query.Formkind;
 	console.log("同意人", qryCurName, "品 ", qryItemNo, "文", BillNo, "金额", TotalValue, "表单", Formkind, "作", qryCurJob);
+	console.log("同意ID", qryCurWorkId );
 	var IsBothOver = 'N';  //项目&副总皆超过为 Y
 	var IsVipOver = 'N';  //副总超过为 Y
 	var IsOver = 'N';  //项目超过为 Y
@@ -229,20 +230,25 @@ module.exports = function (sender) {
 						if (CurJob == 'ceo') {
 							HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 						} else {
-							 console.log(" 熊与鱼 ", fixdate); 
-							 qryPurch(BillNo);
-							 //labuse  remove it
-							 HandleRule("0", "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
+							qryPurch(BillNo);
+							HandleRule("0", "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
 						}
 					} else {
 						HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 					}
+					      AppendRule(  BillNo );
 				} else {
-					CurStatus = 'P';
-					CurText = '审批';
-					console.log("翻盘进行....", AppFlag);
-					sendCnt = '1';
-					HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
+					if(qryCurName == '超级用户'){
+					     qryPurch(BillNo);
+					     console.log(" 熊1 熊2 熊3 "); 
+					     SuperRule(  BillNo , CurWorkId , TermiLevel ,OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName );
+					}else{
+						CurStatus = 'P';
+						CurText = '审批';
+						console.log("翻盘进行....", AppFlag);
+						sendCnt = '1';
+						HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
+					}
 				}
 			},
 			error: sender.error
@@ -540,6 +546,75 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
+	function SuperRule( BillNo , CurWorkId , TermiLevel, OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName ) {
+		CurStatus = 'Q';
+		CurText = '核准';
+		CurLevel = TermiLevel;
+		qryCurJob = 'ceo';
+		var fixlevel = '';
+		var fixdate = '';
+		if(MagName !=undefined && MagName !=''){
+			fixdate += "  MagDate ='" + EntryDate + "',  ";
+			fixlv += "  Level2 ='Y' , ";
+		}
+		if(VipName !=undefined && VipName !=''){
+			fixdate += "  VipDate ='" + EntryDate + "' , ";
+			fixlv += "  Level3 ='Y', "; 
+		}
+		if(PurName !=undefined && PurName !=''){
+			fixdate += "  PurDate ='" + EntryDate + "' , ";
+			fixlv += "  Level4 ='Y', ";
+		}
+		if(PexName !=undefined && PexName !=''){
+			fixdate += "  PexDate ='" + EntryDate + "' , ";
+			fixlv += "  Level5 ='Y', ";
+		}
+		if(CfoName !=undefined && CfoName !=''){
+			fixdate += "  CfoDate ='" + EntryDate + "' , ";
+			fixlv += "  Level6 ='Y', ";
+		}
+		if(PsdName !=undefined && PsdName !=''){
+			fixdate += "  PsdDate ='" + EntryDate + "' ,  ";
+			fixlv += "  Level7 ='Y', ";
+		}
+		if(CeoName !=undefined && CeoName !=''){
+			fixdate += "  CeoDate ='" + EntryDate + "' , ";
+			fixlv += "  Level8 ='Y', ";
+		}
+		if(BodName !=undefined && BodName !=''){
+			fixdate += "  BodDate ='" + EntryDate + "' ,  ";
+			fixlv += "  Level9 ='Y' ,";
+			console.log("LOONA本月少女:", BodName );
+		}
+		fixlevel += "StaffID ='" + qryCurWorkId + "' , StaffName ='" + qryCurName + "'";
+		let SQL = "Update `bgu_rule` set  CurStatus = ? , CurText = ? ,  CurLevel = ? , CurWorkId = ? , CurName = ? , CurJob = ? ," +
+			" " + fixdate + " " + fixlevel + "      where  BillNo=?  ";
+		console.log("无知是恶:", CurStatus, CurText, CurLevel, qryCurWorkId, qryCurName, qryCurJob , BillNo);
+		// console.log("太平无忧:", SQL );
+		console.log("亢龙有悔:", OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName );
+		Flowphone = CurWorkId;
+		yjDBService.exec({
+			sql: SQL,
+			parameters: [CurStatus, CurText, CurLevel, qryCurWorkId, qryCurName, qryCurJob , BillNo],
+			rowsAsArray: true,
+			success: function (result) {
+					if (flag == '0') {
+						if (CurStatus == 'Q') {
+							if (IsOver == 'Y') {
+								NoticeItemOver();
+							} else {
+								NoticeNotOver();
+							}
+							flag = '1';
+						} else {
+							NoticePending();
+							flag = '1';
+						}
+					}
+			},
+			error: sender.error
+		});
+	}
 	function HandleRule(Twins, nowcnt, BillNo, CurStatus, CurText, CurLevel, CurWorkId, CurName, CurJob, fixdate, fixlv, tundate, tunlv, IsOver) {
 		if (CurName != null && CurName != undefined && CurName != '') {
 
@@ -578,6 +653,18 @@ module.exports = function (sender) {
 				if (Twins == '1') {
 					HandleTwins(CurLevel);
 				}
+			},
+			error: sender.error
+		});
+	}
+	function AppendRule( BillNo) {
+		let SQL = "Update `bgu_purchmain` set  IsOver = 'N'  where  BillNo= '"+BillNo+"'  ";
+		yjDBService.exec({
+			sql: SQL,
+			parameters: [ ],
+			rowsAsArray: true,
+			success: function (result) {
+				console.log("没有心:", result);
 			},
 			error: sender.error
 		});
