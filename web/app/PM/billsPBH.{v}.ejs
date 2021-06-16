@@ -1889,27 +1889,81 @@
 						')';
 
 					let tasks = await getDataBySql({
-						sql: 'sqlTaskBills',
+						sql: 'sqlProgramEnd',
 						params: {
 							filter: taskFilter
 						}
 					})
-					// console.log(tasks, tasks);
+					console.log("tasks:", tasks);
+
+					let autoFileArr = [];
+					for (const n of tasks) {
+						let nTaskFiles = JSON.parse(n.taskFiles);
+						for (const file of nTaskFiles) {
+
+							let customerPath = n.cust_FID + "(" + n.cust_Name + ")";
+							let systemPath = "";
+							if (n.catalog === '/') {
+								systemPath = n.STMType.replace("DSP", "")
+							} else {
+								systemPath = n.catalog
+							}
+							let yearPath = n.BTID.substring(1, 5);
+							let groupPath = n.groupLabel;
+							let machinePath = n.MHEType;
+							let modelPath = "";
+							if (n.groupLabel === 'DSP') {
+								modelPath = n.model
+							} else if (n.model === '/') {
+								modelPath = n.model
+							} else {
+								modelPath = n.STMType + '-' + n.model
+							}
+
+							if (!(customerPath && systemPath && yearPath && groupPath && machinePath &&
+									modelPath)) {
+								console.log(customerPath, systemPath, yearPath, groupPath, machinePath,
+									modelPath);
+								alert('归档终止,存在无效的归档参数,,请检查基础数据,或联系管理员!')
+								return
+
+							}
+
+
+
+							let filePathArr = [
+								customerPath,
+								systemPath,
+								yearPath,
+								groupPath,
+								machinePath,
+								modelPath
+							];
+							autoFileArr.push({
+								fileName: file.fileName,
+								fileKey: file.fileKey,
+								filePath: filePathArr,
+								modifyContent: n.modifyContent,
+							})
+						}
+					}
+
+					console.log('autoFileArr', autoFileArr);
 
 					//d api归档
 
 					let res = await $.ajax({
 						method: 'post',
-						url: 'https://172.16.3.49:8000/api/ppm/autoFile',
+						url: 'https://192.168.0.9:8000/api/ppm/lin/autoFile',
 						data: {
-							tasks: tasks
+							autoFileArr: autoFileArr
 						},
 						success: function (data) {
-							// console.log('111111', data);
+							console.log('111111', data);
 							return data;
 						},
 						error: function (error) {
-							// console.log('111111', error);
+							console.log('111111', error);
 							return error;
 						}
 					});
