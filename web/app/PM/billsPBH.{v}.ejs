@@ -23,6 +23,7 @@
 <script src="/js/sweetalert.min.js"></script>
 <script src="/public/funs.js"></script>
 
+
 <!-- 导入js库 -->
 <script type="text/javascript" src="/ppmLib/publicFuns.js"></script>
 
@@ -559,7 +560,14 @@
 
 
 
-
+		<div id="loadingDiv" style="display: none; ">
+			<div id="over"
+				style=" position: absolute;top: 0;left: 0; width: 100%;height: 100%; background-color: #f5f5f5;opacity:0.5;z-index: 1000;">
+			</div>
+			<div id="layout"
+				style="position: absolute;top: 40%; left: 40%;width: 20%; height: 20%;  z-index: 1001;text-align:center;">
+				<img src="/js/plugins/layer/skin/default/loading-0.gif" /></div>
+		</div>
 
 		<script>
 			//函数-根据自定义SQL获取数据加载Task表格,不显示搜索分页,简易模式
@@ -917,6 +925,8 @@
 				})
 			}
 
+
+
 			//页面加载函数---------------
 			$(document).ready(function () {
 
@@ -1048,6 +1058,8 @@
 					$('#BTNPBHDetail').click();
 
 				});
+
+
 
 
 				//过滤按钮组
@@ -1894,14 +1906,20 @@
 							filter: taskFilter
 						}
 					})
-					console.log("tasks:", tasks);
+					console.log("tasks:", taskFilter, tasks);
+
+					//length=0
+					if (tasks.length === 0) {
+						alert('归档出现参数错误,归档终止!')
+						return
+					}
 
 					let autoFileArr = [];
 					for (const n of tasks) {
 						let nTaskFiles = JSON.parse(n.taskFiles);
 						for (const file of nTaskFiles) {
 
-							let customerPath = n.cust_FID + "(" + n.cust_Name + ")";
+							let customerPath = n.FTYID + "(" + n.FTYName + ")";
 							let systemPath = "";
 							if (n.catalog === '/') {
 								systemPath = n.STMType.replace("DSP", "")
@@ -1919,17 +1937,16 @@
 							} else {
 								modelPath = n.STMType + '-' + n.model
 							}
+							modelPath = modelPath.replace(/\//g, "_");
 
 							if (!(customerPath && systemPath && yearPath && groupPath && machinePath &&
 									modelPath)) {
 								console.log(customerPath, systemPath, yearPath, groupPath, machinePath,
 									modelPath);
-								alert('归档终止,存在无效的归档参数,,请检查基础数据,或联系管理员!')
+								alert('归档终止,存在无效的归档参数,无匹配客户或系统,请检查基础数据!')
 								return
 
 							}
-
-
 
 							let filePathArr = [
 								customerPath,
@@ -1949,9 +1966,9 @@
 					}
 
 					console.log('autoFileArr', autoFileArr);
+					alert('点击开始系统自动归档,收到归档成功信息前请勿刷新页面!')
 
 					//d api归档
-
 					let res = await $.ajax({
 						method: 'post',
 						url: 'https://192.168.0.9:8000/api/ppm/lin/autoFile',
@@ -1960,6 +1977,7 @@
 						},
 						success: function (data) {
 							console.log('111111', data);
+
 							return data;
 						},
 						error: function (error) {
@@ -1971,10 +1989,10 @@
 
 				})
 
-
 				//按钮-短信通知
 				$('#BTNSendSMSOpen').click(async function () {
 					$('#winSMS').modal('show')
+					$('#smsPhone').attr("disabled", false);
 					let customerName = $('#PBHCTRName').text();
 					let customerData = await getDataBySql({
 						sql: "getCustomer",
@@ -1991,6 +2009,7 @@
 					}
 
 					customerPhone = phone
+				
 					$('#smsPhone').val(phone)
 
 				})

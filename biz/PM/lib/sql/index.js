@@ -41,7 +41,7 @@ const getPLDNum = "SELECT COUNT(1) AS PLDNum FROM `ppm_bills_plan` WHERE TO_DAYS
 const sqlCodeAuditExport = "select ta.*,tb.taskStaff from ppm_bills_codeaudit ta left join ppm_bills_task tb on ta.BTID=tb.BTID and ta.BTVersion=tb.BTVersion"
 
 //程序归档sql
-const sqlProgramEnd="SELECT * FROM ( SELECT ta.BTID, ta.taskStaff, ta.taskModel, ta.taskFiles, ta.modifyContent, ta.BTVersion, tb.cust_Name, tb.cust_FID, tc.STMType, tc.catalog, tc.groupLabel,tc.model, td.MHEType FROM ppm_bills_task AS ta INNER JOIN pm_customers AS tb ON ta.taskCTRName = tb.cust_Name INNER JOIN ppm_systems AS tc ON ta.taskModel = tc.val INNER JOIN ppm_machines AS td ON ta.taskMHEName = td.MHEName ) TA"
+const sqlProgramEnd="SELECT * FROM ( SELECT ta.BTID, ta.taskStaff, ta.taskModel, ta.taskFiles, ta.modifyContent, ta.BTVersion, tb.FTYName, tb.FTYID, tc.STMType, tc.catalog, tc.groupLabel,tc.model, td.MHEType FROM ppm_bills_task AS ta INNER JOIN ppm_customers AS tb ON ta.taskCTRName = tb.FTYName INNER JOIN ppm_systems AS tc ON ta.taskModel = tc.val INNER JOIN ppm_machines AS td ON ta.taskMHEName = td.MHEName ) TA"
 
 /**
  *更具传入参数创建执行sql语句
