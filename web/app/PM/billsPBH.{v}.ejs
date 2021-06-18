@@ -1969,23 +1969,41 @@
 					alert('点击开始系统自动归档,收到归档成功信息前请勿刷新页面!')
 
 					//d api归档
-					let res = await $.ajax({
-						method: 'post',
-						url: 'https://192.168.0.9:8000/api/ppm/lin/autoFile',
-						data: {
-							autoFileArr: autoFileArr
-						},
-						success: function (data) {
-							console.log('111111', data);
 
-							return data;
+					$.ajax({
+						method: 'post',
+						url: '/app/PM/lib/api',
+						data: {
+							autoFileArr: JSON.stringify(autoFileArr)
 						},
-						error: function (error) {
-							console.log('111111', error);
-							return error;
+						success: function (data, textStatus) {
+							console.log(data, textStatus);
+							alert('归档命令发送成功,系统将在后台自动归档!')
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {
+							console.log(XMLHttpRequest, errorThrown, textStatus);
+							alert('归档异常')
 						}
 					});
-					alert(res)
+
+
+					// let res = await $.ajax({
+					// 	method: 'post',
+					// 	url: 'https://192.168.0.9:8000/api/ppm/lin/autoFile',
+					// 	data: {
+					// 		autoFileArr: autoFileArr
+					// 	},
+					// 	success: function (data) {
+					// 		console.log('111111', data);
+
+					// 		return data;
+					// 	},
+					// 	error: function (error) {
+					// 		console.log('111111', error);
+					// 		return error;
+					// 	}
+					// });
+
 
 				})
 
@@ -2009,7 +2027,7 @@
 					}
 
 					customerPhone = phone
-				
+
 					$('#smsPhone').val(phone)
 
 				})
