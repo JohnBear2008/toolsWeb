@@ -14,7 +14,7 @@ function DDRobotMsgSender(divMsg) {
 	console.log(requestData);
 	// var token = "c6cbd13c9fa5115f91db5b86bd97ba3d756fe8a0bb6d1000588c6f6c469e5730";
 
-	var token ="81375e2ff0ca9c18d5262adb94d19c194dd51f383351ed72a7d8b0ab69961983";//工程单位
+	var token = "81375e2ff0ca9c18d5262adb94d19c194dd51f383351ed72a7d8b0ab69961983"; //工程单位
 
 	var url = 'oapi.dingtalk.com';
 	var req = https.request({
@@ -54,12 +54,10 @@ const CreateDDMsgText = (I, O) => {
 			"text": "以下单据未完成，请跟进！\n\n" + DDText,
 			"hideAvatar": "0",
 			"btnOrientation": "0",
-			"btns": [
-				{
-					"title": "登陆PPM系统",
-					"actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
-				}
-			]
+			"btns": [{
+				"title": "登陆PPM系统",
+				"actionURL": "http://192.168.0.9:2019/app/pm/linkpage"
+			}]
 		},
 		"msgtype": "actionCard",
 		"at": {
@@ -95,15 +93,22 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 			let R2
 
-			console.log("R1.length:"+R1.length)
+			console.log("R1.length:" + R1.length)
 
 			switch (R1.length) {
 				case 0:
-					R2 = { DDMsg: [] }
+					R2 = {
+						DDMsg: []
+					}
 					break;
 				case 1:
 
-					R2 = { DDMsg: [{ msg: R1[0].billText, at: R1[0].billStaffs }] }
+					R2 = {
+						DDMsg: [{
+							msg: R1[0].billText,
+							at: R1[0].billStaffs
+						}]
+					}
 					break;
 
 				default:
@@ -119,13 +124,13 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 					for (let i = 1; i < R1.length; i++) {
 
-						console.log("msgI:"+msgI)
+						console.log("msgI:" + msgI)
 
-						console.log("atI:"+atI)
+						console.log("atI:" + atI)
 
-						if (R1[i].billText === R1[i-1].billText) {
+						if (R1[i].billText === R1[i - 1].billText) {
 
-							
+
 
 							// console.log(atI.indexOf(R1[i].billStaffs) === -1)
 
@@ -135,9 +140,12 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 								}
 							}
 
-							
+
 						} else {
-							DDMsgArray.push({ msg: msgI, at: atI })
+							DDMsgArray.push({
+								msg: msgI,
+								at: atI
+							})
 							msgI = R1[i].billText;
 							atI = R1[i].billStaffs;
 						}
@@ -147,10 +155,15 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 
 
-						DDMsgArray.push({ msg: msgI, at: atI })
+					DDMsgArray.push({
+						msg: msgI,
+						at: atI
+					})
 
 
-					R2 = { DDMsg: DDMsgArray }
+					R2 = {
+						DDMsg: DDMsgArray
+					}
 					break;
 			}
 
@@ -176,7 +189,8 @@ const sendBillsUndoneDDMsg = async (i, o) => {
 
 }
 let I = {
-	sql: "SELECT '计划单未审核' as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 AND C.effective=1 AND C.auditResult=0) A " + " union " +
+	sql: "SELECT '需求单未审核' as billText,A.auditor as billStaffs FROM (select * from `ppm_bills_request` WHERE STATUS='待审核') A" + " union " +
+		"SELECT '计划单未审核' as billText,A.auditor as billStaffs FROM (SELECT C.* FROM `ppm_bills_plan` C, (SELECT BPID AS billBPID, MAX(version) AS billVersion FROM `ppm_bills_plan` GROUP BY billBPID) D WHERE C.BPID = D.billBPID AND C.version = D.billVersion AND C.WFStatus <> 0 AND C.WFStatus<>100 AND C.effective=1 AND C.auditResult=0) A " + " union " +
 		" SELECT '方案单未完成'  as billText, A.PLDPGEMaker as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where auditResult <>1 OR effective IS NULL" + " union " +
 		" SELECT '方案单未审核'  as billText, A.auditor as billStaffs FROM (SELECT * FROM  (SELECT tbb.BPID,tbb.version AS PLDVersion,tbb.CTRName AS PLDCTRName,tbb.LimitDate AS PLDLimitDate,tbb.PGEMaker AS PLDPGEMaker,tbb.MHEName AS PLDMHEName,tbb.modelD AS PLDModelD,tbb.modelH AS PLDModelH,tbb.OGNSystemVersion AS PLDOGNSystemVersion FROM `ppm_bills_plan` tbb, (SELECT BPID,MAX(version) AS maxPLDVersion FROM `ppm_bills_plan` WHERE WFStatus<>0 AND WFStatus<>100 AND PLDStatus=1 GROUP BY BPID) tba  WHERE tbb.BPID=tba.BPID AND tbb.version=tba.maxPLDVersion) tbe LEFT JOIN  (SELECT tbd.*,CASE tbd.BPTStatus WHEN 0 THEN '未审核' WHEN 1 THEN '审核通过' WHEN 2 THEN '审核驳回' END AS BPTStatusText  FROM `ppm_bills_blueprint` tbd,(SELECT BPTBPID,MAX(BPTVersion) AS maxBPTVersion FROM `ppm_bills_blueprint` GROUP BY BPTBPID) tbc WHERE tbd.BPTBPID=tbc.BPTBPID AND tbd.BPTVersion=tbc.maxBPTVersion AND tbd.effective=1) tbf  ON tbe.BPID=tbf.BPTBPID) A where BPTStatusText ='未审核'" + " union " +
 		" SELECT '任务单未完成'  as billText,A.taskStaff as billStaffs FROM (SELECT tbb.* FROM `ppm_bills_task` tbb,(SELECT BTID,MAX(BTVersion) AS maxBTVersion FROM `ppm_bills_task` GROUP BY BTID) tba WHERE tbb.BTID=tba.BTID AND tbb.BTVersion=tba.maxBTVersion) A where BTStatus <> 3 AND taskType='A' AND WFStatus<>0 AND WFStatus<>100 " + " union " +
@@ -204,8 +218,7 @@ let O;
 
 // 通知任务---------
 var j1 = schedule
-	.scheduleJob(
-		{
+	.scheduleJob({
 			hour: 08,
 			minute: 30,
 			dayOfWeek: [1, 2, 3, 4, 5]
@@ -219,8 +232,7 @@ var j1 = schedule
 
 
 var j2 = schedule
-	.scheduleJob(
-		{
+	.scheduleJob({
 			hour: 13,
 			minute: 30,
 			dayOfWeek: [1, 2, 3, 4, 5]

@@ -6,7 +6,7 @@
  * @Description: In User Settings Edit
  * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
  */
-const prefix = 'https://172.16.3.49:8000';
+const prefix = 'https://127.0.0.1:8000';
 
 const getUrl = (type) => {
     //c

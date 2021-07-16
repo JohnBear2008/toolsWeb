@@ -85,7 +85,7 @@
                     <!-- T9 -->
                     <div style="float: left; margin-left: 15px;">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-primary">T9</button>
+                            <button type="button" class="btn btn-primary">ERP接口</button>
                             <button type="button" id="T9ImportBtn" class="btn btn-default">接口导入</button>
                         </div>
                     </div>
@@ -2027,6 +2027,119 @@
 
             })
             console.log('T9Data', T9Data);
+
+            //do-生成主表,子表数据
+            let inBillsArr = [];
+            let inSubBillsArr = [];
+
+            for (const n of T9Data) {
+                inBillsArr.push({
+                    billFrom: 'ERP导入',
+                    billId: n.billId,
+                    customerId: n.customerId,
+                    customerShortName: n.customerShortName,
+                    customerName: n.customerName,
+                    contact: n.contact,
+                    mobilePhone: n.mobilePhone,
+                    workPhone: n.workPhone,
+                    operator: n.operator,
+                    maker: n.maker,
+                    makeDate: currentDate(),
+                    auditor: n.auditor,
+                    status: '待审核',
+                    remark: n.remark
+                })
+
+                inSubBillsArr.push({
+                    billId: n.billId,
+                    rowId: n.rowId,
+                    productId: n.productId,
+                    productName: n.productName,
+                    warehouseId: n.warehouseId,
+                    warehouseName: n.warehouseName,
+                    unit: n.unit,
+                    num: n.num,
+                    status: '预入',
+                    remark: n.subRemark
+                })
+            }
+            //do-去重处理
+            // inBillsArr = Array.from(new Set(inBillsArr))仅可用于简单数组去重
+            var obj = {};
+            inBillsArr = inBillsArr.reduce(function (item, next) {
+                obj[next.billId] ? '' : obj[next.billId] = true && item.push(next);
+                return item
+            }, [])
+
+            //子表不去重
+            // var subObj = {};
+            // inSubBillsArr = inSubBillsArr.reduce(function (item, next) {
+            //     subObj[next.billId] ? '' : subObj[next.billId] = true && item.push(
+            //         next);
+            //     return item
+            // }, [])
+            console.log('inBillsArr', inBillsArr);
+            console.log('inSubBillsArr', inSubBillsArr);
+
+            return;
+
+            //do-导入数据库
+            let rInBills = await postDBData({
+                sql: 'insert',
+                params: {
+                    tableId: 'rp_inbills',
+                    data: inBillsArr
+                }
+            })
+
+            let rInSubBills = await postDBData({
+                sql: 'insert',
+                params: {
+                    tableId: 'rp_insubbills',
+                    data: inSubBillsArr
+                }
+            })
+
+            //do-初始化库存
+            let PIDArr = [];
+            for (const n of inSubBillsArr) {
+                PIDArr.push({
+                    PID: n.productId,
+                    warehouseId: n.warehouseId
+                })
+            }
+
+            let newPIDArr = []
+            for (let i = 0; i < PIDArr.length; i++) {
+                let isNew = true
+                for (let j = 0; j < newPIDArr.length; j++) {
+                    if (PIDArr[i].PID === newPIDArr[j].PID && PIDArr[i].warehouseId ===
+                        newPIDArr[j].warehouseId) {
+                        isNew = false;
+                        break;
+                    }
+                }
+                if (isNew) {
+                    newPIDArr.push(PIDArr[i])
+                }
+            }
+
+            //初始化库存记录
+            let rInitPID = await initWarehousePID({
+                PIDArr: newPIDArr
+            })
+
+            if (rInBills.affectedRows > 0 && rInSubBills.affectedRows > 0 && rInitPID) {
+                alert('批量导入成功')
+            } else {
+                alert('批量导入出错')
+            }
+
+            //return-刷新主界面
+            loadBillMainTable()
+
+
+
 
 
         })
