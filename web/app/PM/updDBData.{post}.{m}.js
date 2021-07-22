@@ -4,7 +4,8 @@ var path=require("path");
 module.exports = function(sender) {
     yjBizService.post({
         params : ["PM","updDBData"],
-        query : sender.req.body,
+        // query : sender.req.body,
+        data: sender.req.body,
         success : function(data){
             sender.success(data);
         },

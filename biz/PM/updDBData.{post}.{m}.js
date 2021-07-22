@@ -14,7 +14,8 @@ module.exports = function (sender) {
 
 	////   console.log("PM2333 test");
 	//       
-	var obj = sender.req.query;
+	// var obj = sender.req.query;
+	var obj=sender.req.body
 
 	console.log('updDBData get obj:', obj);
 	//    
