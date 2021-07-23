@@ -1,2 +1,0 @@
- alter table `bgu_staffs` add COLUMN `OrigLabel` char(200) COLLATE utf8_bin DEFAULT '宁波大港' after `JobKind`;
- alter table `bgu_rule` add COLUMN `OrigLabel` char(200) COLLATE utf8_bin DEFAULT '宁波大港' after `EntryDate`;
