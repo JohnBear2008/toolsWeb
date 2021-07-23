@@ -30,7 +30,14 @@ function loadCaseB(BillNo) {
                 $('#ApplicNo').val(bjob[i].ApplicNo);
                 $('#Version').val(bjob[i].Version);
                 $('#BusiMan').val(bjob[i].BusiMan);
+                $('#CompMan').val(bjob[i].CompMan);
                 $('#BusiArea').val(bjob[i].BusiArea);
+                var RoomText= bjob[i].RoomChoice;
+                RoomText = RoomText.replace('/', '');
+                $("#RoomChoice"+" option[value="+RoomText+"]").prop('selected', true);
+                var DinnerText= bjob[i].DinnerChoice;
+                DinnerText = DinnerText.replace('/', '');
+                $("#DinnerChoice"+" option[value="+DinnerText+"]").prop('selected', true);
                 $('#DeptName').val(bjob[i].DeptName);
                 $('#LeaveDate').val(bjob[i].LeaveDate);
                 $('#LeaveHour').val(bjob[i].LeaveHour);
@@ -44,6 +51,12 @@ function loadCaseB(BillNo) {
                 $('#LiveDateD').val(bjob[i].LiveDateD);
                 $('#LiveDateE').val(bjob[i].LiveDateE);
                 $('#LiveDateF').val(bjob[i].LiveDateF);
+                $('#LiveExtA').val(bjob[i].LiveExtA);
+                $('#LiveExtB').val(bjob[i].LiveExtB);
+                $('#LiveExtC').val(bjob[i].LiveExtC);
+                $('#LiveExtD').val(bjob[i].LiveExtD);
+                $('#LiveExtE').val(bjob[i].LiveExtE);
+                $('#LiveExtF').val(bjob[i].LiveExtF);
                 $('#Explanation').val(bjob[i].Explanation);
                 $('#BackMin').val(bjob[i].BackMin);
                 $('#Overspend').val(bjob[i].Overspend);

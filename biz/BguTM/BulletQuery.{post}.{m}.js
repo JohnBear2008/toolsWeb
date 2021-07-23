@@ -107,7 +107,7 @@ module.exports = function (sender) {
               "StaffID": result[0][0].StaffID,
               "StaffName": result[0][0].StaffName,
               "TotalValue": result[0][0].TotalValue,
-              "ExceedValue": result[0][0].ExceedValue,
+              "ExceedValue": ((result[0][0].ExceedValue != undefined && result[0][0].ExceedValue != '')?  result[0][0].ExceedValue  : ''),
               "IsOver": result[0][0].IsOver,
               "Accumulate": result[0][0].Accumulate,
               "Currency": result[0][0].Currency,
@@ -138,6 +138,7 @@ module.exports = function (sender) {
           var CeoDate = '';
           var BodDate = '';
           var Reason = '';
+          var OrigName = '';
           var SendStatus = '';
           var CurStatus = '';
           var CurLevel = '';
@@ -157,6 +158,7 @@ module.exports = function (sender) {
             CeoName = result[2][0].CeoName; CeoName = nulReplaceTxt(CeoName); CeoDate = result[2][0].CeoDate; CeoDate = nulReplaceTxt(CeoDate);
             BodName = result[2][0].BodName; BodName = nulReplaceTxt(BodName); BodDate = result[2][0].BodDate; BodDate = nulReplaceTxt(BodDate);
             Reason = result[2][0].Reason; Reason = nulReplaceTxt(Reason);
+            OrigName = result[2][0].OrigName; OrigName = nulReplaceTxt(OrigName);
             CurStatus = result[2][0].CurStatus; CurStatus = nulReplaceTxt(CurStatus);
             CurLevel = result[2][0].CurLevel; CurLevel = nulReplaceTxt(CurLevel); TermiLevel = result[2][0].TermiLevel; TermiLevel = nulReplaceTxt(TermiLevel);
             CurName = result[2][0].CurName; CurName = nulReplaceTxt(CurName); CurText = result[2][0].CurText; CurText = nulReplaceTxt(CurText);
@@ -172,7 +174,7 @@ module.exports = function (sender) {
             "PsdName": PsdName, "PsdDate": PsdDate,
             "CeoName": CeoName, "CeoDate": CeoDate,
             "BodName": BodName, "BodDate": BodDate,
-            "Reason": Reason, 
+            "Reason": Reason, "OrigName": OrigName, 
             "SendStatus": SendStatus, "CurStatus": CurStatus,
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
             "CurName": CurName, "CurText": CurText,
@@ -191,12 +193,12 @@ module.exports = function (sender) {
           }
           dataARR.push(objW);
           sender.success(dataARR);
-          // var dump = JSON.stringify(dataARR);
-          // if (dump.length > 1000) {
-          //   console.log("鲁班:" + dump.substring(0, 1000));
-          // } else {
-          //   console.log("鲁班:" + JSON.stringify(dataARR));
-          // }
+          var dump = JSON.stringify(dataARR);
+          if (dump.length > 1000) {
+            console.log("鲁班:" + dump.substring(0, 1000));
+          } else {
+            console.log("鲁班:" + JSON.stringify(dataARR));
+          }
         }
       });
     function PopupDetail(cb) {
@@ -296,7 +298,7 @@ module.exports = function (sender) {
     function PopupAudit(cb) {
       // var BillNo = '20201225103088';
       let SQL2 =
-        " select  `BillNo` ,`entryDate` ,`StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
+        " select  `BillNo` ,`entryDate` , `OrigLabel`, `StaffID` ,`StaffName` ,`CurStatus` ,`CurLevel` ,`TermiLevel` ,`CurWorkId` ," +
         " `CurName` , `CurJob` , `SendStatus`,`CurText` ,`track` ,`Level1` ,`OppWorkId` ,`OppName` ,`OppDate` ,`Level2` ,`MagWorkId` ,`MagName` ," +
         " `MagDate` ,`Level3` ,`VipWorkId` ,`VipDate` ,`VipName` ,  `Level4` ,`PurWorkId` ,`PurName` ,`PurDate` ,`Level5` ,`PexWorkId` ," +
         " `PexName` ,`PexDate` ,`Level6` ,`CfoWorkId` ,`CfoName` ,`CfoDate` ,`Level7` ,`PsdWorkId` ,`PsdName` ,`PsdDate` , " +
@@ -311,7 +313,6 @@ module.exports = function (sender) {
           var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
           // console.log(  " 詩賢 ", data.length);
           for (var i = 0; i < data.length; i++) {
-            // console.log(  " 詩賢 ", data[i].OppName );
             var temp = {
               "Level1": data[i].Level1, "OppWorkId": data[i].OppWorkId, "OppName": data[i].OppName, "OppDate": data[i].OppDate,
               "Level2": data[i].Level2, "MagWorkId": data[i].MagWorkId, "MagName": data[i].MagName, "MagDate": data[i].MagDate,
@@ -325,7 +326,7 @@ module.exports = function (sender) {
               "Reason": data[i].Reason, 
               "BillNo": data[i].BillNo, "SendStatus": data[i].SendStatus, "CurStatus": data[i].CurStatus, "CurLevel": data[i].CurLevel,
               "TermiLevel": data[i].TermiLevel, "CurWorkId": data[i].CurWorkId, "CurName": data[i].CurName, "CurText": data[i].CurText,
-              "CurJob": data[i].CurJob,
+              "CurJob": data[i].CurJob,  "OrigName": data[i].OrigLabel,  
             }
             datas.push(temp)
           }

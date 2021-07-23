@@ -66,13 +66,14 @@ function sleepTravel(mode) {
                     , { field: 'LeaveDate', title: '出发时间', width: 120, sort: true }
                     , { field: 'DeptName', title: '部门', width: 80 }
                     , { field: 'StaffName', title: '提交人', width: 80, sort: true }
-                    , { field: 'IsOver', title: '超支', width: 60 }
+                    , { field: 'OverChoice', title: '超支', width: 60 }
                     , { field: 'Overspend', title: '超支额', width: 70 }
                     , { field: 'EntryDate', title: '日期', width: 110 }
                     , { field: 'Explanation', title: '备注', width: 70 }
                     , { field: 'CurName', title: '审批人', width: 100, sort: true }
                     , { field: 'CurJob', title: '职位', width: 0, hide: true }
                     , { field: 'TotalValue', title: '总金额', width: 110 }
+                    , { field: 'IsOver', title: '追加', width: 0  }
                     , { field: 'CurPhone', title: '釘釘', width: 0, hide: true }
                     // , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200 }
                 ]]
@@ -91,6 +92,7 @@ function sleepTravel(mode) {
                         CapSubject = dataARR[0].Subject;
                         CapCurJob = dataARR[0].CurJob;
                         CapPhone = dataARR[0].CurPhone;
+                        CapClaim = dataARR[0].IsOver;
                         VegasB(dataARR[0].BillNo);
                         // <DIV STYLE="page-break-before:always">
                         $('#kisswindow').modal('show');
@@ -112,6 +114,7 @@ function sleepTravel(mode) {
                 CapSubject = data.Subject;
                 CapCurJob = data.CurJob;
                 CapPhone = data.CurPhone;
+                CapClaim = data.IsOver;
                 if (obj.event === 'analysis') {
                     VegasB(Parts_BillNo);
                     CapBillNo = Parts_BillNo;
@@ -125,7 +128,7 @@ function sleepTravel(mode) {
                         var taskData = {
                             "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": Formkind, "Subject": CapSubject,
                              "TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName, "CurJob": CapCurJob,
-                             "CurPhone": CapPhone,
+                             "CurPhone": CapPhone,  "Claimflag": CapClaim,
                         }
                         layer.alert("同意此笔审批号" + Parts_BillNo);
                         $.ajax({

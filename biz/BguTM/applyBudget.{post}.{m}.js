@@ -23,6 +23,7 @@ module.exports = function (sender) {
     var BudMonth = now.Format("MM");
     var BillNo = BILLDate + "";
     var Formkind = "采购单";
+    var FlowOrig = '';
     var FlowGroup = '';
     var FlowDept = '';
     var FlowUnit = '';
@@ -53,7 +54,8 @@ module.exports = function (sender) {
         FlowUnit = Advstr.UnitName;
         FlowBuy = Advstr.FlowBuy;
         qryGroup = Advstr.GroupName;
-        console.log("太极",qryGroup);
+        FlowOrig = Advstr.OrigName;
+        console.log("太极",qryGroup,"养鸡",FlowOrig);
         let DeptList = [];
         if (qryGroup != "" && qryGroup != undefined) {
             FlowGroup = qryGroup;
@@ -622,12 +624,12 @@ module.exports = function (sender) {
         var SendStatus = 'K';
         var SendText = '保存';
        
-        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,  `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
+        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` , `OrigLabel` ,  `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
             " `CurStatus`, `CurText`,  `SendStatus`, `SendText`, `CurLevel`,  `TermiLevel`, `CurWorkId`, `CurName`, `CurJob` ," +
             " `Track`, `OppWorkId`, `OppName`, `OppDate`,  `MagWorkId`, `MagName` , `MagDate` , `VipWorkId`, `VipName`,  `VipDate` ,  `PurWorkId`, " +
             " `PurName`,   `PexWorkId`, `PexName`,   `CfoWorkId`, `CfoName`,  `PsdWorkId`, `PsdName`,  " +
             "  `CeoWorkId`, `CeoName`,  `BodWorkId`, `BodName` )" +
-            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + FlowGroup + "', '" + FlowDept + "','" + StaffID + "', '" + StaffName + "',  " +
+            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + FlowOrig + "',  '" + FlowGroup + "', '" + FlowDept + "','" + StaffID + "', '" + StaffName + "',  " +
             " '" + CurStatus + "', '" + CurText + "', '" + SendStatus + "', '" + SendText + "', '" + CurLevel + "', " +
             " '" + TermiLevel + "', '" + CurWorkId + "', '" + CurName + "','" + CurJob + "',  " +
             " '" + Track + "' , '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "', " + MagDate + " , " +

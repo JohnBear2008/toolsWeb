@@ -67,6 +67,7 @@
                         <input type="hidden" id="hideDeptName" value="" />
                         <input type="hidden" id="GroupName" value="" />
                         <input type="hidden" id="hideUnit" value="" />
+                        <input type="hidden" id="hideOrig" value="" />
                         <td width="50" bgcolor="#FAF0E6" colspan="5" height="25">
                                 出 差 人： <input name="BusiMan"
                                 id="BusiMan" type="text" size="20" class="feeSubCol" value=""> 
@@ -488,7 +489,7 @@
                 </tr>
                 <tr>
                         <td width="50" height="30">是否有超支 </td>
-                        <td width="50" height="30" colspan="2"><select id="IsOver" name="IsOver"
+                        <td width="50" height="30" colspan="2"><select id="OverChoice" name="OverChoice"
                                         class="feefield"></select></td>
                         <td width="50" height="30" colspan="3">说明<textarea name="OverReason" id="OverReason"
                                           rows="4" class="can-drop-mid"></textarea></td>
@@ -578,16 +579,16 @@
 
                                 var youoption = document.createElement("option");
                                 youoption.text = "是";
-                                youoption.id = "IsOver";
-                                youoption.name = "IsOver";
+                                youoption.id = "OverChoice";
+                                youoption.name = "OverChoice";
                                 youoption.value = "是";
-                                $("#IsOver").append(youoption);
+                                $("#OverChoice").append(youoption);
                                 var youoption = document.createElement("option");
                                 youoption.text = "否";
-                                youoption.id = "IsOver";
-                                youoption.name = "IsOver";
+                                youoption.id = "OverChoice";
+                                youoption.name = "OverChoice";
                                 youoption.value = "否";
-                                $("#IsOver").append(youoption);
+                                $("#OverChoice").append(youoption);
                                 missTType = getQueryString("missT");
                                 missAType = getQueryString("missA");
                                 if (missTType == 'Mdy') {

@@ -402,7 +402,7 @@ function obtLogGroup(loginName) {
                               var qryGroup = dataArr[i].GroupLabel;
                               let GroupList = [];
                               if (qryGroup != "" && qryGroup != undefined) {
-                                    console.log("男子汉", qryGroup);
+                                    console.log("男子汉", qryGroup );
                                     GroupList = qryGroup.split(',');
                                   
                                     for (var ki = 0; ki < GroupList.length; ki++) {
@@ -421,10 +421,68 @@ function obtLogGroup(loginName) {
                         }
                         var sessRole = dataArr[0].StaffRole;
                         var Mobiles = dataArr[0].Mobiles;
+                        var Group = dataArr[0].GroupLabel;
+                        var Orig = dataArr[0].OrigLabel;
+                        console.log("大丈夫", Orig, "小女子", sessRole );
                   }
                   $("#hideDeptName").val(sessDept);
                   $("#hideFlowRole").val(sessRole);
                   $("#hidePhone").val(Mobiles);
+                  $("#MicroOrig").val(Orig);
+                  $("#MicroGroup").val(Group);
+                  $("#hideOrig").val(Orig); 
+            },
+            error: function () {
+            }
+      })
+}
+function obtHisGroup(loginName) {
+      let dataArr = [];
+      var reportType = 'ironSubject';
+      var arrange = 'LinkHisDept';
+      var taskData = { "reportType": reportType, "arrange": arrange, "loginName": loginName };
+      $.ajax({
+            method: 'post',
+            data: taskData,
+            url: "/app/TMFinc/getRoute",
+            success: function (data) {
+                  dataArr = data;
+                  console.log("早餐",dataArr);
+                  if (dataArr.length > 0) {
+                        $("#GroupCombo").val(); $("#GroupCombo").html("");
+                        for (var i = 0; i < dataArr.length; i++) {
+                              var sessDept = dataArr[i].DeptLabel;
+                              var qryGroup = dataArr[i].GroupLabel;
+                              let GroupList = [];
+                              if (qryGroup != "" && qryGroup != undefined) {
+                                    console.log("男子汉", qryGroup );
+                                    GroupList = qryGroup.split(',');
+                                  
+                                    for (var ki = 0; ki < GroupList.length; ki++) {
+                                          var youoption = document.createElement("option");
+                                          youoption.text = GroupList[ki];
+                                          youoption.id = "kisstime";
+                                          youoption.name = "kisstime";
+                                          youoption.value = GroupList[ki];
+                                          if (ki==0) {
+                                                youoption.selected = "selected";
+                                          }
+                                          $("#GroupCombo").append(youoption);
+                                          $("#GroupName").val(GroupList[0]);
+                                    }
+                              }
+                        }
+                        var sessRole = dataArr[0].StaffRole;
+                        var Mobiles = dataArr[0].Mobiles;
+                        var Group = dataArr[0].GroupLabel;
+                        var Orig = dataArr[0].OrigLabel;
+                        console.log("大丈夫", Orig, "小女子", sessRole );
+                  }
+                  $("#hideDeptName").val(sessDept);
+                  $("#hideFlowRole").val(sessRole);
+                  $("#hidePhone").val(Mobiles);
+                  $("#MicroOrig").val(Orig);
+                  $("#MicroGroup").val(Group); 
             },
             error: function () {
             }

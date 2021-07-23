@@ -85,6 +85,7 @@ module.exports = function (sender) {
               "ApplicNo": result[0][0].ApplicNo,
               "Version": result[0][0].Version,
               "BusiMan": result[0][0].BusiMan,
+              "CompMan": result[0][0].CompMan,
               "CompMan": result[0][0].CompMan ,
               "BusiArea": result[0][0].BusiArea,
               "RoomChoice": result[0][0].RoomChoice,
@@ -98,23 +99,37 @@ module.exports = function (sender) {
               "BackDate": (result[0][0].BackDate == null ? '' : result[0][0].BackDate),
               "BackHour": result[0][0].BackHour,
               "BackMin": result[0][0].BackMin,
-              "LiveDateA": (result[0][0].LiveDateA == null ? '' : result[0][0].LiveDateA),
-              "LiveDateB": (result[0][0].LiveDateB == null ? '' : result[0][0].LiveDateB),
-              "LiveDateC": (result[0][0].LiveDateC == null ? '' : result[0][0].LiveDateC),
-              "LiveDateD": (result[0][0].LiveDateD == null ? '' : result[0][0].LiveDateD),
-              "LiveDateE": (result[0][0].LiveDateE == null ? '' : result[0][0].LiveDateE),
-              "LiveDateF": (result[0][0].LiveDateF == null ? '' : result[0][0].LiveDateF),
-              "LiveExtA": ((result[0][0].LiveExtA != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtA + '天' : ''),
-              "LiveExtB": ((result[0][0].LiveExtB != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtB + '天' : ''),
-              "LiveExtC": ((result[0][0].LiveExtC != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtC + '天' : ''),
-              "LiveExtD": ((result[0][0].LiveExtD != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtD + '天' : ''),
-              "LiveExtE": ((result[0][0].LiveExtE != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtE + '天' : ''),
-              "LiveExtF": ((result[0][0].LiveExtF != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtF + '天' : ''),
+              "LiveDateA": (result[0][0].LiveDateA != undefined && result[0][0].LiveExtA != '' ?  result[0][0].LiveDateA : '' ),
+              "LiveDateB": (result[0][0].LiveDateB != undefined && result[0][0].LiveExtB != '' ?  result[0][0].LiveDateB : '' ),
+              "LiveDateC": (result[0][0].LiveDateC != undefined && result[0][0].LiveExtC != '' ?  result[0][0].LiveDateC : '' ),
+              "LiveDateD": (result[0][0].LiveDateD != undefined && result[0][0].LiveExtD != '' ?  result[0][0].LiveDateD : '' ),
+              "LiveDateE": (result[0][0].LiveDateE != undefined && result[0][0].LiveExtE != '' ?  result[0][0].LiveDateE : '' ),
+              "LiveDateF": (result[0][0].LiveDateF != undefined && result[0][0].LiveExtF != '' ?  result[0][0].LiveDateF : '' ),
+              "LiveExtA": ((result[0][0].LiveExtA != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtA : ''),
+              "LiveExtB": ((result[0][0].LiveExtB != undefined && result[0][0].LiveExtB != '')?  result[0][0].LiveExtB : ''),
+              "LiveExtC": ((result[0][0].LiveExtC != undefined && result[0][0].LiveExtC != '')?  result[0][0].LiveExtC : ''),
+              "LiveExtD": ((result[0][0].LiveExtD != undefined && result[0][0].LiveExtD != '')?  result[0][0].LiveExtD : ''),
+              "LiveExtE": ((result[0][0].LiveExtE != undefined && result[0][0].LiveExtE != '')?  result[0][0].LiveExtE : ''),
+              "LiveExtF": ((result[0][0].LiveExtF != undefined && result[0][0].LiveExtF != '')?  result[0][0].LiveExtF : ''),
+              "WordExtA": ((result[0][0].LiveExtA != undefined && result[0][0].LiveExtA != '')?  '住'+result[0][0].LiveExtA + '天' : ''),
+              "WordExtB": ((result[0][0].LiveExtB != undefined && result[0][0].LiveExtB != '')?  '住'+result[0][0].LiveExtB + '天' : ''),
+              "WordExtC": ((result[0][0].LiveExtC != undefined && result[0][0].LiveExtC != '')?  '住'+result[0][0].LiveExtC + '天' : ''),
+              "WordExtD": ((result[0][0].LiveExtD != undefined && result[0][0].LiveExtD != '')?  '住'+result[0][0].LiveExtD + '天' : ''),
+              "WordExtE": ((result[0][0].LiveExtE != undefined && result[0][0].LiveExtE != '')?  '住'+result[0][0].LiveExtE + '天' : ''),
+              "WordExtF": ((result[0][0].LiveExtF != undefined && result[0][0].LiveExtF != '')?  '住'+result[0][0].LiveExtF + '天' : ''),
+              // "LoadExtA": ((result[0][0].LiveExtA != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtA : ''),
+              // "LoadExtB": ((result[0][0].LiveExtB != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtB : ''),
+              // "LoadExtC": ((result[0][0].LiveExtC != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtC : ''),
+              // "LoadExtD": ((result[0][0].LiveExtD != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtD : ''),
+              // "LoadExtE": ((result[0][0].LiveExtE != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtE : ''),
+              // "LoadExtF": ((result[0][0].LiveExtF != undefined && result[0][0].LiveExtA != '')?  result[0][0].LiveExtF : ''),
               "Explanation": result[0][0].Explanation,
               "BackMin": result[0][0].BackMin,
               "Overspend": result[0][0].Overspend,
               "OverReason": result[0][0].OverReason,
-              "IsOver": result[0][0].IsOver,
+              "OverChoice": result[0][0].OverChoice,
+              "TotalValue": result[0][0].TotalValue,
+              "ExceedValue": ((result[0][0].ExceedValue != undefined && result[0][0].ExceedValue != '')?  result[0][0].ExceedValue  : ''),
               "HotelName": result[0][0].HotelName,
               "HotelTel": result[0][0].HotelTel,
               "EntryDate": (result[0][0].EntryDate == null ? '' : result[0][0].EntryDate),
@@ -180,12 +195,12 @@ module.exports = function (sender) {
             "CurLevel": CurLevel, "TermiLevel": TermiLevel,
             "CurName": CurName, "CurText": CurText,
           };
-          var dumpX = JSON.stringify(objX);
-          if (dumpX.length > 500) {
-            console.log("大凉:" + dumpX.substring(0, 500));
-          } else {
-            console.log("大凉:" + JSON.stringify(objX));
-          }
+          // var dumpX = JSON.stringify(objX);
+          // if (dumpX.length > 500) {
+          //   console.log("大凉:" + dumpX.substring(0, 500));
+          // } else {
+          //   console.log("大凉:" + JSON.stringify(objX));
+          // }
           dataARR.push(objX);
           sender.success(dataARR);
           // var dump = JSON.stringify(dataARR);
@@ -278,8 +293,8 @@ module.exports = function (sender) {
         " `StaffID`  ,  `StaffName`  ,  `LeaveDate`  , `LeaveHour`  ,  `LeaveMin`  ,  `BackDate`  ," +
         " `BackHour`  ,  `BackMin`  ,  `LiveDateA`  ,  `LiveDateB`  ,  `LiveDateC`  ,  `LiveDateD`  ," +
         " `LiveDateE`  ,  `LiveDateF` , `LiveExtA`  ,  `LiveExtB`  ,  `LiveExtC`  ,  `LiveExtD`  ," +
-        " `LiveExtE`  ,  `LiveExtF` ,  `Explanation`  ,  `Overspend` ,  `OverReason`  ,  `IsOver`  ,  `HotelName`  ," +
-        " `HotelTel`  ,  `EntryDate`  ,  `BillStatus`   " +
+        " `LiveExtE`  ,  `LiveExtF` ,  `Explanation`  ,  `Overspend` ,  `OverReason`  ,  `TotalValue`  ,`ExceedValue`  ," +
+        " `OverChoice`  ,  `HotelName`  , `HotelTel`  ,  `EntryDate`  ,  `BillStatus`   " +
         " from bgu_tripmain tba  " +
         " where tba.BillNo= ?   ";
       yjDBService.exec({
@@ -302,6 +317,8 @@ module.exports = function (sender) {
               "DeptName": data[i].DeptName,
               "StaffID": data[i].StaffID,
               "StaffName": data[i].StaffName,
+              "TotalValue": data[i].TotalValue,
+              "ExceedValue": data[i].ExceedValue,
               "LeaveDate": data[i].LeaveDate,
               "LeaveHour": data[i].LeaveHour,
               "LeaveMin": data[i].LeaveMin,
@@ -324,7 +341,7 @@ module.exports = function (sender) {
               "BackMin": data[i].BackMin,
               "Overspend": data[i].Overspend,
               "OverReason": data[i].OverReason,
-              "IsOver": data[i].IsOver,
+              "OverChoice": data[i].OverChoice,
               "HotelName": data[i].HotelName,
               "HotelTel": data[i].HotelTel,
               "EntryDate": data[i].EntryDate,

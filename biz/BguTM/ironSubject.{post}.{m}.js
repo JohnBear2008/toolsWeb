@@ -28,6 +28,10 @@ module.exports = function (sender) {
 		var loginName = sender.req.query.loginName;
 		LinkDept();
 	}
+	if (arrange == 'LinkHisDept') {
+		var loginName = sender.req.query.loginName;
+		LinkHisDept();
+	}
 	if (arrange == 'LinkUnit') {
 		var loginName = sender.req.query.loginName;
 		LinkUnit();
@@ -62,8 +66,43 @@ module.exports = function (sender) {
 			error: {},
 		});
 	}
+	function LinkHisDept() {
+		var SQLqry = " select tba.`OrigLabel` , tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`, tba.Mobiles  from  bgu_staffs tba " +
+		" where tba.StaffName = ?  and StaffLevel !='' ";
+		yjDBService.exec({
+			sql: SQLqry,
+			parameters: [loginName],
+			success: function (r) {
+				var datas = []
+				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				for (var i = 0; i < data.length; i++) {
+					var qryDept = data[i].DeptLabel;
+					var qryGroup = data[i].GroupLabel;
+					var qryOrig = data[i].OrigLabel;
+					qryOrig = (qryOrig!=undefined && qryOrig!=null) ? (qryOrig ) :'宁波大港';
+					
+					var temp = {
+						"OrigLabel": qryOrig,
+						"DeptLabel": qryDept,
+						"GroupLabel": qryGroup,
+						"StaffRole": data[i].StaffRole,
+						"Mobiles": data[i].Mobiles,
+					}
+					datas.push(temp)
+				}
+				// var dump = JSON.stringify(datas);
+				// if (dump.length > 1000) {
+				// 	console.log("心亿:" + dump.substring(0, 1000));
+				// } else {
+				// 	console.log("心亿:" + JSON.stringify(datas));
+				// }
+				sender.success(datas);
+			},
+			error: {},
+		});
+	}
 	function LinkDept() {
-		var SQLqry = " select tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`, tba.Mobiles  from  bgu_staffs tba " +
+		var SQLqry = " select tba.`OrigLabel` , tba.`DeptLabel` , tba.`GroupLabel`, tba.`StaffRole`, tba.Mobiles  from  bgu_staffs tba " +
 		" where tba.StaffName = ? and StaffLevel = '1' ";
 		yjDBService.exec({
 			sql: SQLqry,
@@ -74,7 +113,11 @@ module.exports = function (sender) {
 				for (var i = 0; i < data.length; i++) {
 					var qryDept = data[i].DeptLabel;
 					var qryGroup = data[i].GroupLabel;
+					var qryOrig = data[i].OrigLabel;
+					qryOrig = (qryOrig!=undefined && qryOrig!=null) ? (qryOrig ) :'宁波大港';
+					
 					var temp = {
+						"OrigLabel": qryOrig,
 						"DeptLabel": qryDept,
 						"GroupLabel": qryGroup,
 						"StaffRole": data[i].StaffRole,

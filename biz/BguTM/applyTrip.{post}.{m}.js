@@ -17,10 +17,11 @@ module.exports = function (sender) {
     var BILLDate = now.Format("yyyyMMddHHmm") + swift;
     var BillNo = BILLDate + "";
     var TESTstaffUser = 'wqy';
-    var flowDept = '';
-    var flowGroup = '';
+    var FlowDept = '';
+    var FlowGroup = '';
     var qryDept = '';
     var qryGroup = '';
+    var FlowOrig = '';
     var FlowRole = '';
     var flowphone ='';
     if (arrange == 'confirm') {
@@ -37,16 +38,17 @@ module.exports = function (sender) {
         var CompMan = Advstr.CompMan;
         var BusiArea = Advstr.BusiArea;
         qryDept = Advstr.DeptName;
+        FlowOrig = Advstr.OrigName;
         let DeptList = [];
         if (qryDept != "" && qryDept != undefined) {
             DeptList = qryDept.split(',');
-            flowDept = DeptList[0];
+            FlowDept = DeptList[0];
         }
         qryGroup = Advstr.GroupName;
         let GroupList = [];
         if (qryGroup != "" && qryGroup != undefined) {
             GroupList = qryGroup.split(',');
-            flowGroup = GroupList[0];
+            FlowGroup = GroupList[0];
         }
         var RoomChoice   = Advstr.RoomChoice ;
         var DinnerChoice = Advstr.DinnerChoice;
@@ -74,7 +76,7 @@ module.exports = function (sender) {
         var Explanation = Advstr.Explanation;
         var OverReason = Advstr.OverReason;
         var Overspend = Advstr.Overspend;
-        var IsOver = Advstr.IsOver;
+        var OverChoice = Advstr.OverChoice;
         var HotelName = Advstr.HotelName;
         var HotelTel = Advstr.HotelTel;
         var BillStatus = '1';
@@ -91,20 +93,26 @@ module.exports = function (sender) {
     } else {
 
     }
-    function validOrig() {
-        // if (FlowRole != '文员') {
-        //     var retcode = { "status": "Fail", "message": "送审不成功，送审人必须为文员", "BillNo": BillNo };
-        //     sender.success(retcode);
-        //     console.log("嬴政虎", retcode);
-        //     return ;
-        // }
-
+    function validOrig(){
+        // select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName
+        // ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName
+        // ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName 
+        // from  bgu_staffs tba  
+        // LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '工程部-系统开发部', '%')  and tdpt.staffLevel='2
+        // LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' 
+        // LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' 
+        // LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' 
+        // LEFT JOIN bgu_staffs tcfo on tcfo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tcfo.staffLevel='6' 
+        // LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' 
+        // LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' 
+        // LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' 
+        // where  tba.DeptLabel ='工程部' and tba.StaffLevel='1' and tba.StaffName='崔文娇'       
         let SQL3 =
             " select tba.StaffID as OppWorkId,tba.StaffName as OppName ,tdpt.Mobiles ,tdpt.StaffID as MagWorkId, tdpt.StaffName as MagName,tvip.StaffID as VipWorkId, tvip.StaffName as VipName" +
             " ,tpur.StaffID as PurWorkId, tpur.StaffName as PurName,tpex.StaffID as PexWorkId, tpex.StaffName as PexName,tcfo.StaffID as CfoWorkId, tcfo.StaffName as CfoName" +
             " ,tpsd.StaffID as PsdWorkId, tpsd.StaffName as PsdName,tceo.StaffID as CeoWorkId, tceo.StaffName as CeoName,tbod.StaffID as BodWorkId, tbod.StaffName as BodName " +
             " from  bgu_staffs tba  " +
-            " LEFT JOIN bgu_staffs tdpt on ? = tdpt.GroupLabel and tdpt.staffLevel='2' " +
+            " LEFT JOIN bgu_staffs tdpt on tdpt.GroupLabel like CONCAT('%', '" + FlowGroup + "', '%')  and tdpt.staffLevel='2' and tdpt.staffLevel='2' " +
             " LEFT JOIN bgu_staffs tvip on tvip.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tvip.staffLevel='3' " +
             " LEFT JOIN bgu_staffs tpur on tpur.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpur.staffLevel='4' " +
             " LEFT JOIN bgu_staffs tpex on tpex.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpex.staffLevel='5' " +
@@ -112,7 +120,7 @@ module.exports = function (sender) {
             " LEFT JOIN bgu_staffs tpsd on tpsd.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tpsd.staffLevel='7' " +
             " LEFT JOIN bgu_staffs tceo on tceo.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tceo.staffLevel='8' " +
             " LEFT JOIN bgu_staffs tbod on tbod.DeptLabel like CONCAT('%', tba.DeptLabel, '%') and tbod.staffLevel='9' " +
-            " where  tba.DeptLabel =? and tba.StaffLevel='1'   and tba.StaffName=? ";
+            " where  tba.DeptLabel =? and tba.StaffLevel='1' and tba.StaffName=? ";
         var OppWorkId = StaffID;
         var OppName = StaffName;
         var MagName = '';
@@ -124,13 +132,15 @@ module.exports = function (sender) {
         var CeoName = '';
         var BodName = '';
         var Flag = '1';
+        console.log("李白虎",  FlowDept ,OppName);
         yjDBService.exec({
             sql: SQL3,
-            parameters: [flowGroup, flowDept ,OppName],
+            parameters: [ FlowDept ,OppName],
             rowsAsArray: true,
             success: function (r) {
                 var datas = [];
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+                // console.log("孙膑", JSON.stringify(data));
                 for (var i = 0; i < data.length; i++) {
                     flowphone = data[i].Mobiles;
                     MagName = data[i].MagName;
@@ -349,7 +359,7 @@ module.exports = function (sender) {
             var BodName = '';
             yjDBService.exec({
                 sql: SQL3,
-                parameters: [flowGroup, flowDept],
+                parameters: [FlowGroup, FlowDept],
                 rowsAsArray: true,
                 success: function (r) {
                     var datas = [];
@@ -440,12 +450,12 @@ module.exports = function (sender) {
         var CurText = '审批';
         var SendStatus = 'K';
         var SendText = '保存';
-        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,   `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
+        let SQLInsert = "INSERT INTO `bgu_rule` ( `BillNo`,  `EntryDate` ,  `OrigLabel` , `GroupLabel`,  `DeptLabel`, `StaffID`, `StaffName`,  " +
             " `CurStatus`, `CurText`,  `SendStatus`, `SendText`, `CurLevel`,  `TermiLevel`, `CurWorkId`, `CurName`, `CurJob` ," +
             " `Track`, `OppWorkId`, `OppName`, `oppDate`,  `MagWorkId`, `MagName`,  `MagDate` , `VipWorkId`, `VipName`,  `VipDate` ,  " +
             " `PurWorkId`, `PurName`,   `PexWorkId`, `PexName`,   `CfoWorkId`, `CfoName`,  `PsdWorkId`, `PsdName`,  " +
             " `CeoWorkId`, `CeoName`,  `BodWorkId`, `BodName` )" +
-            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + flowGroup + "', '" + flowDept + "','" + StaffID + "', '" + StaffName + "',  " +
+            " Values (  '" + BillNo + "',  '" + EntryDate + "' ,  '" + FlowOrig + "', '" + FlowGroup + "', '" + FlowDept + "','" + StaffID + "', '" + StaffName + "',  " +
             " '" + CurStatus + "', '" + CurText + "', '" + SendStatus + "', '" + SendText + "', '" + CurLevel + "', " +
             " '" + TermiLevel + "', '" + CurWorkId + "', '" + CurName + "', '" + CurJob + "', '" + Track + "' , " +
             " '" + OppWorkId + "' , '" + OppName + "' , '" + EntryDate + "' ,  '" + MagWorkId + "', '" + MagName + "', " + MagDate + " , " +
@@ -562,11 +572,11 @@ module.exports = function (sender) {
         var Formkind = '出差单';
         let paramList = [BillNo, ApplicNo, Formkind, Subject, Version, 
             BusiMan, CompMan ,  BusiArea , RoomChoice , DinnerChoice ,
-            flowDept, StaffID, StaffName, LeaveDate, LeaveHour,
+            FlowDept, StaffID, StaffName, LeaveDate, LeaveHour,
             LeaveMin, BackDate, BackHour, BackMin, LiveDateA,
             LiveDateB, LiveDateC, LiveDateD,  LiveDateE, LiveDateF, 
             LiveExtA, LiveExtB, LiveExtC, LiveExtD,  LiveExtE,
-            LiveExtF, Explanation, Overspend ,  OverReason, IsOver, 
+            LiveExtF, Explanation, Overspend ,  OverReason, OverChoice, 
             TotalValue , HotelName, HotelTel, EntryDate, BillStatus ];
         // console.log('差旅申请', paramList);
         var SQLInsert = "INSERT INTO `bgu_tripmain` ( `BillNo`  ,  `ApplicNo`  ,  `Formkind` ,  `Subject`  ,  `Version`  , " + 
@@ -575,7 +585,7 @@ module.exports = function (sender) {
             " `LeaveMin`  ,  `BackDate`  ,   `BackHour`  , `BackMin` ,  `LiveDateA`  , " +
             " `LiveDateB`  ,  `LiveDateC`  ,  `LiveDateD`  ,   `LiveDateE` , `LiveDateF`, " +
             " `LiveExtA`  ,  `LiveExtB`  ,  `LiveExtC`  , `LiveExtD` ,   `LiveExtE`  ," +
-            " `LiveExtF`  ,  `Explanation`  ,  `Overspend`  , `OverReason`  , `IsOver`  , " +
+            " `LiveExtF`  ,  `Explanation`  ,  `Overspend`  , `OverReason`  , `OverChoice`  , " +
             " `TotalValue` ,  `HotelName`  ,  `HotelTel`  , `EntryDate`  , `BillStatus` )" +
             " VALUES (?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,? )";
         yjDBService.exec({
@@ -644,8 +654,8 @@ module.exports = function (sender) {
             success: function (r) {
                 var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
                 for (var i = 0; i < data.length; i++) {
-                    flowDept = data[i].DeptName;
-                    flowGroup = data[i].GroupName;
+                    FlowDept = data[i].DeptName;
+                    FlowGroup = data[i].GroupName;
                 }
                 clearMain();
             },

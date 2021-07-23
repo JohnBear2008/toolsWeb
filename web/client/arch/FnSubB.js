@@ -19,7 +19,7 @@ function shuffleB(  BillNo ) {
             console.log("也从愚昧中苏醒", Answer);
             $('#listPrintViewDiv').html('');
             htmlModel = '' +
-        '<div id=\'waterAy\' style="left:200px;top:0px;width:950px;height:1050px;">' +
+        '<div id=\'waterAy\' style="left:200px;top:0px;width:950px;height:1080px;">' +
         '<table width="1000" border="3" border = "1" > ' +
         '  <tr> ' +
         '    <td width="50" colspan="8"  height="30" align="center"  > ' +
@@ -277,8 +277,9 @@ function shuffleB(  BillNo ) {
         '  </tr> ' +
             '  <tr> ' +
             '    <td width="50" height="30" >是否有超支 </td> ' +
-            '    <td width="50" height="30" colspan="1">IsOver </td> ' +
-            '    <td width="50" height="30" colspan="3">说明 OverReason </td> ' +
+            '    <td width="50" height="30" colspan="1">OverChoice </td> ' +
+            '    <td width="50" height="30" colspan="2">说明 OverReason </td> ' +
+            '    <td width="50" height="30" colspan="1">追加后 ExceedValue </td> ' +
             '    <td width="50" height="30" colspan="4">超支 Overspend </td> ' +
             '  </tr> ' +
             '  <tr> ' +
@@ -360,17 +361,19 @@ function shuffleB(  BillNo ) {
                     "LiveDateD": bjob[i].LiveDateD,
                     "LiveDateE": bjob[i].LiveDateE,
                     "LiveDateF": bjob[i].LiveDateF,
-                    "LiveExtA": bjob[i].LiveExtA,
-                    "LiveExtB": bjob[i].LiveExtB,
-                    "LiveExtC": bjob[i].LiveExtC,
-                    "LiveExtD": bjob[i].LiveExtD,
-                    "LiveExtE": bjob[i].LiveExtE,
-                    "LiveExtF": bjob[i].LiveExtF,
+                    "LiveExtA": bjob[i].WordExtA,
+                    "LiveExtB": bjob[i].WordExtB,
+                    "LiveExtC": bjob[i].WordExtC,
+                    "LiveExtD": bjob[i].WordExtD,
+                    "LiveExtE": bjob[i].WordExtE,
+                    "LiveExtF": bjob[i].WordExtF,
                     "Explanation": bjob[i].Explanation,
                     "BackMin": bjob[i].BackMin,
                     "Overspend": bjob[i].Overspend,
                     "OverReason": bjob[i].OverReason,
-                    "IsOver": bjob[i].IsOver,
+                    "TotalValue": bjob[i].TotalValue,
+                    "ExceedValue": bjob[i].ExceedValue,
+                    "OverChoice": bjob[i].OverChoice,
                     "HotelName": bjob[i].HotelName,
                     "HotelTel": bjob[i].HotelTel,
                     "EntryDate": bjob[i].EntryDate,
@@ -425,8 +428,8 @@ function shuffleB(  BillNo ) {
                 StaffID   ,   StaffName   ,   LeaveDate   ,  LeaveHour   ,   LeaveMin   ,   BackDate   ,
                 BackHour   ,   BackMin   ,   LiveDateA   ,   LiveDateB   ,   LiveDateC   ,   LiveDateD   ,
                 LiveDateE   ,   LiveDateF   , LiveExtA   ,   LiveExtB   ,   LiveExtC   ,   LiveExtD   ,
-                LiveExtE   ,   LiveExtF  ,  Explanation   ,   Overspend   , OverReason   ,  IsOver   ,   HotelName   ,
-                HotelTel   ,   EntryDate   ,   BillStatus   ,
+                LiveExtE   ,   LiveExtF  ,  Explanation   ,   Overspend   , OverReason   ,  OverChoice   ,
+                ExceedValue ,   HotelName   , HotelTel   ,   EntryDate   ,   BillStatus   ,
 
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
                 OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
@@ -720,7 +723,8 @@ function shuffleB(  BillNo ) {
                 .replace(/Explanation/, Explanation)  
                 .replace(/Overspend/, Overspend)  
                 .replace(/OverReason/, OverReason)  
-                .replace(/IsOver/, IsOver)  
+                .replace(/OverChoice/, OverChoice)  
+                .replace(/ExceedValue/, ExceedValue)  
                 .replace(/HotelName/, HotelName)  
                 .replace(/HotelTel/, HotelTel)  
                 .replace(/EntryDate/, EntryDate)  
@@ -943,7 +947,8 @@ function shuffleB(  BillNo ) {
                             Explanation:   sData[20].Explanation,  
                             Overspend:   sData[20].Overspend,  
                             OverReason:   sData[20].OverReason,  
-                            IsOver:   sData[20].IsOver,  
+                            OverChoice:   sData[20].OverChoice,  
+                            ExceedValue:   sData[20].ExceedValue,  
                             HotelName:   sData[20].HotelName,  
                             HotelTel:   sData[20].HotelTel,  
                             EntryDate:   sData[20].EntryDate,  
@@ -1287,9 +1292,10 @@ function VegasB(  BillNo ) {
         '  </tr> ' +
             '  <tr> ' +
             '    <td width="50" height="60" >是否有超支 </td> ' +
-            '    <td width="50" height="60" >IsOver </td> ' +
-            '    <td width="50" height="60" colspan="3">说明 OverReason </td> ' +
-            '    <td width="50" height="60" colspan="4"> 超支 Overspend </td> ' +
+            '    <td width="50" height="60" >OverChoice </td> ' +
+            '    <td width="50" height="60" colspan="1">说明 OverReason </td> ' +
+            '    <td width="50" height="60" colspan="2">追加后 ExceedValue </td> ' +
+            '    <td width="50" height="60" colspan="4">超支 Overspend </td> ' +
             '  </tr> ' +
             '  <tr> ' +
             '    <td width="50" height="30" >申请人 </td> ' +
@@ -1312,10 +1318,11 @@ function VegasB(  BillNo ) {
             '    <td  width="50"  colspan="9" height="25">Reason</td>' +
             '  </tr>' +
             '</table> ' +
-            // '</br>' +
+            '</br>' +
             // '<button id="PrintConfirm" style="margin-left:400px" type="button" class="btn btn-info"  onclick="printpage()">打印</button>' +
             // '<button id="PrintClose" type="button" class="btn btn-primary" data-dismiss="modal">关闭</button> ' + 
-            '</DIV>';
+            '</DIV>'+
+            '</br>';
                 var watermark = "";
                 if (CurText == '核准') {
                     watermark = "/images/BudgetYes.png";
@@ -1358,6 +1365,8 @@ function VegasB(  BillNo ) {
                     "DeptName": bjob[i].DeptName,
                     "StaffID": bjob[i].StaffID,
                     "StaffName": bjob[i].StaffName,
+                    "TotalValue": bjob[i].TotalValue,
+                    "ExceedValue": bjob[i].ExceedValue,
                     "LeaveDate": bjob[i].LeaveDate,
                     "LeaveHour": bjob[i].LeaveHour,
                     "LeaveMin": bjob[i].LeaveMin,
@@ -1370,17 +1379,17 @@ function VegasB(  BillNo ) {
                     "LiveDateD": bjob[i].LiveDateD,
                     "LiveDateE": bjob[i].LiveDateE,
                     "LiveDateF": bjob[i].LiveDateF,
-                    "LiveExtA": bjob[i].LiveExtA,
-                    "LiveExtB": bjob[i].LiveExtB,
-                    "LiveExtC": bjob[i].LiveExtC,
-                    "LiveExtD": bjob[i].LiveExtD,
-                    "LiveExtE": bjob[i].LiveExtE,
-                    "LiveExtF": bjob[i].LiveExtF,
+                    "LiveExtA": bjob[i].WordExtA,
+                    "LiveExtB": bjob[i].WordExtB,
+                    "LiveExtC": bjob[i].WordExtC,
+                    "LiveExtD": bjob[i].WordExtD,
+                    "LiveExtE": bjob[i].WordExtE,
+                    "LiveExtF": bjob[i].WordExtF,
                     "Explanation": bjob[i].Explanation,
                     "BackMin": bjob[i].BackMin,
                     "Overspend": bjob[i].Overspend,
                     "OverReason": bjob[i].OverReason,
-                    "IsOver": bjob[i].IsOver,
+                    "OverChoice": bjob[i].OverChoice,
                     "HotelName": bjob[i].HotelName,
                     "HotelTel": bjob[i].HotelTel,
                     "EntryDate": bjob[i].EntryDate,
@@ -1435,8 +1444,8 @@ function VegasB(  BillNo ) {
                 StaffID   ,   StaffName   ,   LeaveDate   ,  LeaveHour   ,   LeaveMin   ,   BackDate   ,
                 BackHour   ,   BackMin   ,   LiveDateA   ,   LiveDateB   ,   LiveDateC   ,   LiveDateD   ,
                 LiveDateE   ,   LiveDateF   , LiveExtA   ,   LiveExtB   ,   LiveExtC   ,   LiveExtD   ,
-                LiveExtE   ,   LiveExtF   ,  Explanation   ,   Overspend  , OverReason ,   IsOver   ,   HotelName   ,
-                HotelTel   ,   EntryDate   ,   BillStatus   ,
+                LiveExtE   ,   LiveExtF   ,  Explanation   ,   Overspend  , OverReason ,   OverChoice   , ExceedValue ,  HotelName   ,
+                HotelTel   ,   EntryDate   ,   BillStatus   , 
 
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
                 OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
@@ -1730,7 +1739,8 @@ function VegasB(  BillNo ) {
                 .replace(/Explanation/, Explanation)  
                 .replace(/Overspend/, Overspend)  
                 .replace(/OverReason/, OverReason)  
-                .replace(/IsOver/, IsOver)  
+                .replace(/OverChoice/, OverChoice)  
+                .replace(/ExceedValue/, ExceedValue)
                 .replace(/HotelName/, HotelName)  
                 .replace(/HotelTel/, HotelTel)  
                 .replace(/EntryDate/, EntryDate)  
@@ -1953,7 +1963,8 @@ function VegasB(  BillNo ) {
                             Explanation:   sData[20].Explanation,  
                             Overspend:   sData[20].Overspend,  
                             OverReason:   sData[20].OverReason,  
-                            IsOver:   sData[20].IsOver,  
+                            OverChoice:   sData[20].OverChoice,  
+                            ExceedValue:   sData[20].ExceedValue,  
                             HotelName:   sData[20].HotelName,  
                             HotelTel:   sData[20].HotelTel,  
                             EntryDate:   sData[20].EntryDate,  

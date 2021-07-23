@@ -336,6 +336,7 @@ function view_hmi(obj) {
 }
 function apply_hmi() {
       var DeptName = $('#hideDeptName').val();
+      var OrigName = $('#hideOrig').val();
       var UnitName = $('#hideUnit').val();
       var GroupName = $('#GroupName').val();
       var FlowRole = $('#hideFlowRole').val();
@@ -368,9 +369,8 @@ function apply_hmi() {
             var hidePhone = $('#hidePhone').val();
             var Basstr = {
                   "SendStatus": SendStatus, "hideBillNo": hideBillNo, "hidePhone": hidePhone, "edituse": edituse, "DeptName": DeptName,
-                  "UnitName": UnitName, "GroupName": GroupName, "StaffName": StaffName, "ItemNo": ItemNo, "FlowRole": FlowRole
+                  "UnitName": UnitName, "OrigName": OrigName, "GroupName": GroupName, "StaffName": StaffName, "ItemNo": ItemNo, "FlowRole": FlowRole
             };
-            console.log("多么痛彻的领悟", Basstr);
             var reportType = 'applyBudget';
             var arrange = 'confirm';
             var taskData = {
@@ -415,6 +415,7 @@ function save_hmi() {
       var RequestDate = $('#RequestDate').val();
       var ProjectNo = $('#ProjectNo').val();
       var ApplicNo = $('#ApplicNo').val();
+      var OrigName = $('#hideOrig').val();
       var DeptName = $('#hideDeptName').val();
       var UnitName = $('#hideUnit').val();
       var GroupName = $('#GroupName').val();
@@ -428,7 +429,7 @@ function save_hmi() {
       var Explanation = $('#Explanation').val();
       var Advstr = {
             "SendStatus": SendStatus, "ListNo": ListNo, "RequestDate": RequestDate, "ProjectNo": ProjectNo, "ApplicNo": ApplicNo,
-            "DeptName": DeptName, "UnitName": UnitName, "GroupName": GroupName, "StaffID": StaffID, "StaffName": StaffName,
+            "OrigName": OrigName, "DeptName": DeptName, "UnitName": UnitName, "GroupName": GroupName, "StaffID": StaffID, "StaffName": StaffName,
             "FlowRole": FlowRole,  "FlowBuy": FlowBuy, "TotalValue": TotalValue, "Currency": Currency,
             "Payment": Payment, "Explanation": Explanation, "hideBillNo": hideBillNo
       };

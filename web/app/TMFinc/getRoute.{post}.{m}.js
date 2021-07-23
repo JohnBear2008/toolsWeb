@@ -29,6 +29,9 @@ module.exports = function (sender) {
             case "OrderV":
                   url = ["FincTM", "OrderV"];
                   break;
+            case "RemindSale":
+                  url = ["Lab", "RemindSale"];
+                  break;
             case "ironSubject":
                   url = ["BguTM", "ironSubject"];
                   break;
@@ -56,8 +59,14 @@ module.exports = function (sender) {
             case "FeeHead":
                   url = ["BguTM", "FeeHead"];
                   break;
+            case "FeeHeadLab":
+                  url = ["Lab", "FeeHeadLab"];
+                  break;
             case "FeeHisVisit":
                   url = ["BguTM", "FeeHisVisit"];
+                  break;
+            case "FeeHisVisitLab":
+                  url = ["Lab", "FeeHisVisitLab"];
                   break;
             case "EmployLook":
                   url = ["BguTM", "EmployLook"];
@@ -68,8 +77,11 @@ module.exports = function (sender) {
             case "createOrig":
                   url = ["BguTM", "createOrig"];
                   break;
-            case "CreateClaim":
-                  url = ["BguTM", "CreateClaim"];
+            case "ClaimCreate":
+                  url = ["BguTM", "ClaimCreate"];
+                  break;
+            case "ClaimTrip":
+                  url = ["BguTM", "ClaimTrip"];
                   break;
             case "HandleOrig":
                   url = ["BguTM", "HandleOrig"];

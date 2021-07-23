@@ -51,6 +51,12 @@ module.exports = function (sender) {
 	var LionKing = '';
 	var sendCnt = '';
 	var flag = '0';
+	var Claimflag = 'N';  // N: 扣预算  Y：不扣预算（因为是追加审批）
+	var qryClaim = sender.req.query.Claimflag;
+	if(qryClaim !=undefined && qryClaim !=null && qryClaim !=''   ){
+		Claimflag = qryClaim ;
+	}
+	console.log("  Y不扣预算 ", Claimflag); 
 	QueryParts();
 	function QueryParts() {
 		var filter = " 1=1 ";
@@ -73,7 +79,7 @@ module.exports = function (sender) {
 				for (var i = 0; i < data.length; i++) {
 					Track = data[i].Track;
 					var TrackUU = JSON.parse(Track);
-					// console.log("别问我谁  ", Track);   
+				
 					FlowDeptName = data[i].DeptLabel;
 					FlowGroupName = data[i].GroupLabel;
 					CurLevel = data[i].CurLevel;
@@ -94,7 +100,8 @@ module.exports = function (sender) {
 					var PsdName = data[i].PsdName;
 					var CeoName = data[i].CeoName;
 					var BodName = data[i].BodName;
-					console.log("你血管里流淌着的", OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName);
+					console.log("你血管", OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName);
+					console.log("淌着的", CurLevel, TermiLevel);
 					if (CurLevel == TermiLevel) {
 						AppFlag = 1;
 					}
@@ -106,8 +113,8 @@ module.exports = function (sender) {
 						repeatName += MagName;
 					}
 					if (nextLevel == 3) {
-						nowtjob = TrackUU[0].Level2;  //dpt
-						nextjob = TrackUU[0].Level3;  //vip
+						nowtjob = TrackUU[0].Level2; 
+						nextjob = TrackUU[0].Level3; 
 						console.log("---------------推3推推  ", nextjob);
 						repeatName += OppName; repeatName += MagName; repeatName += VipName;
 					}
@@ -225,21 +232,29 @@ module.exports = function (sender) {
 				if (AppFlag == 1) {
 					CurStatus = 'Q';
 					CurText = '核准';
-					console.log("生米煮熟  ", AppFlag);
+					console.log("生米煮熟  ", AppFlag, "举头望 ",CurJob);
 					if (Formkind == '采购单') {
 						if (CurJob == 'ceo') {
 							HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 						} else {
-							qryPurch(BillNo);
+							if(Claimflag == 'N'){
+								console.log("西鳯酒  ", Claimflag );
+								qryPurch(BillNo);
+							}else{
+							}
 							HandleRule("0", "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, IsOver);
 						}
 					} else {
+						nowtjob = 'vip'; 
+						nextjob = 'vip'; 
 						HandleRule(Twins, "1", BillNo, CurStatus, CurText, nextLevel, nextWorkId, nextName, nextjob, fixdate, fixlv, tundate, tunlv, "N");
 					}
-					      AppendRule(  BillNo );
+					      AppendRule(  BillNo  , Formkind);
 				} else {
 					if(qryCurName == '超级用户'){
-					     qryPurch(BillNo);
+						if(Claimflag=='N'){
+							qryPurch(BillNo);
+						}
 					     console.log(" 熊1 熊2 熊3 "); 
 					     SuperRule(  BillNo , CurWorkId , TermiLevel ,OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName );
 					}else{
@@ -286,7 +301,6 @@ module.exports = function (sender) {
 					}
 					Digit.push(objT);
 				}
-				// console.log("没有永远的朋友", Digit);
 				var Dragon = 0;
 				for (var i = 0; i < data.length; i++) {
 					Underburget = data[i].Underburget;
@@ -657,8 +671,13 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function AppendRule( BillNo) {
-		let SQL = "Update `bgu_purchmain` set  IsOver = 'N'  where  BillNo= '"+BillNo+"'  ";
+	function AppendRule( BillNo , Formkind) {
+		let SQL = "";
+		if(Formkind == "采购单"){
+			SQL = "Update `bgu_purchmain` set  IsOver = 'N'  where  BillNo= '"+BillNo+"'  ";
+		}else{
+			SQL = "Update `bgu_tripmain` set  IsOver = 'N'  where  BillNo= '"+BillNo+"'  ";
+		}
 		yjDBService.exec({
 			sql: SQL,
 			parameters: [ ],

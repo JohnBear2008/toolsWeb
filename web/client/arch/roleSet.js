@@ -102,6 +102,22 @@ function PersonLevel() {
 		$("#LevelValue").append(youoption);
 	  
 }
+function Organization() {
+	$("#OrigValue").val(); $("#OrigValue").html(""); 
+	var youoption = document.createElement("option");
+	youoption.text = '宁波大港';
+	youoption.id = "OrigLevel";
+	youoption.name = "OrigLevel";
+	youoption.value = '宁波大港';
+	$("#OrigValue").append(youoption);
+	var youoption = document.createElement("option");
+	youoption.text = '华南中心';
+	youoption.id = "OrigLevel";
+	youoption.name = "OrigLevel";
+	youoption.value = '华南中心';
+	$("#OrigValue").append(youoption);
+ 
+}
 function OrigList() {
       let dataArr = [];
       var reportType = 'ironSubject';

@@ -75,6 +75,7 @@ function sleepFile(mode) {
                     , { field: 'Payment', title: '付款', width: 70 , hide: true }
                     , { field: 'ApplicNo', title: '申请单号', width: 90 }
                     , { field: 'CurJob', title: '职位', width: 0, hide: true }
+                    , { field: 'IsOver', title: '追加', width: 0  }
                     , { field: 'CurPhone', title: '釘釘', width: 0, hide: true }
                 ]]
                 , page: true
@@ -85,11 +86,13 @@ function sleepFile(mode) {
                 switch (obj.event) {
                     case 'viewSumary':
                         var dataARR = (checkStatus.data);
-                        console.log("这是上面", (dataARR[0].CurPhone));
                         CapBillNo = dataARR[0].BillNo;
+                        CapFormkind = dataARR[0].Formkind;
+                        console.log("这是上面", CapFormkind );
                         CapSubject = dataARR[0].Subject;
                         CapCurJob = dataARR[0].CurJob;
                         CapPhone = dataARR[0].CurPhone;
+                        CapClaim = dataARR[0].IsOver;
                         CapItemNo = dataARR[0].ItemNo;
                         var BudgetItem = dataARR[0].BudgetItem;
                         var VipName = dataARR[0].VipName;
@@ -123,7 +126,9 @@ function sleepFile(mode) {
                 CapItemNo = data.ItemNo;
                 CapCurJob = data.CurJob;
                 CapPhone = data.CurPhone;
-                console.log("都市闲情", (CapItemNo));
+                CapClaim = data.IsOver;
+                CapFormkind = data.Formkind;
+                console.log("都市闲情", (CapFormkind));
                 if (obj.event === 'analysis') {
                     VegasA(Parts_BillNo , BudgetItem , DeptName, UnitName, VipName   );
                     CapBillNo = Parts_BillNo;
@@ -143,9 +148,9 @@ function sleepFile(mode) {
                         layer.msg('操作成功', { icon: 1 });
                         var reportType = 'agreeFee';
                         var taskData = {
-                            "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": Formkind, "Subject": CapSubject,
+                            "reportType": reportType, "BillNo": Parts_BillNo, "Formkind": CapFormkind, "Subject": CapSubject,
                             "ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionOID, "CurName": sessionName,
-                            "CurJob": CapCurJob, "CurPhone": CapPhone,
+                            "CurJob": CapCurJob, "CurPhone": CapPhone, "Claimflag": CapClaim,
                           }
                         layer.alert("同意此笔审批号" + Parts_BillNo);
                         console.log("下立",taskData);
@@ -179,7 +184,7 @@ function sleepFile(mode) {
                         var arrange = 'ReturnBill';
                         var reportType = 'rejectFee';
                         var taskData = {
-                            "reportType": reportType,  "arrange": arrange, "BillNo": Parts_BillNo, "Subject": CapSubject, "TotalValue": CapTotalValue, 
+                            "reportType": reportType,  "arrange": arrange, "BillNo": Parts_BillNo, "Formkind": CapFormkind, "Subject": CapSubject, "TotalValue": CapTotalValue, 
                             "CurWorkId": sessionOID, "CurName": sessionName ,"CurJob": CapCurJob,
                             "CurPhone": CapPhone
                         }

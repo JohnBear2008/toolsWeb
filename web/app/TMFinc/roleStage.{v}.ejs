@@ -70,6 +70,10 @@
     <div class="layui-inline">
       <select id="LevelValue" class="form-control" type="text" value=""></select>
     </div>
+    <label style="margin-left:50px">组织:</label>
+    <div class="layui-inline">
+      <select id="OrigValue" class="form-control" type="text" value=""></select>
+    </div>
     <input type="button" id="BTNDeliv" class="layui-btn layui-btn-normal layui-btn-large" style="margin-left:60px"
       value="人员查看" />
     <br />
@@ -94,6 +98,12 @@
       value="部門设定" />
     <input type="button" id="SetGrpBtn" class="layui-btn btn-warning layui-btn-large" style="margin-left:180px"
       value="课组设定" />
+    <br />
+    <br />
+    <label style="margin-left:30px">新组织:</label>
+    <div class="layui-inline">
+      <input class="CssLargeField" id="LostLabel" value="" >
+    </div>
     <br />
     <br />
     <label style="margin-left:30px">新部門:</label>
@@ -146,6 +156,7 @@
         });
         PersonNJob();
         PersonLevel();
+        Organization();
         magnLab2();
       });
       $('#btn_apply_A').click(function () {
@@ -159,9 +170,9 @@
         var LevelValue = $('#LevelValue').val();
         var Leveloption = $("#LevelValue option:selected");
         var Levelindex = Leveloption.val();
-        var LevelText = Leveloption.text();
+        var LevelText = Leveloption.text();     
         var Advstr = {
-          "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue
+          "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue  
         };
         var reportType = 'EmployJob';
         var Arrange = 'JobReach';
@@ -191,9 +202,10 @@
                  GropList = Groupselt.split(',');
                  $("#GroupValue").val(GropList); 
               }
-              console.log("李信", result[0].DeptLabel , "达摩", result[0].GroupLabel);
+              console.log("李信", result[0].OrigLabel , "达摩", result[0].GroupLabel);
               $('#PowerLabel').val(result[0].DeptLabel);
               $('#RingLabel').val(result[0].GroupLabel);
+              $('#LostLabel').val(result[0].OrigLabel);
               layer.msg('取回成功！' + result[0].GroupLabel + result[0].DeptLabel, { icon: 1 });
             }else{
               $('#PowerLabel').val('');
@@ -204,37 +216,6 @@
           }
         })
       });
-      // $('#CurrentBtn').click(function () {
-      //   var EmpValue = $('#EmpValue').val();
-      //   var LevelValue = $('#LevelValue').val();
-      //   var Leveloption = $("#LevelValue option:selected");
-      //   var Levelindex = Leveloption.val();
-      //   var LevelText = Leveloption.text();
-      //   var Advstr = {
-      //     "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue
-      //   };
-      //   var reportType = 'EmployJob';
-      //   var Arrange = 'JobReach';
-      //   var taskData = {
-      //     "reportType": reportType, "Arrange": Arrange, "Advstr": Advstr
-      //   }
-      //   if (lockOP == '0') {
-      //     layer.msg('请选择角色', { icon: 1 });
-      //     return;
-      //   }
-      //   $.ajax({
-      //     method: 'post',
-      //     data: taskData,
-      //     url: "/app/TMFinc/getRoute",
-      //     success: function (result) {
-      //       $('#PowerLabel').val(result[0].DeptLabel);
-      //       $('#RingLabel').val(result[0].GroupLabel);
-      //       layer.msg('取回成功！' + result[0].GroupLabel + result[0].DeptLabel, { icon: 1 });
-      //     },
-      //     error: function () {
-      //     }
-      //   })
-      // });
       $('#ConfirmBtn').click(function () {
         lockOP = $('#LevelValue').val();
         var EmpValue = $('#EmpValue').val();
@@ -242,10 +223,10 @@
         var Leveloption = $("#LevelValue option:selected");
         var Levelindex = Leveloption.val();
         var LevelText = Leveloption.text();
+        var LostLabel = $('#LostLabel').val();
         var PowerLabel = $('#PowerLabel').val();
         var RingLabel = $('#RingLabel').val();
         // if (PowerLabel != '' && PowerLabel != null && PowerLabel != undefined) {
-
         // } else {
         //   layer.msg('请设定部門', { icon: 1 });
         //   return;
@@ -265,8 +246,9 @@
 
         }
         var Advstr = {
-          "EmpValue": EmpValue, "StaffLevel": LevelValue, "StaffRole": LevelText, "PowerLabel": PowerLabel,
-          "RingLabel": RingLabel, "Pattern": Pattern, "LastModify": sessionName,
+          "EmpValue": EmpValue, "StaffLevel": LevelValue, "LevelLebel": LevelValue,  "OrigLabel": LostLabel, 
+          "StaffRole": LevelText, "PowerLabel": PowerLabel, "RingLabel": RingLabel, "Pattern": Pattern, 
+          "LastModify": sessionName,
         };
         console.log("曹操", Advstr);
         layer.confirm('此数据内容操作后无法还原,请确认操作是否无误！', {
@@ -298,10 +280,15 @@
         var Leveloption = $("#LevelValue option:selected");
         var Levelindex = Leveloption.val();
         var LevelText = Leveloption.text();
+        var OrigValue = $('#OrigValue').val();
+        var Origoption = $("#OrigValue option:selected");
+        var Origindex = Origoption.val();
+        var OrigText = Origoption.text();
         var EmpValue = $('#EmpValue').val();
         Pattern = '';
         var Advstr = {
-          "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue
+          "EmpValue": EmpValue, "Pattern": Pattern, "StaffLevel": LevelValue, "LevelLebel": LevelValue,
+          "OrigLebel": OrigValue,
         };
         console.log("曹丕", Advstr);
         layer.confirm('此数据内容操作后无法还原,请确认操作是否无误！', {
@@ -378,6 +365,10 @@
         } else {
 		      $("#PowerLabel").val("");
         }
+      });
+      $('#OrigValue').click(function () {
+        var lockOrig = $('#OrigValue').val();
+        $("#LostLabel").val(lockOrig);
       });
       function showDBDataSelf() {
         var DataPara = {

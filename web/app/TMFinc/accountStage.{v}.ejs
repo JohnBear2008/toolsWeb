@@ -59,6 +59,7 @@
               <th>用户ID</th>
               <th>用户名</th>
               <th>电话</th>
+              <th>地区</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -117,7 +118,16 @@
                       <input class="form-control" id="bgu_staffsForm-Mobiles" type="text" value="">
                     </div>
                   </div>
-
+                  <div class="form-group">
+                    <label class="col-sm-1 control-label">地区</label>
+                    <div class="col-sm-5">
+                      <!-- <input class="form-control" id="bgu_staffsForm-OrigLabel" type="text" value=""> -->
+                      <select id="bgu_staffsForm-OrigLabel" name="bgu_staffsForm-OrigLabel" class="can-find-M140">
+                        <option value="宁波大港">宁波大港</option>
+                        <option value="华南中心">华南中心</option>
+                      </select>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
@@ -142,6 +152,8 @@
       data: 'StaffName'
     }, {
       data: 'Mobiles'
+    }, {
+      data: 'OrigLabel'
     }]
 
     //表dt参数
@@ -302,6 +314,11 @@
         layer.msg('职工编号未填', { icon: 1 });
         return
       }
+      if (!$('#bgu_staffsForm-OrigLabel').val()) {
+        // alert('用户名未填!')
+        layer.msg('地区未填', { icon: 1 });
+        return
+      }
 
       let mainFormData = getPostFormData({
         formId: 'bgu_staffsForm'
@@ -370,12 +387,14 @@
             var StaffUser = $('#bgu_staffsForm-StaffUser').val();
             var StaffName = $('#bgu_staffsForm-StaffName').val();
             var Mobiles = $('#bgu_staffsForm-Mobiles').val();
+            var OrigLabel = $('#bgu_staffsForm-OrigLabel').val();
             var Advstr = {
               "LastModify": sessionName,
               "StaffID": StaffID,
               "StaffUser": StaffUser,
               "StaffName": StaffName,
               "Mobiles": Mobiles,
+              "OrigLabel": OrigLabel,
             };
             var reportType = 'EmployJob';
             var Arrange = 'UpdatePeople';

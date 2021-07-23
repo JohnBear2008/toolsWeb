@@ -1,0 +1,670 @@
+<!--本地路径-->
+<link rel="stylesheet" type="text/css" href="/css/PM/PMContent.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
+
+<!--<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/jquery.dataTables.css">-->
+<link rel="stylesheet" type="text/css" href="/css/PM/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+
+<!-- JS  -->
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/css/PM/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<!-- date picker -->
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/css/PM/datetimepicker/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<link rel="stylesheet" type="text/css" href="/css/MSTools/layui/css/layui.css">
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<script src="/js/PM/PMfuns.js"></script>
+<!-- JS 这3个管分析视窗 -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/PM/FileSaver.min.js"></script>
+<script src="/js/PM/tableExport.js"></script>
+<!-- 预览 -->
+<script src="/js/HMIPrint/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/css/MSTools/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/TM/tmcode-font.css">
+<script src="/arch/roleSet.js"></script>
+<script src="/bomq/supplyFn.js"></script>
+<script src="/bomq/utilFn.js"></script>
+<script src="/js/sweetalert.min.js"></script>
+<% layout(locals.global.theme_layout_dir+'/master.ejs') -%>
+        </br>
+        <div class="layui-form-item">
+                <a class="layui-btn layui-btn-info" id="btn_apply_A"
+                        style="margin-left:30px">采&nbsp;&nbsp;&nbsp;&nbsp;购</a>
+                <a class="layui-btn layui-btn-info" id="btn_apply_B"
+                        style="margin-left:30px">差&nbsp;&nbsp;&nbsp;&nbsp;旅</a>
+        </div>
+        <div id="noprint" class="noprint">
+                <div class="divcontent">
+                        <div id="handout_wrap_inner"></div>
+                        <!-- <h1>报销出差单查找</h1> -->
+                        <label>年份:</label>
+                        <div class="layui-inline">
+                                <input class="can-find-M140" name="mainYear" id="mainYear" value="" autocomplete="off">
+                        </div>
+                        <label>部門:</label>
+                        <div class="layui-inline">
+                                <select id="DeptCombo" name="DeptCombo" class="can-find-M140" type="text"
+                                        value=""></select>
+                        </div>
+                        <button id="BTNFitSearch" type="button" class="btn btn-info">查找</button>
+                        <input type="button" id="BatchBtn" class="btn btn-warning" value="建立单据" />
+                        <input type="button" id="AuditYes" class="btn btn-danger" value="核可" />
+                        <hr>
+                        <input type="hidden" id="hideDeptName" value="" />
+                        <input type="hidden" id="hidePhone" value="" />
+                        <input type="hidden" id="MicroOrig" value="" />
+			<input type="hidden" id="MicroGroup" value="" />
+                </div>
+        </div><!-- modal fade -->
+        <!--打开-->
+        <div id="DelivFilter" class="easyui-window" title="预算详细" closed="true" style="width:1200px;height:600px;">
+                <form style="padding:10px 50px;">
+                        <div class="pdf-wrapper" id="quota-wrapper" style="background-color: aliceblue;">
+                                <table id="middle_TB" class="table table-striped table-bordered">
+                                        <thead id="conpage">
+                                        </thead>
+                                </table>
+                        </div>
+                </form>
+                <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-3 ">
+                                <button id="quotaCanBtn" type="button" class="btn btn-warning">关闭</button>
+                        </div>
+                </div>
+        </div>
+        <div class="modal fade" id="momowindow" style="top:200px;" tabindex="-1" role="dialog"
+                aria-labelledby="momowindowLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog" style="width:65%">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                        <h3 class="panel-title">建立单据</h3>
+                                </div>
+                                <div class="modal-body">
+                                        <div class="panel panel-info">
+                                                <div class="panel-heading">
+                                                        <input id="nextSNNO" class="form-control" type="text" value=""
+                                                                readonly>
+                                                </div>
+                                                <div class="panel-body">
+                                                        <br />
+                                                        <div class="form-group">
+                                                                <label class="col-sm-1 control-label">文号</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="BillNo" class="form-control"
+                                                                                type="text" value="" readonly>
+                                                                </div>
+                                                                <label class="col-sm-1 control-label">申请</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="TotalValue" class="form-control"
+                                                                                type="text" value="" readonly>
+                                                                </div>
+                                                                <label class="col-sm-1 control-label">上限</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="UpperLimit" class="form-control"
+                                                                                type="text" value="" readonly>
+                                                                </div>
+                                                                <input type="hidden" id="SNNO" value="" />
+                                                        </div>
+                                                        <br> </br>
+                                                        <div class="form-group">
+                                                                <label class="col-sm-1 control-label">累计</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="Accumulate" class="form-control"
+                                                                                type="text" value="" readonly>
+                                                                </div>
+                                                                <label class="col-sm-1 control-label">剩余</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="Surplus" class="form-control"
+                                                                                type="text" value="" readonly>
+                                                                </div>
+                                                                <label class="col-sm-1 control-label">超支</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="IsOver" class="form-control"
+                                                                                type="text" value="" readonly>
+                                                                </div>
+                                                        </div>
+                                                        <br> </br>
+                                                        <div class="form-group">
+                                                                <label class="col-sm-1 control-label">发票号</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="Invoice" class="form-control"
+                                                                                type="text" value="">
+                                                                </div>
+                                                                <label class="col-sm-1 control-label">金额</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="DivideValue" class="form-control"
+                                                                                type="text" value="">
+                                                                </div>
+                                                                <label class="col-sm-1 control-label">备注</label>
+                                                                <div class="col-sm-3">
+                                                                        <input id="Descript" class="form-control"
+                                                                                type="text" value="">
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                        <button id="FormBYES" type="button" class="btn btn-primary"
+                                                data-dismiss="modal">确认</button>
+                                        <button id="FormBClose" type="button" class="btn btn-primary"
+                                                data-dismiss="modal">关闭</button>
+                                </div>
+                        </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+        </div>
+        <div class="pdf-wrapper" id="pdf-wrapper" style="background-color: aliceblue;">
+                <!--数据呈现区-->
+                <table id="center_TB" class="table table-striped table-bordered">
+                        <thead id="content">
+
+                        </thead>
+                </table>
+        </div>
+        <div class="modal fade" id="confirmModal" tabindex="2">
+                <div class="modal-dialog">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span
+                                                        aria-hidden="true">&times;</span><span
+                                                        class="sr-only">Close</span></button>
+                                        <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body">
+                                        <p></p>
+                                </div>
+                                <div class="modal-footer">
+                                        <button type="button" class="btn btn-default cancelBtn"
+                                                data-dismiss="modal">取消</button>
+                                        <button type="button" class="btn btn-danger sureBtn"
+                                                data-dismiss="modal">确定</button>
+                                </div>
+                        </div>
+                        <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+        </div>
+
+        </div>
+        <div id="root" style="height: 100%"></div>
+        <script>
+                var CapMode = 'B';   //出差B
+                var pick = 'B';
+                var hrefA = '/app/TMFinc/expHistory';
+                var hrefB = '/app/TMFinc/expTripSite';   //出差B
+                var missType = '';
+                var missAcute = '';
+                var missBcute = '';
+                var missCcute = '';
+                var missDcute = '';
+                var glbA = '';
+                var glbB = '';
+                var glbC = '';
+                var glbD = '';
+                var glbE = '';
+                var glbF = '';
+                var glbG = '';
+                var glbH = '';
+                var glbS = '';
+                var Pattern = '';
+                var Formkind = '';
+                var advSearch = '';
+                var selClass = '';
+                var ClaimMode = 'T';
+                var FieldA = true;
+                var FieldB = true;
+                var FieldC = true;
+                var FieldD = true;
+                var FieldE = false;
+                var FieldF = false;
+                var FieldG = false;
+                var FieldH = true;
+                var FieldI = false;
+                var FieldJ = false;
+                var FieldK = false;
+                var storage = window.localStorage;
+                var hidata = localStorage.getItem("findpo");
+                hidata = JSON.parse(hidata);
+                var sessionName = '';
+                var sessionOID = '';
+                let sData = [];
+                if (hidata != undefined && hidata != null) {
+                        FieldA = ((hidata.A == null || hidata.A == undefined) ? (FieldA) : hidata.A);
+                        FieldB = ((hidata.B == null || hidata.B == undefined) ? (FieldB) : hidata.B);
+                        FieldC = ((hidata.C == null || hidata.C == undefined) ? (FieldC) : hidata.C);
+                        FieldD = ((hidata.D == null || hidata.D == undefined) ? (FieldD) : hidata.D);
+                        FieldE = ((hidata.E == null || hidata.E == undefined) ? (FieldE) : hidata.E);
+                        FieldF = ((hidata.F == null || hidata.F == undefined) ? (FieldF) : hidata.F);
+                        FieldG = ((hidata.G == null || hidata.G == undefined) ? (FieldG) : hidata.G);
+                        FieldH = ((hidata.H == null || hidata.H == undefined) ? (FieldH) : hidata.H);
+                        FieldI = ((hidata.I == null || hidata.I == undefined) ? (FieldI) : hidata.I);
+                        FieldJ = ((hidata.J == null || hidata.J == undefined) ? (FieldJ) : hidata.J);
+                        FieldK = ((hidata.K == null || hidata.K == undefined) ? (FieldK) : hidata.K);
+                }
+                var columnsData = [];
+                //页面加载函数---------------
+                $(document).ready(function () {
+                        sessionName = "<%-locals.session.yjUser.Name%>";
+                        sessionOID = "<%-locals.session.yjUser.OID%>";
+                        layui.use(['form', 'layedit', 'laydate'], function () {
+                                var form = layui.form
+                                        , layer = layui.layer
+                                        , layedit = layui.layedit
+                                        , laydate = layui.laydate;
+                                form.render();
+                                var DataPara = {
+                                        "tableID": "#center_TB",
+                                        "DBTable": "auto_parts"
+                                }
+                                missType = getQueryString("missT");
+                                missAcute = getQueryString("missA");
+                                var missAencode = decodeURI(missAcute);
+                                glbA = missAencode;
+                                columnsData = [
+                                        { data: 'DBID', "visible": false },
+                                        { data: 'StaffId', "visible": true, "width": "10%" },
+                                        { data: 'StaffName', "visible": true, "width": "10%" },
+                                        { data: 'BudgetYear', "visible": true, "width": "10%" },
+                                        { data: 'UpperLimit', "visible": true, "width": "10%" },
+                                        { data: 'Accumulate', "visible": true, "width": "10%" },
+                                ];
+                        });
+                        $("#SeaBtn").addClass("active");
+                        var contentSum = "";
+                        var content = '<tr>'
+                                + '<th>系统ID</th>'
+                                + '<th>部門ID</th>'
+                                + '<th>部門名称</th>'
+                                + '<th>课组名称</th>'
+                                + '<th>地区</th>'
+                                + '<th>描述</th>'
+                                + '<th>描述</th>'
+                                + '<th>描述</th>'
+                                + '</tr>';
+                        contentSum += content;
+                        $('#content').html(contentSum);
+                        Pattern = $('#Pattern').val();
+                        reloadCol();
+                        OrigList();
+                        obtHisGroup(sessionName);
+                        function timer(time) {
+				setTimeout(function () {
+                                        showDBDataByBill(DataPara, columnsData, Pattern, CapMode, '');
+				}, time);
+			}
+			timer(500);	
+                        $("#pdf-wrapper").css('visibility', 'visible');
+                });
+
+                var DataPara = {
+                        "tableID": "#center_TB",
+                        "DBTable": "auto_parts"
+                }
+                columnsData = [
+
+                ];
+                $('#btn_apply_A').click(function () {
+                        window.location.href = hrefA;
+                });
+                $('#btn_apply_B').click(function () {
+                        window.location.href = hrefB;
+                });
+                function showDBDataByBill(DataPara, columnsData, Pattern, CapMode, StaffName) {
+                        console.log("倾覆爱");
+                        $("#pdf-wrapper").css('visibility', 'visible');
+                        var limit = '5000';
+                        var filter = ' 1=1 ';
+                        var orderBy = '';
+                        $("#center_TB").dataTable().fnDestroy();
+                        var signoption = $("#SIGN option:selected");
+                        var signTxt = signoption.text();
+                        var BguYear = $('#mainYear').val();
+                        var DeptCombo = $('#DeptCombo').val();
+                        var DeptName = '';
+                        var DeptID = '';
+                        let PropList = [];
+                        if (DeptCombo != "" && DeptCombo != undefined) {
+                                PropList = DeptCombo.split('##');
+                                for (var ki = 0; ki < PropList.length; ki++) {
+                                        DeptID = PropList[0];
+                                        DeptName = PropList[1];
+                                }
+                        }
+                        var Advstr = {
+                                "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "BguYear": BguYear,
+                                "DeptName": DeptName, "limit": limit
+                        };
+                        var MicroName = $("#MicroName").val();
+			var MicroOrig = $("#MicroOrig").val();
+			var MicroGroup = $("#MicroGroup").val();
+			var MicroDept = $("#MicroDept").val();
+			var MicroWord = $("#MicroWord").val();
+			var MicroRole = $("#hideFlowRole").val();
+			var Micstr = {
+				"MicroName": MicroName, "MicroOrig": MicroOrig, "MicroRole": MicroRole , "MicroGroup": MicroGroup , "MicroDept": MicroDept, "MicroWord": MicroWord
+			};
+                        var reportChannel = 'FeeHead';
+                        var arrange = 'ClaimSite';
+                        var taskData = { "reportType": reportChannel, "arrange": arrange, "pick": pick };
+                        $.ajax({
+                                method: 'post',
+                                data: taskData,
+                                url: "/app/TMFinc/getRoute",
+                                success: function (data) {
+                                        $('#content').html(data[1]);
+                                        let newColumns = [];
+                                        newColumns = data[0];
+                                        var reportType = 'FeeHisVisit';
+                                        var taskData = { "reportType": reportType, "arrange": arrange, "pick": pick, "filter": filter,
+                                         "Advstr": Advstr, "Micstr": Micstr, "limit": limit, "orderBy": orderBy };
+                                        bornTable(taskData, newColumns);
+                                },
+                                error: function () {
+                                }
+                        })
+                }
+                function bornTable(taskData, columnsData) {
+                        console.log("倾覆了故国", taskData);
+                        $(DataPara.tableID).DataTable({
+                                ajax: {
+                                        method: 'post',
+                                        data: taskData,
+                                        url: "/app/TMFinc/getRoute",
+                                        dataSrc: ''
+                                },
+                                columns: columnsData,
+                                aaSorting: [0, 'desc'],
+                                language: languageCN
+                        });
+                        var table = $('#center_TB').DataTable();
+                        $('#center_TB tbody').on('click', 'tr', function () {
+                                $(this).removeClass('selected');
+                                if ($(this).hasClass('selected')) {
+                                        $(this).removeClass('selected');
+                                } else {
+                                        table.$('tr.selected').removeClass('selected');
+                                        $(this).addClass('selected');
+                                }
+                        });
+                        $('#center_TB tbody').on('dblclick', 'tr', function () {
+                                var table = $('#center_TB').DataTable();
+                                var dataSelect = table.row('.selected').data();
+                                var data = table.row(this).data();
+                                var BillNo = dataSelect.BillNo; BillNo = myTrim(BillNo);
+                                // BillNo ='20210512084625';
+                                showDBCredit(BillNo);
+                                $('#DelivFilter').window('open');
+                                $("#DelivFilter").addClass("active")
+                        });
+                }
+                function reloadCol() {
+                        columnsData = [
+                        ];
+                }
+                function ReConfirm(title, content) {
+                        var confirmPromise = new Promise(function (resolve, reject) {
+                                $('#confirmModal .modal-title').text(title);
+                                $('#confirmModal .modal-body p').text(content);
+                                $('#confirmModal').modal('show');
+                                $('#confirmModal .sureBtn').off('click').click(resolve);
+                                $('#confirmModal .cancelBtn').off('click').click(reject);
+                        })
+                        return confirmPromise;
+                };
+                $('#BTNFitSearch').click(function () {
+                        $("#center_TB").dataTable().fnDestroy();
+                        Pattern = $('#Pattern').val();
+                        var DeptName = $('#DeptCombo').val();
+                        reloadCol();
+                        showDBDataByBill(DataPara, columnsData, Pattern, CapMode, '');
+                });
+                $('#BatchBtn').click(function () {
+                        var table = $('#center_TB').DataTable();
+                        var dataSelect = table.row('.selected').data();
+                        if (dataSelect == undefined) {
+                                alert("当前未选择任何数据,请先点击需要的数据行!");
+                        } else {
+                                var BillNo = dataSelect.BillNo; BillNo = myTrim(BillNo);
+                                var IsOver = dataSelect.IsOver;
+                                var StaffName = dataSelect.StaffName;
+				var MagName = dataSelect.MagName;
+				var VipName = dataSelect.VipName;
+				var sessionDept = $("#hideDeptName").val();
+                                if (IsOver == '是') {
+                                        layer.msg(' 已超过核销金额， 此单不能再增加', { icon: 1 });
+                                        return;
+                                } else {
+
+                                }
+                                if (sessionDept == '财务部' || sessionName == MagName || sessionName == VipName || sessionName == StaffName) {
+				} else {
+					layer.msg('非相关人士 ， 不能建立报销', { icon: 1 });
+					return;
+				}
+                                console.log("故乡的春天", IsOver);
+                                let dataArr = [];
+                                var reportType = 'ClaimCreate';
+                                var arrange = 'examine';
+                                var taskData = { "reportType": reportType, "arrange": arrange, "pick": pick, "BillNo": BillNo };
+                                $.ajax({
+                                        method: 'post',
+                                        data: taskData,
+                                        url: "/app/TMFinc/getRoute",
+                                        success: function (data) {
+                                                dataArr = data;
+                                                for (var i = 0; i < dataArr.length; i++) {
+                                                        $('#BillNo').val(dataArr[i].BillNo);
+                                                        $('#TotalValue').val(dataArr[i].TotalValue);
+                                                        $('#UpperLimit').val(dataArr[i].UpperLimit);
+                                                        $('#Accumulate').val(dataArr[i].Accumulate);
+                                                        $('#IsOver').val(dataArr[i].IsOver);
+                                                        $('#Surplus').val(dataArr[i].Surplus);
+                                                        $('#SNNO').val(dataArr[i].SNNO);
+                                                        var SNNOtmp = dataArr[i].SNNO;
+                                                        SNNOtmp = nulReplace0(SNNOtmp); SNNOtmp = parseInt(SNNOtmp, 10) + 1;
+                                                        var SNNOval = SNNOtmp;
+                                                        $('#nextSNNO').val(SNNOtmp);
+                                                }
+                                                $('#momowindow').modal('show');
+                                        },
+                                        error: function () {
+                                        }
+                                })
+                        }
+                });
+                $('#AuditYes').click(function () {
+                        var table = $('#center_TB').DataTable();
+                        var dataSelect = table.row('.selected').data();
+                        if (dataSelect == undefined) {
+                                alert("当前未选择任何数据,请先点击需要的数据行!");
+                        } else {
+                                var BillNo = dataSelect.BillNo; BillNo = myTrim(BillNo);
+                                var IsOver = dataSelect.IsOver;
+                                var sessionDept = $("#hideDeptName").val();
+                                if (sessionDept == '财务部') {
+                                        console.log("鲨嘴炮", sessionDept);
+                                } else {
+                                        console.log("愿得一心人", sessionDept);
+                                        layer.msg('非财务人员 ， 此单不能报销作业', { icon: 1 });
+                                        return;
+                                }
+                                var hidePhone = $('#hidePhone').val();
+                                var Advstr = {
+                                        "BillNo": BillNo, "CurWorkId": hidePhone, "CurName": sessionName
+                                };
+                                console.log("探囊取物", Advstr);
+                                let dataArr = [];
+                                var message = '财务人员同意报销申请，请确认操作是否无误？';
+                                ReConfirm("警告", message).then(function () {
+                                        console.log('确定被点击，执行后续操作');
+                                        $('.console-show').text('Promise_resolve_confirm页面点击"确定"');
+                                        var reportType = 'ClaimCreate';
+                                        var arrange = 'auditSay';
+                                        var taskData = { "reportType": reportType, "arrange": arrange, "pick": pick, "BillNo": BillNo, "Advstr": Advstr };
+                                        $.ajax({
+                                                method: 'post',
+                                                data: taskData,
+                                                url: "/app/TMFinc/getRoute",
+                                                success: function (data) {
+                                                        console.log("神魔", JSON.stringify(data));
+                                                        if (data.status == 'Fail') {
+                                                                layer.msg("讯息" + data.message);
+                                                        } else if (data.status == 'OK') {
+                                                                layer.confirm("金额已核可" + (data.status), {
+                                                                        btn: ['知道了']
+                                                                }, function () {
+                                                                        layer.msg('操作成功', { icon: 1 });
+                                                                        window.location.href = hrefB + "?missT=" + missType + "&missA=" + missAcute + " ";
+                                                                });
+                                                        }
+                                                },
+                                                error: function () {
+                                                }
+                                        })
+                                }, function () {
+                                        console.log("取消被点击，返回之前的操作");
+                                        $('.console-show').text('Promise_reject_confirm页面点击"取消"');
+                                })
+                        }
+                });
+                function nulReplace0(passTxt) {
+                        var ret = '';
+                        ret = (passTxt == null || passTxt == undefined || passTxt == '') ? ('0') : passTxt;
+                        return ret;
+                }
+                function showDBCredit(BillNo) {
+
+                        $("#quota-wrapper").css('visibility', 'visible');
+                        console.log("裴虎", BillNo);
+                        var DataPara = {
+                                "tableID": "#middle_TB",
+                                "DBTable": "play"
+                        }
+                        columnsData = [
+                                { data: 'DBID', "visible": false },
+                                { data: 'SNNO', "visible": true, "width": "3%" },
+                                { data: 'BillNo', "visible": true, "width": "10%" },
+                                { data: 'RequestDate', "visible": true, "width": "10%" },
+                                { data: 'TotalValue', "visible": true, "width": "10%" },
+                                { data: 'UpperLimit', "visible": true, "width": "10%" },
+                                { data: 'Surplus', "visible": true, "width": "10%" },
+                                { data: 'Accumulate', "visible": true, "width": "10%" },
+                                { data: 'DivideValue', "visible": true, "width": "10%" },
+                                { data: 'Invoice', "visible": true, "width": "10%" },
+                                { data: 'Descript', "visible": true, "width": "15%" }
+                        ];
+                        var inventSum = "";
+                        var invent = '<tr>'
+                                + '<th>系统ID</th>'
+                                + '<th>号</th>'
+                                + '<th>文号ID</th>'
+                                + '<th>日期</th>'
+                                + '<th>申请额</th>'
+                                + '<th>上限额</th>'
+                                + '<th>剩余</th>'
+                                + '<th>累计</th>'
+                                + '<th>分批额</th>'
+                                + '<th>发票</th>'
+                                + '<th>描述</th>'
+                                + '</tr>';
+                        inventSum += invent;
+                        $('#conpage').html(inventSum);
+                        $("#middle_TB").dataTable().fnDestroy();
+                        var reportType = 'ClaimCreate';
+                        var arrange = 'seeInvoice';
+                        var taskData = { "reportType": reportType, "arrange": arrange, "pick": pick, "BillNo": BillNo };
+                        $(DataPara.tableID).DataTable({
+                                ajax: {
+                                        method: 'post',
+                                        data: taskData,
+                                        url: "/app/TMFinc/getRoute",
+                                        dataSrc: '',
+                                        aaSorting: [1, 'asc'],
+                                },
+                                columns: columnsData,
+                                autoWidth: true,
+                                createdRow: function (row, data, dataIndex) {
+                                        if (data.RowCode != "") {
+                                        } else {
+                                                $('td', row).css("background", "#B4EEB4");
+                                        }
+                                },
+                        });
+                }
+                $('#quotaCanBtn').click(function () {
+                        $('#DelivFilter').window('close');
+                });
+                $('#FormBClose').click(function () {
+                        $('#momowindow').modal('close');
+                });
+                $('#FormBYES').click(function () {
+                        var Invoice = $('#Invoice').val();
+                        var DivideValue = $('#DivideValue').val();
+                        var UpperLimit = $('#UpperLimit').val();
+                        var Accumulate = $('#Accumulate').val();
+                        var Surplus = $('#Surplus').val();
+                        var Descript = $('#Descript').val();
+                        var BillNo = $('#BillNo').val();
+                        var SNNO = $('#SNNO').val();
+                        var reportType = 'ClaimCreate';
+                        var arrange = 'addInvoice';
+                        var Advstr = {
+                                "BillNo": BillNo, "SNNO": SNNO, "UpperLimit": UpperLimit, "Accumulate": Accumulate,
+                                "Invoice": Invoice, "DivideValue": DivideValue, "Descript": Descript
+                        };
+                        var taskData = {
+                                "reportType": reportType, "arrange": arrange, "pick": pick, "Advstr": Advstr
+                        }
+                        if (DivideValue == '') {
+                                layer.msg('请填写金额！', { icon: 1 });
+                                return;
+			} else {
+			}
+                        var message = '进行批次报销，请确认操作是否无误？';
+                        DivideValue = nulReplace0(DivideValue); DivideValue = parseInt(DivideValue, 10);
+                        Accumulate = nulReplace0(Accumulate); Accumulate = parseInt(Accumulate, 10);
+                        Accumulate += DivideValue;
+                        Surplus = nulReplace0(Surplus); Surplus = parseInt(Surplus, 10);
+                        console.log("读过六道 ", DivideValue, "安心抵达 ", Accumulate, "彼岸净土", Surplus);
+                        if (DivideValue > Surplus) {
+                                message = '报销金额超过核准金额，此单不能送出'
+                                layer.msg(message, { icon: 1 });
+                                return;
+                        }
+                        console.log("凛冬已至", Advstr);
+                        ReConfirm("警告", message).then(function () {
+                                console.log('确定被点击，执行后续操作');
+                                $('.console-show').text('Promise_resolve_confirm页面点击"确定"');
+                                $.ajax({
+                                        method: 'post',
+                                        data: taskData,
+                                        url: "/app/TMFinc/getRoute",
+                                        success: function (data) {
+                                                console.log("会好", JSON.stringify(data));
+                                                if (data.status == 'Fail') {
+                                                        layer.msg("讯息" + data.message);
+                                                } else if (data.status == 'OK') {
+                                                        layer.confirm("创建单笔金额已完成" + (data.status), {
+                                                                btn: ['知道了']
+                                                        }, function () {
+                                                                layer.msg('操作成功', { icon: 1 });
+                                                                missAcute = $('#Pattern').val();
+                                                                window.location.href = hrefB + "?missT=" + missType + "&missA=" + missAcute + " ";
+                                                        });
+                                                }
+                                        },
+                                        error: function () {
+                                        }
+                                })
+                        }, function () {
+                                console.log("取消被点击，返回之前的操作");
+                                $('.console-show').text('Promise_reject_confirm页面点击"取消"');
+                        })
+
+                });
+        </script>

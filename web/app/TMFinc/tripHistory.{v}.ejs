@@ -61,6 +61,8 @@
 			<input type="hidden" id="hideDeptName" value="" />
 			<input type="hidden" id="hideFlowRole" value="" />
 			<input type="hidden" id="hidePhone" value="" />
+			<input type="hidden" id="MicroOrig" value="" />
+			<input type="hidden" id="MicroGroup" value="" />
 			<hr>
 			<br />
 			<div id="DivFilter" class="easyui-window" title="自定义过滤器" closed="true"
@@ -184,10 +186,20 @@
 									<input id="TotalValue" class="form-control" type="text" value=""
 										readonly>
 								</div>
+								<label class="col-sm-1 control-label">调整额</label>
+								<div class="col-sm-3">
+									<input id="ExceedValue" class="form-control" type="text" value=""
+									readonly >
+								</div>
+								<input type="hidden" id="hideCurJob" value="" />
+							</div>
+							<br />
+							<br />
+							<div class="form-group">
 								<label class="col-sm-1 control-label">上限</label>
 								<div class="col-sm-3">
 									<input id="UpperLimit" class="form-control" type="text" value="">
-								</div>
+								</div>	
 							</div>
 							<br> </br>
 						</div>
@@ -232,7 +244,9 @@
 	</div>
 	<div id="root" style="height: 100%"></div>
 	<script>
-		var href = "/app/TMFinc/feeHistory";
+		var href = "/app/TMFinc/tripHistory";
+		var CapMode = 'B';
+		var pick = 'B';
 		var missType = '';
 		var missAcute = '';
 		var missBcute = '';
@@ -249,7 +263,7 @@
 		var glbH = '';
 		var glbS = '';
 		var Pattern = '';
-		var CapMode = 'B';
+		var CapMode = 'B';  //出差单是 B
 		var SeaMode = '';  //0 is SeaBtn , 1 is SeaAllBtn
 		var CurName = '';
 		var selClass = '';
@@ -327,7 +341,7 @@
 				$("#SIGN").append(youoption);
 			});
 			getpull(); getDrop();
-			obtLogGroup(sessionName);
+			obtHisGroup(sessionName);
 			function timer(time) {
 				setTimeout(function () {
 					if (missScute == '0') {
@@ -357,7 +371,7 @@
                         window.location.href = '/app/TMFinc/feeHistory';
                 });
 		$('#btn_apply_B').click(function () {
-			window.location.href = '/app/TMFinc/tripHistory';
+			     window.location.href = href;
 		});
 		function showDBDataByBill(DataPara, columnsData, Pattern, CapMode, SeaMode, StaffName) {
 			$("#pdf-wrapper").css('visibility', 'visible');
@@ -368,6 +382,16 @@
 			var signoption = $("#SIGN option:selected");
 			var signTxt = signoption.text();
 			var Advstr = { "SIGN": signTxt, "Pattern": Pattern, "StaffName": StaffName, "limit": limit };
+			var MicroName = $("#MicroName").val();
+			var MicroOrig = $("#MicroOrig").val();
+			var MicroGroup = $("#MicroGroup").val();
+			var MicroDept = $("#MicroDept").val();
+			var MicroWord = $("#MicroWord").val();
+			var MicroRole = $("#hideFlowRole").val();
+			var Micstr = {
+				"MicroName": MicroName, "MicroOrig": MicroOrig, "MicroRole": MicroRole , "MicroGroup": MicroGroup , "MicroDept": MicroDept, "MicroWord": MicroWord
+			};
+			console.log("一曲长歌 ", Micstr);
 			$("#matchRec").html("查找条件:" + signTxt);
 			var reportChannel = 'FeeHead';
 			var arrange = 'Fee';
@@ -387,7 +411,8 @@
 					newColumns = [];
 					newColumns = data[0];
 					var reportType = 'FeeHisVisit';
-					var taskData = { "reportType": reportType, "arrange": arrange, "pick": CapMode, "filter": filter, "Advstr": Advstr, "limit": limit, "orderBy": orderBy };
+					var taskData = { "reportType": reportType, "arrange": arrange, "pick": CapMode, 
+					"filter": filter, "Advstr": Advstr, "Micstr": Micstr,"limit": limit, "orderBy": orderBy };
 					bornTable(taskData, newColumns);
 				},
 				error: function () {
@@ -489,11 +514,13 @@
 		});
 		//过滤功能组 自定义过滤确认按钮-----
 		$('#FilterCancelBtnN').click(function () {
-
 			$("#taskMakeDateB").val("")
 			$("#taskMakeDateE").val("")
 			$("#MicroName").val("")
+			$("#MicroOrig").val("")
+			$("#MicroGroup").val("")
 			$("#MicroDept").val("")
+			$("#MicroRole").val("")
 			$("#MicroWord").val("")
 		});
 		function filter_look() {
@@ -501,10 +528,13 @@
 			var MakeDateB = $("#taskMakeDateB").val();
 			var MakeDateE = $("#taskMakeDateE").val();
 			var MicroName = $("#MicroName").val();
+			var MicroOrig = $("#MicroOrig").val();
+			var MicroGroup = $("#MicroGroup").val();
 			var MicroDept = $("#MicroDept").val();
+			var MicroRole = $("#MicroRole").val();
 			var MicroWord = $("#MicroWord").val();
 			var Micstr = {
-				"MicroName": MicroName, "MicroDept": MicroDept, "MicroWord": MicroWord
+				"MicroName": MicroName, "MicroOrig": MicroOrig , "MicroRole": MicroRole ,"MicroGroup": MicroGroup , "MicroDept": MicroDept, "MicroWord": MicroWord
 			};
 			console.log("杨过", MicroName, "龙女", MicroDept, "陈研", MicroWord);
 			Pattern = $('#Pattern').val();
@@ -745,21 +775,23 @@
 				var CurText = dataSelect.CurText;
 				var ClaimText = dataSelect.ClaimText;
 				var StaffName = dataSelect.StaffName;
-				var message = '开始报销，请确认操作是否无误？';
+				var MagName = dataSelect.MagName;
+				var VipName = dataSelect.VipName;
+				var CurJob = dataSelect.CurJob;
+				var message = '开始报销输入发票实际额，请确认操作是否无误？';
 				var TotalValue = dataSelect.TotalValue;
+				var ExceedValue = dataSelect.ExceedValue;
 				if (CurText != '核准') {
 					layer.msg('非核准状态 ， 此单不能报销', { icon: 1 });
 					return;
 				}
 				if (ClaimText == '报销') {
-					message = '此单已进行报销中，是否清空重新建立？'
+					 message = '此单已进行报销中，是否追加预算？'
 				}
 				var sessionDept = $("#hideDeptName").val();
-				if (sessionDept == '财务部') {
-					console.log("鲨嘴炮", sessionDept);
+				if (sessionDept == '财务部' || sessionName == MagName || sessionName == VipName || sessionName == StaffName) {
 				} else {
-					console.log("愿得一心人", sessionDept);
-					layer.msg('非财务人员 ， 此单不能报销作业', { icon: 1 });
+					layer.msg('非相关人士 ， 此单不能报销作业', { icon: 1 });
 					return;
 				}
 				layer.confirm(BillNo + message, {
@@ -768,6 +800,8 @@
 					layer.msg('操作成功', { icon: 1 });
 					$('#BillNo').val(BillNo);
 					$('#TotalValue').val(TotalValue);
+					$('#ExceedValue').val(ExceedValue);
+					$("#hideCurJob").val(CurJob);
 					$('#momowindow').modal('show');
 				}, function () {
 					layer.msg('无操作', { icon: 1 });
@@ -836,7 +870,7 @@
 									var DateE = $("#taskMakeDateE").val();
 									missAcute = $('#Pattern').val();
 									missBcute = $('#CapMode').val();
-									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
+									window.location.href = "/app/TMFinc/tripHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
 								});
 							}
 						},
@@ -865,64 +899,82 @@
 			var Flag = 'N';
 			var UpperLimit = $('#UpperLimit').val();
 			var TotalValue = $('#TotalValue').val();
+			var ExceedValue = $('#ExceedValue').val();
+			var hideCurJob = $('#hideCurJob').val();
 			UpperLimit = nulReplace0(UpperLimit); UpperLimit = parseInt(UpperLimit, 10);
 			TotalValue = nulReplace0(TotalValue); TotalValue = parseInt(TotalValue, 10);
+			ExceedValue = nulReplace0(ExceedValue); ExceedValue = parseInt(ExceedValue, 10);
 
 			var BillNo = $('#BillNo').val();
 			var StaffName = sessionName;
 			var StaffID = sessionOID;
 			var Advstr = {
-				"BillNo": BillNo, "UpperLimit": UpperLimit, "TotalValue": TotalValue, "StaffName": StaffName, "StaffID": StaffID
+				"BillNo": BillNo, "UpperLimit": UpperLimit, "TotalValue": TotalValue, "ExceedValue": ExceedValue,
+				"StaffName": StaffName, "StaffID": StaffID , "CurJob": hideCurJob
 			};
+			console.log("刀的B意义",Advstr);
 			var message = '建立报销可使用金额，请确认操作是否无误？';
-			if (UpperLimit > TotalValue) {
-				Flag = 'Y';
+			if (ExceedValue !=undefined && ExceedValue !=null && ExceedValue !='') {
+				if ( UpperLimit > ExceedValue ) {
+				    Flag = 'Y';
+			      }
+			}else{
+				if (TotalValue !=undefined && TotalValue !=null && TotalValue !='') {
+					if ( UpperLimit > TotalValue ) {
+					  Flag = 'Y';
+					}else{
+					  Flag = 'N';	
+					}
+			      }else{
+					layer.msg('操作不成功', { icon: 1 });
+					return ;
+				}
 			}
 			if (Flag == 'Y') {
-				var messYes = ' 金额不可超过！！请重新修改金额或再送一笔费用申请单';
-				layer.msg(messYes, { icon: 1 });
-				// ReConfirm("资讯", messYes).then(function () {
-				// 	console.log('此单请重新修改金额后送审');
-				// 	$('.console-show').text('Promise_resolve_confirm页面点击"确定"');
-				// 	var reportType = 'CreateClaim';
-				// 	var arrange = 'redoApply';
-				// 	var taskData = { "reportType": reportType, "arrange": arrange, "Advstr": Advstr };
-				// 	$.ajax({
-				// 		method: 'post',
-				// 		data: taskData,
-				// 		url: "/app/TMFinc/getRoute",
-				// 		success: function (data) {
-				// 			console.log("会好", JSON.stringify(data));
-				// 			if (data.status == 'Fail') {
-				// 				layer.msg("讯息" + data.message);
-				// 			} else if (data.status == 'OK') {
-				// 				layer.confirm("文号" + data.BillNo + "已重新审批" + (data.status), {
-				// 					btn: ['知道了']
-				// 				}, function () {
-				// 					layer.msg('操作成功', { icon: 1 });
-				// 					var DateB = $("#taskMakeDateB").val();
-				// 					var DateE = $("#taskMakeDateE").val();
-				// 					missAcute = $('#Pattern').val();
-				// 					missBcute = $('#CapMode').val();
-				// 					window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missC=" + DateB + "&missD=" + DateE + " ";
-				// 				});
-				// 			}
-				// 		},
-				// 		error: function () {
-				// 		}
-				// 	})
-				// }, function () {
-				// 	console.log("取消被点击，返回之前的操作");
-				// 	$('.console-show').text('Promise_reject_confirm页面点击"取消"');
-				// })
+				var messYes = ' 金额不可超过！！请重新修改金额或再次进入追加预算审批程序';
+				// layer.msg(messYes, { icon: 1 });
+				ReConfirm("资讯", messYes).then(function () {
+					console.log('再次进入费用审批');
+					$('.console-show').text('Promise_resolve_confirm页面点击"确定"');
+					var reportType = 'ClaimCreate';
+					var arrange = 'exceedBud';
+					var taskData = { "reportType": reportType, "arrange": arrange,  "pick": pick, "Advstr": Advstr };
+					$.ajax({
+						method: 'post',
+						data: taskData,
+						url: "/app/TMFinc/getRoute",
+						success: function (data) {
+							console.log("会好", JSON.stringify(data));
+							if (data.status == 'Fail') {
+								layer.msg("讯息" + data.message);
+							} else if (data.status == 'OK') {
+								layer.confirm("文号" + data.BillNo + "已重新审批" + (data.status), {
+									btn: ['知道了']
+								}, function () {
+									layer.msg('操作成功', { icon: 1 });
+									var DateB = $("#taskMakeDateB").val();
+									var DateE = $("#taskMakeDateE").val();
+									missAcute = $('#Pattern').val();
+									missBcute = $('#CapMode').val();
+									window.location.href = href+"?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missS=" + SeaMode + "&missC=" + DateB + "&missD=" + DateE + " ";
+								});
+							}
+						},
+						error: function () {
+						}
+					})
+				}, function () {
+					console.log("取消被点击，返回之前的操作");
+					$('.console-show').text('Promise_reject_confirm页面点击"取消"');
+				})
 			}
 			if (Flag == 'N') {
 				ReConfirm("警告", message).then(function () {
 					console.log('确定被点击，执行后续操作');
 					$('.console-show').text('Promise_resolve_confirm页面点击"确定"');
-					var reportType = 'CreateClaim';
+					var reportType = 'ClaimCreate';
 					var arrange = 'beginInvoice';
-					var taskData = { "reportType": reportType, "arrange": arrange, "Advstr": Advstr };
+					var taskData = { "reportType": reportType, "arrange": arrange,  "pick": pick, "Advstr": Advstr };
 					$.ajax({
 						method: 'post',
 						data: taskData,
@@ -940,7 +992,7 @@
 									var DateE = $("#taskMakeDateE").val();
 									missAcute = $('#Pattern').val();
 									missBcute = $('#CapMode').val();
-									window.location.href = "/app/TMFinc/feeHistory?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missS=" + SeaMode + "&missC=" + DateB + "&missD=" + DateE + " ";
+									window.location.href = href+"?missT=" + missType + "&missA=" + missAcute + "&missB=" + missBcute + "&missS=" + SeaMode + "&missC=" + DateB + "&missD=" + DateE + " ";
 								});
 							}
 						},

@@ -212,6 +212,7 @@ function view_dsp() {
 function apply_dsp() {
       var DeptName = '';
       var GroupName = $('#GroupName').val();
+      var OrigName = $('#hideOrig').val();
       let DepList = [];
       if (GroupName != "" && GroupName != undefined) {
             DepList = GroupName.split('-');
@@ -243,7 +244,7 @@ function apply_dsp() {
             var hidePhone = $('#hidePhone').val();
             var Basstr = {
                   "SendStatus": SendStatus, "hideBillNo": hideBillNo , "hidePhone": hidePhone ,
-                  "DeptName": DeptName, "GroupName": GroupName,  "StaffName": StaffName, "FlowRole": FlowRole  
+                  "OrigName": OrigName, "DeptName": DeptName, "GroupName": GroupName,  "StaffName": StaffName, "FlowRole": FlowRole  
             };
             var reportType = 'applyTrip';
             var arrange = 'confirm';
@@ -443,6 +444,7 @@ function save_dsp() {
       var RoomChoice  = $('#RoomChoice').val();
       var DinnerChoice = $('#DinnerChoice').val();
       var FlowRole = $('#hideFlowRole').val();  
+      var OrigName = $('#hideOrig').val();  
       var StaffID = sessionOID;
       var StaffName = sessionName;
       var TotalValue = $('#TicTotal_14').val();
@@ -467,21 +469,21 @@ function save_dsp() {
       var Explanation = $('#Explanation').val();
       var Overspend = $('#Overspend').val();
       var OverReason = $('#OverReason').val();
-      var IsOver = $('#IsOver').val();
+      var OverChoice = $('#OverChoice').val();
       var HotelName = $('#HotelName').val();
       var HotelTel = $('#HotelTel').val();
       var Overspend = $('#Overspend').val();
       var Advstr = {
             "SendStatus": SendStatus, "ApplicNo": ApplicNo, "Subject": Subject, "Version": Version, "BusiMan": BusiMan, "CompMan": CompMan, "BusiArea": BusiArea,
-            "GroupName": GroupName, "RoomChoice": RoomChoice ,"DinnerChoice": DinnerChoice, "DeptName": DeptName, "StaffID": StaffID, "StaffName": StaffName,
+            "OrigName": OrigName, "GroupName": GroupName, "RoomChoice": RoomChoice ,"DinnerChoice": DinnerChoice, "DeptName": DeptName, "StaffID": StaffID, "StaffName": StaffName,
             "FlowRole": FlowRole , "TotalValue": TotalValue, "LeaveDate": LeaveDate,
             "LeaveHour": LeaveHour, "LeaveMin": LeaveMin, "BackDate": BackDate, "BackHour": BackHour, "BackMin": BackMin,
             "LiveDateA": LiveDateA, "LiveDateB": LiveDateB, "LiveDateC": LiveDateC, "LiveDateD": LiveDateD,
             "LiveDateE": LiveDateE, "LiveDateF": LiveDateF, "LiveExtA": LiveExtA, "LiveExtB": LiveExtB, "LiveExtC": LiveExtC,
             "LiveExtD": LiveExtD, "LiveExtE": LiveExtE, "LiveExtF": LiveExtF, "Explanation": Explanation, "Overspend": Overspend,
-            "IsOver": IsOver, "HotelName": HotelName, "HotelTel": HotelTel, "OverReason": OverReason, "hideBillNo": hideBillNo
+            "OverChoice": OverChoice, "HotelName": HotelName, "HotelTel": HotelTel, "OverReason": OverReason, "hideBillNo": hideBillNo
       };
-      console.log("李秀晶", Advstr);
+      // console.log("李秀晶", Advstr);
       if(DeptName!=null ||DeptName!=undefined ){
 
       }else{

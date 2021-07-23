@@ -33,7 +33,7 @@ function shuffleA(BillNo) {
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="2" height="25">Proj_No</td>' +
-                '<td width="50" colspan="7" rowspan ="2" height="25" class="feeSignfield" align="center">  采购申请单 </td>' +
+                '<td width="50" colspan="7" rowspan ="2" height="25" class="feeSignfield" align="center">  采购申请单- <font face="arial" color="darkgray">OrigName</font>  </td>' +
                 '<td width="50" colspan="2" height="25">ReqDate</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -201,6 +201,7 @@ function shuffleA(BillNo) {
                 '   <br/>  ' +
                 '   <br/>  ' +
                 '   <br/>  ' +
+                ' <br/>追加后： ExceedValue </td> ' +
                 '   </td> ' +
                 '<td width="50" colspan="1" height="25">总金额</td>' +
                 '<td width="50" colspan="1" height="25">TotalV</td>' +
@@ -333,6 +334,7 @@ function shuffleA(BillNo) {
                     "CeoName": bjob[i].CeoName, "CeoDate": bjob[i].CeoDate,
                     "BodName": bjob[i].BodName, "BodDate": bjob[i].BodDate,
                     "Reason": bjob[i].Reason,
+                    "OrigName": bjob[i].OrigName,
                     "CurText": bjob[i].CurText, "CurStatus": bjob[i].CurStatus,
                     "CurLevel": bjob[i].CurLevel, "TermiLevel": bjob[i].TermiLevel,
                     "CurName": bjob[i].CurName, "SendText": bjob[i].SendText,
@@ -365,7 +367,7 @@ function shuffleA(BillNo) {
                 SNO_10, BudItem_10, ItemO_10, Descip_10, Measure_10, Invent_10, UniPrice_10, QuantAmt_10, SubTot_10, Delivway_10, Vender_10, Underbur_10, ApendType_10, DeptM_10,
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, GroupName, UnitName ,TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
-                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
+                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason, OrigName, 
                 StatusOK, CreditA, CreditB, CreditC, CreditD , ExceedValue
             }) => {
                 let newHtml = htmlModel
@@ -490,6 +492,7 @@ function shuffleA(BillNo) {
                     .replace(/CeoDate/, CeoDate)
                     .replace(/BodDate/, BodDate)
                     .replace(/Reason/, Reason)
+                    .replace(/OrigName/, OrigName)
 
                     .replace(/StatusOK/, StatusOK)
                     .replace(/CreditA/, CreditA)
@@ -639,6 +642,7 @@ function shuffleA(BillNo) {
                             CeoDate: sData[11].CeoDate,
                             BodDate: sData[11].BodDate,
                             Reason: sData[11].Reason,
+                            OrigName: sData[11].OrigName,
 
                             StatusOK: sData[11].CurText,
                             CreditA: sData[12].CreditA,
@@ -751,7 +755,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 '</tr>' +
                 '<tr>' +
                 '<td width="50" colspan="2" height="25">Proj_No</td>' +
-                '<td width="50" colspan="7" rowspan ="2"  height="25" class="feeSignfield"  align="center">  采购申请单 </td>' +
+                '<td width="50" colspan="7" rowspan ="2"  height="25" class="feeSignfield"  align="center">  采购申请单- <font face="arial" color="darkgray">OrigName</font> </td>' +
                 '<td width="50" colspan="2" height="25">ReqDate</td>' +
                 '</tr>' +
                 '<tr>' +
@@ -921,7 +925,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 ' CreditB  <br/>  ' +
                 ' CreditC   ' +
                 ' CreditD  ' +
-                ' <br/>追加额度： ExceedValue </td> ' +
+                ' <br/>追加后： ExceedValue </td> ' +
                 '<td width="50" colspan="1" height="25">总金额</td>' +
                 '<td width="50" colspan="1" height="25">TotalV</td>' +
                 '</tr>' +
@@ -1067,6 +1071,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                     "CurText": bjob[i].CurText, "CurStatus": bjob[i].CurStatus,
                     "CurLevel": bjob[i].CurLevel, "TermiLevel": bjob[i].TermiLevel,
                     "CurName": bjob[i].CurName, "SendText": bjob[i].SendText,
+                    "OrigName": bjob[i].OrigName 
                 }
                 console.log("真率", objX);
                 sData.push(objX);
@@ -1095,7 +1100,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                 SNO_10, BudItem_10, ItemO_10, Descip_10, Measure_10, Invent_10, UniPrice_10, QuantAmt_10, SubTot_10, Delivway_10, Vender_10, Underbur_10, ApendType_10, DeptM_10,
                 Bill_No, List_No, ReqDate, Proj_No, Applic_No, GroupName, UnitName, TotalV, Exchange, Pay_method, Explan, Entry_Date,
                 OppName, MagName, VipName, PurName, PexName, CfoName, PsdName, CeoName, BodName,
-                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason,
+                OppDate, MagDate, VipDate, PurDate, PexDate, CfoDate, PsdDate, CeoDate, BodDate, Reason, OrigName, 
                 StatusOK, CreditA, CreditB, CreditC, CreditD, ExceedValue
             }) => {
                 let newHtml = htmlModel
@@ -1220,6 +1225,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                     .replace(/CeoDate/, CeoDate)
                     .replace(/BodDate/, BodDate)
                     .replace(/Reason/, Reason)
+                    .replace(/OrigName/, OrigName)
 
                     .replace(/StatusOK/, StatusOK)
                     .replace(/CreditA/, CreditA)
@@ -1369,6 +1375,7 @@ function VegasA(BillNo, FlowBudget, FlowDept,  FlowUnit , FlowVip) {
                             CeoDate: sData[11].CeoDate,
                             BodDate: sData[11].BodDate,
                             Reason: sData[11].Reason,
+                            OrigName: sData[11].OrigName,
 
                             StatusOK: sData[11].CurText,
                             CreditA: sData[12].CreditA,

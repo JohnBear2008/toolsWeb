@@ -9,6 +9,7 @@ module.exports = function (sender) {
 	var StaffID_Clone = '';
 	var StaffUser = '';
 	var StaffName = '';
+	var OrigLabel = Advstr.OrigLabel;
 	var DeptLabel = Advstr.PowerLabel;
 	var GroupLabel = Advstr.RingLabel;
 	var StaffRole = Advstr.StaffRole;
@@ -43,7 +44,7 @@ module.exports = function (sender) {
 	var DeptSQL = '';
 	var Arrange = sender.req.query.Arrange;
 	console.log("霖霖是：", EmpValue, "喜", StaffRole);
-	console.log("霖霖是：", StaffName, StaffID, StaffLevel, DeptLabel, StaffID_Clone , Mobiles , "悲");
+	console.log("霖霖是：", StaffName, StaffID, StaffLevel, OrigLabel , DeptLabel, StaffID_Clone , Mobiles , "悲");
 	if (Pattern == 'Dept') {  //部門
 		DeptSQL = " DeptLabel = '" + DeptLabel + "' ";
 	}
@@ -52,7 +53,7 @@ module.exports = function (sender) {
 	}
 	if (Arrange == 'JobSet') {
 		if(StaffLevel == '1'){
-			JobOppSet( DeptLabel, GroupLabel );
+			JobOppSet( OrigLabel ,DeptLabel, GroupLabel );
 		}else{
 			JobSet(StaffName);
 		}
@@ -67,9 +68,9 @@ module.exports = function (sender) {
 	}
 	if (Arrange == 'JobReset') {
 		if(StaffLevel == '1'){
-			JobOppReset(StaffName, StaffLevel);
+			JobOppReset(StaffName, StaffLevel, OrigLabel );
 		}else{
-			JobReset(StaffName, StaffLevel);
+			JobReset(StaffName, StaffLevel, OrigLabel);
 		}
 		
 	}
@@ -133,25 +134,29 @@ module.exports = function (sender) {
 		} else {
 			StaffLevel = '0';
 		}
-		var SQLqry = " select distinct tba.DeptLabel , tba.GroupLabel from  bgu_staffs tba where StaffName = ? and StaffLevel =? ";
+		var SQLqry = " select distinct tba.OrigLabel , tba.DeptLabel , tba.GroupLabel from  bgu_staffs tba where StaffName = ? and StaffLevel =? ";
 		yjDBService.exec({
 			sql: SQLqry,
 			parameters: [StaffName, StaffLevel],
 			success: function (r) {
 				var datas = []
 				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
+				var OrigStrCat = '';
 				var DeptStrCat = '';
 				var GroupStrCat = '';
 				for (var i = 0; i < data.length; i++) {
 					if(i==0){
+						OrigStrCat =  data[i].OrigLabel;
 						DeptStrCat =  data[i].DeptLabel;
 					      GroupStrCat =  data[i].GroupLabel;
 					}else{
+						OrigStrCat =  data[i].OrigLabel;
 						DeptStrCat = DeptStrCat+','+data[i].DeptLabel;
 						GroupStrCat = GroupStrCat+','+data[i].GroupLabel;
 					}
 				}
 				var temp = {
+					"OrigLabel": OrigStrCat,
 					"DeptLabel": DeptStrCat,
 					"GroupLabel": GroupStrCat,
 				}
@@ -174,7 +179,7 @@ module.exports = function (sender) {
 		} else {
 			StaffLevel = '0';
 		}
-		var SQLqry = " select distinct tba.DeptLabel , tba.GroupLabel from  bgu_staffs tba where StaffName = ? and StaffLevel =? ";
+		var SQLqry = " select distinct tba.OrigLabel ,tba.DeptLabel , tba.GroupLabel from  bgu_staffs tba where StaffName = ? and StaffLevel =? ";
 		yjDBService.exec({
 			sql: SQLqry,
 			parameters: [StaffName, StaffLevel],
@@ -183,30 +188,31 @@ module.exports = function (sender) {
 				var data = yjDB.dataSet2ObjectList(r.meta, r.rows);
 				for (var i = 0; i < data.length; i++) {
 					var temp = {
+						"OrigLabel": data[i].OrigLabel,
 						"DeptLabel": data[i].DeptLabel,
 						"GroupLabel": data[i].GroupLabel,
 					}
 					datas.push(temp)
 				}
-				// var dump = JSON.stringify(datas);
-				// if (dump.length > 100) {
-				// 	console.log("孝恩:" + dump.substring(0, 100));
-				// } else {
-				// 	console.log("孝恩:" + JSON.stringify(datas));
-				// }
+				var dump = JSON.stringify(datas);
+				if (dump.length > 500) {
+					console.log("洨恩:" + dump.substring(0, 500));
+				} else {
+					console.log("洨恩:" + JSON.stringify(datas));
+				}
 				sender.success(datas);
 			},
 			error: {},
 		});
 	}
-	function JobOppReset(StaffName, StaffLevel) {
+	function JobOppReset(StaffName, StaffLevel, OrigLabel) {
 		var SQLDelete =  "Delete From `bgu_staffs` where StaffName=? and StaffLevel ='1' and  (StaffID LIKE '%-%') ";
-		SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
+		SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', OrigLabel='宁波大港', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
 		 " where  StaffName=? ";
 		if (StaffLevel != null && StaffLevel != undefined) {
 			 
 		} else {
-			SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
+			SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', OrigLabel='宁波大港', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
 				" where  StaffName=? ";
 		}
 		console.log("露:", SQLInsert, " 密 ", StaffLevel);
@@ -222,7 +228,6 @@ module.exports = function (sender) {
 					parameters: paramList,
 					rowsAsArray: true,
 					success: function (result) {
-						console.log("露娜:", result);
 						var retcode = { "status": "OK" };
 						sender.success(retcode);
 					},
@@ -232,12 +237,12 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function JobReset(StaffName, StaffLevel) {
+	function JobReset(StaffName, StaffLevel, OrigLabel) {
 		var SQLInsert = "";
 		if (StaffLevel != null && StaffLevel != undefined) {
 			SQLInsert = "Delete from `bgu_staffs` where StaffName=? and  StaffLevel =? and  StaffLevel !='1' ";
 		} else {
-			SQLInsert = "Update `bgu_staffs` set StaffLevel = '1', DeptLabel='', GroupLabel='', StaffRole = '文员' " +
+			SQLInsert = "Update `bgu_staffs` set StaffLevel = '1',  OrigLabel='宁波大港' , DeptLabel='', GroupLabel='', StaffRole = '文员' " +
 				" where  StaffName=? ";
 		}
 		console.log("露:", SQLInsert, " 密 ", StaffLevel);
@@ -254,8 +259,8 @@ module.exports = function (sender) {
 			error: sender.error
 		});
 	}
-	function JobOppSet(DeptLabel,GroupLabel) {
-		var SQLInsert = "Delete from `bgu_staffs` where StaffID  like CONCAT('%', '" + StaffID_Clone + "', '%') and StaffLevel= '1'";
+	function JobOppSet(OrigLabel, DeptLabel,GroupLabel) {
+		var SQLInsert = "Delete from `bgu_staffs` where StaffID  like CONCAT('%', '" + StaffID_Clone + "', '%') and (StaffLevel= '1' OR StaffRole ='文员') ";
 		// console.log("苦尽干来:", SQLInsert);
 		let paramList = [ StaffID_Clone];
 		yjDBService.exec({
@@ -263,12 +268,12 @@ module.exports = function (sender) {
 			parameters: paramList,
 			rowsAsArray: true,
 			success: function (result) {
-				JobOppSetPlug(DeptLabel,GroupLabel);
+				JobOppSetPlug(OrigLabel, DeptLabel,GroupLabel);
 			},
 			error: sender.error
 		});
 	}
-	function JobOppSetPlug(DeptLabel,GroupLabel) {
+	function JobOppSetPlug(OrigLabel, DeptLabel,GroupLabel) {
 		let SfOppID = [];
 		var cnt =0 ;
 		let GrupList = [];let DepList = [];
@@ -280,7 +285,6 @@ module.exports = function (sender) {
 				}else{
 					SfOppID[ki]= StaffID_Clone;
 				}
-				
 				let qryDept  = GrupList[ki]; 
 				if (qryDept != "" && qryDept != undefined) {
 					let BurnList = [];
@@ -288,24 +292,29 @@ module.exports = function (sender) {
 					DepList[ki] = BurnList[0];
 					console.log( "金刚", DepList[ki] , "酷斯拉", GrupList[ki] ,"生长： ",SfOppID[ki]);
 				}
-				
 				cnt ++;
 			}
 		}
+		console.log( "台湾",cnt);
 		for (var ki = 0; ki < cnt; ki++) {
-			JobOppSetIns(SfOppID[ki],DepList[ki],GrupList[ki]);
+			JobOppSetIns(OrigLabel, SfOppID[ki],DepList[ki],GrupList[ki]);
 		}
 		var retcode = { "status": "OK" };
 		sender.success(retcode);
 	}
-	function JobOppSetIns(SfOppIDTxt,DepListTxt,GrupListTxt) {
-            var SQLInsert = "INSERT INTO `bgu_staffs` " +
-			"(`StaffID`, `StaffUser`, `StaffName`, `StaffLevel`, `DeptLabel`, `DeptDefault`, `GroupLabel`, `GroupDefault`, `StaffRole`, `Mobiles`, `Status`, `StatusText` , `LastModify`) " +
-			"  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?  )";
+	function JobOppSetIns(OrigLabel,SfOppIDTxt,DepListTxt,GrupListTxt) {
+            var SQLInsert = "INSERT INTO `bgu_staffs`  (`StaffID`, `StaffUser`, `StaffName`, `StaffLevel`, `OrigLabel`, " +
+			" `DeptLabel`, `DeptDefault`, `GroupLabel`, `GroupDefault`, `StaffRole`, " +
+			" `Mobiles`, `Status`, `StatusText` , `LastModify`) " +
+			"  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?  )";
 		var Status = '0';
 		var StatusText = '正常';
-		// console.log("李白:", SfOppIDTxt, StaffUser, StaffName, StaffLevel, DepListTxt, DepListTxt, GrupListTxt, GrupListTxt, StaffRole, Mobiles, Status, StatusText, LastModify);
-		let paramList = [SfOppIDTxt, StaffUser, StaffName, StaffLevel, DepListTxt, DepListTxt, GrupListTxt, GrupListTxt, StaffRole, Mobiles, Status, StatusText, LastModify];
+		console.log("李白:", SfOppIDTxt, StaffUser, StaffName, OrigLabel, StaffLevel,
+		 "--",DepListTxt, DepListTxt, GrupListTxt, GrupListTxt, StaffRole,
+		 "--", Mobiles, Status, StatusText, LastModify);
+		let paramList = [SfOppIDTxt, StaffUser, StaffName, StaffLevel, OrigLabel,
+			 DepListTxt, DepListTxt, GrupListTxt, GrupListTxt, StaffRole, 
+			 Mobiles, Status, StatusText, LastModify];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,
@@ -331,8 +340,8 @@ module.exports = function (sender) {
 	}
 	function JobSetPlug(StaffName) {
 		var SQLInsert = "INSERT INTO `bgu_staffs` " +
-			"(`StaffID`, `StaffUser`, `StaffName`, `StaffLevel`, `DeptLabel`, `DeptDefault`, `GroupLabel`, `GroupDefault`, `StaffRole`, `Mobiles`, `Status`, `StatusText` , `LastModify`) " +
-			"  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?  )";
+			"(`StaffID`, `StaffUser`, `StaffName`, `StaffLevel`, `OrigLabel`, `DeptLabel`, `DeptDefault`, `GroupLabel`, `GroupDefault`, `StaffRole`, `Mobiles`, `Status`, `StatusText` , `LastModify`) " +
+			"  VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?  )";
 		var Status = '';
 		if (StaffRole == '文员') {
 			Status = '0';
@@ -340,8 +349,8 @@ module.exports = function (sender) {
 			Status = '1';
 		}
 		var StatusText = '正常';
-		console.log("露娜:", StaffID_Clone, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText, LastModify);
-		let paramList = [StaffID_Clone, StaffUser, StaffName, StaffLevel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText, LastModify];
+		console.log("露娜:", StaffID_Clone, StaffUser, StaffName, StaffLevel, OrigLabel ,DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText, LastModify);
+		let paramList = [StaffID_Clone, StaffUser, StaffName, StaffLevel, OrigLabel, DeptLabel, DeptLabel, GroupLabel, GroupLabel, StaffRole, Mobiles, Status, StatusText, LastModify];
 		yjDBService.exec({
 			sql: SQLInsert,
 			parameters: paramList,

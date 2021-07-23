@@ -84,7 +84,7 @@
 						</div>
 						<div id="listPrintViewDiv">
 						</div>
-						<div  style="margin-left:400px;margin-top:15px;">
+						<div  style="margin-left:400px;margin-top:20px;">
 							<button id="BtnAgree" type="button" class="btn btn-warning">同意</button>
 							<button id="BtnReject" type="button" class="btn btn-danger ">退回</button>
 							<button id="PrintConfirm" type="button" class="btn btn-info">打印</button>
@@ -135,7 +135,6 @@
 			</div>
 		</div>
 	</div>
-			 
 				<div class="modal fade" id="sweetwindow" title="驳回理由" tabindex="-1" role="dialog"
 					aria-labelledby="sweetwindowLabel" aria-hidden="true" style="top:300px;height:500px;"
 					data-backdrop="static">
@@ -184,7 +183,8 @@
 					var CapSubject = '';
 					var CapMode = '';
 					var CapPhone = '';
-					var Formkind = '';
+					var CapClaim = '';
+					var CapFormkind = '';
 					var CapDate = '0';  //0  NoDate, 1 Date
 					var CapAlert = '0';  //0 不超过, 1 超过
 					$(document).ready(function () {
@@ -270,11 +270,11 @@
 							console.log("张良", CapItemNo, "张良" , sessionOID );
 							var reportType = 'agreeFee';
 							var taskData = {
-								"reportType": reportType, "BillNo": CapBillNo, "Formkind": Formkind, "Subject": CapSubject,
+								"reportType": reportType, "BillNo": CapBillNo, "Formkind": CapFormkind, "Subject": CapSubject,
 								"ItemNo": CapItemNo, "TotalValue": CapTotalValue, "CurWorkId": sessionOID, "CurName": sessionName,
-								"CurJob": CapCurJob, "CurPhone": CapPhone,
+								"CurJob": CapCurJob, "CurPhone": CapPhone, "Claimflag": CapClaim,
 							}
-							// console.log("到达胜利之前", taskData);
+							console.log("到达胜利之前", taskData);
 							layer.alert("同意此笔审批号" + CapBillNo);
 							$('#kisswindow').modal('toggle');
 							$.ajax({
@@ -314,7 +314,7 @@
 						var arrange = 'ReturnBill';
 						var reportType = 'rejectFee';
 						var taskData = {
-							"reportType": reportType, "arrange": arrange, "BillNo": CapBillNo, "Formkind": Formkind,
+							"reportType": reportType, "arrange": arrange, "BillNo": CapBillNo, "Formkind": CapFormkind ,
 							"Subject": CapSubject, "ItemNo": CapItemNo,
 							"TotalValue": CapTotalValue, "CurWorkId": sessionAID, "CurName": sessionName,
 							"CurJob": CapCurJob, "CurPhone": CapPhone, "Reason": ReasonPest,
