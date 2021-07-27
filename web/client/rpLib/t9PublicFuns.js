@@ -31,8 +31,8 @@ const getUrl = (type) => {
         case 'installInfo':
             apiUrl = 'getInstallInfo'
             break;
-        case 'getStoreHistoryRPIn':
-            apiUrl = 'getStoreHistoryRPIn'
+        case 'storeOut':
+            apiUrl = 'getStoreOut'
             break;
         default:
             console.log("无法识别type");
@@ -46,7 +46,8 @@ const getUrl = (type) => {
 const getT9Data = async ({
     to,
     type,
-    UID
+    UID,
+    filter
 }) => {
     //c-params
     if (!to && type) {
@@ -60,7 +61,8 @@ const getT9Data = async ({
         url: getUrl(type),
         data: {
             to,
-            UID
+            UID,
+            filter
         },
         success: function (data) {
             return data;
@@ -69,10 +71,10 @@ const getT9Data = async ({
             return error;
         }
     });
-
+    console.log('getT9Data res', res);
     return res;
 
-    console.log('getT9Data rs', rs);
+   
 
 }
 

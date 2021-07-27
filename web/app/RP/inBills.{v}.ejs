@@ -2019,12 +2019,21 @@
 
         //T9接口导入按钮
         $('#T9ImportBtn').click(async function () {
-            alert('t9')
+            // alert('t9')
+
+            let RPData = await getDataBySql({
+                sql: 'sqlInBills',
+                params: {
+                    filter: 'billFrom ="ERP导入"'
+                }
+            })
+
+            console.log('RPData', RPData);
 
             let T9Data = await getT9Data({
-                to: 'RP',
-                type: 'getStoreHistoryRPIn',
-
+                to: 'rp',
+                type: 'storeOut',
+                filter: 'remark like "%维修耗用%"'
             })
             console.log('T9Data', T9Data);
 
@@ -2033,35 +2042,52 @@
             let inSubBillsArr = [];
 
             for (const n of T9Data) {
-                inBillsArr.push({
-                    billFrom: 'ERP导入',
-                    billId: n.billId,
-                    customerId: n.customerId,
-                    customerShortName: n.customerShortName,
-                    customerName: n.customerName,
-                    contact: n.contact,
-                    mobilePhone: n.mobilePhone,
-                    workPhone: n.workPhone,
-                    operator: n.operator,
-                    maker: n.maker,
-                    makeDate: currentDate(),
-                    auditor: n.auditor,
-                    status: '待审核',
-                    remark: n.remark
-                })
 
-                inSubBillsArr.push({
-                    billId: n.billId,
-                    rowId: n.rowId,
-                    productId: n.productId,
-                    productName: n.productName,
-                    warehouseId: n.warehouseId,
-                    warehouseName: n.warehouseName,
-                    unit: n.unit,
-                    num: n.num,
-                    status: '预入',
-                    remark: n.subRemark
-                })
+                let isIn = false;
+                for (const m of RPData) {
+                    if (m.billId === n.billId) {
+                        isIn = true
+                        break
+                    }
+                }
+
+                if (!isIn) {
+                    inBillsArr.push({
+                        billFrom: 'ERP导入',
+                        billId: n.billId,
+                        customerId: n.customerId,
+                        customerShortName: n.customerShortName,
+                        customerName: n.customerName,
+                        contact: sessionName,
+                        mobilePhone: n.mobilePhone,
+                        workPhone: n.workPhone,
+                        operator: sessionName,
+                        maker: sessionName,
+                        makeDate: currentDate(),
+                        auditor: sessionName,
+                        status: '待审核',
+                        remark: n.remark
+                    })
+
+                    inSubBillsArr.push({
+                        billId: n.billId,
+                        rowId: n.rowId,
+                        productId: n.productId,
+                        productName: n.productName,
+                        warehouseId: 'W1',
+                        warehouseName: '客服仓',
+                        unit: n.unit,
+                        num: n.num,
+                        status: '预入',
+                        remark: n.subRemark
+                    })
+
+                }
+            }
+
+            if (inBillsArr.length === 0) {
+                alert('未识别到新单据!')
+                return
             }
             //do-去重处理
             // inBillsArr = Array.from(new Set(inBillsArr))仅可用于简单数组去重
@@ -2071,17 +2097,11 @@
                 return item
             }, [])
 
-            //子表不去重
-            // var subObj = {};
-            // inSubBillsArr = inSubBillsArr.reduce(function (item, next) {
-            //     subObj[next.billId] ? '' : subObj[next.billId] = true && item.push(
-            //         next);
-            //     return item
-            // }, [])
+
             console.log('inBillsArr', inBillsArr);
             console.log('inSubBillsArr', inSubBillsArr);
 
-            return;
+
 
             //do-导入数据库
             let rInBills = await postDBData({
@@ -2137,10 +2157,6 @@
 
             //return-刷新主界面
             loadBillMainTable()
-
-
-
-
 
         })
 
