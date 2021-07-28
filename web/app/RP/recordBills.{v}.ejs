@@ -1269,20 +1269,20 @@
 
 
     //加载位置信息selector
-    const loadLocationsSelector = async (i) => {
-        $('#' + i.elementId).empty(); //清空原有选项
-        $('#' + i.elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+    const loadLocationsSelector = async ({
+        elementId,
+        sqlParams,
+        initValue
+    }) => {
+        $('#' + elementId).empty(); //清空原有选项
+        $('#' + elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
 
-        $('#' + i.elementId).selectpicker({
+        $('#' + elementId).selectpicker({
             noneSelectedText: "未选择" //默认显示内容
         });
 
-        // if (!i.sqlParams) {
-        //     $('#' + i.elementId).append($('<option value="">未选择</option>'));
-        //     return
-        // }
-
-        let locationsRS = await getDataBySql(i.sqlParams);
+        let locationsRS = await getDataBySql(sqlParams);
+        console.log('locationsRS', locationsRS);
         if (locationsRS.length === 0) {
             return
         }
@@ -1293,28 +1293,28 @@
         for (const n of locationsArr) {
             if (n && n !== '\n') {
                 // console.log('add', n, typeof n);
-                $('#' + i.elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
+                $('#' + elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
                     '</option>'));
             }
         }
 
         let defaultValue = '';
-        // console.log('len', $('#' + i.elementId + ' option').length);
+        // console.log('len', $('#' + elementId + ' option').length);
 
-        if ($('#' + i.elementId + ' option').length === 1) {
+        if ($('#' + elementId + ' option').length === 1) {
             defaultValue = locationsArr[0];
             // console.log('defaultValueArr', defaultValue);
         }
 
-        if (i.initValue) {
-            defaultValue = i.initValue;
+        if (initValue) {
+            defaultValue = initValue;
         }
 
         // console.log('defaultValue', defaultValue);
 
 
-        $('#' + i.elementId).selectpicker('val', defaultValue);
-        $('#' + i.elementId).selectpicker('refresh');
+        $('#' + elementId).selectpicker('val', defaultValue);
+        $('#' + elementId).selectpicker('refresh');
 
     }
 
@@ -1323,7 +1323,7 @@
         $('#rp_partsbillsForm-partId').unbind('change');
         $('#rp_partsbillsForm-partId').change(async function () {
             let partId = $('#rp_partsbillsForm-partId').val();
-            // console.log('partId', partId);
+            console.log('partId', partId);
             if (partId) {
                 // $('#rp_partsbillsForm-partId').selectpicker('refresh');
                 fillPartInfo(partId);
@@ -2986,6 +2986,11 @@
         $('#rp_recordbillsSave').click(async function () {
 
             // console.log('save mainTableData', mainTableData);
+            //c-检查必填项
+            if (!$('#rp_recordbillsForm-repairStaff option:selected').val()) {
+                alert('维修人必须填!')
+                return
+            }
 
             //check-检查单据状态
             let status = $('#rp_recordbillsForm-status').text()
