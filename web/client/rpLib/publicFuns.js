@@ -538,6 +538,27 @@ const loadBootStrapSelector = async ({
     })
 }
 
+/**
+ *加载datalistSelector 数据
+ *
+ * @param {*} i={elementId,options,initValue}
+ */
+const loadDatalistSelector = async ({
+    elementId,
+    options,
+    initValue
+}) => {
+    console.log('loadDatalistSelector', elementId, options, initValue);
+    $('#' + elementId + '-datalist').empty(); //清空原有选项
+    for (const n of options) {
+        $('#' + elementId + '-datalist').append($('<option  label=' + n.token + ' value=' + n.value + '>' + n.option + '</option>'));
+    }
+    if (initValue) {
+        $('#' + elementId).val(initValue);
+    } else {
+        $('#' + elementId).val('');
+    }
+}
 
 /**
  *加载bootStrapSelect 数据

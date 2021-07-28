@@ -977,10 +977,16 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_recordbillsForm-productId"
+                                                        <!-- <select id="rp_recordbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
-                                                        </select>
+                                                        </select> -->
+
+
+                                                        <input class="form-control" id="rp_recordbillsForm-productId"
+                                                            list="rp_recordbillsForm-productId-datalist">
+                                                        <datalist id="rp_recordbillsForm-productId-datalist">
+                                                        </datalist>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">产品名称</label>
@@ -1393,11 +1399,9 @@
         $('#rp_recordbillsForm-productId').unbind('change');
         $('#rp_recordbillsForm-productId').change(function () {
             // alert(1)
-            let productId = $('#rp_recordbillsForm-productId option:selected')
+            let productId = $('#rp_recordbillsForm-productId')
                 .val()
             if (productId) {
-
-                $('#rp_recordbillsForm-productId').selectpicker('refresh');
                 fillProductInfo(productId);
 
             }
@@ -1800,7 +1804,7 @@
         })
 
         //c-
-        if(!mainFormData.data[0].customerId){
+        if (!mainFormData.data[0].customerId) {
             alert('客户编号为空,请检查客户资料!')
             return
         }
@@ -2212,7 +2216,23 @@
 
 
 
+    //加载部件清单
+    const loadProductSelector = async () => {
+        let elementId = 'rp_recordbillsForm-productId';
+        let options = await getDataBySql({
+            sql: 'getProductSelector',
+            params: {
+                filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+            }
+        })
+        console.log('options', options);
 
+        loadDatalistSelector({
+            elementId: elementId,
+            options: options
+        })
+
+    }
 
 
 
@@ -2927,7 +2947,7 @@
             //设置默认值
 
             $("#rp_recordbillsForm-status").text('新增')
-            $("#rp_recordbillsForm-productId").selectpicker('val', '')
+            $("#rp_recordbillsForm-productId").val('')
             $("#rp_recordbillsForm-origin").selectpicker('val', '宁波')
             $("#rp_recordbillsForm-productFrom").selectpicker('val', '终端客户')
             $("#rp_recordbillsForm-productBelong").selectpicker('val', '客户')
@@ -3425,15 +3445,17 @@
 
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_recordbillsForm-productId',
-            sqlParams: {
-                sql: 'getProductSelector',
-                params: {
-                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
-                }
-            },
-        })
+        // loadBootStrapSelector({
+        //     elementId: 'rp_recordbillsForm-productId',
+        //     sqlParams: {
+        //         sql: 'getProductSelector',
+        //         params: {
+        //             filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+        //         }
+        //     },
+        // })
+
+        loadProductSelector()
 
         // loadT9BootStrapSelector({
         //     elementId: 'rp_recordbillsForm-productId',
