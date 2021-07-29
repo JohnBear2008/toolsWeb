@@ -26,8 +26,12 @@
 
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
-
-
+<script>
+    window.onload = () => {
+        var t = window.devicePixelRatio
+        document.body.style.zoom = 0.7 / t;
+    }
+</script>
 
 <!-- 定义html元素 -->
 <div class="rpContent">
@@ -543,75 +547,9 @@
                 </div>
                 <div class="modal-body">
 
-                    <!-- 历史维修记录 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                    维修记录
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse ">
-                            <div class="panel-body">
-                                此处加载此产品历史维修记录
-
-                                <!-- 定义基础模块数据表 -->
-                                <table id="rp_recordHistory" class=" table table-striped table-bordered"
-                                    style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>申请单号</th>
-                                            <th>产品编号</th>
-                                            <th>产品描述</th>
-                                            <th>问题描述</th>
-                                            <th>维修记录</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 领料退料接口 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                                    领料退料
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseTwo" class="panel-collapse collapse ">
-                            <div class="panel-body">
-                                此处放置领料退料
-
-                                <!-- 定义基础模块数据表 -->
-                                <table id="rp_materialRecords" class=" table table-striped table-bordered"
-                                    style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>单号</th>
-                                            <th>类型</th>
-                                            <th>零件编号</th>
-                                            <th>日期</th>
-                                            <th>金额</th>
-                                            <th>对应ERP单号</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
                         <div class="panel-body">
-
-
                             <form class="form-horizontal" role="form" id='rp_recordbillsForm'>
 
                                 <input id="rp_recordbillsForm-DBID" type="hidden" value="">
@@ -1010,11 +948,16 @@
 
                                                         <label class="col-sm-1 control-label">零件编号</label>
                                                         <div class="col-sm-5">
-                                                            <select id="rp_partsbillsForm-partId"
+                                                            <!-- <select id="rp_partsbillsForm-partId"
                                                                 class="form-control selectpicker"
                                                                 data-live-search="true" data-size="5"
                                                                 data-dropup-auto="false">
-                                                            </select>
+                                                            </select> -->
+
+                                                            <input class="form-control" id="rp_partsbillsForm-partId"
+                                                                list="rp_partsbillsForm-partId-datalist">
+                                                            <datalist id="rp_partsbillsForm-partId-datalist">
+                                                            </datalist>
                                                         </div>
 
                                                         <label class="col-sm-1 control-label">零件位置</label>
@@ -1253,7 +1196,7 @@
     //更新所选配件即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let partId = $('#rp_partsbillsForm-partId option:selected').val();
+        let partId = $('#rp_partsbillsForm-partId').val();
 
         if (partId) {
             stockNum = await getStockNum(partId, 'W2');
@@ -1328,27 +1271,21 @@
 
 
 
-
-
-
-
-
-
     //加载位置信息selector
-    const loadLocationsSelector = async (i) => {
-        $('#' + i.elementId).empty(); //清空原有选项
-        $('#' + i.elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
+    const loadLocationsSelector = async ({
+        elementId,
+        sqlParams,
+        initValue
+    }) => {
+        $('#' + elementId).empty(); //清空原有选项
+        $('#' + elementId).selectpicker('destroy'); //销毁selectpicker 避免显示异常
 
-        $('#' + i.elementId).selectpicker({
+        $('#' + elementId).selectpicker({
             noneSelectedText: "未选择" //默认显示内容
         });
 
-        // if (!i.sqlParams) {
-        //     $('#' + i.elementId).append($('<option value="">未选择</option>'));
-        //     return
-        // }
-
-        let locationsRS = await getDataBySql(i.sqlParams);
+        let locationsRS = await getDataBySql(sqlParams);
+        console.log('locationsRS', locationsRS);
         if (locationsRS.length === 0) {
             return
         }
@@ -1357,31 +1294,30 @@
         let locationsArr = locationsStr.split(',');
 
         for (const n of locationsArr) {
-
             if (n && n !== '\n') {
                 // console.log('add', n, typeof n);
-                $('#' + i.elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
+                $('#' + elementId).append($('<option  data-tokens=' + n + ' value=' + n + '>' + n +
                     '</option>'));
             }
         }
 
         let defaultValue = '';
-        // console.log('len', $('#' + i.elementId + ' option').length);
+        // console.log('len', $('#' + elementId + ' option').length);
 
-        if ($('#' + i.elementId + ' option').length === 1) {
+        if ($('#' + elementId + ' option').length === 1) {
             defaultValue = locationsArr[0];
             // console.log('defaultValueArr', defaultValue);
         }
 
-        if (i.initValue) {
-            defaultValue = i.initValue;
+        if (initValue) {
+            defaultValue = initValue;
         }
 
         // console.log('defaultValue', defaultValue);
 
 
-        $('#' + i.elementId).selectpicker('val', defaultValue);
-        $('#' + i.elementId).selectpicker('refresh');
+        $('#' + elementId).selectpicker('val', defaultValue);
+        $('#' + elementId).selectpicker('refresh');
 
     }
 
@@ -1389,10 +1325,10 @@
     const addPartIdListener = () => {
         $('#rp_partsbillsForm-partId').unbind('change');
         $('#rp_partsbillsForm-partId').change(async function () {
-            let partId = $('#rp_partsbillsForm-partId option:selected').val();
-            // console.log('partId', partId);
+            let partId = $('#rp_partsbillsForm-partId').val();
+            console.log('partId', partId);
             if (partId) {
-                $('#rp_partsbillsForm-partId').selectpicker('refresh');
+                // $('#rp_partsbillsForm-partId').selectpicker('refresh');
                 fillPartInfo(partId);
                 showStockNum();
 
@@ -1477,9 +1413,6 @@
 
         //将表数据同步到共用数组
         subTableData = dataArray;
-
-
-
 
         loadBillDataTable({
             elementId: 'rp_recordbillsSub',
@@ -1998,8 +1931,7 @@
                 filter: 'productId="' + productId + '"'
             }
         })
-
-
+        console.log("bomOptions", bomOptions);
 
         switch (type) {
             case 'all':
@@ -2019,7 +1951,12 @@
         }
 
 
-        loadDataBootStrapSelector({
+        // loadDataBootStrapSelector({
+        //     elementId: elementId,
+        //     options: options
+        // })
+
+        loadDatalistSelector({
             elementId: elementId,
             options: options
         })
@@ -3052,6 +2989,11 @@
         $('#rp_recordbillsSave').click(async function () {
 
             // console.log('save mainTableData', mainTableData);
+            //c-检查必填项
+            if (!$('#rp_recordbillsForm-repairStaff option:selected').val()) {
+                alert('维修人必须填!')
+                return
+            }
 
             //check-检查单据状态
             let status = $('#rp_recordbillsForm-status').text()
@@ -3490,7 +3432,7 @@
             // setState: false,
             onSwitchChange: function (event, state) {
                 if (state === true) {
-                    let partId = $('#rp_partsbillsForm-partId option:selected').val();
+                    let partId = $('#rp_partsbillsForm-partId').val();
                     $("#rp_partsbillsForm-scrapPartId").val(partId)
                     $("#rp_partsbillsForm-scrapPartNum").val(1)
 
@@ -3511,7 +3453,7 @@
             // setState: false,
             onSwitchChange: function (event, state) {
                 if (state === true) {
-                    let partId = $('#rp_partsbillsForm-partId option:selected').val();
+                    let partId = $('#rp_partsbillsForm-partId').val();
                     $("#rp_partsbillsForm-repairPartId").val(partId)
                     $("#rp_partsbillsForm-repairPartNum").val(1)
 

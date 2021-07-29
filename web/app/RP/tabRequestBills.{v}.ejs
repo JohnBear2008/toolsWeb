@@ -34,6 +34,12 @@
 <!-- 导入print 打印库 -->
 <script type="text/javascript" src="/rpLib/print/print.js"></script>
 
+<script>
+    window.onload = () => {
+        var t = window.devicePixelRatio
+        document.body.style.zoom = 0.7 / t;
+    }
+</script>
 
 
 <!-- 定义html元素 -->
@@ -976,10 +982,16 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_recordbillsForm-productId"
+                                                        <!-- <select id="rp_recordbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
-                                                        </select>
+                                                        </select> -->
+
+
+                                                        <input class="form-control" id="rp_recordbillsForm-productId"
+                                                            list="rp_recordbillsForm-productId-datalist">
+                                                        <datalist id="rp_recordbillsForm-productId-datalist">
+                                                        </datalist>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">产品名称</label>
@@ -1389,13 +1401,12 @@
 
     //选定产品修改事件
     const addProductListener = () => {
-        $('#rp_recordbillsForm-productId').unbind();
+        $('#rp_recordbillsForm-productId').unbind('change');
         $('#rp_recordbillsForm-productId').change(function () {
-            let productId = $('#rp_recordbillsForm-productId option:selected')
+            // alert(1)
+            let productId = $('#rp_recordbillsForm-productId')
                 .val()
             if (productId) {
-
-                $('#rp_recordbillsForm-productId').selectpicker('refresh');
                 fillProductInfo(productId);
 
             }
@@ -1796,6 +1807,12 @@
         let mainFormData = getPostFormData({
             formId: 'rp_requestbillsForm'
         })
+
+        //c-
+        if (!mainFormData.data[0].customerId) {
+            alert('客户编号为空,请检查客户资料!')
+            return
+        }
 
         //给主表数据添加,maker 和makeDate时间;新增状态等待单号检测完成,制单人为空则为新增状态
 
@@ -2204,7 +2221,23 @@
 
 
 
+    //加载部件清单
+    const loadProductSelector = async () => {
+        let elementId = 'rp_recordbillsForm-productId';
+        let options = await getDataBySql({
+            sql: 'getProductSelector',
+            params: {
+                filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+            }
+        })
+        console.log('options', options);
 
+        loadDatalistSelector({
+            elementId: elementId,
+            options: options
+        })
+
+    }
 
 
 
@@ -2213,7 +2246,10 @@
         //自动缩放比例
         // var t = window.devicePixelRatio // 获取下载的缩放 125% -> 1.25    150% -> 1.5
         // document.body.style.zoom = 0.8 / t; // 就去修改页面的缩放比例80%
+        // var s = window.screen.width / 1920;
 
+        // var t = window.devicePixelRatio
+        // document.body.style.zoom = 0.7 / t;
 
 
         // alert(parseInt(''))
@@ -2919,7 +2955,7 @@
             //设置默认值
 
             $("#rp_recordbillsForm-status").text('新增')
-            $("#rp_recordbillsForm-productId").selectpicker('val', '')
+            $("#rp_recordbillsForm-productId").val('')
             $("#rp_recordbillsForm-origin").selectpicker('val', '宁波')
             $("#rp_recordbillsForm-productFrom").selectpicker('val', '终端客户')
             $("#rp_recordbillsForm-productBelong").selectpicker('val', '客户')
@@ -3417,15 +3453,17 @@
 
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_recordbillsForm-productId',
-            sqlParams: {
-                sql: 'getProductSelector',
-                params: {
-                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
-                }
-            },
-        })
+        // loadBootStrapSelector({
+        //     elementId: 'rp_recordbillsForm-productId',
+        //     sqlParams: {
+        //         sql: 'getProductSelector',
+        //         params: {
+        //             filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+        //         }
+        //     },
+        // })
+
+        loadProductSelector()
 
         // loadT9BootStrapSelector({
         //     elementId: 'rp_recordbillsForm-productId',
