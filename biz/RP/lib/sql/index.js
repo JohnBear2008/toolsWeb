@@ -159,6 +159,7 @@ const sqlTableSelect = "select * from `tableId`";
 //更新借货单状态
 const updateBorrowStatus = "update `rp_borrowsubbills` set status = case when num=returnNum then '已还入' else '待归还' end"
 
+
 //借货单导出sql
 const borrowBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.billFrom,ta.borrowBillId,ta.customerId,ta.customerShortName,ta.customerName,ta.customerBelongShort,ta.contact,ta.mobilePhone,ta.workPhone,ta.operator,ta.address,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.productId,tb.productName,tb.productDescription,tb.productClass,tb.systemType,tb.warehouseId,tb.warehouseName,tb.unit,tb.num,tb.returnNum,(tb.num-tb.returnNum) as unReturnNum,tb.status as subStatus,tb.remark AS subRemark FROM `rp_borrowbills` ta LEFT JOIN `rp_borrowsubbills` tb ON ta.borrowBillId = tb.borrowBillId ) A"
 
@@ -176,6 +177,10 @@ const transferBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.transferBillId
 
 //报废单导出sql
 const scrapBillsExportSql = "SELECT * FROM ( SELECT ta.DBID,ta.scrapBillId,ta.scrapDate,ta.scrapType,ta.operator,ta.maker,ta.auditor,ta.makeDate,ta.auditDate,ta.`status`,ta.remark,tb.rowId,tb.fromBillId,tb.productId,tb.productName,tb.productDescription,tb.unit,tb.num,tb.remark AS subRemark FROM `rp_scrapbills` ta LEFT JOIN `rp_scrapsubbills` tb ON ta.scrapBillId = tb.scrapBillId ) A"
+
+//申请单导出sql
+const requestBillsExportSql = "SELECT * FROM ( SELECT ta.requestBillId,ta.requestDate,ta.fromBillType,ta.fromBillId,ta.customerId,ta.customerShortName,ta.warrantyPeriod,ta.customerArea,ta.customerName,ta.contact,ta.mobilePhone,ta.address,ta.customerBelongShort,ta.customerBelongFull,ta.isInland,ta.requestWay,ta.requestStaff,ta.maker,ta.makeDate,ta.remark,tb.recordBillId,tb.rowId,tb.responseBillId,tb.productId,tb.productName,tb.productDescription,tb.factoryNo,tb.origin,tb.systemType,tb.productClass,tb.productYear,tb.productMonth,tb.productionDate,tb.orginFactoryNo,tb.isRework,tb.urgent,tb.inWarranty,tb.productBelong,tb.productFrom,tb.faultDescription,tb.`status` FROM `rp_requestbills` ta LEFT JOIN `rp_recordbills` tb ON ta.requestBillId = tb.requestBillId ) A"
+
 /**
  *更具传入参数创建执行sql语句
  *
