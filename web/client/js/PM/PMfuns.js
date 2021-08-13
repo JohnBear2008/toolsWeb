@@ -608,7 +608,7 @@ function Fun_getSQLFullSelectDBData(selectSQL, selectorID, InitValue) {
 			}
 
 
-			if(!InitValue){
+			if (!InitValue) {
 				$(selectorID).selectpicker('val', '');
 			}
 
@@ -713,6 +713,11 @@ function fileSelected() {
 var checkFileName = (i, o) => {
 	o = true;
 	let forbiddenChar = /['";{}()+\^*\/!%#]/;
+
+	//特殊规则以tech_开头文件直接通过
+	if (i.fileName.indexOf('tech_') !== -1) {
+		return true
+	}
 
 	if (escape(i.fileName).indexOf("%u") != -1) { //包含中文
 		o = false;
