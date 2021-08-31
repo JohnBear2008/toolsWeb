@@ -3289,6 +3289,10 @@
 				return
 			}
 
+			
+			
+
+
 			//c-检查代码审核结果状态
 			if ($('#codeAuditResult').text() === '通过') {
 				if (!confirm('该任务单代码审核已通过,保存会清空结果,需要重新代码审核,是否继续?')) {
@@ -3309,6 +3313,13 @@
 				swal('审核人必填')
 				return
 			}
+
+			//c-检查是否选择自审
+			if ($('#codeAuditor option:selected').val()===sessionName) {
+				swal('代码审核已关闭自审,请选择其他代码审核人!')
+				return
+			}
+
 
 			//d-保存代码信息
 			let codeInfo = {
