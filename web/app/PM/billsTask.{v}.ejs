@@ -2183,258 +2183,257 @@
 
 		//按钮-任务审核通过按钮
 		$('#BTNTaskAcceptYes').click(async function () {
-
 			if (checkAuthority({
 					"SQL": "SQLGetAuthorities",
 					"filter": "StaffName='" + sessionName + "'"
 				}, "Task01")) {
 
-				if (sessionName == $('#taskStaff option:selected').text()) {
 
-					//增加完成期限提醒功能
-					if ($('#BTVersion').text() !== '0') {
-						let rsOldLimitDate = await $.ajax({
-							method: 'get',
-							data: {
-								"SQL": "select taskLimitDate from ppm_bills_task",
-								"filter": "BTID='" + $('#BTID').text() + "' and BTVersion='" +
-									parseInt($('#BTVersion').text() - 1) + "'"
-							},
-							url: "/app/PM/getSQLDBData",
-							success: function (data) {
-								// console.log("oldLimitDate:" + JSON.stringify(data));
-								// // return data[0].taskLimitDate
-							},
-							error: function () {}
+				//c-人员检查
+				if (sessionName != $('#taskStaff option:selected').text()) {
+					swal("您不是该任务单的负责人,无法确认任务!");
+					return
+				}
+
+				if (sessionName == $('#IPQCMaker option:selected').text()) {
+					swal("IPQC已关闭自审,请选择其他审核人!");
+					return
+				}
+
+				//增加完成期限提醒功能
+				if ($('#BTVersion').text() !== '0') {
+					let rsOldLimitDate = await $.ajax({
+						method: 'get',
+						data: {
+							"SQL": "select taskLimitDate from ppm_bills_task",
+							"filter": "BTID='" + $('#BTID').text() + "' and BTVersion='" +
+								parseInt($('#BTVersion').text() - 1) + "'"
+						},
+						url: "/app/PM/getSQLDBData",
+						success: function (data) {
+							// console.log("oldLimitDate:" + JSON.stringify(data));
+							// // return data[0].taskLimitDate
+						},
+						error: function () {}
+					})
+
+					let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
+					// console.log('oldTaskLimitDate', oldTaskLimitDate);
+
+					if ($('#taskLimitDate').val() === oldTaskLimitDate) {
+						if (confirm('是否需调整完成期限?')) {
+							return;
+						}
+					}
+				}
+
+				if (checkAcceptInput()) {
+					var msg = confirm("确认后即将开始任务单流程!");
+					if (msg == true) {
+						//do-自动更新计划单完成期限功能-2020-07-10
+						let planData = await getBizDataBySQL({
+							SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
+								$('#taskBPID').text() +
+								"' order by version desc limit 1"
 						})
 
-						let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
-						// console.log('oldTaskLimitDate', oldTaskLimitDate);
-
-						if ($('#taskLimitDate').val() === oldTaskLimitDate) {
-							if (confirm('是否需调整完成期限?')) {
-								return;
+						// alert(JSON.stringify(planData))
+						if ($('#taskLimitDate').val() > planData[0].limitDate) {
+							let updatePlanLimitDate = {
+								"DBTable": "ppm_bills_plan",
+								"BillIDName": "BPID",
+								"BillID": $('#taskBPID').text(),
+								"limitDate": $('#taskLimitDate').val(),
+								"filter": "version =" + planData[0].version,
 							}
+							$.ajax({
+								method: 'post',
+								url: '/app/PM/updBillStatus',
+								data: updatePlanLimitDate,
+								success: function (data, textStatus) {},
+								error: function (XMLHttpRequest,
+									textStatus,
+									errorThrown) {}
+							});
 						}
-					}
+						//do-自动更新计划单完成期限功能-2020-07-10
 
+						var FQCRequest = $('input:radio[name="FQCRequest"]:checked')
+							.val();
 
+						if (FQCRequest == 1) {
 
-					if (checkAcceptInput()) {
-						var msg = confirm("确认后即将开始任务单流程!");
-						if (msg == true) {
-
-
-
-							//do-自动更新计划单完成期限功能-2020-07-10
-							let planData = await getBizDataBySQL({
-								SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
-									$('#taskBPID').text() +
-									"' order by version desc limit 1"
-							})
-
-							// alert(JSON.stringify(planData))
-							if ($('#taskLimitDate').val() > planData[0].limitDate) {
-								let updatePlanLimitDate = {
-									"DBTable": "ppm_bills_plan",
-									"BillIDName": "BPID",
-									"BillID": $('#taskBPID').text(),
-									"limitDate": $('#taskLimitDate').val(),
-									"filter": "version =" + planData[0].version,
-								}
-								$.ajax({
-									method: 'post',
-									url: '/app/PM/updBillStatus',
-									data: updatePlanLimitDate,
-									success: function (data, textStatus) {},
-									error: function (XMLHttpRequest,
-										textStatus,
-										errorThrown) {}
-								});
-							}
-							//do-自动更新计划单完成期限功能-2020-07-10
-
-							var FQCRequest = $('input:radio[name="FQCRequest"]:checked')
-								.val();
-
-							if (FQCRequest == 1) {
-
-								var acceptData = {
-									"DBTable": "ppm_bills_task",
-									"DBID": $('#DBID').text(),
-									"taskStaff": $('#taskStaff option:selected')
-										.text(),
-									"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g,
-											'<br/>')
-										.replace(/'/g, '"'),
-									"taskLimitDate": $('#taskLimitDate').val(),
-									"BTAcceptOpinion": $('#BTAcceptOpinion').val()
-										.replace(/\n|\r\n/g,
-											'<br/>').replace(/'/g, '"'),
-									"BTAcceptor": sessionName,
-									"BTAcceptDate": Ndate,
-									"FQCRequest": $(
-											'input:radio[name="FQCRequest"]:checked')
-										.val(),
-									"FQCMaker": $('#FQCMaker option:selected').text(),
-									"FQCRequestText": $(
-											'input:radio[name="FQCRequest"]:checked')
-										.next(
-											"span").text(),
-									"IPQCMaker": $('#IPQCMaker option:selected')
-										.text(),
-									"BTAcceptResult": 1,
-									"BTAcceptResultText": "已确认",
-									"BTStatus": 2,
-									"BTStatusText": "进行中"
-								}
-
-
-								var PLDUpdData = {
-									"DBTable": "ppm_bills_plan",
-									"BillIDName": "BPID",
-									"BillID": $('#taskBPID').text(),
-									"FQCRequest": 1,
-									"FQCStaff": $('#FQCMaker option:selected').text(),
-									"FQCRequestText": "有"
-								}
-
-
-								var ajax1 = $.ajax({
-									method: 'post',
-									url: '/app/PM/updDBData',
-									data: acceptData,
-									success: function (data, textStatus) {},
-									error: function (XMLHttpRequest, textStatus,
-										errorThrown) {}
-								});
-
-								var ajax2 = $.ajax({
-									method: 'post',
-									url: '/app/PM/updBillStatus',
-									data: PLDUpdData,
-									success: function (data, textStatus) {},
-									error: function (XMLHttpRequest, textStatus,
-										errorThrown) {}
-								});
-
-
-								$.when(ajax1, ajax2).done(function () {
-									swal("任务单确认状态已更新,计划单FQC申请更新!");
-
-
-								});
-
-								//updDBData(acceptData,"任务单确认状态");
-
-
-
-							} else {
-								var acceptData = {
-									"DBTable": "ppm_bills_task",
-									"DBID": $('#DBID').text(),
-									"taskLimitDate": $('#taskLimitDate').val(),
-									"BTAcceptOpinion": $('#BTAcceptOpinion').val()
-										.replace(/\n|\r\n/g,
-											'<br/>').replace(/'/g, '"'),
-									"BTAcceptor": sessionName,
-									"BTAcceptDate": Ndate,
-									"FQCRequest": $(
-											'input:radio[name="FQCRequest"]:checked')
-										.val(),
-									"FQCRequestText": $(
-											'input:radio[name="FQCRequest"]:checked')
-										.next(
-											"span").text(),
-									"taskStaff": $('#taskStaff option:selected')
-										.text(),
-									"IPQCMaker": $('#IPQCMaker option:selected')
-										.text(),
-									"BTAcceptResult": 1,
-									"BTAcceptResultText": "已确认",
-									"BTStatus": 2,
-									"BTStatusText": "进行中"
-								}
-
-								$.ajax({
-									method: 'post',
-									url: '/app/PM/updDBData',
-									data: acceptData,
-									success: function (data, textStatus) {
-										console.log("任务单确认状态已更新!");
-
-									},
-									error: function (XMLHttpRequest, textStatus,
-										errorThrown) {}
-								});
-								//					updDBData(acceptData,"任务单确认状态");
+							var acceptData = {
+								"DBTable": "ppm_bills_task",
+								"DBID": $('#DBID').text(),
+								"taskStaff": $('#taskStaff option:selected')
+									.text(),
+								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g,
+										'<br/>')
+									.replace(/'/g, '"'),
+								"taskLimitDate": $('#taskLimitDate').val(),
+								"BTAcceptOpinion": $('#BTAcceptOpinion').val()
+									.replace(/\n|\r\n/g,
+										'<br/>').replace(/'/g, '"'),
+								"BTAcceptor": sessionName,
+								"BTAcceptDate": Ndate,
+								"FQCRequest": $(
+										'input:radio[name="FQCRequest"]:checked')
+									.val(),
+								"FQCMaker": $('#FQCMaker option:selected').text(),
+								"FQCRequestText": $(
+										'input:radio[name="FQCRequest"]:checked')
+									.next(
+										"span").text(),
+								"IPQCMaker": $('#IPQCMaker option:selected')
+									.text(),
+								"BTAcceptResult": 1,
+								"BTAcceptResultText": "已确认",
+								"BTStatus": 2,
+								"BTStatusText": "进行中"
 							}
 
 
-							if ($('#taskTypeText').text() != "APP") {
+							var PLDUpdData = {
+								"DBTable": "ppm_bills_plan",
+								"BillIDName": "BPID",
+								"BillID": $('#taskBPID').text(),
+								"FQCRequest": 1,
+								"FQCStaff": $('#FQCMaker option:selected').text(),
+								"FQCRequestText": "有"
+							}
+
+
+							var ajax1 = $.ajax({
+								method: 'post',
+								url: '/app/PM/updDBData',
+								data: acceptData,
+								success: function (data, textStatus) {},
+								error: function (XMLHttpRequest, textStatus,
+									errorThrown) {}
+							});
+
+							var ajax2 = $.ajax({
+								method: 'post',
+								url: '/app/PM/updBillStatus',
+								data: PLDUpdData,
+								success: function (data, textStatus) {},
+								error: function (XMLHttpRequest, textStatus,
+									errorThrown) {}
+							});
+
+
+							$.when(ajax1, ajax2).done(function () {
+								swal("任务单确认状态已更新,计划单FQC申请更新!");
+
+
+							});
+
+							//updDBData(acceptData,"任务单确认状态");
 
 
 
-								let i = {
-									confirmMsg: '内核任务已确认,是否发送钉钉消息?',
-									DDMsg: {
-										at: '"' + $('#taskMaker').text() + '"',
-										msg: '@' + $('#taskMaker').text() +
-											' 内核任务已确认,请新增内核计划!'
-									},
-									alertMsg: '发送成功'
-								}
-								let o = {
-									f: io_refresh
-								}
-								aio_chooseSendDDMsg(i, o)
+						} else {
+							var acceptData = {
+								"DBTable": "ppm_bills_task",
+								"DBID": $('#DBID').text(),
+								"taskLimitDate": $('#taskLimitDate').val(),
+								"BTAcceptOpinion": $('#BTAcceptOpinion').val()
+									.replace(/\n|\r\n/g,
+										'<br/>').replace(/'/g, '"'),
+								"BTAcceptor": sessionName,
+								"BTAcceptDate": Ndate,
+								"FQCRequest": $(
+										'input:radio[name="FQCRequest"]:checked')
+									.val(),
+								"FQCRequestText": $(
+										'input:radio[name="FQCRequest"]:checked')
+									.next(
+										"span").text(),
+								"taskStaff": $('#taskStaff option:selected')
+									.text(),
+								"IPQCMaker": $('#IPQCMaker option:selected')
+									.text(),
+								"BTAcceptResult": 1,
+								"BTAcceptResultText": "已确认",
+								"BTStatus": 2,
+								"BTStatusText": "进行中"
+							}
 
-							} else {
+							$.ajax({
+								method: 'post',
+								url: '/app/PM/updDBData',
+								data: acceptData,
+								success: function (data, textStatus) {
+									console.log("任务单确认状态已更新!");
 
-								let msgnext = confirm("是否立即登记任务?");
-								if (msgnext) {
-
-									$('#divTaskInfo input').attr("disabled", true);
-									$('#divTaskInfo select').attr("disabled", true);
-									$('#divTaskInfo textarea').attr("disabled", true);
-
-									$("#BTNTaskSave").hide();
-
-									$('#divTaskAccept input').attr("disabled", true);
-									$('#divTaskAccept select').attr("disabled", true);
-									$('#divTaskAccept textarea').attr("disabled", true);
-
-									$('#DivTaskAcceptBTNS').hide();
+								},
+								error: function (XMLHttpRequest, textStatus,
+									errorThrown) {}
+							});
+							//					updDBData(acceptData,"任务单确认状态");
+						}
 
 
-									$('#BTAcceptResultText').text("已确认");
-									$('#BTAcceptDate').text(Ndate);
+						if ($('#taskTypeText').text() != "APP") {
 
-									$('#codeAuditPanel').show();
 
-									if ($('#codeAuditResult').text() === '通过') {
-										$('#taskRecordPanel').show();
-									} else {
-										$('#taskRecordPanel').hide();
-									}
 
-									// Fun_getSQLSelectDBData({
-									// 	SQL: "SQLSRStaffs"
-									// }, "#recordAuditor");
+							let i = {
+								confirmMsg: '内核任务已确认,是否发送钉钉消息?',
+								DDMsg: {
+									at: '"' + $('#taskMaker').text() + '"',
+									msg: '@' + $('#taskMaker').text() +
+										' 内核任务已确认,请新增内核计划!'
+								},
+								alertMsg: '发送成功'
+							}
+							let o = {
+								f: io_refresh
+							}
+							aio_chooseSendDDMsg(i, o)
 
+						} else {
+
+							let msgnext = confirm("是否立即登记任务?");
+							if (msgnext) {
+
+								$('#divTaskInfo input').attr("disabled", true);
+								$('#divTaskInfo select').attr("disabled", true);
+								$('#divTaskInfo textarea').attr("disabled", true);
+
+								$("#BTNTaskSave").hide();
+
+								$('#divTaskAccept input').attr("disabled", true);
+								$('#divTaskAccept select').attr("disabled", true);
+								$('#divTaskAccept textarea').attr("disabled", true);
+
+								$('#DivTaskAcceptBTNS').hide();
+
+
+								$('#BTAcceptResultText').text("已确认");
+								$('#BTAcceptDate').text(Ndate);
+
+								$('#codeAuditPanel').show();
+
+								if ($('#codeAuditResult').text() === '通过') {
+									$('#taskRecordPanel').show();
 								} else {
-									window.location.reload();
+									$('#taskRecordPanel').hide();
 								}
 
+								// Fun_getSQLSelectDBData({
+								// 	SQL: "SQLSRStaffs"
+								// }, "#recordAuditor");
+
+							} else {
+								window.location.reload();
 							}
 
 						}
 
 					}
 
-
-				} else {
-					swal("您不是该任务单的负责人,无法确认任务!");
 				}
 
 
@@ -3289,8 +3288,8 @@
 				return
 			}
 
-			
-			
+
+
 
 
 			//c-检查代码审核结果状态
@@ -3315,7 +3314,7 @@
 			}
 
 			//c-检查是否选择自审
-			if ($('#codeAuditor option:selected').val()===sessionName) {
+			if ($('#codeAuditor option:selected').val() === sessionName) {
 				swal('代码审核已关闭自审,请选择其他代码审核人!')
 				return
 			}
