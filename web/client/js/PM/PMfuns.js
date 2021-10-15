@@ -206,10 +206,10 @@ function showFilterDBDataAsyncNo(DataPara, columnsData) {
  * SQLPara:{SQL:"SQLName",filter:"A=B"},
  * columnsData:[
 		{ data: 'DBID' ,"visible": false},
-        { data: 'CTRName' },
-        { data: 'CTRVal'}
+		{ data: 'CTRName' },
+		{ data: 'CTRVal'}
 
-    ]
+	]
  * }
  * 
  * 
@@ -244,14 +244,14 @@ function showSQLDataTable(DataPara) {
 			SQLParam:{SQL:"SQLTableBillsDBCenter",filter:"CTRName='海天'"},
 			columnsData:[
 				{ data: 'DBID' ,"visible": false},
-		        { data: 'BPID' },
-		        { data: 'version'},
-		        { data: 'CTRName'},
-		        { data: 'makeDate'},
-		        { data: 'WFEndDate'},
-		        { data: 'taskNum'},
-		        { data: 'taskNumDone'},
-		        { data: 'WFEndText'}
+				{ data: 'BPID' },
+				{ data: 'version'},
+				{ data: 'CTRName'},
+				{ data: 'makeDate'},
+				{ data: 'WFEndDate'},
+				{ data: 'taskNum'},
+				{ data: 'taskNumDone'},
+				{ data: 'WFEndText'}
 
 			]
 	}
@@ -412,7 +412,7 @@ function updDBData(DBData, showText) {
 					});
 			}
 		},
-		error: function (XMLHttpRequest, textStatus, errorThrown) {}
+		error: function (XMLHttpRequest, textStatus, errorThrown) { }
 	});
 }
 
@@ -444,7 +444,7 @@ function delDBData(IDData) {
 
 			}
 		},
-		error: function (XMLHttpRequest, textStatus, errorThrown) {}
+		error: function (XMLHttpRequest, textStatus, errorThrown) { }
 	});
 }
 
@@ -521,7 +521,7 @@ function getSelectDBData(selectPara, selectorID, InitValue) {
 
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 }
 
@@ -575,7 +575,7 @@ function Fun_getSQLSelectDBData(selectSQL, selectorID, InitValue) {
 			$(selectorID).selectpicker('refresh');
 			//              swal($(selectorID).find("option:selected").text())
 		},
-		error: function () {}
+		error: function () { }
 	})
 }
 
@@ -622,7 +622,7 @@ function Fun_getSQLFullSelectDBData(selectSQL, selectorID, InitValue) {
 			//              swal($(selectorID).find("option:selected").text() );
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 }
 
@@ -662,7 +662,7 @@ function getSQLSelectDBData(selectSQL, selectorID, InitValue) {
 			}
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 }
 
@@ -1718,7 +1718,7 @@ function Fun_getBillFile(Para, DivID, feedBack) {
 
 			}
 		},
-		error: function () {}
+		error: function () { }
 	})
 
 }
@@ -1794,7 +1794,7 @@ function Fun_fillTrackTable(tableID, SQLParam) {
 
 			$(tableID + " thead").append(trth);
 		},
-		error: function () {}
+		error: function () { }
 	});
 
 	$.ajax({
@@ -1859,7 +1859,7 @@ function Fun_fillTrackTable(tableID, SQLParam) {
 
 
 		},
-		error: function () {}
+		error: function () { }
 	});
 
 }
@@ -1901,7 +1901,7 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 
 			$(tableID + " thead").append(trth);
 		},
-		error: function () {}
+		error: function () { }
 	});
 
 	$.ajax({
@@ -1971,7 +1971,7 @@ function Fun_fillTrackTableWithDBID(tableID, SQLParam) {
 				}
 			}
 		},
-		error: function () {}
+		error: function () { }
 	});
 
 }
@@ -2314,7 +2314,7 @@ const showDBIDInfo = async (tableID, SQLParam) => {
 			}
 
 		},
-		error: function () {}
+		error: function () { }
 	});
 
 	await $.ajax({
@@ -2432,7 +2432,7 @@ const showDBIDInfo = async (tableID, SQLParam) => {
 			}
 
 		},
-		error: function () {}
+		error: function () { }
 	});
 
 	//代码审核记录附加表
@@ -2544,7 +2544,7 @@ async function Fun_showSQLTestContentsTable(SQL, tableID, TestResult, auditCheck
 
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 
 }
@@ -2676,7 +2676,7 @@ function Fun_showSQLTestContentsTableLite(SQL, tableID, TestResult) {
 
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 
 }
@@ -2728,7 +2728,7 @@ function Fun_previewSQLTestContents(SQL, tableID) {
 			}
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 
 }
@@ -2855,7 +2855,7 @@ function checkAuthority(selectSQL, AuthorityID) {
 
 
 		},
-		error: function () {}
+		error: function () { }
 	})
 
 	if (checkResult == false) {
@@ -2974,7 +2974,7 @@ function getAjaxDataSync(ips, ops, funs) {
 				//	        	 console.log("Ajax data:"+JSON.stringify(data));
 				ops = data;
 			},
-			error: function () {}
+			error: function () { }
 		})
 	}
 
@@ -3075,14 +3075,14 @@ function IOF_sendDingMsg(ips, ops, funs) {
 function confirmSendDDMsg(ips) {
 
 	swal(ips.confirmMsg, {
-			buttons: {
-				cancel: "不发送",
-				catch: {
-					text: "发送",
-					value: "send",
-				}
-			},
-		})
+		buttons: {
+			cancel: "不发送",
+			catch: {
+				text: "发送",
+				value: "send",
+			}
+		},
+	})
 		.then((value) => {
 			switch (value) {
 
@@ -3098,7 +3098,7 @@ function confirmSendDDMsg(ips) {
 							//           console.log("成功数据:" + JSON.stringify(data));
 							swal("系统消息!", "系统钉钉消息已发送!", "success");
 						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) {}
+						error: function (XMLHttpRequest, textStatus, errorThrown) { }
 					});
 					break;
 				default:
@@ -3109,31 +3109,20 @@ function confirmSendDDMsg(ips) {
 }
 
 //根据SQL获取信息
-const getBizDataBySQL = async (i, o) => {
+const getBizDataBySQL = async (i) => {
 
-	o = await new Promise((resolve, reject) => {
+	let rs = await $.ajax({
+		method: 'get',
+		data: i,
+		url: "/app/PM/getSQLDBData",
+		success: function (data) {
+			// console.log("oldLimitDate:" + JSON.stringify(data));
+			// // return data[0].taskLimitDate
+		},
+		error: function () { }
+	})
 
-		$.ajax({
-			method: 'get',
-			data: i,
-			url: "/app/PM/getSQLDBData",
-			// async: false,
-			success: function (data) {
-				// console.log("Ajax data:" + JSON.stringify(data));
-
-				resolve(data)
-			},
-			error: function (err) {
-				reject(err)
-			}
-		});
-
-
-	});
-	// alert(JSON.stringify(o));
-
-	return o
-
+	return rs
 
 }
 
