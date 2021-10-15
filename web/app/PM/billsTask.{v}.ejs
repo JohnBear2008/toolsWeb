@@ -2170,9 +2170,6 @@
 					//如完成期限大于计划单完成期限,自动更新计划单完成期限
 
 
-
-
-
 				}
 
 			} else {
@@ -2183,6 +2180,8 @@
 
 		//按钮-任务审核通过按钮
 		$('#BTNTaskAcceptYes').click(async function () {
+
+
 			if (checkAuthority({
 					"SQL": "SQLGetAuthorities",
 					"filter": "StaffName='" + sessionName + "'"
@@ -2200,7 +2199,9 @@
 					return
 				}
 
-				//增加完成期限提醒功能
+
+
+				//增加完成期限提醒功能 外网确认问题临时去除测试
 				if ($('#BTVersion').text() !== '0') {
 					let rsOldLimitDate = await $.ajax({
 						method: 'get',
@@ -2227,15 +2228,45 @@
 					}
 				}
 
+
+
 				if (checkAcceptInput()) {
+
+
 					var msg = confirm("确认后即将开始任务单流程!");
 					if (msg == true) {
 						//do-自动更新计划单完成期限功能-2020-07-10
-						let planData = await getBizDataBySQL({
-							SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
-								$('#taskBPID').text() +
-								"' order by version desc limit 1"
+
+
+						// alert('debug5')  外网确认异常问题点
+						// let planData = await getBizDataBySQL({
+						// 	SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
+						// 		$('#taskBPID').text() +
+						// 		"' order by version desc limit 1"
+						// })
+
+						// console.log('planData', planData);
+
+						let planData = await $.ajax({
+							method: 'get',
+							data: {
+								SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
+									$('#taskBPID').text() +
+									"' order by version desc limit 1"
+							},
+							url: "/app/PM/getSQLDBData",
+							success: function (data) {
+								// console.log("oldLimitDate:" + JSON.stringify(data));
+								// // return data[0].taskLimitDate
+							},
+							error: function () {}
 						})
+
+						// console.log('planData2', planData2);
+
+						// return
+
+						// alert('debug6')
 
 						// alert(JSON.stringify(planData))
 						if ($('#taskLimitDate').val() > planData[0].limitDate) {
@@ -2246,11 +2277,14 @@
 								"limitDate": $('#taskLimitDate').val(),
 								"filter": "version =" + planData[0].version,
 							}
+
 							$.ajax({
 								method: 'post',
 								url: '/app/PM/updBillStatus',
 								data: updatePlanLimitDate,
-								success: function (data, textStatus) {},
+								success: function (data, textStatus) {
+
+								},
 								error: function (XMLHttpRequest,
 									textStatus,
 									errorThrown) {}
