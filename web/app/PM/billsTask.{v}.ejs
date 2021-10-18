@@ -2238,18 +2238,38 @@
 						//do-自动更新计划单完成期限功能-2020-07-10
 
 
-						// alert('debug5')  外网确认异常问题点
-						let planData = await getBizDataBySQL({
-							SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
-								$('#taskBPID').text() +
-								"' order by version desc limit 1"
-						})
+						// // alert('debug5')  外网确认异常问题点
+						// let planData = await getBizDataBySQL({
+						// 	SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
+						// 		$('#taskBPID').text() +
+						// 		"' order by version desc limit 1"
+						// })
 
 						// console.log('planData', planData);
 
-						//备选方案
-						// let planData = await $.ajax({
+						console.log('debug5');
+
+						// //备选方案
+						// let planData = $.ajax({
 						// 	method: 'get',
+						// 	async: false, //必须同步
+						// 	data: {
+						// 		SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
+						// 			$('#taskBPID').text() +
+						// 			"' order by version desc limit 1"
+						// 	},
+						// 	url: "/app/PM/getSQLDBData",
+						// 	success: function (data) {
+						// 		// console.log("oldLimitDate:" + JSON.stringify(data));
+						// 		// // return data[0].taskLimitDate
+						// 	},
+						// 	error: function () {}
+						// })
+						//	alert('debug6')
+
+						// let planData = $.ajax({
+						// 	method: 'get',
+						// 	async: false, //必须同步
 						// 	data: {
 						// 		SQL: "select version,limitDate from `ppm_bills_plan` where BPID='" +
 						// 			$('#taskBPID').text() +
@@ -2263,7 +2283,21 @@
 						// 	error: function () {}
 						// })
 
-						// console.log('planData2', planData2);
+						// console.log('planData', planData);
+						let a = await postDBData({
+							excuteSql: "select version,limitDate from `ppm_bills_plan` where BPID='" +
+								$('#taskBPID').text() +
+								"' order by version desc limit 1"
+						})
+
+					
+						let planData = [{
+							version: a[0],
+							limitDate: a[1]
+						}]
+						
+
+
 
 						// return
 
