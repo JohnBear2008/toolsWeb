@@ -433,10 +433,10 @@
 												<div class="form-group" id="DivTaskAcceptBTNS">
 													<label class="col-sm-1 control-label">确认:</label>
 													<div class="col-sm-10">
-														<button id="BTNTaskAcceptYes" type="button" class="btn btn-success"
-															data-toggle="modal">确认任务</button>
-														<button id="BTNTaskAcceptNo" type="button" class="btn btn-warning"
-															data-toggle="modal">驳回任务</button>
+														<button id="BTNTaskAcceptYes" type="button"
+															class="btn btn-success" data-toggle="modal">确认任务</button>
+														<button id="BTNTaskAcceptNo" type="button"
+															class="btn btn-warning" data-toggle="modal">驳回任务</button>
 													</div>
 
 												</div>
@@ -464,7 +464,7 @@
 
 											<button id="BTNTaskRecordAdd" type="button" class="btn btn-success"
 												data-toggle="modal">添加记录</button>
-											<button id="BTNTaskRecordAudit"  class="btn btn-warning"
+											<button id="BTNTaskRecordAudit" class="btn btn-warning"
 												data-toggle="modal">审核记录</button>
 											<!-- <button id="BTNTaskRecordClear" class="btn btn-danger" data-toggle="modal" >清除记录</button>-->
 
@@ -589,8 +589,8 @@
 															data-live-search="true">
 														</select>
 
-														<button id="BTNGetTaskAuditor"  type="button" class="btn btn-success"
-															data-toggle="modal">系统指定</button>
+														<button id="BTNGetTaskAuditor" type="button"
+															class="btn btn-success" data-toggle="modal">系统指定</button>
 
 													</div>
 
@@ -610,8 +610,8 @@
 												<div class="form-group" id="DivTaskRecordBTNS">
 													<label class="col-sm-1 control-label">登记:</label>
 													<div class="col-sm-10">
-														<button id="BTNTaskRecordSave"  type="button" class="btn btn-success"
-															data-toggle="modal">保存记录</button>
+														<button id="BTNTaskRecordSave" type="button"
+															class="btn btn-success" data-toggle="modal">保存记录</button>
 
 
 
@@ -1332,7 +1332,11 @@
 		} else if (isInternship(sessionName) && $('#recordAuditor option:selected').text() == sessionName) {
 			swal("您现在处于实习期,不允许自我审核,请重新选择审核人!");
 			return false;
+		} else if ($('#recordAuditor option:selected').text() == $('#taskStaff option:selected').text()) {
+			swal("T任务单记录已关闭自审,请选择其他人审核!");
+			return false;
 		}
+
 
 
 		return true;
@@ -1710,6 +1714,16 @@
 
 			if (sessionName == $('#taskStaff option:selected').text()) {
 
+				if (sessionName == $('#IPQCMaker option:selected').text()) {
+					swal("T-IPQC已关闭自审,请选择其他审核人!");
+					return
+				}
+
+				if (sessionName == $('#FQCMaker option:selected').text()) {
+					swal("T-FQC已关闭自审,请选择其他审核人!");
+					return
+				}
+
 				//增加完成期限提醒功能
 				if ($('#BTVersion').text() !== '0') {
 					let rsOldLimitDate = await $.ajax({
@@ -1751,8 +1765,9 @@
 								"DBTable": "ppm_bills_task_t",
 								"DBID": $('#DBID').text(),
 								"taskStaff": $('#taskStaff option:selected').text(),
-								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>').replace(
-									/'/g, '"'),
+								"taskDBE": $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>')
+									.replace(
+										/'/g, '"'),
 								"taskLimitDate": $('#taskLimitDate').val(),
 								"BTAcceptOpinion": $('#BTAcceptOpinion').val().replace(/\n|\r\n/g,
 									'<br/>'),
