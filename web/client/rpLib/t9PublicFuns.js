@@ -1,12 +1,5 @@
-/*
- * @Author: your name
- * @Date: 2021-03-02 10:16:51
- * @LastEditTime: 2021-05-25 13:53:20
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \toolsWeb\web\client\rpLib\t9PublicFuns.js
- */
-const prefix = 'https://127.0.0.1:8000';
+
+const prefix = 'https://192.168.0.9:8000';
 
 const getUrl = (type) => {
     //c
@@ -39,7 +32,7 @@ const getUrl = (type) => {
             break;
     }
     //r
-    return prefix + '/api/T9/' + apiUrl
+    return prefix + '/api/t9/' + apiUrl
 }
 
 
@@ -74,7 +67,7 @@ const getT9Data = async ({
     console.log('getT9Data res', res);
     return res;
 
-   
+
 
 }
 
