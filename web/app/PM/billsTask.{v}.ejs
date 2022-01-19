@@ -1773,23 +1773,7 @@
 
 	//获取系统审核人
 
-	var getTaskAuditor = function (modifyABE, staff) {
-
-		let modifyABECheck = true;
-
-		let arrCompare = ['ABE1', 'ABE3'];
-
-
-		$("[name='modifyABE']:checked").each(function () {
-			if (arrCompare.indexOf($(this).val()) > -1) {
-				modifyABECheck = modifyABECheck && true;
-			} else {
-				modifyABECheck = modifyABECheck && false;
-			}
-		})
-
-		// console.log("modifyABECheck:" + modifyABECheck);
-
+	var getTaskAuditor = function (staff) {
 		$.ajax({
 			method: 'get',
 			data: {
@@ -1799,20 +1783,16 @@
 			url: "/app/PM/getSQLDBData",
 			//        async:false, 
 			success: function (data) {
-				//       	 console.log("data555:"+JSON.stringify(data));
-				if (data.length != 0 && data[0].upAuditor != "") {
+
+				if (data.length != 0) {
 					if (data[0].entryDays < 90) {
 						Fun_getSQLSelectDBData({
 							SQL: "SQLSRStaffs"
 						}, "#recordAuditor", $('#taskMaker').text());
-					} else if (data[0].entryDays > 90 && modifyABECheck) {
-						Fun_getSQLSelectDBData({
-							SQL: "SQLSRStaffs"
-						}, "#recordAuditor", staff);
 					} else {
 						Fun_getSQLSelectDBData({
 							SQL: "SQLSRStaffs"
-						}, "#recordAuditor", data[0].upAuditor);
+						}, "#recordAuditor", staff);
 					}
 				} else {
 					swal('系统内无指定人,请选择!')
@@ -1820,7 +1800,6 @@
 			},
 			error: function () {}
 		})
-
 	}
 
 
@@ -3256,9 +3235,11 @@
 
 		//获取任务单审核人
 		$('#BTNGetTaskAuditor').click(function () {
-
-			getTaskAuditor($("input[name='modifyABE']:checked"), sessionName);
-
+			let name = sessionName
+			if ($('#recordMaker').text()) {
+				name = $('#recordMaker').text()
+			}
+			getTaskAuditor(name);
 		});
 
 
