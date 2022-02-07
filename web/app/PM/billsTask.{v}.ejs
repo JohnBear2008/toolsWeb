@@ -363,9 +363,11 @@
 
 												<label class="col-sm-1 control-label">IPQC检测:</label>
 
-												<div class="col-sm-3 ">
+												<div class="col-sm-6 ">
 													<select id="IPQCMaker" class="selectpicker" data-live-search="true">
 													</select>
+													<button id="BTNGetIPQCAuditor" type="button"
+														class="btn btn-primary">系统指定</button>
 												</div>
 
 											</div>
@@ -1423,6 +1425,9 @@
 				$('#recordRemark').val("");
 
 				$('#DivTaskAcceptBTNS').show();
+				$('#BTNGetIPQCAuditor').show(); //补充ipqc按钮显示
+
+
 
 				$('#codeAuditPanel').hide();
 				// $('#taskRecordPanel').hide();
@@ -1440,6 +1445,8 @@
 				$('#divTaskAccept textarea').attr("disabled", true);
 
 				$('#DivTaskAcceptBTNS').hide();
+				$('#BTNGetIPQCAuditor').hide(); //补充ipqc按钮隐藏
+
 
 				$('#codeAuditPanel').show();
 
@@ -1477,6 +1484,7 @@
 				$('#divTaskAccept textarea').attr("disabled", true);
 
 				$('#DivTaskAcceptBTNS').hide();
+				$('#BTNGetIPQCAuditor').hide(); //补充ipqc按钮隐藏
 
 				$('#codeAuditPanel').hide();
 				// $('#taskRecordPanel').hide();
@@ -2414,6 +2422,7 @@
 								$('#divTaskAccept textarea').attr("disabled", true);
 
 								$('#DivTaskAcceptBTNS').hide();
+								$('#BTNGetIPQCAuditor').hide(); //补充ipqc按钮隐藏
 
 
 								$('#BTAcceptResultText').text("已确认");
@@ -3264,7 +3273,6 @@
 
 		$('input[type=radio][name=FQCRequest]').change(function () {
 
-
 			let FQCRequest = $('input:radio[name="FQCRequest"]:checked').val();
 			if (FQCRequest === '1') {
 				$("#divFQCMaker").show();
@@ -3277,6 +3285,8 @@
 			}
 
 		})
+
+
 
 
 		loadBootStrapSelector({
@@ -3377,6 +3387,49 @@
 
 		})
 
+
+		//BTNGetIPQCAuditor 默认IPQC检查人按钮
+		$('#BTNGetIPQCAuditor').click(async function () {
+
+
+
+			let ipqcAuditor = await getDataBySql({
+				sql: 'getIPQCAuditor',
+				params: {
+					filter: 'programmer="' + $('#taskStaff option:selected').text() + '"'
+				}
+			})
+			console.log('ipqcAuditor', ipqcAuditor);
+
+
+			if (ipqcAuditor.length === 0) {
+				swal('系统内不存在指定关系,如需添加请联系管理员!')
+				return
+			}
+
+			let ruleAuditor = ''
+			let keyWordMatchString = $('#taskCTRName').text() + $('#taskMHEName option:selected')
+				.text()
+			console.log('keyWordMatchString', keyWordMatchString);
+
+			for (const n of ipqcAuditor) {
+				if (n.keyWord) {
+					ruleAuditor = keyWordMatchString.indexOf(n.keyWord) !== -1 ? n.ipqcAuditor :
+						ruleAuditor
+				} else {
+					ruleAuditor = ruleAuditor ? ruleAuditor : n.ipqcAuditor
+				}
+				console.log('ruleAuditor', ruleAuditor);
+			}
+
+			// $("#IPQCMaker").selectpicker('val', ruleAuditor)
+
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRStaffs"
+			}, "#IPQCMaker", ruleAuditor);
+
+		});
+
 		//defaultAuditorBtn 默认检查人按钮
 		$('#defaultAuditorBtn').click(async function () {
 			let codeAuditor = await getDataBySql({
@@ -3385,12 +3438,29 @@
 					filter: 'programmer="' + $('#taskStaff option:selected').text() + '"'
 				}
 			})
+			//	console.log('codeAuditor', codeAuditor);
 
 			if (codeAuditor.length === 0) {
-				console.log('codeAuditor 未找到数据');
+				swal('系统内不存在指定关系,如需添加请联系管理员!')
 				return
 			}
-			$("#codeAuditor").selectpicker('val', codeAuditor[0].codeAuditor)
+
+			let ruleAuditor = ''
+			let keyWordMatchString = $('#taskCTRName').text() + $('#taskMHEName option:selected')
+				.text()
+			// console.log('keyWordMatchString', keyWordMatchString);
+
+			for (const n of codeAuditor) {
+				if (n.keyWord) {
+					ruleAuditor = keyWordMatchString.indexOf(n.keyWord) !== -1 ? n.codeAuditor :
+						ruleAuditor
+				} else {
+					ruleAuditor = ruleAuditor ? ruleAuditor : n.codeAuditor
+				}
+				// console.log('ruleAuditor',ruleAuditor);
+			}
+
+			$("#codeAuditor").selectpicker('val', ruleAuditor)
 
 		});
 
