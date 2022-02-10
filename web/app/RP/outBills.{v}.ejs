@@ -840,10 +840,15 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_outsubbillsForm-productId"
+                                                        <!-- <select id="rp_outsubbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
-                                                        </select>
+                                                        </select> -->
+
+                                                        <input class="form-control" id="rp_outsubbillsForm-productId"
+                                                            list="rp_outsubbillsForm-productId-datalist">
+                                                        <datalist id="rp_outsubbillsForm-productId-datalist">
+                                                        </datalist>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">仓库</label>
@@ -1125,13 +1130,11 @@
 
     //选定产品修改事件
     const addProductListener = () => {
-        // $('#rp_outsubbillsForm-productId').unbind();
+        $('#rp_outsubbillsForm-productId').unbind('change');
         $('#rp_outsubbillsForm-productId').change(async function () {
-            let productId = $('#rp_outsubbillsForm-productId option:selected')
+            let productId = $('#rp_outsubbillsForm-productId')
                 .val()
             if (productId) {
-
-                $('#rp_outsubbillsForm-productId').selectpicker('refresh');
                 showStockNum();
                 fillProductInfo(productId);
 
@@ -1700,7 +1703,7 @@
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let productId = $('#rp_outsubbillsForm-productId option:selected').val();
+        let productId = $('#rp_outsubbillsForm-productId').val();
         let warehouseId = $('#rp_outsubbillsForm-warehouseId option:selected').val();
         // console.log(warehouseId);
 
@@ -2000,6 +2003,23 @@
 
             });
         });
+    }
+
+    //加载部件清单
+    const loadProductSelector = async () => {
+        let elementId = 'rp_outsubbillsForm-productId';
+        let options = await getDataBySql({
+            sql: 'getProductSelector',
+            // params: {
+            //     filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+            // }
+        })
+        console.log('options', options);
+
+        loadDatalistSelector({
+            elementId: elementId,
+            options: options
+        })
     }
 
 
@@ -2423,7 +2443,7 @@
             //设置默认值
 
             $("#rp_outsubbillsForm-status").text('新增')
-            $("#rp_outsubbillsForm-productId").selectpicker('val', '')
+            $("#rp_outsubbillsForm-productId").val('')
             $("#rp_outsubbillsForm-warehouseId").selectpicker('val', 'W1')
             $("#rp_outsubbillsForm-num").val(1)
 
@@ -2852,25 +2872,14 @@
         })
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_outsubbillsForm-productId',
-            sqlParams: {
-                sql: 'getProductSelector'
-            },
-        })
-
-
-
         // loadBootStrapSelector({
-        //     elementId: 'rp_outbillsForm-isInland',
+        //     elementId: 'rp_outsubbillsForm-productId',
         //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="国内外"',
-        //             orderBy: 'orderId'
-        //         }
+        //         sql: 'getProductSelector'
         //     },
         // })
+        loadProductSelector()
+
 
         loadBootStrapSelector({
             elementId: 'rp_outbillsForm-customerBelongShort',
@@ -2904,62 +2913,6 @@
             },
             // initValue: 'W1'
         })
-
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_outsubbillsForm-origin',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="原产地"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
-
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_outsubbillsForm-productBelong',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="产品归属"',
-        //             orderBy: 'orderId'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_outsubbillsForm-isRework',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_outsubbillsForm-urgent',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-        // loadBootStrapSelector({
-        //     elementId: 'rp_outsubbillsForm-inWarranty',
-        //     sqlParams: {
-        //         sql: 'getOptionSelector',
-        //         params: {
-        //             filter: 'optionClass="是或否"'
-        //         }
-        //     },
-        // })
-
-
 
         //客户选定监听事件
         addCustomerListener();

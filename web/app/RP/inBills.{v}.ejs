@@ -850,10 +850,15 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_insubbillsForm-productId"
+                                                        <!-- <select id="rp_insubbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
-                                                        </select>
+                                                        </select> -->
+
+                                                        <input class="form-control" id="rp_insubbillsForm-productId"
+                                                            list="rp_insubbillsForm-productId-datalist">
+                                                        <datalist id="rp_insubbillsForm-productId-datalist">
+                                                        </datalist>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">仓库</label>
@@ -1126,9 +1131,7 @@
             formId: 'rp_insubbillsForm',
             params: r2
         })
-
         // $('#rp_insubbillsForm-productId').selectpicker('val',r1[0].productId)
-
     }
 
 
@@ -1136,15 +1139,13 @@
     //选定产品修改事件
     const addProductListener = () => {
         // $('#rp_insubbillsForm-productId').unbind();
+        $('#rp_insubbillsForm-productId').unbind('change');
         $('#rp_insubbillsForm-productId').change(async function () {
-            let productId = $('#rp_insubbillsForm-productId option:selected')
+            let productId = $('#rp_insubbillsForm-productId')
                 .val()
             if (productId) {
-
-                $('#rp_insubbillsForm-productId').selectpicker('refresh');
                 showStockNum();
                 fillProductInfo(productId);
-
             }
         });
 
@@ -1632,7 +1633,7 @@
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let productId = $('#rp_insubbillsForm-productId option:selected').val();
+        let productId = $('#rp_insubbillsForm-productId').val();
         let warehouseId = $('#rp_insubbillsForm-warehouseId option:selected').val();
         // console.log(warehouseId);
 
@@ -1935,6 +1936,23 @@
         });
     }
 
+    //加载部件清单
+    const loadProductSelector = async () => {
+        let elementId = 'rp_insubbillsForm-productId';
+        let options = await getDataBySql({
+            sql: 'getProductSelector',
+            // params: {
+            //     filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+            // }
+        })
+        console.log('options', options);
+
+        loadDatalistSelector({
+            elementId: elementId,
+            options: options
+        })
+    }
+
 
     $(document).ready(function () {
 
@@ -2162,6 +2180,8 @@
 
         //新增入库单按钮
         $('#btnInBillNew').click(function () {
+            //打开面板
+            $('#rp_inbillsModal').modal('show');
 
             //清空form数据
             mainTableData = {}
@@ -2211,8 +2231,7 @@
             // $("#listPrintBtn").hide();
             // $("#rp_inbillsPrint").hide();
 
-            //打开面板
-            $('#rp_inbillsModal').modal('show');
+
 
         })
 
@@ -2485,6 +2504,9 @@
 
         // 新增填单按钮
         $('#btnAddProduct').click(function () {
+            //打开面板
+            $('#rp_insubbillsPanel').show();
+
             let subTable = $('#rp_insubbills').DataTable();
             //删除子表选中状态
             // subTable.$('tr.selected').removeClass('selected');
@@ -2495,13 +2517,12 @@
             clearFormInputs({
                 formId: 'rp_insubbillsForm'
             })
-            //打开面板
-            $('#rp_insubbillsPanel').show();
+
 
             //设置默认值
 
             $("#rp_insubbillsForm-status").text('新增')
-            $("#rp_insubbillsForm-productId").selectpicker('val', '')
+            $("#rp_insubbillsForm-productId").val('')
             $("#rp_insubbillsForm-warehouseId").selectpicker('val', 'W1')
             $("#rp_insubbillsForm-num").val(1)
 
@@ -2934,12 +2955,17 @@
         })
 
 
-        loadBootStrapSelector({
-            elementId: 'rp_insubbillsForm-productId',
-            sqlParams: {
-                sql: 'getProductSelector'
-            },
-        })
+        // loadBootStrapSelector({
+        //     elementId: 'rp_insubbillsForm-productId',
+        //     sqlParams: {
+        //         sql: 'getProductSelector'
+        //     },
+        // })
+
+        loadProductSelector()
+
+
+
 
 
         // loadBootStrapSelector({
