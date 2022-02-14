@@ -386,7 +386,7 @@
 
     const syncErpData = async () => {
         let T9Data = await getT9Data({
-            to: 'RP',
+            to: 'rp',
             type: 'installInfo',
 
         })
@@ -406,10 +406,13 @@
 
         console.log('RPData', RPData);
 
+
+
         let newRPData = []
 
         //优化方案
         for (let i = 0; i < T9Data.length; i++) {
+            let match = false
             for (let j = 0; j < RPData.length; j++) {
                 if (T9Data[i].productId === RPData[j].productId && T9Data[i].partId === RPData[j].partId) {
                     match = true
@@ -420,11 +423,11 @@
 
             if (!match) {
                 let newRow = {
-                    productId: n.productId,
-                    partId: n.partId,
-                    locations: n.locations,
-                    num: n.num,
-                    remark: n.remark
+                    productId: T9Data[i].productId,
+                    partId: T9Data[i].partId,
+                    locations: T9Data[i].locations,
+                    num: T9Data[i].num,
+                    remark: T9Data[i].remark
                 }
                 newRPData.push(newRow)
             }
@@ -438,7 +441,7 @@
             return
         }
 
-
+       
         let r1 = await postDBData({
             sql: 'replace',
             params: {

@@ -1934,9 +1934,9 @@
             case 'all':
                 let partOptions = await getDataBySql({
                     sql: 'getProductSelector',
-                    params: {
-                        filter: 'partBelong="零件"'
-                    }
+                    // params: {
+                    //     filter: 'partBelong="零件"'
+                    // }
                 })
 
                 let arr = bomOptions.concat(partOptions)
@@ -2057,8 +2057,6 @@
             if (makeDateE) {
                 filter = filter + ' and makeDate<="' + makeDateE + '"'
             }
-
-
 
             //去除filter中开始的and关键字避免sql错误;
 

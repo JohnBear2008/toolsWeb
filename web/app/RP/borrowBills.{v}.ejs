@@ -370,6 +370,16 @@
                                                 <label class="form-check-label">产品名称</label>
                                             </div>
                                             <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="productionDate"
+                                                    checked>
+                                                <label class="form-check-label">生产日期</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="inWarranty"
+                                                    checked>
+                                                <label class="form-check-label">质保期内</label>
+                                            </div>
+                                            <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" value="warehouseId"
                                                     checked>
                                                 <label class="form-check-label">仓库编号</label>
@@ -886,10 +896,15 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-1 control-label">产品编号</label>
                                                     <div class="col-sm-5">
-                                                        <select id="rp_borrowsubbillsForm-productId"
+                                                        <!-- <select id="rp_borrowsubbillsForm-productId"
                                                             class="selectpicker form-control" data-live-search="true"
                                                             data-size="5" data-dropup-auto="false">
-                                                        </select>
+                                                        </select> -->
+
+                                                        <input class="form-control" id="rp_borrowsubbillsForm-productId"
+                                                            list="rp_borrowsubbillsForm-productId-datalist">
+                                                        <datalist id="rp_borrowsubbillsForm-productId-datalist">
+                                                        </datalist>
                                                     </div>
 
                                                     <label class="col-sm-1 control-label">仓库</label>
@@ -1170,13 +1185,12 @@
     const addProductListener = () => {
         // $('#rp_borrowsubbillsForm-productId').unbind();
         $('#rp_borrowsubbillsForm-productId').change(async function () {
-            let productId = $('#rp_borrowsubbillsForm-productId option:selected')
+            let productId = $('#rp_borrowsubbillsForm-productId')
                 .val()
             if (productId) {
-                $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
+                // $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
                 showStockNum()
                 fillProductInfo(productId);
-
                 $('#rp_borrowsubbillsForm-num').val(1)
 
             }
@@ -1424,7 +1438,7 @@
 
                 //禁止修改关键信息
                 $('#rp_borrowsubbillsForm-productId').prop("disabled", true);
-                $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
+                //  $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
                 $('#rp_borrowsubbillsForm-warehouseId').prop("disabled", true);
                 $('#rp_borrowsubbillsForm-warehouseId').selectpicker('refresh');
                 $('#rp_borrowsubbillsForm-num').prop("disabled", true);
@@ -1768,7 +1782,7 @@
     //更新所选产品即时库存
     const showStockNum = async () => {
         let stockNum = 0;
-        let productId = $('#rp_borrowsubbillsForm-productId option:selected').val();
+        let productId = $('#rp_borrowsubbillsForm-productId').val();
         let warehouseId = $('#rp_borrowsubbillsForm-warehouseId option:selected').val();
         // console.log(warehouseId);
 
@@ -2047,6 +2061,24 @@
     }
 
 
+    //加载部件清单
+    const loadProductSelector = async () => {
+        let elementId = 'rp_borrowsubbillsForm-productId';
+        let options = await getDataBySql({
+            sql: 'getProductSelector',
+            params: {
+                filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")',
+            }
+        })
+        console.log('options', options);
+
+        loadDatalistSelector({
+            elementId: elementId,
+            options: options
+        })
+    }
+
+
     $(document).ready(function () {
 
         // alert(parseInt(''))
@@ -2258,6 +2290,9 @@
         //新增需求单按钮
         $('#btnBorrowBillNew').click(function () {
 
+            //do-打开面板
+            $('#rp_borrowsubbillsPanel').hide();
+
             //do-清空form数据
             mainTableData = {}
             //do-清空子表及全局变量
@@ -2283,8 +2318,7 @@
             });
 
 
-            //do-打开面板
-            $('#rp_borrowsubbillsPanel').hide();
+
 
 
             //do-清空modal数据
@@ -2578,7 +2612,7 @@
             //允许修改关键信息
 
             $('#rp_borrowsubbillsForm-productId').prop("disabled", false);
-            $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
+            // $('#rp_borrowsubbillsForm-productId').selectpicker('refresh');
             $('#rp_borrowsubbillsForm-warehouseId').prop("disabled", false);
             $('#rp_borrowsubbillsForm-warehouseId').selectpicker('refresh');
             $('#rp_borrowsubbillsForm-num').prop("disabled", false);
@@ -2594,7 +2628,7 @@
             //设置默认值
 
             $("#rp_borrowsubbillsForm-status").text('新增')
-            $("#rp_borrowsubbillsForm-productId").selectpicker('val', '')
+            $("#rp_borrowsubbillsForm-productId").val('')
             $("#rp_borrowsubbillsForm-warehouseId").selectpicker('val', 'W1')
             $("#rp_borrowsubbillsForm-num").val(1)
 
@@ -3104,16 +3138,16 @@
             // initValue:'中国,北京'
         })
 
-
-        loadBootStrapSelector({
-            elementId: 'rp_borrowsubbillsForm-productId',
-            sqlParams: {
-                sql: 'getProductSelector',
-                params: {
-                    filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")'
-                }
-            },
-        })
+        loadProductSelector()
+        // loadBootStrapSelector({
+        //     elementId: 'rp_borrowsubbillsForm-productId',
+        //     sqlParams: {
+        //         sql: 'getProductSelector',
+        //         params: {
+        //             filter: 'partBelong in ("零件","面板","主机","其他","液晶","选配")'
+        //         }
+        //     },
+        // })
 
 
 

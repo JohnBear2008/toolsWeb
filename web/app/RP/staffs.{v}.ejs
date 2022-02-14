@@ -372,7 +372,6 @@
         visible: false
     }, {
         data: 'inservice',
-        visible: false
     }, {
         data: 'remark',
         visible: false
@@ -533,21 +532,21 @@
             for (let m of RPData) {
                 if (m.staffName === n.staffName) {
                     match = true
-                    // for (const p in m) {
-                    //     if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
-                    //         switch (p) {
-                    //             case 'staffId':
-                    //                 m[p] = n['UID']
-                    //                 break;
-                    //             case 'birthday':
-                    //                 m[p] = dateFormat(new Date(n[p]), 'yyyy-mm-dd');
-                    //                 break;
-                    //             default:
-                    //                 m[p] = n[p]
-                    //                 break;
-                    //         }
-                    //     }
-                    // }
+                    for (const p in m) {
+                        if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p)) {
+                            switch (p) {
+                                case 'staffId':
+                                    m[p] = n['UID']
+                                    break;
+                                case 'birthday':
+                                    m[p] = dateFormat(new Date(n[p]), 'yyyy-mm-dd');
+                                    break;
+                                default:
+                                    m[p] = n[p]
+                                    break;
+                            }
+                        }
+                    }
                     break;
                 }
             }
