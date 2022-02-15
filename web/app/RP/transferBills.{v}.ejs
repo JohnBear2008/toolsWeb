@@ -2494,7 +2494,10 @@
         loadBootStrapSelector({
             elementId: 'rp_transferbillsForm-operator',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })
@@ -2502,7 +2505,10 @@
         loadBootStrapSelector({
             elementId: 'rp_transferbillsForm-auditor',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })

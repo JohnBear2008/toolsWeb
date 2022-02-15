@@ -1709,7 +1709,10 @@
         loadBootStrapSelector({
             elementId: 'rp_responsebillsForm-responseStaff',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:'中国,北京'
         })

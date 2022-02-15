@@ -3119,7 +3119,10 @@
         loadBootStrapSelector({
             elementId: 'rp_scrapbillsForm-operator',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })
@@ -3127,7 +3130,10 @@
         loadBootStrapSelector({
             elementId: 'rp_scrapbillsForm-auditor',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })

@@ -2858,7 +2858,10 @@
         loadBootStrapSelector({
             elementId: 'rp_outbillsForm-operator',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })
@@ -2866,7 +2869,10 @@
         loadBootStrapSelector({
             elementId: 'rp_outbillsForm-auditor',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })

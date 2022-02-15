@@ -2997,7 +2997,10 @@
         loadBootStrapSelector({
             elementId: 'rp_returnbillsForm-operator',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:'中国,北京'
         })
@@ -3050,7 +3053,10 @@
         loadBootStrapSelector({
             elementId: 'rp_returnbillsForm-auditor',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:''
         })

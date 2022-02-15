@@ -2216,7 +2216,10 @@
             loadBootStrapSelector({
                 elementId: 'scanModel-repairStaff',
                 sqlParams: {
-                    sql: 'getStaffSelector'
+                    sql: 'getStaffSelector',
+                    params: {
+                        filter: "inservice <> '离职'"
+                    }
                 },
                 // initValue:'中国,北京'
             })
@@ -3398,7 +3401,10 @@
         loadBootStrapSelector({
             elementId: 'rp_recordbillsForm-repairStaff',
             sqlParams: {
-                sql: 'getStaffSelector'
+                sql: 'getStaffSelector',
+                params: {
+                    filter: "inservice <> '离职'"
+                }
             },
             // initValue:'中国,北京'
         })
