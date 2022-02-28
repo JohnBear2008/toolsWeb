@@ -992,8 +992,6 @@
 		};
 		getUndoneInfo("#TaskunCodeAuditPass", panelSQLTask, ["taskBPID", "taskCTRName", "BTID"]);
 
-
-
 		var panelSQLTask = {
 			"SQL": "SQLTableBillsTaskRecord",
 			"filter": " taskStaff = '" + sessionName +
@@ -1009,7 +1007,7 @@
 
 		var panelSQLTask = {
 			"SQL": "SQLTableBillsTaskRecord",
-			"filter": " taskStaff = '" + sessionName + "' AND BTStatus=4 "
+			"filter": " taskStaff = '" + sessionName + "' AND BTAcceptResult=1 AND BTStatus=4 "
 		};
 		getUndoneInfo("#TaskunPass", panelSQLTask, ["taskBPID", "taskCTRName", "BTID"]);
 
