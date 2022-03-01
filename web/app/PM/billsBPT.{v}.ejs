@@ -52,7 +52,7 @@
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillBPT" tabindex="-1" role="dialog" aria-labelledby="BillBPTLabel"
 			aria-hidden="true" data-backdrop="static">
-			<div class="modal-dialog" style="width:70%">
+			<div class="modal-dialog" style="width:80%">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" id="BTNModelClose" class="close" data-dismiss="modal"
@@ -394,6 +394,7 @@
 															<tr>
 																<th>数据库ID</th>
 																<th>任务单号</th>
+																<th>任务客户</th>
 																<th>任务单版本号</th>
 																<th>任务类别</th>
 																<th>任务类型</th>
@@ -432,8 +433,16 @@
 
 											<div class="panel panel-default" id="billTaskPanel">
 												<div class="panel-heading">任务单填写</div>
+												<br />
 
-
+												<div class="form-group">
+													<label class="col-sm-2 control-label" for="name">任务客户:</label>
+													<div class="col-sm-3">
+														<select id="taskCustomer" class="selectpicker"
+															data-live-search="true" data-dropup-auto="false">
+														</select>
+													</div>
+												</div>
 
 												<!-------------------------------------------------------------------------->
 												<div class="form-group">
@@ -466,6 +475,8 @@
 
 												<!-------------------------------------------------------------------------->
 												<div class="form-group">
+
+
 
 													<label class="col-sm-2 control-label">类型:</label>
 													<div class="col-sm-10">
@@ -831,6 +842,14 @@
 
 
 <script>
+	const setBootStrapSelector = ({
+		elementId,
+		val
+	}) => {
+		$('#' + elementId).selectpicker('val', val);
+		$('#' + elementId).selectpicker('refresh');
+	}
+
 	//函数:任务单号生成规则
 
 	function Fun_BTIDCreate() {
@@ -1005,6 +1024,12 @@
 				$("#taskDBID").val(dataSelectTask.DBID);
 
 				$("#BTID").text(dataSelectTask.BTID);
+
+
+				//20220228:补齐客户
+				Fun_getSQLSelectDBData({
+					SQL: "SQLSRCustomers"
+				}, "#taskCustomer", dataSelectTask.taskCTRName);
 
 				Fun_getSQLSelectDBData({
 					SQL: "SQLSRMachines"
@@ -1359,6 +1384,9 @@
 					data: 'BTID'
 				},
 				{
+					data: 'taskCTRName'
+				},
+				{
 					data: 'BTVersion'
 				},
 				{
@@ -1630,42 +1658,7 @@
 		});
 	}
 
-	////函数-生成系统模版任务单
-	//function createSystemTasks(bindsInfo){
-	//	
-	//	Fun_BTIDCreate();
-	//	 
-	//	let BTID=$('#BTID').text();
-	//
-	//		let DBData={
-	//				taskBPID:$('#taskBPID').val(),
-	//				BTID:BTID,
-	//				CTRDBID:$('#CTRName').val(),
-	//				taskCTRName:Fun_getSelectText($('#CTRName option:selected').text()),
-	//				bindsInfo:JSON.stringify(bindsInfo),
-	//				taskMaker:sessionName,
-	//				taskMakeDate:Ndate,
-	//				taskLimitDate:$('#limitDate').val()	
-	//		}
-	//		
-	//		$.ajax({
-	//	        method: 'post',
-	//	        url: '/app/PM/autoAddTasks',
-	//	        data: DBData,
-	//	        success: function(data) {
-	////	            swal("成功数据:" + JSON.stringify(data));
-	//	           if (data.affectedRows != 0) {
-	//	               swal("生成系统任务单成功,请点击任务单完善细节!");
-	//	          	   Fun_showSQLLiteTable(tasksTableSQL,tasksTableInfo);
-	//	          	   $('#BTNTaskAdd').click();
-	//	          	   $('#billTaskPanel').hide();
-	//	           }
-	//	       },
-	//	       error:function(err){
-	//	       	swal("失败数据:"+JSON.stringify(err));
-	//	       }
-	//	    });
-	//}
+
 
 
 	//函数-生成系统模版任务单
@@ -2388,6 +2381,10 @@
 			$('#BTVersion').text(0);
 			$('#BTStatusText').text('新增');
 
+			//添加任务客户
+			Fun_getSQLSelectDBData({
+				SQL: "SQLSRCustomers"
+			}, "#taskCustomer", Fun_getSelectText($('#CTRName option:selected').text()));
 
 
 			Fun_getSQLSelectDBData({
@@ -2476,53 +2473,128 @@
 
 			if (sessionName != $("#PGEMaker").val()) {
 				swal("当前账号非指定方案人,不允许新增该方案任务!");
-			} else {
-
-				//增加记忆绑定关系功能
-
-				autoUpdateBindsInfo();
-
-				//--增加同类型任务单检测提示功能--------------------
+				return
+			}
 
 
-				var tableTask = $('#billsTaskTable').DataTable();
-
-				let TaskNum = (tableTask.page.info()).recordsTotal; //总任务数
-
-
-				//保存任务执行函数
-
-				let saveTaskFun = async () => {
-					//--------------------------
+			if ($('#CTRName option:selected').text() !== $('#taskCustomer option:selected').text() &&
+				$('#CTRName option:selected').text().indexOf('NET') === -1) {
+				swal("单方案对多客户模式,仅适用于INet客户,请保持任务单客户与方案客户一致!");
+				return
+			}
 
 
-					if (checkTaskInput()) {
+			//增加记忆绑定关系功能
+
+			autoUpdateBindsInfo();
+
+			//--增加同类型任务单检测提示功能--------------------
+			var tableTask = $('#billsTaskTable').DataTable();
+			let TaskNum = (tableTask.page.info()).recordsTotal; //总任务数
 
 
-						var dataSelectTask = tableTask.row('.selected').data();
-						console.log("dataSelectTask:" + JSON.stringify(dataSelectTask));
-
-						var taskDBID = $('#taskDBID').val();
-
-						var taskBPID = $('#taskBPID').val();
-
-						var modifyABE = getCheckBoxValue('modifyABE');
-
-						//			var BTAcceptResultText=$('#BTAcceptResultText').text();
-
-						let taskDBE = $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>')
-							.replace(/'/g, '"');
+			//保存任务执行函数
+			let saveTaskFun = async () => {
+				//--------------------------
+				if (checkTaskInput()) {
 
 
-						if (dataSelectTask == undefined) {
+					var dataSelectTask = tableTask.row('.selected').data();
+					console.log("dataSelectTask:" + JSON.stringify(dataSelectTask));
+
+					var taskDBID = $('#taskDBID').val();
+
+					var taskBPID = $('#taskBPID').val();
+
+					var modifyABE = getCheckBoxValue('modifyABE');
+
+					//			var BTAcceptResultText=$('#BTAcceptResultText').text();
+
+					let taskDBE = $('#taskDBE').val().replace(/\n|\r\n/g, '<br/>')
+						.replace(/'/g, '"');
+
+
+					if (dataSelectTask == undefined) {
+						var taskData = {
+							"DBTable": "ppm_bills_task",
+							"DBID": taskDBID,
+							"BTID": $('#BTID').text(),
+							"BTVersion": 0,
+							"taskBPID": taskBPID,
+							"taskCTRName": Fun_getSelectText($(
+								'#taskCustomer option:selected').text()),
+							"taskSortType": $(
+									'input:radio[name="taskSortType"]:checked')
+								.val(),
+							"taskSortTypeText": $(
+									'input:radio[name="taskSortType"]:checked')
+								.next(
+									"span").text(),
+							"taskType": $('input:radio[name="taskType"]:checked')
+								.val(),
+							"taskTypeText": $(
+									'input:radio[name="taskType"]:checked').next(
+									"span")
+								.text(),
+							"taskMHEName": Fun_getSelectText($(
+								'#taskMHEName option:selected').text()),
+							"taskModel": $('#taskModel option:selected').text(),
+							"taskOGNSystemVersion": $('#taskOGNSystemVersion')
+								.val(),
+							"taskBugID": $('#taskBugID').val(),
+							"taskStaff": $('#taskStaff option:selected').text(),
+							"modifyABE": modifyABE,
+							"taskDBE": taskDBE,
+							"taskLimitDate": $('#taskLimitDate').val(),
+							"taskMaker": sessionName,
+							"taskMakeDate": Ndate,
+							"BTStatus": 1,
+							"BTStatusText": "新增"
+						}
+						Fun_saveTask(taskData);
+
+					} else {
+
+						if (dataSelectTask.BTStatus == 1) {
+
+
+							// //增加完成期限提醒功能
+							// if ($('#BTVersion').text() !== '0') {
+							// 	let rsOldLimitDate = await $.ajax({
+							// 		method: 'get',
+							// 		data: {
+							// 			"SQL": "select taskLimitDate from ppm_bills_task",
+							// 			"filter": "BTID='" + $('#BTID').text() +
+							// 				"' and BTVersion='" +
+							// 				parseInt($('#BTVersion').text() - 1) + "'"
+							// 		},
+							// 		url: "/app/PM/getSQLDBData",
+							// 		success: function (data) {
+							// 			// console.log("oldLimitDate:" + JSON.stringify(data));
+							// 			// // return data[0].taskLimitDate
+							// 		},
+							// 		error: function () {}
+							// 	})
+
+							// 	let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
+							// 	console.log('oldTaskLimitDate', oldTaskLimitDate);
+
+							// 	if ($('#taskLimitDate').val() === oldTaskLimitDate) {
+							// 		if (confirm('是否需调整完成期限?')) {
+							// 			return;
+							// 		}
+							// 	}
+							// }
+
+
 							var taskData = {
 								"DBTable": "ppm_bills_task",
 								"DBID": taskDBID,
 								"BTID": $('#BTID').text(),
-								"BTVersion": 0,
+								"BTVersion": dataSelectTask.BTVersion,
 								"taskBPID": taskBPID,
 								"taskCTRName": Fun_getSelectText($(
-									'#CTRName option:selected').text()),
+									'#taskCustomer option:selected').text()),
 								"taskSortType": $(
 										'input:radio[name="taskSortType"]:checked')
 									.val(),
@@ -2530,19 +2602,23 @@
 										'input:radio[name="taskSortType"]:checked')
 									.next(
 										"span").text(),
-								"taskType": $('input:radio[name="taskType"]:checked')
+								"taskType": $(
+										'input:radio[name="taskType"]:checked')
 									.val(),
 								"taskTypeText": $(
-										'input:radio[name="taskType"]:checked').next(
-										"span")
+										'input:radio[name="taskType"]:checked')
+									.next("span")
 									.text(),
 								"taskMHEName": Fun_getSelectText($(
-									'#taskMHEName option:selected').text()),
-								"taskModel": $('#taskModel option:selected').text(),
+										'#taskMHEName option:selected')
+									.text()),
+								"taskModel": $('#taskModel option:selected')
+									.text(),
 								"taskOGNSystemVersion": $('#taskOGNSystemVersion')
 									.val(),
 								"taskBugID": $('#taskBugID').val(),
-								"taskStaff": $('#taskStaff option:selected').text(),
+								"taskStaff": $('#taskStaff option:selected')
+									.text(),
 								"modifyABE": modifyABE,
 								"taskDBE": taskDBE,
 								"taskLimitDate": $('#taskLimitDate').val(),
@@ -2551,71 +2627,43 @@
 								"BTStatus": 1,
 								"BTStatusText": "新增"
 							}
-							Fun_saveTask(taskData);
 
+							Fun_saveTask(taskData);
 						} else {
 
-							if (dataSelectTask.BTStatus == 1) {
 
 
-								// //增加完成期限提醒功能
-								// if ($('#BTVersion').text() !== '0') {
-								// 	let rsOldLimitDate = await $.ajax({
-								// 		method: 'get',
-								// 		data: {
-								// 			"SQL": "select taskLimitDate from ppm_bills_task",
-								// 			"filter": "BTID='" + $('#BTID').text() +
-								// 				"' and BTVersion='" +
-								// 				parseInt($('#BTVersion').text() - 1) + "'"
-								// 		},
-								// 		url: "/app/PM/getSQLDBData",
-								// 		success: function (data) {
-								// 			// console.log("oldLimitDate:" + JSON.stringify(data));
-								// 			// // return data[0].taskLimitDate
-								// 		},
-								// 		error: function () {}
-								// 	})
-
-								// 	let oldTaskLimitDate = rsOldLimitDate[0].taskLimitDate;
-								// 	console.log('oldTaskLimitDate', oldTaskLimitDate);
-
-								// 	if ($('#taskLimitDate').val() === oldTaskLimitDate) {
-								// 		if (confirm('是否需调整完成期限?')) {
-								// 			return;
-								// 		}
-								// 	}
-								// }
-
-
+							if (confirm("风险操作:该任务单已非新增状态,保存将更新任务单版本,是否继续?")) {
 								var taskData = {
 									"DBTable": "ppm_bills_task",
-									"DBID": taskDBID,
 									"BTID": $('#BTID').text(),
-									"BTVersion": dataSelectTask.BTVersion,
+									"BTVersion": dataSelectTask.BTVersion + 1,
 									"taskBPID": taskBPID,
 									"taskCTRName": Fun_getSelectText($(
-										'#CTRName option:selected').text()),
+											'#taskCustomer option:selected')
+										.text()),
 									"taskSortType": $(
-											'input:radio[name="taskSortType"]:checked')
+											'input:radio[name="taskSortType"]:checked'
+										)
 										.val(),
 									"taskSortTypeText": $(
-											'input:radio[name="taskSortType"]:checked')
-										.next(
-											"span").text(),
+											'input:radio[name="taskSortType"]:checked'
+										)
+										.next("span").text(),
 									"taskType": $(
 											'input:radio[name="taskType"]:checked')
 										.val(),
 									"taskTypeText": $(
 											'input:radio[name="taskType"]:checked')
-										.next("span")
-										.text(),
+										.next(
+											"span").text(),
 									"taskMHEName": Fun_getSelectText($(
 											'#taskMHEName option:selected')
 										.text()),
 									"taskModel": $('#taskModel option:selected')
 										.text(),
-									"taskOGNSystemVersion": $('#taskOGNSystemVersion')
-										.val(),
+									"taskOGNSystemVersion": $(
+										'#taskOGNSystemVersion').val(),
 									"taskBugID": $('#taskBugID').val(),
 									"taskStaff": $('#taskStaff option:selected')
 										.text(),
@@ -2623,136 +2671,85 @@
 									"taskDBE": taskDBE,
 									"taskLimitDate": $('#taskLimitDate').val(),
 									"taskMaker": sessionName,
-									"taskMakeDate": Ndate,
+									"taskMakeDate": $('#taskMakeDate').text(),
 									"BTStatus": 1,
 									"BTStatusText": "新增"
 								}
 
-								Fun_saveTask(taskData);
-							} else {
 
+								if (dataSelectTask.BTStatus === 3) {
 
-
-								if (confirm("风险操作:该任务单已非新增状态,保存将更新任务单版本,是否继续?")) {
-									var taskData = {
-										"DBTable": "ppm_bills_task",
-										"BTID": $('#BTID').text(),
-										"BTVersion": dataSelectTask.BTVersion + 1,
-										"taskBPID": taskBPID,
-										"taskCTRName": Fun_getSelectText($(
-												'#CTRName option:selected')
-											.text()),
-										"taskSortType": $(
-												'input:radio[name="taskSortType"]:checked'
-											)
-											.val(),
-										"taskSortTypeText": $(
-												'input:radio[name="taskSortType"]:checked'
-											)
-											.next("span").text(),
-										"taskType": $(
-												'input:radio[name="taskType"]:checked')
-											.val(),
-										"taskTypeText": $(
-												'input:radio[name="taskType"]:checked')
-											.next(
-												"span").text(),
-										"taskMHEName": Fun_getSelectText($(
-												'#taskMHEName option:selected')
-											.text()),
-										"taskModel": $('#taskModel option:selected')
-											.text(),
-										"taskOGNSystemVersion": $(
-											'#taskOGNSystemVersion').val(),
-										"taskBugID": $('#taskBugID').val(),
-										"taskStaff": $('#taskStaff option:selected')
-											.text(),
-										"modifyABE": modifyABE,
-										"taskDBE": taskDBE,
-										"taskLimitDate": $('#taskLimitDate').val(),
-										"taskMaker": sessionName,
-										"taskMakeDate": $('#taskMakeDate').text(),
-										"BTStatus": 1,
-										"BTStatusText": "新增"
+									let PLDUpdData = {
+										"DBTable": "ppm_bills_plan",
+										"BillIDName": "BPID",
+										"BillID": taskBPID,
+										"TaskNumDoneCancel": 1,
+										// "WFStatus": 30
 									}
 
+									let ajax1 = $.ajax({
+										method: 'post',
+										url: '/app/PM/updBillStatus',
+										data: PLDUpdData,
+										success: function (data,
+											textStatus) {},
+										error: function (XMLHttpRequest,
+											textStatus,
+											errorThrown) {}
+									});
 
-									if (dataSelectTask.BTStatus === 3) {
+									$.when(ajax1).done(function () {
 
-										let PLDUpdData = {
-											"DBTable": "ppm_bills_plan",
-											"BillIDName": "BPID",
-											"BillID": taskBPID,
-											"TaskNumDoneCancel": 1,
-											// "WFStatus": 30
-										}
-
-										let ajax1 = $.ajax({
-											method: 'post',
-											url: '/app/PM/updBillStatus',
-											data: PLDUpdData,
-											success: function (data,
-												textStatus) {},
-											error: function (XMLHttpRequest,
-												textStatus,
-												errorThrown) {}
-										});
-
-										$.when(ajax1).done(function () {
-
-											Fun_addTask(taskData);
-										});
-									} else {
 										Fun_addTask(taskData);
-									}
+									});
+								} else {
+									Fun_addTask(taskData);
 								}
 							}
 						}
-
 					}
+
 				}
-
-				let taskSortTypeNow = $('input:radio[name="taskSortType"]:checked').val();
-				let taskTypeNow = $('input:radio[name="taskType"]:checked').val();
-				let BTIDNow = $('#BTID').text();
-
-				let sameTypeNum = 0;
-
-				for (let i = 0; i < TaskNum; i++) {
-					let taskSortType = tableTask.row(i).data().taskSortType;
-					let taskType = tableTask.row(i).data().taskType;
-					let BTStatusText = tableTask.row(i).data().BTStatusText;
-					let BTID = tableTask.row(i).data().BTID;
-
-					if (taskSortTypeNow === taskSortType && taskTypeNow === taskType && BTStatusText !==
-						'废弃' && BTIDNow !== BTID) {
-						sameTypeNum = sameTypeNum + 1;
-					}
-				}
-
-
-				if (sameTypeNum > 0) {
-
-					swal({
-							title: "系统提示?",
-							text: "系统检测到该方案存在两个同类型的任务单,是否继续保存?",
-							icon: "warning",
-							buttons: true,
-							dangerMode: true,
-						})
-						.then((v) => {
-							if (v) {
-								saveTaskFun();
-							}
-						});
-				} else {
-					saveTaskFun();
-				}
-
-
-
-
 			}
+
+			let taskSortTypeNow = $('input:radio[name="taskSortType"]:checked').val();
+			let taskTypeNow = $('input:radio[name="taskType"]:checked').val();
+			let BTIDNow = $('#BTID').text();
+
+			let sameTypeNum = 0;
+
+			for (let i = 0; i < TaskNum; i++) {
+				let taskSortType = tableTask.row(i).data().taskSortType;
+				let taskType = tableTask.row(i).data().taskType;
+				let BTStatusText = tableTask.row(i).data().BTStatusText;
+				let BTID = tableTask.row(i).data().BTID;
+
+				if (taskSortTypeNow === taskSortType && taskTypeNow === taskType && BTStatusText !==
+					'废弃' && BTIDNow !== BTID) {
+					sameTypeNum = sameTypeNum + 1;
+				}
+			}
+
+
+			if (sameTypeNum > 0) {
+
+				swal({
+						title: "系统提示?",
+						text: "系统检测到该方案存在两个同类型的任务单,是否继续保存?",
+						icon: "warning",
+						buttons: true,
+						dangerMode: true,
+					})
+					.then((v) => {
+						if (v) {
+							saveTaskFun();
+						}
+					});
+			} else {
+				saveTaskFun();
+			}
+
+
 
 
 
@@ -3274,7 +3271,7 @@
 								" (SELECT MAX(FQCRequest) AS maxFQCRequest FROM `ppm_staffs` WHERE staffName IN " +
 								taskStaffs + " ) td";
 
-							console.log('SQLGetFQCRequest',SQLGetFQCRequest);
+							console.log('SQLGetFQCRequest', SQLGetFQCRequest);
 
 
 							$.ajax({
@@ -3648,6 +3645,19 @@
 		$('#BTNGetAuditor').click(function () {
 			getUpAuditor($('#BPTBPID').val(), sessionName);
 		});
+
+
+
+		loadBootStrapSelector({
+			elementId: 'taskCustomer',
+			sqlParams: {
+				sql: 'getCTRNameSelector',
+				params: {
+					filter: 'status=1'
+				}
+			},
+		})
+
 
 
 

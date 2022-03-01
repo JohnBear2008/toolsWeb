@@ -54,7 +54,7 @@
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="BillPLD" tabindex="1" role="dialog" aria-labelledby="BillPLDLabel"
 			aria-hidden="true" data-backdrop="static">
-			<div class="modal-dialog" style="width:75%">
+			<div class="modal-dialog" style="width:80%">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" id='btnModalClose' class="close" data-dismiss="modal"
@@ -724,6 +724,7 @@
 					"titles": [
 						"BTID",
 						"BTVersion",
+						"taskCTRName",
 						"taskStaff",
 						"taskTypeText",
 						"taskLimitDate",
@@ -1123,7 +1124,7 @@
 						var tdFiles = $("#billsTaskTable tbody tr:eq(" + i + ") td:last")
 							.html();
 
-						var tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(3)")
+						var tdTaskType = $("#billsTaskTable tbody tr:eq(" + i + ") td:eq(4)")
 							.html();
 
 						if (tdFiles != "" && tdTaskType == "APP") {
@@ -1131,11 +1132,11 @@
 							filesHtml = filesHtml + tdFiles + " ; ";
 
 							emailModifyContent = emailModifyContent +
-								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(5)").html()) +
+								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)").html()) +
 								"\n";
 
 							emailFunctionsDBE = emailFunctionsDBE +
-								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(6)").html()) +
+								htmlToTextarea($("#billsTaskTable tbody tr:eq(" + i + ") td:eq(7)").html()) +
 								"\n";
 
 						}
@@ -1967,17 +1968,26 @@
 						}
 					}
 
-					// console.log('autoFileArr', autoFileArr);
-					// alert('点击开始系统自动归档,收到归档成功信息前请勿刷新页面!')
+					console.log('autoFileArr', autoFileArr);
+					alert('点击开始系统自动归档,收到归档成功信息前请勿刷新页面!')
+					let rootPath = ""
+					if ($("#PBHCTRName").text().indexOf('NET') !== -1) {
+						rootPath = "NETPROGRAM"
+						for (let n of autoFileArr) {
+							n.filePath.unshift($('#PBHCTRName').text())
+						}
+					}
 
+					let fileData = {
+						rootPath: rootPath,
+						autoFileArr: JSON.stringify(autoFileArr)
+					}
 					//d api归档
 
 					$.ajax({
 						method: 'post',
 						url: '/app/PM/lib/api',
-						data: {
-							autoFileArr: JSON.stringify(autoFileArr)
-						},
+						data: fileData,
 						success: function (data, textStatus) {
 							console.log(data, textStatus);
 							alert('归档命令发送成功,系统将在后台自动归档!')
