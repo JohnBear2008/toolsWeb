@@ -22,12 +22,13 @@ const getWarehouseSelector = "select warehouseId as value,warehouseName as optio
 const getStoreProductSelector = "select * from ( select ta.warehouseId,ta.stockNum,ta.PID as value,ta.PID as option,tb.productName as token from `rp_warehouse` ta left join `rp_products` tb on ta.PID=tb.productId ) A"
 
 const getBomPartSelector = "select distinct partId as value,partId as option,partId as token from `rp_partlocations`";
+const getPartFeeSelector = "select distinct partId as value,partId as option,partId as token from `rp_partsfee`";
 
 const getRegion = "SELECT mername FROM `region`"
 const getCustomers = "SELECT * FROM `rp_customers`"
 const getProduct = "select * from `rp_products`"
 const getT9Prouct = "select * from comMaterialGroup"
-const getPartInfo = "select * from ( select ta.productId,ta.partId,ta.num,tb.price,tc.productName,tc.productDescription as partDescription from `rp_partlocations` ta left join `rp_partsfee` tb on ta.partId=tb.partId left join `rp_products` tc on ta.partId=tc.productId) A"
+const getPartFeeInfo = "select * from ( SELECT ta.productId AS partId, ta.productName AS partName, ta.productDescription AS partDescription, tb.price FROM rp_products AS ta INNER JOIN rp_partsfee AS tb ON tb.partId = ta.productId) A"
 const getStockNum = "select * from (select PID,stockNum,ta.warehouseId,warehouseName from `rp_warehouse` ta left join `rp_warehouseslist` tb on ta.warehouseId=tb.warehouseId) A"
 
 const getPartLocations = "select locations from `rp_partlocations`"

@@ -718,6 +718,11 @@ var checkFileName = (i, o) => {
 	if (i.fileName.indexOf('tech_') !== -1) {
 		return true
 	}
+	//plc 附件上传临时解除
+	if (i.fileName.indexOf('PLC') !== -1) {
+		return true
+	}
+
 
 	if (escape(i.fileName).indexOf("%u") != -1) { //包含中文
 		o = false;

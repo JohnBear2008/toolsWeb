@@ -544,6 +544,35 @@
                 </div>
                 <div class="modal-body">
 
+                    <!-- 维修历史 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                    维修历史
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse ">
+                            <div class="panel-body">
+                                <!-- 定义基础模块数据表 -->
+                                <table id="rp_materialRecords" class=" table table-striped table-bordered"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>维修单号</th>
+                                            <th>客户</th>
+                                            <th>问题描述</th>
+                                            <th>维修人</th>
+                                            <th>维修方案</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 表单面板 -->
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -1206,66 +1235,28 @@
 
     const fillPartInfo = async (partId) => {
         // console.log('fillPartInfo partId:' + partId);
-        let r1 = await getDataBySql({
-            sql: 'getPartInfo',
+        let partFeeInfo = await getDataBySql({
+            sql: "getPartFeeInfo",
             params: {
-                filter: 'partId="' + partId + '" and productId="' + $('#rp_recordbillsForm-productId')
-                    .text() + '"'
+                filter: "partId='" + partId + "'"
             }
         })
-
-        // console.log('r1:' + JSON.stringify(r1));
-
-        if (r1.length === 0) {
+        if (partFeeInfo.length === 0) {
             return;
         }
-        let r2 = r1[0]
-        delete r2.partLocation;
-        delete r2.partId;
-        r2.partFee = r2.price * r2.num;
+        let partFeeInfoData = partFeeInfo[0]
 
-        // console.log('r2:' + JSON.stringify(r2));
+
+        // delete r2.partLocation;
+        // delete r2.partId;
+        // r2.partFee = r2.price * r2.num;
+
+
         fillFormInputs({
             formId: 'rp_partsbillsForm',
-            params: r2
+            params: partFeeInfoData
         })
-        // $("#rp_recordbillsForm-customerArea").selectpicker('val', r2.customerArea)
     }
-
-    // //添加检测项目监听器
-    // const addTestItemListener = () => {
-    //     // $('#rp_recordbillsForm-testItem').unbind();
-    //     $('#rp_recordbillsForm-testItem').change(function () {
-    //         let testFee = $('#rp_recordbillsForm-testItem option:selected').attr("data-tokens");
-    //         if (testFee) {
-    //             $('#rp_recordbillsForm-testFee').text(testFee);
-    //             CalcRepairTotalFee();
-    //         }
-    //     })
-    // }
-
-    // //添加成色监听器
-    // const addConditionStatusListener = () => {
-    //     // $('#rp_recordbillsForm-conditionStatus').unbind();
-    //     $('#rp_recordbillsForm-conditionStatus').change(function () {
-    //         let conditionStatus = $('#rp_recordbillsForm-testItem option:selected').val();
-    //         if (conditionStatus) {
-    //             CalcRepairTotalFee();
-    //         }
-    //     })
-    // }
-
-    // //添加维修结果监听器
-    // const addRepairResultListener = () => {
-    //     // $('#rp_recordbillsForm-repairResult').unbind();
-    //     $('#rp_recordbillsForm-repairResult').change(function () {
-    //         let repairResult = $('#rp_recordbillsForm-repairResult option:selected').val();
-    //         if (repairResult) {
-    //             CalcRepairTotalFee();
-    //         }
-    //     })
-    // }
-
 
 
     //加载位置信息selector
@@ -1920,32 +1911,34 @@
     }) => {
         let elementId = 'rp_partsbillsForm-partId';
         let productId = $('#rp_recordbillsForm-productId').text()
-        let options = []
-
-        let bomOptions = await getDataBySql({
-            sql: 'getBomPartSelector',
-            params: {
-                filter: 'productId="' + productId + '"'
-            }
+        let options = await getDataBySql({
+            sql: 'getPartFeeSelector'
         })
-        console.log("bomOptions", bomOptions);
 
-        switch (type) {
-            case 'all':
-                let partOptions = await getDataBySql({
-                    sql: 'getProductSelector',
-                    // params: {
-                    //     filter: 'partBelong="零件"'
-                    // }
-                })
+        // let bomOptions = await getDataBySql({
+        //     sql: 'getBomPartSelector',
+        //     params: {
+        //         filter: 'productId="' + productId + '"'
+        //     }
+        // })
+        // console.log("bomOptions", bomOptions);
 
-                let arr = bomOptions.concat(partOptions)
-                options = Array.from(arr)
-                break;
-            default:
-                options = bomOptions
-                break;
-        }
+        // switch (type) {
+        //     case 'all':
+        //         let partOptions = await getDataBySql({
+        //             sql: 'getProductSelector',
+        //             // params: {
+        //             //     filter: 'partBelong="零件"'
+        //             // }
+        //         })
+
+        //         let arr = bomOptions.concat(partOptions)
+        //         options = Array.from(arr)
+        //         break;
+        //     default:
+        //         options = bomOptions
+        //         break;
+        // }
 
 
         // loadDataBootStrapSelector({
@@ -2087,9 +2080,11 @@
                 let rows = table.rows().data();
                 // console.log('rows', rows);
 
-                for (let i = 0; i < rows.length; i++) {
+                let match = false
 
+                for (let i = 0; i < rows.length; i++) {
                     if (rows[i].repairId === repairId) {
+                        match = true
                         table.rows(i).select();
                         $('#btnRecordBillNew').click()
                         break;
@@ -2100,10 +2095,11 @@
                 // $('#btnRecordBillNew').click()
 
                 scanner.stop().then(function () {
+                    if (!match) {
+                        alert("无匹配单据,请确认此单是否已完成登记!")
+                    }
                     // alert('stoped');
                     $('#scanRecordModal').modal('hide')
-
-
                 });
             });
             Instascan.Camera.getCameras().then(function (cameras) {
