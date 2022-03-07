@@ -2231,7 +2231,7 @@
                 );
             }
             $("#customerContacts").selectpicker('val', customerData.contact);
-            $("#customerContacts").selectpicker('refresh');
+            // $("#customerContacts").selectpicker('refresh');//2022-3-7 减少刷新次数
         }
 
 
@@ -2241,13 +2241,15 @@
         $('#customerContacts').change(function () {
             let contact = $('#customerContacts option:selected').val();
             if (contact) {
-                $("#customerContacts").selectpicker('refresh'); //刷新显示
+                // $("#customerContacts").selectpicker('refresh'); ////2022-3-7 减少刷新次数
                 $('#rp_requestbillsForm-contact').val($('#customerContacts option:selected')
                     .val());
                 $('#rp_requestbillsForm-mobilePhone').val($('#customerContacts option:selected')
                     .data("tokens"));
             }
         });
+
+        $("#customerContacts").selectpicker('refresh');
     }
 
 

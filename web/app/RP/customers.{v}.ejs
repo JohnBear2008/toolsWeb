@@ -129,6 +129,11 @@
                                     <div class="col-sm-5">
                                         <p class="form-control-static" id="rp_customersForm-UID"></p>
                                     </div>
+
+                                    <label class="col-sm-1 control-label">拼音码</label>
+                                    <div class="col-sm-5">
+                                        <p class="form-control-static" id="rp_customersForm-pinyin"></p>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -234,7 +239,7 @@
                                         <span class="form-control-static">注意:请按格式填写,
                                             示例:张三,13512345678;李四,13587654321</span>
                                         <textarea id="rp_customersForm-contacts" class="form-control"
-                                            rows="3"></textarea>
+                                            rows="6"></textarea>
                                     </div>
                                 </div>
 
@@ -531,9 +536,10 @@
         let workPhone = $('#rp_customersForm-workPhone').val();
 
         let filter = "";
-        if (customerShortName) {
-            filter = filter + ' or customerShortName="' + customerShortName + '"';
-        }
+        //暂排除简称雷同
+        // if (customerShortName) {
+        //     filter = filter + ' or customerShortName="' + customerShortName + '"';
+        // }
         if (customerName) {
             filter = filter + ' or customerName="' + customerName + '"';
         }
@@ -690,9 +696,21 @@
                         if (RPData.hasOwnProperty.call(m, p) && RPData.hasOwnProperty.call(n, p) && !m[p] && n[
                                 p]) {
                             m[p] = n[p]
-                            console.log(m);
+                            // console.log(m);
+
                             updated = true;
                         }
+
+                    }
+
+                    //自动生成多联系人功能
+                    if (n.contact &&
+                        n.mobilePhone &&
+                        n.contact !== m.contact &&
+                        n.mobilePhone !== m.mobilePhone &&
+                        m.contacts.indexOf(n.contact + ',' + n.mobilePhone) === -1) {
+                        m.contacts = m.contacts + n.contact + ',' + n.mobilePhone + ';'
+                        updated = true;
                     }
 
                     if (updated) {
@@ -702,10 +720,10 @@
                 }
             }
 
-            //不存在的物料如何处理,预留
-            if (!match) {
-                newRPData.push(n)
-            }
+            // //不存在的物料如何处理,预留
+            // if (!match) {
+            //     newRPData.push(n)
+            // }
         }
         console.log('newRPData', newRPData);
 
@@ -714,6 +732,8 @@
             return
         }
 
+
+      //  newRPData = newRPData.slice(0, 1) //debug
 
 
         let r1 = await postDBData({
@@ -727,7 +747,7 @@
         console.log('r1', r1);
         if (r1.affectedRows > 0) {
             MainTable.ajax.reload()
-            alert('同步完成,更新' + r1.affectedRows + '条新数据!')
+            alert('同步完成,更新' + r1.affectedRows / 2 + '条新数据!')
         }
     }
 
