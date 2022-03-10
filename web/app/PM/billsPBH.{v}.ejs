@@ -1916,9 +1916,16 @@
 						alert('归档出现参数错误,归档终止!')
 						return
 					}
+					//去除无有效文件任务避免归档错误
+					let fileTasks = []
+					for (const n of tasks) {
+						if (n.taskFiles) {
+							fileTasks.push(n)
+						}
+					}
 
 					let autoFileArr = [];
-					for (const n of tasks) {
+					for (const n of fileTasks) {
 						let nTaskFiles = JSON.parse(n.taskFiles);
 						for (const file of nTaskFiles) {
 
